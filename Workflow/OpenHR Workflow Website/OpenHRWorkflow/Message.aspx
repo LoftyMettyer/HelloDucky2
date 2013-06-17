@@ -139,7 +139,7 @@
 						<asp:Label ID="lblPrompt1" 
 								runat="server" Text="Click">
 							</asp:Label> 
-						<span id="spnClickHere" name="spnClickHere" onclick="closeMe();" tabindex="1"
+						<span id="spnClickHere" onclick="closeMe();" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608';}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 

@@ -27,11 +27,7 @@
 
 	    function window_onload() {
 
-	        var iDefHeight;
-	        var iDefWidth;
-	        var iResizeByHeight;
-	        var iResizeByWidth;
-	        var sControlType;
+	        var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
 
 	        //Set the current page tab	  
 	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;
@@ -44,40 +40,25 @@
 	        }
 	        SetCurrentTab(iCurrentTab);
 
+	        window.iCurrentMessageState = 'none';
+
 	        try {
 	          
 	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
 	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
 			    
 	            window.focus();
-	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
-	              iResizeByHeight = iDefHeight - window.currentHeight; //  getWindowHeight();
-	              iResizeByWidth = iDefWidth - window.currentWidth;  // getWindowWidth();
+	            if (iDefHeight > 0 && iDefWidth > 0) {
+	              iResizeByHeight = iDefHeight - window.currentHeight; 
+	              iResizeByWidth = iDefWidth - window.currentWidth;
 	                
 	              window.parent.resizeBy(iResizeByWidth, iResizeByHeight);	
 	              window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);			  
 	            }
-				
+
 	            try {
 	                if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
-	                    
-	                    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
-	                    sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-	                    sControlType = sControlType.substring(0, sControlType.indexOf("_"));
-
-	                    if (sControlType == 7) {
-	                        // Date
-	                        igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
-	                    }
-	                    else if (sControlType == 13 || sControlType == 14) {
-                            // Lookup & Dropdown
-	                    }
-	                    else if (sControlType == 11) {
-	                        // Record Selector                                   
-	                    }
-	                    else {
-	                        document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
-	                    }
+	                    document.getElementById(window.$get("frmMain").hdnFirstControl.value).focus();
 	                }
 	            }
 	            catch (e) { }
@@ -132,22 +113,16 @@
 	        var newWin;
 	        try {
 	            newWin = window.open(psURL);
-
-	            if (parseInt(navigator.appVersion) >= 4) {
-	                try {
-	                    newWin.window.focus();
-	                }
-	                catch (e) { }
-	            }
+	            try { newWin.window.focus(); } catch (e) { }
 	        }
 	        catch (e) {
 	            try {
 	                try {
 	                    newWin.close();
 	                }
-            
-	                catch(e){alert("For your security please close your browser");}
-            
+	                catch(e) {
+	                    alert("For your security please close your browser");
+	                }
 	            }
 	            catch (e) { }
 
@@ -171,7 +146,6 @@
 
 	        showWait(true);
 	        showOverlay(true);
-	        showErrorMessages(false);
 	    }
 
 	    function getElementsBySearchValue(searchValue) {
@@ -195,31 +169,31 @@
 	            }
 	        }
 
-	        return retVal;     
-	    } 
-
-	    function showErrorMessages(pfDisplay) {
-		
-	        if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0)) && (pfDisplay == false)) {
-	            $get("imgErrorMessages_Max").style.display = "block";
-	            $get("imgErrorMessages_Max").style.visibility = "visible";
-	        }
-	        else {
-	            $get("imgErrorMessages_Max").style.display = "none";
-	            $get("imgErrorMessages_Max").style.visibility = "hidden";
-	        }
-           
-	        if (pfDisplay == true) {
-	            //refresh the errors WARP panel. 
-	            __doPostBack('pnlErrorMessages', '');
-
-	            $get("divErrorMessages_Outer").style.display = "block";
-	            $get("divErrorMessages_Outer").style.visibility = "visible";
-	        }
-	        else {
-	            $get("divErrorMessages_Outer").style.visibility = "hidden";
-	        }
+	        return retVal;    
 	    }
+
+	    function showErrorMessages(state) {
+
+	        switch (state) {
+	            case 'max':
+	                document.getElementById("errorMessagePanel").style.display = "block";
+	                document.getElementById("errorMessageMax").style.display = "none";
+	                break;
+	            case 'min':
+	                document.getElementById("errorMessagePanel").style.display = "none";
+	                document.getElementById("errorMessageMax").style.display = "block";
+	                break;
+	            default:
+	                document.getElementById("errorMessagePanel").style.display = "none";
+	                document.getElementById("errorMessageMax").style.display = "none";
+	        }
+	        window.iCurrentMessageState = state;
+	    }
+
+	    function hasErrors() {
+	        return document.getElementById("frmMain").hdnCount_Errors.value > 0 || 
+    	           document.getElementById("frmMain").hdnCount_Warnings.value > 0;
+        }
 
 	    function launchFollowOnForms(psForms) {
 	        launchForms(psForms, true);
@@ -232,9 +206,7 @@
 	        try {
 	            document.getElementById($get("frmMain").hdnLastButtonClicked.value).click();
 	        }
-	        catch (e) {
-	            $get("frmMain").btnSubmit.click();
-	        }
+	        catch (e) {}
 	    }
 
 	    function submitForm() {
@@ -268,56 +240,6 @@
             __doPostBack(gridId, 'Select$' + rowIndex);
         }
 
-	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
-	        try {
-	            if (piKeyCode == 113) // F2 - set today's date
-	            {
-	                var d = new Date();
-	                pobjControl.setValue(d);
-	            }
-	            if (piKeyCode == 117) // F6 - show calendar
-	            {
-	                pobjControl.setDropDownVisible(true);
-	            }
-	        }
-	        catch (e) { }
-	    }
-
-	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
-	
-	        var dtCurrentDate;
-
-	        try {
-	            if (pNewText.length > 0) {
-	                dtCurrentDate = pobjControl.getValue();				
-          
-	                $get("txtLastDate_Month").value = dtCurrentDate.getMonth();
-	                $get("txtLastDate_Day").value = dtCurrentDate.getDate();		
-	                $get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
-	            }
-	        }
-	        catch (e) { }
-	    }
-
-	    function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
-	        try {
-	            var sCurrentText = pobjControl.getText();
-	            var sLastDate_Month = $get("txtLastDate_Month").value;
-	            var sLastDate_Day = $get("txtLastDate_Day").value;
-	            var sLastDate_Year = $get("txtLastDate_Year").value;
-	            var dtLastDate;
-
-	            if ((sCurrentText.length == 0)
-    	            && (sLastDate_Month.length > 0)
-        	            && (sLastDate_Day.length > 0)
-            	            && (sLastDate_Year.length > 0)) {
-	                dtLastDate = new Date(sLastDate_Year, sLastDate_Month, sLastDate_Day);
-	                pobjControl.Calendar.setSelectedDate(dtLastDate);
-	            }
-	        }
-	        catch (e) { }
-	    }
-
         function dateControlAndroidFix(controlId, hide) {
             var dateControl = document.getElementById(controlId);
             var nodes = dateControl.parentNode.childNodes;
@@ -329,10 +251,6 @@
                     }
                 }
             }
-        }
-
-        function showCalendar(elementID) {
-            igdrp_getComboById(elementID).showCalendar();
         }
 
         function showOverlay(display) {
@@ -355,11 +273,10 @@
 	                }
                     
 	                $get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
-          
-	                showErrorMessages(false);
+
 	                showOverlay(true);
+	                showErrorMessages(hasErrors() ? 'min' : 'none');
 	                
-	                document.getElementById("divErrorMessages_Outer").style.display = "none";
 	                document.getElementById("divFileUpload").style.display = "block";
 	            }
 	            else {
@@ -392,11 +309,18 @@
 	        catch (e) { }
 	    }
 
-	    function showMessage() {			 
-    
+	    var jQuerySetup;
+
+	    function showMessage() {
+
+	        //Reset jQuery setup
+	        jQuerySetup();
+
 	        //Reset current tab position
 	        SetCurrentTab(iCurrentTab);
-
+	        //Reset current error message display
+	        showErrorMessages(window.iCurrentMessageState);
+	        
 	        showWait(false);
 	        showOverlay(false);
 
@@ -438,8 +362,8 @@
 					
 	            }
 
-	            if (($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0)) {
-	                showErrorMessages(true);
+	            if (hasErrors()) {
+	                showErrorMessages('max');
 	            }
 	            else {
 	                if ($get("frmMain").hdnNoSubmissionMessage.value == 1) {
@@ -479,10 +403,7 @@
 	            $get("ifrmMessages").src = "SubmissionMessage.aspx";
 
 	            showOverlay(true);
-	            $get("frmMain").hdnCount_Errors.value = 0;
-	            $get("frmMain").hdnCount_Warnings.value = 0;
-	            $get("divErrorMessages_Outer").style.display = "none";
-	            showErrorMessages(false);
+	            showErrorMessages('none');
 	            $get("divSubmissionMessages").style.display = "block";
 	            $get("divSubmissionMessages").style.visibility = "visible";
 	        }
@@ -500,6 +421,7 @@
 	        }
 	    }
 	    
+        //TODO replace using jQuery date functions
 	    function GetDatePart(psLocaleDateValue, psDatePart) {
 	        var reDATE = /[YMD]/g;
 	        var sLocaleDateFormat = window.localeDateFormat;
@@ -1159,4 +1081,3 @@ try {
     Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
 }
 catch (e) { }
-

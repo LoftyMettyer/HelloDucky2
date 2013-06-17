@@ -62,6 +62,25 @@ Public Class Utilities
 
   End Function
 
+  Public Shared Function NullSafeShort(ByVal arg As Object, Optional ByVal returnIfEmpty As Short = 0) As Short
+
+    Dim returnValue As Short
+
+    If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
+        OrElse (arg Is String.Empty) Then
+      returnValue = returnIfEmpty
+    Else
+      Try
+        returnValue = CShort(arg)
+      Catch
+        returnValue = returnIfEmpty
+      End Try
+    End If
+
+    Return returnValue
+
+  End Function
+
   '****************************************************************
   '   NullSafeSingle
   '****************************************************************

@@ -11,7 +11,7 @@
 
       try {
         if (document.getElementById("hdnCount_Errors").value > 0) {
-            showErrorMessages(true);
+            showErrorMessages('max');
         }
         else {
           if (document.getElementById("hdnExitMode").value > 0) {
@@ -28,29 +28,25 @@
       try {
         document.getElementById("FileUpload1").focus();
       } catch(e) {} 
-    }          
-    
-    function showErrorMessages(pfDisplay) {
-      if (((document.getElementById("hdnCount_Errors").value > 0)
-				|| (document.getElementById("hdnCount_Warnings").value > 0))
-				&& (pfDisplay == false)) {
-        document.getElementById("imgErrorMessages_Max").style.display = "block";
-        document.getElementById("imgErrorMessages_Max").style.visibility = "visible";
-      }
-      else {
-        document.getElementById("imgErrorMessages_Max").style.display = "none";
-        document.getElementById("imgErrorMessages_Max").style.visibility = "hidden";
-      }
-
-      if (pfDisplay == true) {
-        document.getElementById("divErrorMessages_Outer").style.display = "block";
-        document.getElementById("divErrorMessages_Outer").style.visibility = "visible";
-      }
-      else {
-        document.getElementById("divErrorMessages_Outer").style.visibility = "hidden";
-      }
     }
 
+    function showErrorMessages(state) {
+
+        switch (state) {
+            case 'max':
+                document.getElementById("divErrorMessages_Outer").style.display = "block";
+                document.getElementById("imgErrorMessages_Max").style.display = "none";
+                break;
+            case 'min':
+                document.getElementById("divErrorMessages_Outer").style.display = "none";
+                document.getElementById("imgErrorMessages_Max").style.display = "block";
+                break;
+            default:
+                document.getElementById("divErrorMessages_Outer").style.display = "none";
+                document.getElementById("imgErrorMessages_Max").style.display = "none";
+        }
+    }
+    
     function exitFileUpload(piExitMode) {
       try {
         window.parent.fileUploadDone(document.getElementById("hdnElementID").value, piExitMode);
@@ -81,23 +77,21 @@
 </head>
 <body onload="return window_onload()"  style="padding: 0px; margin: 0px; border: 0px; text-align: center;">
   
-  <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1;" onclick="showErrorMessages(true);" />
+  <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; z-index: 1;" onclick="showErrorMessages('max');" />
   
   <form id="frmFileUpload" runat="server" style="height: 100%; width: 100%; top: 0px; left: 0px;">
   <!--
     Web Form Validation Error Messages
     -->
-  <div id="divErrorMessages_Outer" style="position: absolute; width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+  <div id="divErrorMessages_Outer" style="position: absolute; width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; z-index: 1">
       
     <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt; color: black; font-family: Verdana;">
         
-      <img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
+      <img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages('min');" />
       
       <asp:Label ID="lblErrors" runat="server" Text="Unable to upload the file due to the following error:"></asp:Label>
 
-      <asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
-        Font-Size="8pt" BorderStyle="None">
+      <asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana" Font-Size="8pt" BorderStyle="None">
       </asp:BulletedList>
     </div>
   </div>
@@ -109,7 +103,6 @@
     <table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 100%;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          font-family: Verdana; border: black 1px solid;" bgcolor="White">
-        
       <tr style="background-color: <%=ColourThemeHex()%>;">
           <td colspan="5" height="10"/>
       </tr>
