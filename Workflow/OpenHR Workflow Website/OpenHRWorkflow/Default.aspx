@@ -1429,7 +1429,7 @@
                           
 	                                //This clicks the server-side button to apply filtering...                          
 	                                //this also kicks off the gosubmit() via postback beginrequest.                          
-	                                document.getElementById(psWebComboID+ "refresh").click();                                                       
+	                                document.getElementById(psWebComboID + "refresh").click();                                                    
 
 	                                //set pbmode back to 0 to prevent recursion.                          
 	                                setPostbackMode(0);
@@ -1440,7 +1440,6 @@
 	                catch (e) {}
 	            }
 	        }
-          
 	        return false;
 	    }
 

@@ -92,9 +92,6 @@ Public Class _Default
 
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-    'PG
-    ShowSessionSize()
-
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlForm_InputButton As Button
     Dim ctlForm_HTMLInputButton As HtmlInputButton
@@ -112,7 +109,6 @@ Public Class _Default
     Dim ctlForm_OptionGroupReal As TextBox
     Dim ctlForm_HiddenField As HiddenField
     Dim ctlForm_Literal As LiteralControl
-    Dim ctlForm_UpdatePanel As System.Web.UI.UpdatePanel
     Dim ctlForm_PageTab() As Panel
     Dim ctlForm_HTMLInputText As HtmlInputText
     Dim sBackgroundImage As String
@@ -1979,8 +1975,6 @@ Public Class _Default
                 Case 14 ' lookup  Inputs
                   If Not IsMobileBrowser() Then
 
-                    ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
-
                     ' ============================================================
                     ' Create a textbox as the main control
                     ' ============================================================
@@ -2210,8 +2204,6 @@ Public Class _Default
                         ctlForm_TextInput.Attributes.Remove("DataType")
                         ctlForm_TextInput.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_TextInput.Attributes("LookupColumnIndex"))).DataType.ToString))
 
-                        ' Yup we store the data to a session variable. This is so we can sort/filter 
-                        ' it and stillreset if necessary without running the SP again
                         ctlForm_PagingGridView.DataSource = dt
                         ctlForm_PagingGridView.DataBind()
 
@@ -2265,6 +2257,7 @@ Public Class _Default
                       .Enabled = True
                       .TargetControlID = sID & "TextBox"
                       ' Client-side handler.
+                      'PG when was the IF added, and was it by me?
                       If (sFilterSQL.Length > 0) Then
                         .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
                       End If
@@ -2339,7 +2332,7 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2596,17 +2589,9 @@ Public Class _Default
 
                         cmdGrid.Dispose()
 
-                        ' Only show headers for lookups, not dropdown lists
-                        If iItemType = 14 Then
-                          ''.DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes
-                        Else
-                          ''.DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No
-                        End If
-
                         iRowHeight = CInt(.Height.Value) - 6
                         iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
                         iDropHeight = (iRowHeight * CInt(IIf(dt.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, dt.Rows.Count))) + 1
-                        ''.DropDownLayout.DropdownHeight = Unit.Pixel(iDropHeight)
 
                       Catch ex As Exception
                         sMessage = "Error loading lookup values:<BR><BR>" & _
@@ -2630,15 +2615,6 @@ Public Class _Default
 
 
                     End If
-
-
-                    ' Set dropdown width to fit the columns displayed.
-                    ''If NullSafeInteger(dr("ItemType")) = 14 Then
-                    ''    .DropDownLayout.DropdownWidth = System.Web.UI.WebControls.Unit.Empty
-                    ''Else
-                    ''    .DropDownLayout.DropdownWidth = Unit.Pixel(NullSafeInteger(dr("Width")))
-                    ''End If
-
 
                   End With
 
