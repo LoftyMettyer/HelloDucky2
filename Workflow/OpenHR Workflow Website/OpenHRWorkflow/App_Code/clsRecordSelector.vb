@@ -391,7 +391,7 @@ Public Class RecordSelector
     ' NPG20120110 Fault HRPRO-1831
     ' Hide pager bar if control is too narrow to display navigation buttons, or
     ' if it's empty.
-    If Me.Width.Value < 175 Or Me.IsEmpty Then
+    If (Me.Width.Value < 175 And Me.PageCount < 1) Or Me.IsEmpty Then
       iPagerHeight = 0
     Else
       iPagerHeight = 24
