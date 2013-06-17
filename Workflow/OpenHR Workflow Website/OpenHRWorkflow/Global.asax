@@ -4,10 +4,6 @@
     
     Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
         ' Code that runs on application startup
-    End Sub
-
-	Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)
-        ' Code that runs on application shutdown       
         Try
             Dim path = Server.MapPath("~/Pictures")
             
@@ -29,7 +25,11 @@
             
         Catch ex As Exception
         End Try
-	End Sub
+    End Sub
+
+	Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)
+        ' Code that runs on application shutdown       
+    End Sub
 
     'TODO catch errors and show message page or setup in config.web
 	Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)

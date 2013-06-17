@@ -179,12 +179,12 @@ body { font-family: verdana; }
 {
     display: block;
     text-decoration: none;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .workflow-list img {
     width: 48px;
     height: 48px;
-    margin-right: 4px;
+    margin-right: 8px;
 }
 .workflow-list .detail, .workflow-list .image {
     display: table-cell;
