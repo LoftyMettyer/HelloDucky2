@@ -107,9 +107,11 @@
       var DateBox = document.getElementById(elementID + 'Days');
       var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
       if(tmpDate.length<2) {var strDate='0' + tmpDate;}else{var strDate=tmpDate;}
+      if(strDate=='00') strDate='01';
 
       var DateBox = document.getElementById(elementID + 'Months');
       var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
+      if(tmpDate == '0') tmpDate='01';
       if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
 
       var DateBox = document.getElementById(elementID + 'Years');
