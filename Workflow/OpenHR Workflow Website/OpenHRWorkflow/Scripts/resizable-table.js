@@ -287,6 +287,10 @@ try {
 * See also http://www.vonloesch.de/node/23
 */
 function filterTable(term, tableID) {
+  
+  //fault HRPRO-2289
+  var str = term.value;
+  if (str == "filter page...") return false;
 
   var table = document.getElementById(tableID);
 
