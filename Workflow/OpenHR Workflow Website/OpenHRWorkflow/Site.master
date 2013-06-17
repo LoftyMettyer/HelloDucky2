@@ -1,0 +1,73 @@
+﻿<%@ Master Language="VB" CodeFile="Site.master.vb" Inherits="Site" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head runat="server">
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <link rel="apple-touch-icon" href="Images/Adv_hr&payroll.gif" />
+        <link href="CSS/Site.css" rel="stylesheet" type="text/css" />
+        <title>OpenHR Mobile</title>
+        
+        <script type="text/javascript">
+           // <!CDATA[
+            function showMsgBox(header, message) {
+                document.getElementById('ctl00_lblMsgHeader').innerHTML = header;
+                document.getElementById('ctl00_lblMsgBox').innerHTML = message;
+                document.getElementById('ctl00_overlay').style.visibility = "visible";
+                document.getElementById('ctl00_pnlMsgBox').style.visibility = "visible";
+            }
+
+            function closeMsgBox() {
+                document.getElementById('ctl00_overlay').style.visibility = "hidden";
+                document.getElementById('ctl00_pnlMsgBox').style.visibility = "hidden";
+
+                var redirectTo = document.getElementById('ctl00_hdnRedirectTo').value;
+
+                if (redirectTo.length > 0) {
+                    window.location.replace(redirectTo);
+                }
+            }
+        // ]]>
+        </script>
+        <asp:ContentPlaceHolder id="headCPH" runat="server">
+        </asp:ContentPlaceHolder>
+    </head>
+    <body>
+        <form runat="server">
+
+            <div id="page" class="page">
+            
+                <div id="header" class="header" runat="server" />
+
+                <div id="main" class="main" runat="server">
+                    <asp:ContentPlaceHolder id="mainCPH" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+
+                <div id="footer" class="footer" runat="server">
+                    <asp:ContentPlaceHolder id="footerCPH" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+            </div>
+        </form>
+        
+        <div id="overlay" class="overlay" runat="server"/>
+
+        <div id="background" class="background" runat="server"/>
+            
+        <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 11; position: absolute; width: 100%; top: 30%">
+            <div id="inner" style="background-color: #002248; border: 2px solid gainsboro; width: 300px; margin: 0px auto; text-align: center; border-radius: 10px; padding: 10px;">
+                <label id="lblMsgHeader" runat="server" style="font-family: Verdana; font-weight: bold; font-size: large; color: white"></label>
+                <br/>
+                <br/>
+                <label id="lblMsgBox" runat="server" style="font-family: Verdana; font-size: large; color: white"></label>
+                <br/>
+                <br/>
+                <input type="hidden" id="hdnRedirectTo" runat="server"/>
+                <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick="closeMsgBox(); "/>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -7,6 +7,7 @@
         ' Code that runs on application startup
         Dim fileInfo As System.IO.FileInfo
         
+        'TODO must do something about this
         Try
             Dim dirInfo As New System.IO.DirectoryInfo(Server.MapPath("pictures"))
             Dim files As System.IO.FileInfo() = dirInfo.GetFiles()
@@ -35,6 +36,7 @@
 
 		Session("TimeoutSecs") = Session.Timeout * 60
 
+        'TODO must do something about this
 		Try
 			Dim dirInfo As New System.IO.DirectoryInfo(Server.MapPath("pictures"))
 			Dim files As System.IO.FileInfo() = dirInfo.GetFiles()

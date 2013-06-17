@@ -1,0 +1,126 @@
+﻿/* Reset */
+html, body, div, span, table, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Site styling */
+body {
+    font-family: verdana;
+}
+.header {
+    position: fixed;
+    overflow: hidden; 
+    width: 100%;
+    height: 57px;
+}
+.main {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 57px; 
+    bottom: 60px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 5px;
+}
+.footer {
+    position: fixed; 
+    overflow: hidden; 
+    left: 0; 
+    bottom: 0; 
+    width: 100%;
+    height: 60px;
+}
+.main > label {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.controlgrid {
+    width: 100%;
+}
+.main td {
+    vertical-align: middle;
+}
+.controlgrid input, .controlgrid label {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.controlgrid input 
+{
+    padding: 2px;
+    border: 1px solid #333366;
+}
+.controlgrid input[type="checkbox"] {
+    border: none;
+}
+.copyright {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 10px; 
+    color: #333366;
+}
+
+
+.page 
+{
+    /* TODO wont need if put background on body */
+    z-index: 1;
+}
+.overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    /* TODO use hidden plus put overlay as part of messageBox */
+    visibility: hidden;
+    
+    background-color: #222; /* rgba(252, 252, 252, 0.9); */
+    
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5; 
+    opacity: 0.5;
+    z-index: 10;
+}
+/* todo must be better way */
+.background {
+    position: absolute;
+    display: none;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Adjustment for larger screens */
+.large-view .page 
+{
+    width: 320px;
+    height: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    position: relative;
+    overflow: hidden;
+}
+.large-view .header {
+    position: relative;
+}
+.large-view .main {
+    position: absolute;
+}
+.large-view .footer {
+    position: absolute;
+}

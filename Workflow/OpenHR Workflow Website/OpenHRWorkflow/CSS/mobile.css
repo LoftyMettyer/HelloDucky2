@@ -8,6 +8,7 @@ body {
 table {
     border-collapse:collapse;
 }
+
 #pnlHeader {
     position: absolute; 
     overflow: hidden; 
@@ -75,7 +76,7 @@ table {
 .controlgrid input 
 {
     padding: 2px;
-    border: 1px solid #9A7057;
+    border: 1px solid lightgray;
 }
 .controlgrid input[type="checkbox"] {
     border: none;
@@ -109,19 +110,7 @@ table {
     top: 0px;
     left: 0px;
 }
-
-
-
-.header {
-    height: 57px;
-}
-.main {
-    
-}
-.footer {
-    height: 60px;
-}
-.overlay {
+#overlay {
     position: absolute; 
     visibility: hidden;
     top: 0px;

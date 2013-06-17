@@ -1,15 +1,16 @@
 ﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports Utilities
 
 Public Class Database
 
   Public Shared Function IsSystemLocked() As Boolean
 
-    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(Configuration.ConnectionString)
 
       conn.Open()
       ' Check if the database is locked.
-      Dim cmd = New SqlClient.SqlCommand
+      Dim cmd = New SqlCommand
       cmd.CommandText = "sp_ASRLockCheck"
       cmd.Connection = conn
       cmd.CommandType = CommandType.StoredProcedure
@@ -29,13 +30,11 @@ Public Class Database
 
   Public Shared Function CheckLoginDetails(userName As String) As CheckLoginResult
 
-    Dim result As CheckLoginResult
-
-    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(Configuration.ConnectionString)
 
       conn.Open()
 
-      Dim cmd As New SqlClient.SqlCommand
+      Dim cmd As New SqlCommand
       cmd.CommandText = "spASRSysMobileCheckLogin"
       cmd.Connection = conn
       cmd.CommandType = CommandType.StoredProcedure
@@ -49,13 +48,19 @@ Public Class Database
 
       cmd.ExecuteNonQuery()
 
+      Dim result As CheckLoginResult
       result.InvalidReason = NullSafeString(cmd.Parameters("@psMessage").Value())
       result.UserGroupID = NullSafeInteger(cmd.Parameters("@piUserGroupID").Value())
       result.Valid = (result.InvalidReason = Nothing)
+      Return result
     End Using
-
-    Return result
 
   End Function
 
 End Class
+
+Public Structure CheckLoginResult
+  Public Valid As Boolean
+  Public InvalidReason As String
+  Public UserGroupID As Integer
+End Structure

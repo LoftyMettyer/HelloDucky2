@@ -80,7 +80,7 @@
                     </table>
               
                 </div>
-          
+
                 <div class="copyright">Copyright © Advanced Business Software and Solutions Ltd 2012</div>
 
                 <div id="pnlFooter" runat="server">

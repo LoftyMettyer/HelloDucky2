@@ -1,5 +1,6 @@
-﻿Imports System.Data
+﻿Imports System.Data.SqlClient
 
+'TODO rename class to security & move code from clsActiveDirectoryValidator into here & ValidateUserActiveDirectory => ValidateActiveDirectoryUser
 Public Class Users
 
   Public Shared Function ValidateUserActiveDirectory(domainName As String, userName As String, password As String) As Boolean
@@ -18,7 +19,7 @@ Public Class Users
   Public Shared Function ValidateUserSqlServer(userName As String, password As String) As Boolean
 
     Try
-      Using conn As New SqlClient.SqlConnection(Configuration.ConnectionStringFor(userName, password))
+      Using conn As New SqlConnection(Configuration.ConnectionStringFor(userName, password))
         conn.Open()
       End Using
       Return True
