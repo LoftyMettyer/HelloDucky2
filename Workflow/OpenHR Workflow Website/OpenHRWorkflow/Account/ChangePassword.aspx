@@ -59,12 +59,17 @@
     
     <ol class="footer-buttons col2">
         <li>
-            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnSubmitButton').click();">
-                <asp:Image ID="btnSubmit" runat="server" /><asp:Label ID="btnSubmit_label" runat="server"/>
-            </a>
-            <asp:ImageButton ID="btnSubmitButton" runat="server" OnClientClick="return submitCheck();"/>
+            <asp:LinkButton runat="server" ID="btnSubmitButton"  OnClientClick="return submitCheck();">
+                <asp:Image ID="btnSubmit" runat="server"/>
+                <asp:Label ID="btnSubmit_label" runat="server"/>
+            </asp:LinkButton>
         </li>
-        <li><a href="../Home.aspx"><asp:Image ID="btnCancel" runat="server" /><asp:Label ID="btnCancel_Label" runat="server"/></a></li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Home.aspx">
+                <asp:Image runat="server" ID="btnCancel"/>
+                <asp:Label runat="server" ID="btnCancel_Label"/>
+            </asp:HyperLink>
+        </li>
     </ol>
 
 </asp:Content>

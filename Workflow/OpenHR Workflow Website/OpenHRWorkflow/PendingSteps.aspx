@@ -15,8 +15,18 @@
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
     <ol class="footer-buttons col2">
-        <li><a href="PendingSteps.aspx"><asp:Image ID="btnRefresh" runat="server" /><asp:Label ID="btnRefresh_Label" runat="server"/></a></li>
-        <li><a href="Home.aspx"><asp:Image ID="btnCancel" runat="server" /><asp:Label ID="btnCancel_Label" runat="server"/></a></li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/PendingSteps.aspx">
+                <asp:Image runat="server" ID="btnRefresh"/>
+                <asp:Label runat="server" ID="btnRefresh_Label"/>
+            </asp:HyperLink>
+        </li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Home.aspx">
+                <asp:Image runat="server" ID="btnCancel"/>
+                <asp:Label runat="server" ID="btnCancel_Label"/>
+            </asp:HyperLink>
+        </li>
     </ol>
 
 </asp:Content>

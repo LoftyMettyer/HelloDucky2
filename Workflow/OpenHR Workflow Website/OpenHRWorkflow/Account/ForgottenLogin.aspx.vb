@@ -13,7 +13,7 @@ Partial Class ForgottenLogin
     Title = WebSiteName("Forgotten Login")
   End Sub
 
-  Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmitButton.Click
+  Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmitButton.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""

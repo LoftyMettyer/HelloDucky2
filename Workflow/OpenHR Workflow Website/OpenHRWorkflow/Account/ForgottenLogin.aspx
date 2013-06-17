@@ -17,7 +17,7 @@
             }
             return true;
         }
-        // ]]>
+    // ]]>
     </script>
 </asp:Content>
 
@@ -39,12 +39,17 @@
     
     <ol class="footer-buttons col2">
         <li>
-            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnSubmitButton').click();">
-                <asp:Image ID="btnSubmit" runat="server" /><asp:Label ID="btnSubmit_Label" runat="server"/>
-            </a>
-            <asp:ImageButton ID="btnSubmitButton" runat="server" OnClientClick="return submitCheck();"/>
+            <asp:LinkButton runat="server" ID="btnSubmitButton" OnClientClick="return submitCheck();">
+                <asp:Image runat="server" ID="btnSubmit"/>
+                <asp:Label runat="server" ID="btnSubmit_Label"/>
+            </asp:LinkButton>
         </li>
-        <li><a href="Login.aspx"><asp:Image ID="btnCancel" runat="server" /><asp:Label ID="btnCancel_Label" runat="server"/></a></li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/Login.aspx">
+                <asp:Image runat="server" ID="btnCancel" />
+                <asp:Label runat="server" ID="btnCancel_Label" />
+            </asp:HyperLink>
+        </li>
     </ol>
 
 </asp:Content>

@@ -191,7 +191,7 @@ Partial Class Home
 
   End Function
 
-  Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogoutButton.Click
+  Protected Sub BtnLogoutClick(sender As Object, e As EventArgs) Handles btnLogoutButton.Click
 
     FormsAuthentication.SignOut()
 

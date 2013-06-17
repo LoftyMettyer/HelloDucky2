@@ -130,7 +130,6 @@ body { font-family: verdana; }
 /* Footer Buttons */
 .footer-buttons li {
     float: left;
-    width: 33%;
 }
 .footer-buttons.col2 li {
     width: 50%
@@ -146,9 +145,6 @@ body { font-family: verdana; }
     text-decoration: none;
     cursor: pointer;
 }
-.footer-buttons input[type=submit] {
-    display: none;
-}
 .footer-buttons li img {
     display: block;
     margin: 0 auto;
@@ -161,9 +157,6 @@ body { font-family: verdana; }
     margin-top: 3px;
     font-size: 8px;
     color: black;
-}
-.wf-count {
-
 }
 
 /* Adjustment for larger screens */

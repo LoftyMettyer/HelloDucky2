@@ -17,7 +17,7 @@
             }
             return true;
         }
-        // ]]>
+    // ]]>
     </script>
 </asp:Content>
 
@@ -36,14 +36,18 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-     <ol class="footer-buttons col2">
+    <ol class="footer-buttons col2">
         <li>
-            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnRegisterButton').click();">
-                <asp:Image ID="btnRegister" runat="server" /><asp:Label ID="btnRegister_Label" runat="server"/>
-            </a>
-            <asp:ImageButton ID="btnRegisterButton" runat="server" OnClientClick="return submitCheck();"/>
+            <asp:LinkButton runat="server" ID="btnRegisterButton" OnClientClick="return submitCheck();">
+                <asp:Image runat="server" ID="btnRegister"/>
+                <asp:Label runat="server" ID="btnRegister_Label"/>
+            </asp:LinkButton>
         </li>
-        <li><a href="Login.aspx"><asp:Image ID="btnHome" runat="server" /><asp:Label ID="btnHome_Label" runat="server"/></a></li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/Login.aspx">
+                <asp:Image runat="server" ID="btnHome"/>
+                <asp:Label runat="server" ID="btnHome_Label"/>
+            </asp:HyperLink>
+        </li>
     </ol>
-
 </asp:Content>

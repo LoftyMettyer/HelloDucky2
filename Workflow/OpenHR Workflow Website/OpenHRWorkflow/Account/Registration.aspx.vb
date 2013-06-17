@@ -13,7 +13,7 @@ Partial Class Registration
     Title = WebSiteName("Registration")
   End Sub
 
-  Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegisterButton.Click
+  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnRegisterButton.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""

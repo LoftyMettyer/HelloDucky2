@@ -21,7 +21,7 @@
             }
             return true;
         }
-        // ]]>
+    // ]]>
     </script>
 </asp:Content>
 
@@ -52,13 +52,23 @@
     
     <ol class="footer-buttons col3">
         <li>
-            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnLoginButton').click();">
-                <asp:Image ID="btnLogin" runat="server" /><asp:Label ID="btnLogin_Label" runat="server"/>
-            </a>
-            <asp:Button ID="btnLoginButton" runat="server" OnClientClick="return submitCheck();"/>
+            <asp:LinkButton ID="btnLoginButton" runat="server"  OnClientClick="return submitCheck();">
+                <asp:Image runat="server" ID="btnLogin"/>
+                <asp:Label runat="server" ID="btnLogin_Label"/>
+            </asp:LinkButton>
         </li>
-        <li><a href="ForgottenLogin.aspx"><asp:Image ID="btnForgotPwd" runat="server" /><asp:Label ID="btnForgotPwd_label" runat="server"/></a></li>
-        <li><a href="Registration.aspx"><asp:Image ID="btnRegister" runat="server" /><asp:Label ID="btnRegister_label" runat="server"/></a></li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/ForgottenLogin.aspx">
+                <asp:Image runat="server" ID="btnForgotPwd"  />
+                <asp:Label runat="server" ID="btnForgotPwd_label" />
+            </asp:HyperLink>
+        </li>
+        <li>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/Registration.aspx">
+                <asp:Image runat="server" ID="btnRegister"/>
+                <asp:Label runat="server" ID="btnRegister_label"/>
+            </asp:HyperLink>
+        </li>
     </ol>
 
 </asp:Content>
