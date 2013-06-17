@@ -309,6 +309,9 @@ function filterTable(term, tableID) {
         var dataRow = table.rows[r].innerHTML.substring(0, lowerHTML.indexOf("display: none")) + '>';
       }
 
+      //Fault 1833 - remove & from search text.
+      dataRow = dataRow.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
+
       //if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "|").toLowerCase()
       if (dataRow.replace(/<[^>]+>/g, "|").toLowerCase()
 				.indexOf(terms[i]) < 0) {
