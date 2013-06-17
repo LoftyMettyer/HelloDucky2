@@ -51,7 +51,7 @@ Partial Class Home
                                 " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
                                 " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
       conn.Open()
-      Dim cmd As New SqlClient.SqlCommand(sql, conn)
+      Dim cmd As New SqlCommand(sql, conn)
       Dim dr As SqlDataReader = cmd.ExecuteReader()
 
       While dr.Read()
@@ -69,10 +69,9 @@ Partial Class Home
 
       Using conn As New SqlConnection(Configuration.ConnectionString)
 
-        Dim sql As String = "SELECT w.Id, w.Name, w.PictureID, p.Name AS PictureName" & _
+        Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" & _
               " FROM tbsys_mobilegroupworkflows gw" & _
               " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" & _
-              " LEFT JOIN ASRSysPictures p ON p.PictureID = w.PictureID" & _
               " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
         conn.Open()
@@ -100,7 +99,7 @@ Partial Class Home
           If NullSafeInteger(dr("PictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
           Else
-            sImageFileName = Picture.GetUrl(CInt(dr("PictureID")), CStr(dr("PictureName")))
+            sImageFileName = Picture.GetUrl(CInt(dr("PictureID")))
           End If
           image.ImageUrl = sImageFileName
           image.Height() = Unit.Pixel(57)
@@ -214,7 +213,6 @@ Partial Class Home
   Private Function GetPendingStepsCount() As Integer
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
-
       conn.Open()
 
       Dim cmd As New SqlClient.SqlCommand

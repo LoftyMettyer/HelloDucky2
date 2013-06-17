@@ -13,15 +13,12 @@ Partial Class Registration
 
   Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
 
-    Dim conn As SqlConnection
-    Dim cmdRegistration As SqlCommand
-    Dim cmdUserID As SqlCommand
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
     Dim objCrypt As New Crypt
     Dim strEncryptedString As String
-    Dim userID As Long
+    Dim userID As Integer
 
     If txtEmail.Value.Length = 0 Then
       sMessage = "No email address entered."
@@ -32,24 +29,22 @@ Partial Class Registration
       Try
         ' Fetch the record ID for the specified e-mail. 
         ' Needs to be done first (and separately) so it can be encrypted prior to sending back to SQL
-        conn = New SqlConnection(Configuration.ConnectionString)
-        conn.Open()
+        Using conn As New SqlConnection(Configuration.ConnectionString)
+          conn.Open()
 
-        cmdUserID = New SqlCommand
-        cmdUserID.CommandText = "spASRSysMobileGetUserIDFromEmail"
-        cmdUserID.Connection = conn
-        cmdUserID.CommandType = CommandType.StoredProcedure
+          Dim cmd As New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
+          cmd.CommandType = CommandType.StoredProcedure
 
-        cmdUserID.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmdUserID.Parameters("@psEmail").Value = txtEmail.Value
+          cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+          cmd.Parameters("@psEmail").Value = txtEmail.Value
 
-        cmdUserID.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
+          cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
 
-        cmdUserID.ExecuteNonQuery()
+          cmd.ExecuteNonQuery()
 
-        userID = CLng(NullSafeInteger(cmdUserID.Parameters("@piUserID").Value()))
+          userID = NullSafeInteger(cmd.Parameters("@piUserID").Value())
 
-        cmdUserID.Dispose()
+        End Using
 
         If Configuration.WorkflowUrl.Length = 0 Then
           sMessage = "Unable to determine Workflow URL."
@@ -69,27 +64,25 @@ Partial Class Registration
               User.Identity.Name, _
               "")
 
-          conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
-          conn.Open()
+          Using conn As New SqlConnection(Configuration.ConnectionString)
+            conn.Open()
 
-          cmdRegistration = New SqlClient.SqlCommand
-          cmdRegistration.CommandText = "spASRSysMobileRegistration"
-          cmdRegistration.Connection = conn
-          cmdRegistration.CommandType = CommandType.StoredProcedure
+            Dim cmd As New SqlCommand("spASRSysMobileRegistration", conn)
+            cmd.CommandType = CommandType.StoredProcedure
 
-          cmdRegistration.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdRegistration.Parameters("@psEmailAddress").Value = txtEmail.Value
+            cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@psEmailAddress").Value = txtEmail.Value
 
-          cmdRegistration.Parameters.Add("@psActivationURL", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdRegistration.Parameters("@psActivationURL").Value = Configuration.WorkflowUrl & "?" & strEncryptedString
+            cmd.Parameters.Add("@psActivationURL", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@psActivationURL").Value = Configuration.WorkflowUrl & "?" & strEncryptedString
 
-          cmdRegistration.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+            cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 
-          cmdRegistration.ExecuteNonQuery()
+            cmd.ExecuteNonQuery()
 
-          sMessage = CStr(cmdRegistration.Parameters("@psMessage").Value())
+            sMessage = CStr(cmd.Parameters("@psMessage").Value())
 
-          cmdRegistration.Dispose()
+          End Using
         End If
       Catch ex As Exception
         sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & "Contact your system administrator."

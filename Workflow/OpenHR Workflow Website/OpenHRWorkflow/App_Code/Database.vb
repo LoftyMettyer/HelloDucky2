@@ -7,12 +7,9 @@ Public Class Database
   Public Shared Function IsSystemLocked() As Boolean
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
-
       conn.Open()
       ' Check if the database is locked.
-      Dim cmd = New SqlCommand
-      cmd.CommandText = "sp_ASRLockCheck"
-      cmd.Connection = conn
+      Dim cmd = New SqlCommand("sp_ASRLockCheck", conn)
       cmd.CommandType = CommandType.StoredProcedure
       cmd.CommandTimeout = Configuration.SubmissionTimeoutInSeconds
 
@@ -31,12 +28,9 @@ Public Class Database
   Public Shared Function CheckLoginDetails(userName As String) As CheckLoginResult
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
-
       conn.Open()
 
-      Dim cmd As New SqlCommand
-      cmd.CommandText = "spASRSysMobileCheckLogin"
-      cmd.Connection = conn
+      Dim cmd As New SqlCommand("spASRSysMobileCheckLogin", conn)
       cmd.CommandType = CommandType.StoredProcedure
 
       cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input

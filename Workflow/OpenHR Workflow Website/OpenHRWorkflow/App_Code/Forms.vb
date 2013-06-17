@@ -9,7 +9,7 @@ Public Class Forms
 
       conn.Open()
 
-      Dim cmd As New SqlCommand("SELECT mfe.*, p.Name AS PictureName FROM tbsys_mobileformelements mfe LEFT JOIN ASRSysPictures p ON mfe.PictureID = p.PictureID WHERE form = " & formId, conn)
+      Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformelements WHERE form = " & formId, conn)
       Dim dr As SqlDataReader = cmd.ExecuteReader()
 
       While dr.Read()
@@ -23,7 +23,7 @@ Public Class Forms
           Case 0 ' Button
 
             With CType(control, ImageButton)
-              .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")), NullSafeString(dr("PictureName")))
+              .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
               .Font.Name = NullSafeString(dr("FontName"))
               .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
               .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))

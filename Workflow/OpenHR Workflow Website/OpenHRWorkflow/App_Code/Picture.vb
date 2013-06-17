@@ -1,34 +1,59 @@
 ﻿Imports System.IO
 Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Collections.Generic
 
 Public Class Picture
 
-  Public Shared Function GetUrl(id As Integer, name As String) As String
+  Private Shared ReadOnly Map As New Dictionary(Of Integer, String)
+  Private Shared ReadOnly Folder As String
+  Private Shared ReadOnly RootPath As String
+  Private Shared ReadOnly FullPath As String
 
-    If id = 0 Then Return ""
+  Shared Sub New()
 
-    Dim extension As String = Path.GetExtension(name)
+    Folder = (Configuration.Server & Configuration.Database).GetHashCode().ToString()
+    RootPath = "~/Pics/" & Folder
+    FullPath = HttpContext.Current.Server.MapPath(RootPath)
 
-    Dim directory = (Configuration.Server & Configuration.Database).GetHashCode()
+    If Directory.Exists(FullPath) Then
 
-    Dim fileName As String = directory & "/" & id.ToString & extension
+      For Each file In Directory.GetFiles(FullPath)
 
-    Dim filePath As String = HttpContext.Current.Server.MapPath("~/" & fileName)
+        Dim name = Path.GetFileName(file)
+        Dim id = Path.GetFileNameWithoutExtension(file)
 
-    If File.Exists(filePath) Then
-      Return "~/" & fileName
-    Else
-      LoadPicture(id, filePath)
-      Return "~/" & fileName
+        Map.Add(CInt(id), RootPath & "/" & name)
+      Next
+
     End If
+
+  End Sub
+
+  Public Shared Function GetUrl(id As Integer) As String
+
+    If id = 0 Then Return String.Empty
+
+    Dim url As String = String.Empty
+
+    If Not Map.TryGetValue(id, url) Then
+
+      If Not Directory.Exists(FullPath) Then
+        Directory.CreateDirectory(FullPath)
+      End If
+
+      Dim file = LoadPicture(id)
+      url = RootPath & "/" & Path.GetFileName(file)
+      Map.Add(CInt(id), url)
+    End If
+
+    Return url
 
   End Function
 
-  Private Shared Sub LoadPicture(id As Integer, filePath As String)
+  Private Shared Function LoadPicture(id As Integer) As String
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
-
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRGetPicture", conn)
@@ -47,17 +72,15 @@ Public Class Picture
       Dim retVal As Long
       Dim startIndex As Long
 
+      Dim filePath As String = String.Empty
+
       If dr.Read Then
 
-        Dim fileDirectory = Path.GetDirectoryName(filePath)
-
-        If Not Directory.Exists(fileDirectory) Then
-          Directory.CreateDirectory(fileDirectory)
-        End If
+        filePath = FullPath & "\" & id.ToString() & Path.GetExtension(CStr(dr("Name")))
 
         ' Create a file to hold the output.
-        fs = New System.IO.FileStream(filePath, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-        bw = New System.IO.BinaryWriter(fs)
+        fs = New FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write)
+        bw = New BinaryWriter(fs)
 
         ' Reset the starting byte for a new BLOB.
         startIndex = 0
@@ -85,8 +108,9 @@ Public Class Picture
 
       End If
 
+      Return filePath
     End Using
 
-  End Sub
+  End Function
 
 End Class

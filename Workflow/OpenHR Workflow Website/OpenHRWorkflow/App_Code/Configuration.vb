@@ -12,7 +12,7 @@ Public Class Configuration
     SubmissionTimeoutInSeconds = 120
 
     ConnectionString = String.Format( _
-        "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3}", _
+        "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", _
         Server, Database, Login, Password)
   End Sub
 

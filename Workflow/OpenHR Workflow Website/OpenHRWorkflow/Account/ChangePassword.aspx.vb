@@ -10,72 +10,61 @@ Partial Class ChangePassword
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
 
-    Dim conn As SqlConnection
-    Dim cmdCheckUserSessions As SqlCommand
-    Dim cmdChangePassword As SqlCommand
-    Dim cmdPasswordOk As SqlCommand
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
+    Dim userSessionCount As Integer
 
     Try
       If sMessage.Length = 0 Then
-        conn = New SqlConnection(Configuration.ConnectionString)
-        conn.Open()
+        Using conn As New SqlConnection(Configuration.ConnectionString)
+          conn.Open()
 
-        ' Force password change only if there are no other Security logged in with the same name.
-        cmdCheckUserSessions = New SqlCommand
-        cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
-        cmdCheckUserSessions.Connection = conn
-        cmdCheckUserSessions.CommandType = CommandType.StoredProcedure
+          ' Force password change only if there are no other Security logged in with the same name.
+          Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
+          cmd.CommandType = CommandType.StoredProcedure
 
-        cmdCheckUserSessions.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
+          cmd.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
 
-        cmdCheckUserSessions.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-        cmdCheckUserSessions.Parameters("@psLoginName").Value = User.Identity.Name.ToString()
+          cmd.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          cmd.Parameters("@psLoginName").Value = User.Identity.Name.ToString()
 
-        cmdCheckUserSessions.ExecuteNonQuery()
+          cmd.ExecuteNonQuery()
 
-        Dim iUserSessionCount As Integer = CInt(cmdCheckUserSessions.Parameters("@iLoginCount").Value)
+          userSessionCount = CInt(cmd.Parameters("@iLoginCount").Value)
 
-        cmdCheckUserSessions.Dispose()
+          cmd.Dispose()
+        End Using
 
         ' is OK?
-        If iUserSessionCount < 2 Then
+        If userSessionCount < 2 Then
           ' Read the Password details from the Password form.
           Dim sCurrentPassword As String = txtCurrPassword.Value
           Dim sNewPassword As String = txtNewPassword.Value
 
           ' Attempt to change the password on the SQL Server.
-          cmdChangePassword = New SqlCommand
-          cmdChangePassword.CommandText = "sp_password"
-          cmdChangePassword.Connection = conn
-          cmdChangePassword.CommandType = CommandType.StoredProcedure
+          Using conn As New SqlConnection(Configuration.ConnectionString)
+            conn.Open()
 
-          cmdChangePassword.Parameters.Add("@old", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-          If Len(sCurrentPassword) > 0 Then
-            cmdChangePassword.Parameters("@old").Value = sCurrentPassword
-          Else
-            cmdChangePassword.Parameters("@old").Value = vbNullString
-          End If
+            Dim cmd As New SqlCommand("sp_password", conn)
+            cmd.CommandType = CommandType.StoredProcedure
 
-          cmdChangePassword.Parameters.Add("@new", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-          If Len(sNewPassword) > 0 Then
-            cmdChangePassword.Parameters("@new").Value = sNewPassword
-          Else
-            cmdChangePassword.Parameters("@new").Value = vbNullString
-          End If
+            cmd.Parameters.Add("@old", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@old").Value = If(sCurrentPassword.Length > 0, sCurrentPassword, vbNullString)
 
-          cmdChangePassword.Parameters.Add("@loginame", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdChangePassword.Parameters("@loginame").Value = User.Identity.Name.ToString()
+            cmd.Parameters.Add("@new", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@new").Value = If(sNewPassword.Length > 0, sNewPassword, vbNullString)
 
-          cmdChangePassword.ExecuteNonQuery()
+            cmd.Parameters.Add("@loginame", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@loginame").Value = User.Identity.Name.ToString()
 
-          cmdChangePassword.Dispose()
+            cmd.ExecuteNonQuery()
+          End Using
+
         Else
           sMessage = "You could not change your password. The account is currently being used by "
-          If iUserSessionCount > 2 Then
-            sMessage &= iUserSessionCount.ToString & " Security"
+          If userSessionCount > 2 Then
+            sMessage &= userSessionCount.ToString & " Security"
           Else
             sMessage &= " another user"
           End If
@@ -84,18 +73,18 @@ Partial Class ChangePassword
 
         If sMessage.Length = 0 Then
           ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-          cmdPasswordOk = New SqlCommand
-          cmdPasswordOk.CommandText = "spASRSysMobilePasswordOK"
-          cmdPasswordOk.Connection = conn
-          cmdPasswordOk.CommandType = CommandType.StoredProcedure
+          Using conn As New SqlConnection(Configuration.ConnectionString)
+            conn.Open()
 
-          cmdPasswordOk.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdPasswordOk.Parameters("@sCurrentUser").Value = User.Identity.Name.ToString()
+            Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
+            cmd.CommandType = CommandType.StoredProcedure
 
-          cmdPasswordOk.ExecuteNonQuery()
+            cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+            cmd.Parameters("@sCurrentUser").Value = User.Identity.Name.ToString()
 
-          cmdPasswordOk.Dispose()
-
+            cmd.ExecuteNonQuery()
+          End Using
+          
           ' Tell the user that the password was changed okay.
           sMessage = "Password changed successfully."
         End If

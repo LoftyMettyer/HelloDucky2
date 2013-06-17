@@ -13,55 +13,49 @@ Partial Class ForgottenLogin
 
   Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmit.Click
 
-    Dim conn As SqlConnection
-    Dim cmdForgotLogin As SqlCommand
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
-    Dim lngUserID As Long
 
     Try
-      conn = New SqlConnection(Configuration.ConnectionString)
-      conn.Open()
-
       ' Done in three parts. First get the ID for this e-mail (SQL). Second retrieve and decrypt password (VB), third send a reminder e-mail (SQL).
       ' Scratch that! First get the username from the db for this email address, then send the e-mail.
+      Using conn As New SqlConnection(Configuration.ConnectionString)
+        conn.Open()
 
-      cmdForgotLogin = New SqlCommand
-      cmdForgotLogin.CommandText = "spASRSysMobileGetUserIDFromEmail"
-      cmdForgotLogin.Connection = conn
-      cmdForgotLogin.CommandType = CommandType.StoredProcedure
+        Dim cmd = New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
+        cmd.CommandType = CommandType.StoredProcedure
 
-      cmdForgotLogin.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-      cmdForgotLogin.Parameters("@psEmail").Value = txtEmail.Value
+        cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+        cmd.Parameters("@psEmail").Value = txtEmail.Value
 
-      cmdForgotLogin.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
+        cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
 
-      cmdForgotLogin.ExecuteNonQuery()
+        cmd.ExecuteNonQuery()
 
-      lngUserID = CLng(NullSafeInteger(cmdForgotLogin.Parameters("@piUserID").Value()))
+        Dim userID = NullSafeInteger(cmd.Parameters("@piUserID").Value())
 
-      cmdForgotLogin.Dispose()
-
-      If lngUserID = 0 Then sMessage = "No records exist with the given email address."
+        If userID = 0 Then sMessage = "No records exist with the given email address."
+      End Using
 
       If sMessage.Length = 0 Then
         ' ------------- Part two, send it all to sql to validate and email out -----------------
-        cmdForgotLogin = New SqlCommand
-        cmdForgotLogin.CommandText = "spASRSysMobileForgotLogin"
-        cmdForgotLogin.Connection = conn
-        cmdForgotLogin.CommandType = CommandType.StoredProcedure
+        Using conn As New SqlConnection(Configuration.ConnectionString)
+          conn.Open()
 
-        cmdForgotLogin.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmdForgotLogin.Parameters("@psEmailAddress").Value = txtEmail.Value
+          Dim cmd As New SqlCommand("spASRSysMobileForgotLogin", conn)
+          cmd.CommandType = CommandType.StoredProcedure
 
-        cmdForgotLogin.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+          cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+          cmd.Parameters("@psEmailAddress").Value = txtEmail.Value
 
-        cmdForgotLogin.ExecuteNonQuery()
+          cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 
-        sMessage = CStr(cmdForgotLogin.Parameters("@psMessage").Value())
+          cmd.ExecuteNonQuery()
 
-        cmdForgotLogin.Dispose()
+          sMessage = CStr(cmd.Parameters("@psMessage").Value())
+
+        End Using
       End If
 
     Catch ex As Exception

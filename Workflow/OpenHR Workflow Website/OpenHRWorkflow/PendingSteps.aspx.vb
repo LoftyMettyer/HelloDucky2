@@ -77,7 +77,6 @@ Partial Class PendingSteps
 
       ' Get the pending steps.
       Using conn As New SqlConnection(Configuration.ConnectionString)
-
         conn.Open()
 
         Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
@@ -107,7 +106,7 @@ Partial Class PendingSteps
           If NullSafeInteger(dr("PictureID")) = 0 Then
             fileName = "~/Images/Connected48.png"
           Else
-            fileName = Picture.GetUrl(CInt(dr("PictureID")), CStr(dr("PictureName")))
+            fileName = Picture.GetUrl(CInt(dr("PictureID")))
           End If
           image.ImageUrl = fileName
           image.Height() = Unit.Pixel(57)
