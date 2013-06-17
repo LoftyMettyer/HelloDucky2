@@ -1008,8 +1008,8 @@ Public Class _Default
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 6)
 
                     .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
-                    .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
-                    .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
+
+                    .Attributes("maxlength") = NullSafeString(dr("inputSize"))
 
                     'If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
@@ -1577,7 +1577,7 @@ Public Class _Default
 
                       ' If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                       If IsMobileBrowser() Then
-                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');"                        
+                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');"
                       End If
 
                     End With

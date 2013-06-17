@@ -104,9 +104,10 @@
 	        var iResizeByHeight;
 	        var iResizeByWidth;
 	        var sControlType;
-	        //var ScrollTopPos;
+
 	        //Set the current page tab	  
-	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;	  
+	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;
+	        
 	        if(iPageNo > 0) {
 	            window.iCurrentTab = iPageNo;
 	        }
@@ -133,41 +134,30 @@
 	                    sControlType = sControlType.substr(sControlType.indexOf("_")+1);
 	                    sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
-	                    if (sControlType == 7)
-	                    {
-	                        // Date (7)
+	                    if (sControlType == 7) {
+	                        // Date
 	                        igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
 	                    }
-	                    else
-	                    {
-	                        if ((sControlType == 13)
-    	                        || (sControlType == 14))
-	                        {
-	                            igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
-	                        }
-	                        else
-	                        {
-	                            if (sControlType == 11)
-	                            {
-	                                // Record Selector (11)
-	                                var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
-	                                var oRows = grid.Rows;
-	                                grid.Element.focus(); 
+	                    else if (sControlType == 13 || sControlType == 14) {
+	                        //TODO wont work, not using infragistics combos anymore
+	                        igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                    }
+	                    else if (sControlType == 11) {
+	                        // Record Selector
+	                        //TODO wont work, not using infragistics combos anymore
+	                        var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
+	                        var oRows = grid.Rows;
+	                        grid.Element.focus(); 
                                     
-	                                if (oRows.length > 0)
-	                                {
-	                                    oRow = grid.getActiveRow();
-	                                    if (oRow != null)
-	                                    {
-	                                        oRow.scrollToView();
-	                                    }
-	                                }
-	                            }
-	                            else
-	                            {
-	                                document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
+	                        if (oRows.length > 0) {
+	                            oRow = grid.getActiveRow();
+	                            if (oRow != null) {
+	                                oRow.scrollToView();
 	                            }
 	                        }
+	                    }
+	                    else {
+	                        document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
 	                    }
 	                }
 	            }
@@ -267,26 +257,11 @@
 	            return;			
 	        }		    
 
-	        closeOtherCombos("pnlInput");
-
 	        $get("pleasewaitScreen").style.visibility="visible";
 	        showOverlay(true);
 	        showErrorMessages(false);
 	    }
 
-	    function closeOtherCombos(objId) {
-	        var theObject = document.getElementById(objId);
-	        var level = 0;
-
-	        // Tell the TraverseDOM function to run the doNothing function on each control. 
-	        // The TraverseDOM function already has code close all WebCombos, so a 'doNothibng ios all that is required.
-	        TraverseDOM(theObject, level, doNothing);
-	    }
-
-	    function doNothing(obj) {
-	        // Empty function. Required - See note for closeOtherCombos function.
-	    }
-    
 	    function getElementsBySearchValue(searchValue) {
 	        var retVal = new Array();
 	        var elems = document.getElementsByTagName("input");
@@ -310,53 +285,6 @@
 
 	        return retVal;     
 	    } 
-
-
-	    function TraverseDOM(obj, lvl, actionFunc) {
-		
-	        var sControlType;
-	        var sFormInputPrefix = "forminput_";
-	        var sGridSuffix = "Grid";
-	        try
-	        {
-	            for (var i = 0; i < obj.childNodes.length; i++) {
-	                var childObj = obj.childNodes[i];
-
-	                // Close any lookup/dropdown grids.
-	                try
-	                {
-	                    if (childObj.id != undefined) {
-	                        if (childObj.id.substr(0, "forminput_".length) == "forminput_")
-	                        {
-	                            sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
-	                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-	                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
-
-	                            if ((sControlType == 13)
-    	                            || (sControlType == 14))
-	                            {
-	                                if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
-    	                                (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
-	                                {
-	                                    igcmbo_getComboById(childObj.id).setDropDown(false);
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	                catch(e) { }
-
-	                if (childObj.tagName) 
-	                {
-	                    actionFunc(childObj);
-	                }
-
-	                TraverseDOM(childObj, lvl + 1, actionFunc);
-	            }
-	        }
-	        catch(e) {
-	        }
-	    }
 
 	    function showErrorMessages(pfDisplay) {
 		
@@ -441,73 +369,6 @@
 	        catch (e) { }
 	    }
 
-	    function checkMaxLength(iMaxLength) {
-	        var sClipboardText;
-	        var iResultantLength;
-	        var iCurrentFieldLength;
-	        var fIsPermittedKeystroke;
-	        var iEnteredKeystroke;
-	        var fActionAllowed = true;
-	        var iSelectionLength;
-
-	        try {
-	            if (iMaxLength > 0) {
-	                iSelectionLength = parseInt(document.selection.createRange().text.length);
-	                iCurrentFieldLength = parseInt(event.srcElement.value.length);
-
-	                if (event.type == "keydown") {
-	                    // Allow non-printing, arrow and delete keys
-	                    iEnteredKeystroke = window.event.keyCode;
-	                    fIsPermittedKeystroke = (((iEnteredKeystroke < 32)			// Non printing - don't count
-    	                    || (iEnteredKeystroke >= 33 && iEnteredKeystroke <= 40)	// Page Up, Down, Home, End, Arrow - don't count
-        	                    || (iEnteredKeystroke == 46))							// Delete - doesn't count
-            	                    && (iEnteredKeystroke != 13));							// Enter - does count
-
-	                    // Decide whether the keystroke is allowed to proceed
-	                    if (!fIsPermittedKeystroke) {
-	                        if ((iCurrentFieldLength - iSelectionLength) >= iMaxLength) {
-	                            fActionAllowed = false;
-	                        }
-	                    }
-
-	                    window.event.returnValue = fActionAllowed;
-	                    return (fActionAllowed);
-	                }
-
-	                if (event.type == "paste") {
-	                    sClipboardText = window.clipboardData.getData("Text");
-	                    iResultantLength = iCurrentFieldLength + sClipboardText.length - iSelectionLength;
-
-	                    if (iResultantLength > iMaxLength) {
-	                        fActionAllowed = false;
-	                    }
-
-	                    window.event.returnValue = fActionAllowed;
-	                    return (fActionAllowed);
-	                }
-	            }
-	        }
-	        catch (e) { }
-	    }
-
-	    function dropdownControlKeyPress(pobjControlID, pNewValue, piKeyCode) {
-	        try {
-	            activateControl();
-
-	            if (piKeyCode == 32) // SPACE - drop list
-	            {
-	                var objCombo1 = igcmbo_getComboById(pobjControlID);
-	                objCombo1.setDropDown(true);
-	            }
-	            if (piKeyCode == 13) // RTN - close list
-	            {
-	                var objCombo2 = igcmbo_getComboById(pobjControlID);
-	                objCombo2.setDropDown(false);
-	            }
-	        }
-	        catch (e) { }
-	    }
-
 	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
 	        try {
 	            activateControl();
@@ -526,7 +387,7 @@
 	    }
 
 	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
-	        var sDate;
+	
 	        var dtCurrentDate;
 
 	        try {
@@ -539,11 +400,6 @@
 	            }
 	        }
 	        catch (e) { }
-	    }
-
-	    function showCalendar(elementID) {
-	        var dc = igdrp_getComboById(elementID);
-	        dc.showCalendar();
 	    }
 
 	    function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
@@ -577,7 +433,12 @@
                 }
             }
         }
-                
+
+        function showCalendar(elementID) {
+            var dc = igdrp_getComboById(elementID);
+            dc.showCalendar();
+        }
+        
 	    function showOverlay(display) {
 	        $get("divOverlay").style.display = display ? "block" : "none";               
 	    }
@@ -896,18 +757,6 @@
 	        }
 	    }
 	    
-	    function ChangeLookup(psWebComboId) {
-	        // Ensure locale number formatting is applied.
-	        try
-	        {
-	            var sLocaleDecimal = "<%=LocaleDecimal()%>";
-	            var reDECIMAL = /\./g;        
-	            var objCombo = igcmbo_getComboById(psWebComboId);
-	            objCombo.setDisplayValue(objCombo.displayValue.replace(reDECIMAL, sLocaleDecimal));
-	        }
-	        catch(e) {}
-	    }
-
 	    function ResizeComboForForm(sender, args) {
 	        psWebComboID = sender._id;
             
@@ -974,8 +823,7 @@
 	    }
 
 	    function scrollHeader(iGridID) {
-	        //keeps the header table aligned with the gridview in record
-	        //selectors and lookups.
+	        //keeps the header table aligned with the gridview in record selectors and lookups.
 	        var leftPos = document.getElementById(iGridID).scrollLeft;
 	        document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
       
