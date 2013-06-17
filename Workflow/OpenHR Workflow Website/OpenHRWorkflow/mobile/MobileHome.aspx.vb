@@ -14,7 +14,6 @@ Partial Class Home
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
     Dim ctlFormImageButton As ImageButton
-    Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
     Dim drLayouts As SqlClient.SqlDataReader
@@ -26,24 +25,8 @@ Partial Class Home
 
     _imageCount = 0
 
-    Try
-      _config.Mob_Initialise()
-      Session("Server") = _config.Server
-      Session("Database") = _config.Database
-      Session("Login") = _config.Login
-      Session("Password") = _config.Password
-      Session("WorkflowURL") = _config.WorkflowURL
-
-    Catch ex As Exception
-    End Try
-
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    Dim myConnection As New SqlClient.SqlConnection(strConn)
+    Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
     Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where ID = 1", myConnection)
 
@@ -123,12 +106,7 @@ Partial Class Home
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    myConnection = New SqlClient.SqlConnection(strConn)
+    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -336,7 +314,6 @@ Partial Class Home
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -363,12 +340,7 @@ Partial Class Home
       sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
-
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
       cmdSelect = New SqlClient.SqlCommand
@@ -445,83 +417,72 @@ Partial Class Home
     End Try
   End Function
 
-  Public Function WorkflowLink(ByVal pintWorkflowID As Integer) As String
+  Public Function WorkflowLink(ByVal workflowID As Integer) As String
 
-    Dim sUrl As String
-    Dim sUser As String
     Dim objCrypt As New Crypt
 
-    WorkflowLink = ""
-
-    sUrl = CStr(Session("WorkflowURL"))
-    If Len(sUrl) = 0 Then
-      Exit Function
+    If Configuration.WorkflowUrl.Length = 0 Then
+      Return ""
     End If
 
-    sUser = CStr(Session("Login"))
-    If Len(sUser) = 0 Then
-      Exit Function
+    If Configuration.Login.Length = 0 Then
+      Return ""
     End If
 
     ' For externally initiated workflows:
     '      plngInstance = -1 * workflowID
     '      plngStepID = -
-    Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * pintWorkflowID), -1, sUser, _
-        CStr(Session("Password")), _
-        CStr(Session("Server")), _
-        CStr(Session("Database")), _
-        CStr(User.Identity.Name), _
+
+    'TODO check
+    Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, _
+        Configuration.Login, _
+        Configuration.Password, _
+        Configuration.Server, _
+        Configuration.Database, _
+        User.Identity.Name, _
         "")
 
-    Return sURL & "?" & sEncryptedString
+    Return Configuration.WorkflowUrl & "?" & sEncryptedString
 
   End Function
 
   Private Function CheckPendingSteps() As Integer
 
-    Dim iLoop As Integer
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
-    Dim cmdSteps As SqlClient.SqlCommand
-    Dim rstSteps As SqlClient.SqlDataReader
+    Dim cmd As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
 
     ' Open a connection to the database.
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password"))
-
-    conn = New SqlClient.SqlConnection(strConn)
+    conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
     conn.Open()
 
-    cmdSteps = New SqlClient.SqlCommand
-    cmdSteps.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-    cmdSteps.Connection = conn
-    cmdSteps.CommandType = CommandType.StoredProcedure
+    cmd = New SqlClient.SqlCommand
+    cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+    cmd.Connection = conn
+    cmd.CommandType = CommandType.StoredProcedure
 
-    cmdSteps.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-    cmdSteps.Parameters("@psKeyParameter").Value = User.Identity.Name
+    cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+    cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
 
-    rstSteps = cmdSteps.ExecuteReader
+    dr = cmd.ExecuteReader
 
-    iLoop = 0
-
-    While rstSteps.Read
-      iLoop += 1
+    Dim count As Integer
+    While dr.Read
+      count += 1
     End While
-    rstSteps.Close()
-    cmdSteps.Dispose()
-
-    Return iLoop
+    dr.Close()
+    cmd.Dispose()
+    'TODO clean up
+    Return count
 
   End Function
 
   Protected Sub BtnToDoListClick(sender As Object, e As ImageClickEventArgs) Handles btnToDoList.Click
-    Response.Redirect("MobilePendingSteps.aspx")
+    Response.Redirect("~/Mobile/MobilePendingSteps.aspx")
   End Sub
 
   Protected Sub BtnChangePwdClick(sender As Object, e As ImageClickEventArgs) Handles btnChangePwd.Click
-    Response.Redirect("MobileChangePassword.aspx")
+    Response.Redirect("~/Mobile/MobileChangePassword.aspx")
   End Sub
 
   Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogout.Click

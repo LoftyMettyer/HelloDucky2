@@ -1,12 +1,8 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
+﻿Imports System
 Imports System.DirectoryServices
 
-Public Class clsActiveDirectoryValidator
+Public Class ActiveDirectoryValidator
   Private _path As String
-  Private _filterAttribute As String
 
   Public Sub New(path As String)
     _path = path
@@ -27,7 +23,7 @@ Public Class clsActiveDirectoryValidator
       End If
       ' Update the new path to the user in the directory
       _path = result.Path
-      _filterAttribute = DirectCast(result.Properties("cn")(0), [String])
+      Dim _filterAttribute As String = CStr(result.Properties("cn")(0))
     Catch ex As Exception
       Throw New Exception("Login Error: " & ex.Message)
     End Try

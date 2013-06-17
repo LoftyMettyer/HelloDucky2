@@ -11,7 +11,6 @@ Partial Class PendingSteps
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSteps As SqlClient.SqlCommand
     Dim rstSteps As SqlClient.SqlDataReader
@@ -36,24 +35,8 @@ Partial Class PendingSteps
 
     _ImageCount = 0
 
-    Try
-      _Config.Mob_Initialise()
-      Session("Server") = _Config.Server
-      Session("Database") = _Config.Database
-      Session("Login") = _Config.Login
-      Session("Password") = _Config.Password
-      Session("WorkflowURL") = _Config.WorkflowURL
-
-    Catch ex As Exception
-    End Try
-
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    Dim myConnection As New SqlClient.SqlConnection(strConn)
+    Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -141,12 +124,7 @@ Partial Class PendingSteps
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    myConnection = New SqlClient.SqlConnection(strConn)
+    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -234,12 +212,7 @@ Partial Class PendingSteps
 
     ' -----------------------------------------------------------------------------------------------------------------------------------
 
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                 ";Initial Catalog=" & Session("Database") & _
-                 ";Integrated Security=false;User ID=" & Session("Login") & _
-                 ";Password=" & Session("Password"))
-
-    conn = New SqlClient.SqlConnection(strConn)
+    conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
     conn.Open()
 
     Dim groupId As Integer
@@ -362,7 +335,6 @@ Partial Class PendingSteps
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -388,12 +360,8 @@ Partial Class PendingSteps
       sImageFileName = ""
       sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
 
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
       cmdSelect = New SqlClient.SqlCommand
@@ -472,10 +440,10 @@ Partial Class PendingSteps
 
 
   Protected Sub BtnRefreshClick(sender As Object, e As ImageClickEventArgs) Handles btnRefresh.Click
-    Response.Redirect("MobilePendingSteps.aspx")
+    Response.Redirect("~/Mobile/MobilePendingSteps.aspx")
   End Sub
 
   Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("MobileHome.aspx")
+    Response.Redirect("~/Mobie/MobileHome.aspx")
   End Sub
 End Class

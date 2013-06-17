@@ -5,14 +5,12 @@ Partial Class Registration
   Inherits Page
 
   Private _imageCount As Int16
-  Private _config As New Config
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
     Dim ctlFormImageButton As ImageButton
-    Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
     Dim drLayouts As SqlClient.SqlDataReader
@@ -21,25 +19,8 @@ Partial Class Registration
 
     _imageCount = 0
 
-    Try
-      _config.Mob_Initialise()
-      Session("Server") = _config.Server
-      Session("Database") = _config.Database
-      Session("Login") = _config.Login
-      Session("Password") = _config.Password
-      Session("WorkflowURL") = _config.WorkflowURL
-
-    Catch ex As Exception
-
-    End Try
-
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    Dim myConnection As New SqlClient.SqlConnection(strConn)
+    Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -118,12 +99,7 @@ Partial Class Registration
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    myConnection = New SqlClient.SqlConnection(strConn)
+    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -245,11 +221,6 @@ Partial Class Registration
       sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
-
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -329,7 +300,6 @@ Partial Class Registration
 
   Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdRegistration As SqlClient.SqlCommand
     Dim cmdUserID As SqlClient.SqlCommand
@@ -338,7 +308,7 @@ Partial Class Registration
     Dim sRedirectTo As String = ""
     Dim objCrypt As New Crypt
     Dim strEncryptedString As String
-    Dim lngUserID As Long
+    Dim userID As Long
 
     If txtEmail.Value.Length = 0 Then
       sMessage = "No email address entered."
@@ -349,11 +319,7 @@ Partial Class Registration
       Try
         ' Fetch the record ID for the specified e-mail. 
         ' Needs to be done first (and separately) so it can be encrypted prior to sending back to SQL
-        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                         ";Initial Catalog=" & Session("Database") & _
-                         ";Integrated Security=false;User ID=" & Session("Login") & _
-                         ";Password=" & Session("Password"))
-        conn = New SqlClient.SqlConnection(strConn)
+        conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
         conn.Open()
 
         cmdUserID = New SqlClient.SqlCommand
@@ -368,35 +334,30 @@ Partial Class Registration
 
         cmdUserID.ExecuteNonQuery()
 
-        lngUserID = CLng(NullSafeInteger(cmdUserID.Parameters("@piUserID").Value()))
+        userID = CLng(NullSafeInteger(cmdUserID.Parameters("@piUserID").Value()))
 
         cmdUserID.Dispose()
 
-        Dim sUrl As String = Session("WorkflowURL").ToString()
-        If sUrl.Length = 0 Then
+        If Configuration.WorkflowUrl.Length = 0 Then
           sMessage = "Unable to determine Workflow URL."
         End If
 
-        Dim sUser As String = Session("Login").ToString()
-        If sUser.Length = 0 Then
+        If Configuration.Login.Length = 0 Then
           sMessage = "Unable to connect to server."
         End If
 
         If sMessage.Length = 0 Then
 
           'TODO
-          strEncryptedString = objCrypt.EncryptQueryString((lngUserID), -2, sUser, _
-              Session("Password"), _
-              Session("Server"), _
-              Session("Database"), _
+          strEncryptedString = objCrypt.EncryptQueryString((userID), -2, _
+              Configuration.Login, _
+              Configuration.Password, _
+              Configuration.Server, _
+              Configuration.Database, _
               User.Identity.Name, _
               "")
 
-          strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                           ";Initial Catalog=" & Session("Database") & _
-                           ";Integrated Security=false;User ID=" & Session("Login") & _
-                           ";Password=" & Session("Password"))
-          conn = New SqlClient.SqlConnection(strConn)
+          conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
           conn.Open()
 
           cmdRegistration = New SqlClient.SqlCommand
@@ -408,7 +369,7 @@ Partial Class Registration
           cmdRegistration.Parameters("@psEmailAddress").Value = txtEmail.Value
 
           cmdRegistration.Parameters.Add("@psActivationURL", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdRegistration.Parameters("@psActivationURL").Value = sUrl & "?" & strEncryptedString
+          cmdRegistration.Parameters("@psActivationURL").Value = Configuration.WorkflowUrl & "?" & strEncryptedString
 
           cmdRegistration.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 

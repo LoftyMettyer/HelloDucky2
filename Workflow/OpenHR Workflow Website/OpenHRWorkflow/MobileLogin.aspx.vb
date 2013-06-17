@@ -5,7 +5,6 @@ Imports System.Web.Security
 Partial Class MobileLogin
   Inherits Page
 
-  Private ReadOnly _config As New Config
   Private _imageCount As Int16
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
@@ -13,7 +12,6 @@ Partial Class MobileLogin
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
     Dim ctlFormImageButton As ImageButton
-    Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
     Dim drLayouts As SqlClient.SqlDataReader
@@ -22,24 +20,8 @@ Partial Class MobileLogin
 
     _ImageCount = 0
 
-    Try
-      _Config.Mob_Initialise()
-      Session("Server") = _Config.Server
-      Session("Database") = _Config.Database
-      Session("Login") = _Config.Login
-      Session("Password") = _Config.Password
-      Session("WorkflowURL") = _Config.WorkflowURL
-
-    Catch ex As Exception
-    End Try
-
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    Dim myConnection As New SqlClient.SqlConnection(strConn)
+    Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -113,12 +95,7 @@ Partial Class MobileLogin
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                     ";Initial Catalog=" & Session("Database") & _
-                     ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password"))
-
-    myConnection = New SqlClient.SqlConnection(strConn)
+    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -204,7 +181,6 @@ Partial Class MobileLogin
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -230,12 +206,7 @@ Partial Class MobileLogin
       sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
-
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
       cmdSelect = New SqlClient.SqlCommand
@@ -318,95 +289,50 @@ Partial Class MobileLogin
 
   Private Sub SubmitLoginDetails()
 
-    Dim strConn As String
-    Dim conn As SqlClient.SqlConnection
-    Dim cmdCheck As SqlClient.SqlCommand
-    Dim dr As SqlClient.SqlDataReader
     Dim sMessage As String = ""
-
     Dim userName As String = txtUserName.Value.Trim
 
-    ' Get the password stored for this user, decrypt it, then compare it here.
-    ' do a few quick checks before validating the user
+    ' Basic validation of details
     If userName = "" Then
       sMessage = "No Login entered."
     End If
 
-    ' Perform system Lock Check first.
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                           ";Initial Catalog=" & Session("Database") & _
-                           ";Integrated Security=false;User ID=" & Session("Login") & _
-                           ";Password=" & Session("Password"))
-
+    ' Check if the system is locked
     Try
-      conn = New SqlClient.SqlConnection(strConn)
-      conn.Open()
-
-      ' Check if the database is locked.
-      cmdCheck = New SqlClient.SqlCommand
-      cmdCheck.CommandText = "sp_ASRLockCheck"
-      cmdCheck.Connection = conn
-      cmdCheck.CommandType = CommandType.StoredProcedure
-      cmdCheck.CommandTimeout = _config.SubmissionTimeoutInSeconds
-
-      dr = cmdCheck.ExecuteReader()
-
-      While dr.Read
-        If NullSafeInteger(dr("priority")) <> 3 Then
-          ' Not a read-only lock.
-          sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
-          Exit While
-        End If
-      End While
-
-      dr.Close()
-      cmdCheck.Dispose()
-      conn.Close()
+      If IsSystemLocked() Then
+        sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
+      End If
     Catch ex As Exception
-      sMessage = "Unable to perform system lock check"
+      sMessage = "Unable to perform system lock check."
     End Try
 
     ' Continue with authentication
     If sMessage.Length = 0 Then
 
-      If userName.IndexOf("\") > 0 Then
+      Try
+        Dim valid As Boolean
 
-        ' ============ WINDOWS AUTHENTICATION =============
-        ' The presence of a backslash indicates this is a windows user validate the user against AD
-        Dim domainAndUserName = userName.Split("\"c)
-        Try
-          AuthenticateUser(domainAndUserName(0), domainAndUserName(1), txtPassword.Value)
-        Catch ex As Exception
-          sMessage = ex.Message
-        End Try
+        If userName.IndexOf("\") > 0 Then
+          'Active dirctory authentication
+          valid = ValidateUserActiveDirectory(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
+        Else
+          'Sql server authentication
+          valid = ValidateUserSqlServer(userName, txtPassword.Value)
+        End If
 
-      Else
-        ' ============ SQL AUTHENTICATION =============
-        ' SQL User - validate against the DB
-        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-               ";Initial Catalog=" & Session("Database") & _
-               ";Integrated Security=false;User ID=" & userName & _
-               ";Password=" & txtPassword.Value)
-        Try
-          conn = New SqlClient.SqlConnection(strConn)
-          conn.Open()
-          conn.Close()
-          FormsAuthentication.SetAuthCookie(userName, chkRememberPwd.Checked)
-        Catch ex As Exception
-          sMessage = ex.Message
-        End Try
+        If Not valid Then sMessage = "The user name or password provided is incorrect."
+      Catch ex As Exception
+        sMessage = ex.Message
+      End Try
 
-      End If
     End If
 
     If sMessage.Length = 0 Then
       Try
-        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                         ";Initial Catalog=" & Session("Database") & _
-                         ";Integrated Security=false;User ID=" & Session("Login") & _
-                         ";Password=" & Session("Password"))
+        Dim conn As SqlClient.SqlConnection
+        Dim cmdCheck As SqlClient.SqlCommand
 
-        conn = New SqlClient.SqlConnection(strConn)
+        conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
         conn.Open()
 
         cmdCheck = New SqlClient.SqlCommand
@@ -436,15 +362,14 @@ Partial Class MobileLogin
     If sMessage.Length > 0 Then
       ShowMessage("Login Failed", sMessage, "")
     Else
-      ' Where were we heading before being asked for authentication?
-      Dim url As String = FormsAuthentication.GetRedirectUrl(userName, False)
+      FormsAuthentication.SetAuthCookie(userName, chkRememberPwd.Checked)
 
-      If url = FormsAuthentication.DefaultUrl Then
-        ' Nowhere! Go to the home page.
-        Response.Redirect("~/Mobile/MobileHome.aspx")
+      Dim returnUrl As String = FormsAuthentication.GetRedirectUrl(userName, False)
+
+      If returnUrl <> FormsAuthentication.DefaultUrl Then
+        Response.Redirect(returnUrl)
       Else
-        'Go to the page originally specified by the client.
-        Response.Redirect(url)
+        Response.Redirect("~/Mobile/MobileHome.aspx")
       End If
     End If
 
@@ -461,35 +386,75 @@ Partial Class MobileLogin
   End Sub
 
   Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
-    Response.Redirect("MobileRegistration.aspx")
+    Response.Redirect("~/MobileRegistration.aspx")
   End Sub
 
   Protected Sub BtnForgotPwdClick(sender As Object, e As ImageClickEventArgs) Handles btnForgotPwd.Click
-    Response.Redirect("MobileForgottenLogin.aspx")
+    Response.Redirect("~/MobileForgottenLogin.aspx")
   End Sub
 
-  Private Sub AuthenticateUser(domainName As String, userName As String, password As String)
+  Private Function ValidateUserActiveDirectory(domainName As String, userName As String, password As String) As Boolean
+
     ' Path to youR LDAP directory server.
     ' Contact your network administrator to obtain a valid path.
 
     Dim adPath As String = "LDAP://" & ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
 
-    Dim adAuth As New clsActiveDirectoryValidator(adPath)
+    Dim adAuth As New ActiveDirectoryValidator(adPath)
 
-    If adAuth.IsAuthenticated(domainName, userName, password) Then
-      ' Create the authetication ticket
-      Dim authTicket As New FormsAuthenticationTicket(1, userName, DateTime.Now, DateTime.Now.AddMinutes(20), False, "")
-      ' Now encrypt the ticket.
-      Dim encryptedTicket As String = FormsAuthentication.Encrypt(authTicket)
-      ' Create a cookie and add the encrypted ticket to the
-      ' cookie as data.
-      Dim authCookie As New HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket)
-      ' Add the cookie to the outgoing cookies collection.
-      HttpContext.Current.Response.Cookies.Add(authCookie)
+    Return adAuth.IsAuthenticated(domainName, userName, password)
 
-      FormsAuthentication.SetAuthCookie(txtUserName.Value, chkRememberPwd.Checked)
-    End If
-  End Sub
+  End Function
+
+  Private Function ValidateUserSqlServer(userName As String, password As String) As Boolean
+
+    Try
+      Dim conn As New SqlClient.SqlConnection(Configuration.ConnectionStringFor(userName, password))
+      conn.Open()
+      conn.Close()
+    Catch ex As Exception
+      'TODO clean up
+      Return False
+    End Try
+
+    Return True
+
+  End Function
+
+  Private Function IsSystemLocked() As Boolean
+
+    Try
+      Dim conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      ' Check if the database is locked.
+      Dim cmd = New SqlClient.SqlCommand
+      cmd.CommandText = "sp_ASRLockCheck"
+      cmd.Connection = conn
+      cmd.CommandType = CommandType.StoredProcedure
+      cmd.CommandTimeout = Configuration.SubmissionTimeoutInSeconds
+
+      Dim dr = cmd.ExecuteReader()
+
+      While dr.Read
+        ' Not a read-only lock.
+        If NullSafeInteger(dr("priority")) <> 3 Then
+          Return True
+        End If
+      End While
+
+    Catch ex As Exception
+      Throw
+    Finally
+      'TODO cleanup
+      'dr.Close()
+      'cmd.Dispose()
+      'conn.Close()
+    End Try
+
+    Return False
+
+  End Function
 
 End Class
 
