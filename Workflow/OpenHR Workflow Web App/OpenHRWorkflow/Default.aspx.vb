@@ -1193,8 +1193,8 @@ Public Class [Default]
 							End If
 						End If
 
-						Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
-						 top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
+					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
+					 top, left, width, height, GetFontCss(formItem), GetColorCss(formItem, True), borderCss)
 
 						If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
 							html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
@@ -1307,8 +1307,8 @@ Public Class [Default]
 						  "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
 						  "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
 
-						html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
-						 GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
+					html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
+					 GetFontCss(formItem), GetColorCss(formItem, True), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
 
 						UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
