@@ -420,6 +420,6 @@ Partial Class ChangePassword
   End Sub
 
   Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("MobileHome.aspx")
+    Response.Redirect("~/Mobile/MobileHome.aspx")
   End Sub
 End Class

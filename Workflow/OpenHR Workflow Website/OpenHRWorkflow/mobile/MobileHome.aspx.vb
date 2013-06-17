@@ -492,17 +492,11 @@ Partial Class Home
     ' Remove the cookie from cookies collection.
 
     FormsAuthentication.SignOut()
-    Session.Abandon()
 
     ' clear authentication cookie
     Dim cookie As HttpCookie = New HttpCookie(FormsAuthentication.FormsCookieName, "")
     cookie.Expires = DateTime.Now.AddYears(-1)
     Response.Cookies.Add(cookie)
-
-    ' clear session cookie (not necessary for your current problem but i would recommend you do it anyway)
-    Dim cookie2 As HttpCookie = New HttpCookie("ASP.NET_SessionId", "")
-    cookie2.Expires = DateTime.Now.AddYears(-1)
-    Response.Cookies.Add(cookie2)
 
     Response.Redirect("~/MobileLogin.aspx")
   End Sub
