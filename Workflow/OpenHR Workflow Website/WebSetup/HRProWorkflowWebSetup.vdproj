@@ -634,6 +634,24 @@
                         {
                         }
                     }
+                    "{4C6F2762-250E-4E7D-82DC-65B304135C98}:_D85654A4BA2741979683CB8186E4F431"
+                    {
+                    "AllowScriptSourceAccess" = "11:FALSE"
+                    "AllowReadAccess" = "11:TRUE"
+                    "AllowWriteAccess" = "11:TRUE"
+                    "AllowDirectoryBrowse" = "11:TRUE"
+                    "LogVisits" = "11:TRUE"
+                    "Index" = "11:TRUE"
+                    "ExecutePermissions" = "3:2"
+                    "Name" = "8:Pictures"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_E626FD904D3546C2804B7171F785B6FB"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
         }
@@ -667,8 +685,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
-        "ProductCode" = "8:{0B864F0E-C9E2-420C-8052-3AC1515100FC}"
-        "PackageCode" = "8:{CD1D628B-1732-45D4-85DE-371A31B55995}"
+        "ProductCode" = "8:{E8640C99-E095-4F87-8A23-569CCEA039BF}"
+        "PackageCode" = "8:{AD00A54E-679B-4DA7-9921-901FADA2FAD4}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
