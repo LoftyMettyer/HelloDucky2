@@ -2041,6 +2041,10 @@ Public Class _Default
                                             .RowStyle.BackColor = objGeneral.GetColour(15988214)
                                             .RowStyle.ForeColor = objGeneral.GetColour(6697779)
 
+                                            .RowStyle.BorderColor = objGeneral.GetColour(10720408)
+                                            .RowStyle.BorderStyle = BorderStyle.Solid
+                                            .RowStyle.BorderWidth = Unit.Pixel(1)
+
                                             iRowHeight = 21
                                             '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
 
