@@ -5,7 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
-<head runat="server">
+<head id="Head1" runat="server">
     <meta name="format-detection" content="telephone=no"/>
     <link rel="shortcut icon" href="pictures/logo.ico"/>
 
@@ -1742,7 +1742,7 @@ function ResizeComboForForm(sender, args) {
                 <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
                     
                     <div id="pnlTabsDiv" style="position: absolute;" runat="server">
-                        <div id="pnlTabsBorder" style="position: absolute; top: 27px; left: 0; right: 0; bottom: 0; border: 1px solid black;">
+                        <div id="pnlTabsBorder" style="position: absolute; top: 20px; left: 0; right: 0; bottom: 0; border: 1px solid black;">
                         </div>
                     </div>
                 </div>    
@@ -1788,41 +1788,42 @@ function ResizeComboForForm(sender, args) {
 <script language="javascript" type="text/javascript">
 
   function disposeTree(sender, args) {
-  
+
     //http://support.microsoft.com/?kbid=2000262
 
     try {
-  
-    var elements = args.get_panelsUpdating();
-    for (var i = elements.length - 1; i >= 0; i--) {
-      var element = elements[i];
-      var allnodes = element.getElementsByTagName('*'),
+
+      var elements = args.get_panelsUpdating();
+      for (var i = elements.length - 1; i >= 0; i--) {
+        var element = elements[i];
+        var allnodes = element.getElementsByTagName('*'),
                 length = allnodes.length;
         var nodes = new Array(length);
-      for (var k = 0; k < length; k++) {
-        nodes[k] = allnodes[k];
-      }
-      for (var j = 0, l = nodes.length; j < l; j++) {
-        var node = nodes[j];
-        if (node.nodeType === 1) {
-          if (node.dispose && typeof (node.dispose) === "function") {
-            node.dispose();
-          }
-          else if (node.control && typeof (node.control.dispose) === "function") {
-            node.control.dispose();
-          }
+        for (var k = 0; k < length; k++) {
+          nodes[k] = allnodes[k];
+        }
+        for (var j = 0, l = nodes.length; j < l; j++) {
+          var node = nodes[j];
+          if (node.nodeType === 1) {
+            if (node.dispose && typeof (node.dispose) === "function") {
+              node.dispose();
+            }
+            else if (node.control && typeof (node.control.dispose) === "function") {
+              node.control.dispose();
+            }
 
-          var behaviors = node._behaviors;
-          if (behaviors) {
-            behaviors = Array.apply(null, behaviors);
-            for (var k = behaviors.length - 1; k >= 0; k--) {
-              behaviors[k].dispose();
+            var behaviors = node._behaviors;
+            if (behaviors) {
+              behaviors = Array.apply(null, behaviors);
+              for (var k = behaviors.length - 1; k >= 0; k--) {
+                behaviors[k].dispose();
+              }
             }
           }
         }
-      }
-      element.innerHTML = "";
-    }} catch (e) { }
+        element.innerHTML = "";
+      } 
+    } catch (e) { }
   }
 
   try {

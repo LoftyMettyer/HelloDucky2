@@ -37,7 +37,7 @@ Public Class _Default
   Private Const FORMINPUTPREFIX As String = "forminput_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
   Private Const MAXDROPDOWNROWS As Int16 = 6
-  Private Const miTabStripHeight As Integer = 30
+  Private Const miTabStripHeight As Integer = 21
 
   Private Enum SQLDataType
     sqlUnknown = 0      ' ?
@@ -110,6 +110,7 @@ Public Class _Default
     Dim ctlForm_Literal As LiteralControl
     Dim ctlForm_UpdatePanel As System.Web.UI.UpdatePanel
     Dim ctlForm_PageTab() As Panel
+    Dim ctlForm_HTMLInputText As HtmlInputText
     Dim sBackgroundImage As String
     Dim sBackgroundRepeat As String
     Dim sBackgroundPosition As String
@@ -1353,129 +1354,200 @@ Public Class _Default
                   End If
 
                 Case 7 ' Input value - date
+                  Dim HDNValue As String = ""
 
-                  ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
-                  With ctlForm_Date
-                    .ID = sID
-                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+                  If getBrowserFamily() = "IOS" Then
+                    ' Use the built in date barrel control.
+                    ' HTML 5 only, and even then some browsers don't work properly. Yes YOU, android!
+                    ctlForm_HTMLInputText = New HtmlInputText
 
-                    ' Mobiles sometimes show keyboards when dateboxes are clicked.
-                    ' These can overlap the calendar control, so suppress it.
-                    If isMobileBrowser() Then
-                      .Editable = False
-                      .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
-                    End If
+                    With ctlForm_HTMLInputText
+                      .ID = sID
 
-                    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                      sDefaultFocusControl = sID
-                      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                      ctlDefaultFocusControl = ctlForm_Date
-                    End If
+                      .Attributes.Add("type", "date")
+                      .Attributes.Add("TabIndex", CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString)
+                      .Attributes.Add("onblur", "document.getElementById('" & sID & "Value').value = this.value;")
 
-                    .Style("position") = "absolute"
-                    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-
-                    .CalendarLayout.FooterFormat = "Today: {0:d}"
-                    .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
-                    .CalendarLayout.ShowTitle = False
-
-                    Dim fontUnit = New FontUnit(11, UnitType.Pixel)
-
-                    .CalendarLayout.DayStyle.Font.Size = fontUnit
-                    .CalendarLayout.DayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
-
-                    .CalendarLayout.FooterStyle.Font.Size = fontUnit
-                    .CalendarLayout.FooterStyle.Font.Name = "Verdana"
-                    .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
-
-                    .CalendarLayout.SelectedDayStyle.Font.Size = fontUnit
-                    .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.SelectedDayStyle.Font.Bold = True
-                    .CalendarLayout.SelectedDayStyle.Font.Underline = True
-                    .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                    .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
-
-                    .CalendarLayout.OtherMonthDayStyle.Font.Size = fontUnit
-                    .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
-
-                    .CalendarLayout.NextPrevStyle.ForeColor = SystemColors.InactiveCaptionText
-                    .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
-                    .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
-
-                    .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
-                    .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
-                    .CalendarLayout.CalendarStyle.Font.Size = fontUnit
-                    .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
-                    .CalendarLayout.CalendarStyle.BackColor = Color.White
-
-                    .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
-
-                    .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                    .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
-
-                    .CalendarLayout.DropDownStyle.Font.Size = fontUnit
-                    .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
-                    .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
-
-                    .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                    .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.DayHeaderStyle.Font.Size = fontUnit
-                    .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DayHeaderStyle.Font.Bold = True
-
-                    .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
-                    .NullDateLabel = ""
-
-                    If (Not IsDBNull(dr("value"))) Then
-                      If CStr(dr("value")).Length > 0 Then
-                        iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                        iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                        iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
-
-                        dtDate = DateSerial(iYear, iMonth, iDay)
-                        .Value = dtDate
+                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                        sDefaultFocusControl = sID
+                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                        ctlDefaultFocusControl = ctlForm_HTMLInputText
                       End If
-                    End If
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    .BorderColor = objGeneral.GetColour(5730458)
+                      .Style("position") = "absolute"
+                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      If (Not IsDBNull(dr("value"))) Then
+                        If CStr(dr("value")).Length > 0 Then
+                          Dim sDateString As String
 
-                    If isMobileBrowser() Then
-                      .DropButton.ImageUrl1 = "~/Images/Calendar16.png"
-                      .DropButton.ImageUrl2 = "~/Images/Calendar16.png"
-                      .DropButton.ImageUrlHover = "~/Images/Calendar16.png"
-                    Else
-                      .DropButton.ImageUrl1 = "~/Images/downarrow.gif"
-                      .DropButton.ImageUrl2 = "~/Images/downarrow.gif"
-                      .DropButton.ImageUrlHover = "~/Images/downarrow-hover.gif"
-                    End If
-                    .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
-                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                          sDateString = iYear.ToString & "-"
 
-                    .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
-                    .ClientSideEvents.TextChanged = "dateControlTextChanged"
-                    .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
+                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                          If iMonth < 10 Then
+                            sDateString &= "0" & iMonth.ToString & "-"
+                          Else
+                            sDateString &= iMonth.ToString & "-"
+                          End If
 
-                    If isMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
-                  End With
+                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+                          If iDay < 10 Then
+                            sDateString &= "0" & iDay.ToString & "-"
+                          Else
+                            sDateString &= iDay.ToString
+                          End If
 
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
+
+                          ' dtDate = DateSerial(iYear, iMonth, iDay)
+                          HDNValue = sDateString
+                          .Value = HDNValue
+
+                        End If
+                      End If
+
+                    End With
+
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputText)
+
+                    ' Yippee, can't find a way of storing the value to a server visible variable. 
+                    ' So, use a hidden value.
+                    ctlForm_HiddenField = New HiddenField
+
+                    With ctlForm_HiddenField
+                      .ID = sID & "Value"
+                      .Value = HDNValue
+                    End With
+
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
+
+                  Else
+                    ' Use the infragistics control.
+                    ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
+                    With ctlForm_Date
+                      .ID = sID
+                      .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+
+                      ' Mobiles sometimes show keyboards when dateboxes are clicked.
+                      ' These can overlap the calendar control, so suppress it.
+                      If isMobileBrowser() Then
+                        .Editable = False
+                        .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
+                      End If
+
+                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                        sDefaultFocusControl = sID
+                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                        ctlDefaultFocusControl = ctlForm_Date
+                      End If
+
+                      .Style("position") = "absolute"
+                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+
+                      .CalendarLayout.FooterFormat = "Today: {0:d}"
+                      .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
+                      .CalendarLayout.ShowTitle = False
+
+                      Dim fontUnit = New FontUnit(11, UnitType.Pixel)
+
+                      .CalendarLayout.DayStyle.Font.Size = fontUnit
+                      .CalendarLayout.DayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
+
+                      .CalendarLayout.FooterStyle.Font.Size = fontUnit
+                      .CalendarLayout.FooterStyle.Font.Name = "Verdana"
+                      .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
+
+                      .CalendarLayout.SelectedDayStyle.Font.Size = fontUnit
+                      .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.SelectedDayStyle.Font.Bold = True
+                      .CalendarLayout.SelectedDayStyle.Font.Underline = True
+                      .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                      .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
+
+                      .CalendarLayout.OtherMonthDayStyle.Font.Size = fontUnit
+                      .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
+
+                      .CalendarLayout.NextPrevStyle.ForeColor = SystemColors.InactiveCaptionText
+                      .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
+
+                      .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
+                      .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
+                      .CalendarLayout.CalendarStyle.Font.Size = fontUnit
+                      .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
+                      .CalendarLayout.CalendarStyle.BackColor = Color.White
+
+                      .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
+
+                      .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                      .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
+
+                      .CalendarLayout.DropDownStyle.Font.Size = fontUnit
+                      .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
+                      .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
+
+                      .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.DayHeaderStyle.Font.Size = fontUnit
+                      .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DayHeaderStyle.Font.Bold = True
+
+                      .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
+                      .NullDateLabel = ""
+
+                      If (Not IsDBNull(dr("value"))) Then
+                        If CStr(dr("value")).Length > 0 Then
+                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+
+                          dtDate = DateSerial(iYear, iMonth, iDay)
+                          .Value = dtDate
+                        End If
+                      End If
+
+                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BorderColor = objGeneral.GetColour(5730458)
+
+                      .Font.Name = NullSafeString(dr("FontName"))
+                      .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
+                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                      If isMobileBrowser() Then
+                        .DropButton.ImageUrl1 = "~/Images/Calendar16.png"
+                        .DropButton.ImageUrl2 = "~/Images/Calendar16.png"
+                        .DropButton.ImageUrlHover = "~/Images/Calendar16.png"
+                      Else
+                        .DropButton.ImageUrl1 = "~/Images/downarrow.gif"
+                        .DropButton.ImageUrl2 = "~/Images/downarrow.gif"
+                        .DropButton.ImageUrlHover = "~/Images/downarrow-hover.gif"
+                      End If
+                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
+                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+
+                      .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
+                      .ClientSideEvents.TextChanged = "dateControlTextChanged"
+                      .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
+
+                      If isMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
+                    End With
+
+                    pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Date)
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
+
+                  End If
 
 
                 Case 8 ' Frame
@@ -2930,7 +3002,7 @@ Public Class _Default
                     Dim ctlForm_TabArrows As New Panel
                     With ctlForm_TabArrows
                       .Style.Add("position", "absolute")
-                      .Style.Add("top", "2px")
+                      .Style.Add("top", "0px")
                       .Style.Add("right", "0px")
                       .Style.Add("width", "48px")
                       .Style.Add("z-index", "1")
@@ -2943,7 +3015,7 @@ Public Class _Default
                     ctlForm_Image = New WebControls.Image
                     With ctlForm_Image
                       .Style.Add("width", "24px")
-                      .Style.Add("height", miTabStripHeight - 6 & "px")
+                      .Style.Add("height", miTabStripHeight - 2 & "px")
                       .ImageUrl = "~/Images/tab-prev.gif"
                       .Style.Add("margin", "0px")
                       .Style.Add("padding", "0px")
@@ -2955,7 +3027,7 @@ Public Class _Default
                     ctlForm_Image = New WebControls.Image
                     With ctlForm_Image
                       .Style.Add("width", "24px")
-                      .Style.Add("height", miTabStripHeight - 6 & "px")
+                      .Style.Add("height", miTabStripHeight - 2 & "px")
                       .ImageUrl = "~/Images/tab-next.gif"
                       .Style.Add("margin", "0px")
                       .Style.Add("padding", "0px")
@@ -2970,9 +3042,9 @@ Public Class _Default
                   ' generate the tabs.
                   Dim ctlTabsTable As New Table
                   ctlTabsTable.CellSpacing = 0
-                  ctlTabsTable.Style.Add("margin-top", "2px")
+                  ' ctlTabsTable.Style.Add("margin-top", "2px")
                   Dim trPager As TableRow = New TableRow()
-                  trPager.Height = Unit.Pixel(miTabStripHeight - 4 - 1) ' to prevent vertical scrollbar
+                  trPager.Height = Unit.Pixel(miTabStripHeight - 1) ' to prevent vertical scrollbar
                   trPager.Style.Add("white-space", "nowrap")
 
                   Dim tcTabCell As New TableCell
@@ -3217,11 +3289,13 @@ Public Class _Default
     Dim ctlFormInput As Control
     Dim ctlFormCheckBox As CheckBox
     Dim ctlFormTextInput As TextBox
+    Dim ctlFormHTMLInputText As HtmlInputText
     Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlForm_PagingGridView As RecordSelector
     Dim ctlFormDropdown As DropDownList
     Dim ctlForm_HiddenField As HiddenField
+
 
     Dim sID As String
     Dim sIDString As String
@@ -3331,16 +3405,25 @@ Public Class _Default
               sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
             End If
 
-            ' Mobile?
+            ' Is this an HTML5 compliant mobile device?
+            If (TypeOf ctlFormInput Is HtmlInputText) Then
 
-            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
-              ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
 
-              If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
+              If pnlInput.FindControl(sID & "Value") Is Nothing Then
                 sDateValueString = "null"
               Else
-                sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
+                ctlForm_HiddenField = DirectCast(pnlInput.FindControl(sID & "Value"), HiddenField)
+                sDateValueString = Format(DateTime.Parse(ctlForm_HiddenField.Value), "MM/dd/yyyy")
+                'sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
               End If
+
+              'ctlFormHTMLInputText = DirectCast(ctlFormInput, HtmlInputText)
+
+              'If (ctlFormHTMLInputText.Value.ToString = vbNullString) Or (ctlFormHTMLInputText.Value.ToString = "  /  /") Then
+              '  sDateValueString = "null"
+              'Else
+              '  sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormHTMLInputText.Value)
+              'End If
 
               sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
               sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
@@ -4123,6 +4206,8 @@ Public Class _Default
 
 
   End Sub
+
+
 
   Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
 
