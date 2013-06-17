@@ -521,7 +521,8 @@ Public Class RecordSelector
                                 e.Row.Cells(iColCount).Style.Add("text-align", "right")
                             Case "Boolean"
                                 e.Row.Cells(iColCount).Style.Add("text-align", "center")
-                            Case Else   ' String
+                            Case Else   ' String                                
+                                e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
                                 e.Row.Cells(iColCount).Style.Add("text-align", "left")
                         End Select
                     Catch
