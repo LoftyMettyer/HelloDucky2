@@ -66,6 +66,7 @@ function getCookie(name) {
 }
 // main class prototype
 function ColumnResize(table) {
+
   if (table.tagName != 'TABLE') return;
 
   this.id = table.id;
@@ -78,7 +79,7 @@ function ColumnResize(table) {
   if (!dragColumns) return; // return if no table exists or no one row exists
 
   var GridID = table.id.replace("Header", "Grid");
-  if (!eval(GridID)) { return; }
+  if (!eval(document.getElementById(GridID))) { return; }
   var dragColumns2 = document.getElementById(GridID).rows[0].cells;
 
   var dragColumnNo; // current dragging column

@@ -8,8 +8,29 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <head runat="server">
-	  <title></title>
+	  <title></title>	  
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
+    <script type="text/javascript">
+//      var DDE;
+//      function pageLoad() {
+//        DDE = $find('forminput_38886_14_DDE');
+//        if (DDE._dropDownControl) {
+//          $common.removeHandlers(DDE._dropDownControl, DDE._dropDownControl$delegates);
+//        }
+//        DDE._dropDownControl$delegates = {
+//          click: Function.createDelegate(DDE, ShowMe),
+//          contextmenu: Function.createDelegate(DDE, DDE._dropDownControl_oncontextmenu)
+//        }
+//        $addHandlers(DDE._dropDownControl, DDE._dropDownControl$delegates);
+//      }
+
+//      function ShowMe() {
+//        DDE._wasClicked = true;
+//      }
+
+    </script>
+    
+    
 </head>
 
 <body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
@@ -20,20 +41,28 @@
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
 		<script language="javascript" type="text/javascript">
+  var app = Sys.Application
+  app.add_init(ApplicationInit);
   
     // <!CDATA[
     var gridViewCtl = null;
     var curSelRow = new Array();
     var selRow = new Array();
     var curSelRowBackColour = new Array();
+ 
+    function ApplicationInit(sender) {
+        try 
+        {
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            if (!prm.get_isInAsyncPostBack()) 
+            {
+              prm.add_beginRequest(goSubmit);
+              prm.add_endRequest(showMessage);
+            }
+        }
+        catch (e) {}
+    }
 
-try {
-    //Need to specify Panel 2 here...
-    var prm = Sys.WebForms.PageRequestManager.getInstance();
-    prm.add_beginRequest(goSubmit);
-    prm.add_endRequest(showMessage);
-}
-catch (e) {}
 
 		function window_onload() {
 			var iDefHeight;
@@ -42,7 +71,8 @@ catch (e) {}
 			var iResizeByWidth;
       var sControlType;
       var oldgridSelectedColor;
-            
+			var ScrollTopPos;
+           
 			try {
 				iDefHeight = frmMain.hdnFormHeight.value;
 				iDefWidth = frmMain.hdnFormWidth.value;
@@ -206,7 +236,8 @@ catch (e) {}
 			}
 		}
 
-		function goSubmit() {
+		function goSubmit() {		
+		if(txtPostbackMode.value=="2") return;		
 			disableChildElements("pnlInput");
 			showErrorMessages(false);
 		}
@@ -582,13 +613,18 @@ catch (e) {}
 		}
 
 		function showMessage() {
+		
+		//ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
+		//the postback cycle. So we'll reset all grid scroll bars to their previous position
+		SetScrollTopPos("", "-1");
+        
 			try {
 				if (frmMain.hdnErrorMessage.value.length > 0) {
 					showSubmissionMessage();
 					return;
 				}
 
-				refreshLiterals();
+				if(txtPostbackMode.value!="2") refreshLiterals();
 
 				if ((txtPostbackMode.value == 2)
                     || (txtPostbackMode.value == 3)) 
@@ -601,9 +637,11 @@ catch (e) {}
 					if (txtPostbackMode.value == 3) 
 					{
 					    document.all.ifrmFileUpload.contentWindow.enableControls();
-                    }
+          }
+          // not doing this causes the object referenced is null error:
 					setPostbackMode(0);
 					return;
+					
 				}
 
 				if ((frmMain.hdnCount_Errors.value > 0)
@@ -628,7 +666,6 @@ catch (e) {}
 						}
 					}
 				}
-
 				setPostbackMode(0);
 			}
 			catch (e) { }
@@ -841,6 +878,10 @@ catch (e) {}
       //selectors and lookups.
       var leftPos = document.getElementById(iGridID).scrollLeft;
       document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
+      
+      var hdn1 = document.getElementById(iGridID.replace("Grid","hiddenfield"));
+      hdn1.value = document.getElementById(iGridID).scrollTop;
+      
   }
 	    
   function InitializeLookup(sender, args) {
@@ -1013,14 +1054,16 @@ catch (e) {}
 
 	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
                             sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
-                                                       
+                                                     
                           // ASP's own gridview control doesn't have a nice built-in filter option,
                           // so we'll loop through the rows and hide any that don't meet the criteria.
                           // Need Filter column, Operator and Value.
 					                //var objCombo = igcmbo_getComboById(psWebComboId);
 	                        //        objCombo.selectWhere(sSelectWhere);
         	                
-                          hideRows(psWebComboID.replace("DDE", "Grid"), sValue);
+        	                 //PageMethods.SetGridFilter(psWebComboID, sSelectWhere, OnCallSumComplete, OnCallSumError);
+        	                 
+                          hideRows(psWebComboID.replace("DDE", "Grid"), sValue, sSelectWhere);
 	                
                         }
 	                }
@@ -1031,18 +1074,31 @@ catch (e) {}
 	        return false;
   }
 
-  function hideRows(gridName, searchValue)
+
+function OnCallSumComplete(result,txtresult,methodName)
+{
+//Show the result in txtresult
+}
+
+// Callback function on error
+// Callback function on complete
+// First argument is always "error" if server side code throws any exception
+// Second argument is usercontext control pass at the time of call
+// Third argument is methodName (server side function name) 
+// In this example the methodName will be "Sum"
+function OnCallSumError(error,userContext,methodName)
+{
+//alert(error.get_message());
+}
+
+ function hideRows(gridName, searchValue, sSelectWhere)
   {
     //Get the column number
-    tblTable = document.getElementById(gridName);
-    
-    iFilterColumn = tblTable.attributes["LookupFilterColumn"].value;
-    
+    tblTable = document.getElementById(gridName);   
+    iFilterColumn = tblTable.attributes["LookupFilterColumn"].value;    
     rows = document.getElementById(gridName).rows;
-    
     //If only the blank row exists...
     if(rows.length==1){return;}
-    
     iVisibleRows = 1;
       
     for (i = 1; i < rows.length; i++) {
@@ -1064,13 +1120,26 @@ catch (e) {}
     grdContainer = document.getElementById(gridName.replace("Grid", "gridcontainer"));
     grdContainer.height = iDropHeight + 'px';
     grdContainer.style.height = iDropHeight + 'px';
+    
+    grdContainer = document.getElementById(gridName.replace("Grid", ""));
+    grdContainer.height = iDropHeight + 16 + 'px';
+    grdContainer.style.height = iDropHeight + 16 + 'px';
+
   }
 
-
- function getSelectedRow(iGridID, iRowIdx) {
+function getSelectedRow(iGridID, iRowIdx) {
     getGridViewControl(iGridID);
-    if (null != gridViewCtl) {      
-      return gridViewCtl.rows[iRowIdx];      
+    if (null != gridViewCtl) {
+    
+      iIDCol = GetIDColumnNum(iGridID);
+      for (i = 0; i < gridViewCtl.rows.length; i++) {
+        try {
+          if (gridViewCtl.rows[i].cells[iIDCol].innerText == iRowIdx)  {
+            return gridViewCtl.rows[i];      
+          }
+        }
+        catch (e) {}
+      }                
     }
     return null;
   }
@@ -1079,6 +1148,47 @@ catch (e) {}
     //    if (null == gridViewCtl) {
       gridViewCtl = document.getElementById(iGridID);
     //}
+  }
+
+
+function Right(str, n){
+    if (n <= 0)
+       return "";
+    else if (n > String(str).length)
+       return str;
+    else {
+       var iLen = String(str).length;
+       return String(str).substring(iLen, iLen - n);
+    }
+}
+
+  function SetScrollTopPos(iGridID, iPos) {
+    if(iPos==-1) {
+    
+    //Loop through all hidden scroll fields and reset values.
+    var controlCollection = frmMain.elements;
+	    if (controlCollection!=null) 
+	    {
+		    for (i=0; i<controlCollection.length; i++)  
+		    {
+			    if(Right(controlCollection.item(i).name, 11)=="hiddenfield") {
+			    
+			      document.getElementById(controlCollection.item(i).name.replace("hiddenfield", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
+    			}	
+		    }
+	    }
+				
+				
+      // -1 is the code to reset the scrollbar
+      //alert("SETTING SCROLLBAR " + iGridID.replace("Grid", "gridcontainer") + " TO " + ScrollTopPos);
+      //document.getElementById(iGridID.replace("Grid", "gridcontainer")).scrollTop = (ScrollTopPos);
+    }
+    else { 
+      //store the scrollbar position
+      hdn1 = document.getElementById(iGridID.replace("Grid","hiddenfield"));
+      hdn1.value = iPos;
+      ScrollTopPos = iPos;          
+    }
   }
 
   function changeRow(iGridID, iRowIdx, strHighlightCol, iIDCol) {
@@ -1351,7 +1461,7 @@ catch (e) {}
 
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
 	
-  <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true">
+  <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true">
   </ajx:ToolkitScriptManager>
 	<!--
         Web Form Validation Error Messages
@@ -1411,8 +1521,11 @@ catch (e) {}
 			margin-right: auto; margin-left: auto; padding-top: 0px;" LinkedRefreshControlID="pnlErrorMessages">
 		</igmisc:WebAsyncRefreshPanel>--%>
       
-    <asp:UpdatePanel ID="pnlInput" runat="server" >
+    <asp:UpdatePanel ID="pnlInput" runat="server"  >
     <ContentTemplate>
+    <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
+                            margin-top:0px;margin-bottom:0px;;margin-right:auto;margin-left:auto;padding-top:0px;">
+    </div>    
       <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px;
 				position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
         <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden;
@@ -1460,7 +1573,7 @@ catch (e) {}
   
     //http://support.microsoft.com/?kbid=2000262
 
-    try { 
+    try {
   
     var elements = args.get_panelsUpdating();
     for (var i = elements.length - 1; i >= 0; i--) {
