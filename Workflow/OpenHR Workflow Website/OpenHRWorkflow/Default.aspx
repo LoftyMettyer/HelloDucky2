@@ -19,7 +19,7 @@
         .recordSelector {
             text-align: left;
         }
-        .recrodSelector tr {
+        .recordSelector tr {
             cursor: pointer;
             overflow: hidden;
         }
