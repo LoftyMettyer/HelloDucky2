@@ -336,15 +336,7 @@ Partial Class MobileLogin
     If sMessage.Length > 0 Then
       ShowMessage("Login Failed", sMessage, "")
     Else
-      FormsAuthentication.SetAuthCookie(userName, chkRememberPwd.Checked)
-
-      Dim returnUrl As String = FormsAuthentication.GetRedirectUrl(userName, False)
-
-      If returnUrl <> FormsAuthentication.DefaultUrl Then
-        Response.Redirect(returnUrl)
-      Else
-        Response.Redirect("~/Mobile/MobileHome.aspx")
-      End If
+      FormsAuthentication.RedirectFromLoginPage(userName, chkRememberPwd.Checked)
     End If
 
   End Sub

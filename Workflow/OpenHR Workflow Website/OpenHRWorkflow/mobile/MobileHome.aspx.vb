@@ -467,7 +467,7 @@ Partial Class Home
     cookie.Expires = DateTime.Now.AddYears(-1)
     Response.Cookies.Add(cookie)
 
-    Response.Redirect("~/MobileLogin.aspx")
+    FormsAuthentication.RedirectToLoginPage()
   End Sub
 
   Private Function GetPendingStepsCount() As Integer
