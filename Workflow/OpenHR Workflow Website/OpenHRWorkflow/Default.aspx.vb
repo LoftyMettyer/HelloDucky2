@@ -2880,6 +2880,7 @@ Public Class _Default
                     With ctlForm_InputButton
                       .ID = sID & "refresh"
                       .Style.Add("display", "none")
+                      .Text = .ID
                     End With
 
                     AddHandler ctlForm_InputButton.Click, AddressOf SetLookupFilter
@@ -2908,6 +2909,9 @@ Public Class _Default
                       .Style("position") = "absolute"
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+
+                      .Attributes.Add("onclick", "return false;")
+                      .Attributes.Add("onmousedown", "InitializeLookup(" & sID & ");")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2975,7 +2979,7 @@ Public Class _Default
 
                           ' Fill the datatable with data from the datadapter.
                           da.Fill(dt)
-                          Session(sID & "_DATA") = dt
+                          Session(sID & "DATA") = dt
 
                           ctlForm_Dropdown.DataSource = dt
 
@@ -3019,7 +3023,34 @@ Public Class _Default
                           ctlForm_Dropdown.SelectedValue = listItem.Value
                         End If
                       End If
+
                     End With
+
+
+                    ' ====================================================
+                    ' hidden field to hold any filter SQL code
+                    ' ====================================================
+                    ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                    With ctlForm_HiddenField
+                      .ID = sID & "filterSQL"
+                    End With
+
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
+
+                    ' ============================================================
+                    ' Hidden Button for JS to call which fires filter click event. 
+                    ' ============================================================
+                    ctlForm_InputButton = New Button
+
+                    With ctlForm_InputButton
+                      .ID = sID & "refresh"
+                      .Style.Add("display", "none")
+                    End With
+
+                    AddHandler ctlForm_InputButton.Click, AddressOf SetLookupFilter
+
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_InputButton)
+
                   End If
 
 
@@ -5494,15 +5525,24 @@ Public Class _Default
 
     End If
 
+    If TypeOf (pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", ""))) Is DropDownList Then
+      ' This is a dropdownlist style lookup (mobiles only)
+      Dim dropdown As DropDownList
+      dropdown = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "")), DropDownList)
 
-    Dim gridView As RecordSelector 'GridView
-    gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
+      dropdown.DataSource = dataTable
+      dropdown.DataBind()
+    Else
+      ' This is a normal grid lookup (not Mobile)
 
-    gridView.filterSQL = filterSQL.ToString
+      Dim gridView As RecordSelector 'GridView
+      gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
 
-    gridView.DataSource = dataTable
-    gridView.DataBind()
+      gridView.filterSQL = filterSQL.ToString
 
+      gridView.DataSource = dataTable
+      gridView.DataBind()
+    End If
 
     ' reset filter.
     hiddenField.Value = ""
