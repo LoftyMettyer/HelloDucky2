@@ -28,12 +28,45 @@ Public Class _Default
     Private miFollowOnFormsMessageType As Integer
     Private msFollowOnFormsMessage As String
     Private miSubmissionTimeoutInSeconds As Int32
+    Private msLastSelectedValue As String
 
     Private Const FORMINPUTPREFIX As String = "forminput_"
     Private Const ASSEMBLYNAME As String = "HRPROWORKFLOW"
     Private Const ROWHEIGHTFONTRATIO As Single = 2.5
     Private Const MAXDROPDOWNROWS As Int16 = 6
 
+
+    Private Enum SQLDataType
+        sqlUnknown = 0      ' ?
+        sqlOle = -4         ' OLE columns
+        sqlBoolean = -7     ' Logic columns
+        sqlNumeric = 2      ' Numeric columns
+        sqlInteger = 4      ' Integer columns
+        sqlDate = 11        ' Date columns
+        sqlVarChar = 12     ' Character columns
+        sqlVarBinary = -3   ' Photo columns
+        sqlLongVarChar = -1 ' Working Pattern columns
+    End Enum
+
+    Private Enum FilterOperators
+        giFILTEROP_UNDEFINED = 0
+        giFILTEROP_EQUALS = 1
+        giFILTEROP_NOTEQUALTO = 2
+        giFILTEROP_ISATMOST = 3
+        giFILTEROP_ISATLEAST = 4
+        giFILTEROP_ISMORETHAN = 5
+        giFILTEROP_ISLESSTHAN = 6
+        giFILTEROP_ON = 7
+        giFILTEROP_NOTON = 8
+        giFILTEROP_AFTER = 9
+        giFILTEROP_BEFORE = 10
+        giFILTEROP_ONORAFTER = 11
+        giFILTEROP_ONORBEFORE = 12
+        giFILTEROP_CONTAINS = 13
+        giFILTEROP_IS = 14
+        giFILTEROP_DOESNOTCONTAIN = 15
+        giFILTEROP_ISNOT = 16
+    End Enum
 
 #Region " Web Form Designer Generated Code "
 
@@ -145,6 +178,7 @@ Public Class _Default
         Dim iGapBetweenBorderAndText As Integer
         Dim iLoop As Integer
         Dim iWidthUsed As Integer
+        Dim sFilterSQL As String
 
         Const iGRIDBORDERWIDTH As Integer = 10
         Const sDEFAULTTITLE As String = "HR Pro Workflow"
@@ -785,9 +819,11 @@ Public Class _Default
                                         .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
                                         .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                                         .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
+
                                     End With
 
                                     pnlInput.Controls.Add(ctlForm_TextInput)
+
 
                                 Case 4 ' Workflow value
                                     If (NullSafeInteger(dr("sourceItemType")) = 6) _
@@ -1684,89 +1720,30 @@ Public Class _Default
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
+                                        ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
+                                        .EnableXmlHTTP = True
+                                        .ClientSideEvents.BeforeDropDown = "InitializeLookup"
+
                                         pnlInput.Controls.Add(ctlForm_Dropdown)
 
-                                        If Not IsPostBack Then
-                                            connGrid = New SqlClient.SqlConnection(strConn)
-                                            connGrid.Open()
+                                        sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
+                                                NullSafeInteger(dr("lookupFilterColumnDataType")), _
+                                                NullSafeInteger(dr("LookupFilterOperator")), _
+                                                FORMINPUTPREFIX & NullSafeString(dr("lookupFilterValueID")) & "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
 
-                                            Try
-                                                cmdGrid = New SqlClient.SqlCommand
-                                                cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                                                cmdGrid.Connection = connGrid
-                                                cmdGrid.CommandType = CommandType.StoredProcedure
-                                                cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
-
-                                                cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                                                cmdGrid.Parameters("@piElementItemID").Value = NullSafeString(dr("ID"))
-
-                                                cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                                                cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
-
-                                                drGrid = cmdGrid.ExecuteReader(CommandBehavior.SingleResult)
-
-                                                ' NOTE: Do the dataBind() after adding to the panel
-                                                ' otherwise you get an error.
-                                                .DataSource = drGrid
-                                                .DataBind()
-
-                                                drGrid.Close()
-                                                drGrid = Nothing
-                                                cmdGrid.Dispose()
-                                                cmdGrid = Nothing
-
-                                                ' Format the column(s)
-                                                For Each objGridColumn In .Columns
-                                                    If objGridColumn.Index > 0 Then
-                                                        .DataValueField = objGridColumn.BaseColumnName
-                                                        objGridColumn.Hidden = True
-                                                    Else
-                                                        .DataTextField = objGridColumn.BaseColumnName
-                                                        objGridColumn.AllowNull = False
-
-                                                        If objGridColumn.DataType = "System.DateTime" Then
-                                                            objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-                                                        ElseIf objGridColumn.DataType = "System.Boolean" Then
-                                                            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-                                                        ElseIf objGridColumn.DataType = "System.Decimal" _
-                                                         Or objGridColumn.DataType = "System.Int32" Then
-                                                            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-                                                        End If
-                                                    End If
-                                                Next objGridColumn
-
-                                                ' Select the default value.
-                                                If .Rows.Count > 0 Then
-                                                    objGridCell = .FindByValue(1)
-
-                                                    If Not objGridCell Is Nothing Then
-                                                        .SelectedIndex = objGridCell.Row.Index
-                                                    Else
-                                                        .SelectedIndex = 0
-                                                    End If
-                                                End If
-
-                                            Catch ex As Exception
-                                                sMessage = "Error loading web form combo values:<BR><BR>" & _
-                                                ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                                                "Contact your system administrator."
-                                                Exit While
-
-                                            Finally
-                                                connGrid.Close()
-                                                connGrid.Dispose()
-                                            End Try
+                                        If (sFilterSQL.Length > 0) Then
+                                            ctlForm_HiddenField = New HiddenField
+                                            With ctlForm_HiddenField
+                                                .ID = "lookup" & sID
+                                                .Value = sFilterSQL
+                                            End With
+                                            pnlInput.Controls.Add(ctlForm_HiddenField)
                                         End If
 
-                                        If .Columns(0).DataType = "System.DateTime" Then
-                                            ' Dodge to get rid of the time parts of the webcombo value.
-                                            If Not [String].IsNullOrEmpty(.SelectedRow.Cells(0).Text) Then
-                                                dtDate = CDate(.SelectedRow.Cells(0).Text)
-                                                .DisplayValue = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
-                                            End If
-                                        End If
-
-                                        .Columns(0).SelectedCellStyle.BorderStyle = BorderStyle.Solid
+                                        ' InitializeDataSource & DataBound methods need to be defined because we have EnableXmlHTTP enabled.
+                                        ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
+                                        AddHandler ctlForm_Dropdown.InitializeDataSource, AddressOf Me.InitializeLookupData
+                                        AddHandler ctlForm_Dropdown.DataBound, AddressOf Me.LookupDataBound
 
                                         .Font.Name = NullSafeString(dr("FontName"))
                                         .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
@@ -1781,7 +1758,7 @@ Public Class _Default
                                         .SelBackColor = System.Drawing.SystemColors.Highlight
                                         .BorderColor = objGeneral.GetColour(5730458)
 
-                                        .DropDownLayout.FrameStyle.BorderColor = objGeneral.GetColour(13095124)
+                                        .DropDownLayout.FrameStyle.BorderColor = objGeneral.GetColour(10720408)
                                         .DropDownLayout.FrameStyle.BorderStyle = BorderStyle.Solid
                                         .DropDownLayout.FrameStyle.BorderWidth = Unit.Pixel(1)
                                         .DropDownLayout.FrameStyle.BackColor = objGeneral.GetColour(16248040)
@@ -1791,40 +1768,19 @@ Public Class _Default
                                         .DropDownLayout.RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                                         .DropDownLayout.RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                                         .DropDownLayout.RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                                        .DropDownLayout.RowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                                        .DropDownLayout.RowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-
-                                        .DropDownLayout.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
-                                        .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No
-                                        .DropDownLayout.DropdownWidth = Unit.Pixel(NullSafeInteger(dr("Width")))
-                                        .DropDownLayout.GridLines = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Horizontal
+                                        .DropDownLayout.RowStyle.BackColor = objGeneral.GetColour(15988214)
+                                        .DropDownLayout.RowStyle.ForeColor = objGeneral.GetColour(6697779)
 
                                         .ExpandEffects.Type = Infragistics.WebUI.WebCombo.ExpandEffectType.Slide
 
-                                        If .Rows.Count > MAXDROPDOWNROWS Then
-                                            ' Vertical scrollbar will be visible. Adjust the column width
-                                            .DropDownLayout.ColWidthDefault = Unit.Pixel(NullSafeInteger(dr("Width")) - 20)
-                                        Else
-                                            ' Vertical scrollbar will NOT be visible.
-                                            .DropDownLayout.ColWidthDefault = Unit.Pixel(NullSafeInteger(dr("Width")) - 5)
-                                        End If
-
-                                        iRowHeight = NullSafeInteger(dr("Height")) - 6
-                                        iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
-                                        iDropHeight = (iRowHeight * CInt(IIf(.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, .Rows.Count))) + 1
-                                        .DropDownLayout.DropdownHeight = Unit.Pixel(iDropHeight)
-
-                                        ''.DropDownLayout.FrameStyle.Height = Unit.Percentage(100)
-
-                                        ''.DropDownLayout.RowStyle.BorderColor = System.Drawing.Color.Gray
                                         .DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
                                         .DropDownLayout.RowStyle.Padding.Right = Unit.Pixel(3)
                                         .DropDownLayout.RowStyle.Padding.Top = Unit.Pixel(0)
                                         .DropDownLayout.RowStyle.Padding.Bottom = Unit.Pixel(1)
                                         .DropDownLayout.RowStyle.VerticalAlign = VerticalAlign.Middle
 
-                                        .DropDownLayout.SelectedRowStyle.ForeColor = System.Drawing.SystemColors.HighlightText
-                                        .DropDownLayout.SelectedRowStyle.BackColor = System.Drawing.SystemColors.Highlight
+                                        .DropDownLayout.SelectedRowStyle.ForeColor = objGeneral.GetColour(2774907)
+                                        .DropDownLayout.SelectedRowStyle.BackColor = objGeneral.GetColour(10480637)
 
                                         .DropDownLayout.BorderCollapse = Infragistics.WebUI.UltraWebGrid.BorderCollapse.Collapse
 
@@ -1834,6 +1790,54 @@ Public Class _Default
                                         .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
                                         .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
+
+                                        .DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
+                                        .DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
+                                        .DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
+                                        .DropDownLayout.RowStyle.Cursor = Infragistics.WebUI.Shared.Cursors.Default
+
+                                        .DropDownLayout.AllowColSizing = Infragistics.WebUI.UltraWebGrid.AllowSizing.Free
+
+                                        .DropDownLayout.GridLines = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
+
+                                        ' HEADER formatting
+                                        iGridTopPadding = CInt(NullSafeSingle(dr("FontSize")) / 8)
+                                        iHeaderHeight = CInt(((NullSafeSingle(dr("FontSize")) + iGridTopPadding) * 2) _
+                                         - 2 _
+                                         - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
+
+                                        .DropDownLayout.HeaderStyle.BackColor = objGeneral.GetColour(16248553)
+                                        .DropDownLayout.HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
+                                        .DropDownLayout.HeaderStyle.BorderStyle = BorderStyle.Solid
+                                        .DropDownLayout.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
+                                        .DropDownLayout.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
+                                        .DropDownLayout.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
+                                        .DropDownLayout.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
+
+                                        .DropDownLayout.HeaderStyle.Font.Name = NullSafeString(dr("FontName"))
+                                        .DropDownLayout.HeaderStyle.Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                                        .DropDownLayout.HeaderStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                                        .DropDownLayout.HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                                        .DropDownLayout.HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                                        .DropDownLayout.HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                                        .DropDownLayout.HeaderStyle.Padding.Top = Unit.Pixel(iGridTopPadding)
+                                        .DropDownLayout.HeaderStyle.Padding.Bottom = Unit.Pixel(0)
+                                        .DropDownLayout.HeaderStyle.Padding.Left = Unit.Pixel(2)
+                                        .DropDownLayout.HeaderStyle.Padding.Right = Unit.Pixel(2)
+                                        .DropDownLayout.HeaderStyle.Wrap = False
+                                        .DropDownLayout.HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
+                                        .DropDownLayout.HeaderStyle.VerticalAlign = VerticalAlign.Middle
+                                        .DropDownLayout.HeaderStyle.HorizontalAlign = HorizontalAlign.Center
+
+                                        ' ROW formatting
+                                        .DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
+                                        .DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
+                                        .DropDownLayout.RowStyle.Padding.Right = Unit.Pixel(3)
+                                        .DropDownLayout.RowStyle.Padding.Top = Unit.Pixel(0)
+                                        .DropDownLayout.RowStyle.Padding.Bottom = Unit.Pixel(1)
+                                        .DropDownLayout.RowStyle.VerticalAlign = VerticalAlign.Middle
+
+                                        .DropDownLayout.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
                                     End With
 
                                 Case 15 ' OptionGroup
@@ -1926,6 +1930,9 @@ Public Class _Default
 
                                         cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
                                         cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+
+                                        cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
+                                        cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
 
                                         drGrid = cmdGrid.ExecuteReader
 
@@ -2477,44 +2484,41 @@ Public Class _Default
                             If (TypeOf ctlFormInput Is Infragistics.WebUI.WebCombo.WebCombo) Then
                                 ctlFormDropdown = DirectCast(ctlFormInput, Infragistics.WebUI.WebCombo.WebCombo)
 
-                                If (ctlFormDropdown.SelectedRow Is Nothing) Then
-                                    sFormInput1 = sFormInput1 & sIDString & "" & vbTab
-                                    sFormValidation1 = sFormValidation1 & sIDString & "" & vbTab
-                                Else
-                                    sFormInput1 = sFormInput1 & sIDString & ctlFormDropdown.SelectedRow.Cells(0).Text & vbTab
-                                    sFormValidation1 = sFormValidation1 & sIDString & ctlFormDropdown.SelectedRow.Cells(0).Text & vbTab
-                                End If
+                                sTemp = ctlFormDropdown.DisplayValue
+                                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
                             End If
 
                         Case 14 ' Lookup Input
                             If (TypeOf ctlFormInput Is Infragistics.WebUI.WebCombo.WebCombo) Then
                                 ctlFormDropdown = DirectCast(ctlFormInput, Infragistics.WebUI.WebCombo.WebCombo)
 
-                                If (ctlFormDropdown.SelectedRow Is Nothing) Then
-                                    sTemp = ""
-                                Else
-                                    If [String].IsNullOrEmpty(ctlFormDropdown.SelectedRow.Cells(0).Text) Then
-                                        sTemp = ""
-                                    Else
-                                        sTemp = ctlFormDropdown.SelectedRow.Cells(0).Text
-                                    End If
-                                End If
+                                sTemp = ctlFormDropdown.DisplayValue
 
-                                If ctlFormDropdown.Columns(0).DataType = "System.DateTime" Then
-                                    If (sTemp.Length = 0) Then
+                                If ctlFormDropdown.Columns(CInt(ctlFormDropdown.Attributes("LookupColumnIndex"))).DataType = "System.DateTime" Then
+                                    If sTemp Is Nothing Then
                                         sTemp = "null"
                                     Else
-                                        sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                                        If (sTemp.Length = 0) Then
+                                            sTemp = "null"
+                                        Else
+                                            sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                                        End If
                                     End If
-                                ElseIf ctlFormDropdown.Columns(0).DataType = "System.Decimal" _
-                                 Or ctlFormDropdown.Columns(0).DataType = "System.Int32" Then
+                                ElseIf ctlFormDropdown.Columns(CInt(ctlFormDropdown.Attributes("LookupColumnIndex"))).DataType = "System.Decimal" _
+                                 Or ctlFormDropdown.Columns(CInt(ctlFormDropdown.Attributes("LookupColumnIndex"))).DataType = "System.Int32" Then
 
-                                    sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+                                    If sTemp Is Nothing Then
+                                        sTemp = ""
+                                    Else
+                                        sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+                                    End If
+
                                 End If
 
-                                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                            End If
+                                    sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                                    sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+                                End If
 
                         Case 15 ' OptionGroup Input
                             If (TypeOf ctlFormInput Is TextBox) Then
@@ -2929,6 +2933,12 @@ Public Class _Default
             hdnFollowOnForms.Value = ""
         End If
     End Sub
+    Public Function LocaleDateFormat() As String
+        LocaleDateFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
+    End Function
+    Public Function LocaleDecimal() As String
+        LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
+    End Function
     Public Function ColourThemeHex() As String
         ColourThemeHex = mobjConfig.ColourThemeHex
     End Function
@@ -3109,4 +3119,285 @@ Public Class _Default
         EnableDisableControls(True)
 
     End Sub
+
+    Public Sub InitializeLookupData(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebCombo.WebComboEventArgs)
+        Dim connGrid As System.Data.SqlClient.SqlConnection
+        Dim cmdGrid As System.Data.SqlClient.SqlCommand
+        Dim strConn As String
+        Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
+        Dim da As SqlDataAdapter
+        Dim dt As DataTable
+        Dim sID As String
+        Dim sIDString As String
+        Dim iTemp As Int16
+        Dim sTemp As String
+        Dim iLookupColumnIndex As Integer
+        Dim objDataRow As System.Data.DataRow
+        Dim iItemType As Integer
+
+        Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
+            DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
+
+        strConn = "Application Name=HR Pro Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+
+        connGrid = New SqlClient.SqlConnection(strConn)
+        connGrid.Open()
+
+        With objCombo
+            Try
+                sID = .ID
+
+                msLastSelectedValue = ""
+                If IsPostBack Then
+                    msLastSelectedValue = .DisplayValue
+                End If
+
+                If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
+                    sIDString = sID.Substring(Len(FORMINPUTPREFIX))
+
+                    iTemp = CShort(sIDString.IndexOf("_"))
+                    sTemp = sIDString.Substring(iTemp + 1)
+                    sIDString = sIDString.Substring(0, iTemp) & vbTab
+
+                    cmdGrid = New SqlClient.SqlCommand
+                    cmdGrid.CommandText = "spASRGetWorkflowItemValues"
+                    cmdGrid.Connection = connGrid
+                    cmdGrid.CommandType = CommandType.StoredProcedure
+                    cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+
+                    cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
+                    cmdGrid.Parameters("@piElementItemID").Value = CInt(sIDString)
+
+                    cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+                    cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+
+                    cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
+                    cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
+
+                    da = New SqlDataAdapter(cmdGrid)
+                    dt = New DataTable()
+
+                    ' Create a blank row at the top of the dropdown grid.
+                    objDataRow = dt.NewRow()
+                    dt.Rows.InsertAt(objDataRow, 0)
+
+                    ' Fill the datatable with data from the datadapter.
+                    da.Fill(dt)
+
+                    iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
+                    iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
+
+                    .Attributes.Add("LookupColumnIndex", iLookupColumnIndex.ToString)
+
+                    ' Set requested data for grid
+                    .DataSource = dt
+                    .DataBind()
+
+                    cmdGrid.Dispose()
+                    cmdGrid = Nothing
+
+                    ' Only show headers for lookups, not dropdown lists
+                    If iItemType = 14 Then
+                        .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes
+                    Else
+                        .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No
+                    End If
+
+                    ' Format the column(s)
+                    For Each objGridColumn In .Columns
+                        If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
+                            If objGridColumn.BaseColumnName = "ASRSysDefaultValueFlag" Then
+                                .DataValueField = objGridColumn.BaseColumnName
+                            End If
+
+                            objGridColumn.Hidden = True
+                        Else
+                            If iLookupColumnIndex = objGridColumn.Index Then
+                                .DataTextField = objGridColumn.BaseColumnName
+                            End If
+                            objGridColumn.AllowNull = False
+
+                            If objGridColumn.DataType = "System.DateTime" Then
+                                objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
+
+                            ElseIf objGridColumn.DataType = "System.Boolean" Then
+                                objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
+
+                            ElseIf objGridColumn.DataType = "System.Decimal" _
+                                Or objGridColumn.DataType = "System.Int32" Then
+
+                                objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
+                                .ClientSideEvents.AfterSelectChange = "ChangeLookup"
+
+                            End If
+                        End If
+                    Next objGridColumn
+
+                    ' Set dropdown width to fit the columns displayed.
+                    .DropDownLayout.DropdownWidth = System.Web.UI.WebControls.Unit.Empty
+
+                    '.Columns(0).SelectedCellStyle.BorderStyle = BorderStyle.Solid
+
+                    If .Rows.Count > MAXDROPDOWNROWS Then
+                        '    ' Vertical scrollbar will be visible. Adjust the column width
+                        '    .DropDownLayout.ColWidthDefault = Unit.Pixel(NullSafeInteger(dr("Width")) - 20)
+                    Else
+                        '    ' Vertical scrollbar will NOT be visible.
+                        '    .DropDownLayout.ColWidthDefault = Unit.Pixel(NullSafeInteger(dr("Width")) - 5)
+                    End If
+
+                    'iRowHeight = NullSafeInteger(dr("Height")) - 6
+                    'iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
+                    'iDropHeight = (iRowHeight * CInt(IIf(.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, .Rows.Count))) + 1
+                    '.DropDownLayout.DropdownHeight = Unit.Pixel(iDropHeight)
+                End If
+
+            Catch ex As Exception
+                ' ???handle exception
+            Finally
+                connGrid.Close()
+                connGrid.Dispose()
+            End Try
+        End With
+    End Sub
+
+    Public Sub LookupDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim objGridCell As Infragistics.WebUI.UltraWebGrid.UltraGridCell
+        Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
+            DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
+        Dim dtDate As Date
+
+        With objCombo
+            Try
+                ' Select the default/current value.
+                If .Rows.Count > 0 Then
+                    If IsPostBack Then
+                        ' Select the current value.
+                        If .Columns(CInt(.Attributes("LookupColumnIndex"))).DataType = "System.DateTime" Then
+                            If IsDate(msLastSelectedValue) Then
+                                dtDate = CDate(msLastSelectedValue)
+                                msLastSelectedValue = dtDate.ToString
+                            Else
+                                msLastSelectedValue = ""
+                            End If
+                        End If
+
+                        objGridCell = .FindByText(msLastSelectedValue)
+                    Else
+                        ' Select the default value.
+                        .DataValueField = .Columns(.Columns.Count - 1).BaseColumnName
+                        ' The last column contains a value of 1 if it is the default value.
+                        objGridCell = .FindByValue(1)
+                    End If
+
+                    If Not objGridCell Is Nothing Then
+                        .SelectedIndex = objGridCell.Row.Index
+                    Else
+                        .SelectedIndex = 0
+                    End If
+
+                    If .Columns(CInt(.Attributes("LookupColumnIndex"))).DataType = "System.DateTime" Then
+                        ' Dodge to get rid of the time parts of the webcombo value.
+                        If Not [String].IsNullOrEmpty(.SelectedRow.Cells(CInt(.Attributes("LookupColumnIndex"))).Text) Then
+                            dtDate = CDate(.SelectedRow.Cells(CInt(.Attributes("LookupColumnIndex"))).Text)
+                            .DisplayValue = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
+                        End If
+                    End If
+
+                    If .Columns(CInt(.Attributes("LookupColumnIndex"))).DataType = "System.Decimal" _
+                    Or .Columns(CInt(.Attributes("LookupColumnIndex"))).DataType = "System.Int32" Then
+
+                    End If
+                End If
+            Catch ex As Exception
+                ' ???handle exception
+                Stop
+            Finally
+            End Try
+        End With
+    End Sub
+    Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String
+        Dim sLookupFilterSQL As String = ""
+
+        Try
+            If (psColumnName.Length > 0) _
+                And (piOperatorID > 0) _
+                And (psValue.Length > 0) Then
+
+                Select Case piColumnDataType
+                    Case SQLDataType.sqlBoolean
+                        Select Case piOperatorID
+                            Case FilterOperators.giFILTEROP_EQUALS
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+                            Case FilterOperators.giFILTEROP_NOTEQUALTO
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+                        End Select
+
+                    Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+                        Select Case piOperatorID
+                            Case FilterOperators.giFILTEROP_EQUALS
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+
+                            Case FilterOperators.giFILTEROP_NOTEQUALTO
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+
+                            Case FilterOperators.giFILTEROP_ISATMOST
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
+
+                            Case FilterOperators.giFILTEROP_ISATLEAST
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
+
+                            Case FilterOperators.giFILTEROP_ISMORETHAN
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
+
+                            Case FilterOperators.giFILTEROP_ISLESSTHAN
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
+                        End Select
+
+                    Case SQLDataType.sqlDate
+                        Select Case piOperatorID
+                            Case FilterOperators.giFILTEROP_ON
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+                            Case FilterOperators.giFILTEROP_NOTON
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+                            Case FilterOperators.giFILTEROP_ONORBEFORE
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
+
+                            Case FilterOperators.giFILTEROP_ONORAFTER
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
+
+                            Case FilterOperators.giFILTEROP_AFTER
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
+
+                            Case FilterOperators.giFILTEROP_BEFORE
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
+                        End Select
+
+                    Case SQLDataType.sqlVarChar, SQLDataType.sqlVarBinary, SQLDataType.sqlLongVarChar
+                        Select Case piOperatorID
+                            Case FilterOperators.giFILTEROP_IS
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+                            Case FilterOperators.giFILTEROP_ISNOT
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+                            Case FilterOperators.giFILTEROP_CONTAINS
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
+
+                            Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
+                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
+                        End Select
+                    Case Else
+                End Select
+            End If
+
+        Catch ex As Exception
+        End Try
+
+        LookupFilterSQL = sLookupFilterSQL
+
+    End Function
+
 End Class

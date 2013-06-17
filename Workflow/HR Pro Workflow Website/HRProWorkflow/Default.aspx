@@ -539,6 +539,287 @@
 		function WARP_SetTimeout() {
 			ig_shared.getCBManager()._timeLimit = <%=SubmissionTimeout()%>;
 		}
+	    
+		function GetDatePart(psLocaleDateValue, psDatePart) {
+            var reDATE = /[YMD]/g;        
+            var sLocaleDateFormat = "<%=LocaleDateFormat()%>";
+            var sLocaleDateSep = sLocaleDateFormat.replace(reDATE, "").substr(0, 1);
+            var iLoop;
+            var iRequiredPart = 1;
+            var sValuePart1;
+            var sValuePart2;
+            var sValuePart3;
+            var iPartCounter = 1;
+            var sTemp = "";
+
+            for (iLoop=0; iLoop<psLocaleDateValue.length; iLoop++)
+            {
+                if (psLocaleDateValue.substr(iLoop, 1) == sLocaleDateSep)
+                {
+                    if (iPartCounter == 1)
+                    {
+                        sValuePart1 = sTemp;
+                    }
+                    else
+                    {
+                        if (iPartCounter == 2)
+                        {
+                            sValuePart2 = sTemp;
+                        }
+                    }
+                    
+                    iPartCounter++;
+                    sTemp = "";
+                }
+                else
+                {
+                    sTemp = sTemp + psLocaleDateValue.substr(iLoop, 1);
+                }
+            }
+            sValuePart3 = sTemp;
+
+            
+            if (psDatePart == "Y")
+            {    
+                if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("Y"))
+                {
+                    iRequiredPart++;
+                }
+                if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("Y"))
+                {
+                    iRequiredPart++;
+                }
+            }
+            else
+            {
+                if (psDatePart == "M")
+                {
+                    if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("M"))
+                    {
+                        iRequiredPart++;
+                    }
+                    if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("M"))
+                    {
+                        iRequiredPart++;
+                    }
+                }
+                else
+                {
+                    if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("D"))
+                    {
+                        iRequiredPart++;
+                    }
+                    if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("D"))
+                    {
+                        iRequiredPart++;
+                    }
+                }
+            }
+
+            if (iRequiredPart == 1)
+            {
+                return (sValuePart1);
+            }
+            else
+            {
+                if (iRequiredPart == 2)
+                {
+                    return (sValuePart2);
+                }
+                else
+                {
+                    if (iRequiredPart == 3)
+                    {
+                        return (sValuePart3);
+                    }
+                    else
+                    {
+                        return ("");
+                    }
+                }
+            }
+		}
+	    
+	    function ChangeLookup(psWebComboId) {
+	        // Ensure locale number formatting is applied.
+	        try
+	        {
+                var sLocaleDecimal = "<%=LocaleDecimal()%>";
+                var reDECIMAL = /\./g;        
+                var objCombo = igcmbo_getComboById(psWebComboId);
+	            objCombo.setDisplayValue(objCombo.displayValue.replace(reDECIMAL, sLocaleDecimal));
+	        }
+	        catch(e) {}
+	    }
+	    
+	    function InitializeLookup(psWebComboId) {
+	        var sSelectWhere = "";
+	        var sValueID = "";
+	        var sValueType = "";
+	        var sControlType = "";
+            var sValue = "";
+            var sTemp = "";
+            var sSubTemp = "";
+            var numValue = 0;
+            var dtValue;
+            var fValue = true;
+            var iIndex;
+            var iTemp;
+            var reX = /x/g;        
+            var reDATE = /[YMD]/g;        
+            var reTAB = /\t/g;        
+            var reSINGLEQUOTE = /\'/g;        
+            var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+        	var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	
+		    try {
+			    var sID = "lookup" + psWebComboId;
+			    
+			    // For some reason the WebComboID has '_' replaced with 'x'.
+			    // Replace 'x' with '_' as required to get the required ID.
+                sID = sID.replace(reX, "_");   
+
+                var ctlLookupFilter = document.getElementById(sID);
+                if (ctlLookupFilter)
+                { 
+                    sSelectWhere = ctlLookupFilter.value; 
+
+	                if (sSelectWhere.length > 0)
+	                {
+	                    // sSelectWhere has the format:
+	                    //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
+                        iIndex = sSelectWhere.indexOf("\t");
+                        if (iIndex >= 0)
+                        {
+                            sValueType = sSelectWhere.substring(0, iIndex);
+                            sSelectWhere = sSelectWhere.substr(iIndex+1);
+                        }
+                        
+                        iIndex = sSelectWhere.indexOf("\t");
+                        if (iIndex >= 0)
+                        {
+                            sValueID = sSelectWhere.substring(0, iIndex);
+                            sSelectWhere = sSelectWhere.substr(iIndex+1);
+
+                            sControlType = sValueID.substr(sValueID.indexOf("_")+1);
+                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+                            
+                            if ((sControlType == 13)
+                                || (sControlType == 14))
+                            {
+                                // Dropdown (13), Lookup (14)
+                                var ctlLookupValueCombo = igcmbo_getComboById(sValueID);
+                        	    sValue = ctlLookupValueCombo.displayValue;
+                        	    
+                        	    if(sValueType == 11)
+                        	    {
+                        	        // Date value from lookup. Convert from locale format to yyyymmdd.
+                        	        if (sValue.length > 0)
+                        	        {
+                        	            sTemp = GetDatePart(sValue, "Y");
+                        	             
+                        	            sSubTemp = "0" + GetDatePart(sValue, "M");
+                        	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+                        	            
+                        	            sSubTemp = "0" + GetDatePart(sValue, "D");
+                        	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+                        	            sValue = sTemp;
+                          	        }
+                        	        else
+                        	        {
+                        	            sValue = "";
+                        	        }
+                        	    }
+                        	    else
+                        	    {
+                        	        if((sValueType == 2) || (sValueType == 4))
+                        	        {
+                        	            // numerics/integers
+                        	            if (sValue.length > 0)
+                        	            {
+                        	                sValue = sValue.replace(reDECIMAL, ".");
+                        	            }
+                        	            else
+                        	            {
+                        	                sValue = "0";
+                        	            }
+                        	        }
+                        	    }
+                            }
+                            else
+                            {
+                                if (sControlType == 6)
+                                {
+                                    // Checkbox (6)
+                                    var ctlLookupValueCheckbox = document.getElementById(sValueID);
+                        	        fValue = ctlLookupValueCheckbox.checked;
+                                    if (fValue == true)
+                                    {
+                                        sValue = "1";
+                                    }
+                                    else
+                                    {
+                                        sValue = "0";
+                                    }
+                                }
+                                else
+                                {
+                                    if (sControlType == 5)
+                                    {
+                                        // Numeric (5)
+                                        var ctlLookupValueNumeric = igedit_getById(sValueID);
+                    	                numValue = ctlLookupValueNumeric.getValue();
+                                        sValue = numValue.toString();
+                                    }
+                                    else
+                                    {
+                                        if (sControlType == 7)
+                                        {
+                                            // Date (7)
+                                            var ctlLookupValueDate = igdrp_getComboById(sValueID);
+                    	                    dtValue = ctlLookupValueDate.getValue();
+                    	                    if (dtValue)
+                    	                    {
+                                	            // Get year part.
+                        	                    sTemp = dtValue.getFullYear();
+                        	            
+                        	                    // Get month part. Pad to 2 digits if required.
+                        	                    sSubTemp = "0" + (dtValue.getMonth() + 1);
+                                	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+                        	                    // Get day part. Pad to 2 digits if required.
+                                	            sSubTemp = "0" + dtValue.getDate();
+                                	            sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+                                            }
+                                            else
+                                            {
+                                                sValue = "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // CharInput, OptionGroup
+	                                        var ctlLookupValue = document.getElementById(sValueID);
+	                                        sValue = ctlLookupValue.value;
+	                                    }
+                                    }
+	                            }
+	                        }
+
+	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
+                            sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
+					        var objCombo = igcmbo_getComboById(psWebComboId);
+	                        objCombo.selectWhere(sSelectWhere);
+                        }
+	                }
+                }
+		    }
+		    catch (e) {}
+
+	        return false;
+		}
     // ]]>
 	</script>
 

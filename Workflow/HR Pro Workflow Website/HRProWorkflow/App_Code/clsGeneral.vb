@@ -148,21 +148,11 @@ Public Class General
         Dim iYear As Int16
         Dim iMonth As Int16
         Dim iDay As Int16
-        Dim iYearIndex As Int16
-        Dim iMonthIndex As Int16
-        Dim iDayIndex As Int16
-        Dim sLocaleFormat As String
 
         Try
-            sLocaleFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
-
-            iYearIndex = CShort(sLocaleFormat.IndexOf("Y"))
-            iMonthIndex = CShort(sLocaleFormat.IndexOf("M"))
-            iDayIndex = CShort(sLocaleFormat.IndexOf("D"))
-
-            iYear = CShort(psLocaleDateString.Substring(iYearIndex, 4))
-            iMonth = CShort(psLocaleDateString.Substring(iMonthIndex, 2))
-            iDay = CShort(psLocaleDateString.Substring(iDayIndex, 2))
+            iYear = CShort(GetDatePart(psLocaleDateString, "Y"))
+            iMonth = CShort(GetDatePart(psLocaleDateString, "M"))
+            iDay = CShort(GetDatePart(psLocaleDateString, "D"))
 
             dtDate = DateSerial(iYear, iMonth, iDay)
 
@@ -171,6 +161,78 @@ Public Class General
             ConvertLocaleDateToSQL = ""
         End Try
 
+    End Function
+    Public Function GetDatePart(ByVal psLocaleDateString As String, ByVal psDatePart As String) As String
+        Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
+        Dim sLocaleDateSep As String
+        Dim iLoop As Integer
+        Dim iRequiredPart As Integer = 0
+        Dim sValuePart1 As String = ""
+        Dim sValuePart2 As String = ""
+        Dim sValuePart3 As String = ""
+        Dim iPartCounter As Integer = 1
+        Dim sTemp As String = ""
+        Dim sResult As String = ""
+
+        sLocaleDateSep = Replace(sLocaleDateFormat, "Y", "")
+        sLocaleDateSep = Replace(sLocaleDateSep, "M", "")
+        sLocaleDateSep = Left(Replace(sLocaleDateSep, "D", ""), 1)
+
+        For iLoop = 1 To Len(psLocaleDateString)
+            If Mid(psLocaleDateString, iLoop, 1) = sLocaleDateSep Then
+                Select Case iPartCounter
+                    Case 1
+                        sValuePart1 = sTemp
+                    Case 2
+                        sValuePart2 = sTemp
+                End Select
+
+                iPartCounter = iPartCounter + 1
+                sTemp = ""
+            Else
+                sTemp = sTemp & Mid(psLocaleDateString, iLoop, 1)
+            End If
+
+        Next iLoop
+        sValuePart3 = sTemp
+
+        Select Case psDatePart
+            Case "Y"
+                iRequiredPart = 1
+                If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "Y") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+                If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "Y") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+            Case "M"
+                iRequiredPart = 1
+                If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "M") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+                If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "M") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+            Case "D"
+                iRequiredPart = 1
+                If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "D") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+                If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "D") Then
+                    iRequiredPart = iRequiredPart + 1
+                End If
+        End Select
+
+        Select iRequiredPart
+            Case 1
+                sResult = sValuePart1
+            Case 2
+                sResult = sValuePart2
+            Case 3
+                sResult = sValuePart3
+        End Select
+
+        GetDatePart = sResult
     End Function
 
     Public Function BackgroundRepeat(ByVal piBackgroundImagePosition As Int16) As String
