@@ -4,6 +4,13 @@ Partial Class Login
     Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+
+    'Go to the home page if already logged in
+    If Request.IsAuthenticated Then
+      Response.Redirect("~/Home.aspx")
+      Return
+    End If
+
     Title = WebSiteName("Login")
     Forms.LoadControlData(Me, 1)
     Form.DefaultButton = btnLogin.UniqueID
