@@ -91,9 +91,6 @@ Public Class _Default
 
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
-    'TODO PG
-    System.Diagnostics.Debug.WriteLine("Postback")
-
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlForm_InputButton As Button
     Dim ctlForm_HTMLInputButton As HtmlInputButton
@@ -3941,9 +3938,6 @@ Public Class _Default
   End Sub
 
   Protected Sub BtnDoFilterClick(sender As Object, e As EventArgs) Handles btnDoFilter.Click
-
-    'TODO PG
-    System.Diagnostics.Debug.WriteLine("BtnMob")
 
     Dim arrLookups() As String = hdnMobileLookupFilter.Value.Split(CChar(vbTab))
 
