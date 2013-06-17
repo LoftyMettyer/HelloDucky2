@@ -60,7 +60,7 @@ body { font-family: verdana; }
     height: 60px;
     z-index: 1;
 }
-.main > label {
+.main > span {
     display: block;
     padding-top: 10px;
     padding-bottom: 10px;

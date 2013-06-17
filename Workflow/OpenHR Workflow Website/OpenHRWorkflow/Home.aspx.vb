@@ -158,8 +158,7 @@ Partial Class Home
 
     ' Disable the Change Password button for windows authenticated Security
     If User.Identity.Name.Contains("\") Then
-      btnChangePwd.Visible = False
-      btnChangePwd_label.Visible = False
+      btnChangePwdButton.Visible = False
     End If
 
   End Sub

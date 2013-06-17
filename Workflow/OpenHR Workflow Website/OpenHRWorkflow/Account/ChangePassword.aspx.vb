@@ -42,8 +42,8 @@ Partial Class ChangePassword
         ' is OK?
         If userSessionCount < 2 Then
           ' Read the Password details from the Password form.
-          Dim sCurrentPassword As String = txtCurrPassword.Value
-          Dim sNewPassword As String = txtNewPassword.Value
+          Dim sCurrentPassword As String = txtCurrPassword.Text
+          Dim sNewPassword As String = txtNewPassword.Text
 
           ' Attempt to change the password on the SQL Server.
           Using conn As New SqlConnection(Configuration.ConnectionString)

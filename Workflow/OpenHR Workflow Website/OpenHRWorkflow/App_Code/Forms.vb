@@ -31,8 +31,8 @@ Public Class Forms
 
           Case 2 ' Label
 
-            With CType(control, HtmlGenericControl)
-              .InnerText = NullSafeString(dr("caption"))
+            With CType(control, Label)
+              .Text = NullSafeString(dr("caption"))
               .Style("word-wrap") = "break-word"
               .Style.Add("color", general.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
               .Style.Add("font-family", NullSafeString(dr("FontName")))
@@ -43,7 +43,7 @@ Public Class Forms
 
           Case 3 ' Input value - character
 
-            With CType(control, HtmlInputText)
+            With CType(control, TextBox)
               .Style.Add("color", general.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
               .Style.Add("font-family", NullSafeString(dr("FontName")))
               .Style.Add("font-size", NullSafeString(dr("FontSize")) & "pt")

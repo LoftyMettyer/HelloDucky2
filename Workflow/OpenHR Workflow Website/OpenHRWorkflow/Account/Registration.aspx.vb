@@ -7,8 +7,6 @@ Partial Class Registration
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
     Forms.LoadControlData(Me, 3)
-    ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
-    txtEmail.Attributes.Add("type", "email")
 
     Title = WebSiteName("Registration")
   End Sub
@@ -22,7 +20,7 @@ Partial Class Registration
     Dim strEncryptedString As String
     Dim userID As Integer
 
-    If txtEmail.Value.Length = 0 Then
+    If txtEmail.Text.Length = 0 Then
       sMessage = "No email address entered."
     End If
 
@@ -38,7 +36,7 @@ Partial Class Registration
           cmd.CommandType = CommandType.StoredProcedure
 
           cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmd.Parameters("@psEmail").Value = txtEmail.Value
+          cmd.Parameters("@psEmail").Value = txtEmail.Text
 
           cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
 
@@ -73,7 +71,7 @@ Partial Class Registration
             cmd.CommandType = CommandType.StoredProcedure
 
             cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-            cmd.Parameters("@psEmailAddress").Value = txtEmail.Value
+            cmd.Parameters("@psEmailAddress").Value = txtEmail.Text
 
             cmd.Parameters.Add("@psActivationURL", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
             cmd.Parameters("@psActivationURL").Value = Configuration.WorkflowUrl & "?" & strEncryptedString

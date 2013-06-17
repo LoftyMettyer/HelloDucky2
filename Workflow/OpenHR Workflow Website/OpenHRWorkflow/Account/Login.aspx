@@ -27,20 +27,20 @@
 
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
-    <label id="lblWelcome" runat="server">Welcome</label>
+    <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
 
     <table class="controlgrid">
         <tr>
-            <td><label id="lblUserName" runat="server">Username</label></td>
-            <td ><input id="txtUserName" runat="server" type="text" /></td>
+            <td><asp:Label runat="server" ID="lblUserName" Text="Username"/></td>
+            <td><asp:TextBox runat="server" ID="txtUserName" /></td>
         </tr>
         <tr>
-            <td><label id="lblPassword" runat="server">Password</label></td>
-            <td><input id="txtPassword" runat="server" type="password"/></td>
+            <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
+            <td><asp:TextBox runat="server" ID="txtPassword" TextMode="Password" /></td>            
         </tr>
         <tr>
-            <td><label  id="lblRememberPwd" runat="server">Remember me</label></td>
-            <td><input id="chkRememberPwd" runat="server" type="checkbox" /></td>
+            <td><asp:Label runat="server" ID="lblRememberPwd" Text="Remember me"/></td>
+            <td><asp:CheckBox runat="server" ID="chkRememberPwd" /></td>            
         </tr>
     </table>
                              
@@ -55,20 +55,12 @@
             <asp:LinkButton ID="btnLoginButton" runat="server"  OnClientClick="return submitCheck();">
                 <asp:Image runat="server" ID="btnLogin"/>
                 <asp:Label runat="server" ID="btnLogin_Label"/>
-            </asp:LinkButton>
-        </li>
-        <li>
+            </asp:LinkButton></li><li>
             <asp:HyperLink runat="server" NavigateUrl="~/Account/ForgottenLogin.aspx">
                 <asp:Image runat="server" ID="btnForgotPwd"  />
                 <asp:Label runat="server" ID="btnForgotPwd_label" />           
-            </asp:HyperLink>
-        </li>
-        <li>
+            </asp:HyperLink></li><li>
             <asp:HyperLink runat="server" NavigateUrl="~/Account/Registration.aspx">
                 <asp:Image runat="server" ID="btnRegister"/>
                 <asp:Label runat="server" ID="btnRegister_label"/>
-            </asp:HyperLink>
-        </li>
-    </ol>
-
-</asp:Content>
+            </asp:HyperLink></li></ol></asp:Content>

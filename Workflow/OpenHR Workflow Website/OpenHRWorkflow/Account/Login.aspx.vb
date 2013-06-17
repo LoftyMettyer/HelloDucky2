@@ -14,7 +14,7 @@ Partial Class Login
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click
 
     Dim sMessage As String = ""
-    Dim userName As String = txtUserName.Value.Trim
+    Dim userName As String = txtUserName.Text.Trim
 
     ' Check if the system is locked
     Try
@@ -33,10 +33,10 @@ Partial Class Login
 
         If userName.IndexOf("\") > 0 Then
           'Active dirctory authentication
-          valid = Security.ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
+          valid = Security.ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Text)
         Else
           'Sql server authentication
-          valid = Security.ValidateSqlServerUser(userName, txtPassword.Value)
+          valid = Security.ValidateSqlServerUser(userName, txtPassword.Text)
         End If
 
         If Not valid Then sMessage = "The user name or password provided is incorrect."

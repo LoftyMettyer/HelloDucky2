@@ -36,20 +36,20 @@
 
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
-    <label id="lblWelcome" runat="server">Welcome</label>
+    <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
 
     <table class="controlgrid">
         <tr>
-            <td><label id="lblCurrPassword" runat="server">Current Password</label></td>
-            <td><input id="txtCurrPassword" runat="server" type="password"/></td>
+            <td><asp:Label runat="server" ID="lblCurrPassword" Text="Current Password"/></td>
+            <td><asp:TextBox runat="server" ID="txtCurrPassword" TextMode="Password" /></td>
         </tr>
         <tr>
-            <td><label id="lblNewPassword" runat="server">New Password</label></td>
-            <td><input id="txtNewPassword" runat="server" type="password"/></td>
+            <td><asp:Label runat="server" ID="lblNewPassword" Text="New Password"/></td>
+            <td><asp:TextBox runat="server" ID="txtNewPassword" TextMode="Password" /></td>
         </tr>
         <tr>
-            <td><label id="lblConfPassword" runat="server">Confirm New Password</label></td>
-            <td><input id="txtConfPassword" runat="server" type="password"/></td>
+            <td><asp:Label runat="server" ID="lblConfPassword" Text="Confirm Password"/></td>
+            <td><asp:TextBox runat="server" ID="txtConfPassword" TextMode="Password" /></td>
         </tr>
     </table>
 

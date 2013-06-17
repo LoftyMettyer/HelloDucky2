@@ -7,8 +7,6 @@ Partial Class ForgottenLogin
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
     Forms.LoadControlData(Me, 6)
-    ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
-    txtEmail.Attributes.Add("type", "email")
 
     Title = WebSiteName("Forgotten Login")
   End Sub
@@ -29,7 +27,7 @@ Partial Class ForgottenLogin
         cmd.CommandType = CommandType.StoredProcedure
 
         cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmd.Parameters("@psEmail").Value = txtEmail.Value
+        cmd.Parameters("@psEmail").Value = txtEmail.Text
 
         cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
 
@@ -49,7 +47,7 @@ Partial Class ForgottenLogin
           cmd.CommandType = CommandType.StoredProcedure
 
           cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmd.Parameters("@psEmailAddress").Value = txtEmail.Value
+          cmd.Parameters("@psEmailAddress").Value = txtEmail.Text
 
           cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 

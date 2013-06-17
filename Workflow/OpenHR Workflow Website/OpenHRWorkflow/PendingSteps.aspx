@@ -5,8 +5,8 @@
 
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
-    <label id="lblInstruction" runat="server">Welcome</label>
-    <label id="lblNothingTodo" runat="server">Nothing Todo</label>
+    <asp:Label runat="server" ID="lblInstruction" Text="Welcome"/>
+    <asp:Label runat="server" ID="lblNothingTodo" Text="Nothing Todo"/>
 
     <div runat="server" id="pnlWFList" />   
 

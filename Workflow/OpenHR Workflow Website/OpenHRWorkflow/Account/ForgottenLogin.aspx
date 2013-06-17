@@ -3,7 +3,8 @@
 <asp:Content ID="head" ContentPlaceHolderID="headCPH" Runat="Server">   
     <script  type="text/javascript">
         // <!CDATA[
-        window.onload = function() {
+        window.onload = function () {
+            document.getElementById('ctl00_mainCPH_txtEmail').setAttribute('type', 'email');
             document.getElementById('ctl00_mainCPH_txtEmail').focus();
         };
 
@@ -23,14 +24,13 @@
 
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
-    <label id="lblWelcome" runat="server">Welcome</label>
+    <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
 
     <table class="controlgrid">
         <tr>
-            <td ><label id="lblEmail" runat="server">Email</label></td>
-            <td><input id="txtEmail" runat="server" /></td>
+            <td><asp:Label runat="server" ID="lblEmail" Text="Email"/></td>
+            <td><asp:TextBox runat="server" ID="txtEmail"/></td>
         </tr>
-                
     </table>
 
 </asp:Content>

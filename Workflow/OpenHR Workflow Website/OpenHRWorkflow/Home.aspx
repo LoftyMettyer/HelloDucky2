@@ -5,8 +5,8 @@
 
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
-    <label id="lblWelcome" runat="server">Welcome</label>
-    <label id="lblNothingTodo" runat="server">Nothing Todo</label>
+    <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
+    <asp:Label runat="server" ID="lblNothingTodo" Text="Nothing Todo"/>
 
     <div runat="server" id="pnlWFList" />
 
@@ -23,7 +23,7 @@
             </asp:HyperLink>
         </li>
         <li>
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/ChangePassword.aspx">
+            <asp:HyperLink runat="server" ID="btnChangePwdButton" NavigateUrl="~/Account/ChangePassword.aspx">
                 <asp:Image runat="server" ID="btnChangePwd"/>
                 <asp:Label runat="server" ID="btnChangePwd_Label"/>
             </asp:HyperLink>
