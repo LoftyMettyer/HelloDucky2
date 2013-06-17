@@ -132,7 +132,7 @@ Public Class RecordSelector
         End If
 
 
-        ' Div to contain all items - too small for lookups
+        ' Div to contain all items
         writer.Write("<div ID='" & Me.ID.ToString.Replace("Grid", "") & "' " & _
             IIf(IsLookup, "style='", "style='position:absolute;") & _
             " width:" & CalculateWidth() & ";height:" & CalculateHeight() & ";" & _
@@ -227,10 +227,10 @@ Public Class RecordSelector
             iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
             ' do rows exceed height?
-            If MyBase.Rows.Count > MAXDROPDOWNROWS Then
-                ' Add scrollbar width
-                iGridWidth += 25
-            End If
+            'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+            ' Add scrollbar width
+            iGridWidth += 25
+            'End If
 
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
@@ -300,10 +300,10 @@ Public Class RecordSelector
             iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
             ' do rows exceed height?
-            If MyBase.Rows.Count > MAXDROPDOWNROWS Then
-                ' Add scrollbar width
-                iGridWidth += 25
-            End If
+            'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+            ' Add scrollbar width
+            iGridWidth += 25
+            'End If
 
             strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
