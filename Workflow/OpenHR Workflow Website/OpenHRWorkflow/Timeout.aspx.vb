@@ -4,7 +4,7 @@ Partial Class Timeout
 
   Private mobjConfig As New Config
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
     mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
 
     Response.CacheControl = "no-cache"
@@ -17,7 +17,7 @@ Partial Class Timeout
   Public Function ColourThemeFolder() As String
     ColourThemeFolder = mobjConfig.ColourThemeFolder
   End Function
-  Public Function MessageFontSize() As Int16
+  Public Function MessageFontSize() As Integer
     MessageFontSize = mobjConfig.MessageFontSize
   End Function
 

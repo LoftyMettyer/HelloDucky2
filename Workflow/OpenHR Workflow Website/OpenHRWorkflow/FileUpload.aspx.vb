@@ -5,15 +5,18 @@ Imports Utilities
 Partial Class FileUpload
   Inherits Page
 
+  'TODO PG NOW expose Config and remove other functions
   Private ReadOnly mobjConfig As New Config
 	Private miSubmissionTimeoutInSeconds As Int32
 
 	Public Function ColourThemeHex() As String
 		ColourThemeHex = mobjConfig.ColourThemeHex
-	End Function
+  End Function
+
 	Public Function ColourThemeFolder() As String
 		ColourThemeFolder = mobjConfig.ColourThemeFolder
-	End Function
+  End Function
+
 	Private Function SaveImage(ByVal abtImage As Byte(), ByVal psContentType As String, ByVal psFileName As String, ByVal pfClear As Boolean) As Integer
 		Dim iRowsAffected As Integer
 		Dim strConn As String

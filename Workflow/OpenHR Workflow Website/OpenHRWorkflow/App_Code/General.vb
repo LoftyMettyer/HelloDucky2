@@ -152,7 +152,7 @@ Public Class General
     GetDatePart = sResult
   End Function
 
-  Public Shared Function BackgroundRepeat(ByVal piBackgroundImagePosition As Int16) As String
+  Public Shared Function BackgroundRepeat(ByVal piBackgroundImagePosition As Integer) As String
     Dim sBackgroundRepeat As String
 
     Try
@@ -202,7 +202,7 @@ Public Class General
 
   End Function
 
-  Public Shared Function BackgroundPosition(ByVal piBackgroundImagePosition As Int16) As String
+  Public Shared Function BackgroundPosition(ByVal piBackgroundImagePosition As Integer) As String
     Dim sBackgroundPosition As String
 
     Try

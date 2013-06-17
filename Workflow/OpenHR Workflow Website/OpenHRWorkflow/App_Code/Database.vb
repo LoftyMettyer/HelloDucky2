@@ -2,6 +2,7 @@
 Imports System.Linq
 Imports System.Data.SqlClient
 Imports System.Collections.Generic
+Imports System.Diagnostics
 Imports Utilities
 
 Public Class Database
@@ -240,6 +241,100 @@ Public Class Database
 
       Return CStr(cmd.Parameters("@psMessage").Value())
 
+    End Using
+
+  End Function
+
+  Public Function GetWorkflowForm(instanceId As Integer, elementId As Integer) As WorkflowForm
+
+    Dim result As New WorkflowForm
+
+    'Using conn As New SqlConnection(_connectionString)
+    Dim conn As New SqlConnection(_connectionString)
+    conn.Open()
+
+    Dim cmd As New SqlCommand("spASRGetWorkflowFormItems", conn)
+    cmd.CommandType = CommandType.StoredProcedure
+
+    cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+    cmd.Parameters("@piInstanceID").Value = instanceId
+
+    cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+    cmd.Parameters("@piElementID").Value = elementId
+
+    cmd.Parameters.Add("@psErrorMessage", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piBackColour", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piBackImage", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piBackImageLocation", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piWidth", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piHeight", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piCompletionMessageType", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@psCompletionMessage", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piSavedForLaterMessageType", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@psSavedForLaterMessage", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@piFollowOnFormsMessageType", SqlDbType.Int).Direction = ParameterDirection.Output
+    cmd.Parameters.Add("@psFollowOnFormsMessage", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output
+
+    result.Items = cmd.ExecuteReader
+    result.Connection = conn
+
+    result.ErrorMessage = NullSafeString(cmd.Parameters("@psErrorMessage").Value)
+    result.BackColour = NullSafeInteger(cmd.Parameters("@piBackColour").Value())
+    result.BackImage = NullSafeInteger(cmd.Parameters("@piBackImage").Value())
+    result.BackImageLocation = NullSafeInteger(cmd.Parameters("@piBackImageLocation").Value())
+    result.Width = NullSafeInteger(cmd.Parameters("@piWidth").Value())
+    result.Height = NullSafeInteger(cmd.Parameters("@piHeight").Value())
+    result.CompletionMessageType = NullSafeInteger(cmd.Parameters("@piCompletionMessageType").Value())
+    result.CompletionMessage = NullSafeString(cmd.Parameters("@psCompletionMessage").Value())
+    result.SavedForLaterMessageType = NullSafeInteger(cmd.Parameters("@piSavedForLaterMessageType").Value())
+    result.SavedForLaterMessage = NullSafeString(cmd.Parameters("@psSavedForLaterMessage").Value())
+    result.FollowOnFormsMessageType = NullSafeInteger(cmd.Parameters("@piFollowOnFormsMessageType").Value())
+    result.FollowOnFormsMessage = NullSafeString(cmd.Parameters("@psFollowOnFormsMessage").Value())
+
+    Return result
+    'End Using
+
+  End Function
+
+  Public Function InstantiateWorkflow(workflowId As Integer, Optional keyParameter As String = "") As InstantiateWorkflowResult
+
+    Dim result As New InstantiateWorkflowResult
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand()
+      cmd.CommandType = CommandType.StoredProcedure
+      cmd.Connection = conn
+
+      If keyParameter.Length > 0 Then
+        cmd.CommandText = "spASRMobileInstantiateWorkflow"
+      Else
+        cmd.CommandText = "spASRInstantiateWorkflow"
+      End If
+
+      cmd.Parameters.Add("@piWorkflowID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piWorkflowID").Value = workflowId
+
+      If Len(keyParameter) > 0 Then
+        cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+        cmd.Parameters("@psKeyParameter").Value = keyParameter
+
+        cmd.Parameters.Add("@psPWDParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+        cmd.Parameters("@psPWDParameter").Value = ""
+      End If
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Output
+      cmd.Parameters.Add("@psFormElements", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+      cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      result.InstanceId = NullSafeInteger(cmd.Parameters("@piInstanceID").Value)
+      result.FormElements = NullSafeString(cmd.Parameters("@psFormElements").Value)
+      result.Message = NullSafeString(cmd.Parameters("@psMessage").Value)
+
+      Return result
     End Using
 
   End Function
@@ -600,6 +695,12 @@ Public Structure CheckLoginResult
   Public UserGroupID As Integer
 End Structure
 
+Public Class InstantiateWorkflowResult
+  Public InstanceId As Integer
+  Public FormElements As String
+  Public Message As String
+End Class
+
 Public Class WorkflowItemValuesResult
   Public Data As DataTable
   Public LookupColumnIndex As Integer
@@ -632,4 +733,21 @@ Public Class WorkflowStepLink
   Public Name As String
   Public Desc As String
   Public PictureID As Integer
+End Class
+
+Public Class WorkflowForm
+  Public ErrorMessage As String
+  Public BackColour As Integer
+  Public BackImage As Integer
+  Public BackImageLocation As Integer
+  Public Width As Integer
+  Public Height As Integer
+  Public CompletionMessageType As Integer
+  Public CompletionMessage As String
+  Public SavedForLaterMessageType As Integer
+  Public SavedForLaterMessage As String
+  Public FollowOnFormsMessageType As Integer
+  Public FollowOnFormsMessage As String
+  Public Items As SqlDataReader
+  Public Connection As SqlConnection
 End Class
