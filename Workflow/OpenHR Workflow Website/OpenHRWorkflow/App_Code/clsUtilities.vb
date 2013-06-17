@@ -136,7 +136,7 @@ Public Class Utilities
   '****************************************************************
   ' isMobileBrowser
   '****************************************************************
-  Public Shared Function isMobileBrowser() As Boolean
+  Public Shared Function IsMobileBrowser() As Boolean
     'GETS THE CURRENT USER CONTEXT
     Dim context As HttpContext = HttpContext.Current
 
@@ -181,7 +181,16 @@ Public Class Utilities
     Return False
   End Function
 
+  Public Shared Function IsTablet() As Boolean
 
+    Dim ua As String = HttpContext.Current.Request.UserAgent.ToUpper
+
+    If ua.Contains("IPAD") Then
+      Return True
+    Else
+      Return False
+    End If
+  End Function
 
 
 
