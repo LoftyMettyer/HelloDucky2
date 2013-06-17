@@ -347,6 +347,8 @@ Public Class Database
 					.PasswordType = NullSafeBoolean(dr("PasswordType"))
 					.Orientation = NullSafeInteger(dr("Orientation"))
 					.Alignment = NullSafeInteger(dr("Alignment"))
+					.HotSpotIdentifier = NullSafeString(dr("HotSpotIdentifier"))
+					.Identifier = NullSafeString(dr("Identifier"))
 				End With
 				result.Items.Add(item)
 			Loop
@@ -902,4 +904,6 @@ Public Class FormItem
 	Public PasswordType As Boolean
 	Public Orientation As Integer
 	Public Alignment As Integer
+	Public HotSpotIdentifier As String
+	Public Identifier As String
 End Class
