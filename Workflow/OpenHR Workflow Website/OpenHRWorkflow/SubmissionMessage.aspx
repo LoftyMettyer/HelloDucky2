@@ -10,11 +10,13 @@
     <script language="javascript" type="text/javascript">
 // <!CDATA[
         function window_onload() {
-            //debugger;
-            document.getElementById('lblSubmissionsMessage_1').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_1.value.replace(/&nbsp;/g, " ");
-            document.getElementById('lblSubmissionsMessage_2').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_2.value.replace(/&nbsp;/g, " ");
-            document.getElementById('lblSubmissionsMessage_3').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_3.value.replace(/&nbsp;/g, " ");
+//            document.getElementById('lblSubmissionsMessage_1').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_1.value;
+//            document.getElementById('lblSubmissionsMessage_2').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_2.value;
+//            document.getElementById('lblSubmissionsMessage_3').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_3.value;
 
+            document.getElementById('lblSubmissionsMessage_1').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_1.value.replace(/\s/g, "&nbsp;");
+            document.getElementById('lblSubmissionsMessage_2').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_2.value.replace(/\s/g, "&nbsp;");
+            document.getElementById('lblSubmissionsMessage_3').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_3.value.replace(/\s/g, "&nbsp;");
             // Resize the fame.
             resizeFrame();
 

@@ -3290,9 +3290,9 @@ Public Class _Default
         sMessage2 = "here"
         sMessage3 = " to close this form."
 
-        hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-        hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-        hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
+        hdnSubmissionMessage_1.Value = sMessage1
+        hdnSubmissionMessage_2.Value = sMessage2
+        hdnSubmissionMessage_3.Value = sMessage3
         hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
         hdnFollowOnForms.Value = ""
       Else
@@ -3762,13 +3762,10 @@ Public Class _Default
 
               End If
 
-              sMessage1 = NullSafeString(sMessage1)
-              sMessage2 = NullSafeString(sMessage2)
-              sMessage3 = NullSafeString(sMessage3)
+              hdnSubmissionMessage_1.Value = NullSafeString(sMessage1)
+              hdnSubmissionMessage_2.Value = NullSafeString(sMessage2)
+              hdnSubmissionMessage_3.Value = NullSafeString(sMessage3)
 
-              hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-              hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-              hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
               hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
               hdnFollowOnForms.Value = sFollowOnForms
 
@@ -3801,9 +3798,9 @@ Public Class _Default
       sMessage2 = "here"
       sMessage3 = " to close this form."
 
-      hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-      hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-      hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
+      hdnSubmissionMessage_1.Value = sMessage1
+      hdnSubmissionMessage_2.Value = sMessage2
+      hdnSubmissionMessage_3.Value = sMessage3
       hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
       hdnFollowOnForms.Value = ""
       EnableDisableControls(False)
@@ -3964,9 +3961,9 @@ Public Class _Default
       sMessage2 = "here"
       sMessage3 = " to close this form."
 
-      hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-      hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-      hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
+      hdnSubmissionMessage_1.Value = sMessage1
+      hdnSubmissionMessage_2.Value = sMessage2
+      hdnSubmissionMessage_3.Value = sMessage3
       hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
       hdnFollowOnForms.Value = ""
     End If
