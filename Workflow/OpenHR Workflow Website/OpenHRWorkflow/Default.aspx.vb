@@ -1216,6 +1216,7 @@ Public Class _Default
                     .Checked = (NullSafeString(dr("value")).ToLower = "true")
                     .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
                     .CssClass = If(NullSafeInteger(dr("alignment")) = 0, "checkbox left", "checkbox right")
+                    If IsAndroidBrowser() Then .CssClass += " android"
                     .Text = NullSafeString(dr("caption"))
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
@@ -2495,6 +2496,10 @@ Public Class _Default
                     End If
 
                     radioTop = 19 + CInt((NullSafeInteger(dr("FontSize")) - 8) * 1.375)
+
+                    If IsAndroidBrowser() AndAlso NullSafeInteger(dr("Orientation")) = 0 Then
+                      radioTop -= 5
+                    End If
                   End If
 
                   sTemp = "<fieldset style='z-index: 0; " & _
@@ -2528,6 +2533,7 @@ Public Class _Default
                   With radioList
                     .ID = sID
                     .CssClass = "radioList"
+                    If IsAndroidBrowser() Then .CssClass += " android"
                     .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
                     .RepeatDirection = If(NullSafeInteger(dr("Orientation")) = 0, RepeatDirection.Vertical, RepeatDirection.Horizontal)
                     .Font.Name = NullSafeString(dr("FontName"))
@@ -2536,7 +2542,6 @@ Public Class _Default
                     .Font.Italic = NullSafeBoolean(dr("FontItalic"))
                     .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(radioTop + NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(9 + NullSafeInteger(dr("LeftCoord"))).ToString

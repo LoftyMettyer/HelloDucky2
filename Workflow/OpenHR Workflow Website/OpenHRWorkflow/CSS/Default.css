@@ -51,7 +51,9 @@ textarea { resize: none; }
 .checkbox.left label {
     margin-left: 18px;
 }
-
+.checkbox.android input {
+    margin-top: -12px;
+}
 /* Radio List */
 .radioList {
     border-collapse: collapse;
@@ -68,6 +70,10 @@ textarea { resize: none; }
     vertical-align: middle;
     margin-left: 4px;
 }
-
+.radioList.android input 
+{
+    position: relative;
+    top: -3px;
+}
 /* Overlay */
 #divOverlay { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; background-color: black; filter: alpha(opacity=20); opacity: 0.2; }
