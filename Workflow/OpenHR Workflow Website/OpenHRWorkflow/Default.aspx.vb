@@ -1415,32 +1415,38 @@ Public Class _Default
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                       .Style("margin") = "0px"
                       .Style("height") = Unit.Pixel(NullSafeInteger(dr("Height")) - 3).ToString
+                      If Not IsPostBack Then
 
-                      If (Not IsDBNull(dr("value"))) Then
-                        If CStr(dr("value")).Length > 0 Then
-                          Dim sDateString As String
+                        If (Not IsDBNull(dr("value"))) Then
+                          If CStr(dr("value")).Length > 0 Then
+                            Dim sDateString As String
 
-                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                          sDateString = iYear.ToString & "-"
+                            iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                            sDateString = iYear.ToString & "-"
 
-                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                          If iMonth < 10 Then
-                            sDateString &= "0" & iMonth.ToString & "-"
-                          Else
-                            sDateString &= iMonth.ToString & "-"
+                            iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                            If iMonth < 10 Then
+                              sDateString &= "0" & iMonth.ToString & "-"
+                            Else
+                              sDateString &= iMonth.ToString & "-"
+                            End If
+
+                            iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+                            If iDay < 10 Then
+                              sDateString &= "0" & iDay.ToString & "-"
+                            Else
+                              sDateString &= iDay.ToString
+                            End If
+
+                            HDNValue = sDateString
+                            .Value = HDNValue
+
                           End If
-
-                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
-                          If iDay < 10 Then
-                            sDateString &= "0" & iDay.ToString & "-"
-                          Else
-                            sDateString &= iDay.ToString
-                          End If
-
-                          HDNValue = sDateString
-                          .Value = HDNValue
-
                         End If
+                      Else
+                        ' retrieve value from hidden field
+                        Dim tmpDateValue As String = Request.Form(sID & "Value").ToString
+                        .Value = tmpDateValue
                       End If
 
                     End With
