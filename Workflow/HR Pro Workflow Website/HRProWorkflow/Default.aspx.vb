@@ -2902,6 +2902,7 @@ Public Class _Default
                                         AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
                                     End With
 
+
                                     'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
                                     pnlInputDiv.Controls.Add(ctlForm_Button)
 
@@ -3016,8 +3017,7 @@ Public Class _Default
                             End Select
                         End While
 
-        dr.Close()
-
+                        dr.Close()
 
                         If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
                             ' Form the script to be registered at client side.
@@ -3027,98 +3027,103 @@ Public Class _Default
 
                         End If
 
-        If sMessage.Length = 0 Then
-            If CStr(cmdSelect.Parameters("@psErrorMessage").Value) <> "" Then
-                sMessage = CStr(cmdSelect.Parameters("@psErrorMessage").Value)
-            Else
-                sBackgroundImage = ""
-                sBackgroundRepeat = ""
-                sBackgroundPosition = ""
-                If CInt(cmdSelect.Parameters("@piBackImage").Value) > 0 Then
-                    sBackgroundImage = LoadPicture(CInt(cmdSelect.Parameters("@piBackImage").Value), sMessage)
-                    If sMessage.Length = 0 Then
-                        pnlInputDiv.Style("Background-image") = sBackgroundImage
-                        ' pnlInput.BackImageUrl = sBackgroundImage
+                        If sMessage.Length = 0 Then
+                            If CStr(cmdSelect.Parameters("@psErrorMessage").Value) <> "" Then
+                                sMessage = CStr(cmdSelect.Parameters("@psErrorMessage").Value)
+                            Else
+                                sBackgroundImage = ""
+                                sBackgroundRepeat = ""
+                                sBackgroundPosition = ""
+                                If CInt(cmdSelect.Parameters("@piBackImage").Value) > 0 Then
+                                    sBackgroundImage = LoadPicture(CInt(cmdSelect.Parameters("@piBackImage").Value), sMessage)
+                                    If sMessage.Length = 0 Then
 
-                    End If
-                    If sMessage.Length = 0 Then
-                        sBackgroundImage = "url('" & sBackgroundImage & "')"
-                    End If
+                                        'pnlInputDiv.Style("Background-image") = sBackgroundImage
+                                        divInput.Style("Background-image") = sBackgroundImage
+                                        ' pnlInput.BackImageUrl = sBackgroundImage
 
-                    iBackgroundImagePosition = CInt(cmdSelect.Parameters("@piBackImageLocation").Value())
-                    sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
-                    sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
-                End If
-                'pnlInput.Style("background-repeat") = sBackgroundRepeat
-                'pnlInput.Style("background-position") = sBackgroundPosition
-                pnlInputDiv.Style("background-repeat") = sBackgroundRepeat
-                pnlInputDiv.Style("background-position") = sBackgroundPosition
+                                    End If
+                                    If sMessage.Length = 0 Then
+                                        sBackgroundImage = "url('" & sBackgroundImage & "')"
+                                    End If
 
+                                    iBackgroundImagePosition = CInt(cmdSelect.Parameters("@piBackImageLocation").Value())
+                                    sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
+                                    sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
 
+                                End If
+                                'pnlInput.Style("background-repeat") = sBackgroundRepeat
+                                'pnlInput.Style("background-position") = sBackgroundPosition
+                                'pnlInputDiv.Style("background-repeat") = sBackgroundRepeat
+                                'pnlInputDiv.Style("background-position") = sBackgroundPosition
+                                divInput.Style("background-repeat") = sBackgroundRepeat
+                                divInput.Style("background-position") = sBackgroundPosition
 
-                sBackgroundColourHex = ""
-                If Not IsDBNull(cmdSelect.Parameters("@piBackColour").Value) Then
-                    iBackgroundColour = CInt(cmdSelect.Parameters("@piBackColour").Value())
-                    sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
-                    pnlInputDiv.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))  ' objGeneral.GetColour(iBackgroundColour)
-                End If
+                                sBackgroundColourHex = ""
+                                If Not IsDBNull(cmdSelect.Parameters("@piBackColour").Value) Then
+                                    iBackgroundColour = CInt(cmdSelect.Parameters("@piBackColour").Value())
+                                    sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
+                                    ' pnlInputDiv.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))  ' objGeneral.GetColour(iBackgroundColour)
+                                    divInput.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))  ' objGeneral.GetColour(iBackgroundColour)
+                                End If
 
-                iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
-                iFormHeight = CInt(cmdSelect.Parameters("@piHeight").Value)
-                pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
-                pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
+                                iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
+                                iFormHeight = CInt(cmdSelect.Parameters("@piHeight").Value)
+                                pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
+                                pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
 
-                hdnFormHeight.Value = iFormHeight.ToString
-                hdnFormWidth.Value = iFormWidth.ToString
-                hdnFormBackColourHex.Value = sBackgroundColourHex
-                hdnFormBackImage.Value = sBackgroundImage
-                hdnFormBackRepeat.Value = sBackgroundRepeat
-                hdnFormBackPosition.Value = sBackgroundPosition
+                                hdnFormHeight.Value = iFormHeight.ToString
+                                hdnFormWidth.Value = iFormWidth.ToString
+                                hdnFormBackColourHex.Value = sBackgroundColourHex
+                                hdnFormBackImage.Value = sBackgroundImage
+                                hdnFormBackRepeat.Value = sBackgroundRepeat
+                                hdnFormBackPosition.Value = sBackgroundPosition
 
-                hdnColourThemeHex.Value = mobjConfig.ColourThemeHex().ToString
-                hdnSiblingForms.Value = sSiblingForms.ToString
+                                hdnColourThemeHex.Value = mobjConfig.ColourThemeHex().ToString
+                                hdnSiblingForms.Value = sSiblingForms.ToString
 
-                miCompletionMessageType = NullSafeInteger(cmdSelect.Parameters("@piCompletionMessageType").Value)
-                msCompletionMessage = NullSafeString(cmdSelect.Parameters("@psCompletionMessage").Value)
-                miSavedForLaterMessageType = NullSafeInteger(cmdSelect.Parameters("@piSavedForLaterMessageType").Value)
-                msSavedForLaterMessage = NullSafeString(cmdSelect.Parameters("@psSavedForLaterMessage").Value)
-                miFollowOnFormsMessageType = NullSafeInteger(cmdSelect.Parameters("@piFollowOnFormsMessageType").Value)
-                msFollowOnFormsMessage = NullSafeString(cmdSelect.Parameters("@psFollowOnFormsMessage").Value)
+                                miCompletionMessageType = NullSafeInteger(cmdSelect.Parameters("@piCompletionMessageType").Value)
+                                msCompletionMessage = NullSafeString(cmdSelect.Parameters("@psCompletionMessage").Value)
+                                miSavedForLaterMessageType = NullSafeInteger(cmdSelect.Parameters("@piSavedForLaterMessageType").Value)
+                                msSavedForLaterMessage = NullSafeString(cmdSelect.Parameters("@psSavedForLaterMessage").Value)
+                                miFollowOnFormsMessageType = NullSafeInteger(cmdSelect.Parameters("@piFollowOnFormsMessageType").Value)
+                                msFollowOnFormsMessage = NullSafeString(cmdSelect.Parameters("@psFollowOnFormsMessage").Value)
 
-                'Creates a new async trigger
-                Dim trigger As New AsyncPostBackTrigger()
+                                'Creates a new async trigger
+                                Dim trigger As New AsyncPostBackTrigger()
 
-                'Sets the event name of the control
-                'trigger.EventName = "goSubmit"
-                'Adds the trigger to the UpdatePanels' triggers collection
+                                'Sets the event name of the control
+                                'trigger.EventName = "goSubmit"
+                                'Adds the trigger to the UpdatePanels' triggers collection
 
-                'Sets the control that will trigger a post-back on the UpdatePanel
+                                'Sets the control that will trigger a post-back on the UpdatePanel
 
-                trigger.ControlID = "btnSubmit"
-                pnlInput.Triggers.Add(trigger)
+                                trigger.ControlID = "btnSubmit"
+                                pnlInput.Triggers.Add(trigger)
 
-                pnlInput.UpdateMode = UpdatePanelUpdateMode.Conditional
-                'pnlInput.ChildrenAsTriggers = False
-                ' These two are now created clientside as PageRequestManager functions...
-                'pnlInput.ClientSideEvents.RefreshRequest = "goSubmit();"
+                                pnlInput.UpdateMode = UpdatePanelUpdateMode.Conditional
+                                'pnlInput.ChildrenAsTriggers = False
+                                ' These two are now created clientside as PageRequestManager functions...
+                                'pnlInput.ClientSideEvents.RefreshRequest = "goSubmit();"
 
-                'pnlInput.ClientSideEvents.RefreshComplete = "showMessage();"
+                                'pnlInput.ClientSideEvents.RefreshComplete = "showMessage();"
 
-                ' This is now created in the Page_Init event.
-                ' pnlInput.ClientSideEvents.InitializePanel = "WARP_SetTimeout();"
+                                ' This is now created in the Page_Init event.
+                                ' pnlInput.ClientSideEvents.InitializePanel = "WARP_SetTimeout();"
 
-                If sDefaultFocusControl.Length > 0 Then
-                    frmMain.DefaultFocus = sDefaultFocusControl
-                    hdnFirstControl.Value = sDefaultFocusControl
-                Else
-                    If Not ctlDefaultFocusControl Is Nothing Then
-                        ctlDefaultFocusControl.Focus()
-                    End If
-                End If
-            End If
-        End If
+                                If sDefaultFocusControl.Length > 0 Then
+                                    frmMain.DefaultFocus = sDefaultFocusControl
+                                    hdnFirstControl.Value = sDefaultFocusControl
+                                Else
+                                    If Not ctlDefaultFocusControl Is Nothing Then
+                                        ctlDefaultFocusControl.Focus()
+                                    End If
+                                End If
+                            End If
+                        End If
 
-        cmdSelect.Dispose()
+                        cmdSelect.Dispose()
+
                     End If
 
                 Catch ex As Exception

@@ -7,6 +7,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+
 <head runat="server">
 	  <title></title>	  
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
@@ -1257,7 +1258,7 @@ function Right(str, n){
         Web Form Controls
         -->
 	<div id="divInput" style="z-index: 0; width: 100%; background-color: <%=ColourThemeHex()%>;
-		padding: 0px; margin: 0px; text-align: center">
+		padding: 0px; margin: 0px; text-align: center" runat="server">
       
     <asp:UpdatePanel ID="pnlInput" runat="server">
     <ContentTemplate>
