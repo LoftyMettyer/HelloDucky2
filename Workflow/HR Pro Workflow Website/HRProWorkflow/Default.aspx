@@ -228,7 +228,7 @@
 
 		function goSubmit() {
 				
-		if($get("txtPostbackMode").value=="2") {
+		if($get("txtPostbackMode").value=="3") {
 		  try {
 		    if($get("txtActiveDDE").value.indexOf("dde")>0) {
 		      //keep the lookup open.
@@ -408,7 +408,7 @@
 		}
 
 		function activateGridPostback() {
-			setPostbackMode(2);
+			setPostbackMode(3);
 		}
 
 		function activateControl() {
@@ -1151,7 +1151,7 @@ function ResizeComboForForm(sender, args) {
                           
                           $get("txtActiveDDE").value = psWebComboID;
                           
-                          setPostbackMode(2);
+                          setPostbackMode(3);
                           
                           //These lines hide the lookup dropdown until it's filled with data.
                           document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
