@@ -6,8 +6,11 @@
 
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
+
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>
+<!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
+
 
 <head runat="server">
   <style type="text/css">
@@ -62,6 +65,9 @@
       var sControlType;
       var oldgridSelectedColor;
 			var ScrollTopPos;
+
+      //Set the current page tab to page 1
+      iCurrentTab = 1;
           
 			try {
 				iDefHeight = $get("frmMain").hdnFormHeight.value;
@@ -1245,6 +1251,19 @@ function ResizeComboForForm(sender, args) {
     }
   }
   
+  function SetCurrentTab(iNewTab) {
+    var currentTab = "forminput_" + iCurrentTab + "_21_PageTab"
+    var newTab = "forminput_" + iNewTab + "_21_PageTab"
+
+    try {
+      $get(currentTab).style.display = "none";
+      $get(newTab).style.display = "block";
+
+      iCurrentTab = iNewTab;
+    }
+    catch (e) {}
+  }
+
     // ]]>
 	</script>
 
@@ -1317,8 +1336,9 @@ function ResizeComboForForm(sender, args) {
 	<!--
         Web Form Controls
         -->
-	<div id="divInput" style="position:absolute; top:0px; left:0px; z-index: 0; width: 100%; background-color: <%=ColourThemeHex()%>;
-		padding: 0px; margin: 0px; text-align: center" runat="server">
+  <div id="pnlTabsDiv" style="height:auto;float:right" runat="server"></div>
+	<div id="divInput" style="top:0px; left:0px; z-index: 0; background-color: <%=ColourThemeHex()%>;
+		padding: 0px; margin: 0px; text-align: center;float:right" runat="server">
       
     <asp:UpdatePanel ID="pnlInput" runat="server">
     <ContentTemplate>

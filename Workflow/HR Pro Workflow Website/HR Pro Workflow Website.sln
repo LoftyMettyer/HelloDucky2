@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "InstallerClassLibrary", "InstallerClassLibrary\InstallerClassLibrary.vbproj", "{1371B89A-9495-484C-816F-DEE9025335E0}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HRProWorkflowWebSetup", "WebSetup\HRProWorkflowWebSetup.vdproj", "{84B3579F-B5F3-4AFC-986A-3A5197FD9101}"
@@ -13,7 +13,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "HRProWorkflow", "http://loc
 		SccAuxPath = ""
 		SccLocalPath = "."
 		SccProvider = "MSSCCI:Microsoft Visual SourceSafe"
-		TargetFramework = "3.5"
+		UseIISExpress = "false"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv3.5"
 		Debug.AspNetCompiler.VirtualPath = "/HRProWorkflow"
 		Debug.AspNetCompiler.PhysicalPath = "HRProWorkflow\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\HRProWorkflow\"
