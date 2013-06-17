@@ -602,7 +602,6 @@ Public Class [Default]
 
 								Case Else	' all other char inputs
 									html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").focus();'>"
-
 							End Select
 
 						Else
