@@ -100,18 +100,42 @@ function ColumnResize(table) {
 
     if (no < 0) return false;
     if (dragColumns.length < no) return false;
+    
+    //Minimum width to the left of the drag point
+    if (parseInt(dragColumns[no].style.width) < 50) {
+      w1 = 50 - parseInt(dragColumns[no].style.width);
+      dragColumns[no].style.width = '50px';
+      dragColumns2[no].style.width = '50px';
+      if (dragColumns[no + 1]) {
+        dragColumns[no + 1].style.width = parseInt(dragColumns[no + 1].style.width) - w1 + 'px';
+        dragColumns2[no + 1].style.width = parseInt(dragColumns2[no + 1].style.width) - w1 + 'px';
+      }
+      return true;
+    }
+    
+    //Minimum width to the right of the drag point
+    if (parseInt(dragColumns[no + 1].style.width) < 50) {
+      w1 = 50 - parseInt(dragColumns[no + 1].style.width);
+      dragColumns[no + 1].style.width = '50px';
+      dragColumns2[no + 1].style.width = '50px';
+      if (dragColumns[no]) {
+        dragColumns[no].style.width = parseInt(dragColumns[no].style.width) - w1 + 'px';
+        dragColumns2[no].style.width = parseInt(dragColumns2[no].style.width) - w1 + 'px';
+      }
+      return true;
+    }
 
     if (parseInt(dragColumns[no].style.width) <= -w) return false;
     if (dragColumns[no + 1] && parseInt(dragColumns[no + 1].style.width) <= w) return false;
 
     dragColumns[no].style.width = parseInt(dragColumns[no].style.width) + w + 'px';
-    dragColumns2[no].style.width = parseInt(dragColumns[no].style.width) + w + 'px';
-    
-    if (dragColumns[no + 1])
-      dragColumns[no + 1].style.width = parseInt(dragColumns[no + 1].style.width) - w + 'px';
-    dragColumns2[no + 1].style.width = parseInt(dragColumns[no + 1].style.width) - w + 'px';
+    dragColumns2[no].style.width = parseInt(dragColumns2[no].style.width) + w + 'px';
 
-    return true;
+    if (dragColumns[no + 1]) {
+      dragColumns[no + 1].style.width = parseInt(dragColumns[no + 1].style.width) - w + 'px';
+      dragColumns2[no + 1].style.width = parseInt(dragColumns2[no + 1].style.width) - w + 'px';
+      return true;
+    }
   }
 
   // ============================================================
@@ -120,7 +144,7 @@ function ColumnResize(table) {
     var e = e || window.event;
     var X = e.clientX || e.pageX;
     if (!self.changeColumnWidth(dragColumnNo, X - dragX)) {
-      // stop drag!
+      // stop drag!      
       self.stopColumnDrag(e);
     }
 
@@ -172,7 +196,7 @@ function ColumnResize(table) {
     var colWidth = new Array();
     for (var i = 0; i < dragColumns.length; i++)
       colWidth[i] = parseInt(getWidth(dragColumns[i]));
-    for (var i = 0; i < dragColumns.length; i++) {      
+    for (var i = 0; i < dragColumns.length; i++) {
       dragColumns[i].width = ""; // for sure
       dragColumns[i].style.width = colWidth[i] + "px";
       dragColumns2[i].width = ""; // tie up the grid column widths too.

@@ -58,13 +58,7 @@ Public Class RecordSelector
                     customHeader.Cells(iColCount).Style.Add("display", "none")
                 Else
                     customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
-                    If MyBase.Rows.Count > 1 Then
-                        If IsLookup Then
-                            customHeader.Cells(iColCount).Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
-                        Else
-                            customHeader.Cells(iColCount).Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
-                        End If
-                    End If
+
                     ' Add each of the gridview's column headers to the header table
                     customHeader.Cells(iColCount).ID = Me.ID.ToString & "header" & CStr(iColCount + 1)
                     customHeader.Cells(iColCount).Style.Add("width", Unit.Pixel(iColWidth).ToString)
@@ -87,6 +81,13 @@ Public Class RecordSelector
                         .Style.Add("overflow", "hidden")
                         .Style.Add("text-overflow", "ellipsis")
                         .Style.Add("white-space", "nowrap")
+                        If MyBase.Rows.Count > 1 Then
+                            If IsLookup Then
+                                .Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+                            Else
+                                .Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+                            End If
+                        End If
                     End With
 
                     ' customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
