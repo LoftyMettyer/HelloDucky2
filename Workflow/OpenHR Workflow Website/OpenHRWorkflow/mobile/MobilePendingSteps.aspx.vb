@@ -8,6 +8,7 @@ Partial Class PendingSteps
 
   Private miImageCount As Int16
   Private mobjConfig As New Config
+  Const wfCategoryKey As String = "WORKFLOW"
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
     Dim iLoop As String
@@ -32,6 +33,10 @@ Partial Class PendingSteps
     Dim ctlForm_Row As TableRow
     Dim ctlForm_Cell As TableCell
     Dim ctlForm_Label As Label
+    Dim sql As String
+    Dim command As SqlClient.SqlCommand
+    Dim reader As IDataReader
+
 
     Dim strWFStepText As String
 
@@ -50,11 +55,11 @@ Partial Class PendingSteps
     End Try
 
     ' Establish Connection
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                     ";Initial Catalog=" & Session("Database") & _
+                     ";Integrated Security=false;User ID=" & Session("Login") & _
+                     ";Password=" & Session("Password") & _
+                     ";Pooling=false"), String)
     'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
@@ -145,11 +150,11 @@ Partial Class PendingSteps
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                     ";Initial Catalog=" & Session("Database") & _
+                     ";Integrated Security=false;User ID=" & Session("Login") & _
+                     ";Password=" & Session("Password") & _
+                     ";Pooling=false"), String)
     'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     myConnection = New SqlClient.SqlConnection(strConn)
@@ -282,93 +287,136 @@ Partial Class PendingSteps
     drElements.Close()
 
     ' -----------------------------------------------------------------------------------------------------------------------------------
-    ' Get the pending steps.
-    ' Open a connection to the database.
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+
+    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                 ";Initial Catalog=" & Session("Database") & _
+                 ";Integrated Security=false;User ID=" & Session("Login") & _
+                 ";Password=" & Session("Password") & _
+                 ";Pooling=false"), String)
     conn = New SqlClient.SqlConnection(strConn)
     conn.Open()
 
-    cmdSteps = New SqlClient.SqlCommand
-    cmdSteps.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-    cmdSteps.Connection = conn
-    cmdSteps.CommandType = CommandType.StoredProcedure
+    Dim groupId As Integer = 0
+    Dim fUserHasRunPermission As Boolean = False
 
-    cmdSteps.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-    cmdSteps.Parameters("@psKeyParameter").Value = Session("LoginKey")
+    If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
 
-    rstSteps = cmdSteps.ExecuteReader
+    If groupId <> 0 Then
 
-    iLoop = 0
-    'bulletSteps.Items.Clear()
+      ' get the run permissions for workflow for this user group.
+      sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
+                           " FROM [ASRSysGroupPermissions] p" & _
+                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
+                           " WHERE [p].[itemID] IN (" & _
+                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
+                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = '" & wfCategoryKey & "')) " & _
+                           " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
+      Try
+        command = New SqlClient.SqlCommand(sql, conn)
+        reader = Command.ExecuteReader()
 
-    ' Create the holding table
-    ctlForm_Table = New Table
+        While reader.Read()
+          Select Case reader("itemKey")
+            Case "RUN"
+              fUserHasRunPermission = (reader("permitted") = True)
 
-    ctlForm_Table.Style.Add("position", "absolute")
-    ctlForm_Table.Style.Add("top", "0px")
+          End Select
+        End While
 
-    While (rstSteps.Read)
-      ' Create a row to contain this pending step...
-      ctlForm_Row = New TableRow
-      ctlForm_Row.Attributes.Add("onclick", "window.open('" & rstSteps("url").ToString & "');")
+        reader.close()
+      Catch ex As Exception
 
-      ' Create a cell to contain the workflow icon
-      ctlForm_Cell = New TableCell  ' Image cell
-      ctlForm_Image = New Image
-      sImageFileName = LoadPicture(NullSafeInteger(rstSteps("pictureID")), sMessage)
-      ctlForm_Image.ImageUrl = sImageFileName
-      ctlForm_Image.Height() = Unit.Pixel(57)
-      ctlForm_Image.Width() = Unit.Pixel(57)
+      End Try
 
-      ' add ImageButton to cell
-      ctlForm_Cell.Controls.Add(ctlForm_Image)
+    End If
 
-      ' Add cell to row
-      ctlForm_Row.Cells.Add(ctlForm_Cell)
 
-      ' Create a cell to contain the workflow name and description
-      ctlForm_Cell = New TableCell
-            ctlForm_Label = New Label ' Workflow name text
-            ctlForm_Label.Font.Underline = True
-      ctlForm_Label.Text = rstSteps("name")
-      For Each item In todoTitleStyles
-        ctlForm_Label.Style.Add(item.Key, item.Value)
-      Next
-      ctlForm_Cell.Controls.Add(ctlForm_Label)
 
-      ' Line Break
-      ctlForm_Cell.Controls.Add(New LiteralControl("<br>"))
+    If fUserHasRunPermission Then
 
-      ctlForm_Label = New Label ' Workflow step description text
+      ' Get the pending steps.
+      ' Open a connection to the database.
 
-      If Left(rstSteps("description"), Len(rstSteps("name")) + 2) = (Trim(rstSteps("name")) & " -") Then
-        strWFStepText = rstSteps("description").ToString.Remove(0, (rstSteps("name").ToString.Length) + 2)
-      Else
-        strWFStepText = rstSteps("description").ToString
-      End If
-      ctlForm_Label.Text = strWFStepText
-      For Each item In todoDescStyles
-        ctlForm_Label.Style.Add(item.Key, item.Value)
-      Next
-      ctlForm_Cell.Controls.Add(ctlForm_Label)
 
-      ' Add cell to row, and row to table.
-      ctlForm_Row.Cells.Add(ctlForm_Cell)
-      ctlForm_Table.Rows.Add(ctlForm_Row)
+      cmdSteps = New SqlClient.SqlCommand
+      cmdSteps.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+      cmdSteps.Connection = conn
+      cmdSteps.CommandType = CommandType.StoredProcedure
 
-      iLoop += 1
-    End While
+      cmdSteps.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmdSteps.Parameters("@psKeyParameter").Value = Session("LoginKey")
 
-    pnlWFList.Controls.Add(ctlForm_Table)
+      rstSteps = cmdSteps.ExecuteReader
 
-    hdnStepCount.Value = iLoop
+      iLoop = 0
+      'bulletSteps.Items.Clear()
 
-    rstSteps.Close()
-    cmdSteps.Dispose()
+      ' Create the holding table
+      ctlForm_Table = New Table
+
+      ctlForm_Table.Style.Add("position", "absolute")
+      ctlForm_Table.Style.Add("top", "0px")
+
+      While (rstSteps.Read)
+        ' Create a row to contain this pending step...
+        ctlForm_Row = New TableRow
+        ctlForm_Row.Attributes.Add("onclick", "window.open('" & rstSteps("url").ToString & "');")
+
+        ' Create a cell to contain the workflow icon
+        ctlForm_Cell = New TableCell  ' Image cell
+        ctlForm_Image = New Image
+        sImageFileName = LoadPicture(NullSafeInteger(rstSteps("pictureID")), sMessage)
+        ctlForm_Image.ImageUrl = sImageFileName
+        ctlForm_Image.Height() = Unit.Pixel(57)
+        ctlForm_Image.Width() = Unit.Pixel(57)
+
+        ' add ImageButton to cell
+        ctlForm_Cell.Controls.Add(ctlForm_Image)
+
+        ' Add cell to row
+        ctlForm_Row.Cells.Add(ctlForm_Cell)
+
+        ' Create a cell to contain the workflow name and description
+        ctlForm_Cell = New TableCell
+        ctlForm_Label = New Label ' Workflow name text
+        ctlForm_Label.Font.Underline = True
+        ctlForm_Label.Text = rstSteps("name")
+        For Each item In todoTitleStyles
+          ctlForm_Label.Style.Add(item.Key, item.Value)
+        Next
+        ctlForm_Cell.Controls.Add(ctlForm_Label)
+
+        ' Line Break
+        ctlForm_Cell.Controls.Add(New LiteralControl("<br>"))
+
+        ctlForm_Label = New Label ' Workflow step description text
+
+        If Left(rstSteps("description"), Len(rstSteps("name")) + 2) = (Trim(rstSteps("name")) & " -") Then
+          strWFStepText = rstSteps("description").ToString.Remove(0, (rstSteps("name").ToString.Length) + 2)
+        Else
+          strWFStepText = rstSteps("description").ToString
+        End If
+        ctlForm_Label.Text = strWFStepText
+        For Each item In todoDescStyles
+          ctlForm_Label.Style.Add(item.Key, item.Value)
+        Next
+        ctlForm_Cell.Controls.Add(ctlForm_Label)
+
+        ' Add cell to row, and row to table.
+        ctlForm_Row.Cells.Add(ctlForm_Cell)
+        ctlForm_Table.Rows.Add(ctlForm_Row)
+
+        iLoop += 1
+      End While
+
+      pnlWFList.Controls.Add(ctlForm_Table)
+
+      hdnStepCount.Value = iLoop
+
+      rstSteps.Close()
+      cmdSteps.Dispose()
+    End If
+
   End Sub
 
 

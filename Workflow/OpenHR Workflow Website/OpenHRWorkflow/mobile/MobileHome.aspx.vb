@@ -10,6 +10,7 @@ Partial Class Home
   Private miImageCount As Int16
   Private miStepCount As Integer
   Private mobjConfig As New Config
+  Const wfCategoryKey As String = "WORKFLOW"
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
@@ -24,7 +25,9 @@ Partial Class Home
     Dim sImageFileName As String = ""
     Dim iTempHeight As Integer
     Dim iTempWidth As Integer
-
+    Dim sql As String
+    Dim command As SqlClient.SqlCommand
+    Dim reader As IDataReader
     miImageCount = 0
 
     Try
@@ -272,65 +275,101 @@ Partial Class Home
 
 
     Dim groupId As Integer = 0
+    Dim fUserHasRunPermission As Boolean = False
 
     If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
 
-    Dim sql = "select w.Id, w.Name, w.PictureID from tbsys_mobilegroupworkflows gw inner join tbsys_workflows w on gw.WorkflowID = w.ID where gw.UserGroupID = " & groupId & " and w.enabled = 1 order by gw.Pos ASC"
-    Dim command = New SqlClient.SqlCommand(sql, myConnection)
+    If groupId <> 0 Then
 
-    Dim reader As IDataReader = command.ExecuteReader()
+      ' get the run permissions for workflow for this user group.
+      sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
+                           " FROM [ASRSysGroupPermissions] p" & _
+                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
+                           " WHERE [p].[itemID] IN (" & _
+                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
+                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = '" & wfCategoryKey & "')) " & _
+                           " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
+      Try
+        command = New SqlClient.SqlCommand(sql, myConnection)
+        reader = command.ExecuteReader()
 
-    ' Create the holding table for the list of workflows.
-    Dim table = New Table
-    table.Style.Add("width", "100%")
+        While reader.Read()
+          Select Case reader("itemKey")
+            Case "RUN"
+              fUserHasRunPermission = (reader("permitted") = True)
 
-    'Iterate through the results
-    While reader.Read()
+          End Select
+        End While
 
-      ' Create a row to contain this pending step...
-      Dim row = New TableRow
-      row.Style.Add("width", "100%")
-      row.Attributes.Add("onclick", "window.open('" & WorkflowLink(CInt(reader("ID"))) & "');")
+        reader.Close()
+      Catch ex As Exception
 
-      ' Create a cell to contain the workflow icon
-      Dim cell = New TableCell  ' Image cell
-      cell.Style.Add("width", "57px")
+      End Try
 
-      Dim image = New Image
-      sImageFileName = LoadPicture(NullSafeInteger(reader("PictureID")), sMessage)
-      image.ImageUrl = sImageFileName
-      image.Height() = Unit.Pixel(57)
-      image.Width() = Unit.Pixel(57)
+    End If
 
-      ' add ImageButton to cell
-      cell.Controls.Add(image)
 
-      ' Add cell to row
-      row.Cells.Add(cell)
 
-      ' Create a cell to contain the workflow name and description
-      cell = New TableCell
-      Dim label = New Label ' Workflow name text
-      label.Text = CStr(reader("Name"))
-      For Each item In homeItemStyles
-        label.Style.Add(item.Key, item.Value)
-      Next
+    If fUserHasRunPermission Then
 
-      cell.Controls.Add(label)
+      sql = "select w.Id, w.Name, w.PictureID from tbsys_mobilegroupworkflows gw inner join tbsys_workflows w on gw.WorkflowID = w.ID where gw.UserGroupID = " & groupId & " and w.enabled = 1 order by gw.Pos ASC"
+      command = New SqlClient.SqlCommand(sql, myConnection)
 
-      ' Add cell to row, and row to table.
-      row.Cells.Add(cell)
+      reader = command.ExecuteReader()
 
-      table.Rows.Add(row)
+      ' Create the holding table for the list of workflows.
+      Dim table = New Table
+      table.Style.Add("width", "100%")
 
-    End While
-    reader.Close()
-    pnlWFList.Controls.Add(table)
+      'Iterate through the results
+      While reader.Read()
 
+        ' Create a row to contain this pending step...
+        Dim row = New TableRow
+        row.Style.Add("width", "100%")
+        row.Attributes.Add("onclick", "window.open('" & WorkflowLink(CInt(reader("ID"))) & "');")
+
+        ' Create a cell to contain the workflow icon
+        Dim cell = New TableCell  ' Image cell
+        cell.Style.Add("width", "57px")
+
+        Dim image = New Image
+        sImageFileName = LoadPicture(NullSafeInteger(reader("PictureID")), sMessage)
+        image.ImageUrl = sImageFileName
+        image.Height() = Unit.Pixel(57)
+        image.Width() = Unit.Pixel(57)
+
+        ' add ImageButton to cell
+        cell.Controls.Add(image)
+
+        ' Add cell to row
+        row.Cells.Add(cell)
+
+        ' Create a cell to contain the workflow name and description
+        cell = New TableCell
+        Dim label = New Label ' Workflow name text
+        label.Text = CStr(reader("Name"))
+        For Each item In homeItemStyles
+          label.Style.Add(item.Key, item.Value)
+        Next
+
+        cell.Controls.Add(label)
+
+        ' Add cell to row, and row to table.
+        row.Cells.Add(cell)
+
+        table.Rows.Add(row)
+
+      End While
+      reader.Close()
+      pnlWFList.Controls.Add(table)
+    End If
+
+    ' close sql connection
     myConnection.Close()
 
     ' Update the wf steps count
-    CountPendingWFSteps()
+    If fUserHasRunPermission Then CountPendingWFSteps()
 
   End Sub
 
