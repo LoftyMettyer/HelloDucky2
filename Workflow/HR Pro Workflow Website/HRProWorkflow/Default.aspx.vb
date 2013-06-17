@@ -1640,7 +1640,9 @@ Public Class _Default
 
                                         iRowHeight = 21
                                         '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
-                                        .RowStyle.Height = Unit.Pixel(iRowHeight)
+
+                                        ' NPG20110802 Fault HRPRO-1685, remove rowheight to autofit.
+                                        '.RowStyle.Height = Unit.Pixel(iRowHeight)
 
                                         If IsDBNull(dr("ForeColorHighlight")) Then
                                             '.DisplayLayout.SelectedRowStyleDefault.ForeColor = System.Drawing.SystemColors.HighlightText
@@ -2001,7 +2003,9 @@ Public Class _Default
 
                                         iRowHeight = 21
                                         '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
-                                        .RowStyle.Height = Unit.Pixel(iRowHeight)
+
+                                        ' NPG20110802 Fault HRPRO-1685, remove rowheight to autofit.
+                                        ' .RowStyle.Height = Unit.Pixel(iRowHeight)
 
                                         ''.ExpandEffects.Type = Infragistics.WebUI.WebCombo.ExpandEffectType.Slide
 
