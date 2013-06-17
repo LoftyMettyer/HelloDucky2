@@ -76,9 +76,6 @@ Partial Class Site
 
     End Using
 
-    ' NPG20120412 - Fault HRPRO-2160, webpages named by contentpages now.
-    'Page.Title = WebSiteName()
-
     SetupViewport()
 
   End Sub
@@ -94,6 +91,8 @@ Partial Class Site
   End Sub
 
   Private Sub SetupViewport()
+
+    Return
 
     If IsMobileBrowser() And Not IsTablet() Then
       Return

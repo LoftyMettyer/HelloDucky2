@@ -715,11 +715,11 @@ Public Class _Default
                       .Style.Add("opacity", "0")
                     End If
 
-
                     If NullSafeInteger(dr("BackColor")) <> 16249587 Then
                       .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor"))).ToString)
                       .Style.Add("border", "solid 1px " & objGeneral.GetHTMLColour(9999523).ToString)
                     End If
+
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
                       .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))).ToString)
                     End If

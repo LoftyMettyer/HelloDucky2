@@ -20,7 +20,10 @@ table {
 /* Site styling */
 body { font-family: verdana; }
 
-.page { z-index: 1 }
+.page {
+    
+    z-index: 1;
+}
 
 /*
 .content {
@@ -160,7 +163,6 @@ body { font-family: verdana; }
 }
 
 /* Adjustment for larger screens */
-
 .large-view .page {
     width: 320px;
     height: 450px;
@@ -170,7 +172,6 @@ body { font-family: verdana; }
     position: relative;
     overflow: hidden;
 }
-
 .large-view .header { position: relative; }
 .large-view .main { position: absolute; }
 .large-view .footer { position: absolute; }
