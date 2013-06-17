@@ -389,11 +389,12 @@ Partial Class Registration
 
         If sMessage.Length = 0 Then
 
+          'TODO
           strEncryptedString = objCrypt.EncryptQueryString((lngUserID), -2, sUser, _
               Session("Password"), _
               Session("Server"), _
               Session("Database"), _
-              Session("LoginKey"), _
+              User.Identity.Name, _
               "")
 
           strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
