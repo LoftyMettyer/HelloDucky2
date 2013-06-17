@@ -1086,7 +1086,8 @@ Public Class RecordSelector
 
     Dim tcPageXofY As TableCell = New TableCell()
     With tcPageXofY
-      .ID = "tcPageXofY"
+      '.ID = "tcPageXofY"
+      .Attributes.Add("id", MyBase.ID.Replace("Grid", "") & "tcPageXofY") ' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
       .Style.Add("width", "35%")
       .Style.Add("text-align", "right")
       .Style.Add("padding-left", "5px")
@@ -1181,7 +1182,8 @@ Public Class RecordSelector
 
     Dim tcPagerBtns As TableCell = New TableCell()
     With tcPagerBtns
-      .ID = "tcPagerBtns"
+      '.ID = "tcPagerBtns"
+      .Attributes.Add("id", MyBase.ID.Replace("Grid", "") & "tcPagerBtns") ' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
       .Style.Add("width", "35%")
       .Style.Add("text-align", "center")
       .Style.Add("border", "0px")
@@ -1229,24 +1231,32 @@ Public Class RecordSelector
     If Not IsLookup Then
       ' Hide Search box if required
       If MyBase.Width.Value < 420 Then
-        tcSearchCell.Style.Add("display", "none")
-        tcSearchCell.Style.Add("visibility", "hidden")
-      End If
-
-      If MyBase.Width.Value < 175 Then
-        ' Hide tcPageXofY AND tcPagerBtns
+        'tcSearchCell.Style.Add("display", "none")
+        'tcSearchCell.Style.Add("visibility", "hidden")
         tcPageXofY.Style.Add("display", "none")
         tcPageXofY.Style.Add("visibility", "hidden")
         tcPagerBtns.Style.Add("display", "none")
         tcPagerBtns.Style.Add("visibility", "hidden")
-        trPager.Style.Remove("width")
-        trPager.Style.Add("width", "75px")
+      End If
+
+      If MyBase.Width.Value < 175 Then
+        ' Hide tcPageXofY AND tcPagerBtns
+        'tcPageXofY.Style.Add("display", "none")
+        'tcPageXofY.Style.Add("visibility", "hidden")
+        'tcPagerBtns.Style.Add("display", "none")
+        'tcPagerBtns.Style.Add("visibility", "hidden")
+        'trPager.Style.Remove("width")
+        'trPager.Style.Add("width", "75px")
+        tcSearchCell.Style.Add("display", "none")
+        tcSearchCell.Style.Add("visibility", "hidden")
       ElseIf MyBase.Width.Value < 210 Then
         ' Hide just tcPageXofY
         tcPageXofY.Style.Add("display", "none")
         tcPageXofY.Style.Add("visibility", "hidden")
-        trPager.Style.Remove("width")
-        trPager.Style.Add("width", "175px")
+        tcPagerBtns.Style.Add("display", "none")
+        tcPagerBtns.Style.Add("visibility", "hidden")
+        'trPager.Style.Remove("width")
+        'trPager.Style.Add("width", "175px")
       End If
 
     End If

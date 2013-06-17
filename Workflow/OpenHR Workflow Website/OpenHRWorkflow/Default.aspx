@@ -1078,27 +1078,39 @@ function ResizeComboForForm(sender, args) {
       }                                                 
                   
       //Hide the navigation icons as required
-      //if the control is paged, min width is 420px before hiding the search box
-      var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
+      //Order to hide is: nav arrows go first, then 'page 1 of x'. Finally the search box goes.
+      //N.B. if the control is paged, min width is 420px before hiding the relevant controls
 
+      //Check to see if this is a paged control...
+      var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
       if(eval(oElDDL)) {
+        //This is a paged control, so different rules apply.
         if(oEl.offsetWidth<420) {
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
         }
         else {
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "block";
         }
       }
       else {
+        //Not a paged control
         if(oEl.offsetWidth<250) {
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
         }
         else {
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "block";
         }                    
       }
     }
