@@ -500,10 +500,11 @@
 
 			try {
 				if (pNewText.length > 0) {
-					dtCurrentDate = pobjControl.getValue();
+					dtCurrentDate = pobjControl.getValue();					
 					txtLastDate_Month.value = dtCurrentDate.getMonth();
 					txtLastDate_Day.value = dtCurrentDate.getDate();
-					txtLastDate_Year.value = dtCurrentDate.getYear();
+					//txtLastDate_Year.value = dtCurrentDate.getYear();					
+					txtLastDate_Year.value = dtCurrentDate.getFullYear();					
 				}
 			}
 			catch (e) { }
