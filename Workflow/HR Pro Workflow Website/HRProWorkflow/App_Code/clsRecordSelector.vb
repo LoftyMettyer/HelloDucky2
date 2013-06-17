@@ -709,6 +709,26 @@ Public Class RecordSelector
                     Else
                         pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
                     End If
+
+
+
+
+                    If grdGrid.PageIndex = 0 Then
+                        ' page 1
+                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "Next" & " (page " & (grdGrid.PageIndex + 2).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Last" & " (page " & (grdGrid.PageCount).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                    ElseIf grdGrid.PageIndex = grdGrid.PageCount - 1 Then
+                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "First" & " (page 1 of " & grdGrid.PageCount.ToString & ")"
+                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Previous" & " (page " & (grdGrid.PageIndex).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                    Else
+                        ' all four buttons
+                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "First" & " (page 1 of " & grdGrid.PageCount.ToString & ")"
+                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Previous" & " (page " & (grdGrid.PageIndex).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                        If iColCount = 2 Then pagerRow.Cells(iColCount).ToolTip = "Next" & " (page " & (grdGrid.PageIndex + 2).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                        If iColCount = 3 Then pagerRow.Cells(iColCount).ToolTip = "Last" & " (page " & (grdGrid.PageCount).ToString & " of " & grdGrid.PageCount.ToString & ")"
+                    End If
+
+
                 Next
 
             ElseIf e.Row.RowType = DataControlRowType.Header Then
