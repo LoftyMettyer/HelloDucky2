@@ -79,8 +79,8 @@ Partial Class Home
             sImageFileName = Picture.GetUrl(CInt(dr("PictureID")))
           End If
           image.ImageUrl = sImageFileName
-          image.Height() = Unit.Pixel(57)
-          image.Width() = Unit.Pixel(57)
+          image.Height() = Unit.Pixel(48)
+          image.Width() = Unit.Pixel(48)
           image.Style.Add("cursor", "pointer")
 
           ' add ImageButton to cell

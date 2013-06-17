@@ -178,7 +178,8 @@ body { font-family: verdana; }
     margin-right: 6px;
 }
 .workflow-list td {
-    padding-bottom: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 /* Adjustment for larger screens */
 .large-view .page {

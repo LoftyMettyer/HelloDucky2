@@ -6,6 +6,8 @@ Imports System.Reflection
 Public Class Utilities
 
   Public Shared Function PointToPixel(pointSize As Integer) As Integer
+    ' PBG20120419 Fault HRPRO-2157 revert to point sizing
+    Return pointSize
 
     If pointSize = 0 Then
       Throw New Exception("zero pointSize specified")
@@ -15,7 +17,9 @@ Public Class Utilities
   End Function
 
   Public Shared Function PointToPixelFontUnit(pointSize As Integer) As FontUnit
-    Return New FontUnit(PointToPixel(pointSize), UnitType.Pixel)
+    ' PBG20120419 Fault HRPRO-2157 revert to point sizing
+    Return New FontUnit(pointSize)
+    'Return New FontUnit(PointToPixel(pointSize), UnitType.Pixel)
   End Function
 
   '****************************************************************
