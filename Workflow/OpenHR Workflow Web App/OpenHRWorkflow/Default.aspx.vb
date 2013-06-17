@@ -43,72 +43,6 @@ Public Class [Default]
 
       _db = New Database(Database.CreateConnectionString(_url.Server, _url.Database, _url.User, _url.Password))
 
-      'TODO PG prob have to check db lock & version before doing below
-
-      'Code below is only for initial page load not postbacks
-      If Not IsPostBack Then
-
-         'Activating mobile security. I've hijacked the _instanceID and populated it with the User ID that is to be activated.
-         If message.IsNullOrEmpty() And _url.ElementID = -2 And _url.InstanceID > 0 Then
-
-            message = _db.ActivateUser(_url.InstanceID)
-
-            If message.IsNullOrEmpty() Then
-               message = "You have been successfully activated."
-            End If
-         End If
-
-         'Initiate the workflow if thats whats required
-         If message.IsNullOrEmpty() And _url.InstanceID < 0 And _url.ElementID = -1 Then
-
-            Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceID, _url.UserName)
-
-            If Not result.Message.IsNullOrEmpty() Then
-               message = "Error:<BR><BR>" & result.Message
-            Else
-               If result.FormElements.IsNullOrEmpty() Then
-                  message = "Workflow initiated successfully."
-               Else
-                  'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
-                  Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
-
-                  _url.InstanceID = result.InstanceId
-                  _url.ElementID = CInt(forms(0))
-                  forms.RemoveAt(0)
-
-                  Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))))
-
-                  Dim crypt As New Crypt
-                  Dim newUrl = crypt.EncryptQueryString(_url.InstanceID, _url.ElementID, _url.User, _url.Password, _url.Server, _url.Database, "", "")
-
-                  Session("FireSiblings_" & newUrl) = siblingForms
-                  Response.Redirect("~/Default.aspx?" & newUrl, True)
-               End If
-            End If
-         End If
-
-      End If
-
-      If Not message.IsNullOrEmpty() Then
-         Session("message") = message
-         Response.Redirect("Message.aspx")
-      End If
-   End Sub
-
-   Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-
-      Dim message As String = Nothing
-
-      Response.CacheControl = "no-cache"
-      Response.AddHeader("Pragma", "no-cache")
-      Response.Expires = -1
-
-      'Set the page title
-      Page.Title = GetPageTitle("Workflow")
-
-      'Set the page culture
-      SetPageCulture()
-
       'check to see if the database is locked
       If message.IsNullOrEmpty And Not IsPostBack Then
 
@@ -117,10 +51,9 @@ Public Class [Default]
          End If
       End If
 
-      'Perform version checks if not running in ide
 #If DEBUG Then
 #Else
-      'check if the database and website versions match.
+      'check if the database and website versions match (only when not running in the ide)
       If message.IsNullOrEmpty And Not IsPostBack Then
 
          Dim dbVersion As String = _db.GetSetting("database", "version", False)
@@ -135,64 +68,116 @@ Public Class [Default]
       End If
 #End If
 
+      'Activating mobile security. I've hijacked the _instanceID and populated it with the User ID that is to be activated.
+      If message.IsNullOrEmpty() And Not IsPostBack And _url.ElementID = -2 And _url.InstanceID > 0 Then
+
+         message = _db.ActivateUser(_url.InstanceID)
+
+         If message.IsNullOrEmpty() Then
+            message = "You have been successfully activated."
+         End If
+      End If
+
+      'Initiate the workflow if thats whats required
+      If message.IsNullOrEmpty() And Not IsPostBack And _url.InstanceID < 0 And _url.ElementID = -1 Then
+
+         Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceID, _url.UserName)
+
+         If Not result.Message.IsNullOrEmpty() Then
+            message = "Error:<BR><BR>" & result.Message
+         Else
+            If result.FormElements.IsNullOrEmpty() Then
+               message = "Workflow initiated successfully."
+            Else
+               'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
+               Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
+
+               _url.InstanceID = result.InstanceId
+               _url.ElementID = CInt(forms(0))
+               forms.RemoveAt(0)
+
+               Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))))
+
+               Dim crypt As New Crypt
+               Dim newUrl = crypt.EncryptQueryString(_url.InstanceID, _url.ElementID, _url.User, _url.Password, _url.Server, _url.Database, "", "")
+
+               Session("FireSiblings_" & newUrl) = siblingForms
+               Response.Redirect("~/Default.aspx?" & newUrl, True)
+            End If
+         End If
+      End If
+
+      If Not message.IsNullOrEmpty() Then
+         Session("message") = message
+         Response.Redirect("Message.aspx")
+      End If
+   End Sub
+
+   Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+
+      Dim message As String = Nothing
+
+      'Add expires headers
+      Response.CacheControl = "no-cache"
+      Response.AddHeader("Pragma", "no-cache")
+      Response.Expires = -1
+
+      'Set the page title
+      Page.Title = GetPageTitle("Workflow")
+
+      'Set the page culture
+      SetPageCulture()
+
+      'FileUpload.apsx, FileDownload.aspx & ImageHandler require the url details
+      Session("workflowUrl") = _url
+
+      ' Get the selected tab number for this workflow, if any...
+      If Not IsPostBack Then
+         hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
+      End If
+
+      'Do we need to fire off any sibling forms
+      Dim siblingSessionKey = "FireSiblings_" & Request.QueryString(0)
+      hdnSiblingForms.Value = CStr(Session(siblingSessionKey))
+      Session.Remove(siblingSessionKey)
+
+      'Get the worklfow form details
+      _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
+
+      'Create the web form controls
+      Dim script As String = ""
+      message = CreateControls(_form, script)
+
+      If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
+         ' Form the script to be registered at client side.
+         ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
+      End If
+
+      ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = App.Config.SubmissionTimeout
+
       If message.IsNullOrEmpty Then
 
-         Try
-            'FileUpload.apsx, FileDownload.aspx & ImageHandler require the url details
-            Session("workflowUrl") = _url
+         If Not _form.ErrorMessage.IsNullOrEmpty Then
+            message = _form.ErrorMessage
+         End If
 
-            ' Get the selected tab number for this workflow, if any...
-            If Not IsPostBack Then
-               hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
-            End If
+         If _form.BackImage > 0 Then
+            divInput.Style("background-image") = ResolveClientUrl("~/Image.ashx?s=&id=" & _form.BackImage)
+            divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
+            divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
+         End If
 
-            'Do we need to fire off any sibling forms
-            Dim siblingSessionKey = "FireSiblings_" & Request.QueryString(0)
-            hdnSiblingForms.Value = CStr(Session(siblingSessionKey))
-            Session.Remove(siblingSessionKey)
+         If _form.BackColour > 0 Then
+            divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
+         End If
 
-            'Get the worklfow form details
-            _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
-
-            Dim script As String = ""
-            message = CreateControls(_form, script)
-
-            ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = App.Config.SubmissionTimeout
-
-            If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
-               ' Form the script to be registered at client side.
-               ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
-            End If
-
-            If message.IsNullOrEmpty Then
-
-               If Not _form.ErrorMessage.IsNullOrEmpty Then
-                  message = _form.ErrorMessage
-               End If
-
-               If _form.BackImage > 0 Then
-                  divInput.Style("background-image") = ResolveClientUrl("~/Image.ashx?s=&id=" & _form.BackImage)
-                  divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
-                  divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
-               End If
-
-               If _form.BackColour > 0 Then
-                  divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
-               End If
-
-               pnlInputDiv.Style("width") = _form.Width.ToString & "px"
-               pnlInputDiv.Style("height") = _form.Height.ToString & "px"
-               pnlInputDiv.Style("left") = "-2px"
-            End If
-
-            ' Resize the mobile 'viewport' to fit the webform
-            AddHeaderTags(_form.Width)
-
-         Catch ex As Exception
-            message = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-         End Try
-
+         pnlInputDiv.Style("width") = _form.Width.ToString & "px"
+         pnlInputDiv.Style("height") = _form.Height.ToString & "px"
+         pnlInputDiv.Style("left") = "-2px"
       End If
+
+      ' Resize the mobile 'viewport' to fit the webform
+      AddHeaderTags(_form.Width)
 
       If Not message.IsNullOrEmpty Then
 
@@ -1864,12 +1849,10 @@ Public Class [Default]
 
    Private Sub AddHeaderTags(ByVal viewportWidth As Long)
 
-      ' Create the following timeout meta tag programatically for all browsers
-      ' <meta http-equiv="refresh" content="5; URL=timeout.aspx" />
+      ' Create the following timeout meta tag programatically for all browsers <meta http-equiv="refresh" content="5; URL=timeout.aspx" />
       Dim meta As New HtmlMeta()
       meta.HttpEquiv = "refresh"
       meta.Content = (Session.Timeout * 60).ToString & "; URL=timeout.aspx"
-
       Page.Header.Controls.Add(meta)
 
       ' for Mobiles only, set the viewport and 'home page' icons
