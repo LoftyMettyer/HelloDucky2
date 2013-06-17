@@ -5,7 +5,7 @@ Public Class Security
 
   Public Shared Function ValidateUser(userName As String, password As String) As String
 
-    Const invalidLoginDetails = "The system could not log you on. Make sure your details are correct, then retype your password."
+    Const invalidLoginDetails As String = "The system could not log you on. Make sure your details are correct, then retype your password."
 
     If userName.IndexOf("\") > 0 Then
       If Not ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password) Then Return invalidLoginDetails
