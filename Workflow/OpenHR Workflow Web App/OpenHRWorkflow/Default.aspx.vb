@@ -298,11 +298,7 @@ Public Class [Default]
 								If formItem.Value = Nothing Then
 									.Text = "&lt;undefined&gt;"
 								Else
-									Dim value = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-									If value.Chars(0) = "-" Then
-										value = value.Substring(1) & "-"
-									End If
-									.Text = value
+									.Text = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
 								End If
 
 							Case 11 ' Date
@@ -422,11 +418,7 @@ Public Class [Default]
 								If formItem.Value = Nothing Then
 									.Text = String.Empty
 								Else
-									Dim value = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-									If value.Length > 0 AndAlso value.Chars(0) = "-" Then
-										value = value.Substring(1) & "-"
-									End If
-									.Text = value
+									.Text = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
 								End If
 
 							Case 7 ' Date
