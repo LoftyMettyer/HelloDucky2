@@ -5,92 +5,95 @@
 <head runat="server">
   <title></title>
 
-  <script language="javascript" type="text/javascript">
+  <script type="text/javascript">
 // <!CDATA[
     function window_onload() {
       // Resize the frame.
       try {
-        if (frmFileUpload.hdnCount_Errors.value > 0) {
+        if (document.getElementById("hdnCount_Errors").value > 0) {
           showErrorMessages(true);
         }
         else {
-          if (frmFileUpload.hdnExitMode.value > 0) {
-            exitFileUpload(frmFileUpload.hdnExitMode.value); // 1 = cleared, 2 = uploaded
+          if (document.getElementById("hdnExitMode").value > 0) {
+            exitFileUpload(document.getElementById("hdnExitMode").value); // 1 = cleared, 2 = uploaded
             return;
           }
         }
       }
       catch (e) { };
-
       
       resizeFrame();
     }
 
     function resizeFrame() {
-        var iRequiredWidth = frmFileUpload.offsetParent.scrollWidth;
-        var iMinWidth = 0.9 * window.parent.frmMain.hdnFormWidth.value;
 
+      var tmpElement = document.getElementById("frmFileUpload").offsetParent;
+      var iRequiredWidth = tmpElement.scrollWidth;
+      var iMinWidth = 0.9 * parent.document.getElementById("frmMain").hdnFormWidth.value;
+      
         if (iRequiredWidth < iMinWidth) {
             iRequiredWidth = iMinWidth;
         }
 
-        document.getElementById('FileUpload1').style.width = (iRequiredWidth - 150) + 'px';
-
-            try {
-                window.resizeTo(iRequiredWidth, frmFileUpload.offsetParent.scrollHeight);
-                window.parent.resizeToFit(frmFileUpload.offsetParent.scrollWidth, frmFileUpload.offsetParent.scrollHeight);
+          document.getElementById("FileUpload1").style.width = (iRequiredWidth - 150) + 'px';
+          document.getElementById("FileUpload1").style.width = '400px';
+        try {            
+              window.resizeTo(iRequiredWidth, tmpElement.scrollHeight);
+              window.parent.resizeToFit(tmpElement.scrollWidth, tmpElement.scrollHeight);
             }
             catch (e) {
-                window.location = document.URL;
+              window.location = document.URL;
             }
-    }
+          }
+          
     
     function showErrorMessages(pfDisplay) {
-      if (((frmFileUpload.hdnCount_Errors.value > 0)
-				|| (frmFileUpload.hdnCount_Warnings.value > 0))
+      if (((document.getElementById("hdnCount_Errors").value > 0)
+				|| (document.getElementById("hdnCount_Warnings").value > 0))
 				&& (pfDisplay == false)) {
-        imgErrorMessages_Max.style.display = "block";
-        imgErrorMessages_Max.style.visibility = "visible";
+        document.getElementById("imgErrorMessages_Max").style.display = "block";
+        document.getElementById("imgErrorMessages_Max").style.visibility = "visible";
       }
       else {
-        imgErrorMessages_Max.style.display = "none";
-        imgErrorMessages_Max.style.visibility = "hidden";
+        document.getElementById("imgErrorMessages_Max").style.display = "none";
+        document.getElementById("imgErrorMessages_Max").style.visibility = "hidden";
       }
 
       if (pfDisplay == true) {
         //divErrorMessages_Inner.style.visibility = "visible";
-        divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
-        divErrorMessages_Outer.filters.revealTrans.apply();
-        divErrorMessages_Outer.style.display = "block";
-        divErrorMessages_Outer.style.visibility = "visible";
-        divErrorMessages_Outer.filters.revealTrans.play();
+        //divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
+        //divErrorMessages_Outer.filters.revealTrans.apply();
+        document.getElementById("divErrorMessages_Outer").style.display = "block";
+        document.getElementById("divErrorMessages_Outer").style.visibility = "visible";
+        //divErrorMessages_Outer.filters.revealTrans.play();
       }
       else {
-        divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
-        divErrorMessages_Outer.filters.revealTrans.apply();
-        divErrorMessages_Outer.style.visibility = "hidden";
+        //divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
+        //divErrorMessages_Outer.filters.revealTrans.apply();
+        document.getElementById("divErrorMessages_Outer").style.visibility = "hidden";
         //divErrorMessages_Outer.style.display = "none";
         //divErrorMessages_Inner.style.visibility = "hidden";
-        divErrorMessages_Outer.filters.revealTrans.play();
+        //divErrorMessages_Outer.filters.revealTrans.play();
 
       }
     }
 
     function unblockErrorMessageDIV() {
       try {
-        if ((divErrorMessages_Outer.style.visibility == "hidden") &&
-					(divErrorMessages_Outer.style.display != "none")) {
-          divErrorMessages_Outer.style.display = "none";
+        if ((document.getElementById("divErrorMessages_Outer").style.visibility == "hidden") &&
+					(document.getElementById("divErrorMessages_Outer").style.display != "none")) {
+          document.getElementById("divErrorMessages_Outer").style.display = "none";
         }
       }
       catch (e) { }
     }
 
     function exitFileUpload(piExitMode) {
-        try {
-            window.parent.fileUploadDone(frmFileUpload.hdnElementID.value, piExitMode);
-        }
-        catch (e) { }
+      try {
+        //window.parent.fileUploadDone(frmFileUpload.hdnElementID.value, piExitMode);
+        window.parent.fileUploadDone(document.getElementById("hdnElementID").value, piExitMode);
+      }
+      catch (e) { }
     }
 
     function enableControls() {
@@ -196,7 +199,7 @@
         <td>
         </td>
         <td style="background-color: White" valign="middle">
-          <input id="FileUpload1" runat="server" Width="400" type="file" onKeyUp="refreshFileUploadButton(this.value);" onchange="refreshFileUploadButton(this.value);"/>
+          <input id="FileUpload1" runat="server" size=50 Width="100%" type="file" onKeyUp="refreshFileUploadButton(this.value);" onchange="refreshFileUploadButton(this.value);"/>
         </td>
         <td>
         </td>
@@ -210,7 +213,7 @@
         <td>
         </td>
         <td rowspan="2">
-          <input id="btnFileUpload" value="Upload" runat="server" type="button" enabled="false" accesskey=U/>
+          <input id="btnFileUpload" value="Upload" runat="server" type="button" enabled="false" accesskey="U"/>
           &nbsp;
           <input id="btnClear" value="Clear" runat="server" type="button" enabled="false" accesskey="l"/>
           &nbsp;

@@ -3749,9 +3749,13 @@ Public Class _Default
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
 
-                    .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
+                    If Not isMobileBrowser() Then
+                      .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
 
-                    AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.DisableControls
+                      AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.DisableControls
+                    Else
+                      .Attributes.Add("onclick", "try{alert('Your browser does not support file upload.');}catch(e){};")
+                    End If
                   End With
 
 
