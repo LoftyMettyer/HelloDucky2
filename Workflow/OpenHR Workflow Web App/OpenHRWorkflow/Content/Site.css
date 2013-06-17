@@ -70,12 +70,14 @@ body { font-family: verdana; }
     margin-left: 0px;
 }
 
-.controlgrid input {
+.controlgrid input[type=text] {
     padding: 2px;
     border: 1px solid lightgray;
 }
 
-.controlgrid input[type="checkbox"] { border: none; }
+.controlgrid input[type="checkbox"] {
+    padding: 0px;
+}
 
 .copyright {
     position: absolute;
