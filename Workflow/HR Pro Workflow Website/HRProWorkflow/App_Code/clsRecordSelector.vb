@@ -675,6 +675,7 @@ Public Class RecordSelector
                             Case "Boolean"
                                 e.Row.Cells(iColCount).Style.Add("text-align", "center")
                             Case Else   ' String                                
+                                ' Careful here: &nbsp is not a real space (it's chr160, not chr20) - might cause probs somewhere down the line....
                                 e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
                                 e.Row.Cells(iColCount).Style.Add("text-align", "left")
                         End Select
@@ -755,7 +756,7 @@ Public Class RecordSelector
             ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), DropDownList)
 
             ddl.Items.Clear()
-            ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(grdGrid.Attributes("LookupColumnIndex")).Text).ToString())
+            ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(grdGrid.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32)))
             ddl.SelectedIndex = 0
         End If
     End Sub
