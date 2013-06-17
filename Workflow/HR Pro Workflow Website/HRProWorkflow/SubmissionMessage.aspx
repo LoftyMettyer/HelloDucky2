@@ -10,9 +10,9 @@
 // <!CDATA[
         function window_onload() {
             //debugger;
-            document.getElementById('lblSubmissionsMessage_1').innerHTML = window.parent.frmMain.hdnSubmissionMessage_1.value;
-            document.getElementById('lblSubmissionsMessage_2').innerHTML = window.parent.frmMain.hdnSubmissionMessage_2.value;
-            document.getElementById('lblSubmissionsMessage_3').innerHTML = window.parent.frmMain.hdnSubmissionMessage_3.value;
+            document.getElementById('lblSubmissionsMessage_1').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_1.value;
+            document.getElementById('lblSubmissionsMessage_2').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_2.value;
+            document.getElementById('lblSubmissionsMessage_3').innerHTML = window.parent.document.getElementById("frmMain").hdnSubmissionMessage_3.value;
 
             // Resize the fame.
             resizeFrame();
@@ -21,13 +21,13 @@
         }
 
         function resizeFrame() {
-            window.resizeTo(frmMessage.offsetParent.scrollWidth, frmMessage.offsetParent.scrollHeight);
-            window.parent.resizeToFit(frmMessage.offsetParent.scrollWidth, frmMessage.offsetParent.scrollHeight);
+            window.resizeTo(document.getElementById("frmMessage").offsetParent.scrollWidth, document.getElementById("frmMessage").offsetParent.scrollHeight);
+            window.parent.resizeToFit(document.getElementById("frmMessage").offsetParent.scrollWidth, document.getElementById("frmMessage").offsetParent.scrollHeight);
         }
 
         function doLabelClick() {
             try {
-                var sFollowOnForms = window.parent.frmMain.hdnFollowOnForms.value;
+                var sFollowOnForms = window.parent.document.getElementById("frmMain").hdnFollowOnForms.value;
 
                 if (sFollowOnForms.length > 0) {
                     window.parent.launchFollowOnForms(sFollowOnForms);
