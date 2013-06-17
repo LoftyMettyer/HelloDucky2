@@ -1,0 +1,1356 @@
+﻿	
+	    var app = Sys.Application;
+	    app.add_init(ApplicationInit);
+  
+    // <!CDATA[
+	    var gridViewCtl = null;
+	    var curSelRow = new Array();
+	    var selRow = new Array();
+	    var curSelRowBackColour = new Array();
+ 
+	    function ApplicationInit(sender) {
+	        try 
+	        {
+	            // For postback, set up the scripts for begin and end requests...
+	            var prm = Sys.WebForms.PageRequestManager.getInstance();
+	            if (!prm.get_isInAsyncPostBack()) 
+	            {
+	                prm.add_beginRequest(goSubmit);
+	                prm.add_endRequest(showMessage);
+	            }
+	        }
+	        catch (e) {}
+	    }
+
+
+	    function getWindowWidth() {
+	        var myWidth = 0;
+	        if( typeof( window.innerWidth ) == 'number' ) {
+	            //Non-IE
+	            myWidth = window.innerWidth;
+	        } else if( document.documentElement && ( document.documentElement.clientWidth) ) {
+	            //IE 6+ in 'standards compliant mode'
+	            myWidth = document.documentElement.clientWidth;
+	        } else if( document.body && ( document.body.clientWidth) ) {
+	            //IE 4 compatible
+	            myWidth = document.body.clientWidth;
+	        }
+	        return myWidth;
+	    }
+
+	    function getWindowHeight() {
+	        var myHeight = 0;
+	        if( typeof( window.innerHeight) == 'number' ) {
+	            //Non-IE
+	            myHeight = window.innerHeight;
+	        } else if( document.documentElement && ( document.documentElement.clientHeight ) ) {
+	            //IE 6+ in 'standards compliant mode'
+	            myHeight = document.documentElement.clientHeight;
+	        } else if( document.body && ( document.body.clientHeight ) ) {
+	            //IE 4 compatible
+	            myHeight = document.body.clientHeight;
+	        }
+	        return myHeight;
+	    }
+
+	    function window_onload() {
+	    
+	        var iDefHeight;
+	        var iDefWidth;
+	        var iResizeByHeight;
+	        var iResizeByWidth;
+	        var sControlType;
+
+	        //Set the current page tab	  
+	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;
+	        
+	        if(iPageNo > 0) {
+	            window.iCurrentTab = iPageNo;
+	        }
+	        else {
+	            window.iCurrentTab = 1;
+	        }
+	        SetCurrentTab(iCurrentTab);
+
+	        try {
+	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
+	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
+			    
+	            window.focus();
+	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
+	                iResizeByHeight = iDefHeight - getWindowHeight();
+	                iResizeByWidth = iDefWidth - getWindowWidth();
+	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
+	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
+	            }
+				
+	            try {
+	                if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
+	                    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
+	                    sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                    sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+
+	                    if (sControlType == 7) {
+	                        // Date
+	                        igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                    }
+	                    else if (sControlType == 13 || sControlType == 14) {
+	                        //TODO wont work, not using infragistics combos anymore
+	                        igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                    }
+	                    else if (sControlType == 11) {
+	                        // Record Selector
+	                        //TODO wont work, not using infragistics combos anymore
+	                        var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
+	                        var oRows = grid.Rows;
+	                        grid.Element.focus(); 
+                                    
+	                        if (oRows.length > 0) {
+	                            oRow = grid.getActiveRow();
+	                            if (oRow != null) {
+	                                oRow.scrollToView();
+	                            }
+	                        }
+	                    }
+	                    else {
+	                        document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
+	                    }
+	                }
+	            }
+	            catch (e) { }
+
+	            launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
+	        }
+	        catch (e) {}
+
+	        //Fault HRPRO-2121
+	        try	{
+	            window.resizeBy(0,-1);
+	            window.resizeBy(0,1);
+	        }
+	        catch(e) {}
+	    }
+
+	    function launchForms(psForms, pfFirstFormRelocate) {
+	        var asForms;
+	        var iLoop;
+	        var iCount;
+	        var sQueryString;
+	        var sFirstForm;
+	        try {
+	            iCount = 0;
+	            sFirstForm = "";
+	            asForms = psForms.split("\t");
+
+	            for (iLoop = 1; iLoop < asForms.length; iLoop++) {
+	                sQueryString = asForms[iLoop];
+
+	                if (sQueryString.length > 0) {
+	                    iCount = iCount + 1;
+
+	                    if (iCount == 1) {
+	                        sFirstForm = sQueryString;
+	                    }
+	                    else {
+	                        // Open other forms in new browsers.
+	                        spawnWindow(sQueryString);
+	                    }
+	                }
+	            }
+
+	            if (sFirstForm.length > 0) {
+	                if (pfFirstFormRelocate == true) {
+	                    // Open first form in current browser.
+	                    window.location = sFirstForm;
+	                }
+	                else {
+	                    // Open first form in new browser.
+	                    spawnWindow(sFirstForm);
+	                }
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+	    function spawnWindow(psURL) {
+	        var newWin;
+	        try {
+	            newWin = window.open(psURL);
+
+	            if (parseInt(navigator.appVersion) >= 4) {
+	                try {
+	                    newWin.window.focus();
+	                }
+	                catch (e) { }
+	            }
+	        }
+	        catch (e) {
+	            try {
+	                try {
+	                    newWin.close();
+	                }
+            
+	                catch(e){alert("For your security please close your browser");}
+            
+	            }
+	            catch (e) { }
+
+	            spawnWindow(psURL);
+	        }
+	    }
+
+	    function goSubmit() { 
+				
+	        if($get("txtPostbackMode").value=="3") {      
+	            try {
+	                if($get("txtActiveDDE").value.indexOf("dde")>0) {
+	                    //keep the lookup open.
+	                    //kicks off InitializeLookup BTW.
+	                    $find($get("txtActiveDDE").value).show();
+	                }
+	            }
+	            catch (e) {}
+	            return;			
+	        }		    
+
+	        $get("pleasewaitScreen").style.visibility="visible";
+	        showOverlay(true);
+	        showErrorMessages(false);
+	    }
+
+	    function getElementsBySearchValue(searchValue) {
+	        var retVal = new Array();
+	        var elems = document.getElementsByTagName("input");
+
+	        for(var i = 0; i < elems.length; i++) {
+	            var valueProp = "";
+              
+	            try {
+	                var nameProp = elems[i].getAttribute('name');
+	                if(nameProp.substr(0, 15)=="lookupforminput")
+	                    var valueProp = elems[i].getAttribute('value');
+	            }
+	            catch(e) {}              
+              
+	            if(!(valueProp==null)) {
+	                if(valueProp.indexOf(searchValue) > 0) {
+	                    retVal.push(elems[i]);
+	                }         
+	            }
+	        }
+
+	        return retVal;     
+	    } 
+
+	    function showErrorMessages(pfDisplay) {
+		
+	        if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0))
+    	        && (pfDisplay == false)) {
+	            $get("imgErrorMessages_Max").style.display = "block";
+	            $get("imgErrorMessages_Max").style.visibility = "visible";
+	        }
+	        else {
+	            $get("imgErrorMessages_Max").style.display = "none";
+	            $get("imgErrorMessages_Max").style.visibility = "hidden";
+	        }
+           
+
+	        if (pfDisplay == true) {
+	            //refresh the errors WARP panel. 
+	            __doPostBack('pnlErrorMessages', '');
+
+	            $get("divErrorMessages_Outer").style.display = "block";
+	            $get("divErrorMessages_Outer").style.visibility = "visible";
+	        }
+	        else {
+	            $get("divErrorMessages_Outer").style.visibility = "hidden";
+	        }
+	    }
+
+	    function launchFollowOnForms(psForms) {
+	        launchForms(psForms, true);
+	    }
+
+	    function overrideWarningsAndSubmit() {
+	        if (divErrorMessages_Outer.disabled == true) {
+	            return;
+	        };
+
+	        $get("frmMain").hdnOverrideWarnings.value = 1;
+
+	        try {
+	            document.getElementById(frmMain.hdnLastButtonClicked.value).click();
+	        }
+	        catch (e) {
+	            $get("frmMain").btnSubmit.click();
+	        }
+	    }
+
+	    function submitForm() {
+	        pbModeValue = document.getElementById("txtPostbackMode").value;
+			
+	        try {
+	            if (pbModeValue == 0) {
+	                tAE = document.getElementById("txtActiveElement");				  
+	                if(eval(tAE)) {tae.value.setActive();}
+				  
+	            }
+	        }
+	        catch (e) { };
+			
+	        return (pbModeValue != 0);
+	    }
+
+	    function setPostbackMode(piValue) {
+	        // 0 = Default
+	        // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
+	        // 2 = Grid header postback
+	        // 3 = FileUpload button postback
+	        try {
+	            pbModeValue = document.getElementById("txtPostbackMode");
+	            pbModeValue.value = piValue;
+	        }
+	        catch (e) { }
+			
+	    }
+
+	    function activateGridPostback() {
+	        setPostbackMode(3);
+	    }
+
+	    function activateControl() {
+	        try {
+	            txtActiveElement.value = document.activeElement.id;
+	        }
+	        catch (e) { }
+	    }
+
+	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
+	        try {
+	            activateControl();
+
+	            if (piKeyCode == 113) // F2 - set today's date
+	            {
+	                var d = new Date();
+	                pobjControl.setValue(d);
+	            }
+	            if (piKeyCode == 117) // F6 - show calendar
+	            {
+	                pobjControl.setDropDownVisible(true);
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+	    //Function to call postback for the webNumericEdit change event. IG Bug.
+	    function WebNumericEdit(oEdit) {
+	        window.setTimeout('igedit_getById("' + oEdit + '").doPost(3)', 1);
+	    }
+
+	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
+	
+	        var dtCurrentDate;
+
+	        try {
+	            if (pNewText.length > 0) {
+	                dtCurrentDate = pobjControl.getValue();				
+          
+	                $get("txtLastDate_Month").value = dtCurrentDate.getMonth();
+	                $get("txtLastDate_Day").value = dtCurrentDate.getDate();		
+	                $get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+	    function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
+	        try {
+	            var sCurrentText = pobjControl.getText();
+	            var sLastDate_Month = $get("txtLastDate_Month").value;
+	            var sLastDate_Day = $get("txtLastDate_Day").value;
+	            var sLastDate_Year = $get("txtLastDate_Year").value;
+	            var dtLastDate;
+
+	            if ((sCurrentText.length == 0)
+    	            && (sLastDate_Month.length > 0)
+        	            && (sLastDate_Day.length > 0)
+            	            && (sLastDate_Year.length > 0)) {
+	                dtLastDate = new Date(sLastDate_Year, sLastDate_Month, sLastDate_Day);
+	                pobjControl.Calendar.setSelectedDate(dtLastDate);
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+        function dateControlAndroidFix(controlId, hide) {
+            var dateControl = document.getElementById(controlId);
+            var nodes = dateControl.parentNode.childNodes;
+            for(var i = 0; i < nodes.length; i++) {
+                var ctl = nodes[i];
+                if(ctl.id && ctl.id.indexOf('forminput') == 0 && ctl.id != dateControl.id) {
+                    if(ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 25) {
+                        ctl.style.visibility = hide ? 'hidden' : 'visible';
+                    }
+                }
+            }
+        }
+
+        function showCalendar(elementID) {
+            var dc = igdrp_getComboById(elementID);
+            dc.showCalendar();
+        }
+        
+	    function showOverlay(display) {
+	        $get("divOverlay").style.display = display ? "block" : "none";               
+	    }
+
+	    function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
+		
+	        try {
+	            if (pfDisplay == true) {
+
+	                setPostbackMode(3);
+
+	                var sAlreadyUploaded = new String(psAlreadyUploaded);
+	                sAlreadyUploaded = sAlreadyUploaded.substr(0, 1);
+	                if (sAlreadyUploaded != "1") {
+	                    sAlreadyUploaded = "0";
+	                }
+          
+	                try {
+	                    txtActiveElement.value = document.activeElement.id;
+	                }
+	                catch (e) { }
+          
+	                $get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
+          
+	                showErrorMessages(false);
+	                showOverlay(true);
+	                document.getElementById("divErrorMessages_Outer").disabled = true;
+	                document.getElementById("imgErrorMessages_Max").disabled = true;
+	                document.getElementById("divErrorMessages_Outer").style.display = "none";
+	                document.getElementById("divFileUpload").style.visibility = "visible";
+	                document.getElementById("divFileUpload").style.display = "block";
+	            }
+	            else {
+	                document.getElementById("divFileUpload").style.visibility = "hidden";
+	                document.getElementById("divFileUpload").style.display = "none";
+
+	                setPostbackMode(3);
+					
+	                $get("frmMain").btnReEnableControls.click();
+
+	                showOverlay(false);
+	                document.getElementById("divErrorMessages_Outer").disabled = false;
+	                document.getElementById("imgErrorMessages_Max").disabled = false;
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+	    function fileUploadDone(psElementItemID, piExitMode) {
+	        // 0 = Cancel
+	        // 1 = Clear
+	        // 2 = File Uploaded
+	        // Hide the file upload dialog, and record how the fileUpload was performed.
+	        try {
+	            if ((piExitMode == 1) || (piExitMode == 2)) {
+	                var sID = "fileforminput_" + psElementItemID + "_17_";
+
+	                if (piExitMode == 2) {
+	                    $get("frmMain").elements.namedItem(sID).value = "1";
+	                }
+	                else {
+	                    $get("frmMain").elements.namedItem(sID).value = "0";
+	                }
+	            }
+
+	            showFileUpload(false, '0', 0);
+	        }
+	        catch (e) { }
+	    }
+
+	    function unblockErrorMessageDIV() {
+	        try {
+	            if ((divErrorMessages_Outer.style.visibility == "hidden") &&
+    	            (divErrorMessages_Outer.style.display != "none")) {
+	                divErrorMessages_Outer.style.display = "none";
+	            }
+	        }
+	        catch (e) { }
+	    }
+
+	    function showMessage() {			 
+    
+	        //Reset current tab position
+	        SetCurrentTab(iCurrentTab);	
+		
+	        $get("pleasewaitScreen").style.visibility="hidden";
+	        showOverlay(false);
+
+	        //Reapply resizable column functionality to tables
+	        //This is put here to ensure functionality is reapplied after partial/full postback.
+	        ResizableColumns();		
+
+	        if($get("txtActiveDDE").value.indexOf("dde")>0) {
+	            try {  
+	                $find($get("txtActiveDDE").value).show();        
+	                $get("txtActiveDDE").value="";        
+	            }
+	            catch (e) {}      
+	        }		
+		    
+	        if($get("txtPostbackMode").value==3) {
+	            //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
+	            //the postback cycle. So we'll reset all grid scroll bars to their previous position
+	            SetScrollTopPos("", "-1", 0);		    
+	        }
+      
+      
+	        try {
+	            if ($get("frmMain").hdnErrorMessage.value.length > 0) {
+	                showSubmissionMessage();
+	                return;
+	            }
+
+	            if($get("txtPostbackMode").value!="2") refreshLiterals();
+
+	            if (($get("txtPostbackMode").value == 2)
+    	            || ($get("txtPostbackMode").value == 3)) 
+	            {
+	                // 0 = Default
+	                // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
+	                // 2 = Grid header postback
+	                // 3 = FileUpload button postback
+					
+	                if ($get("txtPostbackMode").value == 3) 
+	                {
+	                    $get("ifrmFileUpload").contentWindow.enableControls();
+	                }
+	                // not doing this causes the object referenced is null error:
+	                setPostbackMode(0);
+	                return;
+					
+	            }
+
+	            if (($get("frmMain").hdnCount_Errors.value > 0)
+    	            || ($get("frmMain").hdnCount_Warnings.value > 0)) {
+	                showErrorMessages(true);
+	            }
+	            else {
+	                if ($get("frmMain").hdnNoSubmissionMessage.value == 1) {
+	                    try {
+	                        if ($get("frmMain").hdnFollowOnForms.value.length > 0) {
+	                            launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
+	                        }
+	                        else {							
+	                            if(navigator.userAgent.indexOf("MSIE")>0) {
+	                                //Only IE can self-close windows that it didn't open
+	                                window.close();
+	                            }
+	                            else
+	                            {
+	                                // Non-IE browsers can't self-close windows.
+	                                //show Please Wait box, with 'please close me' text
+	                                showOverlay(true);
+	                                $get("pleasewaitScreen").style.visibility="visible";
+	                                $get("pleasewaitScreen").style.width="200px";
+
+	                                labelCtl = document.getElementById("pleasewaitText");
+	                                if (null != labelCtl) {
+	                                    labelCtl.innerHTML = "Workflow completed.<BR/><BR/>Please close your browser.";                    
+	                                }								  
+	                            }
+	                        }
+	                    }
+	                    catch (e) { };
+	                }
+	                else {
+	                    if ($get("txtPostbackMode").value == 1) {
+	                        showSubmissionMessage();
+	                    }
+	                }
+	            }
+	            setPostbackMode(0);
+	        }
+	        catch (e) { }
+	    }
+
+	    function showSubmissionMessage() {
+
+	        try {
+	            $get("ifrmMessages").src = "SubmissionMessage.aspx";
+
+	            showOverlay(true);
+	            $get("frmMain").hdnCount_Errors.value = 0;
+	            $get("frmMain").hdnCount_Warnings.value = 0;
+	            $get("divErrorMessages_Outer").style.display = "none";
+	            showErrorMessages(false);
+	            $get("divSubmissionMessages").style.display = "block";
+	            $get("divSubmissionMessages").style.visibility = "visible";
+	        }
+	        catch (e) { }
+	    }
+
+	    function unblockFileUploadDIV() {
+	        try {
+	            if (($get("divFileUpload").style.visibility == "hidden") &&
+    	            ($get("divFileUpload").style.display != "none")) {
+	                $get("divFileUpload").style.display = "none";
+	            }
+	        }
+	        catch (e) { }
+
+	        try {
+	            document.getElementById($get("txtActiveElement").value).setActive();
+	        }
+	        catch (e) { }
+	    }
+
+	    function FileDownload_Click(psID) {
+	        spawnWindow("FileDownload.aspx?" + psID);
+	    }
+
+	    function FileDownload_KeyPress(psID) {
+	        // If the user presses SPACE (keyCode = 32) launch the file download.
+	        if (window.event.keyCode == 32) {
+	            spawnWindow("FileDownload.aspx?" + psID);
+	        }
+	    }
+	    
+	    function GetDatePart(psLocaleDateValue, psDatePart) {
+	        var reDATE = /[YMD]/g;        
+	        var sLocaleDateFormat = "<%=LocaleDateFormat()%>";
+	        var sLocaleDateSep = sLocaleDateFormat.replace(reDATE, "").substr(0, 1);
+	        var iLoop;
+	        var iRequiredPart = 1;
+	        var sValuePart1;
+	        var sValuePart2;
+	        var sValuePart3;
+	        var iPartCounter = 1;
+	        var sTemp = "";
+
+	        for (iLoop=0; iLoop<psLocaleDateValue.length; iLoop++)
+	        {
+	            if (psLocaleDateValue.substr(iLoop, 1) == sLocaleDateSep)
+	            {
+	                if (iPartCounter == 1)
+	                {
+	                    sValuePart1 = sTemp;
+	                }
+	                else
+	                {
+	                    if (iPartCounter == 2)
+	                    {
+	                        sValuePart2 = sTemp;
+	                    }
+	                }
+                    
+	                iPartCounter++;
+	                sTemp = "";
+	            }
+	            else
+	            {
+	                sTemp = sTemp + psLocaleDateValue.substr(iLoop, 1);
+	            }
+	        }
+	        sValuePart3 = sTemp;
+
+            
+	        if (psDatePart == "Y")
+	        {    
+	            if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("Y"))
+	            {
+	                iRequiredPart++;
+	            }
+	            if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("Y"))
+	            {
+	                iRequiredPart++;
+	            }
+	        }
+	        else
+	        {
+	            if (psDatePart == "M")
+	            {
+	                if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("M"))
+	                {
+	                    iRequiredPart++;
+	                }
+	                if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("M"))
+	                {
+	                    iRequiredPart++;
+	                }
+	            }
+	            else
+	            {
+	                if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("D"))
+	                {
+	                    iRequiredPart++;
+	                }
+	                if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("D"))
+	                {
+	                    iRequiredPart++;
+	                }
+	            }
+	        }
+
+	        if (iRequiredPart == 1)
+	        {
+	            return (sValuePart1);
+	        }
+	        else
+	        {
+	            if (iRequiredPart == 2)
+	            {
+	                return (sValuePart2);
+	            }
+	            else
+	            {
+	                if (iRequiredPart == 3)
+	                {
+	                    return (sValuePart3);
+	                }
+	                else
+	                {
+	                    return ("");
+	                }
+	            }
+	        }
+	    }
+	    
+	    function ResizeComboForForm(sender, args) {
+	        psWebComboID = sender._id;
+            
+	        //Let's set the width of the lookup panel to the width of the screen. 
+	        //It used to resize the screen, but don't want this happening now.
+
+	        try {			
+	            var oEl = document.getElementById(psWebComboID.replace("dde", ""));
+	            if(eval(oEl)) 
+	            {
+	                if (oEl.offsetWidth > $get("bdyMain").clientWidth)
+	                {
+	                    iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
+                    
+	                    oEl.style.width = iNewWidth;
+	                    document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
+	                }   
+                  
+	                //also set left position to 0 if required (right coord > bymain.width)
+	                if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
+	                {
+	                    oEl.style.left = "0px";
+	                }                                                 
+                  
+	                //Hide the navigation icons as required
+	                //Order to hide is: nav arrows go first, then 'page 1 of x'. Finally the search box goes.
+	                //N.B. if the control is paged, min width is 420px before hiding the relevant controls
+
+	                //Check to see if this is a paged control...
+	                var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
+	                if(eval(oElDDL)) {
+	                    //This is a paged control, so different rules apply.
+	                    if(oEl.offsetWidth<420) {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                    }
+	                    else {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = ""; 
+	                    }
+	                }
+	                else {
+	                    //Not a paged control
+	                    if(oEl.offsetWidth<250) {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                    }
+	                    else {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "";
+	                    }                    
+	                }
+	            }
+	        }
+	        catch(e) {}
+	    }
+
+	    function scrollHeader(iGridID) {
+	        //keeps the header table aligned with the gridview in record selectors and lookups.
+	        var leftPos = document.getElementById(iGridID).scrollLeft;
+	        document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
+      
+	        var hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
+	        hdn1.value = document.getElementById(iGridID).scrollTop;
+      
+	    }
+	    
+	    function InitializeLookup(sender, args) {
+  
+	        if($get("txtActiveDDE").value.indexOf("dde")>=0) {
+	            // If we're in the process of displaying a filtered lookup already, do nothing and exit the function...
+	            return;
+	        }
+
+	        var sSelectWhere = "";
+	        var sValueID = "";
+	        var sValueType = "";
+	        var sControlType = "";
+	        var sValue = "";
+	        var sTemp = "";
+	        var sSubTemp = "";
+	        var numValue = 0;
+	        var dtValue;
+	        var fValue = true;
+	        var iIndex;
+	        var iTemp;
+	        var reX = /x/g;        
+	        var reDATE = /[YMD]/g;        
+	        var reTAB = /\t/g;        
+	        var reSINGLEQUOTE = /\'/g;        
+	        var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+	        var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	        var psWebComboID = "";
+
+	        psWebComboID = sender._id;
+	        
+	        if(psWebComboID=="") {return;}
+	        
+	        var sID = "lookup" + psWebComboID.replace("dde","");
+	        try {
+	            var ctlLookupFilter = document.getElementById(sID);
+	            if (ctlLookupFilter)
+	            { 
+	                sSelectWhere = ctlLookupFilter.value;
+
+	                if (sSelectWhere.length > 0)
+	                {
+	                    // sSelectWhere has the format:
+	                    //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
+                        
+	                    iIndex = sSelectWhere.indexOf("\t");
+	                    if (iIndex >= 0)
+	                    {
+	                        sValueType = sSelectWhere.substring(0, iIndex);
+	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                    }
+                        
+	                    iIndex = sSelectWhere.indexOf("\t");
+	                    if (iIndex >= 0)
+	                    {
+	                        sValueID = sSelectWhere.substring(0, iIndex);
+	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
+
+	                        sControlType = sValueID.substr(sValueID.indexOf("_")+1);
+	                        sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                        sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+                            
+	                        if ((sControlType == 13)
+    	                        || (sControlType == 14))
+	                        {
+	                            // Dropdown (13), Lookup (14)
+	                            if (sControlType == 13) {  
+	                                var ctlLookupValueCombo = document.getElementById(sValueID);
+	                                sValue = ctlLookupValueCombo.value;
+	                            }
+	                            else
+	                            {
+	                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
+	                                sValue = ctlLookupValueCombo.value;                        	    
+	                            }
+                        	    
+                        	    
+	                            if(sValueType == 11)
+	                            {
+	                                // Date value from lookup. Convert from locale format to yyyymmdd.
+	                                if (sValue.length > 0)
+	                                {
+	                                    sTemp = GetDatePart(sValue, "Y");
+                        	             
+	                                    sSubTemp = "0" + GetDatePart(sValue, "M");
+	                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+                        	            
+	                                    sSubTemp = "0" + GetDatePart(sValue, "D");
+	                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+	                                    sValue = sTemp;
+	                                }
+	                                else
+	                                {
+	                                    sValue = "";
+	                                }
+	                            }
+	                            else
+	                            {
+	                                if((sValueType == 2) || (sValueType == 4))
+	                                {
+	                                    // numerics/integers
+	                                    if (sValue.length > 0)
+	                                    {
+	                                        sValue = sValue.replace(reDECIMAL, ".");
+	                                    }
+	                                    else
+	                                    {
+	                                        sValue = "0";
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        else
+	                        {
+	                            if (sControlType == 6)
+	                            {
+	                                // Checkbox (6)
+	                                var ctlLookupValueCheckbox = document.getElementById(sValueID);
+	                                fValue = ctlLookupValueCheckbox.checked;
+	                                if (fValue == true)
+	                                {
+	                                    sValue = "1";
+	                                }
+	                                else
+	                                {
+	                                    sValue = "0";
+	                                }
+	                            }
+	                            else
+	                            {
+	                                if (sControlType == 5)
+	                                {
+	                                    // Numeric (5)
+	                                    var ctlLookupValueNumeric = igedit_getById(sValueID);
+	                                    numValue = ctlLookupValueNumeric.getValue();
+	                                    sValue = numValue.toString();
+	                                }
+	                                else
+	                                {
+	                                    if (sControlType == 7)
+	                                    {
+	                                        // Date (7)
+	                                        var ctlLookupValueDate = igdrp_getComboById(sValueID);
+	                                        dtValue = ctlLookupValueDate.getValue();
+	                                        if (dtValue)
+	                                        {
+	                                            // Get year part.
+	                                            sTemp = dtValue.getFullYear();
+                        	            
+	                                            // Get month part. Pad to 2 digits if required.
+	                                            sSubTemp = "0" + (dtValue.getMonth() + 1);
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+	                                            // Get day part. Pad to 2 digits if required.
+	                                            sSubTemp = "0" + dtValue.getDate();
+	                                            sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        // CharInput, OptionGroup
+	                                        var ctlLookupValue = document.getElementById(sValueID);
+	                                        sValue = ctlLookupValue.value;
+	                                    }
+	                                }
+	                            }
+	                        }
+
+	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
+	                        sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
+                                
+	                        //var objCombo = igcmbo_getComboById(psWebComboId);
+	                        //        objCombo.selectWhere(sSelectWhere);
+        	                                         
+	                        if(sValue=="") {
+	                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = "";                          
+	                        }
+	                        else {
+	                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = sSelectWhere;                          
+	                        }
+                          
+	                        //This prevents the lookup closing after the filter is applied/removed
+                          
+	                        $get("txtActiveDDE").value = psWebComboID;
+                          
+	                        setPostbackMode(3);
+                          
+	                        //These lines hide the lookup dropdown until it's filled with data.
+	                        document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
+	                        document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
+                          
+	                        //This clicks the server-side button to apply filtering...                          
+	                        //this also kicks off the gosubmit() via postback beginrequest.                          
+	                        document.getElementById(psWebComboID.replace("dde", "refresh")).click();
+                          
+	                        //set pbmode back to 0 to prevent recursion.                          
+	                        setPostbackMode(0);                                                                  
+	                    }
+	                }
+	            }
+	        }
+	        catch (e) {}
+
+	        return false;
+	    }
+
+
+	    function FilterMobileLookup(sourceControlID) {
+	        var sSelectWhere = "";
+	        var sValueID = "";
+	        var sValueType = "";
+	        var sControlType = "";
+	        var sValue = "";
+	        var sTemp = "";
+	        var sSubTemp = "";
+	        var numValue = 0;
+	        var dtValue;
+	        var fValue = true;
+	        var iIndex;
+	        var iTemp;
+	        var reX = /x/g;        
+	        var reDATE = /[YMD]/g;        
+	        var reTAB = /\t/g;        
+	        var reSINGLEQUOTE = /\'/g;        
+	        var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+	        var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	        
+	        if(sourceControlID=="") {return;}
+	        
+	        var lookups = getElementsBySearchValue(sourceControlID);
+	        var AllLookupIDs = "";
+
+	        for(var i = 0; i < lookups.length; i++) {
+
+	            try {
+	                var psWebComboID = lookups[i].name.replace("lookup", "");
+	            }
+	            catch(e) {var psWebComboID="";}
+          
+          
+	            if(psWebComboID.length>0) {
+	        
+	                var sID = "lookup" + psWebComboID;
+	                AllLookupIDs = AllLookupIDs + (i == 0 ? "" : "\t") + psWebComboID + "refresh";
+
+	                try {
+	                    var ctlLookupFilter = document.getElementById(sID);
+	                    if (ctlLookupFilter)
+	                    { 
+	                        sSelectWhere = ctlLookupFilter.value;
+                  
+	                        if (sSelectWhere.length > 0)
+	                        {
+	                            // sSelectWhere has the format:
+	                            //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
+                        
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0)
+	                            {
+	                                sValueType = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                            }
+                        
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0)
+	                            {
+	                                sValueID = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
+
+	                                sControlType = sValueID.substr(sValueID.indexOf("_")+1);
+	                                sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+                            
+	                                if ((sControlType == 13)
+    	                                || (sControlType == 14))
+	                                {
+	                                    // Dropdown (13), Lookup (14)
+	                                    if (sControlType == 13) {
+	                                        var ctlLookupValueCombo = document.getElementById(sValueID);
+	                                        sValue = ctlLookupValueCombo.value;
+	                                    }
+	                                    else
+	                                    {
+	                                        var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
+	                                        if(!(eval(ctlLookupValueCombo))) {var ctlLookupValueCombo = document.getElementById(sValueID);}
+
+	                                        sValue = ctlLookupValueCombo.value;                                  
+	                                    }
+                        	    
+                        	    
+	                                    if(sValueType == 11)
+	                                    {
+	                                        // Date value from lookup. Convert from locale format to yyyymmdd.
+	                                        if (sValue.length > 0)
+	                                        {
+	                                            sTemp = GetDatePart(sValue, "Y");
+                        	             
+	                                            sSubTemp = "0" + GetDatePart(sValue, "M");
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+                        	            
+	                                            sSubTemp = "0" + GetDatePart(sValue, "D");
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+	                                            sValue = sTemp;
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        if((sValueType == 2) || (sValueType == 4))
+	                                        {
+	                                            // numerics/integers
+	                                            if (sValue.length > 0)
+	                                            {
+	                                                sValue = sValue.replace(reDECIMAL, ".");
+	                                            }
+	                                            else
+	                                            {
+	                                                sValue = "0";
+	                                            }
+	                                        }
+	                                    }
+	                                }
+	                                else
+	                                {
+	                                    if (sControlType == 6)
+	                                    {
+	                                        // Checkbox (6)
+	                                        var ctlLookupValueCheckbox = document.getElementById(sValueID);
+	                                        fValue = ctlLookupValueCheckbox.checked;
+	                                        if (fValue == true)
+	                                        {
+	                                            sValue = "1";
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "0";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        if (sControlType == 5)
+	                                        {
+	                                            // Numeric (5)
+	                                            var ctlLookupValueNumeric = igedit_getById(sValueID);
+	                                            numValue = ctlLookupValueNumeric.getValue();
+	                                            sValue = numValue.toString();
+	                                        }
+	                                        else
+	                                        {
+	                                            if (sControlType == 7)
+	                                            {
+	                                                // Date (7)
+	                                                var ctlLookupValueDate = igdrp_getComboById(sValueID);
+	                                                dtValue = ctlLookupValueDate.getValue();
+	                                                if (dtValue)
+	                                                {
+	                                                    // Get year part.
+	                                                    sTemp = dtValue.getFullYear();
+                        	            
+	                                                    // Get month part. Pad to 2 digits if required.
+	                                                    sSubTemp = "0" + (dtValue.getMonth() + 1);
+	                                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+
+	                                                    // Get day part. Pad to 2 digits if required.
+	                                                    sSubTemp = "0" + dtValue.getDate();
+	                                                    sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                                }
+	                                                else
+	                                                {
+	                                                    sValue = "";
+	                                                }
+	                                            }
+	                                            else
+	                                            {
+	                                                // CharInput, OptionGroup
+	                                                var ctlLookupValue = document.getElementById(sValueID);
+	                                                sValue = ctlLookupValue.value;
+	                                            }
+	                                        }
+	                                    }
+	                                }
+
+	                                sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
+	                                sSelectWhere = sSelectWhere.replace(reTAB, sValue);
+        	                       
+	                                if(sValue=="") {
+	                                    document.getElementById(psWebComboID + "filterSQL").value = "";
+	                                }
+	                                else {
+	                                    document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;                          
+	                                }
+                          
+	                                //This prevents the lookup closing after the filter is applied/removed
+                          
+	                                //$get("txtActiveDDE").value = psWebComboID;
+                          
+	                                //setPostbackMode(3);
+                          
+	                                //These lines hide the lookup dropdown until it's filled with data.
+	                                //document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
+	                                //document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
+                          
+	                                //This clicks the server-side button to apply filtering...                          
+	                                //this also kicks off the gosubmit() via postback beginrequest.                          
+	                                //document.getElementById(psWebComboID + "refresh").click();                                                    
+
+	                                //set pbmode back to 0 to prevent recursion.                          
+	                                //setPostbackMode(0);
+	                            }
+	                        }
+	                    }
+	                }
+	                catch (e) {}
+	            }
+	            }
+	            setPostbackMode(3);
+	            document.getElementById("hdnMobileLookupFilter").value = AllLookupIDs;
+
+	        //return false;
+	    }
+
+	    function Right(str, n){
+	        if (n <= 0)
+	            return "";
+	        else if (n > String(str).length)
+	            return str;
+	        else {
+	            var iLen = String(str).length;
+	            return String(str).substring(iLen, iLen - n);
+	        }
+	    }
+
+	    function isGridFiltered(iGridID) { 
+	        //searches the specified table for hidden rows and returns true if any are found...
+	        var table = document.getElementById(iGridID);
+    
+	        for (var r = 0; r < table.rows.length; r++) {
+	            if (table.rows[r].style.display == 'none') {
+	                return true;
+	            }
+	        }
+	        return false;  
+	    }
+  
+	    function GetGridRowHeight(iGridID) {
+	        var table = document.getElementById(iGridID);
+
+	        for (var r = 0; r < table.rows.length; r++) {
+	            if (table.rows[r].style.display == '') {        
+	                return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
+	            }
+	        }
+    
+	        return 0;    
+	    }
+  
+  
+	    function SetScrollTopPos(iGridID, iPos, iRowIndex) {
+	        if(iPos==-1) {
+	            // -1 is the 'code' to reset scrollbar to stored position
+	            //Loop through all hidden scroll fields and reset values.
+	            var controlCollection = $get("frmMain").elements;
+	            if (controlCollection!=null) 
+	            {
+	                for (i=0; i<controlCollection.length; i++)  
+	                {
+	                    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
+	                        document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
+	                    }	
+	                }
+	            }							
+	        }
+	        else { 
+	            //Check if this grid is quick-filtered (NOT lookup filtered)
+	            //If it is, calculate the scroll position to use after postback,
+	            //otherwise store the current scroll position for postback...
+	            if(isGridFiltered(iGridID)) {
+	                iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
+	            }
+	            //store the scrollbar position
+	            hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
+	            hdn1.value = iPos;
+	            ScrollTopPos = iPos;          
+	        }
+	    }
+  
+	    function SetCurrentTab(iNewTab) {
+            
+	        var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
+	        var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
+	        var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
+	        var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
+
+	        document.getElementById("hdnDefaultPageNo").value = iNewTab;
+    
+	        try {
+	            if(currentTab!=null) currentTab.style.display = "none";
+      
+	            if(currentPanel!=null) currentPanel.style.borderBottom = "1px solid black";
+        
+	            if(newTab!=null) newTab.style.display = "block";
+        
+	            if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
+        
+	            window.iCurrentTab = iNewTab;            
+
+	        }
+	        catch (e) {}
+	    }
+
+    function disposeTree(sender, args) {
+
+        //http://support.microsoft.com/?kbid=2000262
+
+        try {
+
+            var elements = args.get_panelsUpdating();
+            for (var i = elements.length - 1; i >= 0; i--) {
+                var element = elements[i];
+                var allnodes = element.getElementsByTagName('*'),
+                    length = allnodes.length;
+                var nodes = new Array(length);
+                for (var k = 0; k < length; k++) {
+                    nodes[k] = allnodes[k];
+                }
+                for (var j = 0, l = nodes.length; j < l; j++) {
+                    var node = nodes[j];
+                    if (node.nodeType === 1) {
+                        if (node.dispose && typeof (node.dispose) === "function") {
+                            node.dispose();
+                        }
+                        else if (node.control && typeof (node.control.dispose) === "function") {
+                            node.control.dispose();
+                        }
+
+                        var behaviors = node._behaviors;
+                        if (behaviors) {
+                            behaviors = Array.apply(null, behaviors);
+                            for (var k = behaviors.length - 1; k >= 0; k--) {
+                                behaviors[k].dispose();
+                            }
+                        }
+                    }
+                }
+                element.innerHTML = "";
+            } 
+        } catch (e) { }
+    }
+
+    try {
+        Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
+    }
+    catch (e) { }
+
