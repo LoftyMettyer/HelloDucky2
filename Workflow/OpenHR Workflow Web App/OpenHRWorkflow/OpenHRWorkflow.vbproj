@@ -372,6 +372,7 @@
       <DependentUpon>Registration.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Class1.vb" />
     <Compile Include="Code\Config.vb" />
     <Compile Include="Code\Configuration.vb" />
     <Compile Include="Code\Crypt.vb" />
@@ -492,7 +493,15 @@
     </None>
     <Content Include="Site.master" />
     <Content Include="Web.custom.config" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
     <None Include="Web.custom.config.template" />
   </ItemGroup>
   <ItemGroup>
