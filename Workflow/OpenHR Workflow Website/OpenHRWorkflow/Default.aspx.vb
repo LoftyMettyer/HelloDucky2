@@ -2988,6 +2988,7 @@ Public Class _Default
                           m_iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
                           iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
 
+                          .DataTextFormatString = "{0:dd/MM/yyyy}"
                           .DataTextField = dt.Columns(m_iLookupColumnIndex).ColumnName.ToString
 
                           .Attributes.Remove("LookupColumnIndex")
