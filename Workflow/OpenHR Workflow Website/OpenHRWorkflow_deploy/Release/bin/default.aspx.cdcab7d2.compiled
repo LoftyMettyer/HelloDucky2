@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="3" virtualPath="/HRProWorkflow/Default.aspx" hash="ffffffff45559949" filehash="409356f0b9820f67" flags="110000" assembly="OpenHRWorkflow" type="ASP.default_aspx">
+<preserve resultType="3" virtualPath="/HRProWorkflow/Default.aspx" hash="ffffffff45559949" filehash="3fd128cdd8695b3a" flags="110000" assembly="OpenHRWorkflow" type="ASP.default_aspx">
   <filedeps>
     <filedep name="/HRProWorkflow/Default.aspx" />
     <filedep name="/HRProWorkflow/Default.aspx.vb" />
