@@ -2732,10 +2732,18 @@ Public Class _Default
                           lastLeft += (stringSize.Width + (font.Size * 2) + 28)
                       End Select
 
+                      'either select first item or the default value if set
                       If iTemp = 0 Or CInt(drGrid.GetValue(1)) = 1 Then
-                        sTemp = sTemp & _
-                         " Checked=""checked"""
+
+                        'default value found so override selecting the first item
+                        If CInt(drGrid.GetValue(1)) = 1 Then
+                          sTemp = sTemp.Replace(" checked=""checked""", "")
+                        End If
+                        'select this item
+                        sTemp = sTemp & " checked=""checked"""
                         sDefaultValue = drGrid(0).ToString
+                      Else
+
                       End If
 
                       sTemp = sTemp & _
