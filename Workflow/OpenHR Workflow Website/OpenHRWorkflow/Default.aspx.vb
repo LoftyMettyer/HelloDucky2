@@ -128,6 +128,7 @@ Public Class _Default
     Dim cmdCheck As SqlCommand
     Dim cmdSelect As SqlCommand
     Dim cmdInitiate As SqlCommand
+    Dim cmdActivate As System.Data.SqlClient.SqlCommand
     Dim dr As SqlDataReader
     Dim iTemp As Integer
     Dim sTemp As String = String.Empty
@@ -217,10 +218,10 @@ Public Class _Default
       Response.AddHeader("Pragma", "no-cache")
       Response.Expires = -1
 
-            If Not IsPostBack And Not isMobileBrowser() Then
-                Session.Clear()
-                Session("TimeoutSecs") = Session.Timeout * 60
-            End If
+      If Not IsPostBack And Not isMobileBrowser() Then
+        Session.Clear()
+        Session("TimeoutSecs") = Session.Timeout * 60
+      End If
     Catch ex As Exception
     End Try
 
@@ -404,14 +405,30 @@ Public Class _Default
       Try ' conn creation 
         ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
         ' Establish Connection
-        Dim myConnection As New SqlConnection(GetConnectionString)
-        myConnection.Open()
-        Dim myCommand As New SqlCommand("UPDATE tbsys_mobilelogins SET [password] = 'Active' WHERE [userid] = " & CStr(miInstanceID), myConnection)
-        myCommand.ExecuteNonQuery()
-        myConnection.Close()
+        Dim strConn As String = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
 
+        Dim myConnection As New SqlClient.SqlConnection(strConn)
+        myConnection.Open()
+
+        cmdActivate = New SqlClient.SqlCommand
+        cmdActivate.CommandText = "spASRSysMobileActivateUser"
+        cmdActivate.Connection = myConnection
+        cmdActivate.CommandType = CommandType.StoredProcedure
+
+        cmdActivate.Parameters.Add("@piRecordID", SqlDbType.Int).Direction = ParameterDirection.Input
+        cmdActivate.Parameters("@piRecordID").Value = NullSafeInteger(miInstanceID)
+
+        cmdActivate.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+
+        cmdActivate.ExecuteNonQuery()
+
+        sMessage = CStr(cmdActivate.Parameters("@psMessage").Value())
+
+        cmdActivate.Dispose()
         ' set message to something to skip all the normal workflow stuff.
-        sMessage = "You have been successfully activated"
+        If sMessage.Length = 0 Then
+          sMessage = "You have been successfully activated"
+        End If
 
       Catch ex As Exception
         sMessage = "Unable to activate user."
