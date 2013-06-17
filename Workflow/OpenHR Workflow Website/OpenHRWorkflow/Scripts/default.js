@@ -1240,8 +1240,11 @@
 	        var table = document.getElementById(iGridID);
 
 	        for (var r = 0; r < table.rows.length; r++) {
-	            if (table.rows[r].style.display == '') {        
-	                return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
+	            if (table.rows[r].style.display == '') {
+	              //return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
+	              var rows = document.getElementById(iGridID).rows;
+	              return (rows[r].offsetHeight);
+	              
 	            }
 	        }
     
