@@ -306,7 +306,6 @@ function filterTable(term, tableID) {
 				.indexOf(terms[i]) < 0) {
         display = 'none';
       } else {
-        //alert((table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display: none"))+'>').replace(/<[^>]+>/g, "|").toLowerCase());
         if (terms[i].length) highlight(terms[i], table.rows[r]);
       }
       table.rows[r].style.display = display;
