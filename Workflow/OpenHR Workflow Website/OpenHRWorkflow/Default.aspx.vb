@@ -3582,8 +3582,10 @@ Public Class _Default
 
                     ' generate the tabs.
                     Dim ctlTabsTable As New Table
+                    ctlTabsTable.CellSpacing = 0
+                    ctlTabsTable.Style.Add("margin-top", "2px")
                     Dim trPager As TableRow = New TableRow()
-                    trPager.Height = Unit.Pixel(m_iTabStripHeight - 4)  ' to prevent vertical scrollbar
+                    trPager.Height = Unit.Pixel(m_iTabStripHeight - 4 - 1) ' to prevent vertical scrollbar
                     trPager.Style.Add("white-space", "nowrap")
 
                     Dim tcTabCell As New TableCell
