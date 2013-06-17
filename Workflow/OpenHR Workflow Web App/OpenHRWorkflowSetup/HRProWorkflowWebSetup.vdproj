@@ -59,7 +59,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B9CD2FCAB3204822DF85F27A314A585E"
+        "OwnerKey" = "8:_27CCB823E78043E5BA2E3F1C6685062F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -71,7 +71,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_27CCB823E78043E5BA2E3F1C6685062F"
+        "OwnerKey" = "8:_B9CD2FCAB3204822DF85F27A314A585E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -215,6 +215,11 @@
             "AssemblyAsmDisplayName" = "8:AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_B9CD2FCAB3204822DF85F27A314A585E"
+                    {
+                    "Name" = "8:AjaxControlToolkit.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:AjaxControlToolkit.dll"
             "TargetName" = "8:"
@@ -241,6 +246,11 @@
             "AssemblyAsmDisplayName" = "8:ScriptReferenceProfiler, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_EAA18313218CF6B47C6EF23F6EFCCED4"
+                    {
+                    "Name" = "8:ScriptReferenceProfiler.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ScriptReferenceProfiler.dll"
             "TargetName" = "8:"
@@ -361,15 +371,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.1"
-        "ProductCode" = "8:{DE3700C9-F96F-41D2-BDA1-89BC1FAFC40F}"
-        "PackageCode" = "8:{C86F797C-314E-464B-89CE-58233D749AA1}"
+        "ProductCode" = "8:{AC8E67E6-E61E-4906-8D86-FCD1261E9062}"
+        "PackageCode" = "8:{3B35DE2A-4E7A-4B11-8826-60A6CC42ACE1}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:5.1.7"
+        "ProductVersion" = "8:5.1.10"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:08451 609 999"
         "ARPHELPLINK" = "8:http://webfirst.advancedcomputersoftware.com/abs"
