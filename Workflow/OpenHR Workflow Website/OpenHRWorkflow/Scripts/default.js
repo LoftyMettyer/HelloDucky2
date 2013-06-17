@@ -466,7 +466,7 @@
 	        // Hide the file upload dialog, and record how the fileUpload was performed.
 	        try {
 	            if ((piExitMode == 1) || (piExitMode == 2)) {
-	                var sID = formInputPrefix + psElementItemID + "_17_";
+	                var sID = "file" + formInputPrefix + psElementItemID + "_17_";
 
 	                if (piExitMode == 2) {
 	                    $get("frmMain").elements.namedItem(sID).value = "1";
