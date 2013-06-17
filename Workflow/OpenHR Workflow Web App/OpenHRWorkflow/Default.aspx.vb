@@ -153,8 +153,6 @@ Public Class [Default]
          ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
       End If
 
-      ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = App.Config.SubmissionTimeout
-
       If message.IsNullOrEmpty Then
 
          If Not _form.ErrorMessage.IsNullOrEmpty Then

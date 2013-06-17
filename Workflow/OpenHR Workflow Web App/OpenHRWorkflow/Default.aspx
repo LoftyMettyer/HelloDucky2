@@ -1,4 +1,7 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.Default" EnableSessionState="True" Codebehind="Default.aspx.vb" %>
+
+<%@ Register Assembly="ScriptReferenceProfiler" Namespace="ScriptReferenceProfiler"
+    TagPrefix="cc1" %>
 <%@ Import Namespace="OpenHRWorkflow" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
@@ -99,18 +102,28 @@
                 window.androidLayerBug = <%=If(AndroidLayerBug(), "true", "false")%>;
             </script>
      
-            <ajx:ToolkitScriptManager ID="tsm" runat="server" 
-                                      EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
-                                      LoadScriptsBeforeUI="True">
+            <asp:ScriptManager ID="PSM" runat="server" EnablePartialRendering="True" LoadScriptsBeforeUI="False" ScriptMode="Release">
                 <CompositeScript>
                     <Scripts>
+                        <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" />
                         <asp:ScriptReference Name="MicrosoftAjax.js" />  
                         <asp:ScriptReference Name="MicrosoftAjaxWebForms.js" /> 
+                        <asp:ScriptReference name="Common.Common.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="ExtenderBase.BaseScripts.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="HoverExtender.HoverBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="DynamicPopulate.DynamicPopulateBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="Compat.Timer.Timer.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="Animation.Animations.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="Animation.AnimationBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="PopupExtender.PopupBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
+	                    <asp:ScriptReference name="DropDown.DropDownBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
                         <asp:ScriptReference Path="~/Scripts/default.js" />
                         <asp:ScriptReference Path="~/Scripts/resizable-table.js" />
                     </Scripts>
                 </CompositeScript>
-            </ajx:ToolkitScriptManager>   
+            </asp:ScriptManager>  
+
+            <%--<cc1:ScriptReferenceProfiler ID="ScriptReferenceProfiler1" runat="server" />--%>
 
             <div id="pleasewaitScreen" style="display: none;">
                 <span id="pleasewaitText">Processing...<br/><br/>Please wait.</span>

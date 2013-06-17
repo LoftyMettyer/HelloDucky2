@@ -983,46 +983,47 @@
 	        catch (e) {}
 	    }
 
-    function disposeTree(sender, args) {
+        //TODO remove fixzed in ASP.NET 4.0
+//    function disposeTree(sender, args) {
 
-        //http://support.microsoft.com/?kbid=2000262
+//        //http://support.microsoft.com/?kbid=2000262
 
-        try {
+//        try {
 
-            var elements = args.get_panelsUpdating();
-            for (var i = elements.length - 1; i >= 0; i--) {
-                var element = elements[i];
-                var allnodes = element.getElementsByTagName('*'),
-                    length = allnodes.length;
-                var nodes = new Array(length);
-                for (var k = 0; k < length; k++) {
-                    nodes[k] = allnodes[k];
-                }
-                for (var j = 0, l = nodes.length; j < l; j++) {
-                    var node = nodes[j];
-                    if (node.nodeType === 1) {
-                        if (node.dispose && typeof (node.dispose) === "function") {
-                            node.dispose();
-                        }
-                        else if (node.control && typeof (node.control.dispose) === "function") {
-                            node.control.dispose();
-                        }
+//            var elements = args.get_panelsUpdating();
+//            for (var i = elements.length - 1; i >= 0; i--) {
+//                var element = elements[i];
+//                var allnodes = element.getElementsByTagName('*'),
+//                    length = allnodes.length;
+//                var nodes = new Array(length);
+//                for (var k = 0; k < length; k++) {
+//                    nodes[k] = allnodes[k];
+//                }
+//                for (var j = 0, l = nodes.length; j < l; j++) {
+//                    var node = nodes[j];
+//                    if (node.nodeType === 1) {
+//                        if (node.dispose && typeof (node.dispose) === "function") {
+//                            node.dispose();
+//                        }
+//                        else if (node.control && typeof (node.control.dispose) === "function") {
+//                            node.control.dispose();
+//                        }
 
-                        var behaviors = node._behaviors;
-                        if (behaviors) {
-                            behaviors = Array.apply(null, behaviors);
-                            for (var k = behaviors.length - 1; k >= 0; k--) {
-                                behaviors[k].dispose();
-                            }
-                        }
-                    }
-                }
-                element.innerHTML = "";
-            } 
-        } catch (e) { }
-    }
+//                        var behaviors = node._behaviors;
+//                        if (behaviors) {
+//                            behaviors = Array.apply(null, behaviors);
+//                            for (var k = behaviors.length - 1; k >= 0; k--) {
+//                                behaviors[k].dispose();
+//                            }
+//                        }
+//                    }
+//                }
+//                element.innerHTML = "";
+//            } 
+//        } catch (e) { }
+//    }
 
-try {
-    Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
-}
-catch (e) { }
+//try {
+//    Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
+//}
+//catch (e) { }

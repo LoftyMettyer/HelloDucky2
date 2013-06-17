@@ -70,8 +70,8 @@ Public Class Config
          Password = ""
          Server = ""
          Database = ""
-      End Try
-      ConnectionString = String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", Server, Database, Login, Password)
+		End Try
+		ConnectionString = String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", Server, Database, Login, Password)
 
       'Read the Hex and Foreground values for the defined theme.
       Try
