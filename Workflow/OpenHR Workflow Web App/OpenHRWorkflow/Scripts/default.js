@@ -982,32 +982,14 @@ function SetScrollTopPos(iGridID, iPos, iRowIndex) {
 
 function SetCurrentTab(iNewTab) {
 
-	if (iNewTab < 1) {
-		iNewTab = 1;
-	}
+	if (iNewTab < 1) { iNewTab = 1; }
 
-	if (window.iCurrentTab === undefined) {
-		window.iCurrentTab = 1;
-	}
+	jQuery('.tab').removeClass('active');
+	jQuery('.tab-page').hide();
 
-	var currentTab = $get(formInputPrefix + iCurrentTab + "_21_PageTab");
-	var currentPanel = $get(formInputPrefix + iCurrentTab + "_21_Panel");
-	var newTab = $get(formInputPrefix + iNewTab + "_21_PageTab");
-	var newPanel = $get(formInputPrefix + iNewTab + "_21_Panel");
+	jQuery('#' + formInputPrefix + iNewTab + '_21_PageTab').show();
+	jQuery('#' + formInputPrefix + iNewTab + '_21_Panel').addClass('active');
 
+	window.iCurrentTab = iNewTab;
 	document.getElementById("hdnDefaultPageNo").value = iNewTab;
-
-	try {
-		if (currentTab != null) currentTab.style.display = "none";
-
-		if (currentPanel != null) currentPanel.style.borderBottom = "1px solid black";
-
-		if (newTab != null) newTab.style.display = "block";
-
-		if (newPanel != null) newPanel.style.borderBottom = "1px solid transparent";
-
-		window.iCurrentTab = iNewTab;
-
-	}
-	catch (e) { }
 }

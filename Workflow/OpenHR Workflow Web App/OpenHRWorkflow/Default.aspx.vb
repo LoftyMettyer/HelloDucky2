@@ -1322,7 +1322,6 @@ Public Class [Default]
 					' generate the tabs.
 					Dim ctlTabsTable As New Table
 					ctlTabsTable.CellSpacing = 0
-					' ctlTabsTable.Style.Add("margin-top", "2px")
 					Dim trPager As TableRow = New TableRow()
 					trPager.Height = TabStripHeight - 1
 					' to prevent vertical scrollbar
@@ -1336,14 +1335,10 @@ Public Class [Default]
 
 						With tcTabCell
 							.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
-							.Style.Add("padding-left", "5px")
-							.Style.Add("padding-right", "5px")
-							.Style.Add("border-radius", "5px 5px 0px 0px")
-							.Style.Add("width", "50px")
-							.BackColor = Color.White
-							.BorderWidth = 1
-							.BorderStyle = BorderStyle.Solid
-							.BorderColor = Color.Black
+							.CssClass = "tab"
+							If iTabNo = 1 Then
+								.CssClass += " active"
+							End If
 
 							' label the button...
 							Dim label = New Label
@@ -1355,8 +1350,6 @@ Public Class [Default]
 
 							' Tab Clicking/mouseover
 							.Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-							.Attributes.Add("onmouseover", "this.style.cursor='pointer';")
-							.Attributes.Add("onmouseout", "this.style.cursor='';")
 						End With
 
 						trPager.Cells.Add(tcTabCell)
@@ -1368,6 +1361,7 @@ Public Class [Default]
 						' Create the tab pages
 						tabPage = New Panel
 						tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
+						tabPage.CssClass = "tab-page"
 						tabPage.Style.Add("position", "absolute")
 						tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
 						tabPage.Style.Add("left", formItem.Left & "px")
