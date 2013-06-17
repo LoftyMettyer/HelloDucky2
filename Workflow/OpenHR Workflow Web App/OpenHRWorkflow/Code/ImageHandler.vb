@@ -19,12 +19,7 @@ Public Class ImageHandler
 
       Dim request = context.Request, response = context.Response, id As Integer
 
-      If Not Integer.TryParse(request.QueryString("id"), id) Then
-         'TODO return not found
-         response.StatusCode = 304
-         response.StatusDescription = "Not Modified"
-         Return
-      End If
+      Integer.TryParse(request.QueryString("id"), id)
 
       If Not [String].IsNullOrEmpty(context.Request.Headers("If-Modified-Since")) Then
          response.StatusCode = 304
@@ -34,7 +29,9 @@ Public Class ImageHandler
 
       'Which database do we want to get the picture from?
       Dim db As Database
+
       If request.QueryString("s") IsNot Nothing Then
+
          'for workflows the database info is store in the session and comes from the workflow url
          Dim url As WorkflowUrl = CType(HttpContext.Current.Session("workflowUrl"), WorkflowUrl)
          db = New Database(Database.GetConnectionString(url.Server, url.Database, url.User, url.Password))
@@ -43,11 +40,14 @@ Public Class ImageHandler
       End If
 
       'Stream the image from the database straight into the Response stream
-      Dim fileName As String = Nothing
-      db.GetPicture(id, response.OutputStream, fileName)
+      Dim picture = db.GetPicture(id)
 
-      response.ContentType = GetContentType(fileName)
-      'response.OutputStream.Write(image, 0, image.Length)
+      If picture Is Nothing Then
+         Throw New HttpException(404, "Image not found")
+      End If
+
+      response.ContentType = GetContentType(picture.Name)
+      response.OutputStream.Write(picture.Image, 0, picture.Image.Length)
       response.Cache.SetCacheability(HttpCacheability.[Public])
       response.Cache.SetExpires(DateTime.Now.AddYears(1))
       response.Cache.SetLastModified(DateTime.Now.AddYears(-1))
@@ -56,7 +56,7 @@ Public Class ImageHandler
 
    Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
       Get
-         Return True
+         Return False
       End Get
    End Property
 

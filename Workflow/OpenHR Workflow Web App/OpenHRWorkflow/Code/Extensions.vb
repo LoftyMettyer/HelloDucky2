@@ -2,6 +2,9 @@
 Imports System.Drawing
 
 Public Module Extensions
+
+#Region "WebControl, CssStyleCollection extensions"
+
    <Extension()>
    Public Sub Apply(value As FontInfo, formItem As FormItem, Optional namePrefix As String = Nothing)
       'TODO PG NOW namePrefix code
@@ -145,7 +148,7 @@ Public Module Extensions
    End Function
 
    <Extension()>
-   Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = - 4)
+   Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
 
       value.BorderStyle = BorderStyle.Solid
       value.BorderColor = ColorTranslator.FromHtml("#999")
@@ -156,4 +159,32 @@ Public Module Extensions
          value.Height = CInt(value.Height.Value) + adjustSizeAmount
       End If
    End Sub
+#End Region
+
+#Region "String extensions"
+
+   'TODO replace all stringValue = Nothing, stringValue.Length = 0, stringValue = “”, stringValue = string.Empty
+   <Extension()>
+   Public Function IsNullOrEmpty(value As String) As Boolean
+      Return String.IsNullOrEmpty(value)
+   End Function
+
+#End Region
+
+#Region "DataReader extensions"
+
+   'TODO PG replace as NullSafeInteger calls etc
+   <Extension()>
+   Public Function AsInt(reader As IDataReader, columnName As String) As Integer
+
+      If Not IsDBNull(reader(columnName)) Then
+         Return Convert.ToInt32(reader(columnName))
+      Else
+         Return 0
+      End If
+
+   End Function
+
+#End Region
+
 End Module

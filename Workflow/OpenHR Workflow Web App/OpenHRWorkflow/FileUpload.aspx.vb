@@ -17,8 +17,8 @@ Partial Class FileUpload
    End Function
 
    Private Function SaveImage(ByVal abtImage As Byte(), ByVal psContentType As String, ByVal psFileName As String, ByVal pfClear As Boolean) As Integer
+
       Dim iRowsAffected As Integer
-      Dim strConn As String
       Dim conn As SqlClient.SqlConnection
       Dim cmdSave As SqlClient.SqlCommand
 
@@ -59,7 +59,6 @@ Partial Class FileUpload
       Dim iTemp As Integer
       Dim sQueryString As String
       Dim iElementItemID As Integer
-      Dim strConn As String
       Dim drDetails As SqlClient.SqlDataReader
       Dim cmdDetails As SqlClient.SqlCommand
       Dim conn As SqlClient.SqlConnection

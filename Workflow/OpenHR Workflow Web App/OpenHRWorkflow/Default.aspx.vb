@@ -1,10 +1,9 @@
 Imports System.Data
 Imports System.Threading
-Imports System.Globalization
 Imports System.Drawing
 Imports AjaxControlToolkit
 Imports System.Transactions
-Imports System.Reflection
+Imports System.Globalization
 
 Public Class [Default]
    Inherits Page
@@ -34,58 +33,13 @@ Public Class [Default]
          Response.Redirect("~/Account/Login.aspx", True)
       End If
 
-      'Extract the workflow details from the url (use the rawUrl rather than queryString)
-      'as some characters are ignored in the queryString
+      'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
       Dim query = Server.UrlDecode(Request.RawUrl)
       query = query.Substring(query.IndexOf("?") + 1)
-
-      _url = New WorkflowUrl
-
-      Try 'TODO move the decrpy to the WorkflowUrl class
-         'Try the latest encryption method
-         'Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
-         Dim currentCulture = Thread.CurrentThread.CurrentCulture
-
-         Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB")
-         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-GB")
-
-         Dim crypt As New Crypt
-         query = crypt.DecompactString(query)
-         query = crypt.DecryptString(query, "", True)
-
-         'Reset the culture to be the one used by the client. Fault HRPRO-1404
-         Thread.CurrentThread.CurrentCulture = currentCulture
-         Thread.CurrentThread.CurrentUICulture = currentCulture
-
-         'Extract the required parameters from the decrypted queryString.
-         Dim values = query.Split(vbTab(0))
-
-         _url.InstanceID = CInt(values(0))
-         _url.ElementID = CInt(values(1))
-         _url.User = values(2)
-         _url.Password = values(3)
-         _url.Server = values(4)
-         _url.Database = values(5)
-         If values.Count > 6 Then _url.UserName = values(6)
-
+      Try
+         _url = WorkflowUrl.Decrypt(query)
       Catch ex As Exception
-         'Try the older encryption method
-         Try
-            Dim crypt As New Crypt
-            query = crypt.ProcessDecryptString(query)
-            query = crypt.DecryptString(query, "", False)
-
-            Dim values = query.Split(vbTab(0))
-
-            If _url.InstanceID = 0 Then _url.InstanceID = CInt(values(0))
-            If _url.ElementID = 0 Then _url.ElementID = CInt(values(1))
-            _url.User = values(2)
-            _url.Password = values(3)
-            _url.Server = values(4)
-            _url.Database = values(5)
-         Catch exx As Exception
-            message = "Invalid query string."
-         End Try
+         message = ex.Message
       End Try
 
       _db = New Database(Database.GetConnectionString(_url.Server, _url.Database, _url.User, _url.Password))
@@ -265,7 +219,7 @@ Public Class [Default]
 
       Dim message As String = ""
 
-      'If there is a tab control move it to the beginning of the item list so that its created before other controls
+      'Sort the form items so that the tab control is created first then the control based on their tab index
       Dim tabItem As FormItem = _form.Items.FirstOrDefault(Function(fi) fi.ItemType = 21)
       If tabItem IsNot Nothing Then
          _form.Items.Remove(tabItem)

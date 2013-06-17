@@ -724,7 +724,7 @@ Public Class Database
       End Using
    End Function
 
-   Public Sub GetPicture(id As Integer, outputStream As Stream, ByRef fileName As String)
+   Public Function GetPicture(id As Integer) As Picture
 
       Using conn As New SqlConnection(_connectionString)
          conn.Open()
@@ -737,16 +737,18 @@ Public Class Database
 
          Using reader As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SequentialAccess)
 
-            Const bufferSize As Integer = 100
+            Const bufferSize As Integer = 200
 
-            Dim writer As BinaryWriter, buffer(bufferSize - 1) As Byte, bytesRead As Long, index As Long
+            Dim writer As BinaryWriter, stream As New MemoryStream, buffer(bufferSize - 1) As Byte, bytesRead As Long, index As Long
 
             If reader.Read Then
 
-               fileName = NullSafeString(reader("Name"))
+               Dim picture As New Picture
+               picture.Id = id
+               picture.Name = NullSafeString(reader("Name"))
 
                ' Create a file to hold the output.
-               writer = New BinaryWriter(outputStream)
+               writer = New BinaryWriter(stream)
 
                ' Read bytes into buffer() and retain the number of bytes returned.
                bytesRead = reader.GetBytes(1, index, buffer, 0, bufferSize)
@@ -765,11 +767,18 @@ Public Class Database
                writer.Write(buffer, 0, CInt(bytesRead) - 1)
                writer.Flush()
                writer.Close()
+
+               picture.Image = stream.ToArray()
+               stream.Close()
+
+               Return picture
             End If
          End Using
       End Using
 
-   End Sub
+      Return Nothing
+
+   End Function
 
 End Class
 
@@ -817,6 +826,12 @@ Public Class WorkflowStepLink
    Public Name As String
    Public Desc As String
    Public PictureID As Integer
+End Class
+
+Public Class Picture
+   Public Id As Integer
+   Public Name As String
+   Public Image As Byte()
 End Class
 
 Public Class WorkflowForm

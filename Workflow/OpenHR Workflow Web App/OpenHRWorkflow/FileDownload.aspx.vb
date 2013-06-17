@@ -45,7 +45,7 @@ Partial Class FileDownload
    End Sub
 
    Private Function ShowTheFile(ByVal piElementItemID As Integer) As String
-      Dim strConn As String
+
       Dim conn As System.Data.SqlClient.SqlConnection
       Dim cmdRead As System.Data.SqlClient.SqlCommand
       Dim drFile As System.Data.SqlClient.SqlDataReader

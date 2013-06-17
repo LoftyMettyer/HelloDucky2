@@ -2,6 +2,8 @@
 Public Class App
    Inherits System.Web.HttpApplication
 
+   Public Shared X As Integer
+
    Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
       ' Fires when the application is started
    End Sub
