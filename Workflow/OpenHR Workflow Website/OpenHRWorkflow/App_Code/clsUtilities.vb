@@ -192,6 +192,16 @@ Public Class Utilities
     Return False
   End Function
 
+  Public Shared Function IsMacSafari() As Boolean
+
+    Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
+
+    If userAgent.Contains("macintosh") Then
+      Return True
+    End If
+    Return False
+  End Function
+
   Public Shared Function IsTablet() As Boolean
 
     Dim ua As String = HttpContext.Current.Request.UserAgent.ToUpper

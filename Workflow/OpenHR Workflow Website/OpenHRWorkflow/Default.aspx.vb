@@ -722,7 +722,7 @@ Public Class _Default
                     End If
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
-                    If IsMobileBrowser() Then
+                    If IsMobileBrowser() OrElse IsMacSafari() Then
                       .Style.Add("-webkit-appearance", "none")
                       .Style.Add("background-color", "#CCCCCC")
                       .Style.Add("border", "solid 1px #C0C0C0")
