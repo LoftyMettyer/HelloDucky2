@@ -2255,15 +2255,25 @@ Public Class _Default
                                             connGrid.Dispose()
                                         End Try
 
+                                        ' ==================================================
+                                        ' Set the dropdownList to the default value.
+                                        ' ==================================================
+                                        If ctlForm_PagingGridView.Attributes("DefaultValue").ToString.Length > 0 Then
+                                            ctlForm_Dropdown.Items.Add(ctlForm_PagingGridView.Attributes("DefaultValue").ToString)
+                                            ctlForm_Dropdown.SelectedIndex = 1
+                                        End If
+
+                                        For jncount As Integer = 0 To ctlForm_PagingGridView.Rows.Count - 1
+                                            If jncount > ctlForm_PagingGridView.PageSize Then Exit For ' don't bother if on other pages
+                                            If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = ctlForm_PagingGridView.Attributes("DefaultValue").ToString Then
+                                                ctlForm_PagingGridView.SelectedIndex = jncount
+                                                Exit For
+                                            End If
+
+                                        Next
                                     End If
 
-                                    ' ==================================================
-                                    ' Set the dropdownList to the default value.
-                                    ' ==================================================
-                                    If ctlForm_PagingGridView.Attributes("DefaultValue").ToString.Length > 0 Then
-                                        ctlForm_Dropdown.Items.Add(ctlForm_PagingGridView.Attributes("DefaultValue").ToString)
-                                        ctlForm_Dropdown.SelectedIndex = 1
-                                    End If
+
 
 
                                     ' =============================================================================
