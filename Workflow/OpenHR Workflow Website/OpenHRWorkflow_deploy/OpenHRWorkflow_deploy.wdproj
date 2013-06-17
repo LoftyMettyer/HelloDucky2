@@ -55,6 +55,7 @@
       <Value>5.0.13.0</Value>
       <Value>5.0.14.0</Value>
       <Value>5.0.15.0</Value>
+      <Value>5.0.16.0</Value>
     </AssemblyAttributes>
     <AssemblyAttributes Include="AssemblyVersion">
       <Value>5.0.2.0</Value>
@@ -70,6 +71,7 @@
       <Value>5.0.13.0</Value>
       <Value>5.0.14.0</Value>
       <Value>5.0.15.0</Value>
+      <Value>5.0.16.0</Value>
     </AssemblyAttributes>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
