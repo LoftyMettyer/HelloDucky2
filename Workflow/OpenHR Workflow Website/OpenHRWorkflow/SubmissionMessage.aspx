@@ -28,7 +28,7 @@
         function doLabelClick() {
             try {
                 var sFollowOnForms = window.parent.document.getElementById("frmMain").hdnFollowOnForms.value;
-
+                
                 if (sFollowOnForms.length > 0) {
                     window.parent.launchFollowOnForms(sFollowOnForms);
                 }
@@ -38,17 +38,21 @@
             }
             catch (e) { };
           }
-          
+
 
 
           function closeMe() {
-            if (navigator.userAgent.indexOf("MSIE") > 0) {
-              //Only IE can self-close windows that it didn't open
-              try { window.parent.close(); } catch (e) { }
-            }
-            else {
-              alert("For your security please close your browser");
-            }
+            try {
+              window.parent.close();
+
+              document.getElementById('lblSubmissionsMessage_1').innerHTML = 'For your security please close your browser';
+              document.getElementById('lblSubmissionsMessage_2').innerHTML = '';
+              document.getElementById('lblSubmissionsMessage_3').innerHTML = '';
+
+              // Resize the fame.
+              resizeFrame();
+            } 
+             catch (e) { alert("For your security please close your browser"); }
           }
 // ]]>
 
