@@ -401,14 +401,44 @@ Public Class RecordSelector
 
         grdGrid.SelectedIndex = -1
         grdGrid.DataBind()
-        For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
-            iCurrentIndex = (grdGrid.PageIndex * grdGrid.PageSize) + itemIndex
-            If Me.SelectedID(grdGrid) = iCurrentIndex Then
-                grdGrid.SelectedIndex = itemIndex
+
+        ' For lookups, use page and index number (breaks with sorting). For Grids use record ID.
+        If IsLookup Then
+            For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+                iCurrentIndex = (grdGrid.PageIndex * grdGrid.PageSize) + itemIndex
+                If Me.SelectedID(grdGrid) = iCurrentIndex Then
+                    grdGrid.SelectedIndex = itemIndex
+                    grdGrid.DataBind() ' Need to bind (again) to reset selection.
+                    Exit For
+                End If
+            Next
+        Else            
+            ' get the grid's id column number.
+            Dim iColCount As Integer
+            Dim sColCaption As String
+            Dim iIDColNum As Integer = -1
+            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+                If sColCaption.ToUpper = "ID" Then
+                    ' Here it is
+                    iIDColNum = iColCount
+                    Exit For
+                End If
+            Next
+            If iIDColNum > 0 Then
+                For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+                    iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
+                    If Me.SelectedID(grdGrid) = iCurrentIndex Then
+                        grdGrid.SelectedIndex = itemIndex
+                        grdGrid.DataBind() ' Need to bind (again) to reset selection.
+                        Exit For
+                    End If
+                Next
+            Else
+                grdGrid.SelectedIndex = 0
                 grdGrid.DataBind() ' Need to bind (again) to reset selection.
-                Exit For
             End If
-        Next
+        End If
     End Sub
 
 
@@ -612,12 +642,30 @@ Public Class RecordSelector
         ' Get the current page and row index numbers
         Dim iNewSelectedIndex As Integer = (grdGrid.PageIndex * grdGrid.PageSize) + e.NewSelectedIndex
 
-        'If Me.SelectedID(gv) = iNewSelectedIndex Then
-        '    Me.SelectedID(gv) = -1
-        '    e.NewSelectedIndex = -1
-        'Else
-        Me.SelectedID(grdGrid) = iNewSelectedIndex
-        'End If
+        ' Fault HRPRO-1645, use the ID of the record for RecordSelectors
+        If IsLookup Then
+            Me.SelectedID(grdGrid) = iNewSelectedIndex
+        Else
+            ' get the id column number.
+            Dim iColCount As Integer
+            Dim sColCaption As String
+            Dim iIDColNum As Integer = -1
+            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+                If sColCaption.ToUpper = "ID" Then
+                    ' Here it is
+                    iIDColNum = iColCount
+                    Exit For
+                End If
+            Next
+
+            ' Get the ID from the column and store it.
+            Me.SelectedID(grdGrid) = IIf(iIDColNum > 0, NullSafeInteger(grdGrid.Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
+
+        End If
+
+
+
 
         'Dim dataTable As DataTable
         'dataTable = DirectCast(grdGrid.DataSource, DataTable)
@@ -642,6 +690,47 @@ Public Class RecordSelector
             gv.Attributes("SelectedID") = value
         End Set
     End Property
+
+    Private Sub RecordSelector_Sorted(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Sorted
+
+        ' Default behaviour of the gridview is to highlight the same row again when 
+        ' the page is changed. We'll override that.
+
+        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+        Dim iCurrentIndex As Integer
+
+        grdGrid.SelectedIndex = -1
+        grdGrid.DataBind()
+
+        If Not IsLookup Then    ' don't handle lookup sorting for now - no ID's you see.
+            ' get the grid's id column number.
+            Dim iColCount As Integer
+            Dim sColCaption As String
+            Dim iIDColNum As Integer = -1
+            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+                If sColCaption.ToUpper = "ID" Then
+                    ' Here it is
+                    iIDColNum = iColCount
+                    Exit For
+                End If
+            Next
+            If iIDColNum > 0 Then
+                For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+                    iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
+                    If Me.SelectedID(grdGrid) = iCurrentIndex Then
+                        grdGrid.SelectedIndex = itemIndex
+                        grdGrid.DataBind() ' Need to bind (again) to reset selection.
+                        Exit For
+                    End If
+                Next
+            Else
+                grdGrid.SelectedIndex = 0
+                grdGrid.DataBind() ' Need to bind (again) to reset selection.
+            End If
+        End If
+    End Sub
 
     Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles Me.Sorting
         ' Dim g As System.Web.UI.WebControls.GridView
