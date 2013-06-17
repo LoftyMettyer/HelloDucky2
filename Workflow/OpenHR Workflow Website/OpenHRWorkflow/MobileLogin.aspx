@@ -91,9 +91,9 @@
                 <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnLogin" runat="server" /></td>
               </tr>
               <tr style="height:17px">
-                <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnRegister_label"></label></td>
-                <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnForgotPwd_label"></label></td>
                 <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnLogin_label"></label></td>
+                <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnForgotPwd_label"></label></td>
+                <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnRegister_label"></label></td>
               </tr>
             </table>
           </div>        
