@@ -35,7 +35,7 @@ Public Class _Default
   Private m_iLookupColumnIndex As Integer
   Private iPageNo As Integer = 0
 
-  Private Const FORMINPUTPREFIX As String = "forminput_"
+  Private Const FORMINPUTPREFIX As String = "FI_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
   Private Const MAXDROPDOWNROWS As Int16 = 6
   Private Const miTabStripHeight As Integer = 21
@@ -3091,7 +3091,7 @@ Public Class _Default
                       tcTabCell = New TableCell
 
                       With tcTabCell
-                        .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
+                        .ID = FORMINPUTPREFIX & iTabNo.ToString & "_21_Panel"
                         .BorderColor = Color.Black
                         .Style.Add("padding-left", "5px")
                         .Style.Add("padding-right", "5px")

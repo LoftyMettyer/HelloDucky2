@@ -1,8 +1,8 @@
 ﻿	
 	    var app = Sys.Application;
 	    app.add_init(ApplicationInit);
-  
-    // <!CDATA[
+
+	    var formInputPrefix = "FI_";
 	    var gridViewCtl = null;
 	    var curSelRow = new Array();
 	    var selRow = new Array();
@@ -227,7 +227,7 @@
               
 	            try {
 	                var nameProp = elems[i].getAttribute('name');
-	                if(nameProp.substr(0, 15)=="lookupforminput")
+	                if(nameProp.substr(0, 8)=="lookupFI")
 	                    var valueProp = elems[i].getAttribute('value');
 	            }
 	            catch(e) {}              
@@ -385,7 +385,7 @@
             var nodes = dateControl.parentNode.childNodes;
             for(var i = 0; i < nodes.length; i++) {
                 var ctl = nodes[i];
-                if(ctl.id && ctl.id.indexOf('forminput') == 0 && ctl.id != dateControl.id) {
+                if(ctl.id && ctl.id.indexOf('FI_') == 0 && ctl.id != dateControl.id) {
                     if(ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 25) {
                         ctl.style.visibility = hide ? 'hidden' : 'visible';
                     }
@@ -453,7 +453,7 @@
 	        // Hide the file upload dialog, and record how the fileUpload was performed.
 	        try {
 	            if ((piExitMode == 1) || (piExitMode == 2)) {
-	                var sID = "fileforminput_" + psElementItemID + "_17_";
+	                var sID = formInputPrefix + psElementItemID + "_17_";
 
 	                if (piExitMode == 2) {
 	                    $get("frmMain").elements.namedItem(sID).value = "1";
@@ -1189,24 +1189,7 @@
 	                                else {
 	                                    document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;                          
 	                                }
-                          
-	                                //This prevents the lookup closing after the filter is applied/removed
-                          
-	                                //$get("txtActiveDDE").value = psWebComboID;
-                          
-	                                //setPostbackMode(3);
-                          
-	                                //These lines hide the lookup dropdown until it's filled with data.
-	                                //document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
-	                                //document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
-                          
-	                                //This clicks the server-side button to apply filtering...                          
-	                                //this also kicks off the gosubmit() via postback beginrequest.                          
-	                                //document.getElementById(psWebComboID + "refresh").click();                                                    
-
-	                                //set pbmode back to 0 to prevent recursion.                          
-	                                //setPostbackMode(0);
-	                            }
+                                }
 	                        }
 	                    }
 	                }
@@ -1285,11 +1268,12 @@
 	    }
   
 	    function SetCurrentTab(iNewTab) {
-            
-	        var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
-	        var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
-	        var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
-	        var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
+
+	        var formInputPrefix = "FI_";
+	        var currentTab = $get(formInputPrefix + iCurrentTab + "_21_PageTab");
+	        var currentPanel = $get(formInputPrefix + iCurrentTab + "_21_Panel");
+	        var newTab = $get(formInputPrefix + iNewTab + "_21_PageTab");
+	        var newPanel = $get(formInputPrefix + iNewTab + "_21_Panel");
 
 	        document.getElementById("hdnDefaultPageNo").value = iNewTab;
     
