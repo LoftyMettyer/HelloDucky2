@@ -218,7 +218,6 @@ Public Class _Default
     sTitle = sDEFAULTTITLE
     iPageTabCount = 0
 
-
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
 
