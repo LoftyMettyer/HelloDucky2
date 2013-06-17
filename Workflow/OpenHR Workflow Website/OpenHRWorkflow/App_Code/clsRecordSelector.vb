@@ -515,7 +515,7 @@ Public Class RecordSelector
 
   Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
 
-    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+    grdGrid = CType(sender, GridView)
 
     Dim iEffectiveRowHeight As Integer = grdGrid.RowStyle.Height.Value
     Dim iRowCount As Integer = grdGrid.Rows.Count
@@ -556,7 +556,7 @@ Public Class RecordSelector
     ' Default behaviour of the gridview is to highlight the same row again when 
     ' the page is changed. We'll override that.
 
-    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+    grdGrid = CType(sender, GridView)
 
     Dim iCurrentIndex As Integer
 
@@ -603,13 +603,13 @@ Public Class RecordSelector
   End Sub
 
 
-  Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles Me.PageIndexChanging
+  Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles Me.PageIndexChanging
     ' Dim g As System.Web.UI.WebControls.GridView
     Dim iIDCol As Integer = 0
-    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+    grdGrid = CType(sender, GridView)
 
     grdGrid.PageIndex = e.NewPageIndex
-    ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+
     dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
 
     If IsLookup Then
@@ -623,7 +623,7 @@ Public Class RecordSelector
   End Sub
 
 
-  Private Sub RecordSelector_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles Me.RowCreated
+  Private Sub RecordSelector_RowCreated(ByVal sender As Object, ByVal e As GridViewRowEventArgs) Handles Me.RowCreated
 
     ' custom header only - manually add the rows for sorting.
     If e.Row.RowType = DataControlRowType.Header Then
@@ -671,7 +671,6 @@ Public Class RecordSelector
     grdGrid = CType(sender, RecordSelector)
 
     Try
-
       If e.Row.RowType = DataControlRowType.DataRow Then
 
         ' loop through the columns of this row. Hide ID columns
@@ -827,13 +826,6 @@ Public Class RecordSelector
 
     End If
 
-    'Dim dataTable As DataTable
-    'dataTable = DirectCast(grdGrid.DataSource, DataTable)
-
-    ' Don't Databind - it sets all the ID's wrong when selecting...
-    ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
-    ' grdGrid.DataBind()
-
   End Sub
 
   Public Property SelectedID(ByVal gv As GridView) As Integer
@@ -987,7 +979,6 @@ Public Class RecordSelector
       dataView.RowFilter = Me.filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
 
       dt = dataView.ToTable()
-      ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
 
       If dt.Rows.Count = 0 Then
         ' create a blank row to display.

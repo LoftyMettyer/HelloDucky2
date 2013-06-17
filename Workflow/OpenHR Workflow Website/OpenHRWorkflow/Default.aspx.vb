@@ -218,8 +218,9 @@ Public Class _Default
       Response.AddHeader("Pragma", "no-cache")
       Response.Expires = -1
 
-      If Not IsPostBack And Not isMobileBrowser() Then
-        Session.Clear()
+      If Not IsPostBack And Not IsMobileBrowser() Then
+        'PG removed
+        'Session.Clear()
       End If
     Catch ex As Exception
     End Try
@@ -620,6 +621,7 @@ Public Class _Default
             Me.ViewState("Server") = msServer
             Me.ViewState("Database") = msDatabase
 
+            'FileUpload.apsx and FileDownload.aspx require these variables
             Session("User") = msUser
             Session("Pwd") = msPwd
             Session("Server") = msServer
@@ -698,15 +700,8 @@ Public Class _Default
                 ctlForm_PageTab(iCurrentPageTab).Style.Add("position", "absolute")
 
                 ' Add this tab to the web form
-                'If iCurrentPageTab = 0 Then
                 pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
-                'Else
-                'ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
-                'pnlTabsDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
-                'End If
               End Try
-
-
 
               ' Generate the unique ID for this control and process it onto the form.
               sID = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
@@ -1889,7 +1884,6 @@ Public Class _Default
 
                       ' Fill the datatable with data from the datadapter.
                       da.Fill(dt)
-
                       Session(sID & "DATA") = dt
 
                       ' NOTE: Do the dataBind() after adding to the panel
@@ -1959,7 +1953,7 @@ Public Class _Default
                       connGrid.Dispose()
                     End Try
                   Else
-                    ' If not a postback, check for empty datagrid and set empty row message
+                    ' If a postback, check for empty datagrid and set empty row message
                     Dim dtSource As DataTable = TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable)
 
                     'If dtSource.Rows.Count = 0 Then
@@ -2194,7 +2188,6 @@ Public Class _Default
 
                         ' Fill the datatable with data from the datadapter.
                         da.Fill(dt)
-
                         Session(sID & "DATA") = dt
 
                         '' Create a blank row at the top of the dropdown grid.
@@ -2216,7 +2209,7 @@ Public Class _Default
 
                         ' Yup we store the data to a session variable. This is so we can sort/filter 
                         ' it and stillreset if necessary without running the SP again
-                        ctlForm_PagingGridView.DataSource = Session(sID & "DATA")
+                        ctlForm_PagingGridView.DataSource = dt
                         ctlForm_PagingGridView.DataBind()
 
                         cmdGrid.Dispose()
@@ -2576,7 +2569,6 @@ Public Class _Default
 
                         ' Fill the datatable with data from the datadapter.
                         da.Fill(dt)
-                        Session(sID & "_DATA") = dt
 
                         ' Format the column(s)
                         For Each objGridColumn In dt.Columns
@@ -3207,7 +3199,6 @@ Public Class _Default
             End While
 
             dr.Close()
-
 
             If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
               ' Form the script to be registered at client side.
@@ -4295,8 +4286,6 @@ Public Class _Default
 
 
   End Sub
-
-
 
   Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
 
