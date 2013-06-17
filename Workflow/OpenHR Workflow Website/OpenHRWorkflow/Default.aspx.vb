@@ -1408,6 +1408,8 @@ Public Class _Default
                       .Style("position") = "absolute"
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                      .Style("margin") = "0px"
+                      .Style("height") = Unit.Pixel(NullSafeInteger(dr("Height")) - 3).ToString
 
                       If (Not IsDBNull(dr("value"))) Then
                         If CStr(dr("value")).Length > 0 Then
