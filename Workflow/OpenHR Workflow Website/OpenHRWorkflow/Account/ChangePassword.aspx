@@ -20,8 +20,12 @@
                 return false;
             }
 
-            if (document.getElementById('<%= txtNewPassword.ClientID %>').value != document.getElementById('<%= txtConfPassword.ClientID %>').value) {
+            if (document.getElementById('<%= txtNewPassword.ClientID %>').value !== document.getElementById('<%= txtConfPassword.ClientID %>').value) {
                 showDialog(header, 'New Password and Confirm Password do not match.');
+                return false;
+            }
+            if (document.getElementById('<%= txtNewPassword.ClientID %>').value === document.getElementById('<%= txtCurrPassword.ClientID %>').value) {
+                showDialog(header, 'New Password and Current Password must be different.');
                 return false;
             }
             return true;
