@@ -1041,6 +1041,8 @@ Public Class _Default
                     .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                     .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
 
+                    If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+
                   End With
 
                   'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_TextInput)
@@ -1243,6 +1245,8 @@ Public Class _Default
                     .ClientSideEvents.KeyDown = "WebNumericEditValidation_KeyDown"
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
 
+                    If isMobileBrowser() Then .ClientSideEvents.TextChanged = "FilterMobileLookup('" & .ID.ToString & "');"
+
                   End With
 
                   ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_NumericInput)
@@ -1303,7 +1307,7 @@ Public Class _Default
                     Else
                       ctlFormCheckBox = DirectCast(pnlInput.FindControl(sID), CheckBox)
                       fChecked = ctlFormCheckBox.Checked
-                    End If
+                    End If                   
 
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
@@ -1311,6 +1315,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
+                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
@@ -1337,6 +1342,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
+                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
@@ -1351,6 +1357,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
+                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
@@ -1377,6 +1384,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
+                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
@@ -1401,500 +1409,122 @@ Public Class _Default
 
                 Case 7 ' Input value - date
 
-                  If False Then ' Not isMobileBrowser() Then
+                  ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
+                  With ctlForm_Date
+                    .ID = sID
+                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
-                    ' create a text box to hold the selected date
-                    ctlForm_TextInput = New TextBox
-                    With ctlForm_TextInput
-                      .ID = sID & "TextBox"
-                      .TabIndex = -1
-                      .Style("position") = "absolute"
-                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
-                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-                      .Style("text-align") = "left"
-                      '.TextMode = TextBoxMode.SingleLine
-                      '.Wrap = False
-                      '.ReadOnly = True
-                      .Attributes.Add("readOnly", "readOnly")
-                      .Attributes.Add("onclick", "dateboxclick('" & sID & "');")
-                      .BorderColor = objGeneral.GetColour(5730458)
-                      .BorderStyle = BorderStyle.Solid
-                      .BorderWidth = Unit.Pixel(1)
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    ' Mobiles sometimes show keyboards when dateboxes are clicked.
+                    ' These can overlap the calendar control, so suppress it.
+                    If isMobileBrowser() Then
+                      .Editable = False
+                      .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
+                    End If
 
-                      If (Not IsDBNull(dr("value"))) And CStr(dr("value")).Length > 0 Then
+                    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                      sDefaultFocusControl = sID
+                      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                      ctlDefaultFocusControl = ctlForm_Date
+                    End If
+
+                    .Style("position") = "absolute"
+                    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+
+                    .CalendarLayout.FooterFormat = "Today: {0:d}"
+                    .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
+                    .CalendarLayout.ShowTitle = False
+
+                    .CalendarLayout.DayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.DayStyle.Font.Name = "Verdana"
+                    .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
+                    .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
+
+                    .CalendarLayout.FooterStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.FooterStyle.Font.Name = "Verdana"
+                    .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
+                    .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
+
+                    .CalendarLayout.SelectedDayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
+                    .CalendarLayout.SelectedDayStyle.Font.Bold = True
+                    .CalendarLayout.SelectedDayStyle.Font.Underline = True
+                    .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                    .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
+
+                    .CalendarLayout.OtherMonthDayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
+                    .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
+
+                    .CalendarLayout.NextPrevStyle.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
+                    .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
+                    .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
+
+                    .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
+                    .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
+                    .CalendarLayout.CalendarStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
+                    .CalendarLayout.CalendarStyle.BackColor = System.Drawing.Color.White
+
+                    .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
+
+                    .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                    .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
+
+                    .CalendarLayout.DropDownStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
+                    .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
+                    .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
+
+                    .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
+                    .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
+                    .CalendarLayout.DayHeaderStyle.Font.Size = FontUnit.Parse(CStr(8))
+                    .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
+                    .CalendarLayout.DayHeaderStyle.Font.Bold = True
+
+                    .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
+                    .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
+                    .NullDateLabel = ""
+
+                    If (Not IsDBNull(dr("value"))) Then
+                      If CStr(dr("value")).Length > 0 Then
                         iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
                         iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
                         iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
 
                         dtDate = DateSerial(iYear, iMonth, iDay)
-                        .Text = FormatDateTime(dtDate, DateFormat.ShortDate)
-                      Else
-                        .Text = "  /  /"
+                        .Value = dtDate
                       End If
+                    End If
 
-                    End With
+                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .BorderColor = objGeneral.GetColour(5730458)
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
+                    .Font.Name = NullSafeString(dr("FontName"))
+                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    ' spinny iPhone type date control
-                    Dim ctlform_Panel As New Panel
+                    .DropButton.ImageUrl1 = "../Images/downarrow.gif"
+                    .DropButton.ImageUrl2 = "../Images/downarrow.gif"
+                    .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
 
-                    With ctlform_Panel
-                      .ID = sID
-                      .Style.Add("font-family", "verdana")
-                      .Style.Add("padding-left", "0px")
-                      .Style.Add("padding-right", "0px")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("visibility", "hidden")
-                      .Style.Add("width", "247px")
-                      .Style.Add("height", "150px")
-                      .Style.Add("text-align", "center")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("left", Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString)
-                      Dim iTopPos As Integer = NullSafeInteger(dr("TopCoord")) + NullSafeInteger(dr("Height"))
-                      .Style.Add("top", Unit.Pixel(iTopPos).ToString)
-                      .Style.Add("margin-left", "-125px")
-                      .Style.Add("z-index", "1")
-                      .Style.Add("border-radius", "0px 10px 10px 10px")
-                      .Style.Add("border", "2px solid black")
-                      .Style.Add("vertical-align", "middle")
-                      .Style.Add("opacity", "1")
-                      '.Attributes.Add("onblur", "dateboxlostfocus('" & sID & "');")
-                      .Style.Add("background-color", "black")
+                    .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
+                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
-                    End With
+                    .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
+                    .ClientSideEvents.TextChanged = "dateControlTextChanged" & _
+                                             CStr(IIf(isMobileBrowser, ";FilterMobileLookup('" & sID.ToString & "');""", ""))
+                    .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
 
+                  End With
 
-                    ' Couple of small divs for the 'Today' and 'Clear' buttons.
-                    Dim ctlForm_TodayPanel As New Panel
-                    With ctlForm_TodayPanel
-                      .Style.Add("text-align", "center")
-                      .Style.Add("vertical-align", "middle")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("height", "15px")
-                      .Style.Add("width", "50px")
-                      .Style.Add("bottom", "151px")
-                      .Style.Add("left", "50%")
-                      .Style.Add("margin-left", "-125px")
-                      .Style.Add("background-color", "White")
-                      .Style.Add("border-radius", "5px 0px 0px 0px")
-                      .BorderColor = Color.Black
-                      .BorderWidth = 1
-                      .Attributes.Add("onclick", "dateBoxTodayClick('" & sID & "');")
-                    End With
+                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
 
-                    ctlForm_Label = New Label
-                    With ctlForm_Label
-                      .Font.Name = "verdana"
-                      .Font.Size = FontUnit.Parse("7")
-                      .Text = "Today"
-                      .Width = Unit.Pixel(50)
-                      .Height = Unit.Pixel(10)
-                    End With
-
-                    ctlForm_TodayPanel.Controls.Add(ctlForm_Label)
-                    ctlform_Panel.Controls.Add(ctlForm_TodayPanel)
-
-
-                    ' Couple of small divs for the 'Today' and 'Clear' buttons.
-                    Dim ctlForm_ClearPanel As New Panel
-                    With ctlForm_ClearPanel
-                      .Style.Add("text-align", "center")
-                      .Style.Add("vertical-align", "middle")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("height", "15px")
-                      .Style.Add("width", "50px")
-                      .Style.Add("bottom", "151px")
-                      .Style.Add("left", "50%")
-                      .Style.Add("margin-left", "-75px")
-                      .Style.Add("background-color", "White")
-                      .Style.Add("border-radius", "0px 5px 0px 0px")
-                      .BorderColor = Color.Black
-                      .BorderWidth = 1
-                      .Attributes.Add("onclick", "dateBoxClearClick('" & sID & "');")
-                    End With
-
-                    ctlForm_Label = New Label
-                    With ctlForm_Label
-                      .Font.Name = "verdana"
-                      .Font.Size = FontUnit.Parse("7")
-                      .Text = "Clear"
-                      .Width = Unit.Pixel(50)
-                      .Height = Unit.Pixel(10)
-                    End With
-
-                    ctlForm_ClearPanel.Controls.Add(ctlForm_Label)
-                    ctlform_Panel.Controls.Add(ctlForm_ClearPanel)
-
-
-
-
-                    Dim ctlCalSpin_Table As New Table
-                    ctlCalSpin_Table.Style.Add("width", "100%")
-
-                    Dim ctlCalSpin_Row As New TableRow
-
-                    ' -------------------- DAYS ------------------------
-                    Dim ctlCalSpin_Cell_Day As New TableCell
-                    With ctlCalSpin_Cell_Day
-                      .Style.Add("width", "55px")
-                      .Style.Add("left", "0px")
-                      .Style.Add("border-radius", "10px 0px 0px 10px")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("top", "0px")
-                      .Style.Add("bottom", "0px")
-                      ' .Style.Add("border", "1px solid black")
-                    End With
-
-                    Dim ctlCalSpin_Panel_Day As New Panel
-                    With ctlCalSpin_Panel_Day
-                      .ID = sID & "Days"
-                      .Style.Add("border-radius", "10px 0px 0px 10px")
-                      .Style.Add("width", "100%")
-                      .Style.Add("height", "100%")
-                      .Style.Add("background-image", "url('images/CalSpinBG.gif');background-color:white")
-                      .Style.Add("overflow", "auto")
-                    End With
-
-                    Dim ctlCalSpin_Table_Day As New Table
-                    ctlCalSpin_Table_Day.Style.Add("overflow", "auto")
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    Dim ctlCalSpin_EmptyRow As New TableRow
-                    Dim ctlCalSpin_EmptyCell As New TableCell
-                    Dim ctlCalSpin_EmptyCellContent As New LiteralControl
-
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' add 31 days to the spinner
-                    For jncount = 1 To 31
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyRow.ID = sID & "daysRow_" & jncount.ToString
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = jncount.ToString
-                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-
-                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-
-                    ' add day table to day panel
-                    ctlCalSpin_Panel_Day.Controls.Add(ctlCalSpin_Table_Day)
-                    ' add day panel to day cell
-                    ctlCalSpin_Cell_Day.Controls.Add(ctlCalSpin_Panel_Day)
-                    ' add day cell to row
-                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Day)
-
-                    ' -------------------- MONTHS ------------------------
-                    Dim ctlCalSpin_Cell_Month As New TableCell
-                    With ctlCalSpin_Cell_Month
-
-                      '.Style.Add("margin-left", "2px")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("width", "128px")
-                      .Style.Add("left", "47px")
-                      .Style.Add("top", "0px")
-                      .Style.Add("bottom", "0px")
-                      .Style.Add("border-left", "1px solid black")
-                      .Style.Add("border-right", "1px solid black")
-                    End With
-
-                    Dim ctlCalSpin_Panel_Month As New Panel
-                    With ctlCalSpin_Panel_Month
-                      .ID = sID & "Months"
-                      .Style.Add("width", "128px")
-                      .Style.Add("height", "100%")
-                      .Style.Add("background-image", "url('images/CalSpinBG.gif')")
-                      .Style.Add("background-color", "white")
-                      .Style.Add("overflow", "auto")
-                    End With
-
-                    Dim ctlCalSpin_Table_Month As New Table
-                    ctlCalSpin_Table_Month.Style.Add("overflow", "auto")
-
-                    ' Empty row
-                    ctlCalSpin_EmptyRow = New TableRow
-                    ctlCalSpin_EmptyCell = New TableCell
-                    ctlCalSpin_EmptyCellContent = New LiteralControl("&nbsp")
-                    ctlCalSpin_EmptyCell.Controls.Add(ctlCalSpin_EmptyCellContent)
-                    ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' add 12 months to the spinner
-                    For jncount = 1 To 12
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyRow.ID = sID & "MonthsRow_" & jncount.ToString
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = MonthName(jncount)
-                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-
-                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-
-                    ' add Month table to day panel
-                    ctlCalSpin_Panel_Month.Controls.Add(ctlCalSpin_Table_Month)
-
-                    ' add Month panel to Month cell
-                    ctlCalSpin_Cell_Month.Controls.Add(ctlCalSpin_Panel_Month)
-
-                    ' add Month cell to row
-                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Month)
-
-
-                    ' -------------------- YEARS ------------------------
-                    Dim ctlCalSpin_Cell_Year As New TableCell
-                    With ctlCalSpin_Cell_Year
-                      .Style.Add("width", "67px")
-                      .Style.Add("left", "178px")
-                      '.Style.Add("margin-left", "15px")
-                      .Style.Add("border-radius", "0px 10px 10px 0px")
-                      .Style.Add("position", "absolute")
-                      .Style.Add("top", "0px")
-                      .Style.Add("bottom", "0px")
-                      '.Style.Add("border", "1px solid cyan")
-                    End With
-
-                    Dim ctlCalSpin_Panel_Year As New Panel
-                    With ctlCalSpin_Panel_Year
-                      .ID = sID & "Years"
-                      .Style.Add("border-radius", "0px 10px 10px 0px")
-                      .Style.Add("width", "100%")
-                      .Style.Add("height", "100%")
-                      .Style.Add("background-image", "url('images/CalSpinBG.gif');background-color:white")
-                      .Style.Add("overflow", "auto")
-                    End With
-
-                    Dim ctlCalSpin_Table_Year As New Table
-                    ctlCalSpin_Table_Year.Style.Add("overflow", "auto")
-
-                    ' Empty row
-                    ctlCalSpin_EmptyRow = New TableRow
-                    ctlCalSpin_EmptyCell = New TableCell
-                    ctlCalSpin_EmptyCellContent = New LiteralControl("&nbsp")
-                    ctlCalSpin_EmptyCell.Controls.Add(ctlCalSpin_EmptyCellContent)
-                    ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' add 'some' yearss to the spinner
-                    For jncount = 1900 To 2092
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyRow.ID = sID & "YearsRow_" & jncount.ToString
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = jncount.ToString
-                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-
-                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-                    ' 3 blank lines are added so the user can spin to an empty value
-                    For jncount = 1 To 3
-                      ctlCalSpin_EmptyRow = New TableRow
-                      ctlCalSpin_EmptyCell = New TableCell
-                      ctlCalSpin_EmptyCell.Text = "&nbsp"
-
-                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
-                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
-                    Next
-
-
-                    ' add Year table to day panel
-                    ctlCalSpin_Panel_Year.Controls.Add(ctlCalSpin_Table_Year)
-
-                    ' add Year panel to Year cell
-                    ctlCalSpin_Cell_Year.Controls.Add(ctlCalSpin_Panel_Year)
-
-                    ' add Year cell to row
-                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Year)
-
-                    ' add the row to the table
-                    ctlCalSpin_Table.Controls.Add(ctlCalSpin_Row)
-
-                    ' add the table to the panel
-                    ctlform_Panel.Controls.Add(ctlCalSpin_Table)
-
-                    ' add the whole thing to the relevant page tab.
-                    ' divInput.Controls.Add(ctlform_Panel)
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlform_Panel)
-
-
-                  Else
-                    ' Infragistics date control for normal tellies.
-
-
-                    ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
-                    With ctlForm_Date
-                      .ID = sID
-                      .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
-
-                      ' Mobiles sometimes show keyboards when dateboxes are clicked.
-                      ' These can overlap the calendar control, so suppress it.
-                      If isMobileBrowser() Then
-                        .Editable = False
-                        .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
-                      End If
-
-                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                        sDefaultFocusControl = sID
-                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                        ctlDefaultFocusControl = ctlForm_Date
-                      End If
-
-                      .Style("position") = "absolute"
-                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-
-                      .CalendarLayout.FooterFormat = "Today: {0:d}"
-                      .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
-                      .CalendarLayout.ShowTitle = False
-
-                      .CalendarLayout.DayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.DayStyle.Font.Name = "Verdana"
-                      .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
-
-                      .CalendarLayout.FooterStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.FooterStyle.Font.Name = "Verdana"
-                      .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
-
-                      .CalendarLayout.SelectedDayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
-                      .CalendarLayout.SelectedDayStyle.Font.Bold = True
-                      .CalendarLayout.SelectedDayStyle.Font.Underline = True
-                      .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                      .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
-
-                      .CalendarLayout.OtherMonthDayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
-                      .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
-
-                      .CalendarLayout.NextPrevStyle.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
-                      .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
-                      .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
-
-                      .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
-                      .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
-                      .CalendarLayout.CalendarStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
-                      .CalendarLayout.CalendarStyle.BackColor = System.Drawing.Color.White
-
-                      .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
-
-                      .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                      .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
-
-                      .CalendarLayout.DropDownStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
-                      .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
-                      .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
-
-                      .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                      .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.DayHeaderStyle.Font.Size = FontUnit.Parse(CStr(8))
-                      .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
-                      .CalendarLayout.DayHeaderStyle.Font.Bold = True
-
-                      .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
-                      .NullDateLabel = ""
-
-                      If (Not IsDBNull(dr("value"))) Then
-                        If CStr(dr("value")).Length > 0 Then
-                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
-
-                          dtDate = DateSerial(iYear, iMonth, iDay)
-                          .Value = dtDate
-                        End If
-                      End If
-
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      .BorderColor = objGeneral.GetColour(5730458)
-
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-
-                      .DropButton.ImageUrl1 = "../Images/downarrow.gif"
-                      .DropButton.ImageUrl2 = "../Images/downarrow.gif"
-                      .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
-
-                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
-                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-
-                      .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
-                      .ClientSideEvents.TextChanged = "dateControlTextChanged"
-                      .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
-
-                    End With
-
-                    ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
-                  End If
 
                 Case 8 ' Frame
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
@@ -2471,27 +2101,14 @@ Public Class _Default
 
                   If Not isMobileBrowser() Then
 
-
-                    ' ctlForm_Dropdown = New Infragistics.WebUI.WebCombo.WebCombo()
-
-                    ' ==============================================================
-                    ' Lookups. So, these are created on the fly as:
-
-
                     ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
 
-                    ' iGridWidth = NullSafeInteger(800)
-                    'Dim iGridHeight As Integer = NullSafeInteger(300)
-                    'Dim iColWidth As Integer = 100
-
-
                     ' ============================================================
-                    ' Create a dropdown list as the main control
+                    ' Create a textbox as the main control
                     ' ============================================================
-                    ' ctlForm_Dropdown = New DropDownList
                     ctlForm_TextInput = New TextBox
 
-                    With ctlForm_TextInput     'ctlForm_Dropdown
+                    With ctlForm_TextInput
                       .ID = sID & "TextBox"
                       .Style("position") = "absolute"
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
@@ -2999,8 +2616,10 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      .Attributes.Add("onclick", "return false;")
-                      .Attributes.Add("onmousedown", "InitializeLookup(" & sID & ");")
+                      '.Attributes.Add("onclick", "return false;")
+                      '.Attributes.Add("onmousedown", "InitializeLookup(" & sID & ");")
+
+                      If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -3164,6 +2783,8 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                     '.Attributes.Add("onclick", "getElementsByPartialName('" & sID & "');")
+
+                    If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                     ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
                     ''.EnableXmlHTTP = True
@@ -3570,7 +3191,9 @@ Public Class _Default
                            " style='float:left'" & _
                            " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                            " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
-                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;"""
+                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
+                                                  CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
+
                         Case 1 ' Horizontal
                           stringSize = graphic.MeasureString(drGrid(0).ToString(), font)
                           Dim spanTop As Int32 = CInt((NullSafeInteger(dr("FontSize")) * 1.25) + 1) - _
@@ -3591,7 +3214,8 @@ Public Class _Default
                            " style='float:left'" & _
                            " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                            " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
-                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;"""
+                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
+                                            CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
 
                           lastLeft += (stringSize.Width + (font.Size * 2) + 28)
                       End Select
@@ -5678,32 +5302,40 @@ Public Class _Default
 
     Dim filterSQL As String = hiddenField.Value
 
-    If dataTable IsNot Nothing Then
-      Dim dataView As New DataView(dataTable)
-      dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
-
-      dataTable = dataView.ToTable()
-      ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
-
-      If dataTable.Rows.Count = 0 Then
-        ' create a blank row to display.
-        Dim objDataRow As System.Data.DataRow
-        objDataRow = dataTable.NewRow()
-        dataTable.Rows.InsertAt(objDataRow, 0)
-      End If
-
-
-    End If
-
     If TypeOf (pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", ""))) Is DropDownList Then
+
       ' This is a dropdownlist style lookup (mobiles only)
       Dim dropdown As DropDownList
       dropdown = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "")), DropDownList)
 
+      ' Store the current value, so we can re-add it after filtering.
+      Dim strCurrentSelection As String = dropdown.Text
+
+      ' Filter the table now.
+      filterDataTable(dataTable, filterSQL)
+
+      ' insert the previously selected item
+      Dim objDataRow As System.Data.DataRow
+      objDataRow = dataTable.NewRow()
+      'objDataRow.ItemArray = dataTable.Rows(dropdown.SelectedIndex).ItemArray
+      objDataRow(0) = strCurrentSelection
+
+      dataTable.Rows.InsertAt(objDataRow, 0)
+
+      ' Rebind the new datatable
       dropdown.DataSource = dataTable
       dropdown.DataBind()
+
+      ' Insert empty row at top of list
+      objDataRow = dataTable.NewRow()
+      dataTable.Rows.InsertAt(objDataRow, 0)
+
+      ' reset filter.
+      hiddenField.Value = ""
     Else
       ' This is a normal grid lookup (not Mobile)
+
+      filterDataTable(dataTable, filterSQL)
 
       Dim gridView As RecordSelector 'GridView
       gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
@@ -5718,6 +5350,22 @@ Public Class _Default
     hiddenField.Value = ""
 
 
+  End Sub
+
+  Private Sub filterDataTable(ByRef dataTable As DataTable, ByVal filterSQL As String)
+    If dataTable IsNot Nothing Then
+      Dim dataView As New DataView(dataTable)
+      dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+
+      dataTable = dataView.ToTable()
+
+      If dataTable.Rows.Count < 2 Then
+        ' create a blank row to display.
+        Dim objDataRow As System.Data.DataRow
+        objDataRow = dataTable.NewRow()
+        dataTable.Rows.InsertAt(objDataRow, 0)
+      End If
+    End If
   End Sub
 
   Public Shared Function isMobileBrowser() As Boolean
