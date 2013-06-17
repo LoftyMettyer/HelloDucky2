@@ -149,9 +149,8 @@ Public Module Extensions
    Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
 
       value.BorderStyle = BorderStyle.Solid
-		value.BorderColor = ColorTranslator.FromHtml("#00FF00") 'green
-		'value.BorderColor = ColorTranslator.FromHtml("#FF0000") 'red
-      value.BorderWidth = 1
+		value.BorderColor = ColorTranslator.FromHtml("#AAA")
+		value.BorderWidth = 1
 
       If adjustSize Then
          value.Width = CInt(value.Width.Value) + adjustSizeAmount
