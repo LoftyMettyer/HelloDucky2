@@ -5,11 +5,11 @@ Public Class Configuration
 
   Shared Sub New()
 
-    MobileKey = ConfigurationManager.AppSettings("MobileKey")
-    WorkflowUrl = ConfigurationManager.AppSettings("WorkflowURL")
-    DefaultActiveDirectoryServer = ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
+    MobileKey = GetAppSetting("MobileKey", "")
+    WorkflowUrl = GetAppSetting("WorkflowURL", "")
+    TabletBackColour = GetAppSetting("TabletBackColour", "lightgray")
+    DefaultActiveDirectoryServer = GetAppSetting("DefaultActiveDirectoryServer", "")
     SubmissionTimeoutInSeconds = 120
-    TabletBackColour = ConfigurationManager.AppSettings("TabletBackColour")
 
     ConnectionString = String.Format( _
         "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3}", _
@@ -22,9 +22,9 @@ Public Class Configuration
   Public Shared Password As String
   Public Shared ConnectionString As String
   Public Shared WorkflowUrl As String
-  Public Shared SubmissionTimeoutInSeconds As Integer
-  Public Shared DefaultActiveDirectoryServer As String
   Public Shared TabletBackColour As String
+  Public Shared DefaultActiveDirectoryServer As String
+  Public Shared SubmissionTimeoutInSeconds As Integer
 
   Public Shared Function ConnectionStringFor(user As String, password As String) As String
     Return String.Format( _
@@ -37,8 +37,8 @@ Public Class Configuration
 
       Try
         Dim crypt As New Crypt
-        value = Crypt.DecompactString(value)
-        value = Crypt.DecryptString(value, "", True)
+        value = crypt.DecompactString(value)
+        value = crypt.DecryptString(value, "", True)
 
         Dim values As String() = value.Split(ControlChars.Tab)
 
@@ -56,6 +56,15 @@ Public Class Configuration
 
     End Set
   End Property
+
+  Private Shared Function GetAppSetting(name As String, defaultValue As String) As String
+
+    Dim value As String = ConfigurationManager.AppSettings(name)
+    If value Is Nothing Then
+      Return defaultValue
+    End If
+    Return value
+  End Function
 
 End Class
 
