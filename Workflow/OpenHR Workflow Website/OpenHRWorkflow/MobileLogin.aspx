@@ -4,11 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
-    <title>OpenHR Mobile Login</title>
-	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
-  <link rel="apple-touch-icon" href="Images/Adv_hr&payroll.gif" />  
-
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
   <%--<meta name="apple-mobile-web-app-capable" content="yes" />--%>
+    <title>OpenHR Mobile Login</title>
+    <link rel="apple-touch-icon" href="Images/Adv_hr&payroll.gif" />  
 
   <script type="text/javascript">
       // <!CDATA[
