@@ -10,7 +10,7 @@ Partial Class Registration
 
     Title = WebSiteName("Registration")
     Page.Form.DefaultButton = btnRegisterButton.UniqueID
-    Page.Form.DefaultFocus = txtEmail.UniqueID
+    Page.Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
   Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnRegisterButton.Click
