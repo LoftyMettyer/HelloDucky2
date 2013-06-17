@@ -5,6 +5,7 @@ Imports System.Data
 Imports System.Globalization
 Imports System.Threading
 Imports System.Drawing
+Imports System.Collections.Generic
 Imports Microsoft.VisualBasic
 Imports Utilities
 Imports System.Data.SqlClient
@@ -999,13 +1000,11 @@ Public Class _Default
                       .TabIndex = NullSafeShort(dr("tabIndex"))
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
-                      '.ApplyLocation(dr)
                       .ApplySize(dr, -1, -1)
                       .Style.ApplyFont(dr)
                       .ApplyColor(dr, True)
                       .ApplyBorder(True)
 
-                      .ReadOnly = True
                       .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
 
                       .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
@@ -2269,6 +2268,19 @@ Public Class _Default
     hdnNoSubmissionMessage.Value = If(message1.Length + message2.Length + message3.Length = 0, "1", "0")
   End Sub
 
+  Private Sub GetControls(controlCollection As ControlCollection, result As ICollection(Of Control), Optional predicate As Func(Of Control, Boolean) = Nothing)
+
+    For Each c As Control In controlCollection
+      If predicate Is Nothing OrElse predicate(c) Then
+        result.Add(c)
+      End If
+      If c.HasControls Then
+        GetControls(c.Controls, result, predicate)
+      End If
+    Next
+
+  End Sub
+
   Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
 
     Dim conn As SqlConnection
@@ -2303,12 +2315,9 @@ Public Class _Default
     Try
       ' Read the web form item values & build up a string of the form input values.
       ' This is a tab delimited string of itemIDs and values.
-
-      Dim controlList = pnlInputDiv.Controls.Cast(Of Control)() _
-            .Union(pnlTabsDiv.Controls.Cast(Of Control)) _
-            .Where(Function(c) c.ClientID.EndsWith("_PageTab")) _
-            .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
-            .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
+      Dim controlList As New List(Of Control)
+      GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX) AndAlso _
+                                                (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
       For Each ctlFormInput In controlList
 
@@ -2940,7 +2949,7 @@ Public Class _Default
       Dim strCurrentSelection As String = dropdown.Text
 
       ' Filter the table now.
-      filterDataTable(dataTable, filterSql)
+      FilterDataTable(dataTable, filterSql)
 
       ' insert the previously selected item
       Dim objDataRow As DataRow
@@ -3004,7 +3013,7 @@ Public Class _Default
     Page.Header.Controls.Add(meta)
 
     ' for Mobiles only, set the viewport and 'home page' icons
-    If isMobileBrowser() Then
+    If IsMobileBrowser() Then
       meta = New HtmlMeta()
       meta.Name = "viewport"
       meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
