@@ -3530,7 +3530,6 @@ Public Class _Default
                     ctlTabsDiv.ID = "TabsDiv"
                     ctlTabsDiv.Style.Add("height", m_iTabStripHeight & "px")
 
-
                     If isMobileBrowser() Then
                       ctlTabsDiv.Style.Add("overflow-x", "auto")
                     Else
@@ -3604,6 +3603,7 @@ Public Class _Default
                           .Style.Add("width", "50px")
                           .BorderWidth = 1
                           .BorderStyle = BorderStyle.Solid
+                          .BackColor = Color.White
 
                           ' label the button...
                           ctlForm_Label = New Label
@@ -3682,8 +3682,9 @@ Public Class _Default
                 If Not IsDBNull(cmdSelect.Parameters("@piBackColour").Value) Then
                   iBackgroundColour = CInt(cmdSelect.Parameters("@piBackColour").Value())
                   sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
-                  ' pnlInputDiv.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))  ' objGeneral.GetColour(iBackgroundColour)
-                  divInput.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))  ' objGeneral.GetColour(iBackgroundColour)
+
+                  divInput.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
+                  pnlTabsDiv.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
                 End If
 
                 iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
@@ -4685,9 +4686,11 @@ Public Class _Default
   Public Function LocaleDecimal() As String
     LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
   End Function
+
   Public Function ColourThemeHex() As String
     ColourThemeHex = mobjConfig.ColourThemeHex
   End Function
+
   Public Function ColourThemeFolder() As String
     ColourThemeFolder = mobjConfig.ColourThemeFolder
   End Function
