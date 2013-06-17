@@ -72,6 +72,7 @@ Partial Class PendingSteps
 
         ' Create the holding table
         table = New Table
+        table.CssClass = "workflow-list"
 
         While (dr.Read)
           ' Create a row to contain this pending step...

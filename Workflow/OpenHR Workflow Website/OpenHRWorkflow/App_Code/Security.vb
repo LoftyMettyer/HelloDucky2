@@ -5,20 +5,17 @@ Public Class Security
 
   Public Shared Function ValidateUser(userName As String, password As String) As String
 
-    Dim valid As Boolean
+    Const invalidLoginDetails = "The system could not log you on. Make sure your details are correct, then retype your password."
 
     If userName.IndexOf("\") > 0 Then
-      valid = ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password)
+      If Not ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password) Then Return invalidLoginDetails
     Else
-      valid = ValidateSqlServerUser(userName, password)
-    End If
-
-    If Not valid Then
-      Return "The system could not log you on. Make sure your details are correct, then retype your password."
+      If Not ValidateSqlServerUser(userName, password) Then Return invalidLoginDetails
     End If
 
     Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
     If Not result.Valid Then
+      If result.InvalidReason = "Incorrect e-mail / password combination" Then Return invalidLoginDetails
       Return result.InvalidReason
     End If
 

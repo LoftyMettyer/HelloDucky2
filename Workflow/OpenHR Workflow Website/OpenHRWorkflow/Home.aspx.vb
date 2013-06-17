@@ -56,6 +56,7 @@ Partial Class Home
 
         ' Create the holding table for the list of workflows.
         Dim table = New Table
+        table.CssClass = "workflow-list"
         table.Style.Add("width", "100%")
 
         'Iterate through the results

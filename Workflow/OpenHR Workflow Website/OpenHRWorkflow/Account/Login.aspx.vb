@@ -3,7 +3,9 @@ Partial Class Login
   Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
-    Forms.RedirectToHomeIsAuthentcated()
+
+    Forms.RedirectToHomeIfAuthentcated()
+
     Title = Utilities.WebSiteName("Login")
     Forms.LoadControlData(Me, 1)
     Form.DefaultButton = btnLogin.UniqueID

@@ -5,8 +5,8 @@ Public Class Forms
 
   Public Shared Sub RedirectIfDbLocked()
 
-    If Database.IsSystemLocked() Then
-      HttpContext.Current.Session("message") = "The system is currently being updated. Please retry again shortly."
+    If Database.IsSystemLocked() Or True Then
+      HttpContext.Current.Session("message") = "The system is currently being modified. Please retry again shortly."
       HttpContext.Current.Response.Redirect("~/Message.aspx")
     End If
 
@@ -26,7 +26,7 @@ Public Class Forms
 
   End Sub
 
-  Public Shared Sub RedirectToHomeIsAuthentcated()
+  Public Shared Sub RedirectToHomeIfAuthentcated()
 
     'Go to the home page if already logged in
     If HttpContext.Current.Request.IsAuthenticated Then
