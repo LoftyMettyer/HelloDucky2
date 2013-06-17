@@ -116,11 +116,12 @@ Partial Class MobileLogin
         Select Case CInt(drElements("Type"))
 
           Case 0 ' Button
+
             If NullSafeString(drElements("Name")).Length > 0 Then
               ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
               With ctlFormImageButton
-                sImageFileName = LoadPicture(NullSafeInteger(drElements("PictureID")), sMessage)
+                sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
                 .ImageUrl = sImageFileName
                 .Font.Name = NullSafeString(drElements("FontName"))
                 .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
@@ -134,7 +135,6 @@ Partial Class MobileLogin
                 With ctlFormHtmlGenericControl
                   .Style("word-wrap") = "break-word"
                   .Style("overflow") = "auto"
-                  .Style.Add("z-index", "1")
                   .InnerText = NullSafeString(drElements("caption"))
                   .Style.Add("background-color", "Transparent")
                   .Style.Add("font-family", "Verdana")
@@ -150,9 +150,6 @@ Partial Class MobileLogin
               ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
-                .Style("overflow") = "auto"
-                .Style("text-align") = "left"
-                .Style.Add("z-index", "1")
                 .InnerText = NullSafeString(drElements("caption"))
                 .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
                 .Style.Add("font-family", NullSafeString(drElements("FontName")))
@@ -163,13 +160,11 @@ Partial Class MobileLogin
 
             End If
 
+
           Case 3 ' Input value - character
             If NullSafeString(drElements("Name")).Length > 0 Then
+
               ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-              ctlFormHtmlInputText.Style("resize") = "none"
-              ctlFormHtmlInputText.Style.Add("border-style", "solid")
-              ctlFormHtmlInputText.Style.Add("border-width", "1")
-              ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
               ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
               ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
               ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")

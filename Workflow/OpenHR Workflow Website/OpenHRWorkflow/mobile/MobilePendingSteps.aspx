@@ -17,13 +17,11 @@
 
                 <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px"/>
                 
-                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 1; bottom: 60px; width: 100%">
+                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 1; bottom: 60px; width: 100%; overflow:auto;" >
                     
-                    <div id="pnlBody"  runat="server" style="position: absolute; width: 100%; height: 100%; z-index: 1; overflow: auto;">      
-                  
-                        <label id="lblNothingTodo" runat="server" style="display: block;">You have nothing in your 'To Do' list.</label>
-                        <label id="lblInstruction" runat="server" style="display: block;">Click on a 'to do' item to view the details and complete your action.</label>
-
+                    <div id="pnlBody" runat="server">      
+                        <label id="lblNothingTodo" runat="server">You have nothing in your 'To Do' list.</label>
+                        <label id="lblInstruction" runat="server">Click on a 'to do' item to view the details and complete your action.</label>
                         <div runat="server" id="pnlWFList" />                  
 
                     </div>

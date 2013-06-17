@@ -53,7 +53,7 @@ Partial Class ForgottenLogin
         End If
 
         If Not IsDBNull(drLayouts(prefix & "PictureID")) Then
-          control.Style("Background-image") = LoadPicture(CInt(drLayouts(prefix & "PictureID")), sMessage, True)
+          control.Style("Background-image") = LoadPicture(CInt(drLayouts(prefix & "PictureID")), sMessage)
           control.Style("background-repeat") = objGeneral.BackgroundRepeat(CShort(drLayouts(prefix & "PictureLocation")))
           control.Style("background-position") = objGeneral.BackgroundPosition(CShort(drLayouts(prefix & "PictureLocation")))
         End If
@@ -79,7 +79,7 @@ Partial Class ForgottenLogin
             End If
 
             .BackColor = Drawing.Color.Transparent
-            .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage, False)
+            .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage)
             .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
             .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
             .Style.Add("z-index", "1")
@@ -118,7 +118,7 @@ Partial Class ForgottenLogin
             ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
             With ctlFormImageButton
-              sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage, False)
+              sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
               .ImageUrl = sImageFileName
               .Font.Name = NullSafeString(drElements("FontName"))
               .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
@@ -132,7 +132,6 @@ Partial Class ForgottenLogin
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
-                .Style.Add("z-index", "1")
                 .InnerText = NullSafeString(drElements("caption"))
                 .Style.Add("background-color", "Transparent")
                 .Style.Add("font-family", "Verdana")
@@ -148,9 +147,6 @@ Partial Class ForgottenLogin
             ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
             With ctlFormHtmlGenericControl
               .Style("word-wrap") = "break-word"
-              .Style("overflow") = "auto"
-              .Style("text-align") = "left"
-              .Style.Add("z-index", "1")
               .InnerText = NullSafeString(drElements("caption"))
               .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
               .Style.Add("font-family", NullSafeString(drElements("FontName")))
@@ -166,10 +162,6 @@ Partial Class ForgottenLogin
           If NullSafeString(drElements("Name")).Length > 0 Then
 
             ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-            ctlFormHtmlInputText.Style("resize") = "none"
-            ctlFormHtmlInputText.Style.Add("border-style", "solid")
-            ctlFormHtmlInputText.Style.Add("border-width", "1")
-            ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
             ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
             ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
             ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
@@ -194,7 +186,7 @@ Partial Class ForgottenLogin
     txtEmail.Attributes.Add("type", "email")
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String, ByVal pfServerSide As Boolean) As String
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
@@ -214,7 +206,7 @@ Partial Class ForgottenLogin
     Dim sName As String
 
     Try
-      _ImageCount = CShort(_ImageCount + 1)
+      _imageCount = CShort(_imageCount + 1)
 
       psErrorMessage = ""
       LoadPicture = ""
@@ -245,7 +237,7 @@ Partial Class ForgottenLogin
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & _ImageCount.ToString & _
+           "_" & _imageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName

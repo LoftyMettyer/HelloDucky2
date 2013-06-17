@@ -60,13 +60,13 @@
 
                 <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 0; width: 100%; height: 57px"/>
                 
-                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 0; bottom: 60px; width: 100%">
+                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 0; bottom: 60px; width: 100%;">
                     
-                    <div id="pnlBody" runat="server" style="height: 100%; z-index: 0;">
+                    <div id="pnlBody" runat="server">
                               
-                        <label id="lblWelcome" style="display: block" runat="server">lblWelcome</label>
+                        <label id="lblWelcome" runat="server">lblWelcome</label>
 
-                        <table style="width: 100%">
+                        <table class="controlgrid">
                             <tr>
                                 <td><label id="lblUserName" runat="server">lblUserName</label></td>
                                 <td ><input type="text" id="txtUserName" runat="server"/></td>

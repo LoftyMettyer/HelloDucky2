@@ -8,4 +8,26 @@ body {
 table {
     border-collapse:collapse;
 }
-
+#pnlBody {
+    padding-left: 5px;
+}
+#pnlBody > label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.controlgrid {
+    width: 100%;
+}
+.controlgrid input, .controlgrid label {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.controlgrid input 
+{
+    padding: 2px;
+    border: 1px solid #9A7057;
+}
+.controlgrid input[type="checkbox"] {
+    border: none;
+}

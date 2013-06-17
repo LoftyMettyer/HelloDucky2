@@ -133,7 +133,6 @@ Partial Class ChangePassword
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
-                .Style.Add("z-index", "1")
                 .InnerText = NullSafeString(drElements("caption"))
                 .Style.Add("background-color", "Transparent")
                 .Style.Add("font-family", "Verdana")
@@ -146,12 +145,9 @@ Partial Class ChangePassword
 
         Case 2 ' Label
           If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)
+            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
             With ctlFormHtmlGenericControl
               .Style("word-wrap") = "break-word"
-              .Style("overflow") = "auto"
-              .Style("text-align") = "left"
-              .Style.Add("z-index", "1")
               .InnerText = NullSafeString(drElements("caption"))
               .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
               .Style.Add("font-family", NullSafeString(drElements("FontName")))
@@ -167,10 +163,6 @@ Partial Class ChangePassword
           If NullSafeString(drElements("Name")).Length > 0 Then
 
             ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-            ctlFormHtmlInputText.Style("resize") = "none"
-            ctlFormHtmlInputText.Style.Add("border-style", "solid")
-            ctlFormHtmlInputText.Style.Add("border-width", "1")
-            ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
             ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
             ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
             ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
