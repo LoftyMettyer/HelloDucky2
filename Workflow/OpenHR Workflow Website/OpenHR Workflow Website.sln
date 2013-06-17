@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "InstallerClassLibrary", "InstallerClassLibrary\InstallerClassLibrary.vbproj", "{1371B89A-9495-484C-816F-DEE9025335E0}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHRWorkflowWebSetup", "WebSetup\HRProWorkflowWebSetup.vdproj", "{84B3579F-B5F3-4AFC-986A-3A5197FD9101}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0} = {CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}
+	EndProjectSection
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OpenHRWorkflow", "http://localhost/OpenHRWorkflow", "{D1D0E976-6553-4235-BAB3-649C8F1AC0D9}"
 	ProjectSection(WebsiteProperties) = preProject

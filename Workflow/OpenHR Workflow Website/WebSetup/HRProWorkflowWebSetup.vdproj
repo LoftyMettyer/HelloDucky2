@@ -593,7 +593,7 @@
         {
             "{80453C8E-1031-40EC-8E7A-9762B297303A}:_060C4D78AD8C49EC852195BEC9F88F20"
             {
-            "VirtualDirectory" = "8:HRProWorkflow"
+            "VirtualDirectory" = "8:OpenHRWorkflow"
             "Port" = "3:80"
             "IsApplication" = "11:TRUE"
             "AllowScriptSourceAccess" = "11:FALSE"
@@ -667,7 +667,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
-        "PackageCode" = "8:{1193DB1D-5952-4F06-86E7-5A72012A6EDF}"
+        "PackageCode" = "8:{3FE6AFAC-50A0-43A5-8632-9B29633FC92A}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1127,6 +1127,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B629A33F3F53416D9A78B8FC02E8FD11"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F095207D25C9491B948AC4FF9CC578AA"
             {
             "SourcePath" = "8:..\\InstallerClassLibrary\\obj\\Release\\InstallerClassLibrary.dll"
