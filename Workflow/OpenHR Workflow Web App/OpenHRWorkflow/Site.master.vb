@@ -9,6 +9,8 @@ Partial Class Site
 
 		Forms.RedirectIfNotLicensed()
 
+		Forms.RedirectToMobileModuleNotInstalled()
+
 		Forms.RedirectIfDbLocked()
 
 		Using conn As New SqlConnection(App.Config.ConnectionString)

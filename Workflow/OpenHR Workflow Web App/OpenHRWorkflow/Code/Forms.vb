@@ -47,6 +47,22 @@ Public Class Forms
 		End If
 	End Sub
 
+	Public Shared Sub RedirectToMobileModuleNotInstalled()
+
+		Dim errors As New List(Of String)
+
+		Dim db As New Database(App.Config.ConnectionString)
+
+		If Not db.IsMobileModuleInstalled() Then
+			errors.Add("The mobile module is not configured correctly in system manager.")
+		End If
+
+		If errors.Count > 0 Then
+			HttpContext.Current.Session("message") = "The system is not configured correctly for the following reasons:<BR><BR>" & String.Join("<BR>", errors)
+			HttpContext.Current.Server.Transfer("~/Message.aspx")
+		End If
+	End Sub
+
 	Public Shared Sub RedirectToHomeIfAuthentcated()
 
 		'Go to the home page if already logged in

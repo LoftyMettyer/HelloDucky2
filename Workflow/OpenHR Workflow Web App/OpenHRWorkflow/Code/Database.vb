@@ -44,6 +44,22 @@ Public Class Database
 
 	End Function
 
+	Public Function IsMobileModuleInstalled() As Boolean
+
+		Using conn As New SqlConnection(_connectionString)
+			conn.Open()
+
+			Dim cmd As New SqlCommand("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRSysMobileCheckLogin]') AND type in (N'P', N'PC')) SELECT 1 ELSE SELECT 0", conn)
+			cmd.CommandType = CommandType.Text
+			cmd.CommandTimeout = _timeout
+
+			Dim result = cmd.ExecuteScalar()
+
+			Return CInt(result) = 1
+		End Using
+
+	End Function
+
 	Public Function IsSystemLocked() As Boolean
 
 		Using conn As New SqlConnection(_connectionString)
