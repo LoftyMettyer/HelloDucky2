@@ -4,38 +4,33 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
-<meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="telephone=no"/>
 <!--<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>-->
 <!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
 
 <head runat="server">
-<link rel="icon" 
-      type="image/png" 
-      href="/pictures/logo.ico"/>
+    <link rel="icon" type="image/png" href="/pictures/logo.ico"/>
 
-  <style type="text/css">
+    <style type="text/css">
 		.highlighted { background: yellow; }
-    textarea {resize: none; }    
+        textarea {resize: none; }    
 	</style>
 
-	  <title></title>	  
-    <script src="Scripts/resizable-table.js" type="text/javascript"></script>	 
+	<title></title>	  
+    <script src="Scripts/resizable-table.js" type="text/javascript"></script>
 </head>
 
-<body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
+<body id="bdyMain" onload="return window_onload()" style="overflow: auto;  
 	text-align: center; margin: 0px; padding: 0px;">
 	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
 		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
 		z-index: 1;" onclick="showErrorMessages(true);" />
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
-
-	
-		<script language="javascript" type="text/javascript">
+	<script language="javascript" type="text/javascript">
   var app = Sys.Application
   app.add_init(ApplicationInit);
   
@@ -178,7 +173,7 @@
 
 			try {
 				iDefHeight = $get("frmMain").hdnFormHeight.value;
-        //iDefHeight = $get("bdyMain").offsetHeight;
+                iDefHeight = $get("bdyMain").offsetHeight;
 				iDefWidth = $get("frmMain").hdnFormWidth.value;
 				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
 				
@@ -242,12 +237,12 @@
 //NPG20120130 Fault HRPRO-1842
 //Disabled the second resize as safari browser can't keep up and doubles the resize.
 //Doesn't seem to affect the other browsers, so see how it goes
-//				if ((iDefHeight > 0) && (iDefWidth > 0)) {
-//				
-//					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-//					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-//					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-//				}
+				if ((iDefHeight > 0) && (iDefWidth > 0)) {
+				
+					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
+					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
+					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
+				}
 
 
 				launchForms($get("frmMain").hdnSiblingForms.value, false);
@@ -1671,23 +1666,22 @@ function ResizeComboForForm(sender, args) {
 
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
 	
-  <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true">
-  </ajx:ToolkitScriptManager>
+  <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true"></ajx:ToolkitScriptManager>
 	<!--
         Web Form Validation Error Messages
-        -->        
+    -->        
 
-<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
-			<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%;
-        height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
-        font-family: Verdana; border: black 1px solid;" bgcolor="White">
+    <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
+		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%;
+                height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
+                font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
 								<label id="pleasewaitText">Processing...<br/><br/>Please wait.<br/></label>
 					</td>
 				</tr>
-			</table>
-		</div>
+		</table>
+	</div>
 		
 		       
 	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute;
@@ -1738,34 +1732,29 @@ function ResizeComboForForm(sender, args) {
 	<!--
         Web Form Controls
         -->
-    <div id="pnlTabsDiv" style="height:30px; position: relative;" runat="server"></div>
-
 	<div id="divInput" style="top:0px; left:0px; z-index: 0; padding: 0px; margin: 0px; text-align: center;float:left" runat="server">
-      
-    <asp:UpdatePanel ID="pnlInput" runat="server">
-    <ContentTemplate>
-    <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
-                            margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
-
-    </div>    
-      <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px;
-				position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
-        <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden;
-				top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
-			<asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
-			<asp:HiddenField ID="hdnCount_Warnings" runat="server" Value="" />
-			<asp:HiddenField ID="hdnOverrideWarnings" runat="server" Value="0" />
-			<asp:HiddenField ID="hdnLastButtonClicked" runat="server" Value="" />
-			<asp:HiddenField ID="hdnNoSubmissionMessage" runat="server" Value="0" />
-			<asp:HiddenField ID="hdnFollowOnForms" runat="server" Value="" />
-			<asp:HiddenField ID="hdnErrorMessage" runat="server" Value="" />
-			<asp:HiddenField ID="hdnSiblingForms" runat="server" Value="" />
-			<asp:HiddenField ID="hdnSubmissionMessage_1" runat="server" Value="" />
-			<asp:HiddenField ID="hdnSubmissionMessage_2" runat="server" Value="" />
-			<asp:HiddenField ID="hdnSubmissionMessage_3" runat="server" Value="" />
-		</ContentTemplate>
-    </asp:UpdatePanel>			
-    
+        <asp:UpdatePanel ID="pnlInput" runat="server">
+            <ContentTemplate>
+                <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
+                                        margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
+                    
+                    <div id="pnlTabsDiv" style="position: absolute;" runat="server"></div>
+                </div>    
+                <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+                <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+			    <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnCount_Warnings" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnOverrideWarnings" runat="server" Value="0" />
+			    <asp:HiddenField ID="hdnLastButtonClicked" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnNoSubmissionMessage" runat="server" Value="0" />
+			    <asp:HiddenField ID="hdnFollowOnForms" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnErrorMessage" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnSiblingForms" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnSubmissionMessage_1" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnSubmissionMessage_2" runat="server" Value="" />
+			    <asp:HiddenField ID="hdnSubmissionMessage_3" runat="server" Value="" />
+	        </ContentTemplate>
+        </asp:UpdatePanel>			
 	</div>
 	<!--
     Temporary values from the server

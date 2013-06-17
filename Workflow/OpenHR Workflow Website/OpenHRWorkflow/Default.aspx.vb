@@ -90,13 +90,6 @@ Public Class _Default
 
     ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = SubmissionTimeout()
 
-
-
-
-
-
-
-
   End Sub
 
 #End Region
@@ -692,8 +685,11 @@ Public Class _Default
                 If iCurrentPageTab > 0 Then ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
 
                 ' Add this tab to the web form
-                pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
-
+                If iCurrentPageTab = 0 Then
+                  pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
+                Else
+                  pnlTabsDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
+                End If
               End Try
 
 
@@ -3525,6 +3521,11 @@ Public Class _Default
 
                   m_iTabStripHeight = 30
 
+                  pnlTabsDiv.Style("width") = CStr(dr("Width")) & "px"
+                  pnlTabsDiv.Style("height") = CStr(dr("Height")) & "px"
+                  pnlTabsDiv.Style("left") = CStr(dr("LeftCoord")) & "px"
+                  pnlTabsDiv.Style("top") = CStr(dr("TopCoord")) & "px"
+
                   If True Then
                     Dim ctlTabsDiv As New Panel
                     ctlTabsDiv.ID = "TabsDiv"
@@ -3629,7 +3630,7 @@ Public Class _Default
 
                     'add table to div
                     ctlTabsDiv.Controls.Add(ctlTabsTable)
-                    pnlTabsDiv.Controls.Add(ctlTabsDiv)
+                    pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
                   End If
 
               End Select
@@ -3684,21 +3685,13 @@ Public Class _Default
                   sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
 
                   divInput.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
-                  pnlTabsDiv.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
                 End If
 
                 iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
                 iFormHeight = CInt(cmdSelect.Parameters("@piHeight").Value)
+
                 pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
                 pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
-
-                pnlTabsDiv.Style("width") = iFormWidth.ToString & "px"
-                If m_iTabStripHeight > 0 Then
-                  pnlTabsDiv.Style("height") = (m_iTabStripHeight.ToString) & "px"
-                Else
-                  pnlTabsDiv.Style("height") = "auto"
-                End If
-
 
                 hdnFormHeight.Value = (iFormHeight + m_iTabStripHeight).ToString
                 hdnFormWidth.Value = iFormWidth.ToString
