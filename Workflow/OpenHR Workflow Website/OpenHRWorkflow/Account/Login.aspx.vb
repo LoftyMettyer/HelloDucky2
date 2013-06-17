@@ -55,7 +55,7 @@ Partial Class Login
     End If
 
     If sMessage.Length > 0 Then
-      CType(Master, Site).ShowMessage("Login Failed", sMessage, "")
+      CType(Master, Site).ShowDialog("Login Failed", sMessage, "")
     Else
       FormsAuthentication.RedirectFromLoginPage(userName, chkRememberPwd.Checked)
     End If

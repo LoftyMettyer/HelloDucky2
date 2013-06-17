@@ -80,13 +80,13 @@ Partial Class Site
 
   End Sub
 
-  Public Sub ShowMessage(headerText As String, messageText As String, redirectTo As String)
+  Public Sub ShowDialog(title As String, message As String, redirectTo As String)
 
-    lblMsgHeader.InnerText = headerText
-    lblMsgBox.InnerText = messageText
-    hdnRedirectTo.Value = redirectTo
-    overlay.Style.Add("visibility", "visible")
-    pnlMsgBox.Style.Add("visibility", "visible")
+    dialogTitle.InnerText = title
+    dialogMessage.InnerText = message
+    dialogRedirect.Value = redirectTo
+    overlay.Style.Add("display", "block")
+    dialog.Style.Add("display", "block")
 
   End Sub
 
@@ -98,7 +98,8 @@ Partial Class Site
 
     Page.Form.Attributes.Add("class", "large-view")
 
-    'TODO cleanup
+    Dim control = FindControl("background")
+
     If System.IO.File.Exists(Server.MapPath("~/Images/tabletBackImage.png")) Then
 
       Dim image As New Image
@@ -108,9 +109,8 @@ Partial Class Site
         .Style.Add("height", "100%")
       End With
 
-      FindControl("background").Controls.Add(image)
+      control.Controls.Add(image)
     Else
-      Dim control = FindControl("background")
       CType(control, HtmlGenericControl).Style.Add("background-color", Configuration.TabletBackColour)
     End If
 

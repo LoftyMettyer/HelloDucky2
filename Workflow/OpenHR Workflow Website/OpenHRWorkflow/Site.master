@@ -11,21 +11,21 @@
         
         <script type="text/javascript">
            // <!CDATA[
-            function showMsgBox(header, message) {
-                document.getElementById('ctl00_lblMsgHeader').innerHTML = header;
-                document.getElementById('ctl00_lblMsgBox').innerHTML = message;
-                document.getElementById('ctl00_overlay').style.visibility = "visible";
-                document.getElementById('ctl00_pnlMsgBox').style.visibility = "visible";
+            function showDialog(title, message) {
+                document.getElementById('ctl00_dialogTitle').innerHTML = title;
+                document.getElementById('ctl00_dialogMessage').innerHTML = message;
+                document.getElementById('ctl00_overlay').style.display = "block";
+                document.getElementById('ctl00_dialog').style.display = "block";
             }
 
-            function closeMsgBox() {
-                document.getElementById('ctl00_overlay').style.visibility = "hidden";
-                document.getElementById('ctl00_pnlMsgBox').style.visibility = "hidden";
+            function closeDialog() {
+                document.getElementById('ctl00_overlay').style.display = "none";
+                document.getElementById('ctl00_dialog').style.display = "none";
+                
+                var redirect = document.getElementById('ctl00_dialogRedirect').value;
 
-                var redirectTo = document.getElementById('ctl00_hdnRedirectTo').value;
-
-                if (redirectTo.length > 0) {
-                    window.location.replace(redirectTo);
+                if (redirect.length > 0) {
+                    window.location.replace(redirect);
                 }
             }
         // ]]>
@@ -51,22 +51,21 @@
                 </div>
             </div>
         </form>
-        
-        <div id="overlay" class="overlay" runat="server"/>
-
+ 
         <div id="background" class="background" runat="server"/>
+        
+        <div id="overlay" class="overlay" style="display: none;" runat="server"/>
+
+        <div id="dialog" class="dialog" style="display: none;" runat="server">
             
-        <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 11; position: absolute; width: 100%; top: 30%">
-            <div id="inner" style="background-color: #002248; border: 2px solid gainsboro; width: 300px; margin: 0px auto; text-align: center; border-radius: 10px; padding: 10px;">
-                <label id="lblMsgHeader" runat="server" style="font-family: Verdana; font-weight: bold; font-size: large; color: white"></label>
+                <label id="dialogTitle" runat="server" style="font-weight: bold; font-size: large; color: white"></label>
                 <br/>
                 <br/>
-                <label id="lblMsgBox" runat="server" style="font-family: Verdana; font-size: large; color: white"></label>
+                <label id="dialogMessage" runat="server" style="font-size: large; color: white"></label>
                 <br/>
                 <br/>
-                <input type="hidden" id="hdnRedirectTo" runat="server"/>
-                <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick="closeMsgBox(); "/>
-            </div>
+                <input type="hidden" id="dialogRedirect" runat="server"/>
+                <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick="closeDialog(); "/>
         </div>
 
     </body>

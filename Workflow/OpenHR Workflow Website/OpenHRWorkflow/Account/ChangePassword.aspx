@@ -12,20 +12,20 @@
             var header = 'Change Password Failed';
 
             if (document.getElementById('ctl00_mainCPH_txtCurrPassword').value.length === 0) {
-                showMsgBox(header, 'Current Password is required.');
+                showDialog(header, 'Current Password is required.');
                 return false;
             }
             if (document.getElementById('ctl00_mainCPH_txtNewPassword').value.length === 0) {
-                showMsgBox(header, 'New Password is required.');
+                showDialog(header, 'New Password is required.');
                 return false;
             }
             if (document.getElementById('ctl00_mainCPH_txtConfPassword').value.length === 0) {
-                showMsgBox(header, 'Confirm Password is required.');
+                showDialog(header, 'Confirm Password is required.');
                 return false;
             }
 
             if (document.getElementById('ctl00_mainCPH_txtNewPassword').value != document.getElementById('ctl00_mainCPH_txtConfPassword').value) {
-                showMsgBox(header, 'New Password and Confirm Password do not match.');
+                showDialog(header, 'New Password and Confirm Password do not match.');
                 return false;
             }
             return true;

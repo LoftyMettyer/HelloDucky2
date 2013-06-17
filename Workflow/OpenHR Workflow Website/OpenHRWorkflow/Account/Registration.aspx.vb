@@ -105,7 +105,7 @@ Partial Class Registration
       sRedirectTo = "Login.aspx"
     End If
 
-    CType(Master, Site).ShowMessage(sHeader, sMessage, sRedirectTo)
+    CType(Master, Site).ShowDialog(sHeader, sMessage, sRedirectTo)
 
   End Sub
 

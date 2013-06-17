@@ -12,11 +12,11 @@
             var header = 'Login Failed';
 
             if (document.getElementById('ctl00_mainCPH_txtUserName').value.length === 0) {
-                showMsgBox(header, 'Username is required.');
+                showDialog(header, 'Username is required.');
                 return false;
             }
             if (document.getElementById('ctl00_mainCPH_txtPassword').value.length === 0) {
-                showMsgBox(header, 'Password is required.');
+                showDialog(header, 'Password is required.');
                 return false;
             }
             return true;

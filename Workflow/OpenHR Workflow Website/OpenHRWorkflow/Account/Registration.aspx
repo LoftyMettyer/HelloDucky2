@@ -12,7 +12,7 @@
             var header = 'Registration Failed';
 
             if (document.getElementById('ctl00_mainCPH_txtEmail').value.length === 0) {
-                showMsgBox(header, 'Email address is required.');
+                showDialog(header, 'Email address is required.');
                 return false;
             }
             return true;
