@@ -658,6 +658,11 @@
 			catch (e) { }
 		}
 
+    function showCalendar(elementID) {
+      var dc = igdrp_getComboById(elementID);
+      dc.showCalendar();
+    }
+
 		function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
 			try {
 				var sCurrentText = pobjControl.getText();
@@ -1381,9 +1386,8 @@ function ResizeComboForForm(sender, args) {
   function GetGridRowHeight(iGridID) {
     var table = document.getElementById(iGridID)
 
-
     for (var r = 0; r < table.rows.length; r++) {
-        if (table.rows[r].style.display == '') {
+        if (table.rows[r].style.display == '') {        
           return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
         }
     }

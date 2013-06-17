@@ -1401,7 +1401,7 @@ Public Class _Default
 
                 Case 7 ' Input value - date
 
-                  If isMobileBrowser() Then
+                  If False Then ' Not isMobileBrowser() Then
 
                     ' create a text box to hold the selected date
                     ctlForm_TextInput = New TextBox
@@ -1785,6 +1785,13 @@ Public Class _Default
                       .ID = sID
                       .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
+                      ' Mobiles sometimes show keyboards when dateboxes are clicked.
+                      ' These can overlap the calendar control, so suppress it.
+                      If isMobileBrowser() Then
+                        .Editable = False
+                        .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
+                      End If
+
                       If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
                         sDefaultFocusControl = sID
                         iMinTabIndex = NullSafeInteger(dr("tabIndex"))
@@ -2056,7 +2063,17 @@ Public Class _Default
                     .AllowPaging = True
                     .AllowSorting = True
                     '.EnableSortingAndPagingCallbacks = True
-                    .PageSize = mobjConfig.LookupRowsRange
+
+                    ' Androids currently can't scroll internal divs, so fix 
+                    ' pagesize of record selector to height of control.
+                    If getBrowserFamily() = "ANDROID" Then
+                      Dim piRowHeight As Double = (CInt(NullSafeString(dr("FontSize"))) - 8) + 21
+                      .PageSize = Math.Min(CInt(Math.Truncate((CInt(NullSafeInteger(dr("Height")) - 42) / piRowHeight))), mobjConfig.LookupRowsRange)
+                      .RowStyle.Height = Unit.Pixel(CInt(piRowHeight))
+                    Else
+                      .PageSize = mobjConfig.LookupRowsRange
+                    End If
+
                     .IsLookup = False
                     ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
                     ' if performance is silly, but while paging is enabled it shouldn't be too bad.
@@ -5773,7 +5790,22 @@ Public Class _Default
     End If
   End Function
 
+  Private Function getBrowserFamily() As String
 
+    Dim ua As String = Request.UserAgent.ToUpper
+
+    If ua.Contains("MSIE") Then
+      Return "MSIE"
+    ElseIf ua.Contains("IPHONE") OrElse ua.Contains("IPAD") Then
+      Return "IOS"
+    ElseIf ua.Contains("ANDROID") Then
+      Return "ANDROID"
+    ElseIf ua.Contains("BLACKBERRY") Then
+      Return "BLACKBERRY"
+    Else
+      Return "UNKNOWN"
+    End If
+  End Function
 
 
 End Class
