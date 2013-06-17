@@ -10,95 +10,116 @@ Partial Class MobileLogin
   Private miImageCount As Int16
   Private mobjConfig As New Config
 
-    Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
-        Dim miInstanceID As Integer
-        Dim miElementID As Integer
-        Dim msServer As String
-        Dim msUser As String
-        Dim msPwd As String
-        Dim sTemp As String
-        Dim iTemp As Integer
-        Dim sQueryString As String
-        Dim objCrypt As New Crypt
+    Dim miInstanceID As Integer
+    Dim miElementID As Integer
+    Dim msServer As String
+    Dim msUser As String
+    Dim msPwd As String
+    Dim sTemp As String
+    Dim iTemp As Integer
+    Dim sQueryString As String
+    Dim objCrypt As New Crypt
 
-        ' is there is a remember me cookie, get the user name out of it and bypass the login screen.
-        Dim CustomerGUID As String = HttpContext.Current.User.Identity.Name
 
-        If CustomerGUID = "" Or CustomerGUID = "sqluser" Then
-            ' No username stored.
+    ' Forms authentication can be overruled, and we do this for any existing workflow link.
+    
+    ' is there is a remember me cookie, get the user name out of it and bypass the login screen.
+    Dim CustomerGUID As String = HttpContext.Current.User.Identity.Name
+
+    If Not (CustomerGUID = "" Or CustomerGUID = "sqluser") Then
+      Session("LoginKey") = CustomerGUID
+    End If
+
+
+    ' We only authenticate if the requested page is a mobile page.
+    Try
+      sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
+      iTemp = sTemp.IndexOf("?")
+
+      If iTemp >= 0 Then
+        sQueryString = sTemp.Substring(iTemp + 1)
+
+
+        '# This needs to be done properly!!!
+        If Not sQueryString.ToUpper().Contains("MOBILE") Then
+          ' challenge by continuing through...
         Else
-            Session("LoginKey") = CustomerGUID
-            ' submitLoginDetails()
-
+          FormsAuthentication.RedirectFromLoginPage("", True)
         End If
+      End If
+    Catch ex As Exception
+
+    End Try
 
 
-        ' First decode the URL to see if this is an external workflow - we don't authenticate them.
-        Try
-            ' Read and decrypt the queryString.
-            miElementID = 0
-            miInstanceID = 0
 
-            sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
-            iTemp = sTemp.IndexOf("?")
+    '' First decode the URL to see if this is a valid workflow - we don't authenticate any workflow in progress or external workflow.
+    'Try
+    '  ' Read and decrypt the queryString.
+    '  miElementID = 0
+    '  miInstanceID = 0
 
-            If iTemp >= 0 Then
-                sQueryString = sTemp.Substring(iTemp + 1)
+    '  sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
+    '  iTemp = sTemp.IndexOf("?")
 
-                Try
-                    ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
-                    Dim sCultureName As String
-                    sCultureName = Thread.CurrentThread.CurrentCulture.Name
+    '  If iTemp >= 0 Then
+    '    sQueryString = sTemp.Substring(iTemp + 1)
 
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
+    '    Try
+    '      ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
+    '      Dim sCultureName As String
+    '      sCultureName = Thread.CurrentThread.CurrentCulture.Name
 
-                    sTemp = objCrypt.DecompactString(sQueryString)
-                    sTemp = objCrypt.DecryptString(sTemp, "", True)
+    '      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
+    '      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
 
-                    ' Reset the culture to be the one used by the client. Fault HRPRO-1404
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
+    '      sTemp = objCrypt.DecompactString(sQueryString)
+    '      sTemp = objCrypt.DecryptString(sTemp, "", True)
 
-                    ' Extract the required parameters from the decrypted queryString.
-                    miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-                    sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+    '      ' Reset the culture to be the one used by the client. Fault HRPRO-1404
+    '      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
+    '      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
 
-                    miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-                    sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+    '      ' Extract the required parameters from the decrypted queryString.
+    '      miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-                    msUser = Left(sTemp, InStr(sTemp, vbTab) - 1)
-                    sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+    '      miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-                    msPwd = Left(sTemp, InStr(sTemp, vbTab) - 1)
-                    sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+    '      msUser = Left(sTemp, InStr(sTemp, vbTab) - 1)
+    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-                    msServer = Left(sTemp, InStr(sTemp, vbTab) - 1)
-                    sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+    '      msPwd = Left(sTemp, InStr(sTemp, vbTab) - 1)
+    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-                    If (miInstanceID < 0) _
-                      And (miElementID = -1) _
-                      And (Not IsPostBack) Then
+    '      msServer = Left(sTemp, InStr(sTemp, vbTab) - 1)
+    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-                        ' This is an externally initiated workflow
-                        ' Send user to originally requested page....
-                        FormsAuthentication.RedirectFromLoginPage("", True)
+    '      ' We're a valid workflow if the elementID > -2 - by the way, a '-2' indicates a 'mobile activation' workflow link.
+    '      If (miElementID >= -2) _
+    '        And (Not IsPostBack) Then
 
-                    End If
+    '        ' This is an externally initiated workflow
+    '        ' Send user to originally requested page....
+    '        FormsAuthentication.RedirectFromLoginPage("", True)
 
-                Catch ex As Exception
-                    ' uh-oh, problem! Try to revert user to calling page.
-                    'FormsAuthentication.RedirectFromLoginPage("", True)
-                End Try
-            Else
-                ' No workflow encrypted string passed, continue to login page.          
-            End If
-        Catch ex As Exception
+    '      End If
 
-        End Try
+    '    Catch ex As Exception
+    '      ' uh-oh, problem! Try to revert user to calling page.
+    '      'FormsAuthentication.RedirectFromLoginPage("", True)
+    '    End Try
+    '  Else
+    '    ' No workflow encrypted string passed, continue to login page...
+    '  End If
+    'Catch ex As Exception
 
-    End Sub
+    'End Try
+
+  End Sub
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
