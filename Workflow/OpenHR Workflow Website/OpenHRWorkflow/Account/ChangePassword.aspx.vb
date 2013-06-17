@@ -7,8 +7,8 @@ Partial Class ChangePassword
     Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
 
     If Not result.Valid Then
-      Session("messages") = result.InvalidReason
-      Response.Redirect("~/Messages.aspx")
+      FormsAuthentication.SignOut()
+      FormsAuthentication.RedirectToLoginPage()
     End If
 
     Title = Utilities.WebSiteName("Change Password")
@@ -28,5 +28,7 @@ Partial Class ChangePassword
     End If
 
   End Sub
+
+
 
 End Class

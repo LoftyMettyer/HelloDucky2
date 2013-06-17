@@ -14,8 +14,8 @@ Partial Class Home
     If result.Valid Then
       userGroupID = result.UserGroupID
     Else
-      Session("messages") = result.InvalidReason
-      Response.Redirect("~/Messages.aspx")
+      FormsAuthentication.SignOut()
+      FormsAuthentication.RedirectToLoginPage()
     End If
 
     Dim homeItemFontInfo As New FontSetting
