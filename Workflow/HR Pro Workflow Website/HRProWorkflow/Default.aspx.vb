@@ -682,7 +682,6 @@ Public Class _Default
 
                       .Height() = Unit.Pixel(iTempHeight)
                       .Width() = Unit.Pixel(iTempWidth)
-                      .EnableViewState = False
 
                     End With
 
@@ -735,7 +734,6 @@ Public Class _Default
 
                       .Height() = Unit.Pixel(iTempHeight)
                       .Width() = Unit.Pixel(iTempWidth)
-                      .EnableViewState = False
 
                     End With
 
@@ -838,7 +836,6 @@ Public Class _Default
                     .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
                     .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                     .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
-                    .EnableViewState = False
 
                   End With
 
@@ -922,7 +919,6 @@ Public Class _Default
 
                       .Height() = Unit.Pixel(iTempHeight)
                       .Width() = Unit.Pixel(iTempWidth)
-                      .EnableViewState = False
 
                     End With
 
@@ -1039,7 +1035,6 @@ Public Class _Default
                     .ClientSideEvents.KeyPress = "WebNumericEditValidation_KeyPress"
                     .ClientSideEvents.KeyDown = "WebNumericEditValidation_KeyDown"
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
-                    .EnableViewState = False
 
                   End With
 
@@ -1293,7 +1288,6 @@ Public Class _Default
                     .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
                     .ClientSideEvents.TextChanged = "dateControlTextChanged"
                     .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
-                    .EnableViewState = False
 
                   End With
 
@@ -1419,7 +1413,6 @@ Public Class _Default
 
                     .Height() = Unit.Pixel(iTempHeight)
                     .Width() = Unit.Pixel(iTempWidth)
-                    .EnableViewState = False
 
                   End With
 
@@ -1568,7 +1561,6 @@ Public Class _Default
                     iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
                     .Height() = Unit.Pixel(iTempHeight)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")))
-                    .EnableViewState = False
 
 
                     ' LOOK AT REPLACING THESE TO IMPROVE PERFORMANCE!
@@ -1761,7 +1753,6 @@ Public Class _Default
                     .ClientSideEvents.BeforeDropDown = "InitializeLookup"
                     .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
                     .ClientSideEvents.AfterDropDown = "ResizeFormForCombo"
-                    .EnableViewState = False
 
                     '.DropDownLayout.XmlLoadOnDemandType = Infragistics.WebUI.WebCombo.ComboLoadOnDemandType.Accumulative
 
@@ -2222,7 +2213,6 @@ Public Class _Default
                     .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
 
                     .ClientSideEvents.Click = "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};"
-                    .EnableViewState = False
 
                     AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
                   End With
