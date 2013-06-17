@@ -752,10 +752,10 @@ Public Class _Default
                     End If
 
                     .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
-                    .Style.Add("Font-Size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
-                    .Style.Add("Font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
-                    .Style.Add("FontStyle", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
-                    .Style.Add("Text-Decoration", sTemp2)
+                    .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
+                    .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
+                    .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
+                    .Style.Add("text-decoration", sTemp2)
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
@@ -1997,9 +1997,9 @@ Public Class _Default
                       .BorderWidth = Unit.Pixel(1)
                       .ReadOnly = True
                       .Style.Add("z-index", "0")
-                      .Style.Add("background-image", "url('images/downarrow.gif');")
-                      .Style.Add("background-position", "right;")
-                      .Style.Add("background-repeat", "no-repeat;")
+                      .Style.Add("background-image", "url('images/downarrow.gif')")
+                      .Style.Add("background-position", "right")
+                      .Style.Add("background-repeat", "no-repeat")
 
                     End With
 
@@ -2828,7 +2828,7 @@ Public Class _Default
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
-                    If IsMobileBrowser() Then
+                    If IsMobileBrowser() OrElse IsMacSafari() Then
                       .Style.Add("-webkit-appearance", "none")
                       .Style.Add("background-color", "#CCCCCC")
                       .Style.Add("border", "solid 1px #C0C0C0")
@@ -2857,11 +2857,11 @@ Public Class _Default
                       sTemp2 = " none"
                     End If
 
-                    .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
-                    .Style.Add("Font-Size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
-                    .Style.Add("Font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
-                    .Style.Add("FontStyle", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
-                    .Style.Add("Text-Decoration", sTemp2)
+                    .Style.Add("font-family", NullSafeString(dr("FontName")).ToString)
+                    .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
+                    .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
+                    .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
+                    .Style.Add("text-decoration", sTemp2)
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
