@@ -3209,6 +3209,9 @@ Public Class _Default
         Dim outByte(iBufferSize - 1) As Byte
         Dim retVal As Long
         Dim startIndex As Long = 0
+        Dim sExtension As String = ""
+        Dim iIndex As Integer
+        Dim sName As String
 
         Try
             miImageCount = CShort(miImageCount + 1)
@@ -3235,12 +3238,16 @@ Public Class _Default
                 dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
 
                 Do While dr.Read
-                    ' JPD 14/1/11 - JIRA 1153 - Some installations of the Workflow website had problems handling URLs that contained percent signs followed by two digits, even when URLencoding has been performed.
-                    ' Replace all '%' with '%-' to ensure percent signs aren't followed by digits.
+                    sName = NullSafeString(dr("name"))
+                    iIndex = sName.LastIndexOf(".")
+                    If iIndex >= 0 Then
+                        sExtension = sName.Substring(iIndex)
+                    End If
+
                     sImageFileName = Session.SessionID().ToString & _
                      "_" & miImageCount.ToString & _
-                     "_" & NullSafeString(dr("name")).Replace("%", "%-")
-                    sTempName = sImageFilePath & "\" & Server.UrlEncode(sImageFileName)
+                     sExtension
+                    sTempName = sImageFilePath & "\" & sImageFileName
 
                     ' Create a file to hold the output.
                     fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
@@ -3275,7 +3282,7 @@ Public Class _Default
                 cmdSelect.Dispose()
 
                 ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-                LoadPicture = "pictures/" & Server.UrlEncode(sImageFileName)
+                LoadPicture = "pictures/" & sImageFileName
 
             Catch ex As Exception
                 LoadPicture = ""
