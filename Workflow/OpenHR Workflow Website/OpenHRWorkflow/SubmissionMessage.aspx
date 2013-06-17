@@ -22,8 +22,11 @@
         }
 
         function resizeFrame() {
+          try {
             window.resizeTo(document.getElementById("frmMessage").offsetParent.scrollWidth, document.getElementById("frmMessage").offsetParent.scrollHeight);
             window.parent.resizeToFit(document.getElementById("frmMessage").offsetParent.scrollWidth, document.getElementById("frmMessage").offsetParent.scrollHeight);
+          }
+          catch (e) { }
         }
 
         function doLabelClick() {
