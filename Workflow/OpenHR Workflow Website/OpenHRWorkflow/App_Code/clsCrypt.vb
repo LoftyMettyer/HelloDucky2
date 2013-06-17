@@ -1,6 +1,7 @@
-Option Strict On
+Option Strict Off
 
-Imports Microsoft.VisualBasic
+Imports VB = Microsoft.VisualBasic
+Imports VB6 = Microsoft.VisualBasic.Compatibility.VB6
 Imports System
 
 Public Class Crypt
@@ -11,6 +12,80 @@ Public Class Crypt
     Private miHiBound As Int32
     Private mabytAddTable(255, 255) As Byte
     Private mabytXTable(255, 255) As Byte
+
+  Public Function EncryptString(ByRef psText As String, Optional ByRef psKey As String = "", Optional ByRef pbOutputInHex As Boolean = False) As String
+
+    Dim abytArray() As Byte
+    Dim abytKey() As Byte
+    Dim abytOut() As Byte
+
+    psText = psText & " "
+    abytArray = System.Text.Encoding.Default.GetBytes(psText)
+    abytKey = System.Text.Encoding.Default.GetBytes(psKey)
+    abytOut = EncryptByte(abytArray, abytKey)
+    EncryptString = System.Text.Encoding.Default.GetString(abytOut)
+
+    If pbOutputInHex = True Then EncryptString = EnHex(EncryptString)
+
+  End Function
+
+  Public Function EnHex(ByRef psData As String) As String
+    Dim dblCount As Double
+    Dim sTemp As String
+
+    Reset()
+
+    For dblCount = 1 To Len(psData)
+      sTemp = Hex(Asc(Mid(psData, dblCount, 1)))
+      If Len(sTemp) < 2 Then sTemp = "0" & sTemp
+      Append(sTemp)
+    Next
+
+    EnHex = GData
+
+    Reset()
+
+  End Function
+
+
+  Public Function EncryptByte(ByRef pabytText() As Byte, ByRef pabytKey() As Byte) As Object
+    Dim abytTemp() As Byte
+    Dim iTemp As Short
+    Dim iLoop As Integer
+    Dim iBound As Short
+
+    Call InitTbl()
+
+    ReDim abytTemp((UBound(pabytText)) + 5)
+    Randomize()
+    abytTemp(0) = Int((Rnd() * 254) + 1)
+    abytTemp(1) = Int((Rnd() * 254) + 1)
+    abytTemp(2) = Int((Rnd() * 254) + 1)
+    abytTemp(3) = Int((Rnd() * 254) + 1)
+    abytTemp(4) = Int((Rnd() * 254) + 1)
+
+    pabytText.CopyTo(abytTemp, 5)
+
+    ReDim Preserve abytTemp(UBound(abytTemp) - 1)
+
+    ReDim pabytText(UBound(abytTemp))
+    abytTemp.CopyTo(pabytText, 0)
+
+    ReDim abytTemp(0)
+    iBound = (UBound(pabytKey) - 1)
+    iTemp = 0
+
+    For iLoop = 0 To UBound(pabytText) - 1
+      If iTemp = iBound Then iTemp = 0
+      pabytText(iLoop) = mabytXTable(pabytText(iLoop), mabytAddTable(pabytText(iLoop + 1), pabytKey(iTemp)))
+      pabytText(iLoop + 1) = mabytXTable(pabytText(iLoop), pabytText(iLoop + 1))
+      pabytText(iLoop) = mabytXTable(pabytText(iLoop), mabytAddTable(pabytText(iLoop + 1), pabytKey(iTemp + 1)))
+      iTemp = iTemp + 1
+    Next iLoop
+
+    EncryptByte = VB6.CopyArray(pabytText)
+
+  End Function
 
     Public Function DecryptString(ByVal psText As String, _
      Optional ByVal psKey As String = "", _
@@ -67,29 +142,29 @@ Public Class Crypt
 
     End Sub
 
-    Private Sub Append(ByRef psStringData As String, _
+  Private Sub Append(ByRef psStringData As String, _
     Optional ByVal piLength As Int32 = 0)
 
-        Dim iDataLength As Int32
-        Dim abytTemp() As Byte
+    Dim iDataLength As Int32
+    Dim abytTemp() As Byte
 
-        If piLength > 0 Then
-            iDataLength = piLength
-        Else
-            iDataLength = Len(psStringData)
-        End If
+    If piLength > 0 Then
+      iDataLength = piLength
+    Else
+      iDataLength = Len(psStringData)
+    End If
 
-        If iDataLength + miHiByte > miHiBound Then
-            miHiBound = miHiBound + 1024
-            ReDim Preserve mabytArray(miHiBound)
-        End If
+    If iDataLength + miHiByte > miHiBound Then
+      miHiBound = miHiBound + 1024
+      ReDim Preserve mabytArray(miHiBound)
+    End If
 
-        ReDim abytTemp(iDataLength)
-        System.Text.Encoding.Default.GetBytes(psStringData, 0, iDataLength, abytTemp, 0)
-        abytTemp.CopyTo(mabytArray, miHiByte)
+    ReDim abytTemp(iDataLength)
+    System.Text.Encoding.Default.GetBytes(psStringData, 0, iDataLength, abytTemp, 0)
+    abytTemp.CopyTo(mabytArray, miHiByte)
 
-        miHiByte = miHiByte + iDataLength
-    End Sub
+    miHiByte = miHiByte + iDataLength
+  End Sub
 
     Public Function DecryptByte(ByVal pabytDs() As Byte, _
       ByVal pabytPass() As Byte) As Byte()
@@ -133,6 +208,107 @@ Public Class Crypt
         Next i
         mfInitTrue = True
     End Sub
+
+
+  Public Function EncryptQueryString(ByVal plngInstanceID As Long, _
+    ByVal plngStepID As Long, _
+    ByVal psUser As String, _
+    ByVal psPassword As String, _
+    ByVal psServer As String, _
+    ByVal psDatabase As String, _
+    ByVal psLoginKey As String, _
+    ByVal psPasswordKey As String) As String
+
+    Dim sSourceString As String
+    Dim sEncryptedString As String
+
+    Try
+      sSourceString = CStr(plngInstanceID) & _
+        vbTab & CStr(plngStepID) & _
+        vbTab & psUser & _
+        vbTab & psPassword & _
+        vbTab & psServer & _
+        vbTab & psDatabase & _
+        vbTab & psLoginKey & _
+        vbTab & psPasswordKey
+
+      sEncryptedString = EncryptString(sSourceString, "jmltn", True)
+      sEncryptedString = CompactString(sEncryptedString)
+
+    Catch ex As Exception
+      sEncryptedString = ""
+
+    End Try
+
+    EncryptQueryString = sEncryptedString
+
+  End Function
+  Public Function CompactString(ByRef psSourceString As String) As String
+    ' Compact the encrypted string.
+    ' psSourceString is a string of the hexadecimal values of the Ascii codes for each character in the encrypted string.
+    ' In this string each character in the encrypted string is represented as 2 hex digits.
+    ' As it's a string of hex characters all characters are in the range 0-9, A-F
+    ' Valid hypertext link characters are 0-9, A-Z, a-z and some others (we'll be using $ and @).
+    ' Take advantage of this by implementing our own base64 encoding as follows:
+    Dim sCompactedString As String
+    Dim sSubString As String
+    Dim sModifiedSourceString As String
+    Dim iValue As Short
+    Dim iTemp As Short
+    Dim sNewString As String
+
+    sCompactedString = ""
+    sModifiedSourceString = psSourceString
+    Do While Len(sModifiedSourceString) > 0
+      ' Read the hex characters in chunks of 3 (ie. possible values 0 - 4095)
+      ' This chunk of 3 Hex characters can then be translated into 2 base64 characters (ie. still have possible values 0 - 4095)
+      ' Woohoo! We've reduced the length of the encrypted string by about one third!
+      sNewString = ""
+      sSubString = VB.Left(sModifiedSourceString & "000", 3)
+      sModifiedSourceString = Mid(sModifiedSourceString, 4)
+      iValue = Val("&H" & sSubString)
+
+      ' Use our own base64 digit set.
+      ' Base64 digit values 0-9 are represented as 0-9
+      ' Base64 digit values 10-35 are represented as A-Z
+      ' Base64 digit values 36-61 are represented as a-z
+      ' Base64 digit value 62 is represented as $
+      ' Base64 digit value 63 is represented as @
+
+      iTemp = iValue Mod 64
+      If iTemp = 63 Then
+        sNewString = "@"
+      ElseIf iTemp = 62 Then
+        sNewString = "$"
+      ElseIf iTemp >= 36 Then
+        sNewString = Chr(iTemp + 61)
+      ElseIf iTemp >= 10 Then
+        sNewString = Chr(iTemp + 55)
+      Else
+        sNewString = Chr(iTemp + 48)
+      End If
+
+      iTemp = (iValue - iTemp) / 64
+
+      If iTemp = 63 Then
+        sNewString = "@" & sNewString
+      ElseIf iTemp = 62 Then
+        sNewString = "$" & sNewString
+      ElseIf iTemp >= 36 Then
+        sNewString = Chr(iTemp + 61) & sNewString
+      ElseIf iTemp >= 10 Then
+        sNewString = Chr(iTemp + 55) & sNewString
+      Else
+        sNewString = Chr(iTemp + 48) & sNewString
+      End If
+
+      sCompactedString = sCompactedString & sNewString
+    Loop
+
+    ' Append the number of characters to ignore, to the compacted string
+    CompactString = sCompactedString & CStr((3 - (Len(psSourceString) Mod 3)) Mod 3)
+
+  End Function
 
     Public Function ProcessDecryptString(ByVal psText As String) As String
         Dim sOutput As String
