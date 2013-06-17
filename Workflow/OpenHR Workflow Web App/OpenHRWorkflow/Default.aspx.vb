@@ -4,11 +4,11 @@ Imports System.Drawing
 Imports AjaxControlToolkit
 Imports System.Transactions
 Imports System.Globalization
+Imports System.Reflection
 
 Public Class [Default]
    Inherits Page
 
-   Private _config As Config
    Private _url As WorkflowUrl
    Private _form As WorkflowForm
    Private _db As Database
@@ -21,6 +21,7 @@ Public Class [Default]
 
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
+      'TODO PG IsNullOrEmpty()
       Dim message As String = ""
 
       'The script manager calls this page to get it combined js files, if the calls is from there ignore it
@@ -96,18 +97,11 @@ Public Class [Default]
 
    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
 
-      Dim message As String = ""
+      Dim message As String = Nothing
 
-      Try
-         Response.CacheControl = "no-cache"
-         Response.AddHeader("Pragma", "no-cache")
-         Response.Expires = -1
-
-         _config = New Config()
-         _config.Initialise(Server.MapPath("themes/ThemeHex.xml"))
-
-      Catch ex As Exception
-      End Try
+      Response.CacheControl = "no-cache"
+      Response.AddHeader("Pragma", "no-cache")
+      Response.Expires = -1
 
       'Set the page title
       Page.Title = GetPageTitle("Workflow")
@@ -116,7 +110,7 @@ Public Class [Default]
       SetPageCulture()
 
       'check to see if the database is locked
-      If message.Length = 0 And Not IsPostBack Then
+      If message.IsNullOrEmpty And Not IsPostBack Then
 
          If _db.IsSystemLocked() Then
             message = "Database locked.<BR><BR>Contact your system administrator."
@@ -128,12 +122,11 @@ Public Class [Default]
 #If DEBUG Then
 #Else
       'check if the database and website versions match.
-      If message.Length = 0 And Not IsPostBack Then
+      If message.IsNullOrEmpty And Not IsPostBack Then
 
          Dim dbVersion As String = _db.GetSetting("database", "version", False)
 
-         Dim wsVersion As String = Assembly.GetExecutingAssembly.GetName.Version.Major & "." &
-                                   Assembly.GetExecutingAssembly.GetName.Version.Minor
+         Dim wsVersion As String = Assembly.GetExecutingAssembly.GetName.Version.Major & "." & Assembly.GetExecutingAssembly.GetName.Version.Minor
 
          If dbVersion <> wsVersion Then
 
@@ -143,7 +136,7 @@ Public Class [Default]
       End If
 #End If
 
-      If message.Length = 0 Then
+      If message.IsNullOrEmpty Then
 
          Try
             'FileUpload.apsx, FileDownload.aspx & ImageHandler require the url details
@@ -160,16 +153,16 @@ Public Class [Default]
             Dim script As String = ""
             message = CreateControls(_form, script)
 
-            ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = _config.SubmissionTimeout
+            ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = App.Config.SubmissionTimeout
 
             If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
                ' Form the script to be registered at client side.
                ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
             End If
 
-            If message.Length = 0 Then
+            If message.IsNullOrEmpty Then
 
-               If _form.ErrorMessage <> "" Then
+               If Not _form.ErrorMessage.IsNullOrEmpty Then
                   message = _form.ErrorMessage
                End If
 
@@ -199,7 +192,7 @@ Public Class [Default]
 
       End If
 
-      If message.Length > 0 Then
+      If Not message.IsNullOrEmpty Then
 
          If IsPostBack Then
             bulletErrors.Items.Clear()
@@ -217,6 +210,7 @@ Public Class [Default]
 
    Private Function CreateControls(workflowForm As WorkflowForm, ByRef script As String) As String
 
+      'TODO PG IsNullOrEmpty
       Dim message As String = ""
 
       'Sort the form items so that the tab control is created first then the control based on their tab index
@@ -660,10 +654,10 @@ Public Class [Default]
                   ' pagesize of record selector to height of control.
                   If Utilities.GetBrowserFamily() = "ANDROID" Then
                      Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
-                     .PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), _config.LookupRowsRange)
+                     .PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), App.Config.LookupRowsRange)
                      .RowStyle.Height = CInt(piRowHeight)
                   Else
-                     .PageSize = _config.LookupRowsRange
+                     .PageSize = App.Config.LookupRowsRange
                   End If
 
                   .IsLookup = False
@@ -840,7 +834,7 @@ Public Class [Default]
                      .AllowPaging = True
                      .AllowSorting = True
                      '.EnableSortingAndPagingCallbacks = True
-                     .PageSize = _config.LookupRowsRange
+                     .PageSize = App.Config.LookupRowsRange
                      .ShowFooter = False
 
                      .CssClass = "recordSelector"
@@ -1579,7 +1573,7 @@ Public Class [Default]
 
          ' Validate the web form entry.
          errorMessagePanel.Font.Name = "Verdana"
-         errorMessagePanel.Font.Size = _config.ValidationMessageFontSize
+         errorMessagePanel.Font.Size = App.Config.ValidationMessageFontSize
          errorMessagePanel.ForeColor = General.GetColour(6697779)
 
          bulletErrors.Items.Clear()
@@ -1707,10 +1701,6 @@ Public Class [Default]
 
    Public Function AutoFocusControl() As String
       Return _autoFocusControl
-   End Function
-
-   Public Function ColourThemeHex() As String
-      Return _config.ColourThemeHex
    End Function
 
    Private Function LookupFilterSQL(ByVal columnName As String, ByVal columnDataType As Integer, ByVal operatorID As Integer, ByVal value As String) As String

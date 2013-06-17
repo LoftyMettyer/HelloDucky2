@@ -4,18 +4,6 @@ Imports System.Data
 Partial Class FileUpload
    Inherits Page
 
-   'TODO PG NOW expose Config and remove other functions
-   Private ReadOnly mobjConfig As New Config
-   Private miSubmissionTimeoutInSeconds As Int32
-
-   Public Function ColourThemeHex() As String
-      ColourThemeHex = mobjConfig.ColourThemeHex
-   End Function
-
-   Public Function ColourThemeFolder() As String
-      ColourThemeFolder = mobjConfig.ColourThemeFolder
-   End Function
-
    Private Function SaveImage(ByVal abtImage As Byte(), ByVal psContentType As String, ByVal psFileName As String, ByVal pfClear As Boolean) As Integer
 
       Dim iRowsAffected As Integer
@@ -34,7 +22,7 @@ Partial Class FileUpload
 
       cmdSave = New SqlClient.SqlCommand("spASRWorkflowFileUpload", conn)
       cmdSave.CommandType = CommandType.StoredProcedure
-      cmdSave.CommandTimeout = miSubmissionTimeoutInSeconds
+      cmdSave.CommandTimeout = App.Config.SubmissionTimeoutInSeconds
 
       cmdSave.Parameters.AddWithValue("@piElementItemID", ViewState("ElementItemID"))
       cmdSave.Parameters.AddWithValue("@piInstanceID", workflowUrl.InstanceID)
@@ -70,9 +58,6 @@ Partial Class FileUpload
       Dim fAlreadyUploaded As Boolean
 
       Try
-         mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
-         miSubmissionTimeoutInSeconds = mobjConfig.SubmissionTimeoutInSeconds
-
          Response.CacheControl = "no-cache"
          Response.AddHeader("Pragma", "no-cache")
          Response.Expires = -1
@@ -106,7 +91,7 @@ Partial Class FileUpload
                cmdDetails.CommandText = "spASRGetWorkflowFileUploadDetails"
                cmdDetails.Connection = conn
                cmdDetails.CommandType = CommandType.StoredProcedure
-               cmdDetails.CommandTimeout = miSubmissionTimeoutInSeconds
+               cmdDetails.CommandTimeout = App.Config.SubmissionTimeoutInSeconds
 
                cmdDetails.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
                cmdDetails.Parameters("@piElementItemID").Value = iElementItemID
@@ -144,12 +129,12 @@ Partial Class FileUpload
                ViewState("FileName") = sFileName
                ViewState("ElementItemID") = iElementItemID
 
-               lblFileUploadPrompt.Font.Size = mobjConfig.MessageFontSize
+               lblFileUploadPrompt.Font.Size = App.Config.MessageFontSize
                lblFileUploadPrompt.ForeColor = General.GetColour(6697779)
 
-               lblErrors.Font.Size = mobjConfig.ValidationMessageFontSize
+               lblErrors.Font.Size = App.Config.ValidationMessageFontSize
                lblErrors.ForeColor = General.GetColour(6697779)
-               bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize
+               bulletErrors.Font.Size = App.Config.ValidationMessageFontSize
                bulletErrors.ForeColor = General.GetColour(6697779)
 
                btnCancel.Attributes.Add("onclick", "try{exitFileUpload(0);}catch(e){};")

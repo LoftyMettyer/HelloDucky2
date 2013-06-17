@@ -1,4 +1,5 @@
 <%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.FileUpload" Codebehind="FileUpload.aspx.vb" %>
+<%@ Import Namespace="OpenHRWorkflow" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -103,15 +104,15 @@
     <table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 100%;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          font-family: Verdana; border: black 1px solid;" bgcolor="White">
-      <tr style="background-color: <%=ColourThemeHex()%>;">
+      <tr style="background-color: <%=App.Config.ColourThemeHex()%>;">
           <td colspan="5" height="10"/>
       </tr>
       <tr style="height: 40px">
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
           &nbsp;&nbsp;
         </td>
         <td width="40" valign="top">
-          <img src="themes/<%=ColourThemeFolder()%>/CrnrTop.gif" alt="" width="40" height="40" />
+          <img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrTop.gif" alt="" width="40" height="40" />
         </td>
         <td rowspan="2" style="background-color: White">
           <br />
@@ -119,24 +120,24 @@
             Font-Names="Verdana"></asp:Label>
         </td>
         <td width="40" valign="top">
-          <img src="themes/<%=ColourThemeFolder()%>/RCrnrTop.gif" alt="" width="40" height="40" />
+          <img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrTop.gif" alt="" width="40" height="40" />
         </td>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
           &nbsp;&nbsp;
         </td>
       </tr>
       <tr>
-          <td width="10" style="background-color: <%=ColourThemeHex()%>;"/>
+          <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;"/>
         
           <td/>
         
           <td/>
         
-          <td width="10" style="background-color: <%=ColourThemeHex()%>;"/>
+          <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;"/>
         
       </tr>
       <tr style="height: 40px">
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
           &nbsp;&nbsp;
         </td>
         <td>
@@ -146,12 +147,12 @@
         </td>
         <td>
         </td>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
           &nbsp;&nbsp;
         </td>
       </tr>
       <tr>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
         </td>
         <td>
         </td>
@@ -166,18 +167,18 @@
         </td>
         <td>
         </td>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
+        <td width="10" style="background-color: <%=App.Config.ColourThemeHex()%>;">
         </td>
       </tr>
       <%--NB. Keep <TD><IMG></TD> tags all on the same line, otherwise the images do not fully align to bottom--%>
       <tr style="height: 40px">
-        <td width="10" bgcolor="<%=ColourThemeHex()%>">
+        <td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">
         </td>
-        <td width="40" valign="bottom"><img src="themes/<%=ColourThemeFolder()%>/CrnrBot.gif" width="40" height="40" alt="" /></td>
-        <td width="40" valign="bottom"><img src="themes/<%=ColourThemeFolder()%>/RCrnrBot.gif" width="40" height="40" alt="" /></td>
-        <td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
+        <td width="40" valign="bottom"><img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrBot.gif" width="40" height="40" alt="" /></td>
+        <td width="40" valign="bottom"><img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrBot.gif" width="40" height="40" alt="" /></td>
+        <td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
       </tr>
-      <tr bgcolor="<%=ColourThemeHex()%>">
+      <tr bgcolor="<%=App.Config.ColourThemeHex()%>">
         <td colspan="5" height="10">
         </td>
       </tr>

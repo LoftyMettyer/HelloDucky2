@@ -1,10 +1,7 @@
 ﻿Imports System.Data
 
 Partial Class FileDownload
-   Inherits System.Web.UI.Page
-
-   Private mobjConfig As New Config
-   Private miSubmissionTimeoutInSeconds As Int32
+   Inherits Page
 
    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
       Dim sTemp As String
@@ -17,9 +14,6 @@ Partial Class FileDownload
       sErrorMessage = ""
 
       Try
-         mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
-         miSubmissionTimeoutInSeconds = mobjConfig.SubmissionTimeoutInSeconds
-
          sTemp = Request.RawUrl.ToString
          iTemp = sTemp.IndexOf("?")
          sQueryString = ""
@@ -86,7 +80,7 @@ Partial Class FileDownload
 
          cmdRead = New SqlClient.SqlCommand("spASRWorkflowFileDownload", conn)
          cmdRead.CommandType = CommandType.StoredProcedure
-         cmdRead.CommandTimeout = miSubmissionTimeoutInSeconds
+         cmdRead.CommandTimeout = App.Config.SubmissionTimeoutInSeconds
 
          cmdRead.Parameters.AddWithValue("@piElementItemID", piElementItemID)
          cmdRead.Parameters.AddWithValue("@piInstanceID", workflowUrl.InstanceID)
@@ -136,7 +130,7 @@ Partial Class FileDownload
                Else
                   If iColumnDataType = -3 Then
                      ' Photograph
-                     sPhotographFolder = mobjConfig.PhotographFolder().Trim
+                     sPhotographFolder = App.Config.PhotographFolder().Trim
 
                      If sPhotographFolder.Length = 0 Then
                         sErrorMessage = "The Photograph path has not been defined, or is invalid."
@@ -156,7 +150,7 @@ Partial Class FileDownload
                      Select Case iColumnOLEType
                         Case 0
                            ' Local
-                           sOLEFolder_Local = mobjConfig.OLEFolder_Local().Trim
+                           sOLEFolder_Local = App.Config.OLEFolderLocal()
 
                            If sOLEFolder_Local.Length = 0 Then
                               sErrorMessage = "The Local OLE path has not been defined, or is invalid."
@@ -175,7 +169,7 @@ Partial Class FileDownload
 
                         Case 1
                            'Server
-                           sOLEFolder_Server = mobjConfig.OLEFolder_Server().Trim
+                           sOLEFolder_Server = App.Config.OLEFolderServer()
 
                            If sOLEFolder_Server.Length = 0 Then
                               sErrorMessage = "The " & If(iColumnDataType = -3, "Photograph", "Server OLE") &

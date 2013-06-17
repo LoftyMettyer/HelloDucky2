@@ -373,7 +373,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Code\Config.vb" />
-    <Compile Include="Code\Configuration.vb" />
     <Compile Include="Code\Crypt.vb" />
     <Compile Include="Code\Database.vb" />
     <Compile Include="Code\Enums.vb" />

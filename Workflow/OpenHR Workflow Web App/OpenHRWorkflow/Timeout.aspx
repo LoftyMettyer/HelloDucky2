@@ -1,4 +1,5 @@
 <%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.timeout" Codebehind="Timeout.aspx.vb" %>
+<%@ Import Namespace="OpenHRWorkflow" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -96,7 +97,7 @@
 
   
 <body 
-	bgcolor="<%=ColourThemeHex()%>" onload="return window_onload()"
+	bgcolor="<%=App.Config.ColourThemeHex()%>" onload="return window_onload()"
 	bottommargin="0" rightmargin="0" leftmargin="0" topmargin="0" 
 	scroll=auto 
 	style="overflow:auto;">
@@ -108,36 +109,36 @@
 			top: 0px; height: 100%;">
 
 		<table height="100%" width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr bgcolor="<%=ColourThemeHex()%>">
+			<tr bgcolor="<%=App.Config.ColourThemeHex()%>">
 				<td colspan="5" height="10"></td>
 			</tr>
 
 			<tr height="40">
-				<td width="10" bgcolor="<%=ColourThemeHex()%>">&nbsp;&nbsp;</td>
-				<td width="40" valign="top"><img src="themes/<%=ColourThemeFolder()%>/CrnrTop.gif" width="40" height="40" alt="" /></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
+				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrTop.gif" width="40" height="40" alt="" /></td>
 				<td width="100%" bgcolor="White"></td>
-				<td width="40" valign="top"><img src="themes/<%=ColourThemeFolder()%>/RCrnrTop.gif" width="40" height="40" alt="" /></td>
-				<td width="10" bgcolor="<%=ColourThemeHex()%>">&nbsp;&nbsp;</td>
+				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrTop.gif" width="40" height="40" alt="" /></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
 			</tr>
 
 			<tr height="100%">
-				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White" nowrap>
-						<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
+						<font face='Verdana' style="color:#333366; font-size:<%=App.Config.MessageFontSize()%>pt">
 							<asp:Label ID="Label1" 
 								runat="server" Text="Session timeout.">
 							</asp:Label> 
 						</font>
 				</td>
 				<td width="40" bgcolor="White"></td>
-				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
 			</tr>
 
 			<tr height="100%">
-				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
 				<td colspan="3" align="center" bgcolor="White">
-					<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
+					<font face='Verdana' style="color:#333366; font-size:<%=App.Config.MessageFontSize()%>pt">
 							<asp:Label ID="Label2" 
 								runat="server" Text="Click">
 							</asp:Label> 
@@ -173,18 +174,18 @@
 							</asp:Label>
 					</font>
 				</td>
-				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
 			</tr>
 
 			<tr height="40">
-				<td width="10" bgcolor="<%=ColourThemeHex()%>">&nbsp;&nbsp;</td>
-				<td width="40" valign="top"><img src="themes/<%=ColourThemeFolder()%>/CrnrBot.gif" width="40" height="40"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
+				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrBot.gif" width="40" height="40"></td>
 				<td width="100%" bgcolor="White"></td>
-				<td width="40" valign="top"><img src="themes/<%=ColourThemeFolder()%>/RCrnrBot.gif" width="40" height="40"></td>
-				<td width="10" bgcolor="<%=ColourThemeHex()%>">&nbsp;&nbsp;</td>
+				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrBot.gif" width="40" height="40"></td>
+				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
 			</tr>
 
-			<tr bgcolor="<%=ColourThemeHex()%>">
+			<tr bgcolor="<%=App.Config.ColourThemeHex()%>">
 				<td colspan="5" height="10"></td>
 			</tr>
 		</table>

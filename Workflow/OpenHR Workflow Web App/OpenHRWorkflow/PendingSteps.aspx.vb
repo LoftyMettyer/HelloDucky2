@@ -25,30 +25,30 @@ Partial Class PendingSteps
     Dim todoDescForeColor As Integer
     Dim todoDescFontInfo As New FontSetting
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+      Using conn As New SqlConnection(App.Config.ConnectionString)
 
-      conn.Open()
+         conn.Open()
 
-      Dim cmd As New SqlCommand("select * from tbsys_mobileformlayout where ID = 1", conn)
-      Dim dr As SqlDataReader = cmd.ExecuteReader()
-      dr.Read()
+         Dim cmd As New SqlCommand("select * from tbsys_mobileformlayout where ID = 1", conn)
+         Dim dr As SqlDataReader = cmd.ExecuteReader()
+         dr.Read()
 
-      todoTitleForeColor = NullSafeInteger(dr("TodoTitleForeColor"))
-      todoTitleFontInfo.Name = NullSafeString(dr("TodoTitleFontName"))
-      todoTitleFontInfo.Size = NullSafeSingle(dr("TodoTitleFontSize"))
-      todoTitleFontInfo.Bold = NullSafeBoolean(dr("TodoTitleFontBold"))
-      todoTitleFontInfo.Italic = NullSafeBoolean(dr("TodoTitleFontItalic"))
-      todoTitleFontInfo.Underline = NullSafeBoolean(dr("TodoTitleFontUnderline"))
-      todoTitleFontInfo.Strikeout = NullSafeBoolean(dr("TodoTitleFontStrikeout"))
+         todoTitleForeColor = NullSafeInteger(dr("TodoTitleForeColor"))
+         todoTitleFontInfo.Name = NullSafeString(dr("TodoTitleFontName"))
+         todoTitleFontInfo.Size = NullSafeSingle(dr("TodoTitleFontSize"))
+         todoTitleFontInfo.Bold = NullSafeBoolean(dr("TodoTitleFontBold"))
+         todoTitleFontInfo.Italic = NullSafeBoolean(dr("TodoTitleFontItalic"))
+         todoTitleFontInfo.Underline = NullSafeBoolean(dr("TodoTitleFontUnderline"))
+         todoTitleFontInfo.Strikeout = NullSafeBoolean(dr("TodoTitleFontStrikeout"))
 
-      todoDescForeColor = NullSafeInteger(dr("TodoDescForeColor"))
-      todoDescFontInfo.Name = NullSafeString(dr("TodoDescFontName"))
-      todoDescFontInfo.Size = NullSafeSingle(dr("TodoDescFontSize"))
-      todoDescFontInfo.Bold = NullSafeBoolean(dr("TodoDescFontBold"))
-      todoDescFontInfo.Italic = NullSafeBoolean(dr("TodoDescFontItalic"))
-      todoDescFontInfo.Underline = NullSafeBoolean(dr("TodoDescFontUnderline"))
-      todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
-    End Using
+         todoDescForeColor = NullSafeInteger(dr("TodoDescForeColor"))
+         todoDescFontInfo.Name = NullSafeString(dr("TodoDescFontName"))
+         todoDescFontInfo.Size = NullSafeSingle(dr("TodoDescFontSize"))
+         todoDescFontInfo.Bold = NullSafeBoolean(dr("TodoDescFontBold"))
+         todoDescFontInfo.Italic = NullSafeBoolean(dr("TodoDescFontItalic"))
+         todoDescFontInfo.Underline = NullSafeBoolean(dr("TodoDescFontUnderline"))
+         todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
+      End Using
 
     Dim canRun As Boolean = db.CanRunWorkflows(userGroupID)
     Dim workflows As New List(Of WorkflowStepLink)

@@ -36,7 +36,7 @@ Public Class ImageHandler
          Dim url As WorkflowUrl = CType(HttpContext.Current.Session("workflowUrl"), WorkflowUrl)
          db = New Database(Database.GetConnectionString(url.Server, url.Database, url.User, url.Password))
       Else
-         db = New Database(Configuration.ConnectionString)
+         db = New Database(App.Config.ConnectionString)
       End If
 
       'Stream the image from the database straight into the Response stream

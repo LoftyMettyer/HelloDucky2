@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.Default" EnableSessionState="True" Codebehind="Default.aspx.vb" %>
+<%@ Import Namespace="OpenHRWorkflow" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
 
@@ -79,7 +80,7 @@
 
         </script>
     </head>
-    <body id="bdyMain" style="overflow: auto; background-color: <%=ColourThemeHex()%>;">
+    <body id="bdyMain" style="overflow: auto; background-color: <%=App.Config.ColourThemeHex()%>;">
 
         <form runat="server" id="frmMain" onsubmit="return submitForm();" autocomplete="off">
 	    

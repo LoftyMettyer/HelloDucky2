@@ -6,13 +6,16 @@ Imports System.IO
 
 Public Class Database
    Private ReadOnly _connectionString As String
+   Private ReadOnly _timeout As Integer
 
    Public Sub New()
-      _connectionString = Configuration.ConnectionString
+      _connectionString = App.Config.ConnectionString
+      _timeout = App.Config.SubmissionTimeoutInSeconds
    End Sub
 
    Public Sub New(connectionString As String)
       _connectionString = connectionString
+      _timeout = App.Config.SubmissionTimeoutInSeconds
    End Sub
 
    Public Shared Function GetConnectionString(server As String, database As String, user As String, password As String) As String
@@ -26,7 +29,7 @@ Public Class Database
          ' Check if the database is locked.
          Dim cmd = New SqlCommand("sp_ASRLockCheck", conn)
          cmd.CommandType = CommandType.StoredProcedure
-         cmd.CommandTimeout = Configuration.SubmissionTimeoutInSeconds
+         cmd.CommandTimeout = _timeout
 
          Dim dr = cmd.ExecuteReader()
 
@@ -136,15 +139,15 @@ Public Class Database
       End If
 
       Dim crypt As New Crypt
-      Dim encryptedString As String = crypt.EncryptQueryString((userID), - 2,
-                                                               Configuration.Login,
-                                                               Configuration.Password,
-                                                               Configuration.Server,
-                                                               Configuration.Database,
+      Dim encryptedString As String = crypt.EncryptQueryString((userID), -2,
+                                                               App.Config.Login,
+                                                               App.Config.Password,
+                                                               App.Config.Server,
+                                                               App.Config.Database,
                                                                "",
                                                                "")
 
-      Dim activationUrl As String = Configuration.WorkflowUrl & "?" & encryptedString
+      Dim activationUrl As String = App.Config.WorkflowUrl & "?" & encryptedString
 
       Using conn As New SqlConnection(_connectionString)
          conn.Open()

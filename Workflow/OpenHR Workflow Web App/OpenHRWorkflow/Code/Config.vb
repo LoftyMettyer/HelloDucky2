@@ -1,189 +1,138 @@
-Imports System.Xml
 Imports System
+Imports System.Xml
 
-'TODO merge the Config & Configuration classes (use FileWatcher for ThemeHex.xml? may have file access permission issues)
 Public Class Config
-  Private msThemeName As String = ""
-  Private msThemeHex As String = ""
-  Private msThemeFore As String = ""
-  Private miMessageFontSize As Int32
-  Private miValidationMessageFontSize As Int32
-  Private miSubmissionTimeout As Int32
-  Private msOLEFolder_Server As String
-  Private msOLEFolder_Local As String
-  Private msPhotographFolder As String
-  Private miLookupRowsRange As Int32
 
-  Public Sub Initialise(ByVal psConfigFile As String)
-    Dim sHexFileName As String
-    Dim xmlReader As XmlTextReader
+   Private Property ThemeFile As String
+   Private Property CustomConfigFile As String
+   Public Property MobileKey As String
+   Public Property Server As String
+   Public Property Database As String
+   Public Property Login As String
+   Public Property Password As String
+   Public Property WorkflowUrl As String
+   Public Property LookupRowsRange As Integer
+   Public Property MessageFontSize As Integer
+   Public Property ValidationMessageFontSize As Integer
+   Public Property OLEFolderServer As String
+   Public Property OLEFolderLocal As String
+   Public Property PhotographFolder As String
+   Public Property ColourThemeFolder As String
+   Public Property ColourThemeForeColour As String
+   Public Property ColourThemeHex As String
+   Public Property TabletBackColour As String
+   Public Property DefaultActiveDirectoryServer As String
+   Public Property ConnectionString As String
 
-    Try
-      msThemeName = ConfigurationManager.AppSettings("Theme")
-      If msThemeName Is Nothing Then msThemeName = "" Else msThemeName = msThemeName.Trim.ToUpper()
-      miMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("MessageFontSize"))
-      miValidationMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("ValidationMessageFontSize"))
-      msOLEFolder_Server = ConfigurationManager.AppSettings("OLEFolder_Server").Trim
-      msOLEFolder_Local = ConfigurationManager.AppSettings("OLEFolder_Local").Trim
-      msPhotographFolder = ConfigurationManager.AppSettings("PhotographFolder").Trim
-      miSubmissionTimeout = NullSafeInteger(ConfigurationManager.AppSettings("SubmissionTimeout"))
-      miLookupRowsRange = NullSafeInteger(ConfigurationManager.AppSettings("LookupRowsRange"))
+   ''' <summary>
+   ''' Timeout measured in milliseconds
+   ''' </summary>
+   Public Property SubmissionTimeout As Integer
+   Public Property SubmissionTimeoutInSeconds As Integer
 
-      ' Read the Hex and Foreground values for the defined theme.
+   Public Sub New(customConfigFile As String, themeFile As String)
+      Me.CustomConfigFile = customConfigFile
+      Me.ThemeFile = themeFile
+      Load()
+   End Sub
+
+   Private Sub Load()
+
+      MobileKey = GetSetting("MobileKey", "")
+      WorkflowUrl = GetSetting("WorkflowURL", "")
+      ColourThemeFolder = GetSetting("Theme", "Blanco").Trim
+      MessageFontSize = GetSetting("MessageFontSize", 10)
+      ValidationMessageFontSize = GetSetting("ValidationMessageFontSize", 8)
+      OLEFolderServer = GetSetting("OLEFolder_Server", "").Trim
+      OLEFolderLocal = GetSetting("OLEFolder_Local", "").Trim
+      PhotographFolder = GetSetting("PhotographFolder", "").Trim
+      SubmissionTimeoutInSeconds = GetSetting("SubmissionTimeout", 120)
+      SubmissionTimeout = SubmissionTimeoutInSeconds * 1000
+      LookupRowsRange = GetSetting("LookupRowsRange", 100)
+      TabletBackColour = GetSetting("TabletBackColour", "lightgray")
+      DefaultActiveDirectoryServer = GetSetting("DefaultActiveDirectoryServer", "")
+
+      'Split the mobile key down
       Try
-        sHexFileName = psConfigFile
-        xmlReader = New XmlTextReader(sHexFileName)
+         Dim crypt As New Crypt
+         Dim value = crypt.DecompactString(MobileKey)
+         value = crypt.DecryptString(value, "", True)
 
-        Do While (xmlReader.ReadToFollowing("theme"))
-          If xmlReader.ReadToFollowing("name") Then
-            If (xmlReader.Read()) Then
-              If (xmlReader.Value.Trim.ToUpper = msThemeName) Then
-                If xmlReader.ReadToFollowing("hex") Then
-                  If (xmlReader.Read()) Then
-                    msThemeHex = xmlReader.Value.Trim.ToUpper
+         Dim values As String() = value.Split(ControlChars.Tab)
 
-                    If xmlReader.ReadToFollowing("forecolour") Then
-                      If (xmlReader.Read()) Then
-                        msThemeFore = xmlReader.Value.Trim.ToUpper
-                      End If
-                    End If
-                  End If
-                End If
+         Login = values(2)
+         Password = values(3)
+         Server = values(4)
+         Database = values(5)
 
-                Exit Do
-              End If
-            End If
-          End If
-        Loop
-        xmlReader.Close()
       Catch ex As Exception
-
+         Login = ""
+         Password = ""
+         Server = ""
+         Database = ""
       End Try
-    Catch ex As Exception
+      ConnectionString = String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", Server, Database, Login, Password)
 
-    End Try
+      'Read the Hex and Foreground values for the defined theme.
+      Try
+         Dim xmlReader As New XmlTextReader(ThemeFile)
 
-  End Sub
+         Do While (xmlReader.ReadToFollowing("theme"))
+            If xmlReader.ReadToFollowing("name") Then
+               If (xmlReader.Read()) Then
+                  If (xmlReader.Value.Trim.ToUpper = ColourThemeFolder.Trim.ToUpper) Then
+                     If xmlReader.ReadToFollowing("hex") Then
+                        If (xmlReader.Read()) Then
+                           ColourThemeHex = "#" & xmlReader.Value.Trim.ToUpper
 
-  Public Function ColourThemeFolder() As String
-    ColourThemeFolder = "Blanco"
+                           If xmlReader.ReadToFollowing("forecolour") Then
+                              If (xmlReader.Read()) Then
+                                 ColourThemeForeColour = xmlReader.Value.Trim
+                              End If
+                           End If
+                        End If
+                     End If
 
-    Try
-      If msThemeName.Length > 0 Then
-        ColourThemeFolder = msThemeName
+                     Exit Do
+                  End If
+               End If
+            End If
+         Loop
+         xmlReader.Close()
+      Catch ex As Exception
+         ColourThemeHex = "#FFF"
+         ColourThemeForeColour = "black"
+      End Try
+
+      'Insert some fake value into the cache with a dependency on the theme & web.custom.config files
+      'when they change we'll get a callback to reload the settings
+      'TODO PG change timeouts
+      HttpRuntime.Cache.Insert("filesTheSame", True,
+                               New CacheDependency(New String() {CustomConfigFile, ThemeFile}),
+                               DateTime.UtcNow.AddMinutes(1),
+                               TimeSpan.Zero,
+                               CacheItemPriority.Default,
+                               Sub() Load()
+      )
+
+   End Sub
+
+   Private Function GetSetting(Of T)(name As String, defaultValue As T) As T
+
+      Dim value As String = ConfigurationManager.AppSettings(name)
+      If value Is Nothing Then
+         Return defaultValue
       End If
-    Catch ex As Exception
-    End Try
+      Try
+         Return CType(Convert.ChangeType(value, GetType(T)), T)
+      Catch ex As Exception
+         Return defaultValue
+      End Try
+   End Function
 
-  End Function
-
-  Public Function ColourThemeHex() As String
-    ' Default to Blanco
-    ColourThemeHex = "#FFFFFF"
-
-    Try
-      If msThemeHex.Length > 0 Then
-        ColourThemeHex = "#" & msThemeHex
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function ColourThemeForeColour() As String
-    ColourThemeForeColour = "Black"
-
-    Try
-      If msThemeFore.Length > 0 Then
-        ColourThemeForeColour = msThemeFore
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function MessageFontSize() As Int32
-    MessageFontSize = 10
-
-    Try
-      If miMessageFontSize > 0 Then
-        MessageFontSize = miMessageFontSize
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function SubmissionTimeout() As Int32
-    ' Return the configured SubmissionTimeout in milliseconds.
-    ' This value is used for WARP submission timeout, and SQL command timeout.
-    ' Defaulted to 2 minutes
-    SubmissionTimeout = SubmissionTimeoutInSeconds() * 1000
-  End Function
-  Public Function SubmissionTimeoutInSeconds() As Int32
-    ' Return the configured SubmissionTimeout in seconds.
-    ' This value is used for WARP submission timeout, and SQL command timeout.
-    ' Defaulted to 2 minutes
-    SubmissionTimeoutInSeconds = 120
-
-    Try
-      If miSubmissionTimeout > 0 Then
-        SubmissionTimeoutInSeconds = miSubmissionTimeout
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function LookupRowsRange() As Int32
-    ' Return the configured number of records to load by default in the lookup dropdown grids.
-    ' Defaulted to 100 rows
-    LookupRowsRange = 100
-
-    Try
-      If miLookupRowsRange > 0 Then
-        LookupRowsRange = miLookupRowsRange
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function ValidationMessageFontSize() As Int32
-    ValidationMessageFontSize = 8
-
-    Try
-      If miValidationMessageFontSize > 0 Then
-        ValidationMessageFontSize = miValidationMessageFontSize
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function OLEFolder_Server() As String
-    OLEFolder_Server = ""
-
-    Try
-      OLEFolder_Server = msOLEFolder_Server
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function OLEFolder_Local() As String
-    OLEFolder_Local = ""
-
-    Try
-      OLEFolder_Local = msOLEFolder_Local
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function PhotographFolder() As String
-    PhotographFolder = ""
-
-    Try
-      PhotographFolder = msPhotographFolder
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Sub New()
-
-  End Sub
+   'TODO PG NOW cleanup all connection string creation (take care with application name & pooling)
+   Public Function ConnectionStringFor(user As String, password As String) As String
+      Return String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=false", Server, Database, user, password)
+   End Function
 
 End Class

@@ -22,21 +22,21 @@ Partial Class Home
     Dim homeItemFontInfo As New FontSetting
     Dim homeItemForeColor As Integer
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+      Using conn As New SqlConnection(App.Config.ConnectionString)
 
-      conn.Open()
-      Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformlayout WHERE ID = 1", conn)
-      Dim dr As SqlDataReader = cmd.ExecuteReader()
-      dr.Read()
+         conn.Open()
+         Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformlayout WHERE ID = 1", conn)
+         Dim dr As SqlDataReader = cmd.ExecuteReader()
+         dr.Read()
 
-      homeItemForeColor = NullSafeInteger(dr("HomeItemForeColor"))
-      homeItemFontInfo.Name = NullSafeString(dr("HomeItemFontName"))
-      homeItemFontInfo.Size = NullSafeSingle(dr("HomeItemFontSize"))
-      homeItemFontInfo.Bold = NullSafeBoolean(dr("HomeItemFontBold"))
-      homeItemFontInfo.Italic = NullSafeBoolean(dr("HomeItemFontItalic"))
-      homeItemFontInfo.Underline = NullSafeBoolean(dr("HomeItemFontUnderline"))
-      homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
-    End Using
+         homeItemForeColor = NullSafeInteger(dr("HomeItemForeColor"))
+         homeItemFontInfo.Name = NullSafeString(dr("HomeItemFontName"))
+         homeItemFontInfo.Size = NullSafeSingle(dr("HomeItemFontSize"))
+         homeItemFontInfo.Bold = NullSafeBoolean(dr("HomeItemFontBold"))
+         homeItemFontInfo.Italic = NullSafeBoolean(dr("HomeItemFontItalic"))
+         homeItemFontInfo.Underline = NullSafeBoolean(dr("HomeItemFontUnderline"))
+         homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
+      End Using
 
     Dim canRun As Boolean = db.CanRunWorkflows(userGroupID)
     Dim workflows As New List(Of WorkflowLink)
@@ -112,15 +112,15 @@ Partial Class Home
     '      plngStepID = -
 
     Dim objCrypt As New Crypt
-    Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, _
-        Configuration.Login, _
-        Configuration.Password, _
-        Configuration.Server, _
-        Configuration.Database, _
-        User.Identity.Name, _
-        "")
+      Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, _
+          App.Config.Login, _
+          App.Config.Password, _
+          App.Config.Server, _
+          App.Config.Database, _
+          User.Identity.Name, _
+          "")
 
-    Return Configuration.WorkflowUrl & "?" & sEncryptedString
+      Return App.Config.WorkflowUrl & "?" & sEncryptedString
 
   End Function
 

@@ -29,7 +29,7 @@ Public Class Security
   ''' </summary>
   Public Shared Function ValidateActiveDirectoryUser(domainName As String, userName As String, password As String) As Boolean
 
-    Dim path As String = "LDAP://" & Configuration.DefaultActiveDirectoryServer
+      Dim path As String = "LDAP://" & App.Config.DefaultActiveDirectoryServer
 
     Dim domainAndUsername As String = domainName & "\" & userName
 
@@ -64,9 +64,9 @@ Public Class Security
   Public Shared Function ValidateSqlServerUser(userName As String, password As String) As Boolean
 
     Try
-      Using conn As New SqlConnection(Configuration.ConnectionStringFor(userName, password))
-        conn.Open()
-      End Using
+         Using conn As New SqlConnection(App.Config.ConnectionStringFor(userName, password))
+            conn.Open()
+         End Using
       Return True
     Catch ex As Exception
       Return False
