@@ -889,13 +889,13 @@ Public Class [Default]
 							'insert a blank row
 							result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
+							'store the data its needed for paging, sorting
+							Session(controlId & "DATA") = result.Data
+
 							'bind data to grid
 							recordSelector.IsEmpty = (result.Data.Rows.Count - 1 = 0)
 							recordSelector.DataSource = result.Data
 							recordSelector.DataBind()
-
-							'store the data its needed for paging, sorting
-							Session(controlId & "DATA") = result.Data
 
 							'store info its needed later
 							textBox.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
@@ -1719,47 +1719,47 @@ Public Class [Default]
 		If lookupID.Length = 0 Then Return
 
 		' Create a datatable from the data in the session variable
-		Dim dataTable As DataTable = TryCast(HttpContext.Current.Session(lookupID.Replace("refresh", "DATA")), DataTable)
+		Dim dataTable As DataTable = TryCast(HttpRuntime.Cache(lookupId.Replace("refresh", "DATA")), DataTable)
 
 		' get the filter sql
-		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
+		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "filterSQL")), HiddenField)
 
 		Dim filterSql As String = hiddenField.Value
 
-		If TypeOf (pnlInputDiv.FindControl(lookupID.Replace("refresh", ""))) Is DropDownList Then
+		If TypeOf (pnlInputDiv.FindControl(lookupId.Replace("refresh", ""))) Is DropDownList Then
 
 			' This is a dropdownlist style lookup (mobiles only)
-			Dim dropdown As DropDownList = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "")), DropDownList)
+			Dim dropdown As DropDownList = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "")), DropDownList)
 
 			' Store the current value, so we can re-add it after filtering.
 			Dim strCurrentSelection As String = dropdown.Text
 
 			' Filter the table now.
-			FilterDataTable(dataTable, filterSql)
+			FilterDataTable(DataTable, filterSql)
 
 			' insert the previously selected item
-			Dim objDataRow As DataRow = dataTable.NewRow()
+			Dim objDataRow As DataRow = DataTable.NewRow()
 			objDataRow(0) = strCurrentSelection
-			dataTable.Rows.InsertAt(objDataRow, 0)
+			DataTable.Rows.InsertAt(objDataRow, 0)
 
 			' Rebind the new datatable
-			dropdown.DataSource = dataTable
+			dropdown.DataSource = DataTable
 			dropdown.DataBind()
 
 			' Insert empty row at top of list
-			objDataRow = dataTable.NewRow()
-			dataTable.Rows.InsertAt(objDataRow, 0)
+			objDataRow = DataTable.NewRow()
+			DataTable.Rows.InsertAt(objDataRow, 0)
 
 			' reset filter.
 			hiddenField.Value = ""
 		Else
 			' This is a normal grid lookup (not Mobile)
-			FilterDataTable(dataTable, filterSql)
+			FilterDataTable(DataTable, filterSql)
 
-			Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
+			Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "Grid")), RecordSelector)
 
 			gridView.filterSQL = filterSql.ToString
-			gridView.DataSource = dataTable
+			gridView.DataSource = DataTable
 			gridView.DataBind()
 		End If
 
@@ -1822,4 +1822,5 @@ Public Class [Default]
 		Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cult)
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cult)
 	End Sub
+
 End Class

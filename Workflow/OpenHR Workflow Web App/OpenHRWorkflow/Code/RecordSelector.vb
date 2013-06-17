@@ -573,7 +573,6 @@ Public Class RecordSelector
     End If
   End Sub
 
-
   Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles Me.PageIndexChanging
 
       'TODO UPGRADE check casts to RecordSelector OK, was GridView
@@ -581,7 +580,7 @@ Public Class RecordSelector
 
     grdGrid.PageIndex = e.NewPageIndex
 
-    dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+		dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
 
     If IsLookup Then
       ' reapply filter?
@@ -815,7 +814,7 @@ Public Class RecordSelector
 
     ' Get the current dataset from the session variable,
     ' Sort it, then store back to session variable.
-    dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+		dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
 
     If IsLookup Then
       ' reapply filter?
@@ -860,7 +859,7 @@ Public Class RecordSelector
         dataTable.Rows.InsertAt(dataTable.NewRow(), 0)
       End If
 
-      HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
+			HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
       grdGrid.DataSource = dataTable
       grdGrid.DataBind()
     End If
