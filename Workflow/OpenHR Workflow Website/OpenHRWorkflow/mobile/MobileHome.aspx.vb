@@ -286,7 +286,11 @@ Partial Class Home
         cell.Style.Add("width", "57px")
 
         Dim image = New Image
-        sImageFileName = LoadPicture(NullSafeInteger(reader("PictureID")), sMessage)
+        If NullSafeInteger(reader("pictureID")) = 0 Then
+          sImageFileName = "~/Images/Connected48.png"
+        Else
+          sImageFileName = LoadPicture(NullSafeInteger(reader("pictureID")), sMessage)
+        End If
         image.ImageUrl = sImageFileName
         image.Height() = Unit.Pixel(57)
         image.Width() = Unit.Pixel(57)

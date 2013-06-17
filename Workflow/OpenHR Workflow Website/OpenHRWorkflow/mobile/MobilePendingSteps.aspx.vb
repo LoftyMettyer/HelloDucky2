@@ -308,7 +308,11 @@ Partial Class PendingSteps
         ' Create a cell to contain the workflow icon
         ctlForm_Cell = New TableCell  ' Image cell
         ctlFormImage = New Image
-        sImageFileName = LoadPicture(NullSafeInteger(rstSteps("pictureID")), sMessage)
+        If NullSafeInteger(rstSteps("pictureID")) = 0 Then
+          sImageFileName = "~/Images/Connected48.png"
+        Else
+          sImageFileName = LoadPicture(NullSafeInteger(rstSteps("pictureID")), sMessage)
+        End If
         ctlFormImage.ImageUrl = sImageFileName
         ctlFormImage.Height() = Unit.Pixel(57)
         ctlFormImage.Width() = Unit.Pixel(57)
