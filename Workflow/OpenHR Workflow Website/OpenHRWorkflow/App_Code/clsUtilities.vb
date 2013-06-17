@@ -161,9 +161,20 @@ Public Class Utilities
     'Absolutely positioning controls inside a fieldset is hit and miss across browsers
     'The top zero position maybe considered either the physical top of the control or
     'underneath the legend.
+    Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
 
     'If radio buttons inside an option group appear too low, add the browser to the list below.
-    If HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower.Contains("fennec") Then
+    If userAgent.Contains("fennec") Then
+      Return True
+    End If
+    Return False
+  End Function
+
+  Public Shared Function IsAndroidBrowser() As Boolean
+
+    Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
+
+    If userAgent.Contains("android") AndAlso userAgent.Contains("applewebkit") Then
       Return True
     End If
     Return False

@@ -1267,7 +1267,14 @@ Public Class _Default
                    " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
                    " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
                    " text-decoration:" & sTemp2 & "'>" & vbCrLf & _
-                   "<TR>" & vbCrLf
+                   "<TR style='background-color:red;'>" & vbCrLf
+
+                  'android checkboxes need to be moved up
+                  Dim androidFix As String = String.Empty
+
+                  If IsAndroidBrowser() Then
+                    androidFix = "position:relative;top:-4px;"
+                  End If
 
                   If IsPostBack Then
                     If pnlInput.FindControl(sID) Is Nothing Then
@@ -1286,7 +1293,7 @@ Public Class _Default
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px'" & _
+                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
                        " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
@@ -1314,7 +1321,7 @@ Public Class _Default
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px'" & _
+                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
                        " tabIndex='-1'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf
@@ -1329,7 +1336,7 @@ Public Class _Default
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px'" & _
+                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
                        " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
@@ -1357,7 +1364,7 @@ Public Class _Default
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px'" & _
+                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
                        " tabIndex='-1'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf
