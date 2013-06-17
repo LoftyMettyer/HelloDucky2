@@ -452,7 +452,7 @@
                             }
                         }
                     }
-                    catch(e){}
+                    catch(e) { }
 
 				    if (childObj.tagName) 
 				    {
@@ -462,7 +462,8 @@
 				    TraverseDOM(childObj, lvl + 1, actionFunc);
 	    		}
 	    	}
-	    	catch(e) {}
+	    	catch(e) {
+		    }
 		}
 
 		function showErrorMessages(pfDisplay) {
