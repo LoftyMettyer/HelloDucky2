@@ -898,7 +898,7 @@ Public Class RecordSelector
 
             dataView.Sort = Me.sortBy   ' SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
             dataTable = dataView.ToTable()
-            'HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
+            HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
             grdGrid.DataSource = dataView
             grdGrid.DataBind()
         End If
