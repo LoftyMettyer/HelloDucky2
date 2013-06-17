@@ -92,6 +92,9 @@ Public Class _Default
 
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+    'PG
+    ShowSessionSize()
+
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlForm_InputButton As Button
     Dim ctlForm_HTMLInputButton As HtmlInputButton
@@ -218,10 +221,10 @@ Public Class _Default
       Response.AddHeader("Pragma", "no-cache")
       Response.Expires = -1
 
-      If Not IsPostBack And Not IsMobileBrowser() Then
-        'PG removed
-        'Session.Clear()
-      End If
+      'HRPRO-2197 removed session clearing
+      'If Not IsPostBack And Not IsMobileBrowser() Then
+      '  Session.Clear()
+      'End If
     Catch ex As Exception
     End Try
 
@@ -4395,21 +4398,28 @@ Public Class _Default
     End If
   End Sub
 
-  Private Function getBrowserFamily() As String
+  Private Sub ShowSessionSize()
 
-    Dim ua As String = Request.UserAgent.ToUpper
+    Page.Trace.Write("Session Trace Info")
 
-    If ua.Contains("MSIE") Then
-      Return "MSIE"
-    ElseIf ua.Contains("IPHONE") OrElse ua.Contains("IPAD") Then
-      Return "IOS"
-    ElseIf ua.Contains("ANDROID") Then
-      Return "ANDROID"
-    ElseIf ua.Contains("BLACKBERRY") Then
-      Return "BLACKBERRY"
-    Else
-      Return "UNKNOWN"
-    End If
-  End Function
+    Dim totalSessionBytes As Long
+
+    Dim b As New System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()
+    Dim m As System.IO.MemoryStream
+
+    For Each key As String In Session
+
+      Dim obj As Object = Session(key)
+
+      m = New System.IO.MemoryStream()
+      b.Serialize(m, obj)
+      totalSessionBytes += m.Length
+
+      Page.Trace.Write(String.Format("{0}: {1:n} kb", key, m.Length / 1024))
+    Next
+
+    Page.Trace.Write(String.Format("Total Size of Session Data: {0:n} kb", totalSessionBytes / 1024))
+
+  End Sub
 
 End Class

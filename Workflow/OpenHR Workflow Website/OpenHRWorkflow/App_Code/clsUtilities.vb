@@ -192,6 +192,23 @@ Public Class Utilities
     End If
   End Function
 
+  Public Shared Function GetBrowserFamily() As String
+
+    Dim ua As String = HttpContext.Current.Request.UserAgent.ToUpper
+
+    If ua.Contains("MSIE") Then
+      Return "MSIE"
+    ElseIf ua.Contains("IPHONE") OrElse ua.Contains("IPAD") Then
+      Return "IOS"
+    ElseIf ua.Contains("ANDROID") Then
+      Return "ANDROID"
+    ElseIf ua.Contains("BLACKBERRY") Then
+      Return "BLACKBERRY"
+    Else
+      Return "UNKNOWN"
+    End If
+  End Function
+
   Public Shared Function WebSiteName(Optional contentPageName As String = "") As String
 
     Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
