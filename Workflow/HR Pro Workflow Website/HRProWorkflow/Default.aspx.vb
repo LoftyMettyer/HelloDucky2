@@ -1317,6 +1317,10 @@ Public Class _Default
                                         .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                                         .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
+                                        .DropButton.ImageUrl1 = "../Images/downarrow.gif"
+                                        .DropButton.ImageUrl2 = "../Images/downarrow.gif"
+                                        .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
+
                                         .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                                         .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
@@ -1937,17 +1941,19 @@ Public Class _Default
 
                                     ' add a little dropdown to make the textbox look like a dropdown.                                    
                                     ctlForm_Image = New System.Web.UI.WebControls.Image
+                                    Dim itmpDropDownWidth As Integer = 17
+
                                     With ctlForm_Image
-                                        .ImageUrl = "Images/DDE-downarrow.gif"
+                                        .ImageUrl = "Images/downarrow.gif"
                                         .Style("position") = "absolute"
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord")) + 1).ToString
-                                        .Style("left") = Unit.Pixel((NullSafeInteger(dr("LeftCoord")) + NullSafeInteger(dr("Width")) - (2 * IMAGEBORDERWIDTH)) - 13).ToString
-                                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(14).ToString
-                                        .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH))
-                                        .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH)).ToString
-                                        .BorderColor = Color.Gray
-                                        .BorderStyle = BorderStyle.Solid
-                                        .BorderWidth = Unit.Pixel(1)
+                                        .Style("left") = Unit.Pixel((NullSafeInteger(dr("LeftCoord")) + NullSafeInteger(dr("Width"))) - itmpDropDownWidth).ToString
+                                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(itmpDropDownWidth).ToString
+                                        .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (IMAGEBORDERWIDTH))
+                                        .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (IMAGEBORDERWIDTH)).ToString
+                                        '.BorderColor = Color.Gray
+                                        '.BorderStyle = BorderStyle.Solid
+                                        '.BorderWidth = Unit.Pixel(1)
                                     End With
 
 
@@ -2323,6 +2329,7 @@ Public Class _Default
                                     With ctlForm_DDE
                                         .DropArrowBackColor = Color.Transparent
                                         .DropArrowWidth = Unit.Pixel(20)
+
                                         .HighlightBackColor = Color.Transparent
                                         ' Careful with the case here, use 'dde' in JavaScript:
                                         .ID = sID & "DDE"
