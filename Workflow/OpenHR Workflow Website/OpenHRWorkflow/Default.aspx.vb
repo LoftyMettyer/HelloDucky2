@@ -11,7 +11,6 @@ Imports Utilities
 Imports System.Data.SqlClient
 Imports System.Transactions
 Imports System.Reflection
-Imports System.Linq
 
 Public Class _Default
   Inherits System.Web.UI.Page
@@ -992,6 +991,7 @@ Public Class _Default
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = sID & "Value", .Value = hdnValue})
 
                   Else
+                    'TODO merge with IOS date above, once AjaxToolkit removed cos it cant postback input[type=date], .ApplySize(dr, -10, -3) for IOS, no .ApplyBorder(), date must be yyyy-mm-dd, remove the get value code from ButtonClick
                     Dim control = New TextBox
                     With control
                       .ID = sID
