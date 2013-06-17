@@ -17,9 +17,6 @@ Partial Class Message
 		Response.CacheControl = "no-cache"
 		Response.AddHeader("Pragma", "no-cache")
     Response.Expires = -1
-
-    Session("message") = "Workflow step completed."
-    lblPrompt2.Text = "to complete the follow-on Workflow form."
 	End Sub
 
 End Class
