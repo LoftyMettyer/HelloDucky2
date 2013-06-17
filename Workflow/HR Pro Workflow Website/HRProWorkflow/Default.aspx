@@ -44,6 +44,9 @@
     }
 
 		function window_onload() {
+		
+		
+		
 			var iDefHeight;
 			var iDefWidth;
 			var iResizeByHeight;
@@ -825,48 +828,77 @@
 	        }
 	        catch(e) {}
 	    }
-	    
-	    function ResizeFormForCombo(psWebComboId) {
-			var iResizeByHeight = 0;
-			var iResizeByWidth = 0;
-            
-			try {
-	            var objCombo = igcmbo_getComboById(psWebComboId);
-                var grid = objCombo.getGrid();
 
-                var oEl = grid.Element;
+// Old resizeformforcombo - used with Infragistics only, now replaced.	    
+//	    function ResizeFormForCombo(psWebComboId) {
+//			var iResizeByHeight = 0;
+//			var iResizeByWidth = 0;
+//            
+//			try {
+//	            var objCombo = igcmbo_getComboById(psWebComboId);
+//                var grid = objCombo.getGrid();
 
-                if (oEl.scrollWidth > bdyMain.clientWidth)
-                {
-                    if (oEl.scrollWidth > screen.availWidth)
-                    {
-                        iResizeByWidth = screen.availWidth - bdyMain.clientWidth;
-                    }
-                    else
-                    {
-                        iResizeByWidth = oEl.scrollWidth - bdyMain.clientWidth;
-                    }
-                }
-                
-//                if (oEl.scrollHeight > bdyMain.clientHeight)
+//                var oEl = grid.Element;
+
+//                if (oEl.scrollWidth > bdyMain.clientWidth)
 //                {
-//                    if (oEl.scrollHeight > screen.availHeight)
+//                    if (oEl.scrollWidth > screen.availWidth)
 //                    {
-//                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
+//                        iResizeByWidth = screen.availWidth - bdyMain.clientWidth;
 //                    }
 //                    else
 //                    {
-//                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
+//                        iResizeByWidth = oEl.scrollWidth - bdyMain.clientWidth;
 //                    }
 //                }
-                
-                if ((iResizeByWidth > 0) || (iResizeByHeight > 0))
+//                
+////                if (oEl.scrollHeight > bdyMain.clientHeight)
+////                {
+////                    if (oEl.scrollHeight > screen.availHeight)
+////                    {
+////                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
+////                    }
+////                    else
+////                    {
+////                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
+////                    }
+////                }
+//                
+//                if ((iResizeByWidth > 0) || (iResizeByHeight > 0))
+//                {
+//                    setTimeout('window.resizeBy(' + iResizeByWidth + ',' + iResizeByHeight + ');', 100);
+//                }
+//            }
+//            catch(e) {}
+//	    }
+
+function ResizeFormForCombo(sender, args) {
+      psWebComboID = sender._id;
+            
+			var iResizeByHeight = 0;
+			var iResizeByWidth = 0;
+
+      //Let's set the width of the lookup panel to the width of the screen. 
+      //It used to resize the screen, but don't want this happening now.
+
+			try {			
+                var oEl = document.getElementById(psWebComboID.replace("dde", ""));
+                if(eval(oEl)) 
                 {
-                    setTimeout('window.resizeBy(' + iResizeByWidth + ',' + iResizeByHeight + ');', 100);
+                  if (oEl.offsetWidth > bdyMain.clientWidth)
+                  {
+                    iNewWidth = bdyMain.clientWidth - oEl.offsetLeft - 5 + "px";
+                    
+                    oEl.style.width = iNewWidth;
+                    document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
+                  }                               
                 }
             }
-            catch(e) {}
-	    }
+      catch(e) {}
+
+}
+
+
 
   function scrollHeader(iGridID) {
       //keeps the header table aligned with the gridview in record
@@ -1077,7 +1109,6 @@
                           
                           //set pbmode back to 0 to prevent recursion.                          
                           setPostbackMode(0);                                                                  
-
                         }
 	                }
                 }
