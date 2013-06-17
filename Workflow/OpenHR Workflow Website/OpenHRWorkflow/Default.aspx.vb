@@ -726,7 +726,7 @@ Public Class _Default
                       .Style.Add("-webkit-appearance", "none")
                       .Style.Add("background-color", "#CCCCCC")
                       .Style.Add("border", "solid 1px #C0C0C0")
-                      .Style.Add("border-radius", "0px")
+                      .Style.Add("border-radius", "5px")
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
@@ -1153,6 +1153,9 @@ Public Class _Default
                   End If
 
                 Case 5 ' Input value - numeric
+
+
+
                   ctlForm_NumericInput = New Infragistics.WebUI.WebDataInput.WebNumericEdit
                   With ctlForm_NumericInput
                     .ID = sID
@@ -1217,7 +1220,6 @@ Public Class _Default
 
                   End With
 
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_NumericInput)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_NumericInput)
 
                 Case 6 ' Input value - logic
@@ -1355,9 +1357,6 @@ Public Class _Default
 
                   ctlForm_CheckBox = New LiteralControl(sTemp)
                   ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_CheckBox)
-
-
-
 
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_CheckBox)
 
@@ -2827,12 +2826,13 @@ Public Class _Default
                       .Style.Add("-webkit-appearance", "none")
                       .Style.Add("background-color", "#CCCCCC")
                       .Style.Add("border", "solid 1px #C0C0C0")
-                      .Style.Add("border-radius", "0px")
+                      .Style.Add("border-radius", "5px")
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
                       .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
                       .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
+                      .Style.Add("border-radius", "5px")
                     End If
 
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
@@ -4214,8 +4214,6 @@ Public Class _Default
       SetLookupFilter(Nothing, Nothing, value)
     Next
   End Sub
-
-
 
   Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs, Optional lookupID As String = "")
 

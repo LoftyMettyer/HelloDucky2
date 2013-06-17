@@ -22,7 +22,7 @@
 
     <ajx:ToolkitScriptManager ID="tsm" runat="server" 
         EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
-        LoadScriptsBeforeUI="False">
+        LoadScriptsBeforeUI="True">
         <CompositeScript>
             <Scripts>
                 <asp:ScriptReference Name="MicrosoftAjax.js" />  
