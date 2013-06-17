@@ -19,6 +19,7 @@ Public Class [Default]
    Private Const TabStripHeight As Integer = 21
    Private Const FormInputPrefix As String = "FI_"
 
+   'TODO firing off openhrworkflow/?asdasdasd is being redirected cos it should be openhrworkflow/default.aspx?asdasdasd
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
       Dim message As String = Nothing
