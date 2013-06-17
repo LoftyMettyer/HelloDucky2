@@ -175,6 +175,8 @@ function ColumnResize(table) {
     for (var i = 0; i < dragColumns.length; i++) {      
       dragColumns[i].width = ""; // for sure
       dragColumns[i].style.width = colWidth[i] + "px";
+      dragColumns2[i].width = ""; // tie up the grid column widths too.
+      dragColumns2[i].style.width = colWidth[i] + "px";
     }
 
     saveOnmouseup = document.onmouseup;
@@ -194,7 +196,7 @@ function ColumnResize(table) {
   // it runs during class creation
   for (var i = 0; i < dragColumns.length; i++) {
     dragColumns[i].innerHTML = "<div style='position:relative;text-overflow:ellipsis;height:100%;width:98%'>" +
-			"<div style='" +
+			"<div onclick='event.cancelBubble=true;' style='" +
 			"position:absolute;height:100%;width:5px;margin-right:-5px;" +
 			"left:100%;top:0px;cursor:w-resize;z-index:10;'>" +
 			"</div>" +
