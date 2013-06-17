@@ -224,13 +224,8 @@ Public Class _Default
             Response.AddHeader("Pragma", "no-cache")
             Response.Expires = -1
 
-            If Not IsPostBack Then
-                ' NPG20110809 Fault HRPRO-1624. The session.clear() event affects any other workflows open
-                ' on this client machine as the sessionID is only unique across users, not browsers.
-                ' As the new controls use session variables to store grid data I've had to prevent 
-                ' this from firing. Future development would be to modify the SP's to get the sorted/filtered data
-                ' on demand, but doing that at this stage would make QA commit Hari Kari.
-                ' Session.Clear()
+            If Not IsPostBack Then               
+                Session.Clear()
                 Session("TimeoutSecs") = Session.Timeout * 60
             End If
         Catch ex As Exception
