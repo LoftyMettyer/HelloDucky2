@@ -88,7 +88,7 @@
             </div>
           </div>
           
-          <div  style="text-align:center; position:absolute;top:357px;width:100%;z-index:0">
+          <div  style="text-align:center; position:fixed;bottom:75px;width:100%;z-index:0">
             <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Ltd 2012</p>
           </div>
 
@@ -106,22 +106,39 @@
               </tr>
             </table>
           </div>        
-        
+ 
         </div>
         
 
-        <div id="pnlGreyOut" runat="server" style="position: absolute;visibility: hidden;width: 100%;height: 100%;filter:alpha(opacity=50);
-                              -moz-opacity:0.5;opacity: 0.5;background-color: #222;margin:0px;z-index:1">
+        <div id="pnlGreyOut" runat="server" style="position: absolute;visibility: hidden;width: 100%;height: 100%;filter:alpha(opacity=50);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         -moz-opacity:0.5;opacity: 0.5;background-color: #222;margin:0px;z-index:1">
         </div>
-          <div id="pnlMsgBox" runat="server" style="background-color: #002248;position: absolute;visibility: hidden;width: 450px;height:150px;
-                                            text-align:center;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-75px;z-index:2;
-                                            border-radius:10px;border:2px solid #001648;vertical-align:middle;opacity:0.8">
-            <br/>&nbsp;&nbsp;
-            <label id="lblMsgBox" runat="server" style="font-family: Verdana;font-size:large;color:white"></label>
-            <br/>&nbsp;&nbsp;<br/>
-            <input type="button" value="OK" style="width:100px;height:30px;background-color: ButtonHighlight" onclick="closeMsgBox();"/>
-          </div>  
+        
+        
+ <div id="pnlMsgBox" runat="server" style="visibility: hidden;z-index:2;position:absolute;width:100%;top:30%">
+     <div id="inner" style="background-color: #002248;border:2px solid gainsboro;width:300px;margin:0px auto;text-align: center;border-radius:10px;padding: 10px;">
+       <label id="Label1" runat="server" style="font-family: Verdana;font-weight: bold;font-size:large;color:white">Login Failed</label>
+       <br/>
+       <br/>
+       <label id="lblMsgBox" runat="server" style="font-family: Verdana;font-size:large;color:white"></label>
+       <br/>
+       <br/>
+       <input type="button" value="OK" style="width:100px;height:30px;background-color: ButtonHighlight" onclick="closeMsgBox();"/>
+     </div>
+</div>
+       
+        
 
+<%--        <div id="pnlMsgBox" runat="server" style="background-color: #002248;position: absolute;visibility: hidden;width: 450px;height:150px;
+                    text-align:center;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-75px;z-index:2;
+                    border-radius:10px;border:2px solid #001648;vertical-align:middle;opacity:0.8">
+          <br/>&nbsp;&nbsp;            
+          <label id="Label1" runat="server" style="font-family: Verdana;font-weight: bold;font-size:large;color:white">Login Failed</label>
+          <br/>&nbsp;&nbsp;<br/>
+          <label id="lblMsgBox" runat="server" style="font-family: Verdana;font-size:large;color:white"></label>
+          <br/>&nbsp;&nbsp;<br/>
+          <input type="button" value="OK" style="width:100px;height:30px;background-color: ButtonHighlight" onclick="closeMsgBox();"/>
+        </div>  
+--%>
 
     </form>
 </body>

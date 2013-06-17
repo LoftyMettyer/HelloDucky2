@@ -399,7 +399,7 @@ Partial Class PendingSteps
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "~/pictures"
+      sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _

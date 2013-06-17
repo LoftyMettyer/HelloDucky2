@@ -40,11 +40,11 @@ Partial Class Home
     End Try
 
     ' Establish Connection
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                     ";Initial Catalog=" & Session("Database") & _
+                     ";Integrated Security=false;User ID=" & Session("Login") & _
+                     ";Password=" & Session("Password") & _
+                     ";Pooling=false"), String)
     'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
@@ -129,11 +129,11 @@ Partial Class Home
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                     ";Initial Catalog=" & Session("Database") & _
+                     ";Integrated Security=false;User ID=" & Session("Login") & _
+                     ";Password=" & Session("Password") & _
+                     ";Pooling=false"), String)
     'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     myConnection = New SqlClient.SqlConnection(strConn)
@@ -262,6 +262,14 @@ Partial Class Home
     End While
     drElements.Close()
 
+
+    ' Disable the Change Password button for windows authenticated users
+    If NullSafeString(Session("LoginKey")).IndexOf("\") < 0 Then
+      btnChangePwd.Enabled = False
+    End If
+
+
+
     Dim groupId As Integer = 0
 
     If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
@@ -364,7 +372,7 @@ Partial Class Home
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "~/pictures"
+      sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
@@ -560,8 +568,8 @@ Partial Class Home
     cookie2.Expires = DateTime.Now.AddYears(-1)
     Response.Cookies.Add(cookie2)
 
-    FormsAuthentication.RedirectToLoginPage()
-
+    'FormsAuthentication.RedirectToLoginPage()
+    Response.Redirect("~/MobileLogin.aspx")
   End Sub
 
 

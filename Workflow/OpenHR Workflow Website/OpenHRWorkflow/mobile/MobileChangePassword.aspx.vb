@@ -303,7 +303,7 @@ Partial Class ChangePassword
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "~/pictures"
+      sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
@@ -402,11 +402,11 @@ Partial Class ChangePassword
       ' Encrypt the password so that it can be transmitted in clear text
       strEncryptedPwd = objCrypt.EncryptString(txtNewPassword.Value, "jmltn", False)
 
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-       ";Initial Catalog=" & Session("Database") & _
-       ";Integrated Security=false;User ID=" & Session("Login") & _
-       ";Password=" & Session("Password") & _
-       ";Pooling=false"
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                       ";Initial Catalog=" & Session("Database") & _
+                       ";Integrated Security=false;User ID=" & Session("Login") & _
+                       ";Password=" & Session("Password") & _
+                       ";Pooling=false"), String)
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -426,8 +426,8 @@ Partial Class ChangePassword
 
     Catch ex As Exception
 
-      sMessage = "Error :<BR><BR>" & _
-     ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+      sMessage = "Error :" & vbCrLf & vbCrLf & _
+     ex.Message.ToString & vbCrLf & vbCrLf & _
      "Contact your system administrator."
 
     End Try

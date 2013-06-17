@@ -352,7 +352,7 @@ Partial Class MobileLogin
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "~/pictures"
+      sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
@@ -520,11 +520,15 @@ Partial Class MobileLogin
             Me.AuthenticateUser(aUserDetails(0), aUserDetails(1), txtPassword.Value)
             sAuthUser = txtUserName.Value
             fAuthenticated = True
+            Session("LoginKey") = txtUserName.Value
+            Session("RememberPWD") = chkRememberPwd.Value
           Catch ex As Exception
             'lblError.Text = ex.Message
             'lblError.Visible = True
             fAuthenticated = False
             sMessage = ex.Message
+            Session("LoginKey") = Nothing
+            Session("RememberPWD") = Nothing
           End Try
         Else
           ' SQL User - validate against the DB
@@ -595,8 +599,8 @@ Partial Class MobileLogin
         cmdCheck.Dispose()
 
       Catch ex As Exception
-        sMessage = "Error :<BR><BR>" & _
-        ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+        sMessage = "Error :" & vbCrLf & _
+        ex.Message.ToString() & vbCrLf & _
         "Contact your system administrator."
       End Try
     End If
