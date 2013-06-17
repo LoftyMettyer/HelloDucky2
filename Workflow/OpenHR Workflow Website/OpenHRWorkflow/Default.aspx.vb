@@ -722,6 +722,8 @@ Public Class _Default
                     .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
                     .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
 
+                    .Overflow = Infragistics.WebUI.WebControls.ButtonOverflow.WordWrap
+
                     .Text = NullSafeString(dr("caption"))
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
