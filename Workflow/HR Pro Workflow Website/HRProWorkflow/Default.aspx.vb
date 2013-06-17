@@ -1738,7 +1738,7 @@ Public Class _Default
                                             ' Set default/first row
                                             ' ------------------------------------------------
                                             If ctlForm_PagingGridView.Rows.Count > 0 Then
-                                                If CStr(dr("value")).Length > 0 Then
+                                                If CStr(dr("value")).Length > 0 And CStr(dr("value")) <> "0" Then
                                                     Dim iIndexColumnNumber As Integer = dt.Columns.IndexOf("ID")
                                                     Dim iRowNumber As Long = 0
 
