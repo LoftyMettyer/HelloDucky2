@@ -1110,51 +1110,53 @@ Public Class RecordSelector
       .Controls.Add(ltlPageCount)
     End With
 
-    Dim ibtnFirst As ImageButton = New ImageButton()
+    Dim ibtnFirst As Button = New Button()
     With ibtnFirst
       .ID = "ibtnFirst"
       .CommandName = "First"
+      .UseSubmitBehavior = False
       .ToolTip = "First Page"
-      .ImageAlign = ImageAlign.AbsMiddle
       .Style.Add("cursor", "pointer")
+      .Style.Add("border-style", "none")
       .CausesValidation = False
       .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
-    Dim ibtnPrevious As ImageButton = New ImageButton()
+    Dim ibtnPrevious As Button = New Button()
     With ibtnPrevious
       .ID = "ibtnPrevious"
       .CommandName = "Previous"
+      .UseSubmitBehavior = False
       .ToolTip = "Previous Page"
-      .ImageAlign = ImageAlign.AbsMiddle
       .Style.Add("cursor", "pointer")
+      .Style.Add("border-style", "none")
       .CausesValidation = False
       .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
-
-
-    Dim ibtnNext As ImageButton = New ImageButton()
+    Dim ibtnNext As Button = New Button()
     With ibtnNext
       .ID = "ibtnNext"
       .CommandName = "Next"
+      .UseSubmitBehavior = False
       .ToolTip = "Next Page"
-      .ImageAlign = ImageAlign.AbsMiddle
       .Style.Add("cursor", "pointer")
+      .Style.Add("border-style", "none")
       .CausesValidation = False
       .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
-    Dim ibtnLast As ImageButton = New ImageButton()
+    Dim ibtnLast As Button = New Button()
     With ibtnLast
       .ID = "ibtnLast"
       .CommandName = "Last"
+      .UseSubmitBehavior = False
       .ToolTip = "Last Page"
-      .ImageAlign = ImageAlign.AbsMiddle
       .Style.Add("cursor", "pointer")
+      .Style.Add("border-style", "none")
       .CausesValidation = False
       .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
@@ -1162,13 +1164,13 @@ Public Class RecordSelector
 
     Dim url As String = "~/Images/"
     If Me.PageIndex > 0 Then
-      ibtnFirst.ImageUrl = url + "page-first.gif"
-      ibtnPrevious.ImageUrl = url + "page-prev.gif"
+      ibtnFirst.Style.Add("background-image", "url('Images/page-first.gif')")
+      ibtnPrevious.Style.Add("background-image", "url('Images/page-prev.gif')")
       ibtnFirst.Enabled = True
       ibtnPrevious.Enabled = True
     Else
-      ibtnFirst.ImageUrl = url + "page-first-disabled.gif"
-      ibtnPrevious.ImageUrl = url + "page-prev-disabled.gif"
+      ibtnFirst.Style.Add("background-image", "url('Images/page-first-disabled.gif')")
+      ibtnPrevious.Style.Add("background-image", "url('Images/page-prev-disabled.gif')")
       ibtnFirst.Enabled = False
       ibtnPrevious.Enabled = False
       ibtnFirst.Style.Add("cursor", "default")
@@ -1176,13 +1178,13 @@ Public Class RecordSelector
     End If
 
     If Me.PageIndex < Me.PageCount - 1 Then
-      ibtnNext.ImageUrl = url + "page-next.gif"
-      ibtnLast.ImageUrl = url + "page-last.gif"
+      ibtnNext.Style.Add("background-image", "url('Images/page-next.gif')")
+      ibtnLast.Style.Add("background-image", "url('Images/page-last.gif')")
       ibtnNext.Enabled = True
       ibtnLast.Enabled = True
     Else
-      ibtnNext.ImageUrl = url + "page-next-disabled.gif"
-      ibtnLast.ImageUrl = url + "page-last-disabled.gif"
+      ibtnNext.Style.Add("background-image", "url('Images/page-next-disabled.gif')")
+      ibtnLast.Style.Add("background-image", "url('Images/page-last-disabled.gif')")
       ibtnNext.Enabled = False
       ibtnLast.Enabled = False
       ibtnNext.Style.Add("cursor", "default")
