@@ -89,7 +89,7 @@
         Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
 
         Datebox = document.getElementById(elementID + 'Years');
-        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));
+        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1899));
 
      }
 
@@ -115,7 +115,7 @@
       if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
 
       var DateBox = document.getElementById(elementID + 'Years');
-      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1949);
+      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1900);
       strDate+='/' + tmpDate;
 
       var dateTextBox = document.getElementById(elementID + 'TextBox');

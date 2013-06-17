@@ -1667,7 +1667,7 @@ Public Class _Default
                     Next
 
                     ' add 'some' yearss to the spinner
-                    For jncount = 1950 To 2092
+                    For jncount = 1900 To 2092
                       ctlCalSpin_EmptyRow = New TableRow
                       ctlCalSpin_EmptyRow.ID = sID & "YearsRow_" & jncount.ToString
                       ctlCalSpin_EmptyCell = New TableCell
