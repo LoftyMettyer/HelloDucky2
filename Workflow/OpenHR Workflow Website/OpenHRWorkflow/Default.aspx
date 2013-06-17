@@ -1044,7 +1044,18 @@ function ResizeComboForForm(sender, args) {
                   {
                     oEl.style.left = "0px";
                   }                                                 
+                  
+                  //Hide the navigation icons as required
+                  if(oEl.offsetWidth<420) {
+                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
+                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
+                  }
+                  else {
+                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
+                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
+                  }
                 }
+                
             }
       catch(e) {}
 
