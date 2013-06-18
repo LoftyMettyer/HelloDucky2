@@ -13,8 +13,6 @@
 
 %>
 
-
-
 <script type="text/javascript">
 	function emptyoption_onload() {
 		var fNoAction;
@@ -362,25 +360,24 @@
 </script>
 
 
-
 <%
-	Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=""" & Replace(Session("optionAction"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtFromDef name=txtFromDef value=""" & Replace(Session("fromDef"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtOrderID name=txtOrderID value=" & Session("orderID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("optionFilterSQL"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtFilterDef name=txtFilterDef value=""" & Replace(Session("optionFilterDef"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtRecordID name=txtRecordID value=" & Session("optionRecordID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtLinkRecordID name=txtLinkRecordID value=" & Session("optionLinkRecordID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtLookupColumnID name=txtLookupColumnID value=" & Session("optionLookupColumnID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtColumnID name=txtColumnID value=" & Session("optionColumnID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtValue name=txtValue value=""" & Replace(Session("optionLookupValue"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtFile name=txtFile value=""" & Replace(Session("optionFile"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtResultCode name=txtResultCode value=" & Session("TBResultCode") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtPreReqFails name=txtPreReqFails value=""" & Replace(Session("PreReqFails"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtUnAvailFails name=txtUnAvailFails value=""" & Replace(Session("UnAvailFails"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtOverlapFails name=txtOverlapFails value=""" & Replace(Session("OverlapFails"), """", "&quot;") & """>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtOverBookFails name=txtOverBookFails value=""" & Replace(Session("OverBookFails"), """", "&quot;") & """>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
 %>
 
 <form id="frmEmptyOption" name="frmEmptyOption">
@@ -423,9 +420,9 @@
 				If Not (rstLinkValues.bof And rstLinkValues.eof) Then
 					For iloop = 0 To (rstLinkValues.fields.count - 1)
 						If IsDBNull(rstLinkValues.fields(iloop).value) Then
-							Response.Write("<INPUT type='hidden' id=txtData_" & rstLinkValues.fields(iloop).name & " name=txtData_" & rstLinkValues.fields(iloop).name & " value="""">" & vbCrLf)
+	                        Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value=''>" & vbCrLf)
 						Else
-							Response.Write("<INPUT type='hidden' id=txtData_" & rstLinkValues.fields(iloop).name & " name=txtData_" & rstLinkValues.fields(iloop).name & " value=""" & Replace(rstLinkValues.fields(iloop).value, """", "&quot;") & """>" & vbCrLf)
+	                        Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value='" & Replace(rstLinkValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
 						End If
 					Next
 				End If
@@ -440,7 +437,7 @@
 			cmdLinkValues = Nothing
 		End If
 	
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+	    Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
 	%>
 </form>
 
@@ -448,11 +445,6 @@
 	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </form>
 
-
-
-
-
 <script type="text/javascript">
 	emptyoption_onload();    
 </script>
-
