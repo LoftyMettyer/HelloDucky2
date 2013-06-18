@@ -83,7 +83,7 @@ function find_window_onload() {
                 OpenHR.messageBox("Unable to load personnel records.\n\nYou are logged on as a self-service user and can access only single record personnel record sets.");
 
                 /* Go to the default page. */
-                menu_loadPage("default");
+                menu_loadPage("main?SSIMode=True");
                 return;
             }
         }

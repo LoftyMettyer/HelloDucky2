@@ -71,7 +71,7 @@
 				}
 		
 				var sAction = frmData.txtAction.value;
-
+				
 				if ((sAction == "LOAD")	
 					&& (frmData.txtOriginalRecID.value != frmData.txtNewRecID.value)
 					&& (frmData.txtOriginalRecID.value != 0))	{

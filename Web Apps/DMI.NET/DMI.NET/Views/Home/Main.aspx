@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
+
 <%
 	Dim sReferringPage As String
 
@@ -46,34 +47,43 @@
 
     $(function () {               
 
-        // ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
-        var ContextMenuTab = {
-            speed: 300,
-            containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
-            containerHeight: $('.ContextMenu-panel').outerHeight(),
-            tabWidth: $('.ContextMenu-tab').outerWidth(),
-            init: function () {
-                //$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
-                $('.ContextMenu-tab').click(function (event) {
-                    if ($('.ContextMenu-panel').hasClass('open')) {
-                        $('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
-                            .removeClass('open');
-                        $("#workframeset").css("left", "30px");
-                        $("#reportframeset").css("left", "30px");
-                        $('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
+    	var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
-                    } else {
-                        $('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
-                            .addClass('open');
-                        $("#workframeset").css("left", "350px");
-                        $("#reportframeset").css("left", "350px");
-                        $('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
-                    }
-                    event.preventDefault();
-                });
-            }
-        };
-        ContextMenuTab.init();
+    	if (SelfServiceUserType == 'True') {
+    		$("#workframeset").css("left", "0px");
+    		$("#reportframeset").css("left", "0px");
+    	}
+    	else {
+
+    		// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
+    		var ContextMenuTab = {
+    			speed: 300,
+    			containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
+    			containerHeight: $('.ContextMenu-panel').outerHeight(),
+    			tabWidth: $('.ContextMenu-tab').outerWidth(),
+    			init: function () {
+    				//$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
+    				$('.ContextMenu-tab').click(function (event) {
+    					if ($('.ContextMenu-panel').hasClass('open')) {
+    						$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
+							    .removeClass('open');
+    						$("#workframeset").css("left", "30px");
+    						$("#reportframeset").css("left", "30px");
+    						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
+
+							} else {
+								$('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
+							    .addClass('open');
+								$("#workframeset").css("left", "350px");
+								$("#reportframeset").css("left", "350px");
+								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
+							}
+				    	event.preventDefault();
+				    });
+			    }
+		    };
+				ContextMenuTab.init();
+			}
     });
 
     $(document).ready(function() {
@@ -82,9 +92,9 @@
 
         //Load Poll.asp, then reload every 30 seconds to keep
         //session alive, and check for server messages.
-        loadPartialView(); // first time
+        refreshPollFrame(); // first time
         // re-call the function each 30 seconds
-        window.setInterval("loadPartialView()", 30000);
+        window.setInterval("refreshPollFrame()", 30000);
 
         $(".popup").dialog({
             autoOpen: false,
@@ -92,10 +102,30 @@
             height: 550,
             width: 800
         });
+	    
+
+    	//load menu for dmi, or linksmain for ssi
+	    var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+
+			if (SelfServiceUserType == 'True') {
+				$.ajax({
+					url: 'linksMain',
+					success: function (html) {
+						$("#workframe").html(html);
+					},
+					error: function (req, status, errorObj) {
+						debugger;
+					}
+				});
+			} else {
+				$("#menuframe").fadeIn("slow");
+				$(".accordion").accordion("resize");
+			}
+
 
     });
 
-    function loadPartialView() {
+    function refreshPollFrame() {
         $.ajax({
             url: "<%:Url.Action("poll", "home")%>",
             type: "POST",
@@ -115,8 +145,9 @@
 
 <%session("utilid")="" %>
 
-<div id="menuframe">
-<div class="ContextMenu-panel open">
+
+<div id="menuframe" style="display: none;">
+<div class="ContextMenu-panel">
 <div class="ContextMenu-tab ui-state-default" style="text-align:center;vertical-align: middle">
 <p style="display:none" class="rot-neg-90">Click here to show/hide this accordian menu...</p>
 <img id="ContextMenuIcon" src="<%= Url.Content("~/content/images/retract.png") %>" alt="x"/>
@@ -127,6 +158,7 @@
 </div>
 </div>
 </div>
+
 
 <div id="mainframeset">
 	

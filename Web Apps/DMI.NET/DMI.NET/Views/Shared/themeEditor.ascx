@@ -64,6 +64,10 @@
 
 <div class="application">
 	<div id="themeeditoraccordion">		
+		Layout:<select onchange="try{changeLayout(this.value);}catch (e) {}"><option></option>
+<option>wireframe</option>
+<option>winkit</option>
+<option>tiles</option></select>
 
 		<h3>Font Settings</h3>
 		<!-- /theme group header -->

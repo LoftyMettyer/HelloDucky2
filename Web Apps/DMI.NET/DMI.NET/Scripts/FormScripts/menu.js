@@ -959,7 +959,6 @@ function menu_refreshMenu() {
 				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
-	    
 		menu_toolbarEnableItem("mnutoolNewRecord", fMnutoolNewRecord);
 		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
 		menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
@@ -972,7 +971,7 @@ function menu_refreshMenu() {
 				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
-		menu_setVisibleMenuItem("mnutoolParentRecord", true);
+		menu_setVisibleMenuItem("mnutoolParentRecord", !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
 		menu_setVisibleMenuItem("mnutoolBack", false);
 		menu_toolbarEnableItem("mnutoolBack", false);
@@ -994,11 +993,12 @@ function menu_refreshMenu() {
 
 		menu_setVisibleMenuItem("mnutoolFind", true);
 
-		menu_setVisibleMenuItem("mnutoolQuickFind", true);
+		menu_setVisibleMenuItem("mnutoolQuickFind", !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
 				((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-	            (frmRecEdit.txtCurrentParentTableID.value > 0))));
+	            (frmRecEdit.txtCurrentParentTableID.value > 0))));		
+
 		menu_setVisibletoolbarGroup("mnutoolFind", true);
 
 		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
@@ -1013,7 +1013,7 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolClearFilter", true);
 		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		menu_setVisibleMenuItem("mnutoolPrint", false);
-		menu_setVisibletoolbarGroup("mnutoolOrder", true);
+		menu_setVisibletoolbarGroup("mnutoolOrder", !menu_isSSIMode());
 		
 		// Standard reports (record menu)
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
@@ -1071,7 +1071,7 @@ function menu_refreshMenu() {
 			sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
 		}
 
-		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+		menu_setVisibleMenuItem("mnutoolRecordPosition", !menu_isSSIMode());
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
 		menu_setVisibleMenuItem("mnutoolHistory", true);
@@ -1085,6 +1085,9 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Toolbar Icon
 		menu_toolbarEnableItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 
+		//hide for SSI
+		menu_setVisibletoolbarGroup("mnutoolStdRpt_AbsenceCalendar", !menu_isSSIMode());
+
 	    // Calendar Reports (toolbar)
 		menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);	//Toolbar icon
 		menu_toolbarEnableItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);	//Toolbar Icon
@@ -1095,6 +1098,9 @@ function menu_refreshMenu() {
 
 	    //Hide Calendar Reports Group if all items are hidden.
 		menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
+		//hide entire group for SSI
+		menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", !menu_isSSIMode());
+
 
         //dynamically created function, found in menu.ascx...
 		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
@@ -1175,9 +1181,9 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentParentTableID.value > 0) ||
 					(frmFind.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 					(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE"))));
-			menu_setVisibleMenuItem("mnutoolParentRecord", true);
+			menu_setVisibleMenuItem("mnutoolParentRecord", !menu_isSSIMode());
 			menu_toolbarEnableItem("mnutoolParentRecord", (frmFind.txtCurrentParentTableID.value > 0));
-			menu_setVisibleMenuItem("mnutoolBack", true);
+			menu_setVisibleMenuItem("mnutoolBack", !menu_isSSIMode());
 			menu_toolbarEnableItem("mnutoolBack", (parseInt(frmFind.txtCurrentRecordID.value) > 0));
 			
 			menu_setVisibleMenuItem("mnutoolFirstRecord", true);
@@ -1225,6 +1231,9 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolClearFilter", true);
 			menu_toolbarEnableItem("mnutoolClearFilter", (frmFind.txtFilterDef.value.length > 0));
 			menu_setVisibleMenuItem("mnutoolPrint", false);
+
+			//hide group for SSI...
+			menu_setVisibletoolbarGroup("mnutoolFilter", !menu_isSSIMode());
 
 			//frmData = window.parent.frames("dataframe").document.forms("frmData");
 			frmData = document.getElementById("frmData");
@@ -1681,10 +1690,20 @@ function menu_refreshMenu() {
 	//		abMainMenu.style.width = screen.width;   //"100%";
 
 	//}
+
+
+	menu_enableMenu();
+
+
 }
 //	
 function menu_enableMenu() {
 	//TODO: run through and re-enable all items.
+	if (menu_isSSIMode()) {
+		//$(".FixedLinksLeft").fadeIn("slow");
+	}
+	//$(".FixedLinksLeft").show("slide", { direction: "left" }, 1000);
+	
 	//	var iLoop;
 
 	//We now always enable the menu items (NB not the tools), so this section is...
@@ -1702,7 +1721,12 @@ function menu_enableMenu() {
 
 }
 
- function menu_disableMenu() {
+function menu_disableMenu() {
+	if (menu_isSSIMode()) {
+		//$("#officebar").hide();
+		//$(".FixedLinksLeft").hide("slide", { direction: "left" }, 500);
+		//$(".FixedLinksLeft").fadeOut("fast");
+	}
 //	var iLoop;
 //	
 //	for (iLoop = 0; iLoop < abMainMenu.Bands.Item("mnuMainMenu").Tools.Count(); iLoop++) {
@@ -1716,7 +1740,7 @@ function menu_enableMenu() {
 //	abMainMenu.RecalcLayout();
 //	abMainMenu.ResetHooks();
 //	abMainMenu.Refresh();
- }
+}
 
 function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	// Prompt the user to save changes if required.
@@ -2885,8 +2909,7 @@ function menu_copyRecord() {
 	}
 }
 
-function menu_editRecord() {
-    
+function menu_editRecord() {	
 	var lngRecordID;
 	var frmWorkArea;
 	var frmFindArea;
@@ -2897,7 +2920,7 @@ function menu_editRecord() {
 
 	if (lngRecordID > 0) {
 		//ShowWait("Loading screen. Please wait...");
-		//disableMenu();
+		menu_disableMenu();
 
         
 	
@@ -4423,4 +4446,13 @@ function menu_SetmnutoolRecordPositionCaption(newCaption) {
 function menu_SetmnutoolLocateRecordsText(newCaption) {
 	//update the locate record text.
 	$("#mnutoolLocateRecords input:text").val(newCaption);
+}
+
+
+function menu_isSSIMode() {
+	if ((window.SSIMode.toLowerCase() == "true") || (window.SSIMode == true)) {
+		return true;
+	} else {
+		return false;
+	}
 }

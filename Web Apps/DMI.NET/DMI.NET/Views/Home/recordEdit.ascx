@@ -11,16 +11,8 @@
 		})();	
 
 
-		function recordEdit_window_onload() {
-			
-
-			if ($(".DashContent").length > 0) {
-				alert("SSI functionality TO DO. \n click Home.");
-				return false;
-			}
-
-
-        //public variables
+		function recordEdit_window_onload() {			
+			//public variables
         this.mavIDColumns = new Array(3);
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
@@ -35,7 +27,10 @@
 
         if (fOK == true) {
             // Expand the work frame and hide the option frame.
-            //window.parent.document.all.item("workframeset").cols = "*, 0";
+        	//window.parent.document.all.item("workframeset").cols = "*, 0";
+        	$("#toolbarRecord").show();
+        	$("#toolbarRecord").click();
+
             $("#workframe").attr("data-framesource", "RECORDEDIT");
 
             var recEditCtl = document.getElementById("ctlRecordEdit"); // frmRecordEditForm.ctlRecordEdit;
@@ -508,10 +503,12 @@
 		
 
 %>
-
+<div class="pageTitleDiv">
+<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
 <h3 class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
     ' Release the ADO command object.
     cmdRecEditWindowTitle = Nothing%></h3>
+</div>
     
 <div id="ctlRecordEdit" style="margin:0 auto;">
     <ul id="tabHeaders">        

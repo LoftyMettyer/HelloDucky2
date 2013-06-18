@@ -27,7 +27,13 @@ body
 .pageTitleIcon {
 	display: none!important;
 }
-.DashContent {position: absolute; top: 126px; bottom: 2px;left: 0px; right: 0px;}
+
+.pageTitle {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.DashContent {position: absolute; top: 0px; bottom: 2px;left: 0px; right: 0px;}
 
 
 .hypertextlinks 
@@ -705,6 +711,5 @@ div.officetab li div.textboxlist img {
 div.officetab li div.textboxlist input {
 	margin: 0 0 0 4px;
 }
-
 
 

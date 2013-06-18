@@ -42,6 +42,7 @@
     <DocumentationFile>DMI.NET.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -149,6 +150,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
@@ -558,6 +560,10 @@
     <Content Include="Database\UpdateScript8.0.8.sql" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
@@ -578,9 +584,6 @@
     <None Include="_bin_deployableAssemblies\System.Web.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.Helpers.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
     <Content Include="Content\fonts\general_enclosed_foundicons.eot" />
     <Content Include="Content\fonts\general_enclosed_foundicons.ttf" />
     <Content Include="Content\fonts\general_enclosed_foundicons.woff" />
@@ -604,7 +607,6 @@
     <Content Include="Content\dragdrop\styles.css" />
     <Content Include="Content\font-awesome-ie7.css" />
     <Content Include="Content\font-awesome.css" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\general_enclosed_foundicons.svg" />
     <Content Include="Content\general_enclosed_foundicons.css" />
     <Content Include="Content\images\abssmall.png" />
@@ -985,7 +987,7 @@
     <Content Include="Views\Home\filterselect.ascx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
-    <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\linksMain.ascx" />
     <Content Include="Views\Home\lookupFind.ascx" />
     <Content Include="Views\Home\orderselect.ascx" />
     <Content Include="Views\Home\promptedValues.aspx" />

@@ -12,15 +12,16 @@ li:visited { color: white;}
 .FixedLinksLeft ul li {	color: White;}
 .FixedLinksRight ul li {color: White;}
 /*.FixedLinksLeft ul li a:hover {	background-color: Orange; border-radius: 5px; }*/
-.FixedLinksLeft .button:hover {	background-color: Orange; border-radius: 5px; }
-
+/*.FixedLinksLeft .button:hover {	background-color: Orange; border-radius: 5px; }*/
+.FixedLinksLeft .button:hover { color: orange; }
+#officebar a:hover { color: orange;}
 
 li {background-color: transparent;}
 li a {	color: White;}
 .linkspagebuttonseparatorframe {border-color: rgb(43, 120, 228);}
 .hypertextlinkseparatorframe {border-color: rgb(43, 120, 228);}
 .hypertextlinkseparator {background-color: rgb(43, 120, 228);}
-.linkspagebuttonseparator {background-color: rgb(43, 120, 228);}
+.linkspagebuttonseparator {background-color: rgb(43, 120, 228);color: white;}
 .hypertextlinktext:hover {	background-color: #ff9608; }
 .linkspagebuttontext:hover {	background-color: #ff9608; }
 /*.linkspagebutton .displayonly { background-color: transparent; }*/

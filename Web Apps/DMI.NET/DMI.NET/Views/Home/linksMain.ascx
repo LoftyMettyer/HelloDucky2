@@ -1,25 +1,16 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage(Of DMI.NET.NavLinksViewModel)" %>
+﻿<%@ Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    <%=DMI.NET.svrCleanup.GetPageTitle("") %>
-</asp:Content>
-
-<asp:Content runat="server" ID="Content1a" ContentPlaceHolderID="FixedLinksContent">
-	<div id="fixedlinksframe" style="display: none;"><%	Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>	
-</asp:Content>
-
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">	
 	<link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
 	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.gridster.js")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.mousewheel.js")%>" type="text/javascript"></script>
 <%--	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.flip.js")%>" type="text/javascript"></script>--%>
 
+<%Session("recordID") = 0%>
+
+
 	<script type="text/javascript">
-
-
 
 		function loadjscssfile(filename, filetype) {			
 
@@ -50,7 +41,9 @@
 		$(document).ready(function () {
 
 			$("#fixedlinksframe").show();
-
+			$("#toolbarHome").show();
+			$("#toolbarHome").click();
+			
 			if (window.currentLayout == "tiles") {
 				setupTiles();
 			}
@@ -129,7 +122,7 @@
 			$(".DashContent").fadeOut("slow");
 
 			$(".DashContent").promise().done(function () {
-				window.location = "LinksMain";
+				window.location = "Main?SSIMode=True";
 				return;
 				//Are we currently in tiles mode? If so, just refresh the screen as there's too much loaded to reformat on the fly.
 				var currentLayout = $("link[id=layoutLink]").attr("href");
@@ -171,42 +164,12 @@
 			});
 		}
 
-		function loadPartialView(action, controller, targetDiv, params) {			
-
-			$.ajax({
-				url: window.ROOT + controller + "/" + action,
-				data: { psScreenInfo: params },
-				type: "POST",
-				success: function (html) {
-					try {
-						$("#" + targetDiv).html(html);
-						var breadcrumb = $(".pageTitle").text();
-						if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
-							$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
-						}
-					} catch(e) {
-						$("#errorDialogTitle").text(e.toString);
-						$("#errorDialogContentText").text(e.responseText);
-						$("#errorDialog").dialog("open");
-					}
-				},
-				error: function (req, status, errorObj) {
-					//TODO: remove this popup. Used for debugging only.
-					//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
-					$("#errorDialogTitle").text(errorObj);
-					$("#errorDialogContentText").text(req.responseText);
-					$("#errorDialog").dialog("open");
-				}
-			});
-		}
-
 
 		function goScreen(psScreenInfo) {
 
 			var sDestination;
-			
+			menu_disableMenu();
 			loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
-			
 			// Submit the refresh.asp to keep the session alive
 			//refreshSession();
 			//psScreenInfo = escape(psScreenInfo);
@@ -228,7 +191,7 @@
 		<%Dim iSeparatorNum = 0%>
 			<div class="hypertextlinks">
 				<%For Each navlink In Model.NavigationLinks%>
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
+				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>				
 				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
@@ -242,8 +205,8 @@
 			<%End If%>
 			<%iSeparatorNum += 1%>
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
-				<li class="hypertextlink-displaytype"><a class="hypertextlinkseparator" href="#">
-					<%: Replace(navlink.Text, "--", "")%></a>
+				<li class="hypertextlink-displaytype">
+					<div class="wrapupcontainer"><div class="wrapuptext"><p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p></div></div>					
 					<div class="gridster">
 						<ul>
 							<%Else%>
@@ -260,7 +223,8 @@
 								Select Case navlink.Element_Type%>
 							<%Case 0
 									classIcon = "icon-external-link"
-
+									
+									
 							 End Select%>
 
 							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
@@ -326,10 +290,11 @@
 			<%End If%>
 			<%iSeparatorNum += 1%>
 			<ul class="linkspagebuttonseparatorframe" id="linkspagebuttonseparatorframe_<%=iSeparatorNum %>">
-				<li class="linkspagebutton-displaytype">
-					
-					<div>
-						<a class="linkspagebuttonseparator" href="#"><%: navlink.Text %></a>
+				<li class="linkspagebutton-displaytype">					
+					<div class="wrapupcontainer">
+						<div class="wrapuptext">
+							<p class="linkspagebuttonseparator"><%: navlink.Text %></p>
+						</div>
 					</div>
 					<div class="gridster">
 						<ul>
@@ -459,7 +424,7 @@
 	<div class="dropdownlinks">
 		<ul class="dropdownlinkseparatorframe" id="dropdownlinkseparatorframe_<%=iSeparatorNum %>">
 		<li class="dropdownlink-displaytype">
-			<a class="dropdownlinkseparator" href="#">Dropdown links:</a>
+			<p class="dropdownlinkseparator">Dropdown links:</p>
 			<div class="gridster">
 			<ul class="DropDownListMenu">
 				<%iRowNum = 1%>
@@ -552,4 +517,3 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>	
 	
-</asp:Content>

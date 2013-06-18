@@ -15,15 +15,28 @@
 		menu_toolbarEnableItem("mnutillRunUtil", false);
 
 		//$("#toolbarHome").click();
-		$("#fixedlinks").fadeIn("slow");
 
 		$("#officebar .button").addClass("ui-corner-all");
 		
-		$('#officebar .button').hover(
-			function () {if(!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
-			function () {if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
-		);		
+		if (window.currentLayout == "winkit") {
+			$('#officebar .button').hover(
+				function() { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+				function() { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
+			);
+		} else {
+			$("#officebar").removeClass("ui-widget-header ui-widget-content");
+		}
 		
+		if (window.currentLayout == "tiles") {
+			//Wrap the icons with circles or boxes or whatever...
+			$("i[class^='icon-']").css("padding-left", "7px");
+			$("i[class^='icon-']").css("padding-bottom", "4px");
+			$("i[class^='icon-']").wrap("<span class='icon-stack' />");
+			$(".icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
+		}
+
+		$("#fixedlinks").fadeIn("slow");
+
 	});
 
 	function fixedlinks_mnutoolAboutHRPro() {
@@ -33,6 +46,10 @@
 	function showThemeEditor() {
 		$("#divthemeRoller").dialog("open");
 		$("#themeeditoraccordion").accordion("resize");
+		
+		//load the themeeditor form now
+		loadPartialView("themeEditor", "home", "divthemeRoller", null);
+
 	}
 
 	$("#officebar").tabs();
@@ -45,7 +62,7 @@
 		alt="" />
 <%End If%></div><div id="fixedlinks">
 	<div class="RecordDescription">
-		<p><a href="<%: Url.Action("LinksMain", "Home") %>" title="Home"><%=Session("recdesc")%></a></p>
+		<p><a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" title="Home"><%=Session("recdesc")%></a></p>
 	</div>
 	<div class="FixedLinksLeft">
 		<div id="officebar" class="officebar ui-widget-header ui-widget-content">
@@ -53,8 +70,10 @@
 				<li class="current ui-state-default ui-corner-top ui-state-active ui-state-hover"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>Fixed Links</span>
-							<div class="button"><a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Self-service Intranet">
-								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" /><i class="icon-home"></i><h6>SSI</h6></a></div>
+							<div class="button"><a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service Intranet">
+								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" />
+									<i class="icon-home"></i>
+								<h6>SSI</h6></a></div>
 							<div class="button">
 								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png") %>" alt="" />
@@ -63,7 +82,7 @@
 								</a>
 							</div>
 							<div class="button">
-								<a href="<%: Url.Action("Main", "Home") %>" rel="table" title="Data Manager Intranet">
+								<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="Data Manager Intranet">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png") %>" alt="" />
 									<i class="icon-group"></i>
 									<h6>DMI</h6>
@@ -189,7 +208,7 @@
 							<div id="mnutoolFind" class="button">
 								<a href="#" rel="table" title="Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
-									<i class="icon-check-empty"></i>
+									<i class="icon-search"></i>
 									<h6>Find</h6></a>
 							</div>
 							<div id="mnutoolQuickFind" class="button">
@@ -358,7 +377,4 @@
 					</ul>
 				</li>
 			</ul>
-		</div></div><div class="FixedLinksRight"><ul><li>Layout:<select onchange="try{changeLayout(this.value);}catch (e) {}"><option></option>
-<option>wireframe</option>
-<option>winkit</option>
-<option>tiles</option></select></li></ul></div></div>
+		</div></div><div class="FixedLinksRight"><ul><li></li></ul></div></div>

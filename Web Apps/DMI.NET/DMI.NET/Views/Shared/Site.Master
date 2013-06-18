@@ -70,7 +70,7 @@
                  and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
     
-	<% 
+	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
 		Dim currentTheme As String = "blue"
@@ -125,6 +125,8 @@
 
 	<script type="text/javascript">
 
+		window.SSIMode = '<%=ViewBag.SSIMode%>';
+		
 		$(document).ready(function () {
 
 			$("#About").dialog({
@@ -166,7 +168,9 @@
 			
 			$("button").css("margin", "5px");
 
-			if ($("#workframeset").length > 0) {
+			//if ($("#workframeset").length > 0) {
+			
+			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
 			    
@@ -193,18 +197,20 @@
 				//Kill themeRoller:
 				if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
 					$("link[id=DMIthemeLink]").attr({ href: "" });
-
-
+				
 				switch (window.currentLayout) {
 									case "winkit":
 										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
                     	break;
 										case "wireframe":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
-                    	break;
+											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/excite-bike/jquery-ui.min.css")%>" });
+											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/excite-bike/jquery-ui.min.css")%>" });
+											break;
 										case "tiles":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-                    	$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.css")%>" });
+											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
                     	break;
 									}
 
@@ -280,7 +286,37 @@
 		}
 
         //set up ROOT variable for use in external JS files.
-	    window.ROOT = '<%= Url.Content("~/") %>';       
+		window.ROOT = '<%= Url.Content("~/") %>';      
+		
+		function loadPartialView(action, controller, targetDiv, params) {
+			$.ajax({
+				url: window.ROOT + controller + "/" + action,
+				data: { psScreenInfo: params },
+				type: "POST",
+				success: function (html) {
+					try {
+						$("#" + targetDiv).html(html);
+						var breadcrumb = $(".pageTitle").text();
+						if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
+							$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
+						}
+					} catch (e) {
+						$("#errorDialogTitle").text(e.toString);
+						$("#errorDialogContentText").text(e.responseText);
+						$("#errorDialog").dialog("open");
+					}
+				},
+				error: function (req, status, errorObj) {
+					//TODO: remove this popup. Used for debugging only.
+					//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
+					$("#errorDialogTitle").text(errorObj);
+					$("#errorDialogContentText").text(req.responseText);
+					$("#errorDialog").dialog("open");
+				}
+			});
+		}
+
+
 </script>
 </head>
 <body class="ui-widget absolutefull">
@@ -303,7 +339,7 @@
 		</div>
 	</div>
 	
-	<div id="divthemeRoller" title="ThemeRoller"><%Html.RenderPartial("~/views/shared/themeEditor.ascx")%></div>
+	<div id="divthemeRoller" title="ThemeRoller"></div>
 
 	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default"><p><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p></div>
 </body>

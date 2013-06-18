@@ -647,9 +647,13 @@ Namespace Controllers
     End Function
 
     ' GET: /Home
-    Function Main() As ActionResult
-      Return View()
-    End Function
+		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
+
+			ViewBag.SSIMode = SSIMode
+
+
+			Return View()
+		End Function
 
     Function Find(Optional sParameters As String = "") As ActionResult
 
@@ -2264,7 +2268,12 @@ Namespace Controllers
 
 
     Function LogOff()
-      Session("databaseConnection") = Nothing
+			Session("databaseConnection") = Nothing
+			Session("avPrimaryMenuInfo") = Nothing
+			Session("avSubMenuInfo") = Nothing
+			Session("avQuickEntryMenuInfo") = Nothing
+			Session("avTableMenuInfo") = Nothing
+
       Return RedirectToAction("Login", "Account")
     End Function
 
@@ -2281,7 +2290,7 @@ Namespace Controllers
     'End Function
 
     Function Poll() As PartialViewResult
-      Return PartialView()
+			'Return PartialView()
     End Function
 
 #Region "Event Log Forms"
@@ -3417,7 +3426,9 @@ Namespace Controllers
       Session("selectSQL") = ""
       Session("errorMessage") = ""
       Session("warningFlag") = ""
-      Session("previousAction") = ""
+			Session("previousAction") = ""
+			Session("orderID") = 0
+
 
       Dim sParameters As String = psScreenInfo
 
@@ -4893,6 +4904,10 @@ Namespace Controllers
 
     End Function
 
+
+		Function themeEditor() As PartialViewResult
+			Return PartialView()
+		End Function
 
 #Region "Standard Reports"
 

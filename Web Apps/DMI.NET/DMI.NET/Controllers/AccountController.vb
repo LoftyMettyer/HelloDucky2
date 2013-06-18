@@ -229,7 +229,7 @@ Namespace Controllers
 			End Try
 
 			Dim objSettings = New Global.HR.Intranet.Server.clsSettings
-			sConnectString = objSettings.GetSQLProviderString & "Data Source=" & sServerName & ";Initial Catalog=" &
+			sConnectString = objSettings.GetSQLProviderString.ToString() & "Data Source=" & sServerName & ";Initial Catalog=" &
 			 sDatabaseName & ";Application Name=OpenHR Intranet;DataTypeCompatibility=80;MARS Connection=True;"
 			objSettings = Nothing
 
@@ -1388,16 +1388,24 @@ Namespace Controllers
 
 					Select Case Session("SelfServiceUserType")
 						Case 1		'IF DMI Multi
-							Return RedirectToAction("Main", "Home")
+							' Return RedirectToAction("Main", "Home")
+							ViewBag.SSIMode = False
 						Case 2		'IF DMI Single
-							Return RedirectToAction("Main", "Home")
+							' Return RedirectToAction("Main", "Home")
+							ViewBag.SSIMode = False
 						Case 3		'IF DMI Single And SSI
-							Return RedirectToAction("LinksMain", "Home")
+							' Return RedirectToAction("LinksMain", "Home")
+							ViewBag.SSIMode = True
 						Case 4		'IF SSI Only
-							Return RedirectToAction("LinksMain", "Home")
+							' Return RedirectToAction("LinksMain", "Home")
+							ViewBag.SSIMode = True
 						Case Else
 							Return RedirectToAction("login", "account")
 					End Select
+					
+					' always main.
+					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+
 				End If
 			End If
 

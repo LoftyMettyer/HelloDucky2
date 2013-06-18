@@ -171,7 +171,7 @@ textarea
 	top: 0px;left: 0px;right: 0px;bottom: 0px;
 	background-color: rgb(7, 55, 99);
 
-	background-image: url("../Content/images/OpenHRLogo2.png");
+	/*background-image: url("../Content/images/OpenHRLogo2.png");*/
 	background-repeat: no-repeat;
 	background-position: center center;
 	vertical-align: middle;
