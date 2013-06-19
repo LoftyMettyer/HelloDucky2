@@ -134,22 +134,22 @@
 			Response.Write("    frmLoginForm.txtDatabase.value = """ & cleanStringForJavaScript(Request.QueryString("database")) & """;" & vbCrLf)
 		ElseIf Session("database") <> "" Then
 			Response.Write("    frmLoginForm.txtDatabase.value = """ & cleanStringForJavaScript(Session("database")) & """;" & vbCrLf)
-		Else
-			Response.Write("    sDatabase = getCookie('Intranet_Database');" & vbCrLf)
-			Response.Write("    if (sDatabase != """" && sDatabase != null && sDatabase != ""undefined"") {" & vbCrLf)
-			Response.Write("      frmLoginForm.txtDatabase.value = sDatabase;" & vbCrLf)
-			Response.Write("    }" & vbCrLf)
+			'Else
+			'Response.Write("    sDatabase = getCookie('Intranet_Database');" & vbCrLf)
+			'Response.Write("    if (sDatabase != """" && sDatabase != null && sDatabase != ""undefined"") {" & vbCrLf)
+			'Response.Write("      frmLoginForm.txtDatabase.value = sDatabase;" & vbCrLf)
+			'Response.Write("    }" & vbCrLf)
 		End If
 
 		If Request.QueryString("server") <> "" Then
 			Response.Write("    frmLoginForm.txtServer.value = """ & cleanStringForJavaScript(Request.QueryString("server")) & """;" & vbCrLf)
 		ElseIf Session("server") <> "" Then
 			Response.Write("    frmLoginForm.txtServer.value = """ & cleanStringForJavaScript(Session("server")) & """;" & vbCrLf)
-		Else
-			Response.Write("    sServer = getCookie('Intranet_Server');" & vbCrLf)
-			Response.Write("    if (sServer != """" && sServer != null && sServer != ""undefined"") {" & vbCrLf)
-			Response.Write("      frmLoginForm.txtServer.value = sServer;" & vbCrLf)
-			Response.Write("    }" & vbCrLf)
+			'Else
+			' Response.Write("    sServer = getCookie('Intranet_Server');" & vbCrLf)
+			'	Response.Write("    if (sServer != """" && sServer != null && sServer != ""undefined"") {" & vbCrLf)
+			'	Response.Write("      frmLoginForm.txtServer.value = sServer;" & vbCrLf)
+			'	Response.Write("    }" & vbCrLf)
 		End If
 
 		If Request.ServerVariables("LOGON_USER") <> "" Then
@@ -246,8 +246,8 @@
 			// Save the values used for user name, database and server to the registry.
 			//TODO
 			setCookie('Intranet_UserName', frmLoginForm.txtUserName.value, 365);
-			setCookie('Intranet_Database', sDatabase, 365);
-			setCookie('Intranet_Server', sServer, 365);
+			//setCookie('Intranet_Database', sDatabase, 365);
+			//setCookie('Intranet_Server', sServer, 365);
 			setCookie('Intranet_WindowsAuthentication', frmLoginForm.chkWindowsAuthentication.checked, 365);
 
 			frmLoginForm.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat();
@@ -361,7 +361,7 @@
 	<tr> 
 		<td>
 			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
-				<tr style="height:40"> 
+				<tr style="height:40px"> 
 			    <td align=right>
             <img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();"
             onmouseover="this.style.cursor='pointer'; this.style.color='<%=session("Config-hypertextlinktext-highlightcolour")%>';" 
