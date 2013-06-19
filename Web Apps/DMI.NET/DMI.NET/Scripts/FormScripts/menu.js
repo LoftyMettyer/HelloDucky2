@@ -400,6 +400,10 @@ function menu_MenuClick(sTool) {
 	//	frmRefresh = window.parent.frames("refreshframe").document.forms("frmRefresh");
 	//	frmRefresh.submit();
 
+	frmRefresh = OpenHR.getForm("refresh", "frmRefresh");
+	OpenHR.submitForm(frmRefresh);
+
+
 	if (sToolName == "mnutoolLogoff") {
 		menu_logoffIntranet();
 		return;
