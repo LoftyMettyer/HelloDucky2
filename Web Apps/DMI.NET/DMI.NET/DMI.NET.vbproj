@@ -176,6 +176,10 @@
     <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
+    <Content Include="Content\jquery.mCustomScrollbar.css" />
+    <Content Include="Content\jquery.mCustomScrollbar.min.css">
+      <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
+    </Content>
     <Content Include="Content\themes\cupertino\images\animated-overlay.gif" />
     <Content Include="Content\themes\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
     <Content Include="Content\themes\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
@@ -577,6 +581,7 @@
     <Content Include="Scripts\FormScripts\util_run_calendarreports.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
+    <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.dll" />

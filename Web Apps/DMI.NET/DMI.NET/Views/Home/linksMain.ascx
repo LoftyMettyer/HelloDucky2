@@ -1,14 +1,14 @@
 ﻿<%@ Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
 
-	<link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
-	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
-	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.gridster.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.mousewheel.js")%>" type="text/javascript"></script>
-<%--	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.flip.js")%>" type="text/javascript"></script>--%>
+<link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
+<link href="<%:Url.Content("~/Content/jquery.mCustomScrollbar.min.css")%>" rel="stylesheet" />
+<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
+<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.gridster.js")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.mousewheel.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.mCustomScrollbar.min.js")%>"></script>
 
 <%Session("recordID") = 0%>
-
 
 	<script type="text/javascript">
 
@@ -70,7 +70,10 @@
 			// re-call the function each 30 seconds
 			window.setInterval("loadPartialView('poll', 'home')", 30000);
 
-			$(".DashContent").fadeIn("slow");			
+			$(".DashContent").fadeIn("slow");
+
+			// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
+			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
 
 		});
 
@@ -84,16 +87,6 @@
 				event.preventDefault();
 			});
 
-			////Add flippy stuff
-			//$(".flipTile").hover(function () {
-			//	$(this).flip({
-			//		direction: 'tb'
-			//	});
-			//});		
-			
-			//hide the ribbon - they're charms in this layout
-			//$("#fixedlinks").hide();
-
 		}
 
 		function griditup(mode) {
@@ -105,8 +98,6 @@
 					min_cols: 1,
 					avoid_overlapped_widgets: true
 				});
-
-
 			}
 		}
 
@@ -123,44 +114,6 @@
 
 			$(".DashContent").promise().done(function () {
 				window.location = "Main?SSIMode=True";
-				return;
-				//Are we currently in tiles mode? If so, just refresh the screen as there's too much loaded to reformat on the fly.
-				var currentLayout = $("link[id=layoutLink]").attr("href");
-				if (currentLayout.indexOf("tiles.css") > 0) {
-					window.location = "LinksMain";
-					return;
-				}
-
-				switch (newLayoutName) {
-				case "tiles":
-					//Hide all officebar tabs, except 'current' which WILL always be home tab...
-						//$(".officebar > ul > li:not(.current)").hide();
-						//$(".current > a").hide();
-
-					window.changeTheme("theme-Blue");
-					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-					setupTiles();
-					break;
-				case "wireframe":
-					//$(".officebar > ul > li:not(.current)").hide();
-						//$(".current > a").hide();
-
-					window.changeTheme("theme-Blue");
-					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-
-					break;
-				case "winkit":
-					window.changeTheme("theme-White");
-					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-					$(".officebar > ul > li:not(.current)").show();
-					$(".current > a").show();
-
-				//$(".hypertextlinks ul").addClass("menu");
-				default:
-					break;
-				}
-
-				$(".DashContent").fadeIn("slow");
 			});
 		}
 
@@ -517,3 +470,4 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>	
 	
+

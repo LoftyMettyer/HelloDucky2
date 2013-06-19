@@ -23,7 +23,7 @@ body
               margin: 0px 0px 0px 120px;
               padding: 30px 0px 0px 10px;
               height: 680px;
-              overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
+              overflow-x: hidden; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
 
 
 
