@@ -65,72 +65,71 @@
 
 <form action="forcedPasswordChange_Submit" method="post" id="frmPasswordChangeForm" name="frmPasswordChangeForm">
 
-<BR>
-<table class="outline" align=center cellPadding=5 cellSpacing=0> 
-    <tr>
-	    <td>
-		    <table align=center class="invisible" cellPadding=0 cellSpacing=0 width=100% height=100%>
-			    <TR>
-					<TD>
-						<table align=center class="invisible" cellPadding=0 cellSpacing=0> 
-						    <tr>
-						        <td colSpan=5 height=40><H3 align=center>You must change your password</H3></td>
-						    </tr>
-						    <tr>
-						        <td width=20></td>
-						        <td align=left nowrap>Current Password :</td>
-						        <td width=20></td>
-						        <td align=left>
-						            <input id="txtCurrentPassword" name="txtCurrentPassword" type="password" class="text" style="WIDTH: 200px">
-						        </td>
-						        <td width=20></td>
-                            </tr>
-						    <tr>
-						        <td width=20></td>
-						        <td align=left nowrap>New Password :</td>
-						        <td width=20></td>
-						        <td align=left>
-						            <input id="txtPassword1" name="txtPassword1" type="password" class="text" style="WIDTH: 200px">
-						        </td>
-						        <td width=20></td>
-						    </tr>
-						    <tr>
-						        <td width=20></td>
-						        <td align=left nowrap>Confirm New Password :</td>
-						        <td width=20></td>
-						        <td align=left>
-						            <input id="txtPassword2" name="txtPassword2" type="password" class="text" style="WIDTH: 200px">
-						        </td>
-						        <td width=20></td>
-						    </tr>
-							<tr>
-							    <td colSpan=5 height=20></td>
-							</tr>
-							<tr>
-							    <td  colSpan=5 align=center>
-									<input id="submitPasswordDetails" name="submitPasswordDetails" type="button" class="btn" value="OK" style="WIDTH: 100px" width="100" 
-									    onclick="SubmitPasswordDetails()"
-					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                            onfocus="try{button_onFocus(this);}catch(e){}"
-			                            onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-							</tr>
-							<tr>
-							  <td colSpan=5 height=10></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+    <br />
+    <br />
+    <br />
+    <table class="outline" align="center" cellpadding="5" cellspacing="0">
+        <tr>
+            <td>
+                <table align="center" class="invisible" cellpadding="0" cellspacing="0" width="100%" height="100%">
+                    <tr>
+                        <td>
+                            <table align="center" class="invisible" cellpadding="0" cellspacing="0">
+                                <tr>
+                                <td colspan="5" height="40">
+                                    <h3 align="center">You must change your password</h3>
+                                </td>
+                                </tr>
+                                <tr>
+                                    <td width="20"></td>
+                                    <td align="left" nowrap>Current Password :</td>
+                                    <td width="20"></td>
+                                    <td align="left">
+                                        <input id="txtCurrentPassword" name="txtCurrentPassword" type="password" class="text" style="width: 200px">
+                                    </td>
+                                    <td width="20"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20"></td>
+                                    <td align="left" nowrap>New Password :</td>
+                                    <td width="20"></td>
+                                    <td align="left">
+                                        <input id="txtPassword1" name="txtPassword1" type="password" class="text" style="width: 200px">
+                                    </td>
+                                    <td width="20"></td>
+                                </tr>
+                                <tr>
+                                    <td width="20"></td>
+                                    <td align="left" nowrap>Confirm New Password :</td>
+                                    <td width="20"></td>
+                                    <td align="left">
+                                        <input id="txtPassword2" name="txtPassword2" type="password" class="text" style="width: 200px">
+                                    </td>
+                                    <td width="20"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" height="20"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" align="center">
+                                        <input id="submitPasswordDetails" name="submitPasswordDetails" type="button" class="btn" value="OK" style="width: 100px" width="100" onclick="SubmitPasswordDetails()" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" height="10"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </form>
 
 <%
 	On Error Resume Next
-    Response.Write("<INPUT type='hidden' id=txtMinPasswordLength name=txtMinPasswordLength value=" & Session("minPasswordLength") & ">" & vbCrLf)
+    Response.Write("<input type='hidden' id='txtMinPasswordLength' name='txtMinPasswordLength' value='" & Session("minPasswordLength") & "'>" & vbCrLf)
 %>
 </div>
 </asp:Content>
