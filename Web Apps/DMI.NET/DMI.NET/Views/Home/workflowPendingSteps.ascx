@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Register Src="~/Views/Home/WorkflowPendingSteps.ascx" TagPrefix="uc1" TagName="WorkflowPendingSteps" %>
+
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -157,7 +159,7 @@
 								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
 									<tr>
 										<td>
-											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px" width="80" id="cmdRefresh" class="btn" onclick="setrefresh();" />
+											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px; margin-bottom:3px;" width="80" id="cmdRefresh" class="btn" onclick="setrefresh();" />
 										</td>
 									</tr>
 									<tr height="100%">
@@ -179,6 +181,7 @@
 								</table>
 							</td>
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<uc1:WorkflowPendingSteps runat="server" ID="WorkflowPendingSteps" />
 						</tr>
 						<tr>
 							<td colspan="5" align="center" height="10"></td>
