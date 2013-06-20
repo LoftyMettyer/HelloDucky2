@@ -22,8 +22,8 @@
 %>
 
 <script type="text/javascript">
-    function Loginerror_window_onload() {        
-        cmdGoBack.focus();
+    function Loginerror_window_onload() {
+        window.cmdGoBack.focus();
     }
 </script>
 
@@ -80,55 +80,49 @@
 
 <div class="COAwallpapered" <%=session("BodyTag")%>>
 
-<table class="outline" align=center cellPadding=0 cellSpacing=0>
-	<TR>
-		<TD>
-            <table class="invisible" cellspacing="0" cellpadding="0">
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
+    <table class="outline" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <table class="invisible" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td colspan="3" height="10"></td>
+                    </tr>
 
-			    <tr> 
-			        <td colspan=3 align=center> 
-						<H3>OpenHR Login</H3>
-			        </td>
-			    </tr>
+                    <tr>
+                        <td colspan="3" align="center">
+                            <h3>OpenHR Login</h3>
+                        </td>
+                    </tr>
 
-                <tr> 
-			        <td width=20 height=10></td> 
-			        <td> 
-						<%=replace(session("ErrorText"), vbcr, "<BR>")%>
-			        </td>
-			        <td width=20></td> 
-			    </tr>
+                    <tr>
+                        <td width="20" height="10"></td>
+                        <td>
+                            <%=Replace(Session("ErrorText"), vbCr, "<br />")%>
+                        </td>
+                        <td width="20"></td>
+                    </tr>
 
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
+                    <tr>
+                        <td colspan="3" height="10"></td>
+                    </tr>
 
-			    <tr> 
-			        <td colspan=3 height=10 align=center> 
-					    <input type=button value="Retry" name="GoBack" class="btn" style="WIDTH: 80px" width=80 id=cmdGoBack
-					        OnClick="GoBack()"
-					        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                onfocus="try{button_onFocus(this);}catch(e){}"
-			                onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-			    </tr>
+                    <tr>
+                        <td colspan="3" height="10" align="center">
+                            <input type="button" value="Retry" name="GoBack" class="btn" style="WIDTH: 80px" width="80" id="cmdGoBack" onclick="GoBack()" />
+                        </td>
+                    </tr>
 
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
-			</table>
-        </td>
-    </tr>
-</table>
+                    <tr>
+                        <td colspan="3" height="10"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-<INPUT type="hidden" id=txtDesktopColour name=txtDesktopColour value=<%=session("DesktopColour")%>>
+    <input type="hidden" id="txtDesktopColour" name="txtDesktopColour" value="<%=session("DesktopColour")%>">
 </div>
 
-    <script type="text/javascript"> Loginerror_window_onload();</script>
-
+<script type="text/javascript">Loginerror_window_onload();</script>
 
 </asp:Content>
