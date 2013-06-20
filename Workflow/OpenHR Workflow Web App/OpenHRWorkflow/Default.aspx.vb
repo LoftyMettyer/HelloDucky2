@@ -378,6 +378,14 @@ Public Class [Default]
 
 						If formItem.InputSize > 0 Then
 							.Attributes("maxlength") = formItem.InputSize.ToString
+
+							' HRPRO-2819, maxlength not honoured for IE9
+							Dim IEVer As Double = getInternetExplorerVersion()
+							If IEVer < 10 And IEVer > 0 Then		' function returns -1 for non-IE browsers.
+								' onKeyPress="return ( this.value.length < 1000 );"
+								.Attributes("onKeyPress") = "return ( this.value.length < " & formItem.InputSize.ToString & " );"
+							End If
+
 						End If
 
 						If IsMobileBrowser() Then
