@@ -157,12 +157,12 @@
 
 							<td width="80">
 								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
+									<tr> 
 										<td>
 											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px; margin-bottom:3px;" width="80" id="cmdRefresh" class="btn" onclick="setrefresh();" />
 										</td>
 									</tr>
-									<tr height="100%">
+									<tr height=3px>
 										<td></td>
 									</tr>
 									<tr>
@@ -170,7 +170,7 @@
 											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" width="80" id="cmdRun" class="btn" />
 										</td>
 									</tr>
-									<tr height="10">
+									<tr>
 										<td></td>
 									</tr>
 									<tr>
