@@ -4,7 +4,7 @@ BEGIN
 	-- Return a recordset of the workflow steps that need to be actioned by the Workflow service.
 	-- Action any that can be actioned immediately. 
 	DECLARE
-		@iAction			integer, -- 0 = do nothing, 1 = submit step, 2 = change status to '2', 3 = Summing Junction check, 4 = Or check
+		@iAction			integer, -- 0 = do nothing, 1 = submit step, 2 = change status to 2, 3 = Summing Junction check, 4 = Or check
 		@iElementType		integer,
 		@iInstanceID		integer,
 		@iElementID			integer,
@@ -149,7 +149,11 @@ BEGIN
 			CLOSE precedingElementsCursor;
 			DEALLOCATE precedingElementsCursor;
 			
-			IF (@fInvalidElements = 0) SET @iAction = 1;
+			IF (@fInvalidElements = 0) 
+				SET @iAction = 1; 
+			ELSE 
+				UPDATE ASRSysWorkflowInstanceSteps SET ActivationDateTime = GETDATE() WHERE instanceID = @iInstanceID AND ID = @iStepID; 
+
 		END
 
 		IF @iAction = 4 -- Or check
@@ -316,7 +320,7 @@ BEGIN
 				OR ASRSysWorkflowInstanceSteps.status = 6
 				OR ASRSysWorkflowInstanceSteps.status = 8);
 			
-		-- Set activated Web Forms to be 'pending' (to be done by the user)
+		-- Set activated Web Forms to be pending (to be done by the user)
 		UPDATE ASRSysWorkflowInstanceSteps
 		SET ASRSysWorkflowInstanceSteps.status = 2
 		WHERE ASRSysWorkflowInstanceSteps.id IN (
@@ -326,7 +330,7 @@ BEGIN
 			WHERE ASRSysWorkflowInstanceSteps.status = 1
 				AND ASRSysWorkflowElements.type = 2);
 			
-		-- Set activated Terminators to be 'completed'
+		-- Set activated Terminators to be completed
 		UPDATE ASRSysWorkflowInstanceSteps
 		SET ASRSysWorkflowInstanceSteps.status = 3,
 			ASRSysWorkflowInstanceSteps.completionDateTime = getdate(), 

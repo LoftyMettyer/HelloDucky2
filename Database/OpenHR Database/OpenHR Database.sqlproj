@@ -312,7 +312,6 @@
     <Build Include="Stored Procedures\Other\spASRAccordPurgeTemp.sql" />
     <Build Include="Stored Procedures\Other\spASRAccordSetLatestToType.sql" />
     <Build Include="Stored Procedures\Other\spASRAccordVoidPreviousTransactions.sql" />
-    <Build Include="Stored Procedures\Other\spASRActionActiveWorkflowSteps.sql" />
     <Build Include="Stored Procedures\Other\spASRCancelPendingPrecedingWorkflowElements.sql" />
     <Build Include="Stored Procedures\Other\spASRCheckNTLogin.sql" />
     <Build Include="Stored Procedures\Other\spASRColumnsUsedInExpression.sql" />
@@ -587,6 +586,7 @@
     <Build Include="User Defined Functions\udfsys_wholeyearsbetweentwodates.sql" />
     <Build Include="User Defined Functions\udfsys_workingdaysbetweentwodates.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetUserGroup.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRActionActiveWorkflowSteps.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
