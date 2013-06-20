@@ -95,6 +95,7 @@ Public Class Component
 
         objExpression = Expressions.GetById(CalculationId).Clone
         Components = objExpression.Components
+
         TableId = objExpression.TableId
         ReturnType = objExpression.ReturnType
         SubType = ComponentTypes.Expression
@@ -105,6 +106,14 @@ Public Class Component
             , "This is likely to be caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations.")
           BaseExpression.IsValid = False
         End If
+
+        For Each objComponent As Component In Components
+          DepthCharge = DepthCharge + 1
+          objComponent.ConvertToExpression(recursionLevel, recursion)
+          DepthCharge = DepthCharge - 1
+        Next
+
+
 
       ElseIf SubType = ComponentTypes.Expression Then
 
