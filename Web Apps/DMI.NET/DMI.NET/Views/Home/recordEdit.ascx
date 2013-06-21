@@ -260,21 +260,48 @@
         }
 
         try {
-
-            //frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
-
             //NPG - recedit not resizing. Do it manually.
             var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);
             var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
 
             $("#ctlRecordEdit").height(newHeight + "px");
             $("#ctlRecordEdit").width(newWidth + "px");
+	        
+          if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
+		        //Only for SSI mode view, zoom in on recedit until it reaches full screen, or twice it's original size.
+		        var screenWidth = document.getElementById("workframeset").offsetWidth;
+		        var screenHeight = document.getElementById("workframeset").offsetHeight;
+		        var scaleFactor = 0;
 
-            //parent.window.resizeBy(-1, -1);
-            //parent.window.resizeBy(1, 1);
+		        //Calculate the scale factor
+		        if ((screenWidth / newWidth) < (screenHeight / newHeight)) {
+			        //use width as factor
+			        scaleFactor = (screenWidth * .9) / newWidth;
+		        } else {
+			        //use height
+			        scaleFactor = (screenHeight * .9) / newHeight;
+		        }
+
+		        scaleFactor = (scaleFactor * 0.8);
+		        
+						//Limit the scale factor to 1.5x
+		        scaleFactor = Math.min(scaleFactor, 1.5);
+		        
+						$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
+		        $("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
+		        $("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
+		        $("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
+		        $("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
+		        $("#ctlRecordEdit").css("transform-origin", "50% top");
+	        }
+	        
+	        //use zoom for IE9?
+
+	        //parent.window.resizeBy(-1, -1);
+	        //parent.window.resizeBy(1, 1);
         } catch (e) {
-        }
-	    
+					}
+
 
     	//Add 'changed' event handler to monitor for data changes    
 	    //checkbox
