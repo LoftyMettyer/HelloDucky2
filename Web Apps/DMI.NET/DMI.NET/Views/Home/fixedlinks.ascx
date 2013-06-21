@@ -26,18 +26,25 @@
 		} else {
 			$("#officebar").removeClass("ui-widget-header ui-widget-content");
 		}
+
+		setTimeout("wrapTileIcons();", 100);
 		
+		$("#fixedlinks").fadeIn("slow");
+		
+		});
+
+
+
+
+	function wrapTileIcons() {
 		if (window.currentLayout == "tiles") {
 			//Wrap the icons with circles or boxes or whatever...
-			$("i[class^='icon-']").css("padding-left", "7px");
-			$("i[class^='icon-']").css("padding-bottom", "4px");
-			$("i[class^='icon-']").wrap("<span class='icon-stack' />");
-			$(".icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
+			$(".officetab i[class^='icon-']").css("padding-left", "7px");
+			$(".officetab i[class^='icon-']").css("padding-bottom", "4px");
+			$(".officetab i[class^='icon-']").wrap("<span class='icon-stack' />");
+			$(".officetab .icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
 		}
-
-		$("#fixedlinks").fadeIn("slow");
-
-	});
+	}
 
 	function fixedlinks_mnutoolAboutHRPro() {
 		$("#About").dialog("open");		

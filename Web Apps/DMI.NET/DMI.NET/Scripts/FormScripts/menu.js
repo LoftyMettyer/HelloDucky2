@@ -1271,7 +1271,7 @@ function menu_refreshMenu() {
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
 			menu_setVisibleMenuItem("mnutoolHistory", false);
-		    $("#mnutoolDatabase").click();
+		  $("#mnutoolDatabase").click();
 		    
 		    menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", false);
 
@@ -1703,8 +1703,10 @@ function menu_refreshMenu() {
 //	
 function menu_enableMenu() {
 	//TODO: run through and re-enable all items.
-	if (menu_isSSIMode()) {
+	if (menu_isSSIMode()  && (window.currentLayout != "winkit")) {
 		//$(".FixedLinksLeft").fadeIn("slow");
+		//$("#officebar").show('drop', { direction: 'left' }, 1000);
+		$("#officebar").fadeIn("fast");
 	}
 	//$(".FixedLinksLeft").show("slide", { direction: "left" }, 1000);
 	
@@ -1726,11 +1728,13 @@ function menu_enableMenu() {
 }
 
 function menu_disableMenu() {
-	if (menu_isSSIMode()) {
-		//$("#officebar").hide();
-		//$(".FixedLinksLeft").hide("slide", { direction: "left" }, 500);
-		//$(".FixedLinksLeft").fadeOut("fast");
+	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
+		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
+		$("#officebar").fadeOut("fast");
 	}
+	
+
+
 //	var iLoop;
 //	
 //	for (iLoop = 0; iLoop < abMainMenu.Bands.Item("mnuMainMenu").Tools.Count(); iLoop++) {
