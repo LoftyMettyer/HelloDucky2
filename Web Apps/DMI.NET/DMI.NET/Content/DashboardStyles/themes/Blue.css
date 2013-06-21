@@ -20,7 +20,7 @@ li {background-color: transparent;}
 li a {	color: White;}
 .linkspagebuttonseparatorframe {border-color: rgb(43, 120, 228);}
 .hypertextlinkseparatorframe {border-color: rgb(43, 120, 228);}
-.hypertextlinkseparator {background-color: rgb(43, 120, 228);}
+.hypertextlinkseparator {background-color: rgb(43, 120, 228);color: white;}
 .linkspagebuttonseparator {background-color: rgb(43, 120, 228);color: white;}
 .hypertextlinktext:hover {	background-color: #ff9608; }
 .linkspagebuttontext:hover {	background-color: #ff9608; }
