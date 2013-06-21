@@ -172,17 +172,7 @@
 			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
-			    
-                //Apply ajax please wait message
-			    $(document).ajaxStart(function() {
-			        $("body").addClass("loading");			        
-			    });
-			    
-			    $(document).ajaxStop(function () {
-			        $("body").removeClass("loading");
-			    });
-
+			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
 			}
 			else {
 				//only load themes for linksMain.				
@@ -229,7 +219,14 @@
 
 			}
 			
-			
+			//Apply ajax please wait message
+			$(document).ajaxStart(function () {
+				$("body").addClass("loading");
+			});
+
+			$(document).ajaxStop(function () {
+				$("body").removeClass("loading");
+			});
 
 		});
 	</script>
@@ -341,6 +338,9 @@
 	
 	<div id="divthemeRoller" title="ThemeRoller"></div>
 
-	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default"><p><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p></div>
+	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default">
+		<p id="footerbannerprogress" class="footer-banner-p-progress" runat="server"></p>
+		<p class="footer-banner-p-copyright"><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p>
+	</div>
 </body>
 </html>

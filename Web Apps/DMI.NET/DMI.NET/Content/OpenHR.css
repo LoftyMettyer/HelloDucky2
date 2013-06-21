@@ -33,7 +33,14 @@ div.COAwallpapered
 	border-radius: 20px 0 0 0;
 }
 
-.footer-banner p {
+.footer-banner-p-progress {
+	display: inline-block;
+	padding-top: 6px;
+	margin: 0 0 0 10px;
+}
+
+.footer-banner-p-copyright {
+	display: inline-block;
 	position: fixed;
 	padding-top: 6px;
 	margin: 0;
