@@ -12,7 +12,7 @@
 	function GoBack() {
         
 	    //loginmessage is always called so back to login.
-	    window.location.href("login");
+	    window.location = "Login";
 
 	    return false;
         if (InStrRev(document.referrer, "/") > 0) {
@@ -85,7 +85,7 @@
                     </tr>
                     <tr>
                         <td align="center" colspan="3">
-                            <input type="button" class="btn" value="OK" name="GoBack" style="HEIGHT: 24px; WIDTH: 100px" width="100" id="cmdGoBack" onclick="GoBack()" />
+                            <input type="button" class="btn" value="OK" name="GoBack" style="height: 33px; width: 100px" id="cmdGoBack" onclick="GoBack();" />
                         </td>
                     </tr>
                     <tr>
