@@ -12,7 +12,10 @@ Namespace ScriptDB
     Private _miNextInsertPoint As Integer
     Private _miLastInsertOperatorType As OperatorSubType
 
-    Public Property CodeLevel As Integer
+    'Public Property CaseCount As Integer
+
+    Public Property CodeLevel As Integer ' this is just for beautification - must be a better way!!!
+
     Public Property ReturnType As ComponentValueTypes
     Public Property CaseReturnType As CaseReturnType = CaseReturnType.Result
     Private Property IsLogicBlock As Boolean
@@ -108,16 +111,16 @@ Namespace ScriptDB
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
           If IsLogicBlock And bNeedsIsEqualTo Then
-            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
+            Statement = String.Format("{0}{1} = 1", Statement, chunk.Code)
             IsLogicBlock = True
             bNeedsIsEqualTo = False
 
           ElseIf bNeedsIsEqualTo And CaseReturnType = CaseReturnType.Condition Then
-            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
+            Statement = String.Format("{0}{1} = 1", Statement, chunk.Code)
             IsLogicBlock = True
             bNeedsIsEqualTo = False
           Else
-            Statement = String.Format("{0}{1}{2}", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
+            Statement = String.Format("{0}{1}", Statement, chunk.Code)
           End If
 
           iThisElement = iThisElement + 1

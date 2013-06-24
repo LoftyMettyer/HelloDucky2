@@ -96,12 +96,19 @@ Namespace Connectivity
     Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean, ByVal autoFormat As Boolean) As Boolean Implements IConnection.ScriptStatement
 
       Dim bOk As Boolean = True
       Dim iSeverity As Severity
 
       Try
+
+        ' This is a OpenSource formatter. Not brilliant, but slightly better than the one I've tried to program into the system framework.
+        ' If a better copy comes along, or we write our own, replace it here.
+        If autoFormat Then
+          statement = NSQLFormatter.Formatter.Format(statement)
+        End If
+
         NativeObject.Execute(statement)
 
       Catch ex As Exception

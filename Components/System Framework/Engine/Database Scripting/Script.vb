@@ -41,7 +41,7 @@ Namespace ScriptDB
       Dim sql As String = SqlDropUdf(schema, name)
 
       Try
-        CommitDb.ScriptStatement(sql, True)
+        CommitDb.ScriptStatement(sql, True, False)
 
       Catch ex As Exception
         ErrorLog.Add(Section.UdFs, name, Severity.Error, ex.Message, sql)
@@ -66,7 +66,7 @@ Namespace ScriptDB
           " DROP VIEW [{0}].[{1}]", [role], viewName)
 
         ' Commit
-        CommitDb.ScriptStatement(sSql, True)
+        CommitDb.ScriptStatement(sSql, True, False)
 
       Catch ex As Exception
         MsgBox(ex.Message, MsgBoxStyle.Critical)
@@ -131,7 +131,7 @@ Namespace ScriptDB
             Case DataRowState.Deleted
               sSql = String.Format("IF EXISTS(SELECT [name] FROM sys.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{0}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) " & vbNewLine & _
                                    "DROP TABLE [dbo].[{0}];", objTable.PhysicalName)
-              CommitDb.ScriptStatement(sSql, True)
+              CommitDb.ScriptStatement(sSql, True, False)
 
             Case DataRowState.Modified
               'If Not objTable.PhysicalName = objTable.NameInDB Then
@@ -153,7 +153,7 @@ Namespace ScriptDB
                 " , [lastsavedby] varbinary(85)" & vbNewLine & _
                 " , [lastsavedatetime] datetime);" _
                 , objTable.PhysicalName)
-              CommitDb.ScriptStatement(sSql, True)
+              CommitDb.ScriptStatement(sSql, True, False)
 
           End Select
 
@@ -164,11 +164,11 @@ Namespace ScriptDB
             If objRelation.RelationshipType = RelationshipType.Parent Then
               sSql = String.Format("IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='ID_{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] ADD [ID_{1}] integer NOT NULL", objTable.PhysicalName, objRelation.ParentId)
-              CommitDb.ScriptStatement(sSql, True)
+              CommitDb.ScriptStatement(sSql, True, False)
 
               sSql = String.Format("IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'IDX_ID_{1}')" & vbNewLine & _
                   "CREATE NONCLUSTERED INDEX [IDX_ID_{1}] ON [dbo].[{0}] ([ID_{1}] ASC)", objTable.PhysicalName, objRelation.ParentId)
-              CommitDb.ScriptStatement(sSql, False)
+              CommitDb.ScriptStatement(sSql, False, False)
 
             End If
 
@@ -180,12 +180,12 @@ Namespace ScriptDB
             If objColumn.State = DataRowState.Deleted Then
               sSql = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] DROP COLUMN [{1}]", objTable.PhysicalName, objColumn.Name)
-              CommitDb.ScriptStatement(sSql, True)
+              CommitDb.ScriptStatement(sSql, True, False)
 
             ElseIf objColumn.State = DataRowState.Modified Or Options.RefreshObjects Then
               sSql = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] ALTER COLUMN [{1}] {2} ELSE ALTER TABLE [dbo].[{0}] ADD [{1}] {2}", objTable.PhysicalName, objColumn.Name, objColumn.DataTypeSyntax)
-              CommitDb.ScriptStatement(sSql, True)
+              CommitDb.ScriptStatement(sSql, True, False)
             End If
           Next
 
@@ -246,7 +246,7 @@ Namespace ScriptDB
           DropView(objTable.SchemaName, sViewName)
 
           sDefinitionSql = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSql)
-          CommitDb.ScriptStatement(sDefinitionSql, True)
+          CommitDb.ScriptStatement(sDefinitionSql, True, False)
 
         Next
 
@@ -276,7 +276,6 @@ Namespace ScriptDB
 
             sDefinition = New StringBuilder
             sDefinition.AppendLine(String.Format("CREATE VIEW [{0}].[{1}]", objTable.SchemaName, objView.Name))
-            sDefinition.AppendLine("--WITH SCHEMABINDING")
             sDefinition.AppendLine("AS SELECT [id], [timestamp]")
 
             For Each objColumn In objView.Columns
@@ -291,7 +290,7 @@ Namespace ScriptDB
 
             ' Generate this view
             DropView(objTable.SchemaName, objView.Name)
-            CommitDb.ScriptStatement(sDefinition.ToString, True)
+            CommitDb.ScriptStatement(sDefinition.ToString, True, False)
 
           Next
         Next
@@ -593,17 +592,17 @@ Namespace ScriptDB
 
           ' Update any parents
           If aryParentsToUpdate.ToArray.Length > 0 Then
-            sSqlParentColumns = "    -- Refresh parent records" & vbNewLine & _
+            sSqlParentColumns = "    /* Refresh parent records */" & vbNewLine & _
                   "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
                   String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
                   "     END"
-            sSqlParentColumnsDelete = "    -- Refresh parents records" & vbNewLine & _
+            sSqlParentColumnsDelete = "    /* Refresh parents records  */" & vbNewLine & _
                   String.Join(vbNewLine, aryParentsToUpdateDelete.ToArray())
 
           End If
 
           ' Validation
-          sValidation = String.Format("    -- Validation" & vbNewLine & _
+          sValidation = String.Format("    /* Validation */" & vbNewLine & _
             "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
             "    BEGIN" & vbNewLine & _
             "        DELETE FROM fusion.ValidationWarnings" & vbNewLine & _
@@ -630,7 +629,7 @@ Namespace ScriptDB
 
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
-            sSqlChildColumns = "    --Update children" & vbNewLine & _
+            sSqlChildColumns = "    /* Update children */" & vbNewLine & _
                "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
                String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
               "     END"
@@ -638,14 +637,14 @@ Namespace ScriptDB
 
           ' Update statement of all the non read only columns (free entry columns)
           If aryBaseTableColumns.ToArray.Length > 0 Then
-            sSqlWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+            sSqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
               "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]," & vbNewLine & _
               "        {1}" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
-            sSqlWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+            sSqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
               "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
@@ -656,14 +655,14 @@ Namespace ScriptDB
           ' Update the default values
           If aryColumnsWithDefaultValues.ToArray.Length > 0 Then
             'aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
-            sqlAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+            sqlAfterInsertColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
               "        SET [updflag] = base.[updflag]," & vbNewLine & _
               "        {1}" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryColumnsWithDefaultValues.ToArray()))
           Else
-            sqlAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+            sqlAfterInsertColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
               "        SET [updflag] = base.[updflag]" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
@@ -672,12 +671,12 @@ Namespace ScriptDB
 
           ' Instead of writeable columns
           If aryAllWriteableColumns.ToArray.Length > 0 Then
-            sQlInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+            sQlInsteadOfInsertColumns = String.Format("    /* Commit writeable columns */" & vbNewLine & _
                "    INSERT [dbo].[{0}] ({1})" & vbNewLine & _
                "        SELECT {2} FROM inserted base;" & vbNewLine & vbNewLine _
                , objTable.PhysicalName, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
           Else
-            sQlInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+            sQlInsteadOfInsertColumns = String.Format("    /* Commit writeable columns */" & vbNewLine & _
                "    INSERT [dbo].[{0}] ([updflag]) VALUES (1);" & vbNewLine & vbNewLine _
                , objTable.PhysicalName)
           End If
@@ -714,7 +713,7 @@ Namespace ScriptDB
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
             sSqlCalculatedColumns = String.Format("    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine & _
-              "    -- Update calculated columns" & vbNewLine & _
+              "    /* Update calculated columns */" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *" & vbNewLine & _
               "            FROM [dbo].[{0}]" & vbNewLine & _
@@ -727,7 +726,7 @@ Namespace ScriptDB
 
           ' Any calculations that require to be saved after the audit
           If aryPostAuditCalcs.ToArray.Length > 0 Then
-            sSqlPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
+            sSqlPostAuditCalcs = String.Format("    /* Update columns that rely on audit log data */" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *" & vbNewLine & _
               "        FROM [dbo].[{0}]" & vbNewLine & _
@@ -746,9 +745,7 @@ Namespace ScriptDB
           sSqlSpecialUpdate = sSqlSpecialUpdate & SpecialTrigger_Personnel(objTable)
           sSqlCategoryUpdate = SpecialTrigger_Categories(objTable)
 
-          ' -------------------
           ' INSTEAD OF INSERT
-          ' -------------------
           sSql = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
             "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
             "    SET @sValidation = '';" & vbNewLine & _
@@ -760,15 +757,13 @@ Namespace ScriptDB
             , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers)
 
-          ' -------------------
           ' AFTER INSERT
-          ' -------------------
           sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
             "    DECLARE @dChangeDate datetime," & vbNewLine & _
             "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
             "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
             sqlAfterInsertColumns & vbNewLine & _
-            "    -- Audit Trail" & vbNewLine & _
+            "    /* Audit Trail */" & vbNewLine & _
             "{2}" & vbNewLine & vbNewLine & _
             sSqlCodeAudit & _
             sValidation & vbNewLine & _
@@ -777,9 +772,7 @@ Namespace ScriptDB
             , objTable.Name, "", sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers)
 
-          ' -------------------
           ' INSTEAD OF UPDATE
-          ' -------------------
           sSql = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
             "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
             "    SET @sValidation = '';" & vbNewLine & _
@@ -795,9 +788,7 @@ Namespace ScriptDB
             , Consts.SysTriggerTransaction, objTable.Id)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSql, existingTriggers)
 
-          ' -------------------
           ' AFTER UPDATE
-          ' -------------------
           sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
             "    DECLARE @dChangeDate datetime," & vbNewLine & _
             "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
@@ -820,37 +811,33 @@ Namespace ScriptDB
             , sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlFusionCode) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers)
 
-          ' -------------------
           ' INSTEAD OF DELETE
-          ' -------------------
           sSql = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
             "    DECLARE @dChangeDate datetime;" & vbNewLine & _
             "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
             "    INSERT [dbo].[{3}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {4}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-           "    -- Purge if already deleted" & vbNewLine & _
+           "     /* Purge if already deleted */" & vbNewLine & _
             "    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine & _
             "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted WHERE [_deleted] = 1))" & vbNewLine & _
             "        DELETE FROM base;" & vbNewLine & vbNewLine & _
-            "    -- Mark records as deleted." & vbNewLine & _
+            "    /* Mark records as deleted. */" & vbNewLine & _
             "    WITH base AS (SELECT [_deleted], [_deleteddate] FROM dbo.[{0}]" & vbNewLine & _
             "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted))" & vbNewLine & _
             "        UPDATE base SET [_deleted] = 1, [_deleteddate] = GETDATE();" & vbNewLine & vbNewLine & _
-            "    -- Audit Trail" & vbNewLine & _
+            "    /* Audit Trail */" & vbNewLine & _
             "{1}" & vbNewLine & vbNewLine & _
             sSqlCodeAudit & _
             sSqlSpecialUpdate & _
             "{2}" & vbNewLine & vbNewLine & _
             "{5}" & vbNewLine & vbNewLine & _
             "{6}" & _
-            "    -- Clear the temporary trigger status table" & vbNewLine & _
+            "    /* Clear the temporary trigger status table */" & vbNewLine & _
             "    DELETE [dbo].[{3}] WHERE [spid] = @@spid AND [tablefromid] = {4};" & vbNewLine & vbNewLine _
             , objTable.PhysicalName, sSqlCodeAuditDelete, sSqlParentColumnsDelete _
             , Consts.SysTriggerTransaction, objTable.Id, objTable.SysMgrDeleteTrigger, sSqlCategoryUpdate)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers)
 
-          ' -------------------
           ' AFTER DELETE
-          ' -------------------
           DropTrigger(objTable, TriggerType.AfterDelete, existingTriggers)
 
         Next
@@ -900,7 +887,7 @@ Namespace ScriptDB
 
         If existingTrigger IsNot Nothing Then
           sSql = String.Format("DROP TRIGGER {0}", sTriggerName)
-          CommitDb.ScriptStatement(sSql, True)
+          CommitDb.ScriptStatement(sSql, True, False)
         End If
 
       Catch ex As Exception
@@ -959,7 +946,6 @@ Namespace ScriptDB
         sSql = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
           "    {3}" & vbNewLine & "AS" & vbNewLine & _
           "BEGIN" & vbNewLine & _
-          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount                integer," & vbNewLine & _
           "            @localID               integer," & vbNewLine & _
@@ -975,10 +961,8 @@ Namespace ScriptDB
           "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine & _
           "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
-          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
-          , sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode] _
-          , If(Options.DevelopmentMode, "", "--"))
+          , sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode])
 
         Dim existingTrigger As ScriptedMetadata = Nothing
         existingTriggers.TryGetValue(sTriggerName, existingTrigger)
@@ -988,17 +972,17 @@ Namespace ScriptDB
         Else
           If existingTrigger Is Nothing Then
             'create trigger
-            CommitDb.ScriptStatement(sSql, True)
+            CommitDb.ScriptStatement(sSql, True, False)
           Else
             'update trigger
             sSql = sSql.Replace("CREATE TRIGGER", "ALTER TRIGGER")
-            CommitDb.ScriptStatement(sSql, True)
+            CommitDb.ScriptStatement(sSql, True, False)
           End If
 
           'wether creating or altering we need to set the trigger alter
           If triggerType = triggerType.AfterDelete Or triggerType = triggerType.AfterUpdate Or triggerType = triggerType.AfterInsert Then
             sSql = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'", [role], sTriggerName, sTriggerFireType)
-            CommitDb.ScriptStatement(sSql, False)
+            CommitDb.ScriptStatement(sSql, False, False)
           End If
         End If
 
@@ -1220,13 +1204,13 @@ Namespace ScriptDB
 
             If Not IsSameWithoutComments(func.Code, existingFunctions(func.BaseName).Definition) Then
               'function needs to be updated
-              CommitDb.ScriptStatement(func.SqlAlter, False)
+              CommitDb.ScriptStatement(func.SqlAlter, False, True)
             End If
 
           Else
 
             'create the function it doesnt exist
-            CommitDb.ScriptStatement(func.SqlCreate, False)
+            CommitDb.ScriptStatement(func.SqlCreate, False, True)
 
           End If
           existingFunctions.Remove(func.BaseName)
@@ -1234,7 +1218,7 @@ Namespace ScriptDB
 
         'Drop from the database function no longer needed
         For Each func In existingFunctions.Values
-          CommitDb.ScriptStatement(SqlDropUdf("dbo", func.Name), False)
+          CommitDb.ScriptStatement(SqlDropUdf("dbo", func.Name), False, True)
         Next
 
       Catch ex As Exception
@@ -1283,7 +1267,7 @@ Namespace ScriptDB
             sSql = String.Format("IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'{1}')" & _
                   "DROP INDEX [{1}] ON [dbo].[{0}]" _
                   , sObjectName, objIndex.Name)
-            CommitDb.ScriptStatement(sSql, True)
+            CommitDb.ScriptStatement(sSql, True, False)
 
             ' Generate index contents
             aryColumns = New ArrayList
@@ -1330,7 +1314,7 @@ Namespace ScriptDB
                 , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
 
             If objIndex.Enabled And bCreateIndex Then
-              CommitDb.ScriptStatement(sSql, False)
+              CommitDb.ScriptStatement(sSql, False, False)
             End If
 
           Next
@@ -1351,7 +1335,7 @@ Namespace ScriptDB
 
       If table Is ModuleSetup.Setting("MODULE_CATEGORY", "Param_CategoryTable").Table Then
 
-        sSql = vbTab & "-- Remove this category from reports and utilities." & vbNewLine & _
+        sSql = vbTab & "/* Remove this category from reports and utilities. */" & vbNewLine & _
           vbTab & "DELETE cats" & vbNewLine & _
           vbTab & vbTab & "FROM dbo.tbsys_objectcategories cats, deleted" & vbNewLine & _
           vbTab & vbTab & "WHERE cats.CategoryID = deleted.ID;" & vbNewLine & vbNewLine
@@ -1368,7 +1352,7 @@ Namespace ScriptDB
       Const sFetchNext As String = vbNullString
       Const sExecFusion As String = vbNullString
 
-      Return String.Format("    -- Message Bus Integration" & vbNewLine & _
+      Return String.Format("    /* Message Bus Integration */" & vbNewLine & _
           vbTab & "DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] {1} FROM inserted;	" & vbNewLine & _
           vbTab & "OPEN MessageCursor;" & vbNewLine & _
           vbTab & "FETCH NEXT FROM MessageCursor INTO @localID {2};" & vbNewLine & _
@@ -1410,7 +1394,7 @@ Namespace ScriptDB
         Next
 
         If aryTriggerCode.Count > 0 Then
-          sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "-- Bank Holiday update" & vbNewLine & _
+          sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "/* Bank Holiday update */" & vbNewLine & _
                 "DECLARE @dates TABLE ([{0}] datetime);" & vbNewLine &
                 "INSERT @dates" & vbNewLine &
                "    SELECT [{0}] FROM inserted" & vbNewLine &
@@ -1433,7 +1417,7 @@ Namespace ScriptDB
         objAbsenceTable = ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableAbsence").Table
         If Not objAbsenceTable Is Nothing Then
 
-          sCode = String.Format("    -- Statutory Sick Pay" & vbNewLine _
+          sCode = String.Format("    /* Statutory Sick Pay */" & vbNewLine _
                   & "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {0})" & vbNewLine _
                   & "        AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('spsys_absencessp') AND sysstat & 0xf = 4)" & vbNewLine _
                   & "    BEGIN" & vbNewLine _
@@ -1479,7 +1463,7 @@ Namespace ScriptDB
 
         If Not (objColumn1 Is Nothing Or objColumn2 Is Nothing Or objColumn3 Is Nothing Or objColumn4 Is Nothing Or objPersonnelTable Is Nothing) Then
 
-          sCode = vbNewLine & String.Format("    -- SSP bypass" & vbNewLine _
+          sCode = vbNewLine & String.Format("    /* SSP bypass */" & vbNewLine _
                   & "    IF EXISTS (SELECT ID_{0} FROM inserted INNER JOIN dbo.[ASRSysSSPRunning] ON [PersonnelRecordID] = ID_{0} AND sspRunning = 1)" & vbNewLine _
                   & "    BEGIN" & vbNewLine _
                   & "        UPDATE dbo.[{1}]" & vbNewLine _
@@ -1548,7 +1532,7 @@ Namespace ScriptDB
           lngPayrollPeriod = CLng(ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value)
           lngPayrollPeriodType = CType(CInt(ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), AccordPurgeType)
 
-          sSqlOvernightJob = sSqlOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
+          sSqlOvernightJob = sSqlOvernightJob & vbNewLine & "    /* Archive payroll */" & vbNewLine
 
           Dim datePart As String = Nothing
 
@@ -1580,12 +1564,12 @@ Namespace ScriptDB
             "BEGIN" & vbNewLine & vbNewLine & _
             "    SET NOCOUNT ON;" & vbNewLine & _
             "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
-            "    -- Tables with date dependent calculations" & vbNewLine & _
+            "    /* Tables with date dependent calculations */" & vbNewLine & _
             sSqlOvernightJob & vbNewLine & _
             "END"
 
-        CommitDb.ScriptStatement(SqlDropProcedure("dbo", sObjectName), True)
-        bOk = CommitDb.ScriptStatement(sSqlOvernightJob, True)
+        CommitDb.ScriptStatement(SqlDropProcedure("dbo", sObjectName), True, False)
+        bOk = CommitDb.ScriptStatement(sSqlOvernightJob, True, False)
 
 
       Catch ex As Exception

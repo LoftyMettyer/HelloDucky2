@@ -51,7 +51,7 @@ Namespace ScriptDB
                     "END", sObjectName, objConversionTable.Name, objValueColumn.Name, objNameColumn.Name, objDecimalsColumn.Name _
                       , objNameColumn.DataTypeSyntax)
             Script.DropUdf("dbo", sObjectName)
-            bOk = CommitDb.ScriptStatement(sSql, True)
+            bOk = CommitDb.ScriptStatement(sSql, True, False)
           End If
 
         End If
@@ -69,7 +69,7 @@ Namespace ScriptDB
     Public Function GetFieldFromDatabases(functionDataType As ComponentValueTypes) As Boolean
 
       Dim bOk As Boolean
-      Dim sObjectName As String
+      Dim sObjectName As String = ""
       Dim sSql As String = vbNullString
       Dim sStatement As String
       Dim aryStatements As New ArrayList
@@ -205,7 +205,7 @@ Namespace ScriptDB
             , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()), sReturnType, sSafeReturnType)
 
         Script.DropUdf("dbo", sObjectName)
-        bOk = CommitDb.ScriptStatement(sSql, True)
+        bOk = CommitDb.ScriptStatement(sSql, True, False)
 
       Catch ex As Exception
         ErrorLog.Add(Section.Triggers, sObjectName, Severity.Error, ex.Message, sSql)

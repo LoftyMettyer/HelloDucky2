@@ -104,7 +104,7 @@ Namespace Connectivity
       _mConn.Close()
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean, ByVal autoFormat As Boolean) As Boolean Implements IConnection.ScriptStatement
 
       Dim objCommand As New SqlCommand
       Dim bOk As Boolean

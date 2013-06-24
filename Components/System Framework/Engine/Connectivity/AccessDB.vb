@@ -93,7 +93,7 @@ Namespace Connectivity
     Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean, ByVal autoFormat As Boolean) As Boolean Implements IConnection.ScriptStatement
       Return False
     End Function
 

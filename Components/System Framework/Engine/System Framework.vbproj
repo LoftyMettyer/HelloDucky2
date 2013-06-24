@@ -19,6 +19,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +67,9 @@
     <AssemblyOriginatorKeyFile>advanced.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NSQLFormatter">
+      <HintPath>..\packages\NSQLFormatter.1.0\lib\NSQLFormatter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -262,6 +267,7 @@
   <ItemGroup>
     <Content Include="Connectivity\Access DB Stored Procedures\spadmin_gettables.txt" />
     <Content Include="Connectivity\Stored Procedures\Get Metadata Stored Procedures.sql" />
+    <None Include="packages.config" />
     <None Include="Resources\Cancel48.png" />
     <None Include="Resources\Cancel256.png" />
     <None Include="Resources\mobsync.15.ico" />
@@ -271,6 +277,7 @@
     <Folder Include="Classes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
