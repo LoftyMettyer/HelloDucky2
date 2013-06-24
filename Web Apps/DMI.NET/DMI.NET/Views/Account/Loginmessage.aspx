@@ -8,7 +8,6 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 <script type="text/javascript">
-<!--
 	/* Go back to the previous page. */
 	function GoBack() {
         
@@ -58,7 +57,7 @@
             iEnd = start + len;
         return String(str).substring(start, iEnd);
 	}
--->
+
 </script>
 
 <div <%=session("BodyTag")%>>
@@ -97,8 +96,7 @@
         </tr>
     </table>
 
-<%--TODO--%>
-    <form action="main.asp" method="post" id="frmGotoMain" name="frmGotoMain">
+    <form action="main" method="post" id="frmGotoMain" name="frmGotoMain">
     </form>
 
     <input type="hidden" id="txtDesktopColour" name="txtDesktopColour" value="<%=session("DesktopColour")%>">
