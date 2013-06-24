@@ -222,23 +222,22 @@ Public Class Expression
 
       .BoilerPlate = String.Format("/* ------------------------------------------------------------------------------- */" & vbNewLine & _
             "/* Generated with the Advanced System Framework */" & vbNewLine & _
-            "/* Column      : {1}.{0} */" & vbNewLine & _
-            "/* Expression  : {2} */" & vbNewLine & _
-            "/* Description : {7} */" & vbNewLine & _
-            "/* Depends on  : {3} */" & vbNewLine & _
-            "/* Date        : {4} */" & vbNewLine & _
+            "/* Column       : {1}.{0} */" & vbNewLine & _
+            "/* Expression   : {2} */" & vbNewLine & _
+            "/* Description  : {5} */" & vbNewLine & _
+            "/* Dependencies : {3} */" & vbNewLine & _
+            "/* Date         : {4} */" & vbNewLine & _
             "/* ------------------------------------------------------------------------------- */" & vbNewLine _
             , AssociatedColumn.Name, AssociatedColumn.Table.Name, BaseExpression.Name _
-            , String.Join(", ", aryDependsOn.ToArray()), Now().ToString _
-            , Tuning.Rating, Tuning.ExpressionComplexity, Description)
+            , String.Join(", ", aryDependsOn.ToArray()), Now().ToString, Description)
       .Declarations = If(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine & vbTab & vbTab & vbTab, Declarations.ToArray()) & ";" & vbNewLine, "")
-      .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
+      .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()), "")
       .JoinCode = If(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
       .FromCode = If(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
-      .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
+      .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0};", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
       ' Code beautify
-      .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
+      '      .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
 
       Select Case ExpressionType
 
@@ -254,7 +253,7 @@ Public Class Expression
                          "    {5}" & vbNewLine & vbNewLine & _
                          "    SELECT @Result = {6}" & vbNewLine & _
                          "                 {7}{8}{9}" & vbNewLine & _
-                         "    RETURN {11};" & vbNewLine & _
+                         "    RETURN {11}" & vbNewLine & _
                          "END" _
                         , .Name, String.Join(", ", aryParameters1.ToArray()) _
                         , AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
@@ -273,7 +272,7 @@ Public Class Expression
                          "    {4}" & vbNewLine & vbNewLine & _
                          "    {5}" & vbNewLine & vbNewLine & _
                          "    SELECT @Result = {6}" & vbNewLine & _
-                         "                 {7}{8}{9}" & vbNewLine & _
+                         "                 {7}{8}{9};" & vbNewLine & _
                          "    RETURN {11};" & vbNewLine & _
                          "END" _
                         , .Name, String.Join(", ", aryParameters1.ToArray()) _
@@ -944,7 +943,7 @@ Public Class Expression
           sWrapped = String.Format("CASE WHEN ISNULL({0}, 0) > {1} OR ISNULL({0}, 0) < -{1} THEN 0 ELSE {0} END", statement, sSize)
 
         Case ColumnTypes.Date, ColumnTypes.Logic
-          sWrapped = statement
+          sWrapped = statement.Trim()
 
       End Select
 

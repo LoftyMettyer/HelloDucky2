@@ -107,6 +107,8 @@ Namespace Connectivity
         ' If a better copy comes along, or we write our own, replace it here.
         If autoFormat Then
           statement = NSQLFormatter.Formatter.Format(statement)
+          statement = statement.Replace(";", ";" & vbNewLine)
+          statement = statement.Replace("*/", "*/" & vbNewLine)
         End If
 
         NativeObject.Execute(statement)

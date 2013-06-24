@@ -46,7 +46,7 @@ Namespace Collections
         code.Code = String.Format("SELECT @part_{0} = {1} " & _
           "{2}" & vbNewLine & _
           "{3}" & vbNewLine & _
-          "{4}" & vbNewLine _
+          "{4};" & vbNewLine _
           , iPartNumber _
           , code.SelectCode, code.FromCode, code.JoinCode, code.WhereCode)
 

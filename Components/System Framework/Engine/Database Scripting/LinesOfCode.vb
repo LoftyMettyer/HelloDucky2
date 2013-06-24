@@ -12,7 +12,7 @@ Namespace ScriptDB
     Private _miNextInsertPoint As Integer
     Private _miLastInsertOperatorType As OperatorSubType
 
-    'Public Property CaseCount As Integer
+    Public Property CaseCount As Integer
 
     Public Property CodeLevel As Integer ' this is just for beautification - must be a better way!!!
 
