@@ -499,6 +499,16 @@ PRINT 'Step - Updating Workflow procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
+PRINT 'Step - Function Changes'
+
+	-- Parentheses
+	DELETE FROM tbstat_componentcode WHERE id IN (27) AND isoperator = 0
+
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount], [maketypesafe])
+		VALUES (27, '({0})', 0, 'Parentheses', 0, 0, 0, 1);
+
+
+
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */

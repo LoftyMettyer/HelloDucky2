@@ -114,7 +114,7 @@ Namespace Collections
 
         objDepends.Code = String.Format("SET @child_{0} = {2};" & vbNewLine & _
             "SELECT @child_{0} = ISNULL(base.[{1}],{2})" & vbNewLine & _
-            "    FROM [dbo].[{3}]({4}) base" & vbNewLine _
+            "    FROM [dbo].[{3}]({4}) base;" & vbNewLine _
             , iPartNumber.ToString, child.Column.Name, sTypesafeCode, objOrderFilter.Name _
             , String.Join(", ", aryParameters.ToArray()))
 

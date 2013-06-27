@@ -40,9 +40,6 @@ Public Class Component
 
   Private _mdecValueNumeric As Decimal = 0
 
-  Private _convertSubComponents As Boolean = True
-  Public Shared DepthCharge As Long
-
   Public Sub New()
     Components = New Collection(Of Component)
   End Sub
@@ -70,8 +67,6 @@ Public Class Component
 
   Public Sub ConvertToExpression()
 
-    DepthCharge = 0
-
     Dim objRecursiveComponents As New Collection(Of Base)
     objRecursiveComponents.Add(AssociatedColumn)
     ConvertToExpression(0, objRecursiveComponents)
@@ -83,7 +78,6 @@ Public Class Component
     Dim objExpression As Expression
     Dim objColumn As Column
     Dim objTable As Table
-    Dim bConvertsSubComponents As Boolean
     Dim lngThisLevel As Long
 
     Try
@@ -100,6 +94,7 @@ Public Class Component
         ReturnType = objExpression.ReturnType
         SubType = ComponentTypes.Expression
 
+
         If TableId <> BaseExpression.TableId Then
           ErrorLog.Add(Section.UdFs, "", Severity.Warning _
           , String.Format("Error creating calculation for {0}.{1} ", BaseExpression.BaseTable.Name, BaseExpression.AssociatedColumn.Name) _
@@ -108,31 +103,24 @@ Public Class Component
         End If
 
         For Each objComponent As Component In Components
-          DepthCharge = DepthCharge + 1
           objComponent.ConvertToExpression(recursionLevel, recursion)
-          DepthCharge = DepthCharge - 1
         Next
-
 
 
       ElseIf SubType = ComponentTypes.Expression Then
 
         For Each objComponent As Component In Components
-          DepthCharge = DepthCharge + 1
           objComponent.ConvertToExpression(recursionLevel, recursion)
-          DepthCharge = DepthCharge - 1
         Next
 
       ElseIf SubType = ComponentTypes.Function Then
 
         For Each objComponent As Component In Components
-          DepthCharge = DepthCharge + 1
           objComponent.ConvertToExpression(recursionLevel, recursion)
-          DepthCharge = DepthCharge - 1
         Next
 
         ' Pull a calculated column directly in as an expression
-      ElseIf SubType = ComponentTypes.Column And _convertSubComponents Then
+      ElseIf SubType = ComponentTypes.Column Then
 
         If Not IsColumnByReference Then
 
@@ -142,21 +130,17 @@ Public Class Component
           ' We've got ourselves into a recursive loop somehow
           If recursion.Contains(objColumn) Then
 
+
           ElseIf objColumn.IsCalculated Then
             If objColumn.Table Is BaseExpression.BaseTable Then
-
               objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcId).Clone
               Components = objExpression.Components
               ReturnType = objColumn.ComponentReturnType
-              bConvertsSubComponents = Not recursion.Contains(objColumn)
 
               recursion.AddIfNew(objColumn)
 
               For Each objComponent As Component In Components
-                objComponent._convertSubComponents = bConvertsSubComponents
-                DepthCharge = DepthCharge + 1
                 objComponent.ConvertToExpression(recursionLevel, recursion)
-                DepthCharge = DepthCharge - 1
               Next
 
               If lngThisLevel < recursionLevel Then
@@ -168,7 +152,9 @@ Public Class Component
             End If
 
           End If
+
         End If
+
 
       End If
 

@@ -119,7 +119,6 @@ Public Class TableOrderFilter
 
     End If
 
-
     ' Add foreign key
     If Not RowDetails.Relation Is Nothing Then
       aryParameters.Add(String.Format("@prm_ID_{0} integer", RowDetails.Relation.ParentId))
@@ -153,8 +152,8 @@ Public Class TableOrderFilter
     With Udf
       .Name = "[dbo].[" & Name & "]"
 
-      .Declarations = If(aryDeclarations.Count > 0, vbTab & "DECLARE " & String.Join("," & vbNewLine & vbTab & vbTab & vbTab, aryDeclarations.ToArray()) & ";" & vbNewLine, "")
-      .Prerequisites = If(aryStatements.Count > 0, vbTab & String.Join(vbNewLine, aryStatements.ToArray()) & vbNewLine & vbNewLine, "")
+      .Declarations = If(aryDeclarations.Count > 0, vbTab & "DECLARE " & String.Join(",", aryDeclarations.ToArray()) & ";", "")
+      .Prerequisites = If(aryStatements.Count > 0, vbTab & String.Join(vbNewLine, aryStatements.ToArray()) & ";", "")
       .WhereCode = If(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
       .OrderCode = If(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
 
@@ -172,7 +171,7 @@ Public Class TableOrderFilter
            "    {6})" & vbNewLine & _
            "INSERT @Results SELECT {3}" & vbNewLine & _
            "        FROM base" & vbNewLine & _
-           "        WHERE [rownumber] = {8}" & vbNewLine & _
+           "        WHERE [rownumber] = {8};" & vbNewLine & _
            "    RETURN;" & vbNewLine & _
            "END" _
           , Name, String.Join(", ", aryParameters.ToArray()) _

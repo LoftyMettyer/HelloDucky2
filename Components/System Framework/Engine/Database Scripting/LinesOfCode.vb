@@ -12,13 +12,11 @@ Namespace ScriptDB
     Private _miNextInsertPoint As Integer
     Private _miLastInsertOperatorType As OperatorSubType
 
-    Public Property CaseCount As Integer
-
     Public Property CodeLevel As Integer ' this is just for beautification - must be a better way!!!
 
     Public Property ReturnType As ComponentValueTypes
     Public Property CaseReturnType As CaseReturnType = CaseReturnType.Result
-    Private Property IsLogicBlock As Boolean
+    Private Property IsLogicBlock As Boolean = False
 
     Public Overloads Sub Add(ByVal lineOfCode As CodeElement)
 
@@ -57,12 +55,10 @@ Namespace ScriptDB
         Dim bComparisonSinceLastLogic As Boolean
 
         Dim bNeedsIsEqualTo As Boolean
-        Dim bNewLine As Boolean
 
         Statement = String.Empty
         For Each chunk In Items
           bNeedsIsEqualTo = False
-          bNewLine = False
 
           If ReturnType = ComponentValueTypes.Logic Then
 
@@ -75,7 +71,6 @@ Namespace ScriptDB
               ElseIf chunk.OperatorType = OperatorSubType.Logic Then
                 bComparisonSinceLastLogic = False
                 IsLogicBlock = True
-                bNewLine = True
 
               ElseIf chunk.OperatorType = OperatorSubType.Modifier Then
                 IsLogicBlock = True

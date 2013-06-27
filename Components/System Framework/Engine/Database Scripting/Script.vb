@@ -494,7 +494,7 @@ Namespace ScriptDB
               If objColumn.IsCalculated Then
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-                '                objColumn.Calculation.GenerateCodeForColumn()
+                '  objColumn.Calculation.GenerateCodeForColumn()
 
                 If objColumn.Calculation.IsValid Then
                   If objColumn.Calculation.IsComplex Then

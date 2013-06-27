@@ -28,7 +28,7 @@ Public Class Expression
   Private _linesOfCode As ScriptDB.LinesOfCode
   Private _calculatePostAudit As Boolean
 
-  Private Property CaseCount As Integer
+  Private Property CaseCount As Integer = 0
   Private Property RequiresRecordId As Boolean
   Private Property RequiresOvernight As Boolean
   Private Property ReferencesParent As Boolean
@@ -91,11 +91,12 @@ Public Class Expression
     BuildDependancies(Me)
 
     IsComplex = False
+    CaseCount = 0
 
     GenerateCode()
   End Sub
 
-  Public Overridable Sub GenerateCode()
+  Public Sub GenerateCode()
 
     Dim sOptions As String = String.Empty
     Dim aryDependsOn As New ArrayList
@@ -192,23 +193,6 @@ Public Class Expression
       End If
     Next
 
-    '' Add relationship code
-    'For Each table In Dependencies.Tables
-    '  'aryComments.Add(String.Format("Table : {0}", table.Name))
-    '  '        aryDependsOn.Add(String.Format("{0}", table.ID))
-
-    '  'If Relation.RelationshipType = RelationshipType.Parent Then
-    '  '  aryParameters2.Add(String.Format("base.[ID_{0}]", Relation.ParentID))
-    '  '  aryParameters3.Add(String.Format("@prm_ID_{0}", Relation.ParentID))
-    '  '  aryComments.Add(String.Format("Relation :{0}", Relation.Name))
-    '  'Else
-    '  aryParameters2.Add("base.[ID]")
-    '  aryParameters3.Add(String.Format("@prm_ID"))
-    '  'aryComments.Add(String.Format("Relation : {0}", Relation.Name))
-    '  'End If
-
-    'Next
-
     ' Calling statement
     With Udf
 
@@ -232,12 +216,9 @@ Public Class Expression
             , String.Join(", ", aryDependsOn.ToArray()), Now().ToString, Description)
       .Declarations = If(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine & vbTab & vbTab & vbTab, Declarations.ToArray()) & ";" & vbNewLine, "")
       .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()), "")
-      .JoinCode = If(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
-      .FromCode = If(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
-      .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0};", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
-
-      ' Code beautify
-      '      .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
+      .JoinCode = If(Joins.Count > 0, String.Format(" {0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
+      .FromCode = If(FromTables.Count > 0, String.Format(" {0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
+      .WhereCode = If(Wheres.Count > 0, String.Format(" WHERE {0};", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
       Select Case ExpressionType
 
@@ -252,7 +233,7 @@ Public Class Expression
                          "    {4}" & vbNewLine & vbNewLine & _
                          "    {5}" & vbNewLine & vbNewLine & _
                          "    SELECT @Result = {6}" & vbNewLine & _
-                         "                 {7}{8}{9}" & vbNewLine & _
+                         "                 {7} {8} {9}" & vbNewLine & _
                          "    RETURN {11}" & vbNewLine & _
                          "END" _
                         , .Name, String.Join(", ", aryParameters1.ToArray()) _
@@ -271,12 +252,12 @@ Public Class Expression
                          "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                          "    {4}" & vbNewLine & vbNewLine & _
                          "    {5}" & vbNewLine & vbNewLine & _
-                         "    SELECT @Result = {6}" & vbNewLine & _
-                         "                 {7}{8}{9};" & vbNewLine & _
+                         " SELECT @Result = {6} {7} {8} {9};" & vbNewLine & _
                          "    RETURN {11};" & vbNewLine & _
                          "END" _
                         , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                        , AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
+                        , AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim(), .FromCode.Trim() _
+                        , .JoinCode.Trim(), .WhereCode.Trim() _
                         , .BoilerPlate, ResultWrapper("@Result"))
 
           ' Wrapper for when this function is used as a filter in an expression
@@ -631,7 +612,6 @@ Public Class Expression
             Next
           End If
 
-
           lineOfCode.Code = String.Format("@child_{0}", iPartNumber)
           ReferencesChild = True
 
@@ -806,7 +786,7 @@ Public Class Expression
     End If
 
     ' Nesting is too deep - convert to part number
-    If CaseCount > 7 Then
+    If CaseCount > 8 Then
 
       objExpression = New Expression
       objExpression.CaseCount = 0
@@ -826,11 +806,6 @@ Public Class Expression
       ReferencesParent = ReferencesParent Or objExpression.ReferencesParent
       ReferencesChild = ReferencesChild Or objExpression.ReferencesChild
 
-      'If childCodeCluster.CaseCount > 0 Then
-      '  Debug.Print("hello1")
-      'End If
-
-
       ' If first part of an if... then... else process slightly differently
       If childCodeCluster.CaseReturnType = CaseReturnType.Condition Then
         lineOfCode.Code = String.Format("{0} = 1", Dependencies.Add(objExpression))
@@ -841,7 +816,6 @@ Public Class Expression
       IsComplex = True
 
     Else
-
       SQLCode_AddCodeLevel(component.Components, childCodeCluster)
       lineOfCode.Code = String.Format("({0})", childCodeCluster.Statement)
     End If
@@ -851,6 +825,7 @@ Public Class Expression
       objColumn = BaseTable.Columns.GetById(component.ColumnId)
       If objColumn.CalculateIfEmpty Then
         lineOfCode.Code = String.Format("ISNULL(NULLIF(@prm_{0},{2}),{1})", objColumn.Name, lineOfCode.Code, objColumn.SafeReturnType)
+        CaseCount = CaseCount + 1
       End If
     End If
 
