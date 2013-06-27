@@ -317,6 +317,9 @@
 </script>
 </head>
 <body class="ui-widget absolutefull">
+	
+	<div id="banner" class="header-banner" style="background-color: <%=Session("Config-banner-colour")%>"><%Html.RenderPartial("~/views/shared/_banner.ascx")%></div>
+	
 	<header>
 		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
 	</header>

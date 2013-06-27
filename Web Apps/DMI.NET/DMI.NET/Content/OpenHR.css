@@ -18,7 +18,7 @@ div.COAwallpapered
 	background-repeat: repeat-y;          
     margin: 0px;
     position: fixed;
-    top:0px;
+    top:44px;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -129,7 +129,7 @@ INPUT
 	padding: 3px;
     /*FONT-SIZE: 10pt;
     COLOR: black;
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/*/
+    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
 }
 
 textarea
@@ -297,7 +297,7 @@ input.textinformation
 
 SELECT
 {
-    /*/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
     FONT-SIZE: 10pt;
     COLOR: #333366;
 	background-color: #f6f5f3;
@@ -379,7 +379,7 @@ table.calendarcell
    /*background: white;*/
 	border-right-style: solid;
 	   position:absolute;
-	   top:126px;
+	   top:170px;
 	   bottom: 0px;
 	   left:0px;
 	   z-index: 99;
@@ -546,10 +546,10 @@ table.calendarcell
 
 header {
 	position: absolute;
-	top: 0;
+	top: 44px;
 	left: 0;
 	right: 0;
-	height: 126px;
+	/*height: 126px;*/
 }
 
 .FixedLinksLeft { float: left;}

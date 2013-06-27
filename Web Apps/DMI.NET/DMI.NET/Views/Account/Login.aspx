@@ -342,21 +342,6 @@
 <div style="scroll:auto" class="COAwallpapered ui-widget-content" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0" class="ui-widget">
 		
 <%	Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" height="44px" style="">
-  <tr> 
-    <td align=left> 
-		 <IMG SRC="<%= Url.Content("~/Content/images/COAInt_TopBar.png")%>" align=top width="138" height="44">
-    </td>
-    <td height="44px" width="100%" align=right> 
-			<IMG style="display: none;" src="<%= Url.Content("~/Content/images/coaint_banner.jpg")%>" align=top width="600" height="44">
-    </td>
-  </tr>
-  <tr height="10"> 
-	  <td>
-	  </td>
-  </tr>  
-</table>
 <table class="ui-dialog-titlebar ui-widget-header" width="100%" border="0" cellspacing="0" cellpadding="0" height="40">
 	<tr> 
 		<td>

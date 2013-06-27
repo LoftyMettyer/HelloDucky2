@@ -1,11 +1,12 @@
 ﻿Imports System.Web.Optimization
 Imports DMI.NET.App_Start
+Imports System.Drawing
 
 ' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 ' visit http://go.microsoft.com/?LinkId=9394802
 
 Public Class MvcApplication
-    Inherits System.Web.HttpApplication
+	Inherits HttpApplication
 
     Shared Sub RegisterGlobalFilters(ByVal filters As GlobalFilterCollection)
         filters.Add(New HandleErrorAttribute())
@@ -40,36 +41,23 @@ Public Class MvcApplication
 
 		'If the user isn't requesting the Login form, redirect them there.
 		'Dim sDefaultStartPage As String
-		Dim sRequestedPage As String
-		Dim sReferringPage As String
 		Dim sBrowserInfo As String
 		Dim iIEVersion As Integer
 
-        Session("version") = "5.1.20"
+		Session("version") = "5.1.20"
 		Session.Timeout = 20
 		Session("TimeoutSecs") = Session.Timeout * 60
 		Server.ScriptTimeout = 1000
 
 		' sDefaultStartPage = "login.asp"
 		' Session("DefaultStartPage") = sDefaultStartPage
-		sRequestedPage = Request.ServerVariables("SCRIPT_NAME")
 
-		sReferringPage = Request.ServerVariables("HTTP_REFERER")
 		Session("database") = Request.QueryString("database")
 		Session("server") = Request.QueryString("server")
 		Session("username") = Request.QueryString("username")
 		If Request.QueryString("username") = "" Then
 			Session("username") = Request.QueryString("user")
 		End If
-
-		If InStrRev(sReferringPage, "/") > 0 Then
-			sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-		End If
-
-		'If (UCase(sReferringPage) <> UCase("login.asp")) And _
-		' (StrComp(sRequestedPage, sDefaultStartPage, 1)) Then
-		'	Response.Redirect(sDefaultStartPage)
-		'End If
 
 		' Check what browser is being used.
 		sBrowserInfo = Request.ServerVariables("HTTP_USER_AGENT")
@@ -99,8 +87,51 @@ Public Class MvcApplication
 		'End If
 
 		' get the theme out the web config.
-		Session("ui-theme") = System.Configuration.ConfigurationManager.AppSettings("ui-theme")
+		Session("ui-theme") = ConfigurationManager.AppSettings("ui-theme")
 		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
+
+		Session("Config-banner-colour") = ConfigurationManager.AppSettings("ui-banner-colour")
+		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
+		
+		Session("Config-banner-justification") = ConfigurationManager.AppSettings("ui-banner-justification")
+		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
+
+		' Banner layout
+		' leftmost banner graphic
+		Dim customImageFileName As String = FindImageFileByName("customtopbar")
+
+		If customImageFileName.Length > 0 Then
+			Try
+				Dim newImage As Image = Image.FromFile(Server.MapPath("~/Content/images/" & customImageFileName))
+				Dim newImageWidth = newImage.Width
+				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
+				Session("Config-banner-graphic-left-width") = newImageWidth
+			Catch ex As Exception
+				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.jpg")
+				Session("Config-banner-graphic-left-width") = "138"
+			End Try
+		Else
+			Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.jpg")
+			Session("Config-banner-graphic-left-width") = "138"
+		End If
+
+		' rightmost banner graphic
+		customImageFileName = FindImageFileByName("customlogo")
+
+		If customImageFileName.Length > 0 Then
+			Try
+				Dim newImage As Image = Image.FromFile(Server.MapPath("~/Content/images/" & customImageFileName))
+				Dim newImageWidth = newImage.Width
+				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
+				Session("Config-banner-graphic-right-width") = newImageWidth
+			Catch ex As Exception
+				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_banner.jpg")
+				Session("Config-banner-graphic-right-width") = "600"
+			End Try
+		Else
+			Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_banner.jpg")
+			Session("Config-banner-graphic-right-width") = "600"
+		End If
 
 	End Sub
 
@@ -128,12 +159,35 @@ Public Class MvcApplication
 		Session("databaseConnection") = ""
 
 		conX.close()
-		conX = Nothing
 
 		' Clear up any temporary files from OLE functionality
 		Session("OLEObject") = Nothing
 		Session("OLEObject") = ""
 
 	End Sub
+
+	Private Function FindImageFileByName(ByVal psFileName As String) As String
+		' loop through the standard image types until we find a match...
+		Dim imageFileName As String = ""
+
+		Dim imageFileExtensions() As String = {"png", "jpg", "bmp", "gif"}
+		For Each fileExtension As String In imageFileExtensions
+			Try
+				Image.FromFile(Server.MapPath("~/Content/images/" & psFileName & "." & fileExtension))
+				imageFileName = psFileName & "." & fileExtension
+				Exit For
+			Catch ex As Exception
+				' try the next one
+			End Try
+		Next
+
+		If imageFileName.Length > 0 Then
+			Return imageFileName
+		Else
+			Return ""
+		End If
+
+	End Function
+
 
 End Class

@@ -1096,6 +1096,7 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_nav.ascx" />
     <Content Include="Views\Home\stdrpt_def_Absence.ascx" />
+    <Content Include="Views\Shared\_Banner.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

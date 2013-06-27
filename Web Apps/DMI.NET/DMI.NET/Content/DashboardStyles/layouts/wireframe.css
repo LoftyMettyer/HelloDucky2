@@ -11,7 +11,7 @@ body
 
 #fixedlinks {
 	position: absolute;
-	top: 0;left: 70px;right: 0;height: 126px;	
+	top: 0;left: 70px;right: 0;height: 95px;	
 }
 
 .FixedLinksLeft {
@@ -93,7 +93,7 @@ div.officetab li div.button .disabled {
 	position: fixed;
 	left: 200px;
 	right: 0px;
-	top: 126px;
+	top: 170px;
 	bottom: 50px;
 	overflow: auto;
 	margin: 10px 0px 0px 100px;
@@ -245,7 +245,7 @@ div.officetab li div.button .disabled {
 /* === Fixed Links === */
 
 #fixedlinksframe {
-	height: 100%;
+	height: 95px;
 }
 
 /*div.officebar { position: absolute;bottom: 0; }*/
