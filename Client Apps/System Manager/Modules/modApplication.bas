@@ -2162,7 +2162,7 @@ Public Sub AttemptReLogin()
     iRetryCount = iRetryCount + 1
     iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
       & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
-      & "If this happens on a regular basis please contact your system administrator it is unlikely that there are some underlying network issues." _
+      & "If this happens on a regular basis please contact your system administrator as it is likely that there are some underlying network issues." _
       & " Attempt #" & iRetryCount _
     , vbCritical + vbYesNo, App.Title)
     
