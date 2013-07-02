@@ -12,7 +12,7 @@ Public Class MainForm
 
         Dim objPhoenix As New SystemFramework.SysMgr
 
-    Dim sPath As String = "C:\Dev\Components\System Framework\Test Harness\"
+		Dim sPath As String = "C:\dev\abs\HR Pro\HR Pro Engine\"
 
         Dim objADO As New ADODB.Connection
         Dim objDAOEngine As New DAO.DBEngine
@@ -397,31 +397,38 @@ Public Class MainForm
 
   End Sub
 
+  Private Sub txtDatabase_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtDatabase.TextChanged
+
+  End Sub
+
   Private Sub Button3_Click(sender As System.Object, e As System.EventArgs) Handles Button3.Click
 
     Dim objPhoenix As New SystemFramework.SysMgr
 
-    Dim objError As SystemFramework.Structures.Error
+    Dim objError As SystemFramework.ErrorHandler.Error
 
     objPhoenix.Initialise()
 
-    objError = New SystemFramework.Structures.Error
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
     objError.Detail = "my detail"
-    objError.Severity = SystemFramework.Enums.Errors.Severity.Error
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Error
     objError.Message = "the error message"
     objPhoenix.ReturnErrorLog.Add(objError)
 
 
-    objError = New SystemFramework.Structures.Error
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
     objError.Detail = "my wanring detail"
-    objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
     objError.Message = "the warning message"
     objPhoenix.ReturnErrorLog.Add(objError)
 
 
-    objError = New SystemFramework.Structures.Error
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
     objError.Detail = "my wanring detail123234"
-    objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
     objError.Message = "the warning message"
     objPhoenix.ReturnErrorLog.Add(objError)
 

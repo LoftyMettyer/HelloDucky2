@@ -39,12 +39,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
-        "OwnerKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -281,6 +275,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate.JetDriver, Version=2.0.0.1001, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_37773F72CCD51999B144063F1EB19E4C"
+                    {
+                    "Name" = "8:NHibernate.JetDriver.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.JetDriver.dll"
             "TargetName" = "8:"
@@ -307,6 +306,11 @@
             "AssemblyAsmDisplayName" = "8:Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_38629FAA38078D5994A8F842956A994E"
+                    {
+                    "Name" = "8:Iesi.Collections.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Iesi.Collections.dll"
             "TargetName" = "8:"
@@ -322,26 +326,6 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
-            {
-            "SourcePath" = "8:SystemFramework.tlb"
-            "TargetName" = "8:SystemFramework.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
@@ -393,6 +377,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D0AB3A9CA6E7006453A0526673F982FA"
+                    {
+                    "Name" = "8:ConfOrm.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.dll"
             "TargetName" = "8:"
@@ -419,6 +408,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D19931ED9BACABDC0C2CCA70CC4CE45C"
+                    {
+                    "Name" = "8:ConfOrm.Shop.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.Shop.dll"
             "TargetName" = "8:"
@@ -445,6 +439,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate, Version=3.2.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D8E52271E12FA85C25743D54D0653011"
+                    {
+                    "Name" = "8:NHibernate.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.dll"
             "TargetName" = "8:"
@@ -471,6 +470,11 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_DA90F02B75ECE06B355602B5F88F737D"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -557,19 +561,19 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework v5.1"
-        "ProductCode" = "8:{DC4422DD-493C-4E5B-9AAF-D8D1AEEC70C5}"
-        "PackageCode" = "8:{691A42A8-77F0-4611-A38A-B483B1615DD9}"
+        "ProductCode" = "8:{5DE48C01-B012-46A4-94BF-2FBC1970A18F}"
+        "PackageCode" = "8:{D19918AC-9C8D-497D-8E45-E56D103FE277}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.1.16"
+        "ProductVersion" = "8:5.2.0"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:OpenHR Framework v5.1"
+        "Title" = "8:OpenHR Framework v5.2"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Advanced Business Software and Solutions Limited"
         "Keywords" = "8:"
