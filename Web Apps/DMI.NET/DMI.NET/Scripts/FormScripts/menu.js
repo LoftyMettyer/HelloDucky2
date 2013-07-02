@@ -4274,6 +4274,7 @@ function menu_loadFind(target) {
 
 	$.ajax({
 		url: "/dmi.net/home/find",
+		dataType: 'html',
 		type: "POST",
 		success: function (data) {
 			$("#workframe").html(data);

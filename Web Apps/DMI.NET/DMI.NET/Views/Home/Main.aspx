@@ -110,6 +110,7 @@
 			if (SelfServiceUserType == 'True') {
 				$.ajax({
 					url: 'linksMain',
+					dataType: 'html',
 					success: function (html) {
 						$("#workframe").html(html);
 					},
@@ -134,7 +135,8 @@
 
     function refreshPollFrame() {
         $.ajax({
-            url: "<%:Url.Action("poll", "home")%>",
+        	url: "<%:Url.Action("poll", "home")%>",
+        	dataType: 'html',
             type: "POST",
             success: function (html) {
                 $("#poll").html(html);

@@ -54,6 +54,7 @@
 
 			$.ajax({
 				url: url,
+				dataType: 'html',
 				type: "POST",
 				data: data,
 				async: false,
@@ -106,6 +107,7 @@
 			$.ajax({
 				url: url,
 				type: "POST",
+				dataType: 'html',
 				data: data,
 				async: asyncFlag,
 				success: function(html) {
@@ -198,7 +200,7 @@
 		},
 		convertSqlDateToLocale = function(z) {
 			var convertDate = Date.parseExact(z, "MM/dd/yyyy");
-			return convertDate.format(LocaleDateFormat());
+			return convertDate.format(OpenHR.LocaleDateFormat());
 		},
 		printerCount = function() {
 			//TODO
