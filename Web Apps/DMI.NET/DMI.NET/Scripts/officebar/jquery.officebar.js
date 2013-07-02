@@ -107,7 +107,6 @@
             .hide()
             .parent()
             .removeClass('current')
-						.removeClass('ui-tabs-active ui-state-active ui-state-hover')	        
       		;
 				}
 
@@ -118,7 +117,6 @@
           .end()
           .parent()
           .addClass('current')
-					.addClass('ui-tabs-active ui-state-active ui-state-hover')
           .get(0));
         
         var me = $(trigger);

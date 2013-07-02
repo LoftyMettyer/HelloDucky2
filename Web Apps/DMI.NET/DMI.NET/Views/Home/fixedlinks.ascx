@@ -17,14 +17,16 @@
 		//$("#toolbarHome").click();
 
 		$("#officebar .button").addClass("ui-corner-all");
-		
-		if (window.currentLayout == "winkit") {
+
+		if ((window.currentLayout == "winkit") || (window.currentLayout == "wireframe")) {
+			$('#officebar .button').addClass('ui-state-default');
+
 			$('#officebar .button').hover(
 				function() { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
 				function() { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
 			);
-		} else {
-			$("#officebar").removeClass("ui-widget-header ui-widget-content");
+		}
+		else {
 		}
 
 		setTimeout("wrapTileIcons();", 100);
@@ -59,7 +61,8 @@
 
 	}
 
-	$("#officebar").tabs();
+	//why was this here?...
+	//$("#officebar").tabs();
 
 </script><div class="RecDescPhoto"><%If DMI.NET.NullSafeString(Session("recdesc")).ToUpper.Contains("AVERY") Then%><img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="davery.jpg"}) %>"
 		alt="" />
@@ -74,7 +77,7 @@
 	<div class="FixedLinksLeft">
 		<div id="officebar" class="officebar ui-widget-header ui-widget-content">
 			<ul>
-				<li class="current ui-state-default ui-corner-top ui-state-active ui-state-hover"><a id="toolbarHome" href="#" rel="home">Home</a>
+				<li class="current ui-state-default"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>Fixed Links</span>
 							<div class="button"><a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service Intranet">

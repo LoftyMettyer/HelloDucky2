@@ -32,14 +32,10 @@ section {
     display: block;
 }
 
-
-header { height: 126px;}
-
 #frmLoginForm { height: 100%;}
 
 
 #workframeset { position: absolute;
-	top: 170px;
 	left: 350px;
 	right: 0;
 	bottom: 0;

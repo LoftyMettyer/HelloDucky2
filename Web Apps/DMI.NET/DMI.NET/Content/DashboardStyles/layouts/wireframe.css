@@ -2,6 +2,8 @@
       height: 100%;
       }
 
+header { height: 95px;}
+
 body 
 {	
 	height: 100%;
@@ -9,14 +11,24 @@ body
 	margin: 0px;
 }
 
+#workframeset {	
+	top: 139px;
+}
+
 #fixedlinks {
 	position: absolute;
 	top: 0;left: 70px;right: 0;height: 95px;	
 }
 
+.RecordDescription {
+	height: 43px;
+	border-style: none;
+}
+
 .FixedLinksLeft {
 	position: absolute;
 	width: 100%;
+	height: 52px;
 }
 
 
@@ -50,8 +62,8 @@ div.officetab li div.button .disabled {
 {
 	margin: 0px 0px 0px 0px;
    padding: 0px;
-   border-style: solid;
-   border-width: 2px;
+   /*border-style: solid;
+   border-width: 2px;*/
 }
                               
 .hypertextlinkseparatorframe ul {padding: 0px;}
@@ -75,7 +87,7 @@ div.officetab li div.button .disabled {
 {
 	line-height: 2;
 	text-decoration: none;
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	}
 
 .hypertextlinktext {
@@ -122,8 +134,8 @@ div.officetab li div.button .disabled {
 	margin: 0px 10px 10px 0px;
    list-style: none;
    padding: 0px;
-   border-style: solid;
-   border-width: 2px;                              
+   /*border-style: solid;
+   border-width: 2px;*/                              
 }
 
 .linkspagebuttonseparatorframe ul {padding: 0px; min-width: 300px;}
@@ -296,12 +308,12 @@ div.officetab div.panel > span { display: none;}
 
 
 .pageTitle {
-	color: white;
+	/*color: white;*/
 	margin: 30px;
 }
 
 .pageTitleIcon {
-	color: white;
+	/*color: white;*/
 	display: block;
 	float: left;
 	font-size: 24pt;
@@ -315,16 +327,20 @@ div.officetab div.panel > span { display: none;}
 	color: orange;
 }
 
-
-
-#officebar, #officebar li, #officebar ul {
-	background-color: rgb(43, 120, 228);
-	color: white;
-	border-style: none;
+#officebar {
+	padding-top: 6px;
 }
 
-#officebar a {
+#officebar .button {
+	margin-right: 5px;
+}
+
+#officebar, #officebar li, #officebar ul {
+	/*background-color: rgb(43, 120, 228);*/
+	background-color: transparent;
+	background-image: none;
 	color: white;
+	border-style: none;
 }
 
 /* Start by setting display:none to make this hidden.

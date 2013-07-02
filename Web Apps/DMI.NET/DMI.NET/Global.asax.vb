@@ -8,34 +8,34 @@ Imports System.Drawing
 Public Class MvcApplication
 	Inherits HttpApplication
 
-    Shared Sub RegisterGlobalFilters(ByVal filters As GlobalFilterCollection)
-        filters.Add(New HandleErrorAttribute())
-    End Sub
+	Shared Sub RegisterGlobalFilters(ByVal filters As GlobalFilterCollection)
+		filters.Add(New HandleErrorAttribute())
+	End Sub
 
-    Shared Sub RegisterRoutes(ByVal routes As RouteCollection)
-        routes.IgnoreRoute("{resource}.axd/{*pathInfo}")
+	Shared Sub RegisterRoutes(ByVal routes As RouteCollection)
+		routes.IgnoreRoute("{resource}.axd/{*pathInfo}")
 
-        ' MapRoute takes the following parameters, in order:
-        ' (1) Route name
-        ' (2) URL with parameters
-        ' (3) Parameter defaults
+		' MapRoute takes the following parameters, in order:
+		' (1) Route name
+		' (2) URL with parameters
+		' (3) Parameter defaults
 		routes.MapRoute( _
-		  "Default", _
-		  "{controller}/{action}/{id}", _
-		  New With {.controller = "Account", .action = "Login", .id = UrlParameter.Optional} _
+			"Default", _
+			"{controller}/{action}/{id}", _
+			New With {.controller = "Account", .action = "Login", .id = UrlParameter.Optional} _
 		)
 
-    End Sub
+	End Sub
 
-  Protected Sub Application_Start()
-    AreaRegistration.RegisterAllAreas()
+	Protected Sub Application_Start()
+		AreaRegistration.RegisterAllAreas()
 
-    RegisterGlobalFilters(GlobalFilters.Filters)
-    RegisterRoutes(RouteTable.Routes)
+		RegisterGlobalFilters(GlobalFilters.Filters)
+		RegisterRoutes(RouteTable.Routes)
 
-    BundleConfig.RegisterBundles(BundleTable.Bundles)
+		BundleConfig.RegisterBundles(BundleTable.Bundles)
 
-  End Sub
+	End Sub
 
 	Sub Session_Start()
 
@@ -92,7 +92,7 @@ Public Class MvcApplication
 
 		Session("Config-banner-colour") = ConfigurationManager.AppSettings("ui-banner-colour")
 		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
-		
+
 		Session("Config-banner-justification") = ConfigurationManager.AppSettings("ui-banner-justification")
 		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
 
@@ -172,15 +172,11 @@ Public Class MvcApplication
 
 		Dim imageFileExtensions() As String = {"png", "jpg", "bmp", "gif"}
 		For Each fileExtension As String In imageFileExtensions
-			Try
-				Image.FromFile(Server.MapPath("~/Content/images/" & psFileName & "." & fileExtension))
+			If System.IO.File.Exists(Server.MapPath("~/Content/images/" & psFileName & "." & fileExtension)) Then
 				imageFileName = psFileName & "." & fileExtension
 				Exit For
-			Catch ex As Exception
-				' try the next one
-			End Try
+			End If
 		Next
-
 		If imageFileName.Length > 0 Then
 			Return imageFileName
 		Else
@@ -188,6 +184,5 @@ Public Class MvcApplication
 		End If
 
 	End Function
-
 
 End Class

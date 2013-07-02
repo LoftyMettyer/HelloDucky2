@@ -120,6 +120,13 @@
 			} else {
 				$("#menuframe").fadeIn("slow");
 				$(".accordion").accordion("resize");
+				$('#officebar .button').addClass('ui-state-default');
+
+				$('#officebar .button').hover(
+					function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+					function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
+				);
+
 			}
 
 
@@ -162,7 +169,7 @@
 
 <div id="mainframeset">
 	
-	<div id="workframeset" style="display: block;">
+	<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
 		<div id="workframe" data-framesource="default.asp"><%Html.RenderPartial("~/views/home/default.ascx")%></div>
 		<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
 	</div>

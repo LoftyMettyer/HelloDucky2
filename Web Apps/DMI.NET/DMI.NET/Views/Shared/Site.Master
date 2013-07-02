@@ -191,11 +191,13 @@
 				switch (window.currentLayout) {
 									case "winkit":
 										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+										$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+										$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
                     	break;
 										case "wireframe":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
-											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/excite-bike/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/excite-bike/jquery-ui.min.css")%>" });
+											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" });
+											$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" });
 											break;
 										case "tiles":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
@@ -294,8 +296,11 @@
 					try {
 						$("#" + targetDiv).html(html);
 						var breadcrumb = $(".pageTitle").text();
-						if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
-							$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
+						if (action.toUpperCase() == 'LINKSMAIN') {
+							$(".RecordDescription a:nth-child(n+2)").remove();
+						}
+						else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
+							$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
 						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);
@@ -320,7 +325,7 @@
 	
 	<div id="banner" class="header-banner" style="background-color: <%=Session("Config-banner-colour")%>"><%Html.RenderPartial("~/views/shared/_banner.ascx")%></div>
 	
-	<header>
+	<header class="ui-widget ui-widget-header">
 		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
 	</header>
 	<asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>

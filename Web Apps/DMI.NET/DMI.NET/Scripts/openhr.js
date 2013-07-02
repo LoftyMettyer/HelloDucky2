@@ -198,7 +198,7 @@
 		},
 		convertSqlDateToLocale = function(z) {
 			var convertDate = Date.parseExact(z, "MM/dd/yyyy");
-			return convertDate.format(OpenHR.LocaleDateFormat());
+			return convertDate.format(LocaleDateFormat());
 		},
 		printerCount = function() {
 			//TODO

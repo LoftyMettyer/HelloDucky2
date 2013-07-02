@@ -2,6 +2,8 @@
       /*height: 100%;*/
       }
 
+header { height: 126px;}
+
 body 
 {	
 	height: 100%;
@@ -9,9 +11,20 @@ body
 	margin: 0px;	
 }
 
+#workframeset {	
+	top: 170px;
+}
 
 .RecDescPhoto, .RecordDescription {
 	display: none;
+}
+
+.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
+	color: white;
+	text-decoration: none;
+}
+.RecordDescription a:hover {
+	border-bottom: 2px solid orange;
 }
 
 #fixedlinks {
@@ -500,6 +513,13 @@ div.officetab li div.button {
   line-height: normal;
 	border: 1px solid transparent;
 	padding: 0 4px 5px 4px;
+	background-color: transparent;
+	background-image: none;
+}
+
+div.officetab li div.button:hover:not(.disabled) {
+	background-image: url("images/ui-bg_glass_85_dfeffc_1x400.png");
+	background-color: rgb(223, 239, 252);
 }
 
 div.officetab li div.list, div.officetab li div.textlist {

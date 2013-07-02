@@ -492,7 +492,7 @@ table.calendarcell
 {
 	/*width: 100%;*/
 	padding-left: 10px;
-	padding-bottom: 5px;
+	/*padding-bottom: 5px;*/
 	}
 	
 	.RecordDescription img 
@@ -511,13 +511,6 @@ table.calendarcell
 		/*font-weight: bold;*/
 	}
 
-	.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
-		color: white;
-		text-decoration: none;
-	}
-	.RecordDescription a:hover {
-		border-bottom: 2px solid orange;
-	}
 .RecDescPhoto i {text-align: center;}
 
 .RecDescPhoto 

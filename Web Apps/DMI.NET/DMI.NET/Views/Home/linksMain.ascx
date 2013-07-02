@@ -64,6 +64,26 @@
 				});
 			}
 
+
+			if (window.currentLayout == "wireframe") {
+				//set up the classes 
+				
+				$(".hypertextlinks").addClass("ui-accordion ui-widget ui-helper-reset");
+				$(".ButtonLinkColumn").addClass("ui-accordion ui-widget ui-helper-reset");
+				$(".wrapupcontainer").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-default ui-state-default ui-corner-top");
+				//$(".hypertextlinkcontent").addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active");
+				//menu style
+				//$(".hypertextlinkcontent>ul").addClass("ui-menu ui-widget ui-widget-content ui-corner-all");
+				$('.hypertextlinkcontent>ul').menu();
+				$('.hypertextlinkcontent>ul').removeClass('ui-corner-all').addClass('ui-corner-bottom');
+				$('.buttonlinkcontent>ul').menu();
+				$('.buttonlinkcontent>ul').removeClass('ui-corner-all').addClass('ui-corner-bottom');
+
+				$('.DashContent').addClass("ui-widget ui-widget-content");
+				//$('.RecordDescription').addClass('ui-widget ui-widget-content');
+			}
+
+
 			//Load Poll.asp, then reload every 30 seconds to keep
 			//session alive, and check for server messages.
 			loadPartialView("poll", "home"); // first time
@@ -160,7 +180,7 @@
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
 					<div class="wrapupcontainer"><div class="wrapuptext"><p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p></div></div>					
-					<div class="gridster">
+					<div class="gridster hypertextlinkcontent" >
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then%>
@@ -182,12 +202,8 @@
 
 							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1">
-								<p class="hypertextlinktileIcon">
-									<i class="<%=classIcon %>"></i>
-								</p>
-								<p>
-									<a href="#">
-										<%: navlink.Text %></a></p>
+								<a href="#"><%: navlink.Text %></a>
+								<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
 							</li>
 							<%iRowNum += 1%>
 							<%End If%>
@@ -249,7 +265,7 @@
 							<p class="linkspagebuttonseparator"><%: navlink.Text %></p>
 						</div>
 					</div>
-					<div class="gridster">
+					<div class="gridster buttonlinkcontent">
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)%>
@@ -266,19 +282,19 @@
 							<%Case 0		 ' Button Link	%>
 								<%If navlink.UtilityType = -1 Then	' screen view%>
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-table" ></i></p>
-										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-magic"></i></p>
-										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 
 								<%ElseIf navlink.UtilityType = 2 Then	 ' report/utility%>
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
-										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 
 								<%End If%>
@@ -289,11 +305,9 @@
 
 							<%Case 2		' Chart %>
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+									<a href="#"><%: navlink.Text %></a>
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-bar-chart"></i>
-									</p>
-									<p>
-										<a href="#"><%: navlink.Text %></a>
 									</p>
 									<div class="widgetplaceholder generaltheme">
 										<div><i class="icon-bar-chart"></i></div>

@@ -2,12 +2,15 @@
       height: 100%;
       }
 
+header { height: 126px;}
+
 .header-banner {
 	display: none;
 }
 
 body 
 {	
+	
 	height: 99%;
 	padding: 0px;
 	margin: 0px;
@@ -19,6 +22,7 @@ body
 }
 
 #workframeset {
+background-color: rgb(7, 55, 99);
 	top: 0!important;
 	left: 0!important;
 }
@@ -64,6 +68,12 @@ body
 .hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .dropdownlinkseparatorframe {float:left;}
 
 .linkspagebuttontext, .hypertextlinktext, .dropdownlinktext {border: none; color: Black;}
+
+	.linkspagebuttontext:hover, .hypertextlinktext:hover {
+		-moz-box-shadow: 0 0 10px orange!important; /* FF3.5+ */
+		-webkit-box-shadow: 0 0 10px orange!important; /* Saf3.0+, Chrome */
+		box-shadow: 0 0 10px orange!important; /* Opera 10.5, IE9, Chrome 10+ */
+	}
 
 .hypertextlinktext {
 	white-space: nowrap;
@@ -243,6 +253,14 @@ li {list-style: none;}
 
 .RecDescPhoto, .RecordDescription { display: none;}
 
+.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
+	color: white;
+	text-decoration: none;
+}
+.RecordDescription a:hover {
+	border-bottom: 2px solid orange;
+}
+
 .FixedLinksLeft, #fixedlinks {
 	position: fixed;	
 	bottom: 0;
@@ -348,6 +366,8 @@ div.officetab div.panel > span { display: none;}
 	color: white;
 	border-style: none;
 }
+
+#officebar a:hover { color: orange;}
 
 #officebar a {
 	color: white;
