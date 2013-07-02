@@ -515,7 +515,7 @@ ErrorTrap:
 
           'Loop through the views, and see if we have permission on these
           Do While (Not rsViews.EOF) And (Not fCanView)
-            If gcoTablePrivileges.Item(rsViews.Fields("ViewName")).AllowSelect Then
+            If gcoTablePrivileges.Item(rsViews.Fields("ViewName").Value).AllowSelect Then
               'We have a view we can use, let's get outta here
               fCanView = True
             End If
