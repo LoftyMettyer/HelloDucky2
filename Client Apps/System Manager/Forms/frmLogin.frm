@@ -376,6 +376,11 @@ Private Sub Form_Load()
   Dim sServerName As String
   Dim bUseWindowsAuthentication As Boolean
   
+  
+  gsApplicationPath = App.Path
+  
+  
+  
   ' Load the CodeJock Styles
   Call LoadSkin(Me, Me.SkinFramework1)
   
@@ -516,8 +521,6 @@ Public Sub Login()
   gsLogDirectory = Space(1024)
   Call GetTempPath(1024, gsLogDirectory)
   gsLogDirectory = Mid(gsLogDirectory, 1, Len(Trim(gsLogDirectory)) - 2)
-  
-  gsApplicationPath = App.Path
 
   glngSQLVersion = 0
   gbUseWindowsAuthentication = chkUseWindowsAuthentication.value
