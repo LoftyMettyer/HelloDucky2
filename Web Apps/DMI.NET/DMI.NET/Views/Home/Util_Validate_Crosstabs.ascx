@@ -2,7 +2,7 @@
 <%@Import namespace="DMI.NET" %>
 
 <script type=”text/javascript">
-	<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>
+<%--	<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>--%>
 </script>
 
 <div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id=bdyMain leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
@@ -31,9 +31,14 @@
 					<td width=20></td>
 			    <td align=center colspan=3> 
 						Please Wait...
-			    </td>
+					</td>
 					<td width=20></td>
 			  </tr>
+				<tr style="color: red">
+					<td align=center colspan=3> 
+						PS This bit not done yet so press cancel to continue without validating
+			    </td>
+				</tr>
 
 			  <tr id=trPleaseWait5 height=20> 
 					<td colspan=5></td>

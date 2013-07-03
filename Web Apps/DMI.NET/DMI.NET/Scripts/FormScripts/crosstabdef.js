@@ -1,9 +1,10 @@
 ﻿
 
-    function util_def_crosstabs_window_onload() {
+function util_def_crosstabs_window_onload() {
         var fOK;
         fOK = true;
         var frmUseful = document.getElementById("frmUseful");
+        var frmDefinition = document.getElementById("frmDefinition");
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
@@ -660,6 +661,36 @@ function changeBaseTable()
 
 }
 
+function AllHiddenAccessCrossTabs(pgrdAccess) {
+    var iLoop;
+    var varBookmark;
+
+    for (iLoop = 1; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+        varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+
+        if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+            if (pgrdAccess.Columns("Access").CellText(varBookmark) != AccessDescription("HD")) {
+                return (false);
+            }
+        }
+    }
+
+    return (true);
+}
+
+function AccessDescription(psCode) {
+    if (psCode == "RW") {
+        return "Read / Write";
+    }
+    if (psCode == "RO") {
+        return "Read Only";
+    }
+    if (psCode == "HD") {
+        return "Hidden";
+    }
+    return "Unknown";
+}
+
 function refreshTab1Controls()
 {
     var fIsForcedHidden;
@@ -676,7 +707,7 @@ function refreshTab1Controls()
         (frmSelectionAccess.calcsHiddenCount.value > 0));
     fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
     fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
-    fAllAlreadyHidden = AllHiddenAccess(frmDefinition.grdAccess);
+    fAllAlreadyHidden = AllHiddenAccessCrossTabs(frmDefinition.grdAccess);
 
     if (fIsForcedHidden == true) {
         if (fAllAlreadyHidden != true) {
@@ -784,7 +815,6 @@ function refreshTab2Controls()
     catch(e) {}
 }
 
-
 function formatClick(index)
 {
     var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
@@ -810,7 +840,6 @@ function formatClick(index)
     frmUseful.txtChanged.value = 1;
     refreshTab3Controls();
 }
-
 
 function refreshTab3Controls()
 {
@@ -1309,7 +1338,7 @@ function submitDefinition()
     sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
     frmValidate.validateHiddenGroups.value = sHiddenGroups;
 
-    sURL = "dialog" +
+    sURL = "Util_Validate_Crosstabs" +
         "?validateBaseFilter=" +  escape(frmValidate.validateBaseFilter.value) +
         "&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
         "&validateEmailGroup=" + escape(frmValidate.validateEmailGroup.value) +
@@ -1322,20 +1351,67 @@ function submitDefinition()
     openDialog(sURL, (screen.width)/2,(screen.height)/3,"no", "no");
 }
 
-function cancelClick()
-{
-    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-        (definitionChanged() == false)) {
-        //todo
-        //window.location.href="defsel";
-        return;
+function HiddenGroups(pgrdAccess) {
+    var iLoop;
+    var varBookmark;
+    var sHiddenGroups;
+
+    sHiddenGroups = "";
+
+    pgrdAccess.Update();
+    for (iLoop = 1; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+        varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+
+        if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+            if (pgrdAccess.Columns("Access").CellText(varBookmark) == AccessDescription("HD")) {
+                sHiddenGroups = sHiddenGroups + pgrdAccess.Columns("GroupName").CellText(varBookmark) + "	";
+            }
+        }
     }
 
-    answer = OpenHR.MessageBox("You have changed the current definition. Save changes ?",3,"Cross Tabs");
+    if (sHiddenGroups.length > 0) {
+        sHiddenGroups = "	" + sHiddenGroups;
+    }
+
+    return (sHiddenGroups);
+}
+
+//function cancelClick()
+//{
+//    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+//        (definitionChanged() == false)) {
+//        //todo
+//        //window.location.href="defsel";
+//        return;
+//    }
+
+//    answer = OpenHR.MessageBox("You have changed the current definition. Save changes ?",3,"Cross Tabs");
+//    if (answer == 7) {
+//        // No
+//        //todo
+//        //window.location.href="defsel";
+//        return (false);
+//    }
+//    if (answer == 6) {
+//        // Yes
+//        okClick();
+//    }
+//}
+
+
+function cancelClick() {
+    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+		(definitionChanged() == false)) {
+
+        menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+        return (false);
+    }
+
+    var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
     if (answer == 7) {
         // No
-        //todo
-        //window.location.href="defsel";
+        menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+
         return (false);
     }
     if (answer == 6) {
@@ -1344,10 +1420,13 @@ function cancelClick()
     }
 }
 
+
 function okClick()
 {
     //window.parent.frames("menuframe").disableMenu();
-    disableMenu();
+    //sableMenu();
+   menu_disableMenu();
+    
 	
     var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
     if ((sAttachmentName.indexOf("/") != -1) || 
@@ -1542,15 +1621,15 @@ function getTableName(piTableID)
     return sTableName;
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
-{
-    dlgwinprops = "center:yes;" +
-        "dialogHeight:" + pHeight + "px;" +
-        "dialogWidth:" + pWidth + "px;" +
-        "help:no;" +
-        "resizable:" + psResizable + ";" +
-        "scroll:" + psScroll + ";" +
-        "status:no;";
+function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+    var dlgwinprops = "center:yes;" +
+		"dialogHeight:" + pHeight + "px;" +
+		"dialogWidth:" + pWidth + "px;" +
+		"help:no;" +
+		"resizable:" + psResizable + ";" +
+		"scroll:" + psScroll + ";" +
+		"status:no;";
+    //calendarreport.js at lineCap 5114
     window.showModalDialog(pDestination, self, dlgwinprops);
 }
 
@@ -1696,6 +1775,19 @@ function validateTab3()
     }
 		
     return (true);
+}
+
+function AccessCode(psDescription) {
+    if (psDescription == "Read / Write") {
+        return "RW";
+    }
+    if (psDescription == "Read Only") {
+        return "RO";
+    }
+    if (psDescription == "Hidden") {
+        return "HD";
+    }
+    return "";
 }
 
 function populateSendForm()
@@ -2372,4 +2464,8 @@ function grdAccess_RowLoaded() {
         }
     }
 }
+
+
+
+
 

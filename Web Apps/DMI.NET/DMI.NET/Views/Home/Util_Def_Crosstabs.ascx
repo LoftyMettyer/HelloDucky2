@@ -501,16 +501,17 @@
                                                         <td width=10 nowrap valign=top>Description :</td>
                                                         <td width=5>&nbsp;</td>
                                                         <td width="40%" rowspan="3">
-                                                            <TEXTAREA id=txtDescription name=txtDescription class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap=VIRTUAL height="0" maxlength="255" 
-                                                                      onkeyup="changeTab1Control()" 
-                                                                      onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}" 
-                                                                      onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
-													</TEXTAREA>
+																													<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
+																														onkeyup="changeTab1Control()"
+																														onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
+																														onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
+																													</textarea>
                                                         </td>
                                                         <td width=20 nowrap>&nbsp;</td>
                                                         <td width=10 valign=top>Access :</td>
                                                         <td width=5>&nbsp;</td>
                                                         <td width="40%" rowspan="3" valign=top>
+	                                                        <%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>    
                                                         </td>
                                                         <td width=5>&nbsp;</td>
                                                     </tr>
