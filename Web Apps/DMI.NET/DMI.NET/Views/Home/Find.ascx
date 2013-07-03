@@ -528,8 +528,8 @@
 							                            ' Field is a date so format as such.
 							                            ' JPD20020903 Fault 2316
 							                            'Response.Write "	<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & convertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value) & """>" & vbcrlf
-							                            sAddString = sAddString & ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value.ToString()) & "	"
-							                            sAddTRString = ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value.ToString())
+														sAddString = sAddString & ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value) & "	"
+							                            sAddTRString = ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value)
 							                        ElseIf rstFindRecords.fields(iLoop).type = 131 Then
 							                            ' Field is a numeric so format as such.
 							                            If IsDBNull(rstFindRecords.Fields(iLoop).Value) Then

@@ -156,7 +156,8 @@
                 //jQuery Functionality:
                 if (fOK == true) {
                     //add datepicker functionality.
-                    $(".datepicker").datepicker();
+                	$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+	                
                     //add spinner functionality
                     $(".spinner").spinner();
                     $(".number").mask("999999");

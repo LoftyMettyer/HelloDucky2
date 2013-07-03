@@ -182,7 +182,7 @@
 		disableMenu = function() {
 			//TODO
 		},
-		locateDateFormat = function() {
+		localeDateFormat = function() {
 			//TODO
 			return "dd/MM/yyyy";
 		},
@@ -396,7 +396,7 @@
 		addActiveXHandler: addActiveXHandler,
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,
-		LocaleDateFormat: locateDateFormat,
+		LocaleDateFormat: localeDateFormat,
 		LocaleDateSeparator: localeDateSeparator,
 		LocaleDecimalSeparator: localeDecimalSeparator,
 		LocaleThousandSeparator: localeThousandSeparator,
