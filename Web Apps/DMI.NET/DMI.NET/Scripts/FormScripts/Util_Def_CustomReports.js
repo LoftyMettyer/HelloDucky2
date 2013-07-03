@@ -2028,7 +2028,7 @@
 
 		sUrl = "util_emailSelection" +
 			"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-		openDialog(sUrl, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+		openDialog(sUrl, (screen.width) / 3, (screen.height) / 3.5, "yes", "yes");
 	}
 
 	function selectRecordOption(psTable, psType) {
