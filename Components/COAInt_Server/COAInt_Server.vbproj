@@ -175,6 +175,7 @@
     <Compile Include="ExprValue.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\Extensions.vb" />
     <Compile Include="General.vb">
       <SubType>Code</SubType>
     </Compile>

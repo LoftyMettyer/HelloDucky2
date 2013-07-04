@@ -219,7 +219,7 @@ ErrorTrap:
     sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID" & " FROM ASRSysTables"
 
     rsTables = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-    GetAllTables = rsTables
+		Return rsTables
 
   End Function
 

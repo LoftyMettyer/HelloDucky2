@@ -193,11 +193,11 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-  Public WriteOnly Property Connection() As Object
-    Set(ByVal value As Object)
-      gADOCon = value
-    End Set
-  End Property
+	Public WriteOnly Property Connection() As ADODB.Connection
+		Set(ByVal value As ADODB.Connection)
+			gADOCon = value
+		End Set
+	End Property
 
   Public WriteOnly Property ClientDateFormat() As String
     Set(ByVal value As String)

@@ -4,52 +4,20 @@ Public Class Menu
 
   Private mclsData As clsDataAccess
 
-  Public WriteOnly Property Connection() As Object
-    Set(ByVal Value As Object)
+	Public WriteOnly Property Connection() As ADODB.Connection
+		Set(ByVal Value As ADODB.Connection)
 
-      ' Connection object passed in from the asp page
-      Dim sGroupName As String
-      Dim sSQL As String
-      Dim rsUser As ADODB.Recordset
-      Dim datData As clsDataAccess
+			gADOCon = Value
 
-      ' JDM - Create connection object differently if we are in development mode (i.e. debug mode)
-      If ASRDEVELOPMENT Then
-        gADOCon = New ADODB.Connection
-        'UPGRADE_WARNING: Couldn't resolve default property of object vConnection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        gADOCon.Open(Value)
-        CreateASRDev_SysProtects(gADOCon)
-      Else
-        gADOCon = Value
-      End If
+			'UPGRADE_NOTE: Object gcoTablePrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			gcoTablePrivileges = Nothing
+			'UPGRADE_NOTE: Object gcolColumnPrivilegesCollection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			gcolColumnPrivilegesCollection = Nothing
 
-      '  Set datData = New clsDataAccess
-      '  sSQL = "exec sp_helpuser '" & gsUsername & "'"
-      '  Set rsUser = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-      '  If rsUser!GroupName = "db_owner" Then
-      '    rsUser.MoveNext
-      '  End If
-      '  sGroupName = rsUser!GroupName
-      '  rsUser.Close
-      '  Set rsUser = Nothing
-      '  Set datData = Nothing
+			SetupTablesCollection()
 
-      '  If sGroupName <> gsUserGroup Then
-      'JPD 20031006 Yes, do drop the tables & columns collections as we want to be sure that
-      'the current users settings are read. HDA encountered a problem where they weren't.
-      ' JPD20030313 Do not drop the tables & columns collections as they can be reused.
-      'UPGRADE_NOTE: Object gcoTablePrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      gcoTablePrivileges = Nothing
-      'UPGRADE_NOTE: Object gcolColumnPrivilegesCollection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      gcolColumnPrivilegesCollection = Nothing
-      '  End If
-
-      '  gsUserGroup = sGroupName
-
-      SetupTablesCollection()
-
-    End Set
-  End Property
+		End Set
+	End Property
 
   Public WriteOnly Property Username() As String
     Set(ByVal value As String)
@@ -108,8 +76,7 @@ Public Class Menu
 
 TidyUpAndExit:
     'UPGRADE_WARNING: Couldn't resolve default property of object GetHistoryScreens. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    GetHistoryScreens = VB6.CopyArray(avTableInfo)
-    Exit Function
+		Return VB6.CopyArray(avTableInfo)
 
 ErrorTrap:
 
@@ -288,7 +255,7 @@ ErrorTrap:
     'UPGRADE_NOTE: Object rsTables may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsTables = Nothing
     'UPGRADE_WARNING: Couldn't resolve default property of object GetPrimaryTableMenu. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    GetPrimaryTableMenu = VB6.CopyArray(avTableInfo)
+		Return VB6.CopyArray(avTableInfo)
 
 TidyUpAndExit:
     Exit Function
@@ -366,7 +333,7 @@ ErrorTrap:
     rsScreens = Nothing
 
     'UPGRADE_WARNING: Couldn't resolve default property of object GetPrimaryTableSubMenu. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    GetPrimaryTableSubMenu = VB6.CopyArray(avScreenInfo)
+    Return VB6.CopyArray(avScreenInfo)
 
   End Function
 
@@ -382,33 +349,26 @@ ErrorTrap:
     Dim avTableInfo(,) As Object
     Dim iNextIndex As Short
 
-    ReDim avTableInfo(3, 0)
+    sSQL = String.Format("SELECT ASRSysTables.tableID, ASRSysTables.tableName, ASRSysScreens.screenID, v.HideFromMenu AS [result]" & _
+      " FROM ASRSysTables" & _
+      " INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID" & _
+      " INNER JOIN ASRSysViewMenuPermissions v ON v.TableName = ASRSysTables.tablename AND v.groupName = '{0}'" & _
+      " WHERE ASRSysTables.tableType = {1}" & _
+      " AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null)" & _
+      " OR (ASRSysScreens.quickEntry = 0))" & _
+      " ORDER BY ASRSysTables.tableName DESC", gsUserGroup, Trim(Str(TableTypes.tabLookup)))
+    rsTableScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+
+    ReDim avTableInfo(3, rsTableScreens.RecordCount)
     ' Index 1 = table ID
     ' Index 2 = table name
     ' Index 3 = table screen ID
 
-    sSQL = "SELECT ASRSysTables.tableID, ASRSysTables.tableName, ASRSysScreens.screenID" & " FROM ASRSysTables" & " INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID" & " WHERE ASRSysTables.tableType = " & Trim(Str(Declarations.TableTypes.tabLookup)) & " AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0))" & " AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0))" & " ORDER BY ASRSysTables.tableName DESC"
-
-    rsTableScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
-
+    iNextIndex = 0
     Do While Not rsTableScreens.EOF
-      'Fault 11847 - The sysusers table will not always contain the 'HR Pro' group id in the
-      ' gid column i.e. it could contain ASRSysGroup, Public etc. therefore the sysusers table
-      ' can not be joined to the ASRSysViewPermissions table on the group name.
-      '    sSQL = "SELECT COUNT(*) AS [result]" & _
-      ''      " FROM ASRSysViewMenuPermissions" & _
-      ''      " INNER JOIN sysusers b ON ASRSysViewMenuPermissions.groupName = b.name" & _
-      ''      " INNER JOIN sysusers a on b.uid = a.gid" & _
-      ''      "   AND a.name = current_user" & _
-      ''      " WHERE ASRSysViewMenuPermissions.tableName = '" & rsTableScreens!TableName & "'" & _
-      ''      "   AND ASRSysViewMenuPermissions.hideFromMenu = 1"
-      sSQL = "SELECT COUNT(*) AS [result]" & " FROM ASRSysViewMenuPermissions" & " WHERE ASRSysViewMenuPermissions.tableName = '" & rsTableScreens.Fields("TableName").Value & "'" & "   AND ASRSysViewMenuPermissions.groupName = '" & gsUserGroup & "'" & "   AND ASRSysViewMenuPermissions.hideFromMenu = 1"
-
-      rsPermissions = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
-
-      If rsPermissions.Fields("Result").Value = 0 Then
-        iNextIndex = UBound(avTableInfo, 2) + 1
-        ReDim Preserve avTableInfo(3, iNextIndex)
+      If rsTableScreens.Fields("Result").Value = 0 Then
+        iNextIndex = iNextIndex + 1
+        '    ReDim Preserve avTableInfo(3, iNextIndex)
 
         'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         avTableInfo(1, iNextIndex) = rsTableScreens.Fields("TableID").Value
@@ -418,26 +378,22 @@ ErrorTrap:
         avTableInfo(3, iNextIndex) = rsTableScreens.Fields("ScreenID").Value
       End If
 
-      rsPermissions.Close()
-      'UPGRADE_NOTE: Object rsPermissions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      rsPermissions = Nothing
-
       rsTableScreens.MoveNext()
     Loop
 
-    'UPGRADE_NOTE: Object rsTableScreens may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      'UPGRADE_NOTE: Object rsTableScreens may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsTableScreens = Nothing
 
 TidyUpAndExit:
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object GetTableScreens. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      'UPGRADE_WARNING: Couldn't resolve default property of object GetTableScreens. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     GetTableScreens = VB6.CopyArray(avTableInfo)
     Exit Function
 
 ErrorTrap:
-    'Open "c:\temp\test.txt" For Append As #99
-    'Print #99, "GetTableScreens  " & sSQL
-    'Close #99
+      'Open "c:\temp\test.txt" For Append As #99
+      'Print #99, "GetTableScreens  " & sSQL
+      'Close #99
 
   End Function
 
@@ -513,9 +469,14 @@ ErrorTrap:
           ' No select permissions, can we use a view instead ???
           rsViews = GetQuickEntryViews(.Fields("TableID").Value)
 
+          Dim objTableView As CTablePrivilege
+
           'Loop through the views, and see if we have permission on these
           Do While (Not rsViews.EOF) And (Not fCanView)
-            If gcoTablePrivileges.Item(rsViews.Fields("ViewName").Value).AllowSelect Then
+
+            objTableView = gcoTablePrivileges.Item(rsViews.Fields("ViewName").Value)
+
+            If objTableView.AllowSelect Then
               'We have a view we can use, let's get outta here
               fCanView = True
             End If

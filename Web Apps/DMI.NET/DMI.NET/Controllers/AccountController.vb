@@ -739,10 +739,7 @@ Namespace Controllers
 			Dim sTempPath As String, sBGImage As String = "", intBGPos As Short = 2, strRepeat As String, strBGPos As String
 
 			Dim objUtilities = New Global.HR.Intranet.Server.Utilities
-
-      'objUtilities.Connection = Session("databaseConnection")
-
-      CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
+			objUtilities.Connection = Session("databaseConnection")
 
 
 			sTempPath = Server.MapPath("~/pictures")

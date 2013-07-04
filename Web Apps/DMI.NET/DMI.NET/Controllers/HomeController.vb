@@ -671,8 +671,7 @@ Namespace Controllers
 
 				'NPG20081401 Fault 12868
 				objUser = New HR.Intranet.Server.clsSettings
-
-				CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
+				objUser.Connection = Session("databaseConnection")
 
 				Const DEADLOCK_ERRORNUMBER = -2147467259
 				Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
@@ -3042,7 +3041,7 @@ Namespace Controllers
 
 			' Pass required info to the DLL
 			objExpression.Username = Session("username")
-			CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+			objExpression.Connection = Session("databaseConnection")
 
 			If Request.Form("txtSend_type") = 11 Then
 				iExprType = 11

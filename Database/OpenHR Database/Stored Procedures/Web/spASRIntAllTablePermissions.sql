@@ -4,8 +4,8 @@ CREATE PROCEDURE [dbo].[spASRIntAllTablePermissions]
 )
 AS
 BEGIN
-;
-	SET NOCOUNT ON
+
+	SET NOCOUNT ON;
 
 	-- Cached view of the objects 
 	DECLARE @SysObjects TABLE([ID]		integer PRIMARY KEY CLUSTERED,
@@ -33,14 +33,13 @@ BEGIN
 		INNER JOIN @SysObjects o ON p.ID = o.ID
 		WHERE ((p.ProtectType <> 206 AND p.Action <> 193) OR (p.Action = 193 AND p.ProtectType IN (204,205)));
 
-
-	SELECT o.name, p.action
+	SELECT o.name, p.action, CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, 3) ELSE 0 END AS tableID
 	FROM @SysProtects p
 	INNER JOIN @SysObjects o ON p.id = o.id
 	WHERE p.protectType <> 206
 		AND p.action <> 193
 	UNION
-	SELECT o.name, 193
+	SELECT o.name, 193, CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, 3) ELSE 0 END AS tableID
 	FROM syscolumns
 	INNER JOIN @SysProtects p ON (syscolumns.id = p.id
 		AND p.action = 193 

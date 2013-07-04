@@ -10,10 +10,10 @@ Public Class Ole
     End Set
   End Property
 
-  Public WriteOnly Property Connection() As Object
-    Set(ByVal value As Object)
-    End Set
-  End Property
+	Public WriteOnly Property Connection() As ADODB.Connection
+		Set(ByVal value As ADODB.Connection)
+		End Set
+	End Property
 
   Public Sub CleanupOLEFiles()
   End Sub

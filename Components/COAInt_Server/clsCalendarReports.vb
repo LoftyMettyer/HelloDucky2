@@ -576,28 +576,18 @@ Public Class CalendarReport
     End Set
   End Property
 
-  Public WriteOnly Property Connection() As Object
-    Set(ByVal Value As Object)
+	Public WriteOnly Property Connection() As ADODB.Connection
+		Set(ByVal Value As ADODB.Connection)
 
-      ' JDM - Create connection object differently if we are in development mode (i.e. debug mode)
-      If ASRDEVELOPMENT Then
-        gADOCon = New ADODB.Connection
-        'UPGRADE_WARNING: Couldn't resolve default property of object vConnection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        gADOCon.Open(Value)
+			gADOCon = Value
+			SetupTablesCollection()
 
-        CreateASRDev_SysProtects(gADOCon)
-      Else
-        gADOCon = Value
-      End If
+			ReadPersonnelParameters()
 
-      SetupTablesCollection()
+			ReadBankHolidayParameters()
 
-      ReadPersonnelParameters()
-
-      ReadBankHolidayParameters()
-
-    End Set
-  End Property
+		End Set
+	End Property
 
   Public ReadOnly Property BaseIDColumn() As String
     Get
