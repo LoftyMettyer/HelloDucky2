@@ -3,85 +3,6 @@
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
-
-<%--<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
-<!--
-    frmUseful.txtChanged.value = 1;
-    if((grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) &&
-        (grdAccess.Columns("Access").Text.length > 0)) {
-        ForceAccess(grdAccess, AccessCode(grdAccess.Columns("Access").Text));
-    
-        grdAccess.MoveFirst();
-        grdAccess.Col = 1;
-    }
-    refreshTab1Controls();
--->
-</script>
-
-<script FOR=grdAccess EVENT=GotFocus LANGUAGE=JavaScript>
-<!--
-    grdAccess.Col = 1
--->
-</script>
-
-<script FORM=grdAccess EVENT=RowColChange(LastRow, LastCol) LANGUAGE=JavaScript>
-<!--
-    var fViewing;
-    var fIsNotOwner;
-    var varBkmk;
-		
-    fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-    fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
-
-    if (grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) {
-        grdAccess.Columns("Access").Text = "";
-    }
-
-    varBkmk = grdAccess.SelBookmarks(0);
-
-    if ((fIsNotOwner == true) ||
-        (fViewing == true) ||
-        (frmSelectionAccess.forcedHidden.value == "Y") ||
-        (grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
-        grdAccess.Columns("Access").Style = 0; // 0 = Edit
-    }
-    else {
-        grdAccess.Columns("Access").Style = 3; // 3 = Combo box
-        grdAccess.Columns("Access").RemoveAll();
-        grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
-        grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
-        grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
-    }
-
-    grdAccess.Col = 1;
-</script>
-
-<script FOR=grdAccess EVENT=RowLoaded(Bookmark) LANGUAGE=JavaScript>
-    var fViewing;
-    var fIsNotOwner;
-		
-    fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-    fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
-
-    if ((fIsNotOwner == true) ||
-        (fViewing == true) ||
-        (frmSelectionAccess.forcedHidden.value == "Y")) {
-        grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
-        grdAccess.Columns("Access").CellStyleSet("ReadOnly");
-        grdAccess.ForeColor = "-2147483631";
-    }  
-    else {
-        if (grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
-            grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
-            grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
-            grdAccess.ForeColor = "0";
-        }
-        else {
-            grdAccess.ForeColor = "0";
-        }
-    }
-</script>--%>
-
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
 	id="dialog"
 	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
@@ -505,7 +426,7 @@
 																onkeyup="changeTab1Control()"
 																onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
 																onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
-																													</textarea>
+															</textarea>
 														</td>
 														<td width="20" nowrap>&nbsp;</td>
 														<td width="10" valign="top">Access :</td>
@@ -562,7 +483,7 @@
 																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 																		All
-                                                                    </label>
+																		</label>
 																	</td>
 																	<td>&nbsp;</td>
 																</tr>
@@ -587,7 +508,7 @@
 																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 																		Picklist
-                                                                    </label>
+																		</label>
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
@@ -623,7 +544,7 @@
 																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 																		Filter
-                                                                    </label>
+																		</label>
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
@@ -646,7 +567,6 @@
 													<tr>
 														<td colspan="9" height="5">&nbsp;</td>
 													</tr>
-
 
 													<tr>
 														<td colspan="5">&nbsp;</td>
@@ -713,7 +633,10 @@
 														</td>
 														<td width="15">&nbsp;</td>
 														<td>
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtHorStart" name="txtHorStart" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtHorStart" name="txtHorStart" 
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -726,7 +649,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtHorStop" name="txtHorStop" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtHorStop"
+																name="txtHorStop" 
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -739,7 +666,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtHorStep" name="txtHorStep" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtHorStep" 
+																name="txtHorStep" 
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -768,7 +699,11 @@
 														</td>
 														<td width="15">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtVerStart" name="txtVerStart" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtVerStart" 
+																name="txtVerStart" 
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -781,7 +716,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtVerStop" name="txtVerStop" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtVerStop"
+																name="txtVerStop"
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -794,7 +733,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtVerStep" name="txtVerStep" width="100%" height="100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtVerStep" 
+																name="txtVerStep" 
+																style="height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -824,7 +767,7 @@
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
 																codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtPgbStart" name="txtPgbStart"
-																style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%"
+																style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -839,7 +782,7 @@
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
 																codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtPgbStop"
-																name="txtPgbStop" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%"
+																name="txtPgbStop" style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -852,7 +795,10 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtPgbStep" name="txtPgbStep" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
+																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+																id="txtPgbStep" name="txtPgbStep" 
+																style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -905,7 +851,8 @@
 															<td width="80" nowrap valign="top">Type :</td>
 															<td width="5">&nbsp;</td>
 															<td width="100%" valign="top">
-																<select id="cboIntType" name="cboIntType" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
+																<select id="cboIntType" name="cboIntType" 
+																	style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																	onchange="changeTab2Control()">
 																	<option value="1">Average</option>
 																	<option value="0" selected>Count</option>
