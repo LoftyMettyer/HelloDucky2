@@ -67,6 +67,7 @@ AS
 		, start_date		AS [effectiveFrom]
 		, end_date			AS [effectiveTo]
 		, [_deleted]		AS [isRecordInactive]
+		, cost_centre		AS [costcenter]
 FROM dbo.tbuser_Salary;
 GO
 
@@ -269,7 +270,8 @@ CREATE PROCEDURE fusion.pMessageUpdate_StaffContractChange(@ID int OUTPUT
 	, @contractedHoursPerWeek	numeric(10,2)
 	, @maximumHoursPerWeek		numeric(10,2)
 	, @effectiveFrom			datetime
-	, @effectiveTo				datetime)
+	, @effectiveTo				datetime
+	, @costcenter				nvarchar(MAX))
 AS
 BEGIN
 
@@ -287,9 +289,9 @@ BEGIN
 	IF ISNULL(@ID,0) = 0
 	BEGIN
 		INSERT fusion.staffContract(ID_Staff, contractName, department, primarySite, contractedHoursPerWeek
-					, maximumHoursPerWeek, effectiveFrom, effectiveTo)
+					, maximumHoursPerWeek, effectiveFrom, effectiveTo, costcenter)
 			VALUES (@staffID, @contractName, @department, @primarySite, @contractedHoursPerWeek
-					, @maximumHoursPerWeek, @effectiveFrom, @effectiveTo);
+					, @maximumHoursPerWeek, @effectiveFrom, @effectiveTo, @costcenter);
 
 		SELECT @ID = MAX(ID_Contract) FROM fusion.staffContract;
 

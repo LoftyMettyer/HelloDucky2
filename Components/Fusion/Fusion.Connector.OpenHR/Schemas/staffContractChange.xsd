@@ -110,6 +110,16 @@
 												<xs:documentation>Effective to date is up to the end of the day specified</xs:documentation>
 											</xs:annotation>
 										</xs:element>
+										<xs:element name="costCenter" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Cost center code for management unit</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>

@@ -67,6 +67,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 cmd.Parameters.Add(new SqlParameter("@maximumHoursPerWeek", contract.data.staffContract.maximumHoursPerWeek ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@effectiveFrom", contract.data.staffContract.effectiveFrom ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@effectiveTo", contract.data.staffContract.effectiveTo ?? (object)DBNull.Value));
+								cmd.Parameters.Add(new SqlParameter("@costCenter", contract.data.staffContract.costCenter ?? (object)DBNull.Value));
 
                 try
                 {
