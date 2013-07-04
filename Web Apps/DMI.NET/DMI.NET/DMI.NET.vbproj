@@ -976,6 +976,7 @@
     <Content Include="Views\Home\CheckForUsage.ascx" />
     <Content Include="Views\Home\configuration.ascx" />
     <Content Include="Views\Home\confirmok.ascx" />
+    <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />
     <Content Include="Views\Home\default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
