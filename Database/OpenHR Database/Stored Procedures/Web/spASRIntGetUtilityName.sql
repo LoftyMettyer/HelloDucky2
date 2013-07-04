@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetUtilityName] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE 
 		@sTableName			sysname,
 		@sIDColumnName		sysname,

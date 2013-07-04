@@ -10,6 +10,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidatePicklist2] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iCount					integer,
 			@sCurrentUser			sysname,
 			@iHiddenCheckResult 	integer,

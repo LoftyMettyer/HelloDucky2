@@ -26,6 +26,9 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCalendarReport]
 	)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	
 			@iTimestamp				integer,
 			@sAccess				varchar(MAX),

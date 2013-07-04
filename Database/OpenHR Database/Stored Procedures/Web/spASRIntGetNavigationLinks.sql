@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetNavigationLinks]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@iCount					integer,
 		@iViewID				integer,
@@ -29,8 +32,6 @@ BEGIN
 		@sViewName				sysname,
 		@iLinkType 				integer,			/* 0 = Hypertext, 1 = Button, 2 = Dropdown List */
 		@fFindPage				bit
-
-	SET NOCOUNT ON;
 
 	/* See if the current user can run the defined Reports/Utilties. */
 	IF UPPER(LTRIM(RTRIM(SYSTEM_USER)))  = 'SA'

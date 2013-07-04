@@ -30,6 +30,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidateExpression] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iTimestamp			integer,
 			@sOwner				varchar(255),
 			@sTemp				varchar(MAX),

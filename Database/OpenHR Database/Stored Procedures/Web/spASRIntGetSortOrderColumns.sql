@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetSortOrderColumns] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @sSQL nvarchar(MAX);
 	
 	/* Clean the input string parameters. */

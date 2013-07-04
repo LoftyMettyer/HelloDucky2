@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[spASRIntCheckSPExists]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@sSPName	varchar(MAX),
 			@iCount		integer;
 

@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntDefProperties] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the details with which to populate the intranet defproperties page. */
 	SELECT convert(varchar, CreatedDate,103) + ' ' + convert(varchar, CreatedDate,108) as 'CreatedDate', 
 		convert(varchar, SavedDate,103) + ' ' + convert(varchar, SavedDate,108) as 'SavedDate', 

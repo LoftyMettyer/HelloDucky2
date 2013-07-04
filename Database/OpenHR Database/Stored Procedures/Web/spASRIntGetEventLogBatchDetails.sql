@@ -4,6 +4,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
 	
 	DECLARE @sExecString		nvarchar(MAX),
 			@sSelectString 		varchar(MAX),

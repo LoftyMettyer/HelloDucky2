@@ -39,6 +39,7 @@
 	[OutputCoverSheet] [bit] NULL,
 	[OverrideFilterID] [int] NULL,
 	[OutputRetainPivotOrChart] [bit] NULL,
+	[OutputRetainCharts] [bit] NULL
  CONSTRAINT [PK_ASRSysBatchJobName_ID] PRIMARY KEY NONCLUSTERED 
 (
 	[ID] ASC

@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetEmpIDFromTBID] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iUserGroupID		integer,
 		@sUserGroupName			sysname,
 		@iChildViewID 			integer,

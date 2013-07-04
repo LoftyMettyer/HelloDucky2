@@ -9,6 +9,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetLinkInfo]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT 
 		@piScreenID = ASRSysSSIntranetLinks.screenID,
 		@piTableID = ASRSysScreens.tableID,

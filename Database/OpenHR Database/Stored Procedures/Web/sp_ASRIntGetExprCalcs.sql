@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetExprCalcs] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the calc definitions. */
 	DECLARE @sUserName	sysname;
 

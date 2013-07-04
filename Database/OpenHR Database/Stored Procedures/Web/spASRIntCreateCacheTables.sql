@@ -5,6 +5,8 @@ CREATE PROCEDURE spASRIntCreateCacheTables
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @iUserGroupID	integer,
 		@sUserGroupName		sysname,
 		@sActualLoginName	varchar(250)

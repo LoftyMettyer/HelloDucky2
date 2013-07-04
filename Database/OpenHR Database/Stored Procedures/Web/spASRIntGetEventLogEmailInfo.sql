@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@sSelectString 	nvarchar(MAX),
 			@sOrderSQL		varchar(MAX);
 	

@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntAuditAccess]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iUserGroupID	integer,
 		@sUserGroupName		sysname,
 		@sActualUserName	sysname;

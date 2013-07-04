@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetTimestamp] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @sTempExecString	nvarchar(MAX),
 		@sTempParamDefinition	nvarchar(500);
 

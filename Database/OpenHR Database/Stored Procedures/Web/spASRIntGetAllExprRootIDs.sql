@@ -5,6 +5,9 @@ CREATE PROCEDURE spASRIntGetAllExprRootIDs
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a cursor of the expressions that use the given expression. */
 	DECLARE	@iComponentID	integer,
 					@iRootExprID	integer,

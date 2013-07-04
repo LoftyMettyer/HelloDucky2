@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetExprTables] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of tab-delimted table definitions ;
 	<table id><tab><table name><tab><table type><tab><related to base table ?><tab><is child of base table ?> */
 	SELECT 

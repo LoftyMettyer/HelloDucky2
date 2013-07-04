@@ -5,6 +5,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetActualLogin]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @iFound	integer;
 
 	/* Is this user logged in under a specific login, or as part of a Windows Group login */

@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntMakeUtilitiesHidden] (
 	@piUtilityID		integer
 ) AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Hide any utilities the use the given picklist/filter/calculation. */
 	DECLARE
 		@sCurrentUser		sysname,

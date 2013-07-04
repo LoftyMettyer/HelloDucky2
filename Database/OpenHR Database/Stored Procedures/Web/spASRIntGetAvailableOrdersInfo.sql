@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetAvailableOrdersInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT orderid AS [ID], 
 		name, 
 		'' AS username, 

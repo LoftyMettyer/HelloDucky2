@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetLinks]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iCount			integer,
 		@iUtilType			integer, 
 		@iUtilID			integer,
@@ -27,7 +30,6 @@ BEGIN
 		@iLinkType			integer,		-- 0 = Hypertext, 1 = Button, 2 = Dropdown List
 		@iElement_Type		integer;		-- 2 = chart
 	
-	SET NOCOUNT ON;
 	IF @plngViewID < 1 
 	BEGIN 
 		SET @plngViewID = -1;

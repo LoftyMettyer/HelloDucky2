@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@iComponentID		integer,
 		@iExpressionID		integer,

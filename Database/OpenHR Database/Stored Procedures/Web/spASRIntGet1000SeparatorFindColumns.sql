@@ -8,6 +8,8 @@ CREATE PROCEDURE [dbo].[spASRIntGet1000SeparatorFindColumns] (
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @iUserGroupID	integer,
 		@sUserGroupName		sysname,
 		@iTableType			integer,

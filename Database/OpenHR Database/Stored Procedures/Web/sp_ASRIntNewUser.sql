@@ -2,6 +2,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntNewUser] (
 	@psUserName	sysname)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Create an user associated with the given SQL login. 
 	Put the new user in the current user's role.
 	Return 1 if everything is done okay, else 0. */

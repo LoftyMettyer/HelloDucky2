@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@sDefaultAccess	varchar(2),
 		@sAccessTable	sysname,

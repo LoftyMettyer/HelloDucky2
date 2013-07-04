@@ -39,6 +39,8 @@ BEGIN
 		@sCourseSource			sysname,
 		@sActualUserName		sysname;
 
+	SET NOCOUNT ON;
+
 	/* Clean the input string parameters. */
 	IF len(@psStatus) > 0 SET @psStatus = replace(@psStatus, '''', '''''');
 

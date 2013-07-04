@@ -8,6 +8,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetSystemSetting] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@iCount					integer,
 		@sTempExecString		nvarchar(MAX),

@@ -6,9 +6,11 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetRecordEditInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the OUTPUT variable @psTitle with the Record Edit window title for the given screen/view . 
-	    The title is in the format <screen name>[ - <view name> view)]
-	*/
+	    The title is in the format <screen name>[ - <view name> view)]	*/
 	DECLARE @sScreenName	sysname,
 			@sViewName		sysname;
 	

@@ -51,6 +51,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetCrossTabDefinition] (
 
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iCount			integer,
 			@sTempHidden	varchar(MAX),
 			@sAccess 		varchar(MAX);

@@ -3,6 +3,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetEmailGroupAddresses]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	select Fixed from ASRSysEmailAddress
 	where EmailID in
 	(select EmailDefID from ASRSysEmailGroupItems where EmailGroupID = @EmailGroupID)

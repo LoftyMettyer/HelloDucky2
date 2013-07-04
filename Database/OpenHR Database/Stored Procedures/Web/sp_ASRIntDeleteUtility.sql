@@ -5,6 +5,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntDeleteUtility] (
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @iExprID	integer;
 
 	IF @piUtilType = 0

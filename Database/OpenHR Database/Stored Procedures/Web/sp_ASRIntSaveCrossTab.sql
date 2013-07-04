@@ -44,6 +44,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntSaveCrossTab] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE 
 			@fIsNew		bit,
 			@sTemp		varchar(MAX),

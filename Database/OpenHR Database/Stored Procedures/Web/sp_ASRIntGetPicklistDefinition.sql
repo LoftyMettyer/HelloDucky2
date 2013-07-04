@@ -10,6 +10,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetPicklistDefinition] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iCount		integer,
 		@sCurrentUser	sysname,
 		@fSysSecMgr		bit;

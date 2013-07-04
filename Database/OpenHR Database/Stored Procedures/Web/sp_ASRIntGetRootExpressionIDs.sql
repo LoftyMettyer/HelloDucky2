@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs] (
 	@piRootExprID	varchar(255)	OUTPUT)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iParentCompID	integer;
 
 	SELECT @iParentCompID = ASRSysExpressions.parentComponentID, 

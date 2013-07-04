@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetFindWindowInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the OUTPUT variable @psTitle with the find window title for the given screen. 	*/
 	DECLARE @sScreenName	sysname,
 			@sViewName		sysname;

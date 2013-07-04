@@ -4,7 +4,11 @@ CREATE PROCEDURE [dbo].[spASRIntGetViewName] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT @psViewName = viewName
-	FROM [dbo].[ASRSysViews]
-	WHERE viewID = @piViewID;
+		FROM [dbo].[ASRSysViews]
+		WHERE viewID = @piViewID;
+
 END

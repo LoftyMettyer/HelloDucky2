@@ -11,6 +11,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidateBulkBookings] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* This stored procedure run the pre-requisite, overbooking, overlapped booking and unavailability checks
 	on booking being made. 
 	Return codes are :

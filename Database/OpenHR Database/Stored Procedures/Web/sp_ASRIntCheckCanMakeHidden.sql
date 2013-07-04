@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntCheckCanMakeHidden] (
 	@psMessage			varchar(MAX)	OUTPUT
 ) AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Check if the given picklist/filter/calculation can be made hidden.
 	Return 	0 if there's no problem
 		1 if it is used only in utilities owned by the current user - we then need to prompt the user if they want to make these utilities hidden too.

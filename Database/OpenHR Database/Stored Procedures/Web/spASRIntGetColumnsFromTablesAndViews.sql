@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[spASRIntGetColumnsFromTablesAndViews]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT c.columnName, c.columnType, c.dataType
 		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
 		, t.tableName AS tableViewName

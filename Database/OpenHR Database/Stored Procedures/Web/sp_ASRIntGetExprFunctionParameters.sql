@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[sp_ASRIntGetExprFunctionParameters] 
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the runtiume function partameter definitions. */
 	DECLARE @fEnableUDFFunctions	bit,
 			@sSQLVersion int

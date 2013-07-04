@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetDefaultOrder] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT @piOrderID = defaultOrderID
 	FROM ASRSysTables
 	WHERE tableID = @piTableID;

@@ -5,10 +5,13 @@ CREATE PROCEDURE spASRIntGetPageTitle (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT @psPageTitle = PageTitle
 	FROM ASRSysSSIViews
-	WHERE (TableID = @piTableID) 
-		AND  (ViewID = @piViewID)
+	WHERE (TableID = @piTableID) AND  (ViewID = @piViewID);
+
 END
 GO
 

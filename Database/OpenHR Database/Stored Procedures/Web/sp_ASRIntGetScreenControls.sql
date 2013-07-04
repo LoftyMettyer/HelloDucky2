@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetScreenControls] (
 	@plngViewId	int)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the controls in the given screen. */
 	SELECT tableID, columnID, controlType,
 		topCoord, leftCoord, height, width,	caption

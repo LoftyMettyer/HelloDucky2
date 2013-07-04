@@ -3,6 +3,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetCalendarReportColumns] (
 	)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
 	
 	/* Return a recordset of the columns for the given table IDs.*/
 	DECLARE @sUserName sysname;

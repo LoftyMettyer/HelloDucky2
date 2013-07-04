@@ -5,8 +5,10 @@ CREATE PROCEDURE spASRIntGetWorkflowParameters
 AS
 BEGIN
 	
+	SET NOCOUNT ON;
+
 	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'WORKFLOW', @pfWFEnabled OUTPUT
+	EXEC [dbo].[spASRIntActivateModule] 'WORKFLOW', @pfWFEnabled OUTPUT;
 
 END
 

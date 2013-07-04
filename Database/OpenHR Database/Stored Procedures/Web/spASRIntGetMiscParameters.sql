@@ -7,7 +7,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetMiscParameters]
 	)
 AS
 BEGIN
-	
+
+	SET NOCOUNT ON;
+		
 	SET @psParam1 = 1;
 	SET @psParam2 = 3;
 	SET @psParam3 = 300;

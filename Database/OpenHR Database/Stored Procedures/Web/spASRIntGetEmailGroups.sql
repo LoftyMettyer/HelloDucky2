@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[spASRIntGetEmailGroups]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT emailGroupID, 
 		name, 
 		userName, 

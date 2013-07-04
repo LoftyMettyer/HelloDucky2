@@ -5,6 +5,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetEventLogDetails] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
 	
 	DECLARE @sSelectString			varchar(MAX),
 			@sFromString			varchar(255),

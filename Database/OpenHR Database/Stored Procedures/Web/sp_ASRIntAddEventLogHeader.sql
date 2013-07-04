@@ -10,7 +10,10 @@ CREATE PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
 )
 AS
 BEGIN
-  INSERT INTO [dbo].[ASRSysEventLog] (
+
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[ASRSysEventLog] (
 		[DateTime],	[Type],	[Name], [Status], [Username],
 		[Mode], [BatchName], [SuccessCount], [FailCount], [BatchRunID], [BatchJobID])
 	VALUES (GETDATE(), @piType, @psName, 0, @psUserName,

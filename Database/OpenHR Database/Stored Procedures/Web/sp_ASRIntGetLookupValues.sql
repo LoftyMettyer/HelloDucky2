@@ -4,6 +4,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetLookupValues] (
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the lookup values for the given lookup column. */
 	DECLARE	@sColumnName	sysname,
 			@sTableName		sysname,

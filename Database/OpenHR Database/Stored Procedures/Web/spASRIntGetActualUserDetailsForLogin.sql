@@ -7,6 +7,9 @@ CREATE Procedure spASRIntGetActualUserDetailsForLogin
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iFound		int
 
 	SELECT @iFound = COUNT(*) 

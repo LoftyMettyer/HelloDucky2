@@ -28,6 +28,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidateReport] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iTimestamp	integer,
 			@sAccess				varchar(MAX),
 			@sOwner					varchar(255),
@@ -78,7 +81,7 @@ BEGIN
 	SET @psDeletedPicklists = ''
 	SET @psHiddenPicklists = ''
 
-	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT
+	EXEC spASRIntSysSecMgr @fSysSecMgr OUTPUT
 	
  	IF @piUtilID > 0
 	BEGIN

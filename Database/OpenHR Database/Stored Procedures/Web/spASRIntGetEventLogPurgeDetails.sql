@@ -1,8 +1,9 @@
 CREATE Procedure spASRIntGetEventLogPurgeDetails
 AS
 BEGIN
-	SELECT * 
-	FROM ASRSysEventLogPurge
+	SET NOCOUNT ON;
+
+	SELECT * FROM ASRSysEventLogPurge;
 END
 GO
 

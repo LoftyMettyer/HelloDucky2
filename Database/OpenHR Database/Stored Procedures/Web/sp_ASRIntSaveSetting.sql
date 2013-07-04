@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntSaveSetting] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Save the given user or system setting. */
 	IF @pfUserSetting = 1
 	BEGIN

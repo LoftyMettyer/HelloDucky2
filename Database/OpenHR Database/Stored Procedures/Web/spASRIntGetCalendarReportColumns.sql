@@ -6,6 +6,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetCalendarReportColumns]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the columns for the given table IDs.*/
 	SELECT ASRSysColumns.ColumnID, ASRSysColumns.TableID, ASRSysColumns.ColumnName, ASRSysColumns.DataType, 
            ASRSysColumns.ColumnType, ASRSysColumns.Size, ASRSystables.TableName,

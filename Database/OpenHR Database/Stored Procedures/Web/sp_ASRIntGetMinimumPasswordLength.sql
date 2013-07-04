@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the minimum password length. */
 	DECLARE 
 		@sValue				varchar(MAX),

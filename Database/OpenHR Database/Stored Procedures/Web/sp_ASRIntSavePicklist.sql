@@ -10,6 +10,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntSavePicklist] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@iIndex		integer,
 		@iCount	integer,

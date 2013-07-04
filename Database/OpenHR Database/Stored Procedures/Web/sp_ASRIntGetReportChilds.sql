@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetReportChilds] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the child table information based on the passed report ID */
 	SELECT  
 		CONVERT(varchar(255), C.ChildTable) + char(9) 

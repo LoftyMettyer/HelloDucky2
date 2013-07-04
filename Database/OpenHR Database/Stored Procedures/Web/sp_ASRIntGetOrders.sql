@@ -1,13 +1,9 @@
-
-
-
-
-
-
-
 CREATE PROCEDURE sp_ASRIntGetOrders (@plngTableID int, @plngViewID int)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the IDs and names of the orders available for the given table/view. */
 	DECLARE @lngTableID		int,
 		@lngDefaultOrderID	int

@@ -8,6 +8,8 @@
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @sPermissionItemKey varchar(500),
 		@iSSIntranetCount AS integer,
 		@sIntranet_SelfService AS varchar(255),

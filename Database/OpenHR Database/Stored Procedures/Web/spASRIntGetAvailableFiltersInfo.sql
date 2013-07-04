@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetAvailableFiltersInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT exprid AS [ID], 
 		name, 
 		username, 

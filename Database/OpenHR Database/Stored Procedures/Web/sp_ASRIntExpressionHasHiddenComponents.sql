@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntExpressionHasHiddenComponents] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Check if the given expression has any hidden componeonts. */
 	DECLARE @iExprID	integer,
 		@sAccess		varchar(MAX),

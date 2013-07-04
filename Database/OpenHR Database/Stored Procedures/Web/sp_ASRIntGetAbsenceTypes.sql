@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[sp_ASRIntGetAbsenceTypes]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@sExecString	nvarchar(MAX),
 		@sTableName			varchar(255),
 		@sColumnName		varchar(255),

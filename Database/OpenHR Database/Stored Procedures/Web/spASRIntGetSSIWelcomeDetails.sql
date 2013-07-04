@@ -8,6 +8,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetSSIWelcomeDetails]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @sql nvarchar(max)
 	DECLARE @dtLastLogon datetime
 	DECLARE @myval varchar(max)

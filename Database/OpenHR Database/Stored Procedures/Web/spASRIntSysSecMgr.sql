@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntSysSecMgr]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@sRoleName			sysname,
 		@sActualUserName	sysname,

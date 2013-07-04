@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[sp_ASRIntGetExprOperators]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of tab-delimted operator definitions ;
 	<operator id><tab><operator name><tab><operator category> */
 	SELECT 

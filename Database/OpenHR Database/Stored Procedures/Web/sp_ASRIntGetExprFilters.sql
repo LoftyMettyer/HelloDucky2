@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetExprFilters] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the filter definitions. */
 	DECLARE @sUserName	sysname;
 

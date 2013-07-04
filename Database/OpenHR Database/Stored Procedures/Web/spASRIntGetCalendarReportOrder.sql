@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetCalendarReportOrder]
 	)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iCount	integer;
 
 	SET @psErrorMsg = '';

@@ -16,6 +16,7 @@ CREATE PROCEDURE [dbo].[spASRIntGetEventLogRecords] (
 )
 AS
 BEGIN
+	SET NOCOUNT ON;
 
 	DECLARE	@sRealSource 			sysname,
 			@sSelectSQL				varchar(MAX),

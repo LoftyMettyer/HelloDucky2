@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetExprColumns] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of tab-delimted column definitions ;
 	<column id><tab><column name><tab><data type> */
 	DECLARE @iDataType	integer;

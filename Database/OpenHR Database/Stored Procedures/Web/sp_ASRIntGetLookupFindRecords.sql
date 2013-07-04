@@ -14,6 +14,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetLookupFindRecords] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the lookup find records, given the table and column IDs.
 		@piTableID = the ID of the table on which the find is based.
 		@piColumnID = the ID of the column on which the find is based.

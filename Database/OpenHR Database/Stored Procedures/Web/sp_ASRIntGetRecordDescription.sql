@@ -7,6 +7,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetRecordDescription] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the record descriptiuon for the given record, screen, view. */
 	DECLARE	@iRecordID			integer,
 			@iRecDescID			integer,

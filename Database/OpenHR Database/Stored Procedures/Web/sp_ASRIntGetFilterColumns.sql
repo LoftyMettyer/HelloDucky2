@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetFilterColumns]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the IDs and names of the columns available for the given table/view. */
 	DECLARE @lngTableID		integer,
 		@fSysSecMgr			bit,
@@ -16,8 +19,6 @@ BEGIN
 		@iTableType			integer,
 		@iChildViewID		integer,
 		@sActualUserName	sysname;
-
-	SET NOCOUNT ON
 
 	EXEC [dbo].[spASRIntGetActualUserDetails]
 		@sActualUserName OUTPUT,

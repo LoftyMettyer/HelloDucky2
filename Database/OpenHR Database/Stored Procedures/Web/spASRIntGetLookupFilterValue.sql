@@ -11,6 +11,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetLookupFilterValue] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE
 		@iLookupFilterValueID	integer,
 		@sRealSource			sysname,

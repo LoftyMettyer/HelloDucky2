@@ -321,7 +321,6 @@
     <Build Include="Stored Procedures\Other\spASRDropTempObjects.sql" />
     <Build Include="Stored Procedures\Other\spASREmailBatch.sql" />
     <Build Include="Stored Procedures\Other\spASREmailImmediate.sql" />
-    <Build Include="Stored Procedures\Other\spASREmailQueue.sql" />
     <Build Include="Stored Procedures\Other\spASREmailRebuild.sql" />
     <Build Include="Stored Procedures\Other\spASRGetActiveWorkflowStoredDataSteps.sql" />
     <Build Include="Stored Procedures\Other\spASRGetActualUserDetails.sql" />
@@ -693,5 +692,8 @@
     <Build Include="Stored Procedures\Other\sp_ASRInsertChildView2.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewRecord.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewUtility.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>

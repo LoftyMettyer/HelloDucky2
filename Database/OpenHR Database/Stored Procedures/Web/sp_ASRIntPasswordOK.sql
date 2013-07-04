@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[sp_ASRIntPasswordOK]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Update the current user's record into ASRSysPassword table.. */
 	DECLARE @iCount		integer,
 		@sCurrentUser	sysname;

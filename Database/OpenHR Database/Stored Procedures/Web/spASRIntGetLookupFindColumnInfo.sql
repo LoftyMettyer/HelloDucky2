@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetLookupFindColumnInfo] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE 
 		@iTableID			integer,
 		@bUse1000Separator	bit,

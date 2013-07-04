@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetExprFunctions] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of tab-delimited runtime function definitions ;
 	<function id><tab><function name><tab><function category> */
 	DECLARE @fEnableUDFFunctions	bit,

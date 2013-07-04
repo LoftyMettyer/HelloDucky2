@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValues] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a list of the prompted values in the given filter (and sub-filters). */
 	DECLARE	@iComponentID	integer, 
 			@iType			integer,

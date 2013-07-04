@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntActivateModule](
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iCustomerNo		integer,
 			@sModuleCode		varchar(100),
 			@sValue				varchar(MAX),

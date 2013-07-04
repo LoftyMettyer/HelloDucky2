@@ -2,6 +2,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetOpFuncShortcuts]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the operators and functions that have shortcut keys. */
 	DECLARE	@iFunctionID		integer, 
 			@sParameter			varchar(MAX),

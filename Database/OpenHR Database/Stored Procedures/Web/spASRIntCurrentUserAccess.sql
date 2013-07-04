@@ -5,6 +5,9 @@ CREATE PROCEDURE [dbo].[spASRIntCurrentUserAccess] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE 
 		@sTableName			sysname,
 		@sAccessTableName	sysname,

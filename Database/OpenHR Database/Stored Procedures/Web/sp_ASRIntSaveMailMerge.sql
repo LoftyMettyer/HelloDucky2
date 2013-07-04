@@ -31,6 +31,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntSaveMailMerge] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@sTemp			varchar(MAX),
 			@sColumnDefn	varchar(MAX),
 			@sColumnParam	varchar(MAX),

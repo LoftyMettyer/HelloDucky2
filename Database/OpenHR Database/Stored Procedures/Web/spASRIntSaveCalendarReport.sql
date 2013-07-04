@@ -53,6 +53,8 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCalendarReport]
 AS
 BEGIN 
 
+	SET NOCOUNT ON;
+
 	DECLARE	@sTemp					varchar(MAX),
 			@iCount					integer,
 			@fIsNew					bit,

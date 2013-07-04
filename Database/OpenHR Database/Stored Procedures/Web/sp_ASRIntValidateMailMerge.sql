@@ -18,6 +18,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidateMailMerge] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iTimestamp				integer,
 			@sAccess				varchar(MAX),
 			@sOwner					varchar(255),

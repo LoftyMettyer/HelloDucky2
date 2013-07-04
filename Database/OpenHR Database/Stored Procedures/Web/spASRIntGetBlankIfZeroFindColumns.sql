@@ -7,6 +7,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetBlankIfZeroFindColumns] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iUserGroupID	integer,
 		@sUserGroupName		sysname,
 		@iTableType			integer,

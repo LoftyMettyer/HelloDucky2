@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetModuleParameter]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT @psParameter = parameterValue 
 	FROM [dbo].[ASRSysModuleSetup]
 	WHERE moduleKey = @psModuleKey 

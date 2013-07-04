@@ -1,6 +1,9 @@
 CREATE PROCEDURE [dbo].[spASRIntGetCalendarColours]
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT ASRSysColours.ColOrder, 
 		ASRSysColours.ColValue,
 		ASRSysColours.ColDesc, 

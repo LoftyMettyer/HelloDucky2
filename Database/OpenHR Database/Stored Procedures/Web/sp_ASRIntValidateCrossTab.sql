@@ -17,6 +17,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntValidateCrossTab] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE	@iTimestamp				integer,
 			@sAccess				varchar(MAX),
 			@sOwner					varchar(255),

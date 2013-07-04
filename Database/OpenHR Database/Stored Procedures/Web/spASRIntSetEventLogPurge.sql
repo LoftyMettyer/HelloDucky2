@@ -5,6 +5,10 @@ CREATE PROCEDURE [dbo].[spASRIntSetEventLogPurge]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	INSERT INTO [dbo].[ASRSysEventLogPurge] (Period,Frequency)
 	VALUES (@psPeriod, @piFrequency);
+
 END

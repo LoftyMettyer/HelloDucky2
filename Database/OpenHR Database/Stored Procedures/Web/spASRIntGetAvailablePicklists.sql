@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetAvailablePicklists] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	SELECT picklistid AS [ID], 
 		name 
 	FROM [dbo].[ASRSysPicklistName]

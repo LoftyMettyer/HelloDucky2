@@ -7,6 +7,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetSetting] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return the required user or system setting. */
 	DECLARE	@iCount	integer;
 

@@ -10,6 +10,9 @@ CREATE PROCEDURE [dbo].[spASRIntGetQuickFindRecord] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE 
 		@lngTableID			integer,
 		@fSysSecMgr			bit,
