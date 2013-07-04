@@ -4903,10 +4903,78 @@ Namespace Controllers
 
 		End Function
 
-
 		Function themeEditor() As PartialViewResult
 			Return PartialView()
 		End Function
+
+		Function linkFind() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+		Function linkFind_Submit(value As FormCollection)
+			On Error Resume Next
+
+			Dim sErrorMsg As String = ""
+			Dim sNextPage As String, sAction As String
+
+			' Read the information from the calling form.
+			sNextPage = Request.Form("txtGotoOptionPage")
+			sAction = Request.Form("txtGotoOptionAction")
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+
+
+			If sAction = "" Then
+				' Go to the requested page.
+				Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "CANCEL" Then
+				' Go to the requested page.
+				Session("errorMessage") = sErrorMsg
+				Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "SELECTLINK" Then
+				Session("errorMessage") = sErrorMsg
+
+				' Go to the requested page.
+				Return RedirectToAction(sNextPage)
+			End If
+
+			Return RedirectToAction(sNextPage)
+
+		End Function
+
 
 #Region "Standard Reports"
 

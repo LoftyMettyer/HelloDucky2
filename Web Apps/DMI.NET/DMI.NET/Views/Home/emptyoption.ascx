@@ -92,8 +92,9 @@
 			    var recEditControl;
 			    if (txtAction.value == "SELECTLINK") {
 					fNoAction = false;
-			        recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-			        var sControlName;
+					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
+				    
+					var sControlName;
 					var sColumnID;
 					var dataCollection = window.frmEmptyOption.elements;
 					if (dataCollection != null) {
@@ -107,10 +108,10 @@
 							if (sControlName == "txtData_") {
 								sColumnID = dataCollection.item(i).name;
 								sColumnID = sColumnID.substr(8);
-								recEditControl.setData(sColumnID, dataCollection.item(i).value);
+								recEdit_setData(sColumnID, dataCollection.item(i).value);
 							}
 						}
-						recEditControl.changed = true;
+						enableSaveButton(); //recedit
 					}
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");

@@ -10,13 +10,20 @@ function optiondata_onload() {
 	} else {
 		// Do nothing if the menu controls are not yet instantiated.
 		var sCurrentWorkPage = OpenHR.currentWorkPage();
-
+		
 		//To allow option frame to pop out with jQuery dialog control...
 		var sOptionWorkPage = $("#optionframe").attr("data-framesource");
-		if ((sOptionWorkPage = "LOOKUPFIND") && (sCurrentWorkPage == "RECORDEDIT")) {
-			sCurrentWorkPage = "LOOKUPFIND";
+		if (sCurrentWorkPage == "RECORDEDIT") {
+			switch (sOptionWorkPage) {
+			case 'LOOKUPFIND':
+				sCurrentWorkPage = "LOOKUPFIND";
+				break;
+			case 'LINKFIND':
+				sCurrentWorkPage = "LINKFIND";
+				break;
+			default:
+			}
 		}
-
 		var sErrorMsg;
 		var sAction;
 		var dataCollection;
@@ -24,22 +31,35 @@ function optiondata_onload() {
 		var sColumnName;
 		var iCount;
 		var fRecordAdded;
-		if (sCurrentWorkPage == "LINKFIND") {
+		var sColumnType;
+		var colMode;
+		var colNames;
+		var sColDef;
+		var iIndex;
+		var i;
+		var colData;
+		var colDataArray;
+		var obj;
+		var iCount2;
+		if (sCurrentWorkPage == "LINKFIND") {			
+
 			sErrorMsg = frmOptionData.txtErrorMessage.value;
 			if (sErrorMsg.length > 0) {
 				// We've got an error so don't update the record edit form.
 
 				// Get menu.asp to refresh the menu.
-				menu_refreshMenu();
+				//menu_refreshMenu();
 				OpenHR.messageBox(sErrorMsg);
 			}
 			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
-			var grdLinkFind = OpenHR.getForm("optionframe", "frmLinkFindForm").ssOleDBGridLinkRecords;
+			//var grdLinkFind = OpenHR.getForm("optionframe", "frmLinkFindForm").ssOleDBGridLinkRecords;
 
-			grdLinkFind.redraw = false;
-			grdLinkFind.removeAll();
-			grdLinkFind.columns.removeAll();
+			linkFind_removeAll('ssOleDBGridLinkRecords');	// Clear the grid.
+
 			dataCollection = frmOptionData.elements; // Configure the grid columns.
+			colMode = [];
+			colNames = [];
+			
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -47,30 +67,24 @@ function optiondata_onload() {
 					if (sControlName == "txtOptionColDef_") {
 						// Get the column name and type from the control.
 						sColDef = dataCollection.item(i).value;
-
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
 							sColumnType = sColDef.substr(iIndex + 1);
-
-							grdLinkFind.columns.add(grdLinkFind.columns.count);
-							grdLinkFind.columns.item(grdLinkFind.columns.count - 1).name = sColumnName;
-							grdLinkFind.columns.item(grdLinkFind.columns.count - 1).caption = sColumnName;
+							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Visible = false;
+								colMode.push({ name: sColumnName, hidden: true });
+							} else {
+								switch (sColumnType) {
+									case "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center' });
+										break;
+									default:
+										colMode.push({ name: sColumnName });
+								}
 							}
 
-							if ((sColumnType == "131") || (sColumnType == "3")) {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 1;
-							} else {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 0;
-							}
-							if (sColumnType == 11) {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 2;
-							} else {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 0;
-							}
 						}
 					}
 				}
@@ -80,17 +94,56 @@ function optiondata_onload() {
 			fRecordAdded = false;
 			iCount = 0;
 			if (dataCollection != null) {
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
 					if (sControlName == "txtOptionData_") {
-						grdLinkFind.addItem(dataCollection.item(i).value);
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
+
+				//create the column layout:
+				$("#ssOleDBGridLinkRecords").jqGrid({
+					data: colData,
+					datatype: "local",
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					onSelectRow: function () {
+						linkFind_refreshControls();
+					},
+					ondblClickRow: function () {
+						SelectLink();
+					}
+				});
+
+				$("#ssOleDBGridLinkRecords").jqGrid('bindKeys', {
+					"onEnter": function () {
+						SelectLink();
+					}
+				});
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGridLinkRecords").jqGrid('setGridHeight', $("#linkFindGridRow").height());
+				//var y = $("#gbox_ssOleDBGrid").height();
+				//var z = $('#gbox_ssOleDBGrid .ui-jqgrid-bdiv').height();
+
 			}
-			grdLinkFind.redraw = true;
+
+			//NOTE: may come in useful.
+			//http://stackoverflow.com/questions/12572780/jqgrids-addrowdata-hangs-for-large-number-of-records
 
 			frmOptionData.txtRecordCount.value = iCount;
 
@@ -98,7 +151,7 @@ function optiondata_onload() {
 				locateRecord(OpenHR.getForm("optionframe", "frmLinkFindForm").txtOptionLinkRecordID.value, true); //should be in scope!
 			}
 
-			refreshControls();  ///should be in scope - from lookupFind.ascx
+			linkFind_refreshControls();  ///should be in scope - from lookupFind.ascx
 
 
 			// Get menu.asp to refresh the menu.
@@ -125,23 +178,21 @@ function optiondata_onload() {
 			OpenHR.getForm("optionframe", "frmLookupFindForm").txtLookupColumnGridPosition.value = frmOptionData.txtLookupColumnGridPosition.value;
 
 			// Refresh the link find grid with the data if required.
-			grdFind = OpenHR.getForm("optionframe", "frmLookupFindForm").ssOleDBGrid; // Clear the grid.
+			grdFind = OpenHR.getForm("optionframe", "frmLookupFindForm").ssOleDBGrid; 
 
-			lookupFind_removeAll('ssOleDBGrid');
+			lookupFind_removeAll('ssOleDBGrid');	// Clear the grid.
 
 			dataCollection = frmOptionData.elements; // Configure the grid columns.
-			var sColumnType;
-			var colMode = [];
-			var colNames = [];
-
+			colMode = [];
+			colNames = [];
 			if (dataCollection != null) {
-				for (var i = 0; i < dataCollection.length; i++) {
+				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 16);
 					if (sControlName == "txtOptionColDef_") {
 						// Get the column name and type from the control.
-						var sColDef = dataCollection.item(i).value;
-						var iIndex = sColDef.indexOf("	");
+						sColDef = dataCollection.item(i).value;
+						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
 							sColumnType = sColDef.substr(iIndex + 1);
@@ -168,19 +219,16 @@ function optiondata_onload() {
 			fRecordAdded = false;
 			iCount = 0;		        //used to store record count later...
 			if (dataCollection != null) {
-				var colData = [];
-
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
 					if (sControlName == "txtOptionData_") {
 						//original line
 						//grdFind.addItem(dataCollection.item(i).value);
-
-						var colDataArray = dataCollection.item(i).value.split("\t");
-						var obj = {};
-
-						for (var iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
 							//loop through columns and add each one to the 'obj' object
 							obj[colNames[iCount2]] = colDataArray[iCount2];
 						}

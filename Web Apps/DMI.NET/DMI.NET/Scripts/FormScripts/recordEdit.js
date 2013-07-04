@@ -18,7 +18,7 @@ function addControl(tabNumber, controlDef) {
 				tabTemplate = "<li><a " + tabCss + " href='#{href}'>#{label}</a></li>";
 
 			var label = getTabCaption(tabNumber),
-				li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
+			li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
 
 			tabs.find(".ui-tabs-nav").append(li);
 			tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
@@ -842,7 +842,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		else {
 			nextAvail = this.mavIDColumns.length / 3;
 		}
-
+		
 		this.mavIDColumns[nextAvail] = new Array(3);
 
 		this.mavIDColumns[nextAvail][1] = Number(controlItemArray[1]);   //ColumnID
@@ -934,7 +934,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 	var width;
 	var borderCss;
 	var radioTop;
-
+	var button;
 	switch (Number(controlItemArray[3])) {
 		case 1: //checkbox
 			span = document.createElement('span');
@@ -1043,7 +1043,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 8: //ctlOle
-			var button = document.createElement('input');
+			button = document.createElement('input');
 			button.type = "button";
 			button.id = controlID;
 			button.value = "OLE";
@@ -1228,11 +1228,30 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 1024: //ctlPhoto
-
+			break;
 
 
 		case 2048: //ctlCommand
+			button = document.createElement('input');
+			button.type = "button";
+			button.id = controlID;
+			button.value = controlItemArray[8];
+			applyLocation(button, controlItemArray, true);
+			button.style.padding = "0px";
+			button.setAttribute("data-columnID", columnID);
+			button.setAttribute("data-control-key", key);
+			button.setAttribute("data-columnName", "ID_" + controlItemArray[42]);
+			button.setAttribute("data-linkTableID", controlItemArray[42]);
+			button.setAttribute("data-linkOrderID", controlItemArray[43]);
+			button.setAttribute("data-linkViewID", controlItemArray[44]);
+
+			if (tabIndex > 0) button.tabindex = tabIndex;
+			//button.disabled = false;    //always enabled
+			addControl(iPageNo, button);
+
 			break;
+			
+
 		case 4096: //ctlWorking Pattern
 			//TODO: Font size change - this control is fixed in size.
 			top = (Number(controlItemArray[4]) / 15);
@@ -1570,19 +1589,26 @@ function addHTMLControlValues(controlValues) {
 }
 
 function recEdit_setData(columnID, value) {
+	
 	//Set the given column's value
 	//copied from recordDMI.ocx        
-	var fIsIDColumn = false;
 
 	if (columnID.toUpperCase() == "TIMESTAMP") {
 		// The column is the timestamp column.
 		$("#txtRecEditTimeStamp").val(value);
 	}
 	else {
-		var tmp = this.mavIDColumns.indexOf(Number(columnID));
-		if (tmp > 0) {
-			this.mavIDColumns[tmp][3] = Number(value);
-			fIsIDColumn = true;
+		var fIsIDColumn = false;		
+
+		for (var i = 1; i <= this.mavIDColumns.length / 3; i++) {
+			var mavIDColumn = this.mavIDColumns[i];
+
+			for (var j = 0; j < mavIDColumn.length; j++) {
+				if (mavIDColumn[j] == Number(columnID)) {
+					this.mavIDColumns[i][3] = Number(value);
+					fIsIDColumn = true;
+				}
+			}
 		}
 
 		if (!fIsIDColumn) {
@@ -1615,9 +1641,6 @@ function recEdit_setParentRecordID(plngParentRecordID) {
 	frmRecordEditForm.txtCurrentParentRecordID.value = plngParentRecordID;
 	//frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
 }
-
-
-
 
 function updateControl(lngColumnID, value) {
 
@@ -1681,8 +1704,7 @@ function updateControl(lngColumnID, value) {
 				case "checkbox":
 					$(this).prop("checked", value == "True" ? true : false);
 					break;
-				case "button":
-					//link button or nav control
+				case "button":					
 					if (controlType == Math.pow(2, 14)) {
 						//Navigation Control
 						if (value.length <= 0) {
@@ -1691,7 +1713,17 @@ function updateControl(lngColumnID, value) {
 							$(this).attr("href", value);
 						}
 					}
-					//TODO: link button.
+					else if (controlType == 2048) {
+						//Link Button
+						var lngLinkTableID = $(this).attr("data-linkTableID");
+						var lngLinkOrderID = $(this).attr("data-linkOrderID");
+						var lngLinkViewID = $(this).attr("data-linkViewID");
+						
+						$(this).attr('onclick', 'javascript:linkButtonClick(' + lngLinkTableID + ',' + lngLinkOrderID + ',' + lngLinkViewID + ');');
+						
+						break;
+					}
+					
 				default:
 					$(this).val(value);
 
@@ -1911,9 +1943,27 @@ function TBBookingStatusValue() {
 
 }
 
-
-
 function ExecutePostSaveCode() {
 	//TODO:
 
 }
+
+function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
+	//Get the ID of the linked table.
+
+	var lngLinkRecordID = 0;
+	var ubound = (window.mavIDColumns.length / 3);
+
+	for (var iLoop = 1; iLoop <= (ubound) ; iLoop++) {
+
+		if (window.mavIDColumns[iLoop][2] == "ID_" + lngLinkTableID) {
+			// The given column is an ID column so put the value into the ID column array.
+			lngLinkRecordID = window.mavIDColumns[iLoop][3];
+			break;
+		}
+	}
+	
+	menu_loadLinkPage(lngLinkTableID, lngLinkOrderID, lngLinkViewID, lngLinkRecordID);
+
+}
+

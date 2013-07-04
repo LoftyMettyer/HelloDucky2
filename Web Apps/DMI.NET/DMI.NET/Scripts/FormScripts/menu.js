@@ -1922,116 +1922,117 @@ function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 }
 
 function menu_loadRecordEditPage(psToolName) {
-    alert("empty function loadRecordEditPage");
-//	var lngTableID;
-//	var lngViewID;
-//	var lngScreenID;
-//	var sSubString;
-//	var sLineage;
-//	var frmWorkArea;
-//	var frmRecEdit;
-//	var frmData;
-//	var iIndex;
-//	var sToolKey;
+	var lngTableID;
+	var lngViewID;
+	var lngScreenID;
+	var sSubString;
+	var sLineage;
+	var frmWorkArea;
+	var frmRecEdit;
+	var frmData;
+	var iIndex;
+	var sToolKey;
+	var frmMenuInfo = document.getElementById('frmMenuInfo');
+	
+	//ShowWait("Loading screen. Please wait...");
+	menu_disableMenu();
+	
+	// Get the table, view and screen info from the tool name.
+	sSubString = psToolName.substr(3);
+	iIndex = sSubString.indexOf("_");
+	lngTableID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngViewID = sSubString.substr(0, iIndex);
+	lngScreenID = sSubString.substr(iIndex + 1);
+	var frmWorkAreaInfo = document.getElementById('frmWorkAreaInfo');
+	
+	frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+	// Submit the current "workframe" form, and then load the required record Edit page.
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea.txtGotoTableID.value = lngTableID;
+	frmWorkArea.txtGotoViewID.value = lngViewID;
+	frmWorkArea.txtGotoScreenID.value = lngScreenID;
+	frmWorkArea.txtGotoOrderID.value = 0;
+	frmWorkArea.txtGotoRecordID.value = 0;
+	
+	sToolKey = psToolName.substr(0, 3);
+	if (sToolKey == "HT_") {
+		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+		frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
+		frmData = OpenHR.getForm("dataframe", "frmData");
+		frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
 
-//	ShowWait("Loading screen. Please wait...");
-//	disableMenu();
-//	
-//	// Get the table, view and screen info from the tool name.
-//	sSubString = psToolName.substr(3);
-//	iIndex = sSubString.indexOf("_");
-//	lngTableID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngViewID = sSubString.substr(0, iIndex);
-//	lngScreenID = sSubString.substr(iIndex + 1);
+		sLineage = frmRecEdit.txtCurrentTableID.value +
+			"_" + frmRecEdit.txtCurrentViewID.value +
+			"_" + frmRecEdit.txtCurrentScreenID.value +
+			"_" + frmRecEdit.txtCurrentOrderID.value +
+			"_" + frmData.txtRecordID.value +
+			"_" + frmData.txtParentTableID.value +
+			"_" + frmData.txtParentRecordID.value + ":" +
+			frmRecEdit.txtLineage.value;
+	}
+	else {
+		frmWorkArea.txtGotoParentTableID.value = 0;
+		frmWorkArea.txtGotoParentRecordID.value = 0;
+		sLineage = "";
+	}
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//	// Submit the current "workframe" form, and then load the required record Edit page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmWorkArea.txtGotoTableID.value = lngTableID;
-//	frmWorkArea.txtGotoViewID.value = lngViewID;
-//	frmWorkArea.txtGotoScreenID.value = lngScreenID;
-//	frmWorkArea.txtGotoOrderID.value = 0;
-//	frmWorkArea.txtGotoRecordID.value = 0;
-//	
-//	sToolKey = psToolName.substr(0, 3);
-//	if (sToolKey == "HT_") {
-//		frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//		frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
-//		frmData = window.parent.frames("dataframe").document.forms("frmData");
-//		frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
-//		
-//		sLineage = frmRecEdit.txtCurrentTableID.value +
-//			"_" + frmRecEdit.txtCurrentViewID.value +
-//			"_" + frmRecEdit.txtCurrentScreenID.value +
-//			"_" + frmRecEdit.txtCurrentOrderID.value +
-//			"_" + frmData.txtRecordID.value +
-//			"_" + frmData.txtParentTableID.value +
-//			"_" + frmData.txtParentRecordID.value + ":" +
-//			frmRecEdit.txtLineage.value
-//	}
-//	else {
-//		frmWorkArea.txtGotoParentTableID.value = 0;
-//		frmWorkArea.txtGotoParentRecordID.value = 0;
-//		sLineage = "";
-//	}
+	if ((sToolKey == "PT_")
+		|| (sToolKey == "PV_")) {
+		// PT_ = primary table
+		// PV_ = primary table view
+		if (frmMenuInfo.txtPrimaryStartMode.value == 1) {
+			frmWorkArea.txtAction.value = "NEW";
+		}
+		else {
+			frmWorkArea.txtAction.value = "";
+		}
+	}
+	else {					
+		if (sToolKey == "TS_") {
+			// TS_ = Table screen
+			if (frmMenuInfo.txtLookupStartMode.value == 1) {
+				frmWorkArea.txtAction.value = "NEW";
+			}
+			else {
+				frmWorkArea.txtAction.value = "";
+			}
+		}
+		else {				
+			if (sToolKey == "QE_") {
+				// QE_ = quick entry screen
+				if (frmMenuInfo.txtQuickAccessStartMode.value == 1) {
+					frmWorkArea.txtAction.value = "NEW";
+				}
+				else {
+					frmWorkArea.txtAction.value = "";
+				}
+			}
+			else {	
+				if (sToolKey == "HT_") {										
+					// HT_ = history table
+					if (frmMenuInfo.txtHistoryStartMode.value == 1) {
+						frmWorkArea.txtAction.value = "NEW";
+					}
+					else {
+						frmWorkArea.txtAction.value = "";
+					}
+				}				
+				else {
+					frmWorkArea.txtAction.value = "";
+				}
+			}
+		}
+	}
+	
+	frmWorkArea.txtGotoFilterDef.value = "";
+	frmWorkArea.txtGotoFilterSQL.value = "";
+	frmWorkArea.txtGotoLineage.value = sLineage;
+	frmWorkArea.txtGotoPage.value = "recordEdit";
 
-//	if ((sToolKey == "PT_")
-//		|| (sToolKey == "PV_")) {
-//		// PT_ = primary table
-//		// PV_ = primary table view
-//		if (frmMenuInfo.txtPrimaryStartMode.value == 1) {
-//			frmWorkArea.txtAction.value = "NEW";
-//		}
-//		else {
-//			frmWorkArea.txtAction.value = "";
-//		}
-//	}
-//	else {					
-//		if (sToolKey == "TS_") {
-//			// TS_ = Table screen
-//			if (frmMenuInfo.txtLookupStartMode.value == 1) {
-//				frmWorkArea.txtAction.value = "NEW";
-//			}
-//			else {
-//				frmWorkArea.txtAction.value = "";
-//			}
-//		}
-//		else {				
-//			if (sToolKey == "QE_") {
-//				// QE_ = quick entry screen
-//				if (frmMenuInfo.txtQuickAccessStartMode.value == 1) {
-//					frmWorkArea.txtAction.value = "NEW";
-//				}
-//				else {
-//					frmWorkArea.txtAction.value = "";
-//				}
-//			}
-//			else {	
-//				if (sToolKey == "HT_") {										
-//					// HT_ = history table
-//					if (frmMenuInfo.txtHistoryStartMode.value == 1) {
-//						frmWorkArea.txtAction.value = "NEW";
-//					}
-//					else {
-//						frmWorkArea.txtAction.value = "";
-//					}
-//				}				
-//				else {
-//					frmWorkArea.txtAction.value = "";
-//				}
-//			}
-//		}
-//	}
-//	
-//	frmWorkArea.txtGotoFilterDef.value = "";
-//	frmWorkArea.txtGotoFilterSQL.value = "";
-//	frmWorkArea.txtGotoLineage.value = sLineage;
-//	frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-
-//	frmWorkArea.submit();
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_loadFindPage() {
@@ -2183,35 +2184,36 @@ function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pf
 }
 
 function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID) {
-//	var frmRecEditArea;
-//	var frmOptionArea;
+	var frmRecEditArea;
+	var frmOptionArea;
 
-//	ShowWait("Loading link find records. Please wait...");
-//	disableMenu();
+	
+	//ShowWait("Loading link find records. Please wait...");
+	menu_disableMenu();
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	document.getElementById("frmWorkAreaInfo").txtHRProNavigation.value = 1;
+	
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-//	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmOptionArea.txtGotoOptionValue.value = "";
-//	frmOptionArea.txtGotoOptionLinkTableID.value = plngLinkTableID;
-//	frmOptionArea.txtGotoOptionLinkOrderID.value = plngLinkOrderID;
-//	frmOptionArea.txtGotoOptionLinkViewID.value = plngLinkViewID;
-//	frmOptionArea.txtGotoOptionLinkRecordID.value = plngLinkRecordID;
-//	frmOptionArea.txtGotoOptionPage.value = "linkFind.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
-//	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmOptionArea.txtGotoOptionValue.value = "";
+	frmOptionArea.txtGotoOptionLinkTableID.value = plngLinkTableID;
+	frmOptionArea.txtGotoOptionLinkOrderID.value = plngLinkOrderID;
+	frmOptionArea.txtGotoOptionLinkViewID.value = plngLinkViewID;
+	frmOptionArea.txtGotoOptionLinkRecordID.value = plngLinkRecordID;
+	frmOptionArea.txtGotoOptionPage.value = "linkFind";
+	frmOptionArea.txtGotoOptionAction.value = "";
+	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//	frmOptionArea.submit();
+	OpenHR.submitForm(frmOptionArea);
 }
 
 function menu_loadTransferCoursePage(psCourseTitle) {
