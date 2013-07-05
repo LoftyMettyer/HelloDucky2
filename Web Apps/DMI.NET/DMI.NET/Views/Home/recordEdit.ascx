@@ -13,7 +13,7 @@
 
 		function recordEdit_window_onload() {			
 			//public variables
-        this.mavIDColumns = new Array(3);
+        this.mavIDColumns = new Array();
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
         var fOK;
@@ -143,7 +143,7 @@
                             }
                         }
 
-                        //Now add the form controls based on the fixed array of txtRecEditControl_ items...                        
+                    	//Now add the form controls based on the fixed array of txtRecEditControl_ items...                        	                    
                         for (i = 0; i < txtControls.length; i++) {
                             txtControlValue = $("#" + txtControls[i]).val();
                             var txtControlID = $("#" + txtControls[i]).attr("id");

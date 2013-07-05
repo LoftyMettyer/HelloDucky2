@@ -160,7 +160,7 @@ function insertUpdateDef() {
 	//	' which we'll construct an insert or update SQL string.
 
 	var uniqueIdentifier = 0;
-
+	
 	$('input[id^="txtRecEditControl_"]').each(function (index) {
 
 		uniqueIdentifier += 1;
@@ -205,7 +205,7 @@ function insertUpdateDef() {
 
 			if (fDoControl) {
 				//	Get the name of the column associated with the current control.
-				if (objScreenControl.ControlType == 2048) { //command button. TODO: should this include nav control?
+				if (objScreenControl.ControlType == 2048) { //command button. TODO: should this include nav control?					
 					sColumnName = "ID_" + objScreenControl.LinkTableID;
 					sColumnID = sColumnName;
 				}
@@ -468,21 +468,25 @@ function insertUpdateDef() {
 						//	asColumns(4, iNextIndex) = Val(objControl.BackColor)
 					}
 
-					//TODO: else if(objScreenControl.ControlType == ??????) TypeOf objControl Is CommandButton Then
-					//	If mobjScreenControls.Item(sTag).LinkTableID <> mlngParentTableID Then
-					//	For iLoop = 1 To UBound(mavIDColumns, 2)
-					//	If UCase(mavIDColumns(2, iLoop)) = "ID_" & Trim(Str(mobjScreenControls.Item(sTag).LinkTableID)) Then
-					//	asColumns(2, iNextIndex) = Trim(Str(mavIDColumns(3, iLoop)))
-					//	asColumns(4, iNextIndex) = Trim(Str(mavIDColumns(3, iLoop)))
-					//	Exit For
-					//	End If
-					//	Next iLoop
-					//	Else
-					//	asColumns(2, iNextIndex) = Trim(Str(mlngParentRecordID))
-					//	asColumns(4, iNextIndex) = Trim(Str(mlngParentRecordID))
-					//	End If
-					//	End If
-					//	End If
+					else if (objScreenControl.ControlType == 2048) {						
+						//TypeOf objControl Is CommandButton (link button)
+						if (objScreenControl.LinkTableID != $("#txtCurrentParentTableID").val()) {
+							ubound = (window.mavIDColumns.length);
+
+							for (iLoop = 0; iLoop < (ubound); iLoop++) {
+
+								if (window.mavIDColumns[iLoop][1] == "ID_" + objScreenControl.LinkTableID) {
+									asColumnsToAdd[1] = window.mavIDColumns[iLoop][2];
+									asColumnsToAdd[3] = window.mavIDColumns[iLoop][2];
+									break;
+								}
+
+							}
+						} else {
+							asColumnsToAdd[1] = $("#txtCurrentParentTableID").val();
+							asColumnsToAdd[3] = $("#txtCurrentParentTableID").val();
+						}		
+					}
 				}
 			}
 			//	End If
@@ -835,20 +839,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 	if (controlItemArray[0] < 0) {
 		//The definition is for an id column.            
-		var nextAvail;
-		if (this.mavIDColumns.length <= 0) {
-			nextAvail = 0;
-		}
-		else {
-			nextAvail = this.mavIDColumns.length / 3;
-		}
-		
-		this.mavIDColumns[nextAvail] = new Array(3);
-
-		this.mavIDColumns[nextAvail][1] = Number(controlItemArray[1]);   //ColumnID
-		this.mavIDColumns[nextAvail][2] = controlItemArray[2];   //Column Name
-		this.mavIDColumns[nextAvail][3] = 0;   //Value
-
+		this.mavIDColumns.push([Number(controlItemArray[1]), controlItemArray[2], 0]);
 	}
 
 	//-------------------------------------------------Get permissions for this control first -----------------------------------------------------------------
@@ -1598,17 +1589,14 @@ function recEdit_setData(columnID, value) {
 		$("#txtRecEditTimeStamp").val(value);
 	}
 	else {
-		var fIsIDColumn = false;		
+		var fIsIDColumn = false;
 
-		for (var i = 1; i <= this.mavIDColumns.length / 3; i++) {
-			var mavIDColumn = this.mavIDColumns[i];
-
-			for (var j = 0; j < mavIDColumn.length; j++) {
-				if (mavIDColumn[j] == Number(columnID)) {
-					this.mavIDColumns[i][3] = Number(value);
+		var ubound = (window.mavIDColumns.length);
+		for (var i = 0; i < (ubound); i++) {
+				if (window.mavIDColumns[i][0] == Number(columnID)) {
+					this.mavIDColumns[i][2] = Number(value);
 					fIsIDColumn = true;
 				}
-			}
 		}
 
 		if (!fIsIDColumn) {
@@ -1926,7 +1914,7 @@ function TBBookingStatusValue() {
 	//TBBookingStatusValue = objControl.Text
 	//Case Else
 	//TBBookingStatusValue = ""
-	//End Select
+	//End Select)
 
 	//ElseIf TypeOf objControl Is COAInt_OptionGroup Then
 	//' Character field from an option group (CHAR type column). Save the text from the option group.
@@ -1950,7 +1938,6 @@ function ExecutePostSaveCode() {
 
 function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
 	//Get the ID of the linked table.
-
 	var lngLinkRecordID = 0;
 	var ubound = (window.mavIDColumns.length / 3);
 
