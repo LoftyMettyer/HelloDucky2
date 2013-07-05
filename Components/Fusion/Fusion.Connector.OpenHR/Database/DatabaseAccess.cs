@@ -261,12 +261,12 @@ namespace Fusion.Connector.OpenHR.Database
                 su.jobTitle = pRow["jobTitle"].ToString() == "" ? null : pRow["jobTitle"].ToString();
                 su.managerRef = pRow["managerRef"].ToString() == "" ? null : pRow["managerRef"].ToString();
 
-                su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString() == "" ? null : pRow["AddressLine1"].ToString();
+                su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString() == "" ? " " : pRow["AddressLine1"].ToString();
                 su.homeAddress.addressLine2 = pRow["AddressLine2"].ToString();
                 su.homeAddress.addressLine3 = pRow["AddressLine3"].ToString();
                 su.homeAddress.addressLine4 = pRow["AddressLine4"].ToString();
                 su.homeAddress.addressLine5 = pRow["AddressLine5"].ToString();
-                su.homeAddress.postCode = pRow["postcode"].ToString() == "" ? null : pRow["postcode"].ToString();                
+                su.homeAddress.postCode = pRow["postcode"].ToString() == "" ? " " : pRow["postcode"].ToString();                
 
                 su.nationalInsuranceNumber = pRow["nationalInsuranceNumber"].ToString() == "" ? null : pRow["nationalInsuranceNumber"].ToString();
 
