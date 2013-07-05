@@ -30,7 +30,7 @@ namespace Fusion.Connector.OpenHR.Database
             {
                 c.Open();
 
-                var su = c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, SUBSTRING(picture,401,datalength(picture)-400) AS picture FROM Fusion.staff where StaffID = @StaffID",
+								var su = c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, CASE WHEN LEN(picture) < 400 THEN NULL ELSE SUBSTRING(picture,401,datalength(picture)-400) END FROM Fusion.staff where StaffID = @StaffID",
                                      new
                                          {
                                              StaffID = localId
