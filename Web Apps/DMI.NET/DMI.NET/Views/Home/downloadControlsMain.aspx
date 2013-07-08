@@ -27,7 +27,7 @@
 		
 		<%Html.RenderPartial("~/views/home/downloadControls.aspx")%>
 	</div>
-  <%End If%>
+	<%End If%>
 	</div>
 </asp:Content>
 

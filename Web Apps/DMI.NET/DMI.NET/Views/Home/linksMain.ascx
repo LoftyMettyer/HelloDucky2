@@ -122,7 +122,7 @@
 		}
 
 		function changeLayout(newLayoutName) {
-		    
+				
 			setCookie('Intranet_Layout', newLayoutName, 365);
 			if (newLayoutName == "winkit") {
 				setCookie('Intranet_Theme', "white", 365);
@@ -221,28 +221,28 @@
 		<%fFirstSeparator = True%>
 		<div class="linkspagebutton">
 			<div class="ButtonLinkColumn">
-                <%Dim sOnclick As String = ""
-                    Dim sLinkKey As String = ""%>
+								<%Dim sOnclick As String = ""
+										Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
 				
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
 
 				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
-                <%
-                    If navlink.UtilityID > 0 Then
-                        Dim sUtilityType = CStr(navlink.UtilityType)
-                        Dim sUtilityID = CStr(navlink.UtilityID)
-                        Dim sUtilityBaseTable = CStr(navlink.BaseTable)
-                        Dim sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
-                        
-                        sOnclick = "goUtility('" & sUtilityDef & "')"
-                    Else
-                		sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
-                        
-                        sOnclick = "goScreen('" & sLinkKey & "')"
-                    End If
-                    
-                    %>
+								<%
+										If navlink.UtilityID > 0 Then
+												Dim sUtilityType = CStr(navlink.UtilityType)
+												Dim sUtilityID = CStr(navlink.UtilityID)
+												Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+												Dim sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
+												
+												sOnclick = "goUtility('" & sUtilityDef & "')"
+										Else
+										sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
+												
+												sOnclick = "goScreen('" & sLinkKey & "')"
+										End If
+										
+										%>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
 				<%iColNum = 1%>
@@ -432,7 +432,7 @@
 
 		</div>
 	</div>
-    
+		
 	<div id="pollframeset">
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>

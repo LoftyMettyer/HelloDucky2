@@ -14,7 +14,7 @@
 
 	Dim prmType = cmdUsage.CreateParameter("type", 3, 1)
 	cmdUsage.Parameters.Append(prmType)
-  prmType.value = cleanNumeric(session("utiltype"))
+	prmType.value = cleanNumeric(session("utiltype"))
 				
 	Dim prmId = cmdUsage.CreateParameter("id", 3, 1)
 	cmdUsage.Parameters.Append(prmId)
@@ -34,20 +34,20 @@
 	<TR>
 		<TD>
 			<table class="invisible" cellspacing="0" cellpadding=0>
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
-			  
-			    <tr> 
-			        <td colspan=3 align=center> 
-			        <H3>Usage Check</H3>
-			        </td>
-			    </tr>
-			  
-			    <tr height=10> 
+					<tr> 
+							<td colspan=3 height=10></td>
+					</tr>
+				
+					<tr> 
+							<td colspan=3 align=center> 
+							<H3>Usage Check</H3>
+							</td>
+					</tr>
+				
+					<tr height=10> 
 					<td width=20>&nbsp;</td>
-			        <td>
-			            Could not <%=session("action")%> '<%=session("utilname")%>' because it is used in the following:<BR><BR>
+							<td>
+									Could not <%=session("action")%> '<%=session("utilname")%>' because it is used in the following:<BR><BR>
 <%
 	Do While Not rstUsage.EOF
 		Dim sDescription As String = CType(rstUsage.Fields("description").Value, String)
@@ -59,24 +59,24 @@
 		rstUsage.MoveNext()
 	Loop
 %>
-			        </td>
+							</td>
 					<td width=20>&nbsp;</td>
-			    </tr>
+					</tr>
 
-			    <tr>
+					<tr>
 					<td height=10 colspan=3></td>
 				</tr>
 				 
-			    <tr> 
-			        <td colspan=3 height=10 align=center> 
-			            <input id="cmdOK" name="cmdOK" type="button" value="OK" style="WIDTH: 75px" class="btn" onclick="OpenHR.submitForm(frmUsage);"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-			    </tr>
-			    <tr>
+					<tr> 
+							<td colspan=3 height=10 align=center> 
+									<input id="cmdOK" name="cmdOK" type="button" value="OK" style="WIDTH: 75px" class="btn" onclick="OpenHR.submitForm(frmUsage);"
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
+							</td>
+					</tr>
+					<tr>
 					<td height=10 colspan=3></td>
 				</tr>
 <%--				<%session("utilid") = Request.Form("utilid")%>--%>

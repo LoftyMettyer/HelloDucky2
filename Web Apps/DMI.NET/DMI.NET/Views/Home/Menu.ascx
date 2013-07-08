@@ -12,15 +12,15 @@
 	Dim avHistoryMenuInfo
 	Dim iLoop As Integer
 	Dim iLoop2 As Integer
-    Dim iCount As Integer
+		Dim iCount As Integer
 	Dim objMenu
 	Dim sToolCaption As String
 	Dim sToolID As String
 	
 	sErrorDescription = ""
 	
-    objMenu = New HR.Intranet.Server.Menu()
-    
+		objMenu = New HR.Intranet.Server.Menu()
+		
 	objMenu.Username = Session("username")
 	
 	If Session("avPrimaryMenuInfo") Is Nothing Then
@@ -57,7 +57,7 @@
 		If avPrimaryMenuInfo(4, iLoop) > 0 Then
 			' The user has 'read' permission on the table, and no views on the table.
 			' There is only one screen defined for the table.
-        
+				
 			' Add a menu option to call up the primary table screen.
 			Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avPrimaryMenuInfo(4, iLoop)) & """);" & vbCrLf)
 			Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "..."";" & vbCrLf)
@@ -84,10 +84,10 @@
 	((avPrimaryMenuInfo(5, iLoop) = True) And (avPrimaryMenuInfo(3, iLoop) > 0)) Then
 			' The user has 'read' permission on the table, and the table has more than one screen defined for it.
 			' Or there are views on the table.
-  
+	
 			Response.Write("  //abMainMenu.Bands.add(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """);" & vbCrLf)
 			Response.Write("  //abMainMenu.Bands(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """).type = 2;" & vbCrLf & vbCrLf)
-        
+				
 			'Instantiate the submenu heading tool and set properties
 			Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PS_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & """);" & vbCrLf)
 			Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & """;" & vbCrLf)
@@ -108,7 +108,7 @@
 			
 			Response.Write("  lngLastScreenID = 0;" & vbCrLf)
 			Response.Write("  sLastToolName = """";" & vbCrLf)
-      
+			
 			
 			For iLoop2 = 1 To UBound(avSubMenuInfo, 2)
 				
@@ -265,7 +265,7 @@
 	Dim iLastChildTableID = 0
 	Dim iNextChildTableID
 	Dim sBand As String = ""
-    
+		
 	avHistoryMenuInfo = objMenu.GetHistoryScreens
 
 	For iLoop = 1 To UBound(avHistoryMenuInfo, 2)
@@ -300,7 +300,7 @@
 			' which will have created the sub-menu, so just add it to the sub-menu.
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
-            
+						
 		Else
 			If (iNextChildTableID = avHistoryMenuInfo(2, iLoop)) Then
 				' The current screen is for the same table as the next screen to be added
@@ -309,7 +309,7 @@
 				sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
 				Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(3, iLoop), "_", " ")) & """;" & vbCrLf)
 				Response.Write("    objBandToolSubBand = """ & sBand & """;" & vbCrLf)
-          
+					
 				Response.Write("    menu_insertSubMenuItem(""mnubandHistory"", objBandToolCaption.replace(""&&"", ""&""), ""0"", objBandToolSubBand);" & vbCrLf)
 				Response.Write("    menu_insertMenuItem(objBandToolSubBand, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
 			Else
@@ -408,7 +408,7 @@
 		cmdSystemPermissions.CommandTimeout = 300
 
 		Err.Clear()
-        
+				
 		Dim rstSystemPermissions = cmdSystemPermissions.Execute
 		
 		If (Err.Number <> 0) Then
@@ -640,7 +640,7 @@
 </FORM>
 
 <form action="" method="POST" id="frmWorkAreaInfo" name="frmWorkAreaInfo">
-    <input type="hidden" id="txtHRProNavigation" name="txtHRProNavigation" value="0">
+		<input type="hidden" id="txtHRProNavigation" name="txtHRProNavigation" value="0">
 </form>
 
 <script type="text/javascript">

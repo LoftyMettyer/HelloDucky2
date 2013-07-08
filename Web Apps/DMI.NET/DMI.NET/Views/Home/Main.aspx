@@ -25,11 +25,11 @@
 	End If
 
 	' RH 18/04/01 - Clear this session variable
-    Session("utilid") = ""        
+	Session("utilid") = ""
 
 %>
-    
-    <%=DMI.NET.svrCleanup.GetPageTitle("") %>
+		
+		<%=DMI.NET.svrCleanup.GetPageTitle("") %>
 
 </asp:Content>
 
@@ -45,67 +45,67 @@
 
 <script type="text/javascript">
 
-    $(function () {               
+		$(function () {               
 
-    	var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
-    	if (SelfServiceUserType == 'True') {
-    		$("#workframeset").css("left", "0px");
-    		$("#reportframeset").css("left", "0px");
-    	}
-    	else {
+			if (SelfServiceUserType == 'True') {
+				$("#workframeset").css("left", "0px");
+				$("#reportframeset").css("left", "0px");
+			}
+			else {
 
-    		// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
-    		var ContextMenuTab = {
-    			speed: 300,
-    			containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
-    			containerHeight: $('.ContextMenu-panel').outerHeight(),
-    			tabWidth: $('.ContextMenu-tab').outerWidth(),
-    			init: function () {
-    				//$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
-    				$('.ContextMenu-tab').click(function (event) {
-    					if ($('.ContextMenu-panel').hasClass('open')) {
-    						$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
-							    .removeClass('open');
-    						$("#workframeset").css("left", "30px");
-    						$("#reportframeset").css("left", "30px");
-    						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
+				// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
+				var ContextMenuTab = {
+					speed: 300,
+					containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
+					containerHeight: $('.ContextMenu-panel').outerHeight(),
+					tabWidth: $('.ContextMenu-tab').outerWidth(),
+					init: function () {
+						//$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
+						$('.ContextMenu-tab').click(function (event) {
+							if ($('.ContextMenu-panel').hasClass('open')) {
+								$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
+									.removeClass('open');
+								$("#workframeset").css("left", "30px");
+								$("#reportframeset").css("left", "30px");
+								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
 
 							} else {
 								$('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
-							    .addClass('open');
+									.addClass('open');
 								$("#workframeset").css("left", "350px");
 								$("#reportframeset").css("left", "350px");
 								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
 							}
-				    	event.preventDefault();
-				    });
-			    }
-		    };
+							event.preventDefault();
+						});
+					}
+				};
 				ContextMenuTab.init();
 			}
-    });
+		});
 
-    $(document).ready(function() {
-        $("#fixedlinksframe").show();
-        $("#FixedLinksContent").fadeIn("slow");
+		$(document).ready(function() {
+				$("#fixedlinksframe").show();
+				$("#FixedLinksContent").fadeIn("slow");
 
-        //Load Poll.asp, then reload every 30 seconds to keep
-        //session alive, and check for server messages.
-        refreshPollFrame(); // first time
-        // re-call the function each 30 seconds
-        window.setInterval("refreshPollFrame()", 30000);
+				//Load Poll.asp, then reload every 30 seconds to keep
+				//session alive, and check for server messages.
+				refreshPollFrame(); // first time
+				// re-call the function each 30 seconds
+				window.setInterval("refreshPollFrame()", 30000);
 
-        $(".popup").dialog({
-            autoOpen: false,
-            modal: true,
-            height: 550,
-            width: 800
-        });
-	    
+				$(".popup").dialog({
+						autoOpen: false,
+						modal: true,
+						height: 550,
+						width: 800
+				});
+			
 
-    	//load menu for dmi, or linksmain for ssi
-	    var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+			//load menu for dmi, or linksmain for ssi
+			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
 			if (SelfServiceUserType == 'True') {
 				$.ajax({
@@ -131,21 +131,21 @@
 			}
 
 
-    });
+		});
 
-    function refreshPollFrame() {
-        $.ajax({
-        	url: "<%:Url.Action("poll", "home")%>",
-        	dataType: 'html',
-            type: "POST",
-            success: function (html) {
-                $("#poll").html(html);
-            },
-            error: function (req, status, errorObj) {
-                //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-            }
-        });
-    }
+		function refreshPollFrame() {
+				$.ajax({
+					url: "<%:Url.Action("poll", "home")%>",
+					dataType: 'html',
+						type: "POST",
+						success: function (html) {
+								$("#poll").html(html);
+						},
+						error: function (req, status, errorObj) {
+								//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+						}
+				});
+		}
 
 
 </script>
@@ -187,12 +187,12 @@
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
-    
-    <div id="reportframeset" class="popup" data-framesource="util_run" style="">
-        <div id="reportframe"></div>
-    </div>
+		
+		<div id="reportframeset" class="popup" data-framesource="util_run" style="">
+				<div id="reportframe"></div>
+		</div>
 
-    <div id="messageframe" style="display: none">Message Page</div>
+		<div id="messageframe" style="display: none">Message Page</div>
 
 	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>
 

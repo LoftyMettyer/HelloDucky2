@@ -24,22 +24,22 @@
 			if (OpenHR.currentWorkPage() != "DEFAULT") {
 				fNoAction = true;
 
-			    var div = document.getElementById("emptyoption_vars");
-			    var txtAction = div.querySelector("#txtAction");
-			    var txtFromDef = div.querySelector("#txtFromDef");
-			    var txtOrderID = div.querySelector("#txtOrderID");
-			    var txtFilterSQL = div.querySelector("#txtFilterSQL");
-			    var txtFilterDef = div.querySelector("#txtFilterDef");
-			    var txtRecordID = div.querySelector("#txtRecordID");
-			    var txtColumnID = div.querySelector("#txtColumnID");
-			    var txtValue = div.querySelector("#txtValue");
-			    var txtFile = div.querySelector("#txtFile");
-			    var txtResultCode = div.querySelector("#txtResultCode");
-			    var txtPreReqFails = div.querySelector("#txtPreReqFails");
-			    var txtUnAvailFails = div.querySelector("#txtUnAvailFails");
-			    var txtOverlapFails = div.querySelector("#txtOverlapFails");
-			    var txtOverBookFails = div.querySelector("#txtOverBookFails");
-			    var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
+					var div = document.getElementById("emptyoption_vars");
+					var txtAction = div.querySelector("#txtAction");
+					var txtFromDef = div.querySelector("#txtFromDef");
+					var txtOrderID = div.querySelector("#txtOrderID");
+					var txtFilterSQL = div.querySelector("#txtFilterSQL");
+					var txtFilterDef = div.querySelector("#txtFilterDef");
+					var txtRecordID = div.querySelector("#txtRecordID");
+					var txtColumnID = div.querySelector("#txtColumnID");
+					var txtValue = div.querySelector("#txtValue");
+					var txtFile = div.querySelector("#txtFile");
+					var txtResultCode = div.querySelector("#txtResultCode");
+					var txtPreReqFails = div.querySelector("#txtPreReqFails");
+					var txtUnAvailFails = div.querySelector("#txtUnAvailFails");
+					var txtOverlapFails = div.querySelector("#txtOverlapFails");
+					var txtOverBookFails = div.querySelector("#txtOverBookFails");
+					var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
 
 				if (txtAction.value == "SELECTORDER") {
 					fNoAction = false;
@@ -89,11 +89,11 @@
 					//OpenHR.getFrame("workframe").refreshData();
 					refreshData();	//recedit
 				}
-			    var recEditControl;
-			    if (txtAction.value == "SELECTLINK") {
+					var recEditControl;
+					if (txtAction.value == "SELECTLINK") {
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
-				    
+						
 					var sControlName;
 					var sColumnID;
 					var dataCollection = window.frmEmptyOption.elements;
@@ -132,8 +132,8 @@
 
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
 					fNoAction = false;
-				    recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-				    recEditControl.setData(txtColumnID.value, txtFile.value);
+						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+						recEditControl.setData(txtColumnID.value, txtFile.value);
 					recEditControl.ChangedOLEPhoto(txtColumnID.value, "");
 					recEditControl.changed = true;
 
@@ -144,8 +144,8 @@
 
 				if (txtAction.value == "LINKOLE") {
 					fNoAction = false;
-				    recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-				    recEditControl.setData(txtColumnID.value, txtFile.value);
+						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+						recEditControl.setData(txtColumnID.value, txtFile.value);
 					//recEditControl.timestamp = <%=session("timestamp")%>;
 					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
 					//recEditControl.changed = true;
@@ -161,9 +161,9 @@
 						(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
 						(txtAction.value == "SELECTADDFROMWAITINGLIST_2") ||
 						(txtAction.value == "SELECTBULKBOOKINGS")) {
-				    var sPrefix;
-				    var sPrefix2;
-				    if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
+						var sPrefix;
+						var sPrefix2;
+						if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
 							(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
 							(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
 						sPrefix = "The employee";
@@ -191,7 +191,7 @@
 					iResultCode = txtResultCode.value;
 					if (iResultCode > 0) {
 						var iOverlapCode = iResultCode % 10;
-					    var iResultCode = iResultCode - iOverlapCode;
+							var iResultCode = iResultCode - iOverlapCode;
 						iResultCode = iResultCode / 10;
 						var iAvailabilityCode = iResultCode % 10;
 						iResultCode = iResultCode - iAvailabilityCode;
@@ -202,12 +202,12 @@
 						var iOverbookCode = iResultCode;
 
 						var sTransferErrorMsg = "";
-					    var sTransferWarningMsg = "";
-					    var sPreReqFails;
-					    var sUnAvailFails;
-					    var sOverlapFails;
-					    var sOverBookFails;
-					    if (txtAction.value == "SELECTBULKBOOKINGS") {
+							var sTransferWarningMsg = "";
+							var sPreReqFails;
+							var sUnAvailFails;
+							var sOverlapFails;
+							var sOverBookFails;
+							if (txtAction.value == "SELECTBULKBOOKINGS") {
 							sPreReqFails = txtPreReqFails.value;
 							sUnAvailFails = txtUnAvailFails.value;
 							sOverlapFails = txtOverlapFails.value;
@@ -284,7 +284,7 @@
 							}
 							OpenHR.messageBox(sTransferErrorMsg);                            
 							fTransferOK = false;
-                            
+														
 						} else if (sTransferWarningMsg.length > 0) {
 							/* Error - but over-ridable. */
 							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
@@ -305,12 +305,12 @@
 							}
 						}
 					}
-				    var optionDataForm;
-				    if (txtAction.value == "SELECTBOOKCOURSE_2") {
+						var optionDataForm;
+						if (txtAction.value == "SELECTBOOKCOURSE_2") {
 						if (fTransferOK == true) {
 							// Go ahead and book the course.
-						    optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-						    optionDataForm.txtOptionAction.value = "SELECTBOOKCOURSE_3";
+								optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
+								optionDataForm.txtOptionAction.value = "SELECTBOOKCOURSE_3";
 							optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 							optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 							optionDataForm.txtOptionValue.value = txtValue.value;
@@ -321,8 +321,8 @@
 						if (txtAction.value == "SELECTTRANSFERBOOKING_1") {
 							if (fTransferOK == true) {
 								// Go ahead and book the course.
-							    optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-							    optionDataForm.txtOptionAction.value = "SELECTTRANSFERBOOKING_2";
+									optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
+									optionDataForm.txtOptionAction.value = "SELECTTRANSFERBOOKING_2";
 								optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 								optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 
@@ -332,8 +332,8 @@
 							if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
 								if (fTransferOK == true) {
 									// Go ahead and book the course.
-								    optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-								    optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
+										optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+										optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
 									optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 									optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 									optionDataForm.txtOptionValue.value = txtValue.value;
@@ -344,8 +344,8 @@
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
 									if (fTransferOK == true) {
 										// Go ahead and make the bookings.
-									    optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-									    optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
+											optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+											optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
 										optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 										optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 										optionDataForm.txtOptionValue.value = txtValue.value;
@@ -382,25 +382,25 @@
 
 
 <%
-    Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
-    Response.Write("</div>" & vbCrLf)
+		Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("</div>" & vbCrLf)
 %>
 
 <form id="frmEmptyOption" name="frmEmptyOption">
@@ -410,9 +410,9 @@
 		Dim prmTableID
 		Dim prmRecordID
 		Dim rstLinkValues
-	    Dim sErrorDescription As String = ""
-    
-    
+			Dim sErrorDescription As String = ""
+		
+		
 		If Session("optionAction") = "SELECTLINK" Then
 			' Get the parent fields for the selected link.
 			cmdLinkValues = CreateObject("ADODB.Command")
@@ -443,9 +443,9 @@
 				If Not (rstLinkValues.bof And rstLinkValues.eof) Then
 					For iloop = 0 To (rstLinkValues.fields.count - 1)
 						If IsDBNull(rstLinkValues.fields(iloop).value) Then
-	                        Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value=''>" & vbCrLf)
+													Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value=''>" & vbCrLf)
 						Else
-	                        Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value='" & Replace(rstLinkValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+													Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value='" & Replace(rstLinkValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
 						End If
 					Next
 				End If
@@ -460,7 +460,7 @@
 			cmdLinkValues = Nothing
 		End If
 	
-	    Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
+			Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
 	%>
 </form>
 
