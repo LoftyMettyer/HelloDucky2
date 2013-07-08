@@ -723,9 +723,9 @@ function validateSave() {
 		fHasParents = false;
 		fLinked = false;
 
-		var ubound = (this.mavIDColumns.length / 3);
+		var ubound = (this.mavIDColumns.length);
 
-		for (iLoop = 1; iLoop <= (ubound) ; iLoop++) {
+		for (iLoop = 0; iLoop < (ubound) ; iLoop++) {
 
 			if (this.mavIDColumns[iLoop][2].length > 2) {
 				// Must be parent id column (ID_) rather that own record id column (id)
@@ -1811,6 +1811,7 @@ function getTabCaption(tabNumber) {
 
 
 function TBCourseRecordID() {
+	debugger;
 	// Training Booking specific.
 	// Return the Course Record ID.
 	// Used when editing a Training Booking record.
@@ -1939,9 +1940,9 @@ function ExecutePostSaveCode() {
 function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
 	//Get the ID of the linked table.
 	var lngLinkRecordID = 0;
-	var ubound = (window.mavIDColumns.length / 3);
+	var ubound = (window.mavIDColumns.length);
 
-	for (var iLoop = 1; iLoop <= (ubound) ; iLoop++) {
+	for (var iLoop = 0; iLoop < (ubound) ; iLoop++) {
 
 		if (window.mavIDColumns[iLoop][2] == "ID_" + lngLinkTableID) {
 			// The given column is an ID column so put the value into the ID column array.
