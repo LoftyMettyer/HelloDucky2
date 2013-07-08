@@ -205,7 +205,7 @@ function insertUpdateDef() {
 
 			if (fDoControl) {
 				//	Get the name of the column associated with the current control.
-				if (objScreenControl.ControlType == 2048) { //command button. TODO: should this include nav control?					
+				if (objScreenControl.ControlType == 2048) { //command button.
 					sColumnName = "ID_" + objScreenControl.LinkTableID;
 					sColumnID = sColumnName;
 				}
@@ -811,7 +811,7 @@ function getScreenControl_Collection(screenControlValue) {
 		OLEType: Number(controlItemArray[55]),
 		EmbeddedEnabled: (Number(controlItemArray[56]) != 0),
 		MaxOleSize: Number(controlItemArray[57]),
-		NavigateTo: controlItemArray[58],
+		NavigateTo: formatAddress(controlItemArray[58]),
 		NavigateIn: controlItemArray[59],
 		NavigateOnSave: controlItemArray[60],
 		ScreenReadOnly: (Number(controlItemArray[61]) != 0)
@@ -1410,7 +1410,6 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//var navigateIn = controlItemArray[59];
 			var displayText = (controlItemArray[8].length <= 0 ? "Navigate..." : controlItemArray[8]);
 			//var navigateTo = controlItemArray[58];
-
 			switch (Number(displayType)) {
 
 				case 0: //Hyperlink
@@ -1423,7 +1422,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					hyperlink.appendChild(document.createTextNode(displayText));
 					hyperlink.style.color = controlItemArray[10];
 					hyperlink.style.backgroundColor = controlItemArray[9];
-					hyperlink.setAttribute("href", controlItemArray[58]);
+					hyperlink.setAttribute("href", formatAddress(controlItemArray[58]));
 					hyperlink.setAttribute("target", "_blank");
 
 					hyperlink.id = controlID;
@@ -1448,7 +1447,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					button.style.color = controlItemArray[10];
 					button.style.backgroundColor = controlItemArray[9];
 
-					button.setAttribute("onclick", "window.open('" + controlItemArray[58] + "')");
+					//button.setAttribute("onclick", "window.open('" + formatAddress(controlItemArray[58]) + "')");
 
 					button.id = controlID;
 					button.style.padding = "0px";
@@ -1469,7 +1468,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					if (tabIndex > 0) el.tabindex = tabIndex;
 
 					addControl(iPageNo, el);
-					el.setAttribute('src', controlItemArray[58]);
+					el.setAttribute('src', formatAddress(controlItemArray[58]));
 
 					break;
 				case 3: //Hidden
@@ -1694,11 +1693,11 @@ function updateControl(lngColumnID, value) {
 					break;
 				case "button":					
 					if (controlType == Math.pow(2, 14)) {
-						//Navigation Control
+						//Navigation Control						
 						if (value.length <= 0) {
-							$(this).attr("href", "about:blank");
+							$(this).attr("onclick", "javascript:window.open('about:blank');");
 						} else {
-							$(this).attr("href", value);
+							$(this).attr("onclick", "javascript:window.open('" + formatAddress(value) + "');");
 						}
 					}
 					else if (controlType == 2048) {
@@ -1707,11 +1706,9 @@ function updateControl(lngColumnID, value) {
 						var lngLinkOrderID = $(this).attr("data-linkOrderID");
 						var lngLinkViewID = $(this).attr("data-linkViewID");
 						
-						$(this).attr('onclick', 'javascript:linkButtonClick(' + lngLinkTableID + ',' + lngLinkOrderID + ',' + lngLinkViewID + ');');
-						
-						break;
+						$(this).attr('onclick', 'javascript:linkButtonClick(' + lngLinkTableID + ',' + lngLinkOrderID + ',' + lngLinkViewID + ');');												
 					}
-					
+					break;
 				default:
 					$(this).val(value);
 
@@ -1775,14 +1772,27 @@ function updateControl(lngColumnID, value) {
 		//Spinner - done nwith number above..
 
 		//Nav controls
-		if ($(this).is("a")) {
+		if ($(this).is("a")) {		
 			if ((value == null) || (value == undefined)) {
 				$(this).attr("href", "about:blank");
 			} else {
 				if (value.length <= 0) {
 					$(this).attr("href", "about:blank");
 				} else {
-					$(this).attr("href", value);
+					$(this).attr("href", formatAddress(value));
+				}
+			}
+		}
+
+		if ($(this).is('iframe')) {
+
+			if ((value == null) || (value == undefined)) {
+				$(this).attr('src', 'about:blank');
+			} else {
+				if (value.length <= 0) {
+					$(this).attr('src', 'about:blank');
+				} else {
+					$(this).attr('src', formatAddress(value));
 				}
 			}
 		}
@@ -1811,7 +1821,6 @@ function getTabCaption(tabNumber) {
 
 
 function TBCourseRecordID() {
-	debugger;
 	// Training Booking specific.
 	// Return the Course Record ID.
 	// Used when editing a Training Booking record.
@@ -1955,3 +1964,11 @@ function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
 
 }
 
+function formatAddress(addressUrl) {
+	if (addressUrl == undefined) return false;
+
+	if ((addressUrl.substr(0, 7).toLowerCase() == 'http://') || (addressUrl.substr(1, 7).toLowerCase() == 'https://')) return addressUrl;
+
+	return 'http://' + addressUrl;
+
+}
