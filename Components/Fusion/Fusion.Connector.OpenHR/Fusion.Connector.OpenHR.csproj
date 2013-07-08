@@ -181,10 +181,18 @@
     <Content Include="Scripts\Fusion - Generic.sql" />
     <Content Include="Scripts\Fusion - NFP.sql" />
     <Content Include="Scripts\Fusion - Personnel.sql" />
-    <Content Include="Support\NServiceBus.Core.dll" />
-    <Content Include="Support\NServiceBus.dll" />
-    <Content Include="Support\NServiceBus.Tools.Management.Errors.ReturnToSourceQueue.dll" />
-    <Content Include="Support\ReturnToSourceQueue.exe" />
+    <Content Include="Support\NServiceBus.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Support\NServiceBus.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Support\NServiceBus.Tools.Management.Errors.ReturnToSourceQueue.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Support\ReturnToSourceQueue.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
