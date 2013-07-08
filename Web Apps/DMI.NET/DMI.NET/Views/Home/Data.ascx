@@ -583,7 +583,7 @@
     Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
     Response.Write("<input type='hidden' id='txtParentTableID' name='txtParentTableID' value='" & Session("parentTableID") & "'>" & vbCrLf)
     Response.Write("<input type='hidden' id='txtParentRecordID' name='txtParentRecordID' value='" & Session("parentRecordID") & "'>" & vbCrLf)
-    Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value=""" & Replace(Session("errorMessage"), """", "'") & """>" & vbCrLf)
     Response.Write("<input type='hidden' id='txtWarning' name='txtWarning' value='" & Session("warningFlag") & "'>" & vbCrLf)
 	' Clear the error message session variable.
 	Session("errorMessage") = ""
