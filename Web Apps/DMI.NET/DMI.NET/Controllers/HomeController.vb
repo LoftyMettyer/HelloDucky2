@@ -2253,11 +2253,35 @@ Namespace Controllers
 				Throw New HttpException(404, "Image not found")
 			End If
 
+			' Check file extension to ensure correct MIME type.
 			Try
-				Response.ContentType = "image/gif"
-				Response.OutputStream.Write(image, 0, image.Length)
-			Catch ex As Exception
 
+				Dim imageExtension As String = Path.GetExtension(objRs.fields(0).value).ToLowerInvariant()
+				Select Case imageExtension
+					Case ".ico"
+						Response.ContentType = "image/x-icon"
+						Response.OutputStream.Write(image, 0, image.Length)
+
+					Case ".bmp"
+						Response.ContentType = "image/bmp"
+						Response.OutputStream.Write(image, 0, image.Length)
+
+					Case ".gif"
+						Response.ContentType = "image/gif"
+						Response.OutputStream.Write(image, 0, image.Length)
+
+					Case ".jpg", ".jpeg"
+						Response.ContentType = "image/jpeg"
+						Response.OutputStream.Write(image, 0, image.Length)
+
+					Case Else
+						Response.ContentType = "image/bmp"
+						Response.OutputStream.Write(image, 0, image.Length)
+
+				End Select
+
+			Catch ex As Exception
+				' um...
 			End Try
 
 			objRs.close()
