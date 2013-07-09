@@ -1262,11 +1262,12 @@ function menu_refreshMenu() {
 				sCaption = sCaption + " (filtered)";
 			}
 
-			if ($("#frmData").length > 0) {
-				if (frmData.txtRecordDescription.value.length > 0) {
-					sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
-				}
-			}
+			//if ($("#frmData").length > 0) {
+			//	if (frmData.txtRecordDescription.value.length > 0) {
+			//		sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
+			//	}
+			//}
+			
 			menu_setVisibleMenuItem("mnutoolRecordPosition", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
