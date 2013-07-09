@@ -4,9 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OpenHR Intranet</title>
-    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+		<title>OpenHR Intranet</title>
+		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
 </head>
 
 <body id=bdyMain bgcolor='<%=session("ConvertedDesktopColour")%>' leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
@@ -207,30 +207,30 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdok type=button value=OK name=cmdok style="WIDTH: 80px" width="80" class="btn"
-									    onclick="setForm();"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="setForm();"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdnone type=button value=None name=cmdnone style="WIDTH: 80px" width="80" class="btn"
-									    onclick="frmPopup.txtSelectedID.value=0;frmPopup.txtSelectedName.value='';frmPopup.txtSelectedAccess.value='';frmPopup.txtSelectedUserName.value='';setForm();"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="frmPopup.txtSelectedID.value=0;frmPopup.txtSelectedName.value='';frmPopup.txtSelectedAccess.value='';frmPopup.txtSelectedUserName.value='';setForm();"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 									
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdcancel type=button value=Cancel name=cmdcancel style="WIDTH: 80px" width="80" class="btn"
-									    onclick="self.close();" 
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="self.close();" 
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 							</tr>
 						</table>
@@ -278,9 +278,9 @@
 	function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
 
 		var sFind,
-		    iLastTick,
-		    txtLastKeyFind = document.getElementById("txtLastKeyFind"),
-		    txtTicker = document.getElementById("txtTicker");
+				iLastTick,
+				txtLastKeyFind = document.getElementById("txtLastKeyFind"),
+				txtTicker = document.getElementById("txtTicker");
 
 		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
 			var dtTicker = new Date();
@@ -568,10 +568,10 @@
 	function util_recordselection_window_onload() {
 
 		var ssOleDBGridDefSelRecords = document.getElementById("ssOleDBGridDefSelRecords"),
-		    iResizeBy,
-		    iNewWidth,
-		    iNewHeight,
-		    bdyMain = document.getElementById("bdyMain");
+				iResizeBy,
+				iNewWidth,
+				iNewHeight,
+				bdyMain = document.getElementById("bdyMain");
 
 		setGridFont(ssOleDBGridDefSelRecords);
 

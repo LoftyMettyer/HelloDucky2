@@ -124,7 +124,7 @@
 					break;
 				}
 			}
-    
+		
 			iRecordID = frmtbFindForm.ssOleDBGridRecords.Columns(iIDColumnIndex).Value;
 		}
 
@@ -385,11 +385,11 @@
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoView name=btnGoView class="btn"
-									    onclick="tbgoView()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbgoView()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 								<TD>
 									&nbsp;
@@ -451,11 +451,11 @@
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoOrder name=btnGoOrder class="btn"
-									    onclick="tbgoOrder()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbgoOrder()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 							</TR>
 						</table>
@@ -567,21 +567,21 @@
 								</td>
 								<td width=10>
 									<input id="cmdSelect" name="cmdSelect" type="button" class="btn" value="Select" style="WIDTH: 75px" width="75" 
-									    onclick="tbSelect()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbSelect()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</td>
 								<td width=40>
 								</td>
 								<td width=10>
 									<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-									    onclick="tbCancel()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbCancel()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</td>
 							</tr>			
 						</table>

@@ -41,15 +41,15 @@
 
 <%
 	Dim objCrossTab As HR.Intranet.Server.CrossTab
-    
+		
 	objCrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
 	If (objCrossTab.ErrorString = "") Then
 
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 		Response.Write("   function util_run_crosstabs_window_onload() {" & vbCrLf)
 %>
-    setGridFont(ssOutputGrid);
-    setGridFont(ssHiddenGrid);
+		setGridFont(ssOutputGrid);
+		setGridFont(ssHiddenGrid);
 <%
 	Response.Write("	crosstab_loadAddRecords();" & vbCrLf)
 	Response.Write("    frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
@@ -59,7 +59,7 @@
 
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
 	Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
-    
+		
 	If objCrossTab.RecordDescExprID = 0 Then
 		Response.Write("    OpenHR.messageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
 	Else
@@ -302,10 +302,10 @@ End If
 									<input id="Text1" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 100%"
 										disabled="disabled"></td>
 								<tr height="5">
-	                <td></td>
+									<td></td>
 								</tr>
-                <% End If%>
-		            <td width="20"></td>
+								<% End If%>
+								<td width="20"></td>
 								<td width="100" valign="top">Type :</td>
 								<td width="5"></td>
 								<td width="300" valign="top">

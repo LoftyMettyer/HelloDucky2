@@ -128,7 +128,7 @@
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
 				try {
-				    window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
+						window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
 				}
 				catch (e) {
 				}
@@ -1069,11 +1069,11 @@
 											</TD>
 											<TD width="10" >
 												<INPUT type="button" value="Go" id="btnGoView" name="btnGoView" class="btn"
-												    onclick="goView()"
-                                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{button_onFocus(this);}catch(e){}"
-                                                    onblur="try{button_onBlur(this);}catch(e){}" />
+														onclick="goView()"
+																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																										onfocus="try{button_onFocus(this);}catch(e){}"
+																										onblur="try{button_onBlur(this);}catch(e){}" />
 											</TD>
 											<TD >
 												&nbsp;
@@ -1135,11 +1135,11 @@
 											</TD>
 											<TD width=10 height=10>
 												<INPUT type="button" value="Go" id=btnGoOrder name=btnGoOrder class="btn"
-												    onclick="goOrder()"
-                                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{button_onFocus(this);}catch(e){}"
-                                                    onblur="try{button_onBlur(this);}catch(e){}" />
+														onclick="goOrder()"
+																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																										onfocus="try{button_onFocus(this);}catch(e){}"
+																										onblur="try{button_onBlur(this);}catch(e){}" />
 											</TD>
 										</TR>
 									</table>
@@ -1235,7 +1235,7 @@
 <%	
 	end if
 %>
-	                    <INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value="<%=sErrorDescription%>">
+											<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value="<%=sErrorDescription%>">
 
 					</td>
 					<td width=20></td>
@@ -1251,20 +1251,20 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdOK type=button value=OK name=cmdOK style="WIDTH: 80px" width="80" class="btn"
-									    onclick="Selection_makeSelection()" 
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="Selection_makeSelection()" 
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdCancel type=button value=Cancel name=cmdCancel style="WIDTH: 80px" width="80" class="btn"
-									    onclick="window.parent.close();" 
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="window.parent.close();" 
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 							</TR>
 						</TABLE>

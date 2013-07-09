@@ -5,108 +5,108 @@
 
 <html>
 <head>
-    <title>OpenHR Intranet</title>
+		<title>OpenHR Intranet</title>
 
 <script type="text/javascript">
-    function util_validate_window_onload() {
-    	if (window.txtDisplay.value != "False") {
-    		$('#PleaseWaitDiv').hide();
-    	}
-    	else
-    	{
-    		nextPass();
-    	}
-    }
-    function overwrite(){
-        nextPass();
-    }
+		function util_validate_window_onload() {
+			if (window.txtDisplay.value != "False") {
+				$('#PleaseWaitDiv').hide();
+			}
+			else
+			{
+				nextPass();
+			}
+		}
+		function overwrite(){
+				nextPass();
+		}
 
-    function createNew(){
-        window.dialogArguments.OpenHR.createNew(self);		
-    }
+		function createNew(){
+				window.dialogArguments.OpenHR.createNew(self);		
+		}
 
-    function removeComponents(piIndex)
-    {
-        var sKeys;
+		function removeComponents(piIndex)
+		{
+				var sKeys;
 	
-        if (piIndex == 1) {
-            sKeys = window.txtDeletedKeys.value;
-        }
-        else {
-            if (piIndex == 2) {
-                sKeys = window.txtHiddenNotOwnerKeys.value;
-            }
-            else {
-                sKeys = window.txtHiddenOwnerKeys.value;
-            }
-        }
-        window.dialogArguments.OpenHR.removeComponents(sKeys);		  
-        cancelClick();
-    }
+				if (piIndex == 1) {
+						sKeys = window.txtDeletedKeys.value;
+				}
+				else {
+						if (piIndex == 2) {
+								sKeys = window.txtHiddenNotOwnerKeys.value;
+						}
+						else {
+								sKeys = window.txtHiddenOwnerKeys.value;
+						}
+				}
+				window.dialogArguments.OpenHR.removeComponents(sKeys);		  
+				cancelClick();
+		}
 
-    function returnToDefSel() {
+		function returnToDefSel() {
 
-        window.dialogArguments.OpenHR.returnToDefSel();		  
-        cancelClick();
-    }
+				window.dialogArguments.OpenHR.returnToDefSel();		  
+				cancelClick();
+		}
 
-    function makeHidden() {
-        window.dialogArguments.OpenHR.makeHidden(self);
-    }
+		function makeHidden() {
+				window.dialogArguments.OpenHR.makeHidden(self);
+		}
 
-    function nextPass() {
-        var iNextPass;
+		function nextPass() {
+				var iNextPass;
 
-        iNextPass = new Number(frmValidate.validatePass.value);
-        iNextPass = iNextPass + 1;
+				iNextPass = new Number(frmValidate.validatePass.value);
+				iNextPass = iNextPass + 1;
 
-        if (iNextPass <= 3) {
-            frmValidate.validatePass.value = iNextPass;
-            OpenHR.submitForm(frmValidate);
-        }
-        else {
-            var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
-            window.dialogArguments.OpenHR.submitForm(frmSend);
-            self.close();
-        }
-    }
+				if (iNextPass <= 3) {
+						frmValidate.validatePass.value = iNextPass;
+						OpenHR.submitForm(frmValidate);
+				}
+				else {
+						var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
+						window.dialogArguments.OpenHR.submitForm(frmSend);
+						self.close();
+				}
+		}
 
-    function cancelClick()
-    {
-        var iIndex;
-        var sCurrentPage = window.dialogArguments.document.location;
+		function cancelClick()
+		{
+				var iIndex;
+				var sCurrentPage = window.dialogArguments.document.location;
 
-        try {
-            sCurrentPage = sCurrentPage.toString();
-            iIndex = sCurrentPage.lastIndexOf("/");
+				try {
+						sCurrentPage = sCurrentPage.toString();
+						iIndex = sCurrentPage.lastIndexOf("/");
 
-            if (iIndex >= 0) {
-                sCurrentPage = sCurrentPage.substr(iIndex + 1);
-            }
+						if (iIndex >= 0) {
+								sCurrentPage = sCurrentPage.substr(iIndex + 1);
+						}
 	
-            iIndex = sCurrentPage.indexOf(".");
-            if (iIndex >= 0) {
-                sCurrentPage = sCurrentPage.substr(0, iIndex);
-            }
+						iIndex = sCurrentPage.indexOf(".");
+						if (iIndex >= 0) {
+								sCurrentPage = sCurrentPage.substr(0, iIndex);
+						}
 	
-            sCurrentPage = sCurrentPage.toUpperCase();
+						sCurrentPage = sCurrentPage.toUpperCase();
 
-            if (sCurrentPage == "UTIL_DEF_EXPRESSION") {
-                window.dialogArguments.OpenHR.reEnableControls();
-            }
-        }
-        catch(e) {
-        }
+						if (sCurrentPage == "UTIL_DEF_EXPRESSION") {
+								window.dialogArguments.OpenHR.reEnableControls();
+						}
+				}
+				catch(e) {
+				}
 
-        self.close();
-    }
+				self.close();
+		}
 </script>
 
 </head>
 
 <body id="bdyMain">
-    
-        <div id="util_validate_expression" data-framesource="util_validate_expression" style="text-align: center;">
+		
+				<div id="util_validate_expression" data-framesource="util_validate_expression" style="text-align: center;">
 					<div id="PleaseWaitDiv">
 							<h3>
 								<%
@@ -134,95 +134,95 @@
 	dim sUtilType2
 	dim iExprType
 
-    Dim cmdValidate
-    Dim prmUtilName
-    Dim prmUtilID
-    Dim prmExprType
-    Dim prmUtilOwner
-    Dim prmBaseTableID
-    Dim prmComponentDefn
-    Dim prmTimestamp
-    Dim prmDeletedKeys
-    Dim prmHiddenOwnerKeys
-    Dim prmHiddenNotOwnerKeys
-    Dim prmDeletedDescs
-    Dim prmHiddenOwnerDescs
-    Dim prmHiddenNotOwnerDescs
-    Dim prmErrorCode
+	Dim cmdValidate
+	Dim prmUtilName
+	Dim prmUtilID
+	Dim prmExprType
+	Dim prmUtilOwner
+	Dim prmBaseTableID
+	Dim prmComponentDefn
+	Dim prmTimestamp
+	Dim prmDeletedKeys
+	Dim prmHiddenOwnerKeys
+	Dim prmHiddenNotOwnerKeys
+	Dim prmDeletedDescs
+	Dim prmHiddenOwnerDescs
+	Dim prmHiddenNotOwnerDescs
+	Dim prmErrorCode
 
-    Dim iErrorCode As Integer
-    Dim sDeletedKeys As String
-    Dim sHiddenOwnerKeys As String
-    Dim sHiddenNotOwnerKeys As String
-    Dim sDeletedDescs As String
-    Dim sHiddenOwnerDescs As String
-    Dim sHiddenNotOwnerDescs As String
-    Dim iIndex As Integer
-    Dim sDesc As String
-  
-    Dim objExpression
-    Dim iReturnType As Integer
-      
-    Dim iValidityCode As Integer
-    Dim sValidityMessage As String
-    Dim iOriginalReturnType As Integer
-    Dim cmdDefPropRecords
-    Dim prmType
-    Dim prmID
-    Dim rsDefProp
-    Dim sDescription As String
-    Dim cmdCheckHidden
-    
-    Dim prmResult
-    Dim prmMsg
-    Dim sHiddenErrorMsg As String
-    
-	fOK = true
-	fDisplay = false
+	Dim iErrorCode As Integer
+	Dim sDeletedKeys As String
+	Dim sHiddenOwnerKeys As String
+	Dim sHiddenNotOwnerKeys As String
+	Dim sDeletedDescs As String
+	Dim sHiddenOwnerDescs As String
+	Dim sHiddenNotOwnerDescs As String
+	Dim iIndex As Integer
+	Dim sDesc As String
 	
-	if Request.form("validateUtilType") = "11" then
+	Dim objExpression
+	Dim iReturnType As Integer
+			
+	Dim iValidityCode As Integer
+	Dim sValidityMessage As String
+	Dim iOriginalReturnType As Integer
+	Dim cmdDefPropRecords
+	Dim prmType
+	Dim prmID
+	Dim rsDefProp
+	Dim sDescription As String
+	Dim cmdCheckHidden
+		
+	Dim prmResult
+	Dim prmMsg
+	Dim sHiddenErrorMsg As String
+		
+	fOK = True
+	fDisplay = False
+	
+	If Request.Form("validateUtilType") = "11" Then
 		sUtilType = "Filter"
 		sUtilType2 = "filter"
 		iExprType = 11
-	else
+	Else
 		sUtilType = "Calculation"
 		sUtilType2 = "calculation"
 		iExprType = 10
-	end if
+	End If
 		
-	if Request.form("validatePass") = 1 then
+	If Request.Form("validatePass") = 1 Then
 		cmdValidate = CreateObject("ADODB.Command")
 		cmdValidate.CommandText = "sp_ASRIntValidateExpression"
-		cmdValidate.CommandType = 4 ' Stored Procedure
+		cmdValidate.CommandType = 4	' Stored Procedure
 		cmdValidate.ActiveConnection = Session("databaseConnection")
 
 		prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 		cmdValidate.Parameters.Append(prmUtilName)
-		prmUtilName.value = Request.form("validateName")
+		prmUtilName.value = Request.Form("validateName")
 
 		prmUtilID = cmdValidate.CreateParameter("utilID", 3, 1)	'3=integer, 1=input
 		cmdValidate.Parameters.Append(prmUtilID)
-		prmUtilID.value = cleanNumeric(Request.form("validateUtilID"))
+		prmUtilID.value = CleanNumeric(Request.Form("validateUtilID"))
 
 		prmExprType = cmdValidate.CreateParameter("exprtype", 3, 1)	'3=integer, 1=input
 		cmdValidate.Parameters.Append(prmExprType)
-		prmExprType.value = cleanNumeric(iExprType)
+		prmExprType.value = CleanNumeric(iExprType)
 
 		prmUtilOwner = cmdValidate.CreateParameter("utilOwner", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 		cmdValidate.Parameters.Append(prmUtilOwner)
-		prmUtilOwner.value = Request.form("validateOwner")
+		prmUtilOwner.value = Request.Form("validateOwner")
 
 		prmBaseTableID = cmdValidate.CreateParameter("baseTableID", 3, 1)	'3=integer, 1=input
 		cmdValidate.Parameters.Append(prmBaseTableID)
-		prmBaseTableID.value = cleanNumeric(Request.form("validateBaseTableID"))
+		prmBaseTableID.value = CleanNumeric(Request.Form("validateBaseTableID"))
 
 		prmComponentDefn = cmdValidate.CreateParameter("componentDefn", 200, 1, 2147483646)
 		cmdValidate.Parameters.Append(prmComponentDefn)
-		prmComponentDefn.value = Request.form("components1")
+		prmComponentDefn.value = Request.Form("components1")
 
 		prmTimestamp = cmdValidate.CreateParameter("timestamp", 3, 1)	'3=integer, 1=input
 		cmdValidate.Parameters.Append(prmTimestamp)
-		prmTimestamp.value = cleanNumeric(Request.form("validateTimestamp"))
+		prmTimestamp.value = CleanNumeric(Request.Form("validateTimestamp"))
 
 		prmDeletedKeys = cmdValidate.CreateParameter("deletedKeys", 200, 2, 2147483646)
 		cmdValidate.Parameters.Append(prmDeletedKeys)
@@ -246,7 +246,7 @@
 		cmdValidate.Parameters.Append(prmErrorCode)
 
 		Err.Clear()
-		cmdValidate.Execute
+		cmdValidate.Execute()
 
 		Response.Write("<input type='hidden' id='txtErrorCode' name='txtErrorCode' value='" & cmdValidate.Parameters("errorCode").Value & "'>" & vbCrLf)
 		Response.Write("<input type='hidden' id='txtDeletedKeys' name='txtDeletedKeys' value='" & cmdValidate.Parameters("deletedKeys").Value & "'>" & vbCrLf)
@@ -688,17 +688,17 @@
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("				</tr>" & vbCrLf)
 		End If
-	end if	
-  
-    
-	if Request.form("validatePass") = 2 then
+	End If
+	
+		
+	If Request.Form("validatePass") = 2 Then
 		' Get the server DLL to validate the expression definition
-        objExpression = New HR.Intranet.Server.Expression
+		objExpression = New HR.Intranet.Server.Expression
 
 		' Pass required info to the DLL
-		objExpression.Username = session("username")
-        CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
-        
+		objExpression.Username = Session("username")
+		CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+				
 		If Request.Form("validateUtilType") = 11 Then
 			iExprType = 11
 			iReturnType = 3
@@ -838,13 +838,13 @@
 						Response.Write("					<td width='20'></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
 					End If
-									   
+										 
 					rsDefProp = Nothing
 					cmdDefPropRecords = Nothing
 				End If
 			End If
 		End If
-	end if
+	End If
 		
 	If Request.Form("validatePass") = 3 Then
 		If (Request.Form("validateUtilID") > 0) And _
@@ -990,19 +990,19 @@
 	</tr>
 </table>
 </div>
-            
+						
 
-    <form id="frmValidate" name="frmValidate" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
-        <input type="hidden" id="validatePass" name="validatePass" value='<%=Request.form("validatePass")%>'>
-        <input type="hidden" id="validateUtilID" name="validateUtilID" value='<%=Request.form("validateUtilID")%>'>
-        <input type="hidden" id="validateUtilType" name="validateUtilType" value='<%=Request.form("validateUtilType")%>'>
-        <input type="hidden" id="validateAccess" name="validateAccess" value='<%=Request.form("validateAccess")%>'>
-        <input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%=Request.form("validateOriginalAccess")%>'>
-        <input type="hidden" id="validateOwner" name="validateOwner" value='<%=Request.form("validateOwner")%>'>
+		<form id="frmValidate" name="frmValidate" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
+				<input type="hidden" id="validatePass" name="validatePass" value='<%=Request.form("validatePass")%>'>
+				<input type="hidden" id="validateUtilID" name="validateUtilID" value='<%=Request.form("validateUtilID")%>'>
+				<input type="hidden" id="validateUtilType" name="validateUtilType" value='<%=Request.form("validateUtilType")%>'>
+				<input type="hidden" id="validateAccess" name="validateAccess" value='<%=Request.form("validateAccess")%>'>
+				<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%=Request.form("validateOriginalAccess")%>'>
+				<input type="hidden" id="validateOwner" name="validateOwner" value='<%=Request.form("validateOwner")%>'>
 
-        <input type="hidden" id="components1" name="components1" value="<%=Request.form("components1")%>">
-        <input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=Request.form("validateBaseTableID")%>'>
-    </form>
+				<input type="hidden" id="components1" name="components1" value="<%=Request.form("components1")%>">
+				<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=Request.form("validateBaseTableID")%>'>
+		</form>
 
 
 </body>
@@ -1010,5 +1010,5 @@
 </html>
 
 <script type="text/javascript">
-    util_validate_window_onload();
+		util_validate_window_onload();
 </script>

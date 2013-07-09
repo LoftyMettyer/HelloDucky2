@@ -7,36 +7,36 @@
 
 <%
 
-    Dim dtStartDate
-    Dim dtEndDate
-    Dim strAbsenceTypes As String
-    Dim lngFilterID As Long
-    Dim lngPicklistID As Long
-    Dim lngPersonnelID As Long
-    Dim bPrintFilterPickList As Boolean
+		Dim dtStartDate
+		Dim dtEndDate
+		Dim strAbsenceTypes As String
+		Dim lngFilterID As Long
+		Dim lngPicklistID As Long
+		Dim lngPersonnelID As Long
+		Dim bPrintFilterPickList As Boolean
 
 	' Default output options
-    Dim bOutputPreview As Boolean
-    Dim lngOutputFormat As Long
-    Dim pblnOutputScreen As Boolean
-    Dim pblnOutputPrinter As Boolean
-    Dim pstrOutputPrinterName As String
-    Dim pblnOutputSave As Boolean
-    Dim plngOutputSaveExisting As Long
-    Dim pblnOutputEmail As Boolean
-    Dim plngOutputEmailID As Long
-    Dim pstrOutputEmailName As String
-    Dim pstrOutputEmailSubject As String
-    Dim pstrOutputEmailAttachAs As String
-    Dim pstrOutputFilename As String
+		Dim bOutputPreview As Boolean
+		Dim lngOutputFormat As Long
+		Dim pblnOutputScreen As Boolean
+		Dim pblnOutputPrinter As Boolean
+		Dim pstrOutputPrinterName As String
+		Dim pblnOutputSave As Boolean
+		Dim plngOutputSaveExisting As Long
+		Dim pblnOutputEmail As Boolean
+		Dim plngOutputEmailID As Long
+		Dim pstrOutputEmailName As String
+		Dim pstrOutputEmailSubject As String
+		Dim pstrOutputEmailAttachAs As String
+		Dim pstrOutputFilename As String
 
-    Dim lngStartDateColID As Long
-    Dim lngStartSessionColID As Long
-    Dim lngEndDateColID As Long
-    Dim lngEndSessionColID As Long
-    Dim lngTypeColID As Long
-    Dim lngReasonColID As Long
-    Dim lngDurationColID As Long
+		Dim lngStartDateColID As Long
+		Dim lngStartSessionColID As Long
+		Dim lngEndDateColID As Long
+		Dim lngEndSessionColID As Long
+		Dim lngTypeColID As Long
+		Dim lngReasonColID As Long
+		Dim lngDurationColID As Long
 	
 	' Get variables for Absence Breakdown / Bradford Factor
 	dtStartDate = convertLocaleDateToSQL(session("stdReport_StartDate"))
@@ -61,174 +61,174 @@
 	pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
 	pstrOutputFilename = session("stdReport_OutputFilename")
 
-    Dim cmdDefinition
-    Dim prmModuleKey
-    Dim prmParameterKey
-    Dim prmParameterValue
-    Dim lngHorColID As Long
-    Dim lngVerColID As Long
-    
+		Dim cmdDefinition
+		Dim prmModuleKey
+		Dim prmParameterKey
+		Dim prmParameterValue
+		Dim lngHorColID As Long
+		Dim lngVerColID As Long
+		
 	'Hard coded values for the horizontal cross tab fields (start sesssion)
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldStartSession"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 	
-  lngHorColID = cmdDefinition.Parameters("paramValue").value
+	lngHorColID = cmdDefinition.Parameters("paramValue").value
 	lngStartSessionColID = cmdDefinition.Parameters("paramValue").value
 
 	'Hard coded values for the vertical cross tab fields (absence type)
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldType"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 	
-  lngVerColID = cmdDefinition.Parameters("paramValue").value
+	lngVerColID = cmdDefinition.Parameters("paramValue").value
 	lngTypeColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldStartDate"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 		
 	lngStartDateColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldEndDate"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 		
 	lngEndDateColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldEndSession"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 		
 	lngEndSessionColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldReason"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 		
 	lngReasonColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = Server.CreateObject("ADODB.Command")
+		cmdDefinition = Server.CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-    cmdDefinition.ActiveConnection = Session("databaseConnection")
+		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmModuleKey)
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterKey)
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldDuration"
 
-    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-    cmdDefinition.Parameters.Append(prmParameterValue)
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+		cmdDefinition.Parameters.Append(prmParameterValue)
 
-    Err.Clear()
+		Err.Clear()
 	cmdDefinition.Execute
 		
 	lngDurationColID = cmdDefinition.Parameters("paramValue").value
 
-    cmdDefinition = Nothing
+		cmdDefinition = Nothing
 
-    Dim fok As Boolean
-    Dim objCrossTab As HR.Intranet.Server.CrossTab
-    Dim fNotCancelled As Boolean
-    Dim lngEventLogID As Long
-    Dim blnNoDefinition As Boolean
+		Dim fok As Boolean
+		Dim objCrossTab As HR.Intranet.Server.CrossTab
+		Dim fNotCancelled As Boolean
+		Dim lngEventLogID As Long
+		Dim blnNoDefinition As Boolean
 
-    Session("objCrossTab" & Session("utilid")) = Nothing
+		Session("objCrossTab" & Session("utilid")) = Nothing
 	Session("CT_Mode") = ""
 	Session("CT_PageNumber") = ""
 	Session("CT_IntersectionType") = ""
@@ -237,21 +237,21 @@
 	Session("CT_SupressZeros") = ""
 
 	if session("utiltype") = "" or _ 
-	   session("utilname") = "" or _ 
-	   session("utilid") = "" or _ 
-	   session("action") = "" then 
-	      
-        Response.Write("Error : Not all session variables found...<HR>")
-        Response.Write("Type = " & Session("utiltype") & "<BR>")
-        Response.Write("UtilName = " & Session("utilname") & "<BR>")
-        Response.Write("UtilID = " & Session("utilid") & "<BR>")
-        Response.Write("Action = " & Session("action") & "<BR>")
-        Response.End()
+		 session("utilname") = "" or _ 
+		 session("utilid") = "" or _ 
+		 session("action") = "" then 
+				
+				Response.Write("Error : Not all session variables found...<HR>")
+				Response.Write("Type = " & Session("utiltype") & "<BR>")
+				Response.Write("UtilName = " & Session("utilname") & "<BR>")
+				Response.Write("UtilID = " & Session("utilid") & "<BR>")
+				Response.Write("Action = " & Session("action") & "<BR>")
+				Response.End()
 	end if
 
 	' Create the reference to the DLL (Report Class)
-    objCrossTab = New CrossTab()
-    Session("objCrossTab" & Session("utilid")) = Nothing
+		objCrossTab = New CrossTab()
+		Session("objCrossTab" & Session("utilid")) = Nothing
 
 	' Pass required info to the DLL
 	objCrossTab.Username = session("username")
@@ -265,9 +265,9 @@
 
 	objCrossTab.CreateTablesCollection
 
-    Dim aPrompts
-    Dim fModuleOk As Boolean
-    
+		Dim aPrompts
+		Dim fModuleOk As Boolean
+		
 	aPrompts = Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
 
 	fModuleOK = true
@@ -365,29 +365,29 @@
 		if fok then fok = fNotCancelled
 	end if		
 
-    Session("objCrossTab" & Session("utilid")) = objCrossTab
+		Session("objCrossTab" & Session("utilid")) = objCrossTab
 
 %>
 
 <%
 
-    Response.Write("<script type=""text/javascript"">" & vbCrLf)
-    Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
-    Response.Write("{" & vbCrLf)
-    Response.Write("	var iCount;" & vbCrLf & vbCrLf)
+		Response.Write("<script type=""text/javascript"">" & vbCrLf)
+		Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
+		Response.Write("{" & vbCrLf)
+		Response.Write("	var iCount;" & vbCrLf & vbCrLf)
 
-    Response.Write("	iCount = new Number(txtLoadCount.value);" & vbCrLf)
-    Response.Write("	txtLoadCount.value = iCount + 1;" & vbCrLf & vbCrLf)
+		Response.Write("	iCount = new Number(txtLoadCount.value);" & vbCrLf)
+		Response.Write("	txtLoadCount.value = iCount + 1;" & vbCrLf & vbCrLf)
 
-    Response.Write("  if (iCount > 0) {	" & vbCrLf)
-    Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
-    Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
-    Response.Write("    getData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
-    Response.Write("  }" & vbCrLf & vbCrLf)
+		Response.Write("  if (iCount > 0) {	" & vbCrLf)
+		Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
+		Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
+		Response.Write("    getData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
+		Response.Write("  }" & vbCrLf & vbCrLf)
 
-    Response.Write("}" & vbCrLf)
+		Response.Write("}" & vbCrLf)
 
-    Response.Write("</script>" & vbCrLf)
+		Response.Write("</script>" & vbCrLf)
 
 %>
 
@@ -399,28 +399,28 @@ if fModuleOK then
 %>
 
 <div id="main" data-framesource="stdrpt_run_AbsenceBreakdown" style="display: block;">
-    <div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block;">
-        <%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
-    </div>
+		<div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block;">
+				<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
+		</div>
 
-    <div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">
-        <%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
-    </div>
-    
-    <div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">
-        <%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
-    </div>
+		<div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">
+				<%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
+		</div>
+		
+		<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">
+				<%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
+		</div>
 
-    <div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
-        <% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
-    </div>
+		<div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
+				<% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
+		</div>
 </div>
 
 
 <form id="frmOutput" name="frmOutput">
-    <input type="hidden" id="fok" name="fok" value="">
-    <input type="hidden" id="cancelled" name="cancelled" value="">
-    <input type="hidden" id="statusmessage" name="statusmessage" value="">
+		<input type="hidden" id="fok" name="fok" value="">
+		<input type="hidden" id="cancelled" name="cancelled" value="">
+		<input type="hidden" id="statusmessage" name="statusmessage" value="">
 </form>
 
 <%	
@@ -432,38 +432,38 @@ else
 	<TR>
 		<TD>
 			<table class="invisible" cellspacing=0 cellpadding=0>
-			  <tr>
-			    <td colspan=3 height=10></td>
-			  </tr>
-			  <tr> 
-			    <td width=20 height=10></td>
-			    <td align=center>
+				<tr>
+					<td colspan=3 height=10></td>
+				</tr>
+				<tr> 
+					<td width=20 height=10></td>
+					<td align=center>
 						<H4>Absence Breakdown Failed.</H4>
-			    </td>
-			    <td width=20></td>
-			  </tr>
-			  <tr>
-			    <td width=20 height=10></td>
-			    <td align=center nowrap>Module setup has not been completed.
-			    </td>
-			    <td width=20></td>
-			  </tr>
-			  <tr>
-			    <td colspan=3 height=10>&nbsp;</td>
-			  </tr>
-			  <tr> 
-			    <td colspan=3 height=10 align=center> 
-                    <INPUT TYPE=button VALUE=Close NAME=cmdClose class="btn" style="WIDTH: 80px" width=80 id=cmdClose
-					    OnClick=closeclick(); 
-                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                        onfocus="try{button_onFocus(this);}catch(e){}"
-                        onblur="try{button_onBlur(this);}catch(e){}" />
-			    </td>
-			  </tr>
-			  <tr> 
-			    <td colspan=3 height=10></td>
-			  </tr>
+					</td>
+					<td width=20></td>
+				</tr>
+				<tr>
+					<td width=20 height=10></td>
+					<td align=center nowrap>Module setup has not been completed.
+					</td>
+					<td width=20></td>
+				</tr>
+				<tr>
+					<td colspan=3 height=10>&nbsp;</td>
+				</tr>
+				<tr> 
+					<td colspan=3 height=10 align=center> 
+										<INPUT TYPE=button VALUE=Close NAME=cmdClose class="btn" style="WIDTH: 80px" width=80 id=cmdClose
+							OnClick=closeclick(); 
+												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+					</td>
+				</tr>
+				<tr> 
+					<td colspan=3 height=10></td>
+				</tr>
 			</table>
 		</td>
 	</tr>
@@ -477,12 +477,12 @@ end if
 
 <script type="text/javascript">
 
-    util_run_crosstabs_addhandlers();
-    util_run_crosstabs_window_onload();
-    
-    $("#reportframe").show();
+		util_run_crosstabs_addhandlers();
+		util_run_crosstabs_window_onload();
+		
+		$("#reportframe").show();
 
-    $("#top").hide();
-    $("#reportworkframe").show();
+		$("#top").hide();
+		$("#reportworkframe").show();
 
 </script>

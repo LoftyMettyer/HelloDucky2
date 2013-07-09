@@ -101,11 +101,11 @@
 				cmdDefn.CommandText = "sp_ASRIntGetCrossTabDefinition"
 				cmdDefn.CommandType = 4	' Stored Procedure
 				cmdDefn.ActiveConnection = Session("databaseConnection")
-                
+								
 				Dim prmUtilDefnID = cmdDefn.CreateParameter("utilid", 3, 1)	' 3=integer, 1=input
 				cmdDefn.Parameters.Append(prmUtilDefnID)
 				prmUtilDefnID.value = CleanNumeric(Session("utilid"))
-                
+								
 				Dim prmUser = cmdDefn.CreateParameter("user", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 				cmdDefn.Parameters.Append(prmUser)
 				prmUser.value = Session("username")
@@ -994,7 +994,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													Data Only
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1019,7 +1019,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													CSV File
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1044,7 +1044,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													HTML Document
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1069,7 +1069,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													Word Document
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1094,7 +1094,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													Excel Worksheet
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1119,7 +1119,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													Excel Chart
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1144,7 +1144,7 @@
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
 													Excel Pivot Table
-                                                                                                </label>
+																																																</label>
 												</td>
 												<td width="5">&nbsp</td>
 											</tr>
@@ -1400,17 +1400,17 @@
 		</tr>
 	</table>
 	</td>
-                        </tr>
-                    </TABLE>
-                </td>
-            </tr>
-        </TABLE></form>
+												</tr>
+										</TABLE>
+								</td>
+						</tr>
+				</TABLE></form>
 </div>
 </td>
-        <td width="10"></td>
+				<td width="10"></td>
 </tr> 
 
-        <tr height="10">
+				<tr height="10">
 					<td colspan="3"></td>
 				</tr>
 
@@ -1447,11 +1447,11 @@
 	<td colspan="3"></td>
 </tr>
 </table>
-    </td>
-    </tr> 
-    </table>
+		</td>
+		</tr> 
+		</table>
 
-        <input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
+				<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
 <input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
 <input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 
@@ -1463,7 +1463,7 @@
 <input type='hidden' id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 </form>
 
-    <form id="frmAccess">
+		<form id="frmAccess">
 			<%
 				sErrorDescription = ""
 	

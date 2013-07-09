@@ -3,664 +3,664 @@
 
 
 <script type="text/javascript">
-    function output_setOptions() {
+		function output_setOptions() {
 
-        var frmExport = OpenHR.getForm("reportframe", "frmExportData");
-        var outType = "#optOutputFormat" + frmExport.txtFormat.value;
-        var i;
+				var frmExport = OpenHR.getForm("reportframe", "frmExportData");
+				var outType = "#optOutputFormat" + frmExport.txtFormat.value;
+				var i;
 
-        $(outType)[0].checked = true;
-        frmOutputDef.chkDestination0.checked = frmExport.txtScreen;
+				$(outType)[0].checked = true;
+				frmOutputDef.chkDestination0.checked = frmExport.txtScreen;
 
-        if (frmExport.txtPrinter.value.toLowerCase() == "false" && frmExport.txtFormat.value != 0) {
-            frmOutputDef.chkDestination1.checked = false;
-        } else {
-            frmOutputDef.chkDestination1.checked = true;
-            populatePrinters();
-            for (i = 0; i < frmOutputDef.cboPrinterName.options.length; i++) {
-                if (frmOutputDef.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
-                    frmOutputDef.cboPrinterName.selectedIndex = i;
-                    break;
-                }
-            }
-        }
+				if (frmExport.txtPrinter.value.toLowerCase() == "false" && frmExport.txtFormat.value != 0) {
+						frmOutputDef.chkDestination1.checked = false;
+				} else {
+						frmOutputDef.chkDestination1.checked = true;
+						populatePrinters();
+						for (i = 0; i < frmOutputDef.cboPrinterName.options.length; i++) {
+								if (frmOutputDef.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
+										frmOutputDef.cboPrinterName.selectedIndex = i;
+										break;
+								}
+						}
+				}
 
-        if (frmExport.txtSave.value.toLowerCase() == "false") {
-            frmOutputDef.chkDestination2.checked = false;
-        } else {
-            frmOutputDef.chkDestination2.checked = true;
-            populateSaveExisting();
-            frmOutputDef.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
-        }
+				if (frmExport.txtSave.value.toLowerCase() == "false") {
+						frmOutputDef.chkDestination2.checked = false;
+				} else {
+						frmOutputDef.chkDestination2.checked = true;
+						populateSaveExisting();
+						frmOutputDef.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
+				}
 
-        if (frmExport.txtEmail.value.toLowerCase() == "false") {
-            frmOutputDef.chkDestination3.checked = false;
-        } else {
-            frmOutputDef.chkDestination3.checked = true;
-            frmOutputDef.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
-            frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
-            frmOutputDef.txtEmailSubject.value = frmExport.txtEmailSubject.value;
-            frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
-        }
+				if (frmExport.txtEmail.value.toLowerCase() == "false") {
+						frmOutputDef.chkDestination3.checked = false;
+				} else {
+						frmOutputDef.chkDestination3.checked = true;
+						frmOutputDef.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
+						frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
+						frmOutputDef.txtEmailSubject.value = frmExport.txtEmailSubject.value;
+						frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
+				}
 
-        frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
-        outputOptionsRefreshControls();
-        frmOutputDef.cmdOK.focus();
+				frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
+				outputOptionsRefreshControls();
+				frmOutputDef.cmdOK.focus();
 
-    }
+		}
 
-    function outputOptionsFormatClick(index)
-    {
-        frmOutputDef.chkDestination0.checked = false;
-        frmOutputDef.chkDestination1.checked = false;
-        frmOutputDef.chkDestination2.checked = false;
-        frmOutputDef.chkDestination3.checked = false;
+		function outputOptionsFormatClick(index)
+		{
+				frmOutputDef.chkDestination0.checked = false;
+				frmOutputDef.chkDestination1.checked = false;
+				frmOutputDef.chkDestination2.checked = false;
+				frmOutputDef.chkDestination3.checked = false;
 
-        if (index == 1) 
-        {
-            frmOutputDef.chkDestination2.checked = true;
-            frmOutputDef.cboSaveExisting.length = 0;
-            frmOutputDef.txtFilename.value = '';	
-        }
-        else if (index == 0) 
-        {
-            frmOutputDef.chkDestination1.checked = true;
-        }
-        else 
-        {
-            frmOutputDef.chkDestination0.checked = true;
-        }
+				if (index == 1) 
+				{
+						frmOutputDef.chkDestination2.checked = true;
+						frmOutputDef.cboSaveExisting.length = 0;
+						frmOutputDef.txtFilename.value = '';	
+				}
+				else if (index == 0) 
+				{
+						frmOutputDef.chkDestination1.checked = true;
+				}
+				else 
+				{
+						frmOutputDef.chkDestination0.checked = true;
+				}
 	
-        outputOptionsRefreshControls();
-    }
+				outputOptionsRefreshControls();
+		}
 
-    function outputOptionsRefreshControls()
-    {
-        with (frmOutputDef)
-        {
-            if (optOutputFormat0.checked == true)		//Data Only
-            {
-                //disable display on screen options FOR OUTPUT SCREEN ONLY
-                chkDestination0.checked = false;
-                checkbox_disable(chkDestination0, true);
+		function outputOptionsRefreshControls()
+		{
+				with (frmOutputDef)
+				{
+						if (optOutputFormat0.checked == true)		//Data Only
+						{
+								//disable display on screen options FOR OUTPUT SCREEN ONLY
+								chkDestination0.checked = false;
+								checkbox_disable(chkDestination0, true);
 
 
-                //enable-disable printer options
-                checkbox_disable(chkDestination1, false);	
-                if (chkDestination1.checked == true)
-                {
-                    populatePrinters();
-                    combo_disable(cboPrinterName, false);
-                }
-                else
-                {
-                    cboPrinterName.length = 0;
-                    combo_disable(cboPrinterName, true);
-                }
+								//enable-disable printer options
+								checkbox_disable(chkDestination1, false);	
+								if (chkDestination1.checked == true)
+								{
+										populatePrinters();
+										combo_disable(cboPrinterName, false);
+								}
+								else
+								{
+										cboPrinterName.length = 0;
+										combo_disable(cboPrinterName, true);
+								}
 			
-                //disable save options
-                chkDestination2.checked = false;
-                checkbox_disable(chkDestination2, true);
-                combo_disable(cboSaveExisting, true);
-                cboSaveExisting.length = 0;
-                txtFilename.value = '';
-                text_disable(txtFilename, true);
-                button_disable(cmdFilename, true);
+								//disable save options
+								chkDestination2.checked = false;
+								checkbox_disable(chkDestination2, true);
+								combo_disable(cboSaveExisting, true);
+								cboSaveExisting.length = 0;
+								txtFilename.value = '';
+								text_disable(txtFilename, true);
+								button_disable(cmdFilename, true);
 			
-                //disable email options
-                chkDestination3.checked = false;
-                checkbox_disable(chkDestination3, true);
-                //text_disable(txtEmailGroup, true);
-                txtEmailGroup.value = '';
-                txtEmailGroupID.value = 0;
-                button_disable(cmdEmailGroup, true);
-                text_disable(txtEmailSubject, true);
-                text_disable(txtEmailAttachAs, true);
-            }
-            else if (optOutputFormat1.checked == true)   //CSV File
-            {
-                //disable display on screen options
-                chkDestination0.checked = false;
-                checkbox_disable(chkDestination0, true);	
+								//disable email options
+								chkDestination3.checked = false;
+								checkbox_disable(chkDestination3, true);
+								//text_disable(txtEmailGroup, true);
+								txtEmailGroup.value = '';
+								txtEmailGroupID.value = 0;
+								button_disable(cmdEmailGroup, true);
+								text_disable(txtEmailSubject, true);
+								text_disable(txtEmailAttachAs, true);
+						}
+						else if (optOutputFormat1.checked == true)   //CSV File
+						{
+								//disable display on screen options
+								chkDestination0.checked = false;
+								checkbox_disable(chkDestination0, true);	
 			
-                //disable printer options
-                chkDestination1.checked = false;
-                checkbox_disable(chkDestination1, true);
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName, true);	
+								//disable printer options
+								chkDestination1.checked = false;
+								checkbox_disable(chkDestination1, true);
+								cboPrinterName.length = 0;
+								combo_disable(cboPrinterName, true);	
 						
-                //enable-disable save options
-                checkbox_disable(chkDestination2, false);
-                if (chkDestination2.checked == true)
-                {
-                    populateSaveExisting();
-                    combo_disable(cboSaveExisting, false);
-                    //text_disable(txtFilename, false);
-                    button_disable(cmdFilename, false);
-                }	
-                else
-                {
-                    cboSaveExisting.length = 0;
-                    combo_disable(cboSaveExisting, true);
-                    //text_disable(txtFilename, true);
-                    txtFilename.value = '';
-                    button_disable(cmdFilename, true);
-                }
+								//enable-disable save options
+								checkbox_disable(chkDestination2, false);
+								if (chkDestination2.checked == true)
+								{
+										populateSaveExisting();
+										combo_disable(cboSaveExisting, false);
+										//text_disable(txtFilename, false);
+										button_disable(cmdFilename, false);
+								}	
+								else
+								{
+										cboSaveExisting.length = 0;
+										combo_disable(cboSaveExisting, true);
+										//text_disable(txtFilename, true);
+										txtFilename.value = '';
+										button_disable(cmdFilename, true);
+								}
 			
-                //enable-disable email options
-                checkbox_disable(chkDestination3, false);
-                if (chkDestination3.checked == true)
-                {
-                    //text_disable(txtEmailGroup, false);
-                    text_disable(txtEmailSubject, false);
-                    button_disable(cmdEmailGroup, false);
-                    text_disable(txtEmailAttachAs, false);
-                }
-                else
-                {
-                    //text_disable(txtEmailGroup, true);
-                    txtEmailGroup.value = '';
-                    txtEmailGroupID.value = 0;
-                    button_disable(cmdEmailGroup, true);
-                    text_disable(txtEmailSubject, true);
-                    text_disable(txtEmailAttachAs, true);
-                }
-            }
-            else if (optOutputFormat2.checked == true)		//HTML Document
-            {
-                //disable display on screen options
-                checkbox_disable(chkDestination0, false);	
+								//enable-disable email options
+								checkbox_disable(chkDestination3, false);
+								if (chkDestination3.checked == true)
+								{
+										//text_disable(txtEmailGroup, false);
+										text_disable(txtEmailSubject, false);
+										button_disable(cmdEmailGroup, false);
+										text_disable(txtEmailAttachAs, false);
+								}
+								else
+								{
+										//text_disable(txtEmailGroup, true);
+										txtEmailGroup.value = '';
+										txtEmailGroupID.value = 0;
+										button_disable(cmdEmailGroup, true);
+										text_disable(txtEmailSubject, true);
+										text_disable(txtEmailAttachAs, true);
+								}
+						}
+						else if (optOutputFormat2.checked == true)		//HTML Document
+						{
+								//disable display on screen options
+								checkbox_disable(chkDestination0, false);	
 			
-                //disable printer options
-                chkDestination1.checked = false;
-                checkbox_disable(chkDestination1, true);
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName, true);	
+								//disable printer options
+								chkDestination1.checked = false;
+								checkbox_disable(chkDestination1, true);
+								cboPrinterName.length = 0;
+								combo_disable(cboPrinterName, true);	
 						
-                //enable-disable save options
-                checkbox_disable(chkDestination2, false);
-                if (chkDestination2.checked == true)
-                {
-                    populateSaveExisting();
-                    combo_disable(cboSaveExisting, false);
-                    //text_disable(txtFilename, false);
-                    button_disable(cmdFilename, false);
-                }	
-                else
-                {
-                    cboSaveExisting.length = 0;
-                    combo_disable(cboSaveExisting, true);
-                    //text_disable(txtFilename, true);
-                    txtFilename.value = '';
-                    button_disable(cmdFilename, true);
-                }
+								//enable-disable save options
+								checkbox_disable(chkDestination2, false);
+								if (chkDestination2.checked == true)
+								{
+										populateSaveExisting();
+										combo_disable(cboSaveExisting, false);
+										//text_disable(txtFilename, false);
+										button_disable(cmdFilename, false);
+								}	
+								else
+								{
+										cboSaveExisting.length = 0;
+										combo_disable(cboSaveExisting, true);
+										//text_disable(txtFilename, true);
+										txtFilename.value = '';
+										button_disable(cmdFilename, true);
+								}
 
-                //enable-disable email options
-                checkbox_disable(chkDestination3, false);
-                if (chkDestination3.checked == true)
-                {
-                    //text_disable(txtEmailGroup, false);
-                    text_disable(txtEmailSubject, false);
-                    button_disable(cmdEmailGroup, false);
-                    text_disable(txtEmailAttachAs, false);
-                }
-                else
-                {
-                    //text_disable(txtEmailGroup, true);
-                    txtEmailGroup.value = '';
-                    txtEmailGroupID.value = 0;
-                    button_disable(cmdEmailGroup, true);
-                    text_disable(txtEmailSubject, true);
-                    text_disable(txtEmailAttachAs, true);
-                }
-            }
-            else if (optOutputFormat3.checked == true)		//Word Document
-            {
-                //enable display on screen options
-                checkbox_disable(chkDestination0, false);	
+								//enable-disable email options
+								checkbox_disable(chkDestination3, false);
+								if (chkDestination3.checked == true)
+								{
+										//text_disable(txtEmailGroup, false);
+										text_disable(txtEmailSubject, false);
+										button_disable(cmdEmailGroup, false);
+										text_disable(txtEmailAttachAs, false);
+								}
+								else
+								{
+										//text_disable(txtEmailGroup, true);
+										txtEmailGroup.value = '';
+										txtEmailGroupID.value = 0;
+										button_disable(cmdEmailGroup, true);
+										text_disable(txtEmailSubject, true);
+										text_disable(txtEmailAttachAs, true);
+								}
+						}
+						else if (optOutputFormat3.checked == true)		//Word Document
+						{
+								//enable display on screen options
+								checkbox_disable(chkDestination0, false);	
 			
-                //enable-disable printer options
-                checkbox_disable(chkDestination1, false);	
-                if (chkDestination1.checked == true)
-                {
-                    populatePrinters();
-                    combo_disable(cboPrinterName, false);
-                }
-                else
-                {
-                    cboPrinterName.length = 0;
-                    combo_disable(cboPrinterName, true);
-                }
+								//enable-disable printer options
+								checkbox_disable(chkDestination1, false);	
+								if (chkDestination1.checked == true)
+								{
+										populatePrinters();
+										combo_disable(cboPrinterName, false);
+								}
+								else
+								{
+										cboPrinterName.length = 0;
+										combo_disable(cboPrinterName, true);
+								}
 										
-                //enable-disable save options
-                checkbox_disable(chkDestination2, false);
-                if (chkDestination2.checked == true)
-                {
-                    populateSaveExisting();
-                    combo_disable(cboSaveExisting, false);
-                    //text_disable(txtFilename, false);
-                    button_disable(cmdFilename, false);
-                }	
-                else
-                {
-                    cboSaveExisting.length = 0;
-                    combo_disable(cboSaveExisting, true);
-                    //text_disable(txtFilename, true);
-                    txtFilename.value = '';
-                    button_disable(cmdFilename, true);
-                }
+								//enable-disable save options
+								checkbox_disable(chkDestination2, false);
+								if (chkDestination2.checked == true)
+								{
+										populateSaveExisting();
+										combo_disable(cboSaveExisting, false);
+										//text_disable(txtFilename, false);
+										button_disable(cmdFilename, false);
+								}	
+								else
+								{
+										cboSaveExisting.length = 0;
+										combo_disable(cboSaveExisting, true);
+										//text_disable(txtFilename, true);
+										txtFilename.value = '';
+										button_disable(cmdFilename, true);
+								}
 			
-                //enable-disable email options
-                checkbox_disable(chkDestination3, false);
-                if (chkDestination3.checked == true)
-                {
-                    //text_disable(txtEmailGroup, false);
-                    text_disable(txtEmailSubject, false);
-                    button_disable(cmdEmailGroup, false);
-                    text_disable(txtEmailAttachAs, false);
-                }
-                else
-                {
-                    //text_disable(txtEmailGroup, true);
-                    txtEmailGroup.value = '';
-                    txtEmailGroupID.value = 0;
-                    button_disable(cmdEmailGroup, true);
-                    text_disable(txtEmailSubject, true);
-                    text_disable(txtEmailAttachAs, true);
-                }
-            }
-            else if ((optOutputFormat4.checked == true) ||
-                (optOutputFormat5.checked == true) ||
-                (optOutputFormat6.checked == true))
-            {
-                //enable display on screen options
-                checkbox_disable(chkDestination0, false);	
+								//enable-disable email options
+								checkbox_disable(chkDestination3, false);
+								if (chkDestination3.checked == true)
+								{
+										//text_disable(txtEmailGroup, false);
+										text_disable(txtEmailSubject, false);
+										button_disable(cmdEmailGroup, false);
+										text_disable(txtEmailAttachAs, false);
+								}
+								else
+								{
+										//text_disable(txtEmailGroup, true);
+										txtEmailGroup.value = '';
+										txtEmailGroupID.value = 0;
+										button_disable(cmdEmailGroup, true);
+										text_disable(txtEmailSubject, true);
+										text_disable(txtEmailAttachAs, true);
+								}
+						}
+						else if ((optOutputFormat4.checked == true) ||
+								(optOutputFormat5.checked == true) ||
+								(optOutputFormat6.checked == true))
+						{
+								//enable display on screen options
+								checkbox_disable(chkDestination0, false);	
 			
-                //enable-disable printer options
-                checkbox_disable(chkDestination1, false);	
-                if (chkDestination1.checked == true)
-                {
-                    populatePrinters();
-                    combo_disable(cboPrinterName, false);
-                }
-                else
-                {
-                    cboPrinterName.length = 0;
-                    combo_disable(cboPrinterName, true);
-                }
+								//enable-disable printer options
+								checkbox_disable(chkDestination1, false);	
+								if (chkDestination1.checked == true)
+								{
+										populatePrinters();
+										combo_disable(cboPrinterName, false);
+								}
+								else
+								{
+										cboPrinterName.length = 0;
+										combo_disable(cboPrinterName, true);
+								}
 										
-                //enable-disable save options
-                checkbox_disable(chkDestination2, false);
-                if (chkDestination2.checked == true)
-                {
-                    populateSaveExisting();
-                    combo_disable(cboSaveExisting, false);
-                    //text_disable(txtFilename, false);
-                    button_disable(cmdFilename, false);
-                }	
-                else
-                {
-                    cboSaveExisting.length = 0;
-                    combo_disable(cboSaveExisting, true);
-                    //text_disable(txtFilename, true);
-                    txtFilename.value = '';
-                    button_disable(cmdFilename, true);
-                }
+								//enable-disable save options
+								checkbox_disable(chkDestination2, false);
+								if (chkDestination2.checked == true)
+								{
+										populateSaveExisting();
+										combo_disable(cboSaveExisting, false);
+										//text_disable(txtFilename, false);
+										button_disable(cmdFilename, false);
+								}	
+								else
+								{
+										cboSaveExisting.length = 0;
+										combo_disable(cboSaveExisting, true);
+										//text_disable(txtFilename, true);
+										txtFilename.value = '';
+										button_disable(cmdFilename, true);
+								}
 			
-                //enable-disable email options
-                checkbox_disable(chkDestination3, false);
-                if (chkDestination3.checked == true)
-                {
-                    //text_disable(txtEmailGroup, false);
-                    text_disable(txtEmailSubject, false);
-                    button_disable(cmdEmailGroup, false);
-                    text_disable(txtEmailAttachAs, false);
-                }
-                else
-                {
-                    //text_disable(txtEmailGroup, true);
-                    txtEmailGroup.value = '';
-                    txtEmailGroupID.value = 0;
-                    button_disable(cmdEmailGroup, true);
-                    text_disable(txtEmailSubject, true);
-                    text_disable(txtEmailAttachAs, true);
-                }
-            }
-            else
-            {
-                optOutputFormat0.checked = true;
-                outputOptionsRefreshControls();
-            }
+								//enable-disable email options
+								checkbox_disable(chkDestination3, false);
+								if (chkDestination3.checked == true)
+								{
+										//text_disable(txtEmailGroup, false);
+										text_disable(txtEmailSubject, false);
+										button_disable(cmdEmailGroup, false);
+										text_disable(txtEmailAttachAs, false);
+								}
+								else
+								{
+										//text_disable(txtEmailGroup, true);
+										txtEmailGroup.value = '';
+										txtEmailGroupID.value = 0;
+										button_disable(cmdEmailGroup, true);
+										text_disable(txtEmailSubject, true);
+										text_disable(txtEmailAttachAs, true);
+								}
+						}
+						else
+						{
+								optOutputFormat0.checked = true;
+								outputOptionsRefreshControls();
+						}
 		
-            if (txtEmailSubject.disabled)
-            {
-                txtEmailSubject.value = '';
-            }
+						if (txtEmailSubject.disabled)
+						{
+								txtEmailSubject.value = '';
+						}
 
-            if (txtEmailAttachAs.disabled)
-            {
-                txtEmailAttachAs.value = '';
-            }
-            else
-            {
+						if (txtEmailAttachAs.disabled)
+						{
+								txtEmailAttachAs.value = '';
+						}
+						else
+						{
 		
-                if (txtEmailAttachAs.value == '') 
-                {
-                    if (txtFilename.value != '') 
-                    {
-                        sAttachmentName = new String(txtFilename.value);
-                        txtEmailAttachAs.value = sAttachmentName.substr(sAttachmentName.lastIndexOf("\\")+1);
-                        }
-                }
-            }
+								if (txtEmailAttachAs.value == '') 
+								{
+										if (txtFilename.value != '') 
+										{
+												sAttachmentName = new String(txtFilename.value);
+												txtEmailAttachAs.value = sAttachmentName.substr(sAttachmentName.lastIndexOf("\\")+1);
+												}
+								}
+						}
 
-            if (cmdFilename.disabled == true) 
-            {
-                txtFilename.value = "";
-            }
-        }
+						if (cmdFilename.disabled == true) 
+						{
+								txtFilename.value = "";
+						}
+				}
 
-    }
+		}
 
-    function populatePrinters()
-    {
-        with (frmOutputDef.cboPrinterName)
-        {
-            strCurrentPrinter = '';
-            if (selectedIndex > 0) 
-            {
-                strCurrentPrinter = options[selectedIndex].innerText;
-            }
+		function populatePrinters()
+		{
+				with (frmOutputDef.cboPrinterName)
+				{
+						strCurrentPrinter = '';
+						if (selectedIndex > 0) 
+						{
+								strCurrentPrinter = options[selectedIndex].innerText;
+						}
 
-            length = 0;
-            var oOption = document.createElement("OPTION");
-            options.add(oOption);
-            oOption.innerText = "<Default Printer>";
-            oOption.value = 0;
+						length = 0;
+						var oOption = document.createElement("OPTION");
+						options.add(oOption);
+						oOption.innerText = "<Default Printer>";
+						oOption.value = 0;
 
-            for (iLoop=0; iLoop<OpenHR.PrinterCount(); iLoop++)  
-            {
-                var oOption = document.createElement("OPTION");
-                options.add(oOption);
-                oOption.innerText = OpenHR.PrinterName(iLoop);
-                oOption.value = iLoop+1;
+						for (iLoop=0; iLoop<OpenHR.PrinterCount(); iLoop++)  
+						{
+								var oOption = document.createElement("OPTION");
+								options.add(oOption);
+								oOption.innerText = OpenHR.PrinterName(iLoop);
+								oOption.value = iLoop+1;
 
-                if (oOption.innerText == strCurrentPrinter) 
-                {
-                    selectedIndex = iLoop+1
-                }
-            }
-        }
-    }
+								if (oOption.innerText == strCurrentPrinter) 
+								{
+										selectedIndex = iLoop+1
+								}
+						}
+				}
+		}
 
-    function populateSaveExisting()
-    {
-        with (frmOutputDef.cboSaveExisting)
-        {
-            lngCurrentOption = 0;
-            if (selectedIndex > 0) 
-            {
-                lngCurrentOption = options[selectedIndex].value;
-            }
-            length = 0;
+		function populateSaveExisting()
+		{
+				with (frmOutputDef.cboSaveExisting)
+				{
+						lngCurrentOption = 0;
+						if (selectedIndex > 0) 
+						{
+								lngCurrentOption = options[selectedIndex].value;
+						}
+						length = 0;
 
-            var oOption = document.createElement("OPTION");
-            options.add(oOption);
-            oOption.innerText = "Overwrite";
-            oOption.value = 0;
+						var oOption = document.createElement("OPTION");
+						options.add(oOption);
+						oOption.innerText = "Overwrite";
+						oOption.value = 0;
 		
-            var oOption = document.createElement("OPTION");
-            options.add(oOption);
-            oOption.innerText = "Do not overwrite";
-            oOption.value = 1;
+						var oOption = document.createElement("OPTION");
+						options.add(oOption);
+						oOption.innerText = "Do not overwrite";
+						oOption.value = 1;
 		
-            var oOption = document.createElement("OPTION");
-            options.add(oOption);
-            oOption.innerText = "Add sequential number to name";
-            oOption.value = 2;
+						var oOption = document.createElement("OPTION");
+						options.add(oOption);
+						oOption.innerText = "Add sequential number to name";
+						oOption.value = 2;
 		
-            var oOption = document.createElement("OPTION");
-            options.add(oOption);
-            oOption.innerText = "Append to file";
-            oOption.value = 3;
+						var oOption = document.createElement("OPTION");
+						options.add(oOption);
+						oOption.innerText = "Append to file";
+						oOption.value = 3;
 		
-            if ((frmOutputDef.optOutputFormat4.checked) ||
-                (frmOutputDef.optOutputFormat5.checked) ||
-                (frmOutputDef.optOutputFormat6.checked)) 
-            {
-                var oOption = document.createElement("OPTION");
-                options.add(oOption);
-                oOption.innerText = "Create new sheet in workbook";
-                oOption.value = 4;
-            }
+						if ((frmOutputDef.optOutputFormat4.checked) ||
+								(frmOutputDef.optOutputFormat5.checked) ||
+								(frmOutputDef.optOutputFormat6.checked)) 
+						{
+								var oOption = document.createElement("OPTION");
+								options.add(oOption);
+								oOption.innerText = "Create new sheet in workbook";
+								oOption.value = 4;
+						}
 
-            for (iLoop=0; iLoop<options.length; iLoop++)  
-            {
-                if (options(iLoop).value == lngCurrentOption) 
-                {
-                    selectedIndex = iLoop
-                    break;
-                }
-            }
-        }
-    }
+						for (iLoop=0; iLoop<options.length; iLoop++)  
+						{
+								if (options(iLoop).value == lngCurrentOption) 
+								{
+										selectedIndex = iLoop
+										break;
+								}
+						}
+				}
+		}
 
-    function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
-    {
-        dlgwinprops = "center:yes;" +
-            "dialogHeight:" + pHeight + "px;" +
-            "dialogWidth:" + pWidth + "px;" +
-            "help:no;" +
-            "resizable:" + psResizable + ";" +
-            "scroll:" + psScroll + ";" +
-            "status:no;";
-        window.showModalDialog(pDestination, self, dlgwinprops);
-    }
+		function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
+		{
+				dlgwinprops = "center:yes;" +
+						"dialogHeight:" + pHeight + "px;" +
+						"dialogWidth:" + pWidth + "px;" +
+						"help:no;" +
+						"resizable:" + psResizable + ";" +
+						"scroll:" + psScroll + ";" +
+						"status:no;";
+				window.showModalDialog(pDestination, self, dlgwinprops);
+		}
 
-    function selectEmailGroup()
-    {
-        var sURL;
+		function selectEmailGroup()
+		{
+				var sURL;
 	
-        frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value; 
+				frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value; 
 
-        sURL = "util_emailSelection" +
-            "?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-        openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
-    }
+				sURL = "util_emailSelection" +
+						"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
+				openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
+		}
 
-    function outputOptionsOKClick() 
-    {
-        if ((frmOutputDef.chkDestination0.checked == false) && 
-            (frmOutputDef.chkDestination1.checked == false) && 
-            (frmOutputDef.chkDestination2.checked == false) && 
-            (frmOutputDef.chkDestination3.checked == false)) 
-        {
-            OpenHR.MessageBox("You must select a destination",48,"Output Options");
-            window.focus();
-            return;
-        }
+		function outputOptionsOKClick() 
+		{
+				if ((frmOutputDef.chkDestination0.checked == false) && 
+						(frmOutputDef.chkDestination1.checked == false) && 
+						(frmOutputDef.chkDestination2.checked == false) && 
+						(frmOutputDef.chkDestination3.checked == false)) 
+				{
+						OpenHR.MessageBox("You must select a destination",48,"Output Options");
+						window.focus();
+						return;
+				}
 
-        var sAttachmentName = new String(frmOutputDef.txtEmailAttachAs.value);
-        if ((sAttachmentName.indexOf("/") != -1) || 
-            (sAttachmentName.indexOf(":") != -1) || 
-            (sAttachmentName.indexOf("?") != -1) || 
-            (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) || 
-            (sAttachmentName.indexOf("<") != -1) || 
-            (sAttachmentName.indexOf(">") != -1) || 
-            (sAttachmentName.indexOf("|") != -1) || 
-            (sAttachmentName.indexOf("\\") != -1) || 
-            (sAttachmentName.indexOf("*") != -1)) 
-        {
-            OpenHR.MessageBox("The attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ *",48,"Output Options");
-            window.focus();
-            return;
-        }
+				var sAttachmentName = new String(frmOutputDef.txtEmailAttachAs.value);
+				if ((sAttachmentName.indexOf("/") != -1) || 
+						(sAttachmentName.indexOf(":") != -1) || 
+						(sAttachmentName.indexOf("?") != -1) || 
+						(sAttachmentName.indexOf(String.fromCharCode(34)) != -1) || 
+						(sAttachmentName.indexOf("<") != -1) || 
+						(sAttachmentName.indexOf(">") != -1) || 
+						(sAttachmentName.indexOf("|") != -1) || 
+						(sAttachmentName.indexOf("\\") != -1) || 
+						(sAttachmentName.indexOf("*") != -1)) 
+				{
+						OpenHR.MessageBox("The attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ *",48,"Output Options");
+						window.focus();
+						return;
+				}
 
-        if ((frmOutputDef.txtFilename.value == "") 
-            && (frmOutputDef.cmdFilename.disabled == false)) 
-        {
-            OpenHR.MessageBox("You must enter a file name",48,"Output Options");
-            window.focus();
-            return;
-        }
+				if ((frmOutputDef.txtFilename.value == "") 
+						&& (frmOutputDef.cmdFilename.disabled == false)) 
+				{
+						OpenHR.MessageBox("You must enter a file name",48,"Output Options");
+						window.focus();
+						return;
+				}
 
-        if ((frmOutputDef.txtEmailGroup.value == "") 
-            && (frmOutputDef.cmdEmailGroup.disabled == false)) 
-        {
-            OpenHR.MessageBox("You must select an email group",48,"Output Options");
-            window.focus();
-            return;
-        }
+				if ((frmOutputDef.txtEmailGroup.value == "") 
+						&& (frmOutputDef.cmdEmailGroup.disabled == false)) 
+				{
+						OpenHR.MessageBox("You must select an email group",48,"Output Options");
+						window.focus();
+						return;
+				}
 
-        if ((frmOutputDef.chkDestination3.checked) 
-            && (frmOutputDef.txtEmailAttachAs.value == ''))
-        {
-            OpenHR.MessageBox("You must enter an email attachment file name.",48,"Output Options");
-            window.focus();
-            return;
-        }
+				if ((frmOutputDef.chkDestination3.checked) 
+						&& (frmOutputDef.txtEmailAttachAs.value == ''))
+				{
+						OpenHR.MessageBox("You must enter an email attachment file name.",48,"Output Options");
+						window.focus();
+						return;
+				}
 	
-        window.ShowWaitFrame("Outputting...");	
+				window.ShowWaitFrame("Outputting...");	
 	
-        //  The doExport function is where it all continues
-        window.setTimeout('doExport()',1000);	
-    }
+				//  The doExport function is where it all continues
+				window.setTimeout('doExport()',1000);	
+		}
 
-    function doExport()
-    {
-        //Send the values back to the calling form...
-        var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
+		function doExport()
+		{
+				//Send the values back to the calling form...
+				var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
 
-        frmExportData.txtFormat.value = 0;
-        if (frmOutputDef.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
+				frmExportData.txtFormat.value = 0;
+				if (frmOutputDef.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
 
-        //CSV
-        if (frmOutputDef.optOutputFormat2.checked == true) {frmExportData.txtFormat.value = 2; }	
+				//CSV
+				if (frmOutputDef.optOutputFormat2.checked == true) {frmExportData.txtFormat.value = 2; }	
 
-        //HTML
-        if (frmOutputDef.optOutputFormat3.checked == true) {frmExportData.txtFormat.value = 3; }	
+				//HTML
+				if (frmOutputDef.optOutputFormat3.checked == true) {frmExportData.txtFormat.value = 3; }	
 
-        //WORD
-        if (frmOutputDef.optOutputFormat4.checked == true) {frmExportData.txtFormat.value = 4; }	
+				//WORD
+				if (frmOutputDef.optOutputFormat4.checked == true) {frmExportData.txtFormat.value = 4; }	
 
-        //EXCEL
-        if (frmOutputDef.optOutputFormat5.checked == true) {frmExportData.txtFormat.value = 5; }	
+				//EXCEL
+				if (frmOutputDef.optOutputFormat5.checked == true) {frmExportData.txtFormat.value = 5; }	
 
-        //GRAPH
-        if (frmOutputDef.optOutputFormat6.checked == true) {frmExportData.txtFormat.value = 6; }	
+				//GRAPH
+				if (frmOutputDef.optOutputFormat6.checked == true) {frmExportData.txtFormat.value = 6; }	
 
-        //PIVOT
+				//PIVOT
 
-        frmExportData.txtScreen.value = frmOutputDef.chkDestination0.checked;
+				frmExportData.txtScreen.value = frmOutputDef.chkDestination0.checked;
 
-        frmExportData.txtPrinter.value = frmOutputDef.chkDestination1.checked;
-        frmExportData.txtPrinterName.value = '';
-        if (frmOutputDef.cboPrinterName.selectedIndex != -1) 
-        {
-            frmExportData.txtPrinterName.value = frmOutputDef.cboPrinterName.options(frmOutputDef.cboPrinterName.selectedIndex).innerText;
-        }
+				frmExportData.txtPrinter.value = frmOutputDef.chkDestination1.checked;
+				frmExportData.txtPrinterName.value = '';
+				if (frmOutputDef.cboPrinterName.selectedIndex != -1) 
+				{
+						frmExportData.txtPrinterName.value = frmOutputDef.cboPrinterName.options(frmOutputDef.cboPrinterName.selectedIndex).innerText;
+				}
 
-        frmExportData.txtSave.value = frmOutputDef.chkDestination2.checked;
-        frmExportData.txtSaveExisting.value = frmOutputDef.cboSaveExisting.selectedIndex;
-        frmExportData.txtEmail.value = frmOutputDef.chkDestination3.checked;
-        frmExportData.txtEmailAddr.value = frmOutputDef.txtEmailGroupID.value;
-        frmExportData.txtEmailAddrName.value = frmOutputDef.txtEmailGroup.value;
-        frmExportData.txtEmailSubject.value = frmOutputDef.txtEmailSubject.value;
-        frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
-        frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
+				frmExportData.txtSave.value = frmOutputDef.chkDestination2.checked;
+				frmExportData.txtSaveExisting.value = frmOutputDef.cboSaveExisting.selectedIndex;
+				frmExportData.txtEmail.value = frmOutputDef.chkDestination3.checked;
+				frmExportData.txtEmailAddr.value = frmOutputDef.txtEmailGroupID.value;
+				frmExportData.txtEmailAddrName.value = frmOutputDef.txtEmailGroup.value;
+				frmExportData.txtEmailSubject.value = frmOutputDef.txtEmailSubject.value;
+				frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
+				frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
-        var frmGetDataForm = OpenHR.getForm("reportdataframe", "frmGetReportData");
+				var frmGetDataForm = OpenHR.getForm("reportdataframe", "frmGetReportData");
 	
-        if (frmOutputDef.txtEmailGroupID.value > 0) 
-        {
-            if (frmOutputDef.txtUtilType.value == 17)
-            {
-                frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-                window.ExportData("OUTPUTRUN");
-            }
-            else
-            {
-                frmGetDataForm.txtMode.value = "EMAILGROUP";
-                frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-                OpenHR.submitForm(frmGetDataForm);
-            }
-        }
-        else
-        {
-            frmGetDataForm.txtEmailGroupID.value = 0;
-            window.ExportData("OUTPUTRUN");
-        }
+				if (frmOutputDef.txtEmailGroupID.value > 0) 
+				{
+						if (frmOutputDef.txtUtilType.value == 17)
+						{
+								frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
+								window.ExportData("OUTPUTRUN");
+						}
+						else
+						{
+								frmGetDataForm.txtMode.value = "EMAILGROUP";
+								frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
+								OpenHR.submitForm(frmGetDataForm);
+						}
+				}
+				else
+				{
+						frmGetDataForm.txtEmailGroupID.value = 0;
+						window.ExportData("OUTPUTRUN");
+				}
 		
-        if (frmOutputDef.txtUtilType.value == 2)
-        {		
-            window.ShowDataFrame();
-        }
-    }
+				if (frmOutputDef.txtUtilType.value == 2)
+				{		
+						window.ShowDataFrame();
+				}
+		}
 
-    function saveFile()
-    {
-        dialog.CancelError = true;
-        dialog.DialogTitle = "Output Document";
-        dialog.Flags = 2621444;
+		function saveFile()
+		{
+				dialog.CancelError = true;
+				dialog.DialogTitle = "Output Document";
+				dialog.Flags = 2621444;
 
-        if (frmOutputDef.optOutputFormat1.checked == true) 
-        {
-            //CSV
-            dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
-        }
-        else if (frmOutputDef.optOutputFormat2.checked == true) 
-        {
-            //HTML
-            dialog.Filter = "HTML Document (*.htm)|*.htm";
-        }
-        else if (frmOutputDef.optOutputFormat3.checked == true) 
-        {
-            //WORD
-            //dialog.Filter = "Word Document (*.doc)|*.doc";
-            dialog.Filter = frmOutputDef.txtWordFormats.value;
-            dialog.FilterIndex = frmOutputDef.txtWordFormatDefaultIndex.value;
-        }
-        else 
-        {
-            //EXCEL
-            //dialog.Filter = "Excel Workbook (*.xls)|*.xls";
-            dialog.Filter = frmOutputDef.txtExcelFormats.value;
-            dialog.FilterIndex = frmOutputDef.txtExcelFormatDefaultIndex.value;
-        }
+				if (frmOutputDef.optOutputFormat1.checked == true) 
+				{
+						//CSV
+						dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
+				}
+				else if (frmOutputDef.optOutputFormat2.checked == true) 
+				{
+						//HTML
+						dialog.Filter = "HTML Document (*.htm)|*.htm";
+				}
+				else if (frmOutputDef.optOutputFormat3.checked == true) 
+				{
+						//WORD
+						//dialog.Filter = "Word Document (*.doc)|*.doc";
+						dialog.Filter = frmOutputDef.txtWordFormats.value;
+						dialog.FilterIndex = frmOutputDef.txtWordFormatDefaultIndex.value;
+				}
+				else 
+				{
+						//EXCEL
+						//dialog.Filter = "Excel Workbook (*.xls)|*.xls";
+						dialog.Filter = frmOutputDef.txtExcelFormats.value;
+						dialog.FilterIndex = frmOutputDef.txtExcelFormatDefaultIndex.value;
+				}
 
-        if (frmOutputDef.txtFilename.value.length == 0) 
-        {
-            sKey = new String("documentspath_");
-            sKey = sKey.concat(frmOutputDef.txtDatabase.value);
-            sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-            dialog.InitDir = sPath;
-        }
-        else 
-        {
-            dialog.FileName = frmOutputDef.txtFilename.value;
-        }
+				if (frmOutputDef.txtFilename.value.length == 0) 
+				{
+						sKey = new String("documentspath_");
+						sKey = sKey.concat(frmOutputDef.txtDatabase.value);
+						sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+						dialog.InitDir = sPath;
+				}
+				else 
+				{
+						dialog.FileName = frmOutputDef.txtFilename.value;
+				}
 
-        try 
-        {
-            dialog.ShowSave();
+				try 
+				{
+						dialog.ShowSave();
 
-            if (dialog.FileName.length > 256) 
-            {
-                OpenHR.MessageBox("Path and file name must not exceed 256 characters in length");
-                window.focus();
-                return;
-            }
+						if (dialog.FileName.length > 256) 
+						{
+								OpenHR.MessageBox("Path and file name must not exceed 256 characters in length");
+								window.focus();
+								return;
+						}
 
-            frmOutputDef.txtFilename.value = dialog.FileName;
-        }
-        catch(e) {}
-    }
+						frmOutputDef.txtFilename.value = dialog.FileName;
+				}
+				catch(e) {}
+		}
 
 </script>
 
 <OBJECT classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" 
 	id=dialog 
-   codebase="cabs/comdlg32.cab#Version=1,0,0,0"
+	 codebase="cabs/comdlg32.cab#Version=1,0,0,0"
 	style="LEFT: 0px; TOP: 0px" 
 	VIEWASTEXT>
 	<PARAM NAME="_ExtentX" VALUE="847">
@@ -695,7 +695,7 @@
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
 
 <form id="frmOutputDef" name="frmOutputDef">
-    <table align=center class="outline" cellPadding=5 width=100% height=100% cellSpacing=0>
+		<table align=center class="outline" cellPadding=5 width=100% height=100% cellSpacing=0>
 	<TR>
 		<TD>
 
@@ -721,22 +721,22 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat0 value=0
-																			    onClick="outputOptionsFormatClick(0);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(0);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat0"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Data Only
-																		      
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat0"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Data Only
+																					
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -747,22 +747,22 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat1 value=1
-																			    onClick="outputOptionsFormatClick(1);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(1);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat1"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  CSV File
-																		      
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat1"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			CSV File
+																					
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -773,22 +773,22 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>																		
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat2 value=2
-																			    onClick="outputOptionsFormatClick(2);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(2);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat2"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  HTML Document
-																		      
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat2"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			HTML Document
+																					
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -798,22 +798,22 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat3 value=3
-																			    onClick="outputOptionsFormatClick(3);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(3);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat3"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Word Document
-																		      </label>
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat3"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Word Document
+																					</label>
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -823,22 +823,22 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat4 value=4
-																			    onClick="outputOptionsFormatClick(4);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(4);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat4"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Excel Worksheet
-																		      
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat4"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Excel Worksheet
+																					
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -889,21 +889,21 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat5 value=5
-																			    onClick="outputOptionsFormatClick(5);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(5);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat5"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Excel Chart
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat5"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Excel Chart
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -940,21 +940,21 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat5 value=5
-																			    onClick="outputOptionsFormatClick(5);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(5);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat5"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Excel Chart
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat5"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Excel Chart
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -964,21 +964,21 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>																		
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat6 value=6
-																			    onClick="outputOptionsFormatClick(6);" 
-                                          onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{radio_onFocus(this);}catch(e){}"
-                                          onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(6);" 
+																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																					onfocus="try{radio_onFocus(this);}catch(e){}"
+																					onblur="try{radio_onBlur(this);}catch(e){}"/>
 																		</td>
 																		<td align=left nowrap>
-                                          <label 
-                                              tabindex=-1
-                                              for="optOutputFormat6"
-                                              class="radio"
-                                              onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                              onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                          />
-		                                  Excel Pivot Table
+																					<label 
+																							tabindex=-1
+																							for="optOutputFormat6"
+																							class="radio"
+																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																					/>
+																			Excel Pivot Table
 															
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1000,22 +1000,22 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left colspan=6 nowrap>
-																    <input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1" 
-	                                                onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-	                                                onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
-																                  onClick="refreshControls();"/>
-                                    <label 
-                                          for="chkDestination0"
-                                          class="checkbox"
-                                          tabindex=0 
-                                          onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-                                          onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-                                          onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-                                      
-								    								Display output on screen 
-              		    		          </label>
+																		<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1" 
+																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
+																									onClick="refreshControls();"/>
+																		<label 
+																					for="chkDestination0"
+																					class="checkbox"
+																					tabindex=0 
+																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																			
+																		Display output on screen 
+																		</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1025,22 +1025,22 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>																	
-																    <input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1" 
-	                                                onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-	                                                onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
-																                  onClick="refreshControls();"/>
-                                    <label 
-                                          for="chkDestination1"
-                                          class="checkbox"
-                                          tabindex=0 
-                                          onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-                                          onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-                                          onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-                                      
-								    								Send to printer 
-              		    		          </label>																		
+																		<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1" 
+																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
+																									onClick="refreshControls();"/>
+																		<label 
+																					for="chkDestination1"
+																					class="checkbox"
+																					tabindex=0 
+																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																			
+																		Send to printer 
+																		</label>																		
 																		</td>
 																		<td width=30 nowrap>&nbsp</td>
 																		<td align=left nowrap>
@@ -1060,22 +1060,22 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
-																    <input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1" 
-	                                                onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-	                                                onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
-																                  onClick="refreshControls();"/>
-                                    <label 
-                                          for="chkDestination2"
-                                          class="checkbox"
-                                          tabindex=0 
-                                          onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-                                          onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-                                          onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-                                      
-								    								Save to file 
-              		    		          </label>																		
+																		<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1" 
+																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
+																									onClick="refreshControls();"/>
+																		<label 
+																					for="chkDestination2"
+																					class="checkbox"
+																					tabindex=0 
+																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																			
+																		Save to file 
+																		</label>																		
 																		</td>
 																		<td width=30 nowrap>&nbsp</td>
 																		<td align=left nowrap>
@@ -1089,12 +1089,12 @@
 																						<INPUT id=txtFilename name=txtFilename class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 100%">
 																					</TD>
 																					<TD width=25>
-									                          <input type=button id=cmdFilename name=cmdFilename value=... style="WIDTH: 100%"  class="btn" 
-									                              onclick="saveFile()"
-                                                                  onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                                                  onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                                  onfocus="try{button_onFocus(this);}catch(e){}"
-                                                                  onblur="try{button_onBlur(this);}catch(e){}" />
+																						<input type=button id=cmdFilename name=cmdFilename value=... style="WIDTH: 100%"  class="btn" 
+																								onclick="saveFile()"
+																																	onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																																	onfocus="try{button_onFocus(this);}catch(e){}"
+																																	onblur="try{button_onBlur(this);}catch(e){}" />
 																					</TD>
 																				</TD>
 																			</TABLE>
@@ -1129,22 +1129,22 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
-																    <input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1" 
-	                                                onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-	                                                onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
-																                  onClick="refreshControls();"/>
-                                    <label 
-                                          for="chkDestination3"
-                                          class="checkbox"
-                                          tabindex=0 
-                                          onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-                                          onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-                                          onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-                                          onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-                                          onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-                                      
-								    								Send as email
-              		    		          </label>																		
+																		<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1" 
+																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
+																									onClick="refreshControls();"/>
+																		<label 
+																					for="chkDestination3"
+																					class="checkbox"
+																					tabindex=0 
+																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																			
+																		Send as email
+																		</label>																		
 																		</td>
 																		<td width=30 nowrap>&nbsp</td>
 																		<td align=left nowrap>
@@ -1159,12 +1159,12 @@
 																						<INPUT id=txtEmailGroupID name=txtEmailGroupID type=hidden>
 																					</TD>
 																					<TD width=25>
-									                          <input type=button id=cmdEmailGroup name=cmdEmailGroup value=... style="WIDTH: 100%"  class="btn" 
-									                              onclick="selectEmailGroup()"
-                                                                  onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                                                  onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                                  onfocus="try{button_onFocus(this);}catch(e){}"
-                                                                  onblur="try{button_onBlur(this);}catch(e){}" />
+																						<input type=button id=cmdEmailGroup name=cmdEmailGroup value=... style="WIDTH: 100%"  class="btn" 
+																								onclick="selectEmailGroup()"
+																																	onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																																	onfocus="try{button_onFocus(this);}catch(e){}"
+																																	onblur="try{button_onBlur(this);}catch(e){}" />
 																					</TD>
 																				</TD>
 																			</TABLE>
@@ -1233,20 +1233,20 @@
 								<TD>&nbsp;</TD>
 								<TD width=80>
 									<input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%"  class="btn" 
-									    onclick="outputOptionsOKClick()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="outputOptionsOKClick()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 								<TD width=10></TD>
 								<TD width=80>
 									<input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn" 
-                                        onclick="ShowDataFrame();"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
+																				onclick="ShowDataFrame();"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
 								</TD>
 							</TR>
 						</TABLE>
@@ -1263,28 +1263,28 @@
 </TABLE>
 
 
-    <input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=Session("Database")%>">
-    <input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=Session("utilType")%>">
-    <input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
-    <input type="hidden" id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
-    <input type="hidden" id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
-    <input type="hidden" id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
-    <input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
-    <input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
-    <input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
+		<input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=Session("Database")%>">
+		<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=Session("utilType")%>">
+		<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
+		<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
+		<input type="hidden" id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
+		<input type="hidden" id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
+		<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
+		<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
+		<input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
 </form>
 
 <form id="frmEmailSelection" name="frmEmailSelection" target="emailSelection" action="util_emailSelection" method="post" style="visibility: hidden; display: none">
-    <input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
+		<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
 </form>
 
 
 <%--<script type="text/javascript">
 
-    //$("#reportframe").show();
-    //$("#reportdataframe").hide();
-    //$("#reportworkframe").hide();
-    //$("#reportbreakdownframe").hide();
-    //$("#outputoptions").show();
+		//$("#reportframe").show();
+		//$("#reportdataframe").hide();
+		//$("#reportworkframe").hide();
+		//$("#reportbreakdownframe").hide();
+		//$("#outputoptions").show();
 
 </script>--%>

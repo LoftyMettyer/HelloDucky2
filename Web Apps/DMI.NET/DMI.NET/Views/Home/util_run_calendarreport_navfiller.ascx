@@ -1,9 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
 <%
-    Dim objCalendar As HR.Intranet.Server.CalendarReport
+		Dim objCalendar As HR.Intranet.Server.CalendarReport
 	
-    objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
+		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 
 	if Request.Form("txtChangeOptions") <> "" then
 		objCalendar.IncludeBankHolidays = Request.Form("txtIncludeBankHolidays")
@@ -15,15 +15,15 @@
 %>
 
 <form name="frmNavFillerOptions" id="frmNavFillerOptions" action="util_run_calendarreport_navfiller?CalRepUtilID=<%=Session("CalRepUtilID").ToString()%>" style="visibility: hidden; display: none" method="post">
-    <input type="hidden" name="txtIncludeBankHolidays" id="txtIncludeBankHolidays">
-    <input type="hidden" name="txtIncludeWorkingDaysOnly" id="txtIncludeWorkingDaysOnly">
-    <input type="hidden" name="txtShowBankHolidays" id="txtShowBankHolidays">
-    <input type="hidden" name="txtShowCaptions" id="txtShowCaptions">
-    <input type="hidden" name="txtShowWeekends" id="txtShowWeekends">
-    <input type="hidden" name="txtChangeOptions" id="txtChangeOptions" value="1">
-    <input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Session("CalRepUtilID").ToString()%>'>
+		<input type="hidden" name="txtIncludeBankHolidays" id="txtIncludeBankHolidays">
+		<input type="hidden" name="txtIncludeWorkingDaysOnly" id="txtIncludeWorkingDaysOnly">
+		<input type="hidden" name="txtShowBankHolidays" id="txtShowBankHolidays">
+		<input type="hidden" name="txtShowCaptions" id="txtShowCaptions">
+		<input type="hidden" name="txtShowWeekends" id="txtShowWeekends">
+		<input type="hidden" name="txtChangeOptions" id="txtChangeOptions" value="1">
+		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Session("CalRepUtilID").ToString()%>'>
 </form>
 
 <%	
-    objCalendar = Nothing
+		objCalendar = Nothing
 %>

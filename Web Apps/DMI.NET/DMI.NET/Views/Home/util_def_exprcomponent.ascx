@@ -6,54 +6,54 @@
 
 
 <object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0"
-    viewastext>
-    <param name="LPKPath" value="lpks/main.lpk">
+		classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+		id="Microsoft_Licensed_Class_Manager_1_0"
+		viewastext>
+		<param name="LPKPath" value="lpks/main.lpk">
 </object>
 
 
 <FORM action="" method=POST id=frmMainForm name=frmMainForm>
 <%
-    Dim cmdParameter
-    Dim prmFunctionID
-    Dim prmParameterIndex
-    Dim prmPassByType
-    
-    Dim iPassBy As Integer
-    Dim sErrMsg As String
-    
-    
+		Dim cmdParameter
+		Dim prmFunctionID
+		Dim prmParameterIndex
+		Dim prmPassByType
+		
+		Dim iPassBy As Integer
+		Dim sErrMsg As String
+		
+		
 iPassBy = 1	
 if (len(sErrMsg) = 0) and (Session("optionFunctionID") > 0) then
-        cmdParameter = CreateObject("ADODB.Command")
+				cmdParameter = CreateObject("ADODB.Command")
 	cmdParameter.CommandText = "spASRIntGetParameterPassByType"
 	cmdParameter.CommandType = 4 ' Stored Procedure
-        cmdParameter.ActiveConnection = Session("databaseConnection")
+				cmdParameter.ActiveConnection = Session("databaseConnection")
 
-        prmFunctionID = cmdParameter.CreateParameter("functionID", 3, 1) ' 3=integer, 1=input
-        cmdParameter.Parameters.Append(prmFunctionID)
+				prmFunctionID = cmdParameter.CreateParameter("functionID", 3, 1) ' 3=integer, 1=input
+				cmdParameter.Parameters.Append(prmFunctionID)
 	prmFunctionID.value = cleanNumeric(clng(Session("optionFunctionID")))
 
-        prmParameterIndex = cmdParameter.CreateParameter("parameterIndex", 3, 1) ' 3=integer, 1=input
-        cmdParameter.Parameters.Append(prmParameterIndex)
+				prmParameterIndex = cmdParameter.CreateParameter("parameterIndex", 3, 1) ' 3=integer, 1=input
+				cmdParameter.Parameters.Append(prmParameterIndex)
 	prmParameterIndex.value = cleanNumeric(clng(Session("optionParameterIndex")))
 
-        prmPassByType = cmdParameter.CreateParameter("passByType", 3, 2) ' 3=integer, 2=output
-        cmdParameter.Parameters.Append(prmPassByType)
+				prmPassByType = cmdParameter.CreateParameter("passByType", 3, 2) ' 3=integer, 2=output
+				cmdParameter.Parameters.Append(prmPassByType)
 
-        Err.Clear()
+				Err.Clear()
 	cmdParameter.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error checking parameter pass-by type." & vbCrLf & FormatError(Err.Description)
-        Else
-            iPassBy = cmdParameter.Parameters("passByType").Value
-        End If
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error checking parameter pass-by type." & vbCrLf & FormatError(Err.Description)
+				Else
+						iPassBy = cmdParameter.Parameters("passByType").Value
+				End If
 
 	' Release the ADO command object.
-        cmdParameter = Nothing
+				cmdParameter = Nothing
 end if
-    Response.Write("<INPUT type='hidden' id=txtPassByType name=txtPassByType value=" & iPassBy & ">" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtPassByType name=txtPassByType value=" & iPassBy & ">" & vbCrLf)
 %>	
 
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
@@ -90,23 +90,23 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Field name=optType type=radio selected
-												    onclick="changeType(1)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+														onclick="changeType(1)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Field"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Field
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Field"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Field
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;&nbsp;</TD>
 										</TR>
@@ -119,28 +119,28 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Operator name=optType type=radio
-                                                    <%
-												    If iPassBy = 2 Then
-												        Response.Write("disabled")												        
-												    End If
-												    %>
-												    onclick="changeType(5)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																										<%
+														If iPassBy = 2 Then
+																Response.Write("disabled")												        
+														End If
+														%>
+														onclick="changeType(5)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Operator"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Operator
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Operator"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Operator
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -153,28 +153,28 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Function name=optType type=radio 
-                                                    <%
-												    If iPassBy = 2 Then											        
-												        Response.Write("disabled")
-												    End If
-												    %>
-												    onclick="changeType(2)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																										<%
+														If iPassBy = 2 Then											        
+																Response.Write("disabled")
+														End If
+														%>
+														onclick="changeType(2)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Function"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Function
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Function"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Function
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -187,27 +187,27 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Value name=optType type=radio <%
-												    If iPassBy = 2 Then
-												        Response.Write("disabled")
-												    End If
-												    %>
-												    onclick="changeType(4)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+														If iPassBy = 2 Then
+																Response.Write("disabled")
+														End If
+														%>
+														onclick="changeType(4)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Value"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Value
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Value"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Value
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -219,28 +219,28 @@ end if
 										<TR height=10>
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
-                                                <input id="optType_LookupTableValue" name="optType" type="radio" <% 
-                                                    If iPassBy = 2 Then
-                                                        Response.Write("disabled")
-                                                    End If
-                                                    %>
-                                                    onclick="changeType(6)"
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}" />
+																								<input id="optType_LookupTableValue" name="optType" type="radio" <% 
+																										If iPassBy = 2 Then
+																												Response.Write("disabled")
+																										End If
+																										%>
+																										onclick="changeType(6)"
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}"
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}" />
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_LookupTableValue"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Lookup Table Value
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_LookupTableValue"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Lookup Table Value
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -253,25 +253,25 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_PromptedValue name=optType type=radio <%if iPassBy = 2 then
-    Response.write("disabled")
-												    End If%>
-												    onclick="changeType(7)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+		Response.write("disabled")
+														End If%>
+														onclick="changeType(7)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_PromptedValue"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Prompted Value
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_PromptedValue"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Prompted Value
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -284,25 +284,25 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Calculation name=optType type=radio <%  If iPassBy = 2 Then
-												        Response.Write("disabled")
-												    End If%>
-												    onclick="changeType(3)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																Response.Write("disabled")
+														End If%>
+														onclick="changeType(3)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Calculation"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Calculation
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Calculation"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Calculation
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -315,28 +315,28 @@ end if
 											<TD width=5>&nbsp;</TD>
 											<TD width=5>
 												<input id=optType_Filter name=optType type=radio <%
-												    If iPassBy = 2 Then
-												        Response.Write("disabled")
-												    End If
+														If iPassBy = 2 Then
+																Response.Write("disabled")
+														End If
 
-												    %>
-												    onclick="changeType(10)" 
-                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+														%>
+														onclick="changeType(10)" 
+																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																										onfocus="try{radio_onFocus(this);}catch(e){}"
+																										onblur="try{radio_onBlur(this);}catch(e){}"/>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD nowrap>
-                                                <label 
-                                                    tabindex=-1
-                                                    for="optType_Filter"
-                                                    class="radio"
-                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                />
-    												Filter
-                           	    		        </label>
+																								<label 
+																										tabindex=-1
+																										for="optType_Filter"
+																										class="radio"
+																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																								/>
+														Filter
+																						</label>
 											</TD>
 											<TD width=5>&nbsp;</TD>
 										</TR>
@@ -379,65 +379,65 @@ end if
 														<TR>
 															<TD>
 																<input id=optField_Field name=optField type=radio selected
-																    onclick="field_refreshTable()" 
-                                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="field_refreshTable()" 
+																																		onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																		onfocus="try{radio_onFocus(this);}catch(e){}"
+																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD nowrap>
-                                                                <label 
-                                                                    tabindex=-1
-                                                                    for="optField_Field"
-                                                                    class="radio"
-                                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                />
-	    														    Field
-                                           	    		        </label>
-    														</TD>
+																																<label 
+																																		tabindex=-1
+																																		for="optField_Field"
+																																		class="radio"
+																																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																/>
+																			Field
+																														</label>
+																</TD>
 															<TD width=20>&nbsp;&nbsp;&nbsp;</TD>
 															<TD>
 																<input id=optField_Count name=optField type=radio selected
-																    onclick="field_refreshTable()" 
-                                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="field_refreshTable()" 
+																																		onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																		onfocus="try{radio_onFocus(this);}catch(e){}"
+																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD nowrap>
-                                                                <label 
-                                                                    tabindex=-1
-                                                                    for="optField_Count"
-                                                                    class="radio"
-                                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                />
-															        Count
-                                           	    		        </label>
+																																<label 
+																																		tabindex=-1
+																																		for="optField_Count"
+																																		class="radio"
+																																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																/>
+																			Count
+																														</label>
 															</TD>
 															<TD width=20>&nbsp;&nbsp;&nbsp;</TD>
 															<TD>
 																<input id=optField_Total name=optField type=radio selected
-																    onclick="field_refreshTable()"
-                                                                    onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                    onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                    onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="field_refreshTable()"
+																																		onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																		onfocus="try{radio_onFocus(this);}catch(e){}"
+																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD nowrap>
-                                                                <label 
-                                                                    tabindex=-1
-                                                                    for="optField_Total"
-                                                                    class="radio"
-                                                                    onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                    onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                />
-															        Total
-                                           	    		        </label>
+																																<label 
+																																		tabindex=-1
+																																		for="optField_Total"
+																																		class="radio"
+																																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																/>
+																			Total
+																														</label>
 															</TD>
 															<TD width=100%></TD>
 														</TR>
@@ -457,7 +457,7 @@ end if
 												<TD width=20>&nbsp;&nbsp;</TD>
 												<TD width=50%>
 													<select id="cboFieldTable" name="cboFieldTable" class="combo" style="WIDTH: 100%" 
-													    onchange="field_changeTable()"> 
+															onchange="field_changeTable()"> 
 													</select>
 												</TD>
 												<TD width=50%>&nbsp;</TD>
@@ -515,67 +515,67 @@ end if
 																				<TR>
 																					<TD>
 																						<input id=optFieldRecSel_First name=optFieldRecSel type=radio 
-																						    onclick="field_refreshChildFrame()"
-                                                                                            onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                                            onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                            onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                            onblur="try{radio_onBlur(this);}catch(e){}"/>
+																								onclick="field_refreshChildFrame()"
+																																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																														onfocus="try{radio_onFocus(this);}catch(e){}"
+																																														onblur="try{radio_onBlur(this);}catch(e){}"/>
 																					</TD>
 																					<TD width=5>&nbsp;</TD>
 																					<TD nowrap>
-                                                                                        <label 
-                                                                                            tabindex=-1
-                                                                                            for="optFieldRecSel_First"
-                                                                                            class="radio"
-                                                                                            onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                            onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                                        />
-																					        First
-                                                                   	    		        </label>
+																																												<label 
+																																														tabindex=-1
+																																														for="optFieldRecSel_First"
+																																														class="radio"
+																																														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																												/>
+																									First
+																																										</label>
 																					</TD>
 																					<TD width=20>&nbsp;&nbsp;&nbsp;</TD>
 																					<TD>
 																						<input id=optFieldRecSel_Last name=optFieldRecSel type=radio 
-																						    onclick="field_refreshChildFrame()"
-                                                                                            onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                                            onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                            onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                            onblur="try{radio_onBlur(this);}catch(e){}"/>
+																								onclick="field_refreshChildFrame()"
+																																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																														onfocus="try{radio_onFocus(this);}catch(e){}"
+																																														onblur="try{radio_onBlur(this);}catch(e){}"/>
 																					</TD>
 																					<TD width=5>&nbsp;</TD>
 																					<TD nowrap>
-                                                                                        <label 
-                                                                                            tabindex=-1
-                                                                                            for="optFieldRecSel_Last"
-                                                                                            class="radio"
-                                                                                            onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                            onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                                        />
-																					        Last
-                                                                   	    		        </label>
+																																												<label 
+																																														tabindex=-1
+																																														for="optFieldRecSel_Last"
+																																														class="radio"
+																																														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																												/>
+																									Last
+																																										</label>
 																					</TD>
 																					<TD width=20>&nbsp;&nbsp;&nbsp;</TD>
 																					<TD>
 																						<input id=optFieldRecSel_Specific name=optFieldRecSel type=radio 
-																						    onclick="field_refreshChildFrame()"
-                                                                                            onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                                                                                            onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                            onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                            onblur="try{radio_onBlur(this);}catch(e){}"/>
+																								onclick="field_refreshChildFrame()"
+																																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																														onfocus="try{radio_onFocus(this);}catch(e){}"
+																																														onblur="try{radio_onBlur(this);}catch(e){}"/>
 																					</TD>
 																					<TD width=5>&nbsp;</TD>
 																					<TD nowrap>
 																						<DIV id=divFieldRecSel_Specific style="visibility:hidden;display:none">
-                                                                                            <label 
-                                                                                                tabindex=-1
-                                                                                                for="optFieldRecSel_Specific"
-                                                                                                class="radio"
-                                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                                            />
-		    																					Specific
-                                                                       	    		        </label>
-        																				</DIV>
+																																														<label 
+																																																tabindex=-1
+																																																for="optFieldRecSel_Specific"
+																																																class="radio"
+																																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																														/>
+																									Specific
+																																												</label>
+																								</DIV>
 																					</TD>
 																					<TD width=5>&nbsp;</TD>
 																					<TD width=100%>
@@ -603,11 +603,11 @@ end if
 																					</TD>
 																					<TD style="width:30px;">
 																						<INPUT id=btnFieldRecOrder name=btnFieldRecOrder style="WIDTH: 100%" class="btn" type=button value="..."
-																						    onclick="field_selectRecOrder()" 
-		                                                                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-		                                                                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-		                                                                                    onfocus="try{button_onFocus(this);}catch(e){}"
-		                                                                                    onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecOrder()" 
+																																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{button_onFocus(this);}catch(e){}"
+																																												onblur="try{button_onBlur(this);}catch(e){}" />
 																					</TD>
 																				</TR>
 																			</TABLE>
@@ -632,11 +632,11 @@ end if
 																					</TD>
 																					<TD width=30>
 																						<INPUT id=btnFieldRecFilter name=btnFieldRecFilter class="btn" style="WIDTH: 100%" type=button value="..."
-																						    onclick="field_selectRecFilter()" 
-			                                                                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                                                                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                                                                                onfocus="try{button_onFocus(this);}catch(e){}"
-			                                                                                onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecFilter()" 
+																																											onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																																											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																																											onfocus="try{button_onFocus(this);}catch(e){}"
+																																											onblur="try{button_onBlur(this);}catch(e){}" />
 																					</TD>
 																				</TR>
 																			</TABLE>
@@ -1123,42 +1123,42 @@ end if
 											</TR>
 
 											<tr> 
-											  <td colspan=3 height=10></td>
+												<td colspan=3 height=10></td>
 											</tr>
 
 											<tr> 
 												<TD width=10>&nbsp;</TD>
-											    <td height="60"> 
+													<td height="60"> 
 													<TEXTAREA id=txtCalcDescription name=txtCalcDescription class="textarea disabled" tabindex="-1"
-													    style="HEIGHT: 99%; WIDTH: 100%; " wrap=VIRTUAL disabled="disabled">
+															style="HEIGHT: 99%; WIDTH: 100%; " wrap=VIRTUAL disabled="disabled">
 													</TEXTAREA>
 												</td>
 												<TD width=10>&nbsp;</TD>
 											</tr>
 
 											<tr> 
-											  <td colspan=3 height=10></td>
+												<td colspan=3 height=10></td>
 											</tr>
 
 											<tr> 
 												<TD width=10>&nbsp;</TD>
-											    <td height="10"> 
-											    <input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="-1"
-                                                    onclick="calculationAndFilter_refresh();"
-                                                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-                                                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-                                                <label 
-			                                        for="chkOwnersCalcs"
-			                                        class="checkbox"
-			                                        tabindex=0 
-			                                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-				                                    onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-				                                    onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-	                                                onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-	                                                onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+													<td height="10"> 
+													<input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="-1"
+																										onclick="calculationAndFilter_refresh();"
+																										onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																										onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																								<label 
+																							for="chkOwnersCalcs"
+																							class="checkbox"
+																							tabindex=0 
+																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																									onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																									onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
 
-                                                    Only show calculations where owner is '<% =session("Username") %>'
-                    		    		        </label>
+																										Only show calculations where owner is '<% =session("Username") %>'
+																				</label>
 												</td>
 												<TD width=10>&nbsp;</TD>
 											</tr>
@@ -1344,12 +1344,12 @@ end if
 											</TR>
 
 											<tr> 
-											  <td colspan=3 height=10></td>
+												<td colspan=3 height=10></td>
 											</tr>
 
 											<tr> 
 												<TD width=10>&nbsp;</TD>
-											    <td height="60"> 
+													<td height="60"> 
 													<TEXTAREA id=txtFilterDescription name=txtFilterDescription class="textarea disabled" tabindex="-1"
 													style="HEIGHT: 99%; WIDTH: 100%; " wrap=VIRTUAL disabled="disabled">
 													</TEXTAREA>
@@ -1358,27 +1358,27 @@ end if
 											</tr>
 
 											<tr> 
-											  <td colspan=3 height=10></td>
+												<td colspan=3 height=10></td>
 											</tr>
 
 											<tr>
-                                                <td width="10">&nbsp;</td>
-                                                <td height="10">
-                                                    <input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="-1"
-                                                        onclick="calculationAndFilter_refresh();"
-                                                        onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-                                                        onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-                                                    <label
-                                                        for="chkOwnersFilters"
-                                                        class="checkbox"
-                                                        tabindex="0"
-                                                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-                                                        onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-                                                        onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-                                                        onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-                                                        onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-                                                        Only show filters where owner is '<% =session("Username") %>'
-                                                    </label>
+																								<td width="10">&nbsp;</td>
+																								<td height="10">
+																										<input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="-1"
+																												onclick="calculationAndFilter_refresh();"
+																												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																										<label
+																												for="chkOwnersFilters"
+																												class="checkbox"
+																												tabindex="0"
+																												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																												Only show filters where owner is '<% =session("Username") %>'
+																										</label>
 												</td>
 												<TD width=10>&nbsp;</TD>
 											</tr>
@@ -1653,65 +1653,65 @@ end if
 																			<TR height=10>
 																				<TD width=5>
 																					<input id=optPValDate_Explicit name=optPValDate type=radio selected
-																					    onclick="pVal_changeDateOption(0)" 
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(0)" 
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_Explicit"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-	    																				Explicit
-                                                            	    		        </label>
-    																			</TD>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_Explicit"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Explicit
+																																							</label>
+																					</TD>
 																				<TD width=20>&nbsp;&nbsp;</TD>
 																				<TD width=5>
 																					<input id=optPValDate_MonthStart name=optPValDate type=radio 
-																					    onclick="pVal_changeDateOption(2)"
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(2)"
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_MonthStart"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-    																					Month Start
-                                                            	    		        </label>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_MonthStart"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Month Start
+																																							</label>
 																				</TD>
 																				<TD width=20>&nbsp;&nbsp;</TD>
 																				<TD width=5>
 																					<input id=optPValDate_YearStart name=optPValDate type=radio 
-																					    onclick="pVal_changeDateOption(4)"
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(4)"
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_YearStart"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-    																					Year Start
-                                                            	    		        </label>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_YearStart"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Year Start
+																																							</label>
 																				</TD>
 																				<TD width=100%>&nbsp;</TD>
 																			</TR>
@@ -1719,65 +1719,65 @@ end if
 																			<TR height=10>
 																				<TD width=5>
 																					<input id=optPValDate_Current name=optPValDate type=radio 
-																					    onclick="pVal_changeDateOption(1)"
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(1)"
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_Current"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-    																					Current
-                                                            	    		        </label>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_Current"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Current
+																																							</label>
 																				</TD>
 																				<TD width=20>&nbsp;&nbsp;</TD>
 																				<TD width=5>
 																					<input id=optPValDate_MonthEnd name=optPValDate type=radio 
-																					    onclick="pVal_changeDateOption(3)"
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(3)"
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_MonthEnd"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-    																					Month End
-                                                            	    		        </label>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_MonthEnd"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Month End
+																																							</label>
 																				</TD>
 																				<TD width=20>&nbsp;&nbsp;</TD>
 																				<TD width=5>
 																					<input id=optPValDate_YearEnd name=optPValDate type=radio 
-																					    onclick="pVal_changeDateOption(5)"
-		                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                                                                                        onfocus="try{radio_onFocus(this);}catch(e){}"
-                                                                                        onblur="try{radio_onBlur(this);}catch(e){}"/>
+																							onclick="pVal_changeDateOption(5)"
+																																										onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																																												onfocus="try{radio_onFocus(this);}catch(e){}"
+																																												onblur="try{radio_onBlur(this);}catch(e){}"/>
 																				</TD>
 																				<TD width=5>&nbsp;</TD>
 																				<TD nowrap>
-                                                                                    <label 
-                                                                                        tabindex=-1
-	                                                                                    for="optPValDate_YearEnd"
-	                                                                                    class="radio"
-		                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-		                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-		                                                                            />
-    																					Year End
-                                                            	    		        </label>
+																																										<label 
+																																												tabindex=-1
+																																											for="optPValDate_YearEnd"
+																																											class="radio"
+																																										onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																										onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																								/>
+																							Year End
+																																							</label>
 																				</TD>
 																				<TD width=100%>&nbsp;</TD>
 																			</TR>
@@ -1848,21 +1848,21 @@ end if
 								</td>
 								<td width=10>
 									<input id=cmdOK name=cmdOK type="button" class="btn" value="OK" style="WIDTH: 75px" width="75" 
-									    onclick="component_OKClick()"
-		                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-		                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-		                                onfocus="try{button_onFocus(this);}catch(e){}"
-		                                onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_OKClick()"
+																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																		onfocus="try{button_onFocus(this);}catch(e){}"
+																		onblur="try{button_onBlur(this);}catch(e){}" />
 								</td>
 								<td width=40>
 								</td>
 								<td width=10>
 									<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-									    onclick="component_CancelClick()"
-		                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-		                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-		                                onfocus="try{button_onFocus(this);}catch(e){}"
-		                                onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_CancelClick()"
+																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																		onfocus="try{button_onFocus(this);}catch(e){}"
+																		onblur="try{button_onBlur(this);}catch(e){}" />
 								</td>
 							</tr>			
 						</table>
@@ -1879,354 +1879,354 @@ end if
 </FORM>
 
 <form id="util_def_exprcomponent_frmUseful" name="util_def_exprcomponent_frmUseful" style="visibility: hidden; display: none">
-    <input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-    <input type="hidden" id="txtExprType" name="txtExprType" value='<%=session("optionExprType")%>'>
-    <input type="hidden" id="txtExprID" name="txtExprID" value='<%=session("optionExprID")%>'>
-    <input type="hidden" id="txtAction" name="txtAction" value='<%=session("optionAction")%>'>
-    <input type="hidden" id="txtLinkRecordID" name="txtLinkRecordID" value='<%=session("optionLinkRecordID")%>'>
-    <input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("optionTableID")%>'>
-    <input type="hidden" id="txtInitialising" name="txtInitialising" value="0">
-    <input type="hidden" id="txtChildFieldOrderID" name="txtChildFieldOrderID" value="0">
-    <input type="hidden" id="txtChildFieldFilterID" name="txtChildFieldFilterID" value="0">
-    <input type="hidden" id="txtChildFieldFilterHidden" name="txtChildFieldFilterHidden" value="0">
-    <input type="hidden" id="txtFunctionsLoaded" name="txtFunctionsLoaded" value="0">
-    <input type="hidden" id="txtOperatorsLoaded" name="txtOperatorsLoaded" value="0">
-    <input type="hidden" id="txtLookupTablesLoaded" name="txtLookupTablesLoaded" value="0">
-    <input type="hidden" id="txtPValLookupTablesLoaded" name="txtPValLookupTablesLoaded" value="0">
+		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+		<input type="hidden" id="txtExprType" name="txtExprType" value='<%=session("optionExprType")%>'>
+		<input type="hidden" id="txtExprID" name="txtExprID" value='<%=session("optionExprID")%>'>
+		<input type="hidden" id="txtAction" name="txtAction" value='<%=session("optionAction")%>'>
+		<input type="hidden" id="txtLinkRecordID" name="txtLinkRecordID" value='<%=session("optionLinkRecordID")%>'>
+		<input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("optionTableID")%>'>
+		<input type="hidden" id="txtInitialising" name="txtInitialising" value="0">
+		<input type="hidden" id="txtChildFieldOrderID" name="txtChildFieldOrderID" value="0">
+		<input type="hidden" id="txtChildFieldFilterID" name="txtChildFieldFilterID" value="0">
+		<input type="hidden" id="txtChildFieldFilterHidden" name="txtChildFieldFilterHidden" value="0">
+		<input type="hidden" id="txtFunctionsLoaded" name="txtFunctionsLoaded" value="0">
+		<input type="hidden" id="txtOperatorsLoaded" name="txtOperatorsLoaded" value="0">
+		<input type="hidden" id="txtLookupTablesLoaded" name="txtLookupTablesLoaded" value="0">
+		<input type="hidden" id="txtPValLookupTablesLoaded" name="txtPValLookupTablesLoaded" value="0">
 </form>
 
 <form action="util_def_exprComponent_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-    <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </form>
 
 <FORM id=util_def_exprcomponent_frmOriginalDefinition name=util_def_exprcomponent_frmOriginalDefinition>
 <%
-    Dim sDefnString As String
-    Dim sFieldTableID As String
-    Dim sFieldColumnID As String
-    Dim sLookupTableID As String
-    Dim sLookupColumnID As String
-    
+		Dim sDefnString As String
+		Dim sFieldTableID As String
+		Dim sFieldColumnID As String
+		Dim sLookupTableID As String
+		Dim sLookupColumnID As String
+		
 	on error resume next
 	sErrMsg = ""
 
 	if session("optionAction") = "EDITEXPRCOMPONENT"	then
 		sDefnString = Session("optionExtension")
 
-        Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=" & componentParameter(sDefnString, "COMPONENTID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtType name=txtType value=" & componentParameter(sDefnString, "TYPE") & ">" & vbCrLf)
-        sFieldTableID = componentParameter(sDefnString, "FIELDTABLEID")
-        sFieldColumnID = componentParameter(sDefnString, "FIELDCOLUMNID")
-        Response.Write("<INPUT type='hidden' id=txtFieldPassBy name=txtFieldPassBy value=" & componentParameter(sDefnString, "FIELDPASSBY") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionTableID name=txtFieldSelectionTableID value=" & componentParameter(sDefnString, "FIELDSELECTIONTABLEID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionRecord name=txtFieldSelectionRecord value=" & componentParameter(sDefnString, "FIELDSELECTIONRECORD") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionLine name=txtFieldSelectionLine value=" & componentParameter(sDefnString, "FIELDSELECTIONLINE") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionOrderID name=txtFieldSelectionOrderID value=" & componentParameter(sDefnString, "FIELDSELECTIONORDERID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionFilter name=txtFieldSelectionFilter value=" & componentParameter(sDefnString, "FIELDSELECTIONFILTER") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFunctionID name=txtFunctionID value=" & componentParameter(sDefnString, "FUNCTIONID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtCalculationID name=txtCalculationID value=" & componentParameter(sDefnString, "CALCULATIONID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtOperatorID name=txtOperatorID value=" & componentParameter(sDefnString, "OPERATORID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueType name=txtValueType value=" & componentParameter(sDefnString, "VALUETYPE") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueCharacter name=txtValueCharacter value=""" & Replace(componentParameter(sDefnString, "VALUECHARACTER"), """", "&quot;") & """>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueNumeric name=txtValueNumeric value=" & componentParameter(sDefnString, "VALUENUMERIC") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueLogic name=txtValueLogic value=" & componentParameter(sDefnString, "VALUELOGIC") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueDate name=txtValueDate value=" & componentParameter(sDefnString, "VALUEDATE") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtPromptDescription name=txtPromptDescription value=""" & Replace(componentParameter(sDefnString, "PROMPTDESCRIPTION"), """", "&quot;") & """>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtPromptMask name=txtPromptMask value=""" & Replace(componentParameter(sDefnString, "PROMPTMASK"), """", "&quot;") & """>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtPromptSize name=txtPromptSize value=" & componentParameter(sDefnString, "PROMPTSIZE") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtPromptDecimals name=txtPromptDecimals value=" & componentParameter(sDefnString, "PROMPTDECIMALS") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFunctionReturnType name=txtFunctionReturnType value=" & componentParameter(sDefnString, "FUNCTIONRETURNTYPE") & ">" & vbCrLf)
-        sLookupTableID = componentParameter(sDefnString, "LOOKUPTABLEID")
-        sLookupColumnID = componentParameter(sDefnString, "LOOKUPCOLUMNID")
-        Response.Write("<INPUT type='hidden' id=txtFilterID name=txtFilterID value=" & componentParameter(sDefnString, "FILTERID") & ">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldOrderName name=txtFieldOrderName value=""" & componentParameter(sDefnString, "FIELDSELECTIONORDERNAME") & """>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtFieldFilterName name=txtFieldFilterName value=""" & componentParameter(sDefnString, "FIELDSELECTIONFILTERNAME") & """>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtPromptDateType name=txtPromptDateType value=" & componentParameter(sDefnString, "PROMPTDATETYPE") & ">" & vbCrLf)
-    Else
-        Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=0>" & vbCrLf)
-        sFieldTableID = Session("optionTableID")
+				Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=" & componentParameter(sDefnString, "COMPONENTID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtType name=txtType value=" & componentParameter(sDefnString, "TYPE") & ">" & vbCrLf)
+				sFieldTableID = componentParameter(sDefnString, "FIELDTABLEID")
+				sFieldColumnID = componentParameter(sDefnString, "FIELDCOLUMNID")
+				Response.Write("<INPUT type='hidden' id=txtFieldPassBy name=txtFieldPassBy value=" & componentParameter(sDefnString, "FIELDPASSBY") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionTableID name=txtFieldSelectionTableID value=" & componentParameter(sDefnString, "FIELDSELECTIONTABLEID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionRecord name=txtFieldSelectionRecord value=" & componentParameter(sDefnString, "FIELDSELECTIONRECORD") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionLine name=txtFieldSelectionLine value=" & componentParameter(sDefnString, "FIELDSELECTIONLINE") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionOrderID name=txtFieldSelectionOrderID value=" & componentParameter(sDefnString, "FIELDSELECTIONORDERID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionFilter name=txtFieldSelectionFilter value=" & componentParameter(sDefnString, "FIELDSELECTIONFILTER") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFunctionID name=txtFunctionID value=" & componentParameter(sDefnString, "FUNCTIONID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtCalculationID name=txtCalculationID value=" & componentParameter(sDefnString, "CALCULATIONID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOperatorID name=txtOperatorID value=" & componentParameter(sDefnString, "OPERATORID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueType name=txtValueType value=" & componentParameter(sDefnString, "VALUETYPE") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueCharacter name=txtValueCharacter value=""" & Replace(componentParameter(sDefnString, "VALUECHARACTER"), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueNumeric name=txtValueNumeric value=" & componentParameter(sDefnString, "VALUENUMERIC") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueLogic name=txtValueLogic value=" & componentParameter(sDefnString, "VALUELOGIC") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueDate name=txtValueDate value=" & componentParameter(sDefnString, "VALUEDATE") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtPromptDescription name=txtPromptDescription value=""" & Replace(componentParameter(sDefnString, "PROMPTDESCRIPTION"), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtPromptMask name=txtPromptMask value=""" & Replace(componentParameter(sDefnString, "PROMPTMASK"), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtPromptSize name=txtPromptSize value=" & componentParameter(sDefnString, "PROMPTSIZE") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtPromptDecimals name=txtPromptDecimals value=" & componentParameter(sDefnString, "PROMPTDECIMALS") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFunctionReturnType name=txtFunctionReturnType value=" & componentParameter(sDefnString, "FUNCTIONRETURNTYPE") & ">" & vbCrLf)
+				sLookupTableID = componentParameter(sDefnString, "LOOKUPTABLEID")
+				sLookupColumnID = componentParameter(sDefnString, "LOOKUPCOLUMNID")
+				Response.Write("<INPUT type='hidden' id=txtFilterID name=txtFilterID value=" & componentParameter(sDefnString, "FILTERID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldOrderName name=txtFieldOrderName value=""" & componentParameter(sDefnString, "FIELDSELECTIONORDERNAME") & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFieldFilterName name=txtFieldFilterName value=""" & componentParameter(sDefnString, "FIELDSELECTIONFILTERNAME") & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtPromptDateType name=txtPromptDateType value=" & componentParameter(sDefnString, "PROMPTDATETYPE") & ">" & vbCrLf)
+		Else
+				Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=0>" & vbCrLf)
+				sFieldTableID = Session("optionTableID")
 		sFieldColumnID = 0
 		sLookupTableID = 0
-        sLookupColumnID = 0
-        Response.Write("<INPUT type='hidden' id=txtFieldSelectionRecord name=txtFieldSelectionRecord value=1>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueCharacter name=txtValueCharacter value="""">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueNumeric name=txtValueNumeric value=0>" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueLogic name=txtValueLogic value=""False"">" & vbCrLf)
-        Response.Write("<INPUT type='hidden' id=txtValueDate name=txtValueDate value="""">" & vbCrLf)
-    End If
+				sLookupColumnID = 0
+				Response.Write("<INPUT type='hidden' id=txtFieldSelectionRecord name=txtFieldSelectionRecord value=1>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueCharacter name=txtValueCharacter value="""">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueNumeric name=txtValueNumeric value=0>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueLogic name=txtValueLogic value=""False"">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtValueDate name=txtValueDate value="""">" & vbCrLf)
+		End If
 
-    Response.Write("<INPUT type='hidden' id=txtFieldTableID name=txtFieldTableID value=" & sFieldTableID & ">" & vbCrLf)
-    Response.Write("<INPUT type='hidden' id=txtFieldColumnID name=txtFieldColumnID value=" & sFieldColumnID & ">" & vbCrLf)
-    Response.Write("<INPUT type='hidden' id=txtLookupTableID name=txtLookupTableID value=" & sLookupTableID & ">" & vbCrLf)
-    Response.Write("<INPUT type='hidden' id=txtLookupColumnID name=txtLookupColumnID value=" & sLookupColumnID & ">" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtFieldTableID name=txtFieldTableID value=" & sFieldTableID & ">" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtFieldColumnID name=txtFieldColumnID value=" & sFieldColumnID & ">" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtLookupTableID name=txtLookupTableID value=" & sLookupTableID & ">" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtLookupColumnID name=txtLookupColumnID value=" & sLookupColumnID & ">" & vbCrLf)
 %>
 </FORM>
 
 <FORM id=frmTables name=frmTables>
 <%
-    Dim cmdTables
-    Dim prmTableID
-    Dim rstTables
-    Dim iCount As Integer
-    
+		Dim cmdTables
+		Dim prmTableID
+		Dim rstTables
+		Dim iCount As Integer
+		
 	if len(sErrMsg) = 0 then
-        cmdTables = CreateObject("ADODB.Command")
+				cmdTables = CreateObject("ADODB.Command")
 		cmdTables.CommandText = "sp_ASRIntGetExprTables"
 		cmdTables.CommandType = 4 ' Stored Procedure
-        cmdTables.ActiveConnection = Session("databaseConnection")
+				cmdTables.ActiveConnection = Session("databaseConnection")
 
-        prmTableID = cmdTables.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-        cmdTables.Parameters.Append(prmTableID)
+				prmTableID = cmdTables.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
+				cmdTables.Parameters.Append(prmTableID)
 		prmTableID.value = cleanNumeric(session("optionTableID"))
 
-        Err.Clear()
-        rstTables = cmdTables.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component tables." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstTables.state <> 0 Then
-                ' Read recordset values.
-                iCount = 0
-                Do While Not rstTables.EOF
-                    iCount = iCount + 1
-                    Response.Write("<INPUT type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & rstTables.fields("definitionString").value & """>" & vbCrLf)
-                    rstTables.MoveNext()
-                Loop
+				Err.Clear()
+				rstTables = cmdTables.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component tables." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstTables.state <> 0 Then
+								' Read recordset values.
+								iCount = 0
+								Do While Not rstTables.EOF
+										iCount = iCount + 1
+										Response.Write("<INPUT type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & rstTables.fields("definitionString").value & """>" & vbCrLf)
+										rstTables.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstTables.close()
-            End If
-            rstTables = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstTables.close()
+						End If
+						rstTables = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdTables = Nothing
+				cmdTables = Nothing
 	end if
 %>
 </FORM>
 
 <FORM id=frmFunctions name=frmFunctions>
 <%
-    Dim cmdFunctions
-    Dim rstFunctions
-    
+		Dim cmdFunctions
+		Dim rstFunctions
+		
 	if len(sErrMsg) = 0 then
-        cmdFunctions = CreateObject("ADODB.Command")
-        cmdFunctions.CommandText = "sp_ASRIntGetExprFunctions"
+				cmdFunctions = CreateObject("ADODB.Command")
+				cmdFunctions.CommandText = "sp_ASRIntGetExprFunctions"
 		cmdFunctions.CommandType = 4 ' Stored Procedure
-        cmdFunctions.ActiveConnection = Session("databaseConnection")
+				cmdFunctions.ActiveConnection = Session("databaseConnection")
 
-        prmTableID = cmdFunctions.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-        cmdFunctions.Parameters.Append(prmTableID)
+				prmTableID = cmdFunctions.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
+				cmdFunctions.Parameters.Append(prmTableID)
 		prmTableID.value = cleanNumeric(session("optionTableID"))
 
-        Err.Clear()
-        rstFunctions = cmdFunctions.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstFunctions.state <> 0 Then
-                ' Read recordset values.
-                iCount = 0
-                Do While Not rstFunctions.EOF
-                    iCount = iCount + 1
-                    Response.Write("<INPUT type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & rstFunctions.fields("definitionString").value & """>" & vbCrLf)
-                    rstFunctions.MoveNext()
-                Loop
+				Err.Clear()
+				rstFunctions = cmdFunctions.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstFunctions.state <> 0 Then
+								' Read recordset values.
+								iCount = 0
+								Do While Not rstFunctions.EOF
+										iCount = iCount + 1
+										Response.Write("<INPUT type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & rstFunctions.fields("definitionString").value & """>" & vbCrLf)
+										rstFunctions.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstFunctions.close()
-            End If
-            rstFunctions = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstFunctions.close()
+						End If
+						rstFunctions = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdFunctions = Nothing
+				cmdFunctions = Nothing
 	end if
 %>
 </FORM>
 
 <FORM id=frmFunctionParameters name=frmFunctionParameters>
 <%
-    Dim cmdFunctionParameters
-    Dim rstFunctionParameters
-    
+		Dim cmdFunctionParameters
+		Dim rstFunctionParameters
+		
 	if len(sErrMsg) = 0 then
-        cmdFunctionParameters = CreateObject("ADODB.Command")
+				cmdFunctionParameters = CreateObject("ADODB.Command")
 		cmdFunctionParameters.CommandText = "sp_ASRIntGetExprFunctionParameters"
 		cmdFunctionParameters.CommandType = 4 ' Stored Procedure
-        cmdFunctionParameters.ActiveConnection = Session("databaseConnection")
+				cmdFunctionParameters.ActiveConnection = Session("databaseConnection")
 
-        Err.Clear()
-        rstFunctionParameters = cmdFunctionParameters.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstFunctionParameters.state <> 0 Then
-                ' Read recordset values.
-                iCount = 1
-                Do While Not rstFunctionParameters.EOF
-                    Response.Write("<INPUT type='hidden' id=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " name=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " value=""" & rstFunctionParameters.fields("parameterName").value & """>" & vbCrLf)
-                    iCount = iCount + 1
-                    rstFunctionParameters.MoveNext()
-                Loop
+				Err.Clear()
+				rstFunctionParameters = cmdFunctionParameters.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstFunctionParameters.state <> 0 Then
+								' Read recordset values.
+								iCount = 1
+								Do While Not rstFunctionParameters.EOF
+										Response.Write("<INPUT type='hidden' id=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " name=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " value=""" & rstFunctionParameters.fields("parameterName").value & """>" & vbCrLf)
+										iCount = iCount + 1
+										rstFunctionParameters.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstFunctionParameters.close()
-            End If
-            rstFunctionParameters = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstFunctionParameters.close()
+						End If
+						rstFunctionParameters = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdFunctionParameters = Nothing
+				cmdFunctionParameters = Nothing
 	end if
 %>
 </FORM>
 
 <FORM id=frmOperators name=frmOperators>
 <%
-    Dim cmdOperators
-    Dim rstOperators
-    
+		Dim cmdOperators
+		Dim rstOperators
+		
 	if len(sErrMsg) = 0 then
-        cmdOperators = CreateObject("ADODB.Command")
+				cmdOperators = CreateObject("ADODB.Command")
 		cmdOperators.CommandText = "sp_ASRIntGetExprOperators"
 		cmdOperators.CommandType = 4 ' Stored Procedure
-        cmdOperators.ActiveConnection = Session("databaseConnection")
+				cmdOperators.ActiveConnection = Session("databaseConnection")
 
-        Err.Clear()
-        rstOperators = cmdOperators.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component operators." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstOperators.state <> 0 Then
-                ' Read recordset values.
-                iCount = 0
-                Do While Not rstOperators.EOF
-                    iCount = iCount + 1
-                    Response.Write("<INPUT type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & rstOperators.fields("definitionString").value & """>" & vbCrLf)
-                    rstOperators.MoveNext()
-                Loop
+				Err.Clear()
+				rstOperators = cmdOperators.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component operators." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstOperators.state <> 0 Then
+								' Read recordset values.
+								iCount = 0
+								Do While Not rstOperators.EOF
+										iCount = iCount + 1
+										Response.Write("<INPUT type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & rstOperators.fields("definitionString").value & """>" & vbCrLf)
+										rstOperators.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstOperators.close()
-            End If
-            rstOperators = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstOperators.close()
+						End If
+						rstOperators = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdOperators = Nothing
+				cmdOperators = Nothing
 	end if
 %>
 </FORM>
 
 <FORM id=frmCalcs name=frmCalcs>
 <%
-    Dim cmdCalcs
-    Dim rstCalcs
-    Dim prmExprID
-    Dim prmBaseTableID
-    
-    
-    
+		Dim cmdCalcs
+		Dim rstCalcs
+		Dim prmExprID
+		Dim prmBaseTableID
+		
+		
+		
 	if len(sErrMsg) = 0 then
-        cmdCalcs = CreateObject("ADODB.Command")
+				cmdCalcs = CreateObject("ADODB.Command")
 		cmdCalcs.CommandText = "sp_ASRIntGetExprCalcs"
 		cmdCalcs.CommandType = 4 ' Stored Procedure
-        cmdCalcs.ActiveConnection = Session("databaseConnection")
+				cmdCalcs.ActiveConnection = Session("databaseConnection")
 
-        prmExprID = cmdCalcs.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
-        cmdCalcs.Parameters.Append(prmExprID)
+				prmExprID = cmdCalcs.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
+				cmdCalcs.Parameters.Append(prmExprID)
 		prmExprID.value = cleanNumeric(clng(session("optionExprID")))
 
-        prmBaseTableID = cmdCalcs.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-        cmdCalcs.Parameters.Append(prmBaseTableID)
+				prmBaseTableID = cmdCalcs.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
+				cmdCalcs.Parameters.Append(prmBaseTableID)
 		prmBaseTableID.value = cleanNumeric(clng(session("optionTableID")))
 
-        Err.Clear()
-        rstCalcs = cmdCalcs.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component calculations." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstCalcs.state <> 0 Then
-                ' Read recordset values.
-                iCount = 0
-                Do While Not rstCalcs.EOF
-                    iCount = iCount + 1
-                    Response.Write("<INPUT type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(rstCalcs.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
-                    Response.Write("<INPUT type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(rstCalcs.fields("description").value, """", "&quot;") & """>" & vbCrLf)
-                    rstCalcs.MoveNext()
-                Loop
+				Err.Clear()
+				rstCalcs = cmdCalcs.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component calculations." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstCalcs.state <> 0 Then
+								' Read recordset values.
+								iCount = 0
+								Do While Not rstCalcs.EOF
+										iCount = iCount + 1
+										Response.Write("<INPUT type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(rstCalcs.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
+										Response.Write("<INPUT type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(rstCalcs.fields("description").value, """", "&quot;") & """>" & vbCrLf)
+										rstCalcs.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstCalcs.close()
-            End If
-            rstCalcs = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstCalcs.close()
+						End If
+						rstCalcs = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdCalcs = Nothing
+				cmdCalcs = Nothing
 	end if
 %>
 </FORM>
 	
 <FORM id=frmFilters name=frmFilters>
 <%
-    Dim cmdFilters
-    Dim rstFilters
-    
+		Dim cmdFilters
+		Dim rstFilters
+		
 	if len(sErrMsg) = 0 then
-        cmdFilters = CreateObject("ADODB.Command")
+				cmdFilters = CreateObject("ADODB.Command")
 		cmdFilters.CommandText = "sp_ASRIntGetExprFilters"
 		cmdFilters.CommandType = 4 ' Stored Procedure
-        cmdFilters.ActiveConnection = Session("databaseConnection")
+				cmdFilters.ActiveConnection = Session("databaseConnection")
 
-        prmExprID = cmdFilters.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
-        cmdFilters.Parameters.Append(prmExprID)
+				prmExprID = cmdFilters.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
+				cmdFilters.Parameters.Append(prmExprID)
 		prmExprID.value = cleanNumeric(clng(session("optionExprID")))
 
-        prmBaseTableID = cmdFilters.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-        cmdFilters.Parameters.Append(prmBaseTableID)
+				prmBaseTableID = cmdFilters.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
+				cmdFilters.Parameters.Append(prmBaseTableID)
 		prmBaseTableID.value = cleanNumeric(clng(session("optionTableID")))
 
-        Err.Clear()
-        rstFilters = cmdFilters.Execute
-        If (Err.Number <> 0) Then
-            sErrMsg = "Error reading component filters." & vbCrLf & FormatError(Err.Description)
-        Else
-            If rstFilters.state <> 0 Then
-                ' Read recordset values.
-                iCount = 0
-                Do While Not rstFilters.EOF
-                    iCount = iCount + 1
-                    Response.Write("<INPUT type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(rstFilters.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
-                    Response.Write("<INPUT type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(rstFilters.fields("description").value, """", "&quot;") & """>" & vbCrLf)
-                    rstFilters.MoveNext()
-                Loop
+				Err.Clear()
+				rstFilters = cmdFilters.Execute
+				If (Err.Number <> 0) Then
+						sErrMsg = "Error reading component filters." & vbCrLf & FormatError(Err.Description)
+				Else
+						If rstFilters.state <> 0 Then
+								' Read recordset values.
+								iCount = 0
+								Do While Not rstFilters.EOF
+										iCount = iCount + 1
+										Response.Write("<INPUT type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(rstFilters.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
+										Response.Write("<INPUT type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(rstFilters.fields("description").value, """", "&quot;") & """>" & vbCrLf)
+										rstFilters.MoveNext()
+								Loop
 
-                ' Release the ADO recordset object.
-                rstFilters.close()
-            End If
-            rstFilters = Nothing
-        End If
+								' Release the ADO recordset object.
+								rstFilters.close()
+						End If
+						rstFilters = Nothing
+				End If
 
 		' Release the ADO command object.
-        cmdFilters = Nothing
+				cmdFilters = Nothing
 	end if
 %>
 </FORM>
 	
 <form id="frmFieldRec" name="frmFieldRec" target="fieldRec" action="fieldRec" method="post" style="visibility: hidden; display: none">
-    <input type="hidden" id="selectionType" name="selectionType">
-    <input type="hidden" id="Hidden1" name="txtTableID">
-    <input type="hidden" id="selectedID" name="selectedID">
+		<input type="hidden" id="selectionType" name="selectionType">
+		<input type="hidden" id="Hidden1" name="txtTableID">
+		<input type="hidden" id="selectedID" name="selectedID">
 </form>
 
 <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
 <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
 
 <%
-    Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrMsg & """>" & vbCrLf)
+		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrMsg & """>" & vbCrLf)
 %>
 
 
@@ -2525,12 +2525,12 @@ function componentParameter(psDefnString, psParameter)
 	componentParameter = ""
 end function
 
-    </script>
+		</script>
 
 
 <script type="text/javascript">
-    util_def_exprcomponent_addhandlers();
-    util_def_exprcomponent_onload();
+		util_def_exprcomponent_addhandlers();
+		util_def_exprcomponent_onload();
 </script>
 
 

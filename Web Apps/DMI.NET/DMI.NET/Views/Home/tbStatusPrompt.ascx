@@ -65,106 +65,106 @@
 <FORM action="" method="POST" id="frmForm" name="frmForm">
 
 <table align=center class="outline" cellPadding=5 cellSpacing=0> 
-    <tr>
-	    <td>
-		    <table align=center class="invisible" cellPadding=0 cellSpacing=0> 
-			    <tr>
-			        <td colSpan=4 height=10></td>
-			    </tr>
-			    <tr>
-			        <td colSpan=4>
-			            <H3 align=center>Book Course</H3>
-			        </td>
-			    </tr>
+		<tr>
+			<td>
+				<table align=center class="invisible" cellPadding=0 cellSpacing=0> 
+					<tr>
+							<td colSpan=4 height=10></td>
+					</tr>
+					<tr>
+							<td colSpan=4>
+									<H3 align=center>Book Course</H3>
+							</td>
+					</tr>
 
 				<tr>
 					<td width=20></td>
-				    <TD align="center" colSpan=2>
-				        Select the required booking status :
-				    </TD>
+						<TD align="center" colSpan=2>
+								Select the required booking status :
+						</TD>
 					<td width=20></td>
 				</tr>
 	
 				<TR>
-				    <TD colSpan=4 height=20></TD>
+						<TD colSpan=4 height=20></TD>
 				</TR>
 
 				<TR>
 					<td width=20></td>
-				    <TD colspan=2 nowrap>
-				        <INPUT type="radio" id=optStatus_Booked name=optStatus CHECKED
-                            onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                            onfocus="try{radio_onFocus(this);}catch(e){}"
-                            onblur="try{radio_onBlur(this);}catch(e){}"/>
-                        <label 
-                            tabindex="-1"
-                            for="optStatus_Booked"
-                            class="radio"
-                            onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                        >
-        				    Booked
-	    			    </label>
-    				</TD>
+						<TD colspan=2 nowrap>
+								<INPUT type="radio" id=optStatus_Booked name=optStatus CHECKED
+														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+														onfocus="try{radio_onFocus(this);}catch(e){}"
+														onblur="try{radio_onBlur(this);}catch(e){}"/>
+												<label 
+														tabindex="-1"
+														for="optStatus_Booked"
+														class="radio"
+														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+												>
+										Booked
+								</label>
+						</TD>
 					<td width=20></td>
 				</TR>
 
 				<TR>
 					<td width=20></td>
-				    <TD colspan=2>
-				        <INPUT type="radio" id=optStatus_Provisional name=optStatus
-                            onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-                            onfocus="try{radio_onFocus(this);}catch(e){}"
-                            onblur="try{radio_onBlur(this);}catch(e){}"/>
-                       <label 
-                            tabindex="-1"
-                            for="optStatus_Provisional"
-                            class="radio"
-                            onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                        >
-    				        Provisional
-				        </label>
-                    </TD>
+						<TD colspan=2>
+								<INPUT type="radio" id=optStatus_Provisional name=optStatus
+														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+														onfocus="try{radio_onFocus(this);}catch(e){}"
+														onblur="try{radio_onBlur(this);}catch(e){}"/>
+											 <label 
+														tabindex="-1"
+														for="optStatus_Provisional"
+														class="radio"
+														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+												>
+										Provisional
+								</label>
+										</TD>
 					<td width=20></td>
 				</TR>
 
 				<TR>
-				    <TD colSpan=4 height=20></TD>
+						<TD colSpan=4 height=20></TD>
 				</TR>
 
 				<TR>
 					<td width=20></td>
-				    <TD colSpan=2>
-				        <TABLE CLASS="invisible" CELLSPACING="0" CELLPADDING="0" align="center">
-				            <TR>
-					            <TD align="center">
+						<TD colSpan=2>
+								<TABLE CLASS="invisible" CELLSPACING="0" CELLPADDING="0" align="center">
+										<TR>
+											<TD align="center">
 									<input id="cmdSelect" name="cmdSelect" type="button" value="OK" class="btn" style="WIDTH: 75px" width="75" 
-									    onclick="Select()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
-					            </TD>
+											onclick="Select()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
+											</TD>
 								<TD width=20></TD>
-				    		    <TD align="center">
-				    			    <input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn" style="WIDTH: 75px" width="75" 
-				    			        onclick="Cancel()"
-                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                        onfocus="try{button_onFocus(this);}catch(e){}"
-                                        onblur="try{button_onBlur(this);}catch(e){}" />
-				    		    </TD>
+										<TD align="center">
+											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn" style="WIDTH: 75px" width="75" 
+													onclick="Cancel()"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
+										</TD>
 							</TR>
-				        </TABLE>
-				    </TD>
+								</TABLE>
+						</TD>
 					<td width=20></td>
 				</TR>
 
 				<TR>
-				    <TD colSpan=4 height=10></TD>
+						<TD colSpan=4 height=10></TD>
 				</TR>
 			</TABLE>
 		</td>

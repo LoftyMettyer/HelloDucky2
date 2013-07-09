@@ -20,7 +20,7 @@
 	Dim prmEnabled = cmdVersionOneModule.CreateParameter("enabled", 11, 2) ' 11=bit, 2=output
 	cmdVersionOneModule.Parameters.Append(prmEnabled)
 
-    Err.Clear()
+		Err.Clear()
 	cmdVersionOneModule.Execute()
 
 	Dim iVersionOneEnabled = CInt(cmdVersionOneModule.Parameters("enabled").Value)
@@ -368,7 +368,7 @@
 															<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 																<tr>
 																	<td width="100%" height="100%">
-                                                                        <%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSelectedColumns")%>
+																																				<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSelectedColumns")%>
 																	</td>
 																</tr>
 															</table>
@@ -383,7 +383,7 @@
 													<tr>
 														<td width="5"></td>
 														<td rowspan="4" width="40%" height="100%">
-														    <%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridAvailableColumns")%>
+																<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridAvailableColumns")%>
 														</td>
 														<td width="10" nowrap></td>
 														<td height="5" valign="top" align="center">
@@ -517,7 +517,7 @@
 													<tr height="5">
 														<td width="5">&nbsp;</td>
 														<td rowspan="12">
-														    <%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSortOrder")%>
+																<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSortOrder")%>
 														</td>
 
 														<td width="10">&nbsp;</td>
@@ -1079,7 +1079,7 @@
 			cmdTables.CommandType = 4	' Stored Procedure
 			cmdTables.ActiveConnection = Session("databaseConnection")
 
-		    Err.Clear()
+				Err.Clear()
 			Dim rstTablesInfo = cmdTables.Execute
 			If (Err.Number <> 0) Then
 				sErrorDescription = "The tables information could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -1087,10 +1087,10 @@
 
 			If Len(sErrorDescription) = 0 Then
 				Do While Not rstTablesInfo.EOF
-		            Response.Write("<INPUT type=""hidden"" id=txtTableName_" & rstTablesInfo.fields("tableID").value & " name=txtTableName_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("tableName").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtTableType_" & rstTablesInfo.fields("tableID").value & " name=txtTableType_" & rstTablesInfo.fields("tableID").value & " value=" & rstTablesInfo.fields("tableType").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenString").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtTableParents_" & rstTablesInfo.fields("tableID").value & " name=txtTableParents_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("parentsString").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtTableName_" & rstTablesInfo.fields("tableID").value & " name=txtTableName_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("tableName").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtTableType_" & rstTablesInfo.fields("tableID").value & " name=txtTableType_" & rstTablesInfo.fields("tableID").value & " value=" & rstTablesInfo.fields("tableType").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenString").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtTableParents_" & rstTablesInfo.fields("tableID").value & " name=txtTableParents_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("parentsString").value & """>" & vbCrLf)
 
 					rstTablesInfo.MoveNext()
 				Loop
@@ -1217,7 +1217,7 @@
 				Dim prmWarningMsg = cmdDefn.CreateParameter("warningMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
 				cmdDefn.Parameters.Append(prmWarningMsg)
 
-		        Err.Clear()
+						Err.Clear()
 				Dim rstDefinition = cmdDefn.Execute
 				Dim iHiddenCalcCount = 0
 		
@@ -1230,9 +1230,9 @@
 						Do While Not rstDefinition.EOF
 							iCount = iCount + 1
 							If rstDefinition.fields("definitionType").value = "ORDER" Then
-		                        Response.Write("<INPUT type=""hidden"" id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & rstDefinition.fields("definitionString").value & """>" & vbCrLf)
+														Response.Write("<INPUT type=""hidden"" id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & rstDefinition.fields("definitionString").value & """>" & vbCrLf)
 							Else
-		                        Response.Write("<INPUT type=""hidden"" id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(rstDefinition.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
+														Response.Write("<INPUT type=""hidden"" id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(rstDefinition.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
 	
 								' Check if the report column is a hidden calc.
 								If rstDefinition.fields("hidden").value = "Y" Then
@@ -1254,37 +1254,37 @@
 						sErrMsg = CType(("'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").value), String)
 					End If
 
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Selection name=txtDefn_Selection value=" & cmdDefn.Parameters("Selection").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & LCase(cmdDefn.Parameters("picklistHidden").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & LCase(cmdDefn.Parameters("filterHidden").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & LCase(cmdDefn.Parameters("OutputSave").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFileName name=txtDefn_OutputFileName value=""" & cmdDefn.Parameters("OutputFileName").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAddrID name=txtDefn_EmailAddrID value=" & cmdDefn.Parameters("EmailAddrID").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailSubject name=txtDefn_EmailSubject value=""" & Replace(cmdDefn.Parameters("EmailSubject").value, """", "&quot;") & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_TemplateFileName name=txtDefn_TemplateFileName value=""" & cmdDefn.Parameters("TemplateFileName").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & LCase(cmdDefn.Parameters("OutputScreen").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAsAttachment name=txtDefn_EmailAsAttachment value=" & Replace(LCase(cmdDefn.Parameters("EmailAsAttachment").value), """", "&quot;") & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAttachmentName name=txtDefn_EmailAttachmentName value=""" & cmdDefn.Parameters("EmailAttachmentName").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_SuppressBlanks name=txtDefn_SuppressBlanks value=" & LCase(cmdDefn.Parameters("SuppressBlanks").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_PauseBeforeMerge name=txtDefn_PauseBeforeMerge value=" & LCase(cmdDefn.Parameters("PauseBeforeMerge").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & LCase(cmdDefn.Parameters("OutputPrinter").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").value & """>" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapID name=txtDefn_DocumentMapID value=" & cmdDefn.Parameters("DocumentMapID").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_ManualDocManHeader name=txtDefn_ManualDocManHeader value=" & LCase(cmdDefn.Parameters("ManualDocManHeader").value) & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").value & ">" & vbCrLf)
-		            Response.Write("<INPUT type=""hidden"" id=txtDefn_Warning name=txtDefn_Warning value=""" & Replace(cmdDefn.Parameters("warningMsg").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Selection name=txtDefn_Selection value=" & cmdDefn.Parameters("Selection").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & LCase(cmdDefn.Parameters("picklistHidden").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & LCase(cmdDefn.Parameters("filterHidden").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & LCase(cmdDefn.Parameters("OutputSave").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFileName name=txtDefn_OutputFileName value=""" & cmdDefn.Parameters("OutputFileName").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAddrID name=txtDefn_EmailAddrID value=" & cmdDefn.Parameters("EmailAddrID").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailSubject name=txtDefn_EmailSubject value=""" & Replace(cmdDefn.Parameters("EmailSubject").value, """", "&quot;") & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_TemplateFileName name=txtDefn_TemplateFileName value=""" & cmdDefn.Parameters("TemplateFileName").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & LCase(cmdDefn.Parameters("OutputScreen").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAsAttachment name=txtDefn_EmailAsAttachment value=" & Replace(LCase(cmdDefn.Parameters("EmailAsAttachment").value), """", "&quot;") & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAttachmentName name=txtDefn_EmailAttachmentName value=""" & cmdDefn.Parameters("EmailAttachmentName").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_SuppressBlanks name=txtDefn_SuppressBlanks value=" & LCase(cmdDefn.Parameters("SuppressBlanks").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_PauseBeforeMerge name=txtDefn_PauseBeforeMerge value=" & LCase(cmdDefn.Parameters("PauseBeforeMerge").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & LCase(cmdDefn.Parameters("OutputPrinter").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapID name=txtDefn_DocumentMapID value=" & cmdDefn.Parameters("DocumentMapID").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_ManualDocManHeader name=txtDefn_ManualDocManHeader value=" & LCase(cmdDefn.Parameters("ManualDocManHeader").value) & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").value & ">" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtDefn_Warning name=txtDefn_Warning value=""" & Replace(cmdDefn.Parameters("warningMsg").value, """", "&quot;") & """>" & vbCrLf)
 				End If
-    
+		
 				Dim fDocManagement = False
 				Dim lngDocumentMapID = 0
 				If cmdDefn.Parameters("DocumentMapID").value > 0 Then
@@ -1294,26 +1294,26 @@
 
 				' Release the ADO command object.
 				cmdDefn = Nothing
-    
+		
 				If fDocManagement = True Then
 					' Get the Document Type 'Name' (only the ID is stored in the table)
 					Dim cmdDocManRecords = CreateObject("ADODB.Command")
 					cmdDocManRecords.CommandText = "spASRIntGetDocumentManagementTypes"
 					cmdDocManRecords.CommandType = 4 ' Stored Procedure
 					cmdDocManRecords.ActiveConnection = Session("databaseConnection")
-		            Err.Clear()
+								Err.Clear()
 					Dim rstDocManRecords = cmdDocManRecords.Execute
-	    
+			
 					Dim lngCount = 1
 					Do While Not rstDocManRecords.EOF
 						If CInt(rstDocManRecords.Fields(0).Value) = lngDocumentMapID Then
-		                    Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapName name=txtDefn_DocumentMapName value=""" & Replace(CType(rstDocManRecords.Fields(1).Value, String), """", "&quot;") & """>" & vbCrLf)
+												Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapName name=txtDefn_DocumentMapName value=""" & Replace(CType(rstDocManRecords.Fields(1).Value, String), """", "&quot;") & """>" & vbCrLf)
 						End If
 
 						rstDocManRecords.MoveNext()
 						lngCount = lngCount + 1
 					Loop
-        
+				
 					cmdDocManRecords = Nothing
 				End If
 
@@ -1351,7 +1351,7 @@
 				prmFromCopy.value = 0
 			End If
 
-		    Err.Clear()
+				Err.Clear()
 			Dim rstAccessInfo = cmdAccess.Execute
 			If (Err.Number <> 0) Then
 				sErrorDescription = "The access information could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -1360,7 +1360,7 @@
 			If Len(sErrorDescription) = 0 Then
 				Dim iCount = 0
 				Do While Not rstAccessInfo.EOF
-		            Response.Write("<INPUT type=""hidden"" id=txtAccess_" & iCount & " name=txtAccess_" & iCount & " value=""" & rstAccessInfo.fields("accessDefinition").value & """>" & vbCrLf)
+								Response.Write("<INPUT type=""hidden"" id=txtAccess_" & iCount & " name=txtAccess_" & iCount & " value=""" & rstAccessInfo.fields("accessDefinition").value & """>" & vbCrLf)
 
 					iCount = iCount + 1
 					rstAccessInfo.MoveNext()
@@ -1405,15 +1405,15 @@
 			Dim prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
 			cmdDefinition.Parameters.Append(prmParameterValue)
 
-		    Err.Clear()
+				Err.Clear()
 			cmdDefinition.Execute()
 
-		    Response.Write("<INPUT type=""hidden"" id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").value & ">" & vbCrLf)
+				Response.Write("<INPUT type=""hidden"" id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").value & ">" & vbCrLf)
 	
 			'cmdDefinition = Nothing
 
-		    Response.Write("<INPUT type=""hidden"" id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-		    Response.Write("<INPUT type=""hidden"" id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+				Response.Write("<INPUT type=""hidden"" id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+				Response.Write("<INPUT type=""hidden"" id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
 		%>
 	</form>
 
@@ -1501,11 +1501,11 @@
 		<input type="hidden" id="calcsHiddenCount" name="calcsHiddenCount" value="0">
 	</form>
 
-    <input type="hidden" id="txtTicker" name="txtTicker" value="0">
-    <input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
+		<input type="hidden" id="txtTicker" name="txtTicker" value="0">
+		<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
 </div>
 
 <script type="text/javascript">
-    util_def_mailmerge_window_onload();
-    utilDefMailmergeAddActiveXHandlers();
+		util_def_mailmerge_window_onload();
+		utilDefMailmergeAddActiveXHandlers();
 </script>

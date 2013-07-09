@@ -11,10 +11,10 @@
 <html>
 <head>
 	
-    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/jQueryUI")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
+		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/jQueryUI")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+		<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
 
 	<title>OpenHR Intranet</title>
 

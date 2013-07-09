@@ -1676,15 +1676,15 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td align="left" nowrap>
 																					<!--
-                                                                            <label 
-                                                                                tabindex=-1
-                                                                                for="optOutputFormat1"
-                                                                                class="radio"
-                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                            />
-	        																	CSV File
-                                                       	    		        </label>
+																																						<label 
+																																								tabindex=-1
+																																								for="optOutputFormat1"
+																																								class="radio"
+																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																						/>
+																						CSV File
+																																				</label>
 																			-->
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1704,15 +1704,15 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td>
 																					<!--
-                                                                            <label 
-                                                                                tabindex=-1
-                                                                                for="optOutputFormat5"
-                                                                                class="radio"
-                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                            />
-																			    Excel Chart
-                                                       	    		        </label>
+																																						<label 
+																																								tabindex=-1
+																																								for="optOutputFormat5"
+																																								class="radio"
+																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																						/>
+																					Excel Chart
+																																				</label>
 																			-->
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1732,15 +1732,15 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td>
 																					<!--
-                                                                            <label 
-                                                                                tabindex=-1
-                                                                                for="optOutputFormat6"
-                                                                                class="radio"
-                                                                                onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-                                                                                onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-                                                                            />
-																			    Excel Pivot Table
-                                                       	    		        </label>
+																																						<label 
+																																								tabindex=-1
+																																								for="optOutputFormat6"
+																																								class="radio"
+																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
+																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
+																																						/>
+																					Excel Pivot Table
+																																				</label>
 																			-->
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -2469,13 +2469,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 			If Len(sErrMsg) > 0 Then
 				Session("confirmtext") = sErrMsg
 				Session("confirmtitle") = "OpenHR Intranet"
-	                                    	    
-				Session("followpage") = "defsel"
-	                                    	    
-				Session("reaction") = "CALENDARREPORTS"
-	                                    	    
-				Response.Clear()
-	                                    	    
+																						
+			Session("followpage") = "defsel"
+																						
+			Session("reaction") = "CALENDARREPORTS"
+																						
+			Response.Clear()
+																						
 				Response.Redirect("confirmok")
 			End If
 	

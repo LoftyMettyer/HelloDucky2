@@ -7,90 +7,90 @@
 <%-- For other devs: Do not remove above line. --%>
 
 <script type="text/javascript">
-    function workpendingsteps_window_onload() {
-        // Table to jQuery grid
-        tableToGrid("#PendingStepsTable", {
-            onSelectRow: function(rowID) {
-            },
-            ondblClickRow: function(rowID) {
-            },
-            rowNum: 1000   //TODO set this to blocksize...
-        });
-        
-        //debugger;
-        //Hide the URL table header and its column
-        $('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
-        $('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
-        
-        //Select the first row
-        $("#PendingStepsTable").jqGrid('setSelection', 1);
-       
-        //On clicking "Run", open window with the selected item's URL
-        $("#cmdRun").click(function() {
-            var selectedRow = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row
-            //debugger;
-            var url = $(selectedRow.children()[1]).html(); //Get the url
-            //window.open(url, '_blank', 'fullscreen=yes');
-            var newWindow = window.open(url);
-            if (window.focus) {
-                newWindow.focus();
-            }
-        });
-    }
+		function workpendingsteps_window_onload() {
+				// Table to jQuery grid
+				tableToGrid("#PendingStepsTable", {
+						onSelectRow: function(rowID) {
+						},
+						ondblClickRow: function(rowID) {
+						},
+						rowNum: 1000   //TODO set this to blocksize...
+				});
+				
+				//debugger;
+				//Hide the URL table header and its column
+				$('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
+				$('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
+				
+				//Select the first row
+				$("#PendingStepsTable").jqGrid('setSelection', 1);
+			 
+				//On clicking "Run", open window with the selected item's URL
+				$("#cmdRun").click(function() {
+						var selectedRow = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row
+						//debugger;
+						var url = $(selectedRow.children()[1]).html(); //Get the url
+						//window.open(url, '_blank', 'fullscreen=yes');
+						var newWindow = window.open(url);
+						if (window.focus) {
+								newWindow.focus();
+						}
+				});
+		}
 </script>
 
 <script runat="server">
-    Private _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
-    Private _StepCount As Integer = 0
-    Private _WorkflowGood As Boolean = True
-    
-    Private Sub GetPendingWorkflowSteps
-        'Get the pendings workflow steps from the database
-        Dim _cmdDefSelRecords = CreateObject("ADODB.Command")
-        
-        _cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
-        _cmdDefSelRecords.CommandType = 4 ' Stored Procedure
-        _cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
+		Private _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
+		Private _StepCount As Integer = 0
+		Private _WorkflowGood As Boolean = True
+		
+		Private Sub GetPendingWorkflowSteps
+				'Get the pendings workflow steps from the database
+				Dim _cmdDefSelRecords = CreateObject("ADODB.Command")
+				
+				_cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
+				_cmdDefSelRecords.CommandType = 4 ' Stored Procedure
+				_cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
-        Err.Clear()
-        Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
+				Err.Clear()
+				Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
 
-        If Err.Number <> 0 Then
-            ' Workflow not licensed or configured. Go to default page.
-            _WorkflowGood = False
-        Else
-            With _PendingWorkflowStepsHTMLTable
-                .Append("<table id=""PendingStepsTable"">")
-                .Append("<tr>")
-                .Append("<th id=""DescriptionHeader"">Description</th>")
-                .Append("<th id=""URLHeader"">URL</th>")
-                .Append("</tr>")
-            End With
-            'Loop over the records
-            Do Until _rstDefSelRecords.eof
-                _StepCount += 1
-                With _PendingWorkflowStepsHTMLTable
-                    .Append("<tr>")
-                    .Append("<td>" & _rstDefSelRecords.Fields("description").Value & "</td>")
-                    .Append("<td>" & _rstDefSelRecords.Fields("url").Value & "</td>")
-                    .Append("</tr>")
-                End With
-                _rstDefSelRecords.movenext()
-            Loop
-            
-            _PendingWorkflowStepsHTMLTable.Append("</table>")
-            
-            _rstDefSelRecords.close()
-            _rstDefSelRecords = Nothing
-        End If
-        
-        ' Release the ADO command object.
-        _cmdDefSelRecords = Nothing
-    End Sub
-    
-    Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
-        GetPendingWorkflowSteps()
-    End Sub
+				If Err.Number <> 0 Then
+						' Workflow not licensed or configured. Go to default page.
+						_WorkflowGood = False
+				Else
+						With _PendingWorkflowStepsHTMLTable
+								.Append("<table id=""PendingStepsTable"">")
+								.Append("<tr>")
+								.Append("<th id=""DescriptionHeader"">Description</th>")
+								.Append("<th id=""URLHeader"">URL</th>")
+								.Append("</tr>")
+						End With
+						'Loop over the records
+						Do Until _rstDefSelRecords.eof
+								_StepCount += 1
+								With _PendingWorkflowStepsHTMLTable
+										.Append("<tr>")
+										.Append("<td>" & _rstDefSelRecords.Fields("description").Value & "</td>")
+										.Append("<td>" & _rstDefSelRecords.Fields("url").Value & "</td>")
+										.Append("</tr>")
+								End With
+								_rstDefSelRecords.movenext()
+						Loop
+						
+						_PendingWorkflowStepsHTMLTable.Append("</table>")
+						
+						_rstDefSelRecords.close()
+						_rstDefSelRecords = Nothing
+				End If
+				
+				' Release the ADO command object.
+				_cmdDefSelRecords = Nothing
+		End Sub
+		
+		Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+				GetPendingWorkflowSteps()
+		End Sub
 
 </script>
 <form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
@@ -99,13 +99,13 @@
 		Response.Expires = -1
 	
 		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
-	        ' Reset the Workflow OutOfOffice flag.
-	        Dim cmdOutOfOffice = CreateObject("ADODB.Command")
-	        cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
+					' Reset the Workflow OutOfOffice flag.
+					Dim cmdOutOfOffice = CreateObject("ADODB.Command")
+					cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
 			cmdOutOfOffice.CommandType = 4 ' Stored Procedure
 			cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
-	        Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)   ' 11=bit, 1=input
+					Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)   ' 11=bit, 1=input
 			cmdOutOfOffice.Parameters.Append(prmValue)
 			prmValue.value = 0
 
@@ -121,14 +121,14 @@
 </form>
 
 <script type="text/javascript">
-    function setrefresh() {
-        OpenHR.submitForm("frmRefresh");
-        <%If Session("fromMenu") = 0 Then%>
-          menu_autoLoadPage("workflowPendingSteps", true);
-        <%Else%>
-          menu_autoLoadPage("workflowPendingSteps", false);
-        <%End If%>
-      }
+		function setrefresh() {
+				OpenHR.submitForm("frmRefresh");
+				<%If Session("fromMenu") = 0 Then%>
+					menu_autoLoadPage("workflowPendingSteps", true);
+				<%Else%>
+					menu_autoLoadPage("workflowPendingSteps", false);
+				<%End If%>
+			}
 </script>
 
 <div <%=session("BodyTag")%>>
@@ -192,14 +192,14 @@
 		</table>
 		<%							
 		Else
-		    Dim sMessage As String
-		    If _WorkflowGood = True Then
-		        ' Display message saying no pending steps.
-		        sMessage = "No pending workflow steps"
-		    Else
-		        ' Display error message.
-		        sMessage = "Error getting the pending workflow steps"
-		    End If
+				Dim sMessage As String
+				If _WorkflowGood = True Then
+						' Display message saying no pending steps.
+						sMessage = "No pending workflow steps"
+				Else
+						' Display error message.
+						sMessage = "Error getting the pending workflow steps"
+				End If
 		%>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
@@ -252,6 +252,6 @@ End If
 </div>
 
 <script type="text/javascript">
-    workpendingsteps_window_onload();
+		workpendingsteps_window_onload();
 </script>
 

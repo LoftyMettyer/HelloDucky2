@@ -3,16 +3,16 @@
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
 <%
-    
-    Session("CALREP_firstLoad") = 1
-    Session("EmailGroupID") = 0
-    
-    Session("OutputOptions_Format") = 0
-    Session("OutputOptions_Screen") = "true"
-    Session("OutputOptions_Printer") = "false"
-    Session("OutputOptions_Save") = "false"
-    Session("OutputOptions_SaveExisting") = 0
-    
+		
+		Session("CALREP_firstLoad") = 1
+		Session("EmailGroupID") = 0
+		
+		Session("OutputOptions_Format") = 0
+		Session("OutputOptions_Screen") = "true"
+		Session("OutputOptions_Printer") = "false"
+		Session("OutputOptions_Save") = "false"
+		Session("OutputOptions_SaveExisting") = 0
+		
 	' following sessions vars:
 	'
 	' UtilType    - 0-13 (see UtilityType code in DATMGR .exe
@@ -63,69 +63,69 @@
 %>
 
 <script type="text/javascript">	
-    function raiseError(sErrorDesc, fok, fcancelled) {
-        var frmError = document.getElementById("frmError");
-        frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
-        frmError.txtErrorDesc.value = sErrorDesc;
-        frmError.txtOK.value = fok;
-        frmError.txtUserCancelled.value = fcancelled;
-        var sTarget = new String("errorMessage");
-        frmError.target = sTarget;
-        NewWindow('', sTarget, '500', '200', 'no');
-        frmError.submit();
-        self.close();
-        return;
-    }
+		function raiseError(sErrorDesc, fok, fcancelled) {
+				var frmError = document.getElementById("frmError");
+				frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
+				frmError.txtErrorDesc.value = sErrorDesc;
+				frmError.txtOK.value = fok;
+				frmError.txtUserCancelled.value = fcancelled;
+				var sTarget = new String("errorMessage");
+				frmError.target = sTarget;
+				NewWindow('', sTarget, '500', '200', 'no');
+				frmError.submit();
+				self.close();
+				return;
+		}
 
-    function pausecomp(millis) {
-        var date = new Date();
-        var curDate;
+		function pausecomp(millis) {
+				var date = new Date();
+				var curDate;
 
-        do {
-            curDate = new Date();
-        } while (curDate - date < millis);
-    }
+				do {
+						curDate = new Date();
+				} while (curDate - date < millis);
+		}
 
-    function NewWindow(mypage, myname, w, h, scroll) {
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-        var win = window.open(mypage, myname, winprops);
+		function NewWindow(mypage, myname, w, h, scroll) {
+				var winl = (screen.width - w) / 2;
+				var wint = (screen.height - h) / 2;
+				var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+				var win = window.open(mypage, myname, winprops);
 
-        if (parseInt(navigator.appVersion) >= 4) {
-            pausecomp(300);
-            win.window.focus();
-        }
-    }
+				if (parseInt(navigator.appVersion) >= 4) {
+						pausecomp(300);
+						win.window.focus();
+				}
+		}
 
-    function ShowWaitFrame() {
+		function ShowWaitFrame() {
 
-        var fs = window.parent.document.all.item("reportframe");
+				var fs = window.parent.document.all.item("reportframe");
 
-        if (fs) {
-            fs.rows = "*,0,0";
-        }
+				if (fs) {
+						fs.rows = "*,0,0";
+				}
 
-    }
+		}
 
-    //function ShowOutputOptionsFrame(sUrl) {
+		//function ShowOutputOptionsFrame(sUrl) {
 
-    //    $("#reportworkframe").hide();
-    //    $("#reportbreakdownframe").hide();
+		//    $("#reportworkframe").hide();
+		//    $("#reportbreakdownframe").hide();
 
-    //    $("#outputoptions").src = sUrl;
-    //    $("#outputoptions").show();
+		//    $("#outputoptions").src = sUrl;
+		//    $("#outputoptions").show();
 
-    //}
+		//}
 
-    function ShowDataFrame() {
+		function ShowDataFrame() {
 
-        $("#reportbreakdownframe").hide();
-        $("#outputoptions").hide();
-        $("#reportframe").show();
-        $("#reportworkframe").show();
+				$("#reportbreakdownframe").hide();
+				$("#outputoptions").hide();
+				$("#reportframe").show();
+				$("#reportworkframe").show();
 
-    }
+		}
 
 </script>
 
@@ -160,13 +160,13 @@
 		ElseIf Session("utiltype") = "8" Then
 			'Html.RenderPartial("~/Views/Home/util_run_import.ascx")
 		ElseIf Session("utiltype") = "9" Then
-	        Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
+					Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
 		ElseIf Session("utiltype") = "15" Then
-	        Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
+					Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
 		ElseIf Session("utiltype") = "16" Then
-	        Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 		ElseIf Session("utiltype") = "17" Then
-	        Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
+					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
 		Else
 			' blah.
 		End If
@@ -175,6 +175,6 @@
 </div>
 
 <script type="text/javascript">
-    $("#outputoptions").hide();
-    $("#reportworkframe").show();
+		$("#outputoptions").hide();
+		$("#reportworkframe").show();
 </script>

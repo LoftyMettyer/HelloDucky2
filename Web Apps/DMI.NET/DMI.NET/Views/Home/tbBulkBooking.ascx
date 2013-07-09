@@ -55,15 +55,15 @@
 		frmGotoOption.txtGotoOptionRecordID.value = $("#txtOptionRecordID").val();
 		frmGotoOption.txtGotoOptionLinkRecordID.value = sSelectedIDs;
 		<%
-    if session("TB_TBStatusPExists") then
+		if session("TB_TBStatusPExists") then
 %>
 		frmGotoOption.txtGotoOptionLookupValue.value = frmBulkBooking.selStatus.options[frmBulkBooking.selStatus.selectedIndex].value;
 		<%
-    else
+		else
 %>
 		frmGotoOption.txtGotoOptionLookupValue.value = "B";
 		<%
-    end if 
+		end if 
 %>
 
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
@@ -348,7 +348,7 @@
 		Response.Write("				</TR>" & vbCrLf)
 	end if
 %>		
-  
+	
 				<tr> 
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 					<td rowspan=13 width=100%>
@@ -527,8 +527,8 @@
 		' When calling a stored procedure which returns a recordset AND has output parameters
 		' you need to close the recordset and set it to nothing before using the output parameters. 
 		if len(cmdFindRecords.Parameters("errorMsg").Value) > 0 then
-	    Session("ErrorTitle") = "Bulk Booking Page"
-		  Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
+			Session("ErrorTitle") = "Bulk Booking Page"
+			Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
 			Response.Clear	  
 			Response.Redirect("error.asp")
 		else
@@ -543,11 +543,11 @@
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 					<TD width=80 height=10>
 						<input type="button" id=cmdAdd name=cmdAdd value="Add" style="WIDTH: 100px" width="100" class="btn"  
-						    onclick="add()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="add()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 				</tr>
@@ -559,11 +559,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdAddFilter id=cmdAddFilter value="Filtered Add" style="WIDTH: 100px" width="100" class="btn"
-						    onclick="filteredAdd()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="filteredAdd()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>
 		
@@ -574,11 +574,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdAddPicklist id=cmdAddPicklist value="Picklist Add" style="WIDTH: 100px" width="100" class="btn"
-						    onclick="addPicklist()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="addPicklist()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>
 		
@@ -589,11 +589,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdRemove value="Remove" style="WIDTH: 100px" width="100" class="btn"
-						    onclick="remove()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="remove()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>
 
@@ -604,11 +604,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdRemoveAll value="Remove All" style="WIDTH: 100px" width="100" class="btn"
-						    onclick="removeAll()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="removeAll()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>
 
@@ -619,11 +619,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdOK value="OK" style="WIDTH: 100px" width="100" id=cmdOK class="btn"
-						    onclick="ok()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="ok()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>
 
@@ -634,11 +634,11 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 100px" width="100" class="btn"
-						    onclick="cancel()" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="cancel()" 
+														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+														onmouseout="try{button_onMouseOut(this);}catch(e){}"
+														onfocus="try{button_onFocus(this);}catch(e){}"
+														onblur="try{button_onBlur(this);}catch(e){}" />
 					</TD>
 				</TR>     
 
