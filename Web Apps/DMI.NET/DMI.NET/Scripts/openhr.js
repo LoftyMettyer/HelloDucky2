@@ -89,7 +89,10 @@
 			return document.frames[frameId];
 		},
 		getForm = function(frameId, formId) {
-			return document.forms[formId];
+			//return document.forms[formId];
+
+			return document.querySelector('#' + frameId + ' #' + formId);
+
 		},
 		submitForm = function(form, targetWin, asyncFlag) {
 			var $form = $(form),

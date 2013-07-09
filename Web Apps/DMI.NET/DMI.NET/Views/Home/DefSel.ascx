@@ -266,7 +266,8 @@
 					// Expand the option frame and hide the work frame.
 					menu_disableMenu();
 				} else {
-					menu_refreshMenu();
+					//menu_refreshMenu();
+					refreshControls();
 				}
 
 				if (frmDefSel.txtSingleRecordID.value > 0) {
@@ -414,9 +415,11 @@
 		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = true;
 		//}
 
-		function refreshControls() {
+		function refreshControls() {			
 			//show the utilities menu block.
 			//$("#mnuSectionUtilities").show();
+			frmDefSel = document.getElementById('frmDefSel');
+
 			menu_toolbarEnableItem("mnutoolNewUtil", true);
 			menu_toolbarEnableItem("mnutoolEditUtil", true);
 			menu_toolbarEnableItem("mnutoolCopyUtil", true);
@@ -424,8 +427,11 @@
 			menu_toolbarEnableItem("mnutoolPrintUtil", true);
 			menu_toolbarEnableItem("mnutoolPropertiesUtil", true);
 			menu_toolbarEnableItem("mnutillRunUtil", true);
-			menu_setVisibleMenuItem('mnuutilCancelUtil', true);
-			menu_toolbarEnableItem('mnuutilCancelUtil', true);
+			//only display the 'close' button for defsel when called from rec edit...
+			if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+				menu_setVisibleMenuItem('mnuutilCancelUtil', true);
+				menu_toolbarEnableItem('mnuutilCancelUtil', true);
+			}
 			$("#toolbarUtilities").click();
 			//$("#toolbarHome").click();
 			//menu_refreshMenu();
