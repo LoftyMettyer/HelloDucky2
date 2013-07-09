@@ -40,7 +40,7 @@
 
 			// Expand the work frame and hide the option frame.
 			//TODO
-		    //window.parent.document.all.item("workframeset").cols = "*, 0";	
+				//window.parent.document.all.item("workframeset").cols = "*, 0";	
 			$("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
 	
 			populateBaseTableCombo();
@@ -97,8 +97,8 @@
 			frmUseful.txtLoading.value = 'N';
 
 			// Get menu.asp to refresh the menu.
-		    //OpenHR.refreshMenu();		
-		    menu_refreshMenu();
+				//OpenHR.refreshMenu();		
+				menu_refreshMenu();
 
 			if ((frmUseful.txtAction.value.toUpperCase() != "NEW") &&
 				(frmOriginalDefinition.txtDefn_Info.value != "")) 
@@ -2211,16 +2211,16 @@
 	function cancelClick() {
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
-		    
-		    menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
-		    return (false);		    
+				
+				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+				return (false);		    
 		}
 
 		answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Custom Reports");
 		if (answer == 7) {
 			// No
-		    menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
-		    return (false);
+				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+				return (false);
 		}
 		if (answer == 6) {
 			// Yes
@@ -4719,53 +4719,53 @@
 
 	function populateSaveExisting() {
 
-	    var lngCurrentOption;
-	    var iLoop;
+			var lngCurrentOption;
+			var iLoop;
 
-	    with (frmDefinition.cboSaveExisting) {
-	        lngCurrentOption = 0;
-	        if (selectedIndex > 0) {
-	            lngCurrentOption = options[selectedIndex].value;
-	        }
-	        length = 0;
-	        
-	        var oOption = document.createElement("OPTION");
-	        options.add(oOption);
-	        oOption.innerText = "Overwrite";
-	        oOption.value = 0;
+			with (frmDefinition.cboSaveExisting) {
+					lngCurrentOption = 0;
+					if (selectedIndex > 0) {
+							lngCurrentOption = options[selectedIndex].value;
+					}
+					length = 0;
+					
+					var oOption = document.createElement("OPTION");
+					options.add(oOption);
+					oOption.innerText = "Overwrite";
+					oOption.value = 0;
 
-	        oOption = document.createElement("OPTION");
-	        options.add(oOption);
-	        oOption.innerText = "Do not overwrite";
-	        oOption.value = 1;
+					oOption = document.createElement("OPTION");
+					options.add(oOption);
+					oOption.innerText = "Do not overwrite";
+					oOption.value = 1;
 
-	        oOption = document.createElement("OPTION");
-	        options.add(oOption);
-	        oOption.innerText = "Add sequential number to name";
-	        oOption.value = 2;
+					oOption = document.createElement("OPTION");
+					options.add(oOption);
+					oOption.innerText = "Add sequential number to name";
+					oOption.value = 2;
 
-	        oOption = document.createElement("OPTION");
-	        options.add(oOption);
-	        oOption.innerText = "Append to file";
-	        oOption.value = 3;
+					oOption = document.createElement("OPTION");
+					options.add(oOption);
+					oOption.innerText = "Append to file";
+					oOption.value = 3;
 
-	        if ((frmDefinition.optOutputFormat4.checked) ||
-                (frmDefinition.optOutputFormat5.checked) ||
-                (frmDefinition.optOutputFormat6.checked)) {
-	            oOption = document.createElement("OPTION");
-	            options.add(oOption);
-	            oOption.innerText = "Create new sheet in workbook";
-	            oOption.value = 4;
-	        }
+					if ((frmDefinition.optOutputFormat4.checked) ||
+								(frmDefinition.optOutputFormat5.checked) ||
+								(frmDefinition.optOutputFormat6.checked)) {
+							oOption = document.createElement("OPTION");
+							options.add(oOption);
+							oOption.innerText = "Create new sheet in workbook";
+							oOption.value = 4;
+					}
 
-	        for (iLoop = 0; iLoop < options.length; iLoop++) {
-	            if (options(iLoop).value == lngCurrentOption) {
-	                selectedIndex = iLoop;
-	                break;
-	            }
-	        }
+					for (iLoop = 0; iLoop < options.length; iLoop++) {
+							if (options(iLoop).value == lngCurrentOption) {
+									selectedIndex = iLoop;
+									break;
+							}
+					}
 
-	    }
+			}
 
 	}
 
@@ -6410,7 +6410,7 @@
 		{
 			return;
 		}
-    
+		
 		var fSortAddDisabled = false;
 		var fSortEditDisabled = false;
 		var fSortRemoveDisabled = false;
@@ -6581,9 +6581,9 @@
 		{
 			return;
 		}
-  
+	
 		var sMessage = '';
-  
+	
 		with (frmDefinition.ssOleDBGridSortOrder)
 		{
 			var sKey = Columns("ColumnID").Value;
@@ -6897,9 +6897,9 @@
 		{
 			return;
 		}
-  
+	
 		var sMessage = '';
-  
+	
 		with (frmDefinition.ssOleDBGridRepetition)
 		{
 			var sKey = Columns("ColumnID").Value;
@@ -7135,7 +7135,7 @@
 			{
 				var bHidden = getCurrentColProp('Hidden');
 				var bSurpress = getCurrentColProp('Hide');
-    
+		
 				if ((bHidden == true) || (bSurpress == true) || (frmUseful.txtChildColumnSelected.value == 0))
 				{
 					Columns("repetition").CellStyleSet("ssetFixDataDisabled", AddItemRowIndex(Bookmark));

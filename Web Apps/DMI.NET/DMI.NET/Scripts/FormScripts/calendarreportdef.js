@@ -934,57 +934,57 @@ function refreshTab5Controls() {
 			button_disable(cmdFilename, true);
 		}
 			/*else if (optOutputFormat1.checked == true)   //CSV File
-                {
-                //enable preview opitons
-                checkbox_disable(chkPreview, (fViewing == true));
-                
-                //disable display on screen options
-                chkDestination0.checked = false;
-                checkbox_disable(chkDestination0, true);
-                
-                //disable printer options
-                chkDestination1.checked = false;
-                checkbox_disable(chkDestination1, true);
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName, true);
-                            
-                //enable-disable save options
-                checkbox_disable(chkDestination2, (fViewing == true));
-                if (chkDestination2.checked == true)
-                    {
-                    populateSaveExisting();
-                    combo_disable(cboSaveExisting, (fViewing == true));
-                    }	
-                else
-                    {
-                    cboSaveExisting.length = 0;
-                    combo_disable(cboSaveExisting, true);
-                    }
-                
-                //enable-disable email options
-                checkbox_disable(chkDestination3, (fViewing == true));
-                if (chkDestination3.checked == true)
-                    {
-                    text_disable(txtEmailGroup, (fViewing == true));
-                    text_disable(txtEmailSubject, (fViewing == true));
-                    button_disable(cmdEmailGroup, (fViewing == true));
-                    text_disable(txtEmailAttachAs, (fViewing == true));
-                    }
-                else
-                    {
-                    text_disable(txtEmailGroup, true);
-                    txtEmailGroup.value = '';
-                    txtEmailGroupID.value = 0;
-                    text_disable(txtEmailSubject, true);
-                    txtEmailSubject.value = '';
-                    button_disable(cmdEmailGroup, true);
-                    text_disable(txtEmailAttachAs, true);
-                    }
-    
-                //enable-disable filename options
-                text_disable(txtFilename, ((fViewing == true) || (!chkDestination2.checked)));
-                button_disable(cmdFilename, ((fViewing == true) || (!chkDestination2.checked)));
-                }*/
+								{
+								//enable preview opitons
+								checkbox_disable(chkPreview, (fViewing == true));
+								
+								//disable display on screen options
+								chkDestination0.checked = false;
+								checkbox_disable(chkDestination0, true);
+								
+								//disable printer options
+								chkDestination1.checked = false;
+								checkbox_disable(chkDestination1, true);
+								cboPrinterName.length = 0;
+								combo_disable(cboPrinterName, true);
+														
+								//enable-disable save options
+								checkbox_disable(chkDestination2, (fViewing == true));
+								if (chkDestination2.checked == true)
+										{
+										populateSaveExisting();
+										combo_disable(cboSaveExisting, (fViewing == true));
+										}	
+								else
+										{
+										cboSaveExisting.length = 0;
+										combo_disable(cboSaveExisting, true);
+										}
+								
+								//enable-disable email options
+								checkbox_disable(chkDestination3, (fViewing == true));
+								if (chkDestination3.checked == true)
+										{
+										text_disable(txtEmailGroup, (fViewing == true));
+										text_disable(txtEmailSubject, (fViewing == true));
+										button_disable(cmdEmailGroup, (fViewing == true));
+										text_disable(txtEmailAttachAs, (fViewing == true));
+										}
+								else
+										{
+										text_disable(txtEmailGroup, true);
+										txtEmailGroup.value = '';
+										txtEmailGroupID.value = 0;
+										text_disable(txtEmailSubject, true);
+										txtEmailSubject.value = '';
+										button_disable(cmdEmailGroup, true);
+										text_disable(txtEmailAttachAs, true);
+										}
+		
+								//enable-disable filename options
+								text_disable(txtFilename, ((fViewing == true) || (!chkDestination2.checked)));
+								button_disable(cmdFilename, ((fViewing == true) || (!chkDestination2.checked)));
+								}*/
 		else if (optOutputFormat2.checked == true)		//HTML Document
 		{
 			//enable preview opitons
@@ -1130,11 +1130,11 @@ function refreshTab5Controls() {
 			button_disable(cmdFilename, ((fViewing == true) || (!chkDestination2.checked)));
 		}
 			/*else if (optOutputFormat5.checked == true)		//Excel Chart
-                {
-                }
-            else if (optOutputFormat6.checked == true)		//Excel Pivot Table
-                {
-                }*/
+								{
+								}
+						else if (optOutputFormat6.checked == true)		//Excel Pivot Table
+								{
+								}*/
 		else {
 			optOutputFormat0.checked = true;
 			chkDestination0.checked = true;
@@ -1192,11 +1192,11 @@ function saveFile() {
 	dialog.Flags = 2621444;
 
 	/*if (frmDefinition.optOutputFormat1.checked == true) {
-        //CSV
-        dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
-    }
+				//CSV
+				dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
+		}
 
-    else */
+		else */
 	if (frmDefinition.optOutputFormat2.checked == true) {
 		//HTML
 		dialog.Filter = "HTML Document (*.htm)|*.htm";
@@ -3088,9 +3088,9 @@ function loadDefinition() {
 		frmDefinition.optOutputFormat0.checked = true;
 	}
 		/*else if (frmOriginalDefinition.txtDefn_OutputFormat.value == 1)
-            {
-            frmDefinition.optOutputFormat1.checked = true;
-            }*/
+						{
+						frmDefinition.optOutputFormat1.checked = true;
+						}*/
 	else if (frmOriginalDefinition.txtDefn_OutputFormat.value == 2) {
 		frmDefinition.optOutputFormat2.checked = true;
 	} else if (frmOriginalDefinition.txtDefn_OutputFormat.value == 3) {
@@ -3199,7 +3199,7 @@ function loadSortDefinition() {
 
 function convertLocaleDateToSQL(psDateString) {
 	/* Convert the given date string (in locale format) into 
-    SQL format (mm/dd/yyyy). */
+		SQL format (mm/dd/yyyy). */
 	var sDateFormat;
 	var iDays;
 	var iMonths;
@@ -3342,7 +3342,7 @@ function convertLocaleDateToSQL(psDateString) {
 
 function convertLocaleDateToDateObject(psDateString) {
 	/* Convert the given date string (in locale format) into 
-    SQL format (mm/dd/yyyy). */
+		SQL format (mm/dd/yyyy). */
 	var sDateFormat;
 	var iDays;
 	var iMonths;
@@ -5008,7 +5008,7 @@ function removeEventTable(piChildTableID) {
 							if (sControlName == "txtReportDefnColumn_") {
 								iTableID = document.parentWindow.parent.window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
 								if (document.parentWindow.parent.window.dialogArguments.window.isSelectedChildTable(iTableID)){
-								  fChildColumnsSelected = true;
+									fChildColumnsSelected = true;
 									break;
 								}
 
