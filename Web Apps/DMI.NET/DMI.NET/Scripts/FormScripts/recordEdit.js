@@ -1109,7 +1109,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				legend.appendChild(document.createTextNode(controlItemArray[8]));
 			}
 
-
+			if (!fControlEnabled) fieldset.disabled = true;
 			//No Option Group buttons - these are added as values next.
 
 			addControl(iPageNo, fieldset);
