@@ -1732,9 +1732,35 @@ function menu_disableMenu() {
 	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
 		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
 		$("#officebar").fadeOut("fast");
+	} else {
+		
+		//disable menu items on record tab.
+		menu_toolbarEnableItem('mnutoolNewRecord', false);
+		menu_toolbarEnableItem('mnutoolCopyRecord', false);
+		menu_toolbarEnableItem('mnutoolEditRecord', false);
+		menu_toolbarEnableItem('mnutoolSaveRecord', false);
+		menu_toolbarEnableItem('mnutoolDeleteRecord', false);
+
+		menu_toolbarEnableItem('mnutoolParentRecord', false);
+		menu_toolbarEnableItem('mnutoolBack', false);
+		menu_toolbarEnableItem('mnutoolFirstRecord', false);
+		menu_toolbarEnableItem('mnutoolPreviousRecord', false);
+		menu_toolbarEnableItem('mnutoolNextRecord', false);
+		menu_toolbarEnableItem('mnutoolLastRecord', false);
+
+		menu_toolbarEnableItem('mnutoolFind', false);
+		menu_toolbarEnableItem('mnutoolQuickFind', false);
+		menu_toolbarEnableItem('mnutoolOrder', false);
+		menu_toolbarEnableItem('mnutoolFilter', false);
+		menu_toolbarEnableItem('mnutoolClearFilter', false);
+
+		menu_toolbarEnableItem('mnutoolCalendarReportsRec', false);
+		menu_toolbarEnableItem('mnutoolStdRpt_BreakdownREC', false);
+		menu_toolbarEnableItem('mnutoolStdRpt_AbsenceCalendar', false);
+		menu_toolbarEnableItem('mnutoolStdRpt_BradfordREC', false);
+		menu_toolbarEnableItem('mnutoolMailMergeRec', false);
 	}
 	
-
 
 //	var iLoop;
 //	
