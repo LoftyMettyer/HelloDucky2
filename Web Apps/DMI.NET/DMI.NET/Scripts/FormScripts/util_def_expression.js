@@ -1957,10 +1957,11 @@ function submitDefinition() {
 
 	disableButtons();
 
-	sURL = "util_dialog_expression" +
-			"?action=validate";
+	sURL = "util_dialog_expression" + "?action=validate";
 
-	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+	openDialog(sURL, 500, 170);
+
+	reEnableControls();
 }
 
 function disableButtons() {
