@@ -930,6 +930,8 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolPrintUtil", false);
 	menu_toolbarEnableItem("mnutoolPropertiesUtil", false);
 	menu_toolbarEnableItem("mnutillRunUtil", false);
+	menu_setVisibleMenuItem("mnuutilCancelUtil", false);
+	menu_toolbarEnableItem("mnuutilCancelUtil", false);
 	
 	//$("#toolbarHome").click();
 
@@ -996,6 +998,7 @@ function menu_refreshMenu() {
 		menu_setVisibletoolbarGroup("mnutoolLocateRecords", false);	//hide the group too.
 
 		menu_setVisibleMenuItem("mnutoolFind", true);
+		menu_toolbarEnableItem('mnutoolFind', true);
 
 		menu_setVisibleMenuItem("mnutoolQuickFind", !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
@@ -4043,89 +4046,89 @@ function menu_convertLocaleDateToSQL(psDateString)
 }
 
 function menu_loadRecordDefSelPage(piDefSelType) {
-//	
-//	var frmOptionArea;
-//	var lngRecordID;
-//	var lngTableID;
-//	var strRealSource;
+	
+	var frmOptionArea;
+	var lngRecordID;
+	var lngTableID;
+	var strRealSource;
+	
+	if (menu_saveChanges("CALENDARREPORTSREC", true, false) != 2) { // 2 = vbCancel
 
-//	if (saveChanges("CALENDARREPORTSREC", true, false) != 2) { // 2 = vbCancel
+		// Show loading screen
+		menu_disableMenu();
+		
+		// Submit the current "workframe" form, and then load the required page.
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//		// Show loading screen
-//		disableMenu();
-//		
-//		// Submit the current "workframe" form, and then load the required page.
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
-
-//		strRealSource = window.parent.frames("workframe").frmRecordEditForm.txtRecEditRealSource.value;	
-//		lngTableID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentTableID.value;
-//		lngRecordID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//			
-//		frmOptionArea.txtGotoOptionDefSelRecordID.value = lngRecordID;
-//		frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
-//		frmOptionArea.txtGotoOptionTableID.value = lngTableID;
-//		frmOptionArea.txtGotoOptionDefSelType.value = piDefSelType;
-//		frmOptionArea.txtGotoOptionUtilID.value = 0;
-//		frmOptionArea.txtGotoOptionPage.value = "defsel.asp";
-//		frmOptionArea.txtGotoOptionAction.value = "";
-//		
-//		frmOptionArea.submit();
-//	}
+		strRealSource = $('#txtRecEditRealSource').val();	
+		lngTableID = $('#txtCurrentTableID').val();
+		lngRecordID = $('#txtCurrentRecordID').val();
+			
+		frmOptionArea.txtGotoOptionDefSelRecordID.value = lngRecordID;
+		frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
+		frmOptionArea.txtGotoOptionTableID.value = lngTableID;
+		frmOptionArea.txtGotoOptionDefSelType.value = piDefSelType;
+		frmOptionArea.txtGotoOptionUtilID.value = 0;
+		frmOptionArea.txtGotoOptionPage.value = "defsel";
+		frmOptionArea.txtGotoOptionAction.value = "";
+		
+		OpenHR.submitForm(frmOptionArea);
+	}
 }
 
 function menu_loadRecordDefSelPageNoSaveCheck(piDefSelType) {
-//	
-//	var frmOptionArea;
-//	var lngRecordID;
-//	var lngTableID;
-//	var strRealSource;
+	
+	var frmOptionArea;
+	var lngRecordID;
+	var lngTableID;
+	var strRealSource;
 
-//	// Show loading screen
-//	disableMenu();
-//		
-//	// Submit the current "workframe" form, and then load the required page.
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	// Show loading screen
+	menu_disableMenu();
+		
+	// Submit the current "workframe" form, and then load the required page.
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//	strRealSource = window.parent.frames("workframe").frmRecordEditForm.txtRecEditRealSource.value;	
-//	lngTableID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentTableID.value;
-//	lngRecordID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//		
-//	frmOptionArea.txtGotoOptionDefSelRecordID.value = lngRecordID;
-//	frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
-//	frmOptionArea.txtGotoOptionTableID.value = lngTableID;
-//	frmOptionArea.txtGotoOptionDefSelType.value = piDefSelType;
-//	frmOptionArea.txtGotoOptionUtilID.value = 0;
-//	frmOptionArea.txtGotoOptionPage.value = "defsel.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
-//		
-//	frmOptionArea.submit();
+	strRealSource = $('#txtRecEditRealSource').val();
+	lngTableID = $('#txtCurrentTableID').val();
+	lngRecordID = $('#txtCurrentRecordID').val();
+		
+	frmOptionArea.txtGotoOptionDefSelRecordID.value = lngRecordID;
+	frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
+	frmOptionArea.txtGotoOptionTableID.value = lngTableID;
+	frmOptionArea.txtGotoOptionDefSelType.value = piDefSelType;
+	frmOptionArea.txtGotoOptionUtilID.value = 0;
+	frmOptionArea.txtGotoOptionPage.value = "defsel";
+	frmOptionArea.txtGotoOptionAction.value = "";
+		
+	OpenHR.submitForm(frmOptionArea);
 }
 
 function menu_LoadAbsenceCalendar() {
 
-		var frmOptionArea;
-		var frmRecEdit;
+	var frmOptionArea;
+	var frmRecEdit;
 	var lngRecordID;
 	var strRealSource;
 
-		if (menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false) != 2) { // 2 = vbCancel
+	if (menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false) != 2) { // 2 = vbCancel
 
 		// Show loading screen
 		OpenHR.disableMenu();
 
 		// Submit the current "workframe" form, and then load the required page.
-			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-			frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-			lngRecordID = frmRecEdit.txtCurrentRecordID.value;
+		lngRecordID = frmRecEdit.txtCurrentRecordID.value;
 		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
 
 		strRealSource = frmRecEdit.txtRecEditRealSource.value;
 		frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
-		
+
 		frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
 		frmOptionArea.txtGotoOptionAction.value = "";
-			OpenHR.submitForm(frmOptionArea);
+		OpenHR.submitForm(frmOptionArea);
 
 	}
 
@@ -4133,28 +4136,28 @@ function menu_LoadAbsenceCalendar() {
 
 function menu_LoadAbsenceCalendarNoSaveCheck() {
 
-//	var frmOptionArea;
-//	var lngRecordID;
-//	var lngTableID;
-//	var strRealSource;
+	var frmOptionArea;
+	var lngRecordID;
+	var lngTableID;
+	var strRealSource;
 
-//	// Show loading screen
-//	window.parent.frames("menuframe").ShowWait("Loading absence calendar. Please wait...");
-//	disableMenu();
+	// Show loading screen
+	//TODO: window.parent.frames("menuframe").ShowWait("Loading absence calendar. Please wait...");
+	menu_disableMenu();
 
-//	// Submit the current "workframe" form, and then load the required page.
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	// Submit the current "workframe" form, and then load the required page.
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//	lngRecordID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+	lngRecordID = $('#txtCurrentRecordID').val();
+	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
 
-//	strRealSource = window.parent.frames("workframe").frmRecordEditForm.txtRecEditRealSource.value;	
-//	frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
-//		
-//	frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
-//	frmOptionArea.submit();
-//	//CloseWait();
+	strRealSource = $('#txtRecEditRealSource').val();	
+	frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
+		
+	frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
+	frmOptionArea.txtGotoOptionAction.value = "";
+	OpenHR.submitForm(frmOptionArea);
+	//CloseWait();
 }
 
 function menu_LoadStandardReport(psReportType, psRecordSelection)
@@ -4180,7 +4183,7 @@ function menu_LoadStandardReport(psReportType, psRecordSelection)
 		if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
 			{
 			frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
-			frmSendArea.txtGotoOptionRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+			frmSendArea.txtGotoOptionRecordID.value = $('txtCurrentRecordID').val();
 			frmSendArea.txtGotoOptionPage.value = sPage;
 			frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
 			bOK = true;

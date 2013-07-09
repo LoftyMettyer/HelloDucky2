@@ -383,6 +383,11 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
 								<h6>Run</h6></a>
 							</div>
+							<div id="mnuutilCancelUtil" class="button">
+								<a href="javascript:setcancel();" rel="table" title="Close...">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
+								<h6>Close</h6></a>
+							</div>
 						</li>						
 					</ul>
 				</li>

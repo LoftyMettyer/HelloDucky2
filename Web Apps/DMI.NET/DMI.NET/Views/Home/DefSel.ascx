@@ -255,14 +255,32 @@
 				return (iRecordId);
 		}
 
-		function defsel_window_onload() {
-				
-				var fOk;
+		function defsel_window_onload() {			
+				var fOk = true;
+			
+				var frmDefSel = document.getElementById('frmDefSel');
+				var sControlName;
+				var sControlPrefix;
+			
+				if (frmDefSel.txtSingleRecordID.value > 0) {
+					// Expand the option frame and hide the work frame.
+					menu_disableMenu();
+				} else {
+					menu_refreshMenu();
+				}
 
-				fOk = true;
-				$("#workframe").attr("data-framesource", "DEFSEL");
-				$("#optionframe").hide();
-				$("#workframe").show();
+				if (frmDefSel.txtSingleRecordID.value > 0) {
+					// Expand the option frame and hide the work frame.
+					//window.parent.document.all.item("workframeset").cols = "1, *";
+					$("#optionframe").attr("data-framesource", "DEFSEL");
+					$("#workframe").hide();
+					$("#optionframe").show();
+				} else {
+					//window.parent.document.all.item("workframeset").cols = "*, 0";
+					$("#workframe").attr("data-framesource", "DEFSEL");
+					$("#optionframe").hide();
+					$("#workframe").show();
+				}
 
 				tableToGrid("#DefSelRecords", {
 						onSelectRow: function (rowID) {
@@ -300,34 +318,12 @@
 
 				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
 				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
-
-
-				var frmDefSel = document.getElementById('frmDefSel');
-
-				var sControlName;
-				var sControlPrefix;
 		
 				frmDefSel.cmdCancel.focus();
 
 				refreshControls();
 			
-				if (frmDefSel.txtSingleRecordID.value > 0) {
-						// Expand the option frame and hide the work frame.
-						//TODO
-						//window.parent.frames("menuframe").disableMenu();
-				} else {
-					//TODO	    
-						menu_refreshMenu();
-				}
 
-				if (frmDefSel.txtSingleRecordID.value > 0) {
-						// Expand the option frame and hide the work frame.
-						//TODO
-						//window.parent.document.all.item("workframeset").cols = "1, *";
-				} else {
-						//TODO
-						//window.parent.document.all.item("workframeset").cols = "*, 0";
-				}
 			
 				if (rowCount() > 0) {
 					moveFirst();
@@ -428,6 +424,8 @@
 			menu_toolbarEnableItem("mnutoolPrintUtil", true);
 			menu_toolbarEnableItem("mnutoolPropertiesUtil", true);
 			menu_toolbarEnableItem("mnutillRunUtil", true);
+			menu_setVisibleMenuItem('mnuutilCancelUtil', true);
+			menu_toolbarEnableItem('mnuutilCancelUtil', true);
 			$("#toolbarUtilities").click();
 			//$("#toolbarHome").click();
 			//menu_refreshMenu();
@@ -627,23 +625,48 @@
 			}
 		}
 
-		function setcancel() {    	
-				var frmDefSel = document.getElementById('frmDefSel');
-				if (frmDefSel.txtSingleRecordID.value > 0) {
-						var sWorkPage = currentWorkFramePage();
-						if (sWorkPage == "RECORDEDIT") {
-								refreshData(); //workframe
-						}
+		function setcancel() {
+			var frmDefSel = document.getElementById('frmDefSel');
+			if (frmDefSel.txtSingleRecordID.value > 0) {
+				var sWorkPage = defsel_currentWorkFramePage();
+				if (sWorkPage == "RECORDEDIT") {
+					refreshData(); //workframe
+				}
 
-						window.location.href = "emptyoption";
-						menu_disableMenu();
-						//TODO
-						//window.parent.document.all.item("workframeset").cols = "*, 0";
-				}
-				else {
-						window.location.href = "default";
-				}
+
+				//window.location.href = "emptyoption";
+				loadEmptyOption();
+				
+				menu_disableMenu();
+
+				//window.parent.document.all.item("workframeset").cols = "*, 0";
+				$("#optionframe").hide();
+				$("#workframe").show();
+				$("#toolbarRecord").show();
+				$("#toolbarRecord").click();
+
+			}
+			else {
+				window.location.href = "default";
+			}
 		}
+
+
+		function loadEmptyOption() {
+			$.ajax({
+				url: 'emptyoption',
+				type: "POST",
+				dataType: 'html',
+				async: true,
+				success: function (html) {
+					try {
+						$('#optionframe').html('');
+						$('#optionframe').html(html);
+					} catch (e) { }
+				}
+			});
+		}
+
 
 		///* Sequential search the grid for the required OLE. */
 		//function locateRecord(psFileName, pfExactMatch) {
@@ -691,25 +714,26 @@
 
 		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = true;
 		//}
-
-		//TODO
-		function currentWorkFramePage() {
+		
+		function defsel_currentWorkFramePage() {
 				// Work frame is in view.
-				var sCurrentPage = window.parent.frames("workframe").document.location;
-				sCurrentPage = sCurrentPage.toString();
+				//var sCurrentPage = window.parent.frames("workframe").document.location;
+				//sCurrentPage = sCurrentPage.toString();
 
-				if (sCurrentPage.lastIndexOf("/") > 0) {
-						sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
-				}
+				//if (sCurrentPage.lastIndexOf("/") > 0) {
+				//		sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
+				//}
 
-				if (sCurrentPage.indexOf(".") > 0) {
-						sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
-				}
+				//if (sCurrentPage.indexOf(".") > 0) {
+				//		sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
+				//}
 
-				sCurrentPage = sCurrentPage.replace(/ /gi, "");
-				sCurrentPage = sCurrentPage.toUpperCase();
+				//sCurrentPage = sCurrentPage.replace(/ /gi, "");
+				//sCurrentPage = sCurrentPage.toUpperCase();
 
-				return (sCurrentPage);
+			var sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+
+			return (sCurrentPage.toUpperCase());
 		}
 
 </script>
