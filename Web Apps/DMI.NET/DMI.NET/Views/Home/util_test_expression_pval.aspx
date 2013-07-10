@@ -597,7 +597,7 @@
 						' Character Prompted Value
 						If iValueType = "1" Then
 							Response.Write("        <input type='text' class='text' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sValueCharacter, """", "&quot;") & "' maxlength='" & iPromptSize & "' style='width: 100%'>" & vbCrLf)
-							Response.Write("        <input type='hidden' id='promptMask_" & sNodeKey & "' name='promptMask_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
+							Response.Write("        <input type='hidden' id='PROMPTMASK_" & sNodeKey & "' name='PROMPTMASK_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
 
 							' Numeric Prompted Value
 						ElseIf iValueType = 2 Then
