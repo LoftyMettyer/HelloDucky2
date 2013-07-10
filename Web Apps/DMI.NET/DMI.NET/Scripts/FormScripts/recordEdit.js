@@ -930,23 +930,25 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		case 1: //checkbox
 			span = document.createElement('span');
 
-			applyLocation(span, controlItemArray, true);
-			span.style.margin = "0px";
-			span.style.textAlign = "left";
-			span.style.display = "inline-block";
+			applyLocation(span, controlItemArray, false);
+			//span.style.margin = "0px";
+			//span.style.textAlign = "left";
+			span.style.display = "block";
+			span.style.overflow = 'hidden';			
 
 			var checkbox = span.appendChild(document.createElement('input'));
 			checkbox.type = "checkbox";
 			checkbox.id = controlID;
 			checkbox.style.fontFamily = controlItemArray[11];
 			checkbox.style.fontSize = controlItemArray[12] + 'pt';
-			checkbox.style.position = "absolute";
-			checkbox.style.top = "50%";
+			//checkbox.style.position = "absolute";
+			//checkbox.style.top = "50%";
 
-			checkbox.style.padding = "0px";
-			checkbox.style.margin = "-7px 0px 0px 0px";
+			//checkbox.style.padding = "0px";
+			//checkbox.style.margin = "-7px 0px 0px 0px";
 			checkbox.style.textAlign = "left";
-
+			checkbox.style.verticalAlign = 'middle';
+			checkbox.style.borderStyle = 'none';
 			var label = span.appendChild(document.createElement('label'));
 			label.htmlFor = checkbox.id;
 			label.appendChild(document.createTextNode(controlItemArray[8]));
@@ -956,16 +958,21 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			//align left or right...
 			if (controlItemArray[20] != "0") {
-				//right align
-				span.className = "checkbox right";
-				checkbox.style.right = "0px";
+				//right align				
+				checkbox.style.float = 'right';
+				checkbox.style.paddingTop = '5px';
+				//span.className = "checkbox right";
+				//checkbox.style.right = "0px";
 			} else {
 				//left align
-				span.className = "checkbox left";
-				checkbox.style.left = "0px";
-				label.style.marginLeft = "18px";
+				label.style.paddingLeft = '8px';
+				//span.className = "checkbox left";
+				//checkbox.style.left = "0px";
+				//label.style.marginLeft = "18px";
 			}
 
+			label.style.verticalAlign = 'middle';
+			
 			if (tabIndex > 0) checkbox.tabindex = tabIndex;
 
 			checkbox.setAttribute("data-columnID", columnID);
@@ -1094,6 +1101,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.fontFamily = controlItemArray[11];
 			fieldset.style.fontSize = controlItemArray[12] + 'pt';
 			fieldset.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+			fieldset.style.whiteSpace = 'nowrap';
+			
 			fieldset.id = controlID;
 			fieldset.setAttribute("data-datatype", "Option Group");
 			fieldset.setAttribute("data-columnID", columnID);
@@ -1546,13 +1555,16 @@ function addHTMLControlValues(controlValues) {
 						if (alignment == 1) {
 							$(this).css("padding-left", "17px");
 							//Horizontal alignment
-							radio.style.padding = "0px";
+							//radio.style.padding = "0px";
+							radio.style.borderStyle = 'none';
+							radio.style.verticalAlign = 'middle';
 
 							//add text to radio button
 							label.style.marginLeft = "3px";
 							label.style.marginRight = "32px";
 							label.htmlFor = uniqueID + "_" + i;
-
+							label.style.verticalAlign = 'middle';
+							
 							label.appendChild(document.createTextNode(sValue));
 						}
 					}
