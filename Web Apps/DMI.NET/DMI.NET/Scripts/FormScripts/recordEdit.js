@@ -1130,7 +1130,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			applyLocation(spinnerContainer, controlItemArray, true);
 			spinnerContainer.style.padding = "0px";
 
-			var spinner = spinnerContainer.appendChild(document.createElement("input"));
+			var spinner = spinnerContainer.appendChild(document.createElement("input"));						
 			spinner.className = "spinner";
 			spinner.id = controlID;
 			spinner.style.fontFamily = controlItemArray[11];
@@ -1139,6 +1139,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			spinner.style.margin = "0px";
 			spinner.setAttribute("data-columnID", columnID);
 			spinner.setAttribute("data-control-key", key);
+			spinner.setAttribute('data-minval', controlItemArray[29]);
+			spinner.setAttribute('data-maxval', controlItemArray[30]);
+			spinner.setAttribute('data-increment', controlItemArray[31]);
 
 			if (tabIndex > 0) spinner.tabindex = tabIndex;
 			if (!fControlEnabled) spinnerContainer.disabled = true;
