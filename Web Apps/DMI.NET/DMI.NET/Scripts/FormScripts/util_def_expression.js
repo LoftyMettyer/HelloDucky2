@@ -581,7 +581,7 @@ function componentDescription(psDefnString) {
 					sDesc = "Empty Date";
 				}
 				else {
-					sDesc = menu_ConvertSQLDateToLocale(sDesc);
+					sDesc = OpenHR.ConvertSQLDateToLocale(sDesc);
 				}
 		}
 	}
