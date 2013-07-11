@@ -1163,6 +1163,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 						textbox.className = "datepicker";
 						break;
 					case 2, 4: //sqlNumeric, sqlInteger
+						
+					//Need to see why this isn't working:
 						textbox.className = "number";
 						break;
 					default:
