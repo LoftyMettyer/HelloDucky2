@@ -1164,7 +1164,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 						break;
 					case 2, 4: //sqlNumeric, sqlInteger
 						
-					//Need to see why this isn't working:
+						//Need to see why this isn't working:
+						
+						// ah, it's because the itemarray value is 12!
 						textbox.className = "number";
 						break;
 					default:
