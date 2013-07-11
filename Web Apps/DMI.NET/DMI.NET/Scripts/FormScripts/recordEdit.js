@@ -1144,7 +1144,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			spinner.setAttribute('data-increment', controlItemArray[31]);
 
 			if (tabIndex > 0) spinner.tabindex = tabIndex;
-			if (!fControlEnabled) spinnerContainer.disabled = true;
+			//if (!fControlEnabled) spinnerContainer.disabled = true;
+			if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
 
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, spinnerContainer);

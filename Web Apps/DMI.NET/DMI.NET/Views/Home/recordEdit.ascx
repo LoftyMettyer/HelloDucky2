@@ -164,11 +164,22 @@
 	                	var minvalue = $(this).attr('data-minval');	                	
 	                	var maxvalue = $(this).attr('data-maxval');
 	                	var increment = $(this).attr('data-increment');
+		                var disabledflag = $(this).attr('data-disabled');	                											
 
 		                $('#' + id).spinner({
 		                	min: minvalue,
 		                	max: maxvalue,
-		                	step: increment
+		                	step: increment,
+		                	disabled: disabledflag
+		                }).on('input', function () {
+			                var val = this.value,
+				                $this = $(this),
+				                max = $this.spinner('option', 'max'),
+				                min = $this.spinner('option', 'min');
+		                	//if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
+		                	this.value = val > max ? max : val < min ? min : val;
+		                }).blur(function() {
+		                	if (isNaN(this.value)) this.value = 0;
 		                });
 
 	                });
