@@ -7,7 +7,7 @@ function addControl(tabNumber, controlDef) {
 
 	if ($("#" + tabID).length <= 0) {
 		if (tabNumber > 0) {
-			//tab doesn't exist - create it...
+			//The control to be added has a tab number, but the tab doesn't yet exist - create it...
 			var tabFontName = $("#txtRecEditFontName").val();
 			var tabFontSize = $("#txtRecEditFontSize ").val();
 
@@ -1819,7 +1819,7 @@ function updateControl(lngColumnID, value) {
 }
 
 function getTabCaption(tabNumber) {
-
+	
 	var psNewValues = $("#txtRecEditTabCaptions").val();
 	try {
 		var arr = psNewValues.split("\t");
@@ -1827,7 +1827,7 @@ function getTabCaption(tabNumber) {
 		return false;
 	}
 
-	var tabCaption = arr[tabNumber - 1];
+	var tabCaption = arr[tabNumber - 1].replace('&&', '&');
 
 	return tabCaption;
 
