@@ -243,10 +243,10 @@ Namespace Controllers
 
 			sConnectString = sConnectString & ";Persist Security Info=True;"
 
-      ' Open a connection to the database.
-      Dim conX As New ADODB.Connection
+			' Open a connection to the database.
+			Dim conX As New ADODB.Connection
 
-      conX.ConnectionTimeout = 60
+			conX.ConnectionTimeout = 60
 
 			Try
 				conX.Open(sConnectString)
@@ -269,8 +269,8 @@ Namespace Controllers
 			' Set no command timeout
 			conX.CommandTimeout = 0
 
-      ' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
-      Dim cmdHit = New ADODB.Command
+			' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
+			Dim cmdHit = New ADODB.Command
 			cmdHit.CommandText = "sp_ASRIntPoll"
 			cmdHit.CommandType = 4
 			' Stored Procedure
