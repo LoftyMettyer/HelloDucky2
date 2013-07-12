@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,9 +8,26 @@
 		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
 		<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
+	
+		<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
+		<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+
+		<%--Base stylesheets--%>
+		<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+
+		<%--stylesheet for slide-out dmi menu--%>
+		<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
+
+		<%--ThemeRoller stylesheet--%>
+		<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+
+
 </head>
 		
-		<body>
+<body>
 <script type="text/javascript">
 
 		function eventlogselection_window_onload() {
@@ -38,80 +54,67 @@
 				}
 		}
 
-</script>
-
-<script type="text/javascript" id="scptGeneralFunctions">
-<!--
-
-		function cancelClick()
-		{
-				self.close();
+		function cancelClick() {
+			self.close();
 		}
 
-		function deleteClick()
-		{
-				var sEventIDs;
-	
-				var frmOpenerDelete =  window.dialogArguments.OpenHR.getForm("workframe","frmDelete");
-				var frmOpenerLog =  window.dialogArguments.OpenHR.getForm("workframe","frmLog");
-	
-				sEventIDs = '';
-	
-				if (frmEventSelection.optSelection1.checked == true)
-				{
-						frmOpenerDelete.txtDeleteSel.value = 0;
-		
-						frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
-		
-						for (var i=0; i<frmOpenerLog.ssOleDBGridEventLog.selbookmarks.count; i++)
-						{
-								sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.selbookmarks(i)) + ',';
-						}
-			
-						sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-		
-						frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
-				}
-		
-		
-				else if (frmEventSelection.optSelection2.checked == true)
-				{
-						frmOpenerDelete.txtDeleteSel.value = 1;
-		
-						frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
+		function deleteClick() {
+			var sEventIDs;
 
-						frmOpenerLog.ssOleDBGridEventLog.MoveFirst();
-		
-						for (var i=0; i<frmOpenerLog.ssOleDBGridEventLog.Rows; i++)
-						{
-								sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.AddItemBookmark(i)) + ',';
-						}
-			
-						sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-		
-						frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
-				}
-		
-		
-				else if (frmEventSelection.optSelection3.checked == true)
-				{
-						frmOpenerDelete.txtDeleteSel.value = 2;
-				}
-	
-				frmOpenerDelete.txtSelectedIDs.value = sEventIDs;
-	
-				frmOpenerDelete.txtCurrentUsername.value = frmOpenerLog.cboUsername.options[frmOpenerLog.cboUsername.selectedIndex].value;
-				frmOpenerDelete.txtCurrentType.value = frmOpenerLog.cboType.options[frmOpenerLog.cboType.selectedIndex].value;
-				frmOpenerDelete.txtCurrentMode.value = frmOpenerLog.cboMode.options[frmOpenerLog.cboMode.selectedIndex].value;
-				frmOpenerDelete.txtCurrentStatus.value = frmOpenerLog.cboStatus.options[frmOpenerLog.cboStatus.selectedIndex].value;
-	
-				frmOpenerDelete.txtViewAllPerm.value = frmOpenerLog.txtELViewAllPermission.value;
+			var frmOpenerDelete = window.dialogArguments.OpenHR.getForm("workframe", "frmDelete");
+			var frmOpenerLog = window.dialogArguments.OpenHR.getForm("workframe", "frmLog");
 
-				window.dialogArguments.OpenHR.submitForm(frmOpenerDelete);
-				self.close();
+			sEventIDs = '';
+
+			if (frmEventSelection.optSelection1.checked == true) {
+				frmOpenerDelete.txtDeleteSel.value = 0;
+
+				frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
+
+				for (var i = 0; i < frmOpenerLog.ssOleDBGridEventLog.selbookmarks.count; i++) {
+					sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.selbookmarks(i)) + ',';
+				}
+
+				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
+
+				frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
+			}
+
+
+			else if (frmEventSelection.optSelection2.checked == true) {
+				frmOpenerDelete.txtDeleteSel.value = 1;
+
+				frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
+
+				frmOpenerLog.ssOleDBGridEventLog.MoveFirst();
+
+				for (var i = 0; i < frmOpenerLog.ssOleDBGridEventLog.Rows; i++) {
+					sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.AddItemBookmark(i)) + ',';
+				}
+
+				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
+
+				frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
+			}
+
+
+			else if (frmEventSelection.optSelection3.checked == true) {
+				frmOpenerDelete.txtDeleteSel.value = 2;
+			}
+
+			frmOpenerDelete.txtSelectedIDs.value = sEventIDs;
+
+			frmOpenerDelete.txtCurrentUsername.value = frmOpenerLog.cboUsername.options[frmOpenerLog.cboUsername.selectedIndex].value;
+			frmOpenerDelete.txtCurrentType.value = frmOpenerLog.cboType.options[frmOpenerLog.cboType.selectedIndex].value;
+			frmOpenerDelete.txtCurrentMode.value = frmOpenerLog.cboMode.options[frmOpenerLog.cboMode.selectedIndex].value;
+			frmOpenerDelete.txtCurrentStatus.value = frmOpenerLog.cboStatus.options[frmOpenerLog.cboStatus.selectedIndex].value;
+
+			frmOpenerDelete.txtViewAllPerm.value = frmOpenerLog.txtELViewAllPermission.value;
+
+			window.dialogArguments.OpenHR.submitForm(frmOpenerDelete);
+			self.close();
 		}
 
-		-->
 </script>
 
 
@@ -125,7 +128,7 @@
 						<table HEIGHT="100%" WIDTH="100%" class="invisible" CELLSPACING="0" CELLPADDING="4">
 							<tr height="30">
 								<td>
-									<img src="images/Question.gif" WIDTH="38" HEIGHT="39">
+									<img src= "<%: Url.LatestContent("~/Content/images/Question.gif")%>" WIDTH="38" HEIGHT="39" alt="">
 								</td>
 								<td colspan="3">
 									You have opted to delete entries from the Event Log.
@@ -244,8 +247,8 @@
 </table>
 </form>
 		
-		<script type="text/javascript">
-				eventlogselection_window_onload();
+<script type="text/javascript">
+	eventlogselection_window_onload();
 </script>
 
 </body>
