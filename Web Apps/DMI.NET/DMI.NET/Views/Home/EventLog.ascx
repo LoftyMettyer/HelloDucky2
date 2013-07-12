@@ -254,8 +254,7 @@
 								sControlName = dataCollection.item(i).name;
 								sControlPrefix = sControlName.substr(0, 13);
 			
-								if (sControlPrefix=="txtAddString_") 
-								{
+								if (sControlPrefix=="txtAddString_") {
 										frmLog.ssOleDBGridEventLog.AddItem(dataCollection.item(i).value);
 								}
 						}
