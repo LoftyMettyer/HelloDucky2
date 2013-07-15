@@ -595,9 +595,6 @@
 		function printEvent(pfToPrinter) {
 			var fOK = true;
 			var sErrorString = new String("");
-			var iCurrentRec;
-			var sCR = String.fromCharCode(13);
-			var sLF = String.fromCharCode(10);
 			var objPrinter = ASRIntranetPrintFunctions;
 			var iDetailCount;
 
@@ -654,9 +651,11 @@
 					objPrinter.PrintBold("Details : ");
 					objPrinter.PrintNormal("");
 
-					iDetailCount = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
-
-					debugger;
+					if ($("#cboOtherJobs").length > 0) {
+						iDetailCount = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
+					} else {
+						iDetailCount = $("#ssOleDBGridEventLogDetails tr").length;
+					}
 
 					if (iDetailCount < 1) {
 						objPrinter.PrintNonBold("There are no details for this event log entry");
@@ -664,44 +663,23 @@
 					else {
 
 						var a;
-						var row;
-						var rows = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').getDataIDs();
-						for (a = 0; a < rows.length; a++) {
-							row = $("#ssOleDBGridEventLogDetails").getRowData(rows[a]);
+						var rows;
 
-					//		var dataFromCellByColumnIndex = $('#ssOleDBGridEventLogDetails').jqGrid('getCell', a, 1);
+						if ($("#cboOtherJobs").length > 0) {
+							rows = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]');
+						} else {
+							rows = $("#ssOleDBGridEventLogDetails tr");
+						}
 
+						for (a = 1; a < rows.length; a++) {
+							objPrinter.PrintBold("*** Log entry " + a + " of " + iDetailCount + " ***");
 
-							iCurrentRec = i + 1;
-							objPrinter.PrintBold("*** Log entry " + iCurrentRec + " of " + iDetailCount + " ***");
-
-							sErrorString = $('#ssOleDBGridEventLogDetails').jqGrid('getCell', a, 1);
+							sErrorString = rows[a].cells[1].innerText;
 
 							objPrinter.PrintNonBold(sErrorString);
 							objPrinter.PrintNormal("");
 
-
-
 						}
-
-
-
-
-
-						frmEventDetails.ssOleDBGridEventLogDetails.Redraw = false;
-						frmEventDetails.ssOleDBGridEventLogDetails.MoveFirst();
-						for (var i = 0; i < frmEventDetails.ssOleDBGridEventLogDetails.Rows; i++) {
-							iCurrentRec = i + 1;
-							objPrinter.PrintBold("*** Log entry " + iCurrentRec + " of " + frmEventDetails.ssOleDBGridEventLogDetails.Rows + " ***");
-
-							sErrorString = frmEventDetails.ssOleDBGridEventLogDetails.Columns(0).Text;
-
-							objPrinter.PrintNonBold(sErrorString);
-							objPrinter.PrintNormal("");
-
-							frmEventDetails.ssOleDBGridEventLogDetails.MoveNext();
-						}
-						frmEventDetails.ssOleDBGridEventLogDetails.Redraw = true;
 					}
 				}
 
@@ -740,9 +718,11 @@
 
 		function populateEventDetails() {
 
-			var eventLogId = "row_" + $("#cboOtherJobs")[0].value;
-			$("#ssOleDBGridEventLogDetails tr").hide();
-			$('[id^="' + eventLogId + '" ]').show();
+			if  ($("#cboOtherJobs").length > 0) {				
+				var eventLogId = "row_" + $("#cboOtherJobs")[0].value;
+				$("#ssOleDBGridEventLogDetails tr").hide();
+				$('[id^="' + eventLogId + '" ]').show();
+			}
 			setGridCaption();
 
 		}
@@ -751,7 +731,11 @@
 			var iTotalRec;
 			var sCaption;
 
-			iTotalRec = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
+			if ($("#cboOtherJobs").length > 0) {
+				iTotalRec = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
+			} else {
+				iTotalRec = $("#ssOleDBGridEventLogDetails tr").length;
+			}
 
 			//Update the grid caption after the user has used keys to view the details
 			if (iTotalRec == 0) {
