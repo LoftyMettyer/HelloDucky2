@@ -9,7 +9,6 @@
 </object>
 
 <script type="text/javascript">
-
 		function util_def_picklist_onload() {
 
 				var fOK;
@@ -724,21 +723,11 @@
 													<TR>
 														<TD width=5>
 															<INPUT CHECKED id=optAccessRW name=optAccess type=radio 
-																	onclick="changeAccess()"
-																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																onfocus="try{radio_onFocus(this);}catch(e){}"
-																																onblur="try{radio_onBlur(this);}catch(e){}"/>
+																	onclick="changeAccess()" />
 														</TD>
 														<TD width=5>&nbsp;</TD>
 														<TD width=30>
-																														<label 
-																																tabindex="-1"
-																															for="optAccessRW"
-																															class="radio"
-																														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																												/>
+																														<label tabindex="-1" for="optAccessRW" class="radio" >
 																	Read/Write
 																											</label>
 														</TD>
@@ -767,22 +756,11 @@
 												<TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 width="100%">
 													<TR>
 														<TD width=5>
-															<input id=optAccessRO name=optAccess type=radio 
-																	onclick="changeAccess()"
-																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																onfocus="try{radio_onFocus(this);}catch(e){}"
-																																onblur="try{radio_onBlur(this);}catch(e){}"/>
+															<input id=optAccessRO name=optAccess type=radio onclick="changeAccess()" />
 														</TD>
 														<TD width=5>&nbsp;</TD>
 														<TD width=80 nowrap>
-																														<label 
-																																tabindex="-1"
-																															for="optAccessRO"
-																															class="radio"
-																														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																												/>
+																														<label tabindex="-1" for="optAccessRO" class="radio" >
 																	Read Only
 																														</label>
 														</TD>
@@ -808,22 +786,11 @@
 												<TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 width="100%">
 													<TR>
 														<TD width=5>
-															<input id=optAccessHD name=optAccess type=radio 
-																	onclick="changeAccess()"
-																														onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																onfocus="try{radio_onFocus(this);}catch(e){}"
-																																onblur="try{radio_onBlur(this);}catch(e){}"/>
+															<input id=optAccessHD name=optAccess type=radio onclick="changeAccess()" />
 														</TD>
 														<TD width=5>&nbsp;</TD>
 														<TD width=60 nowrap>
-																														<label 
-																																tabindex="-1"
-																															for="optAccessHD"
-																															class="radio"
-																														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																												/>
+															<label tabindex="-1" for="optAccessHD" class="radio" >
 																	Hidden
 															</label>
 														</TD>
@@ -1047,12 +1014,7 @@
 														</TD>
 														<TD rowspan=14 width=10>&nbsp;</TD>
 														<TD width=100>
-															<input type=button id=cmdAdd name=cmdAdd class="btn" value=Add style="WIDTH: 100%"  
-																	onclick="addClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdAdd name=cmdAdd class="btn" value=Add style="WIDTH: 100%" onclick="addClick()" />
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1060,12 +1022,7 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdAddAll name=cmdAddAll class="btn" value="Add All" style="WIDTH: 100%"  
-																	onclick="addAllClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdAddAll name=cmdAddAll class="btn" value="Add All" style="WIDTH: 100%" onclick="addAllClick()"/>
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1073,12 +1030,7 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdFilteredAdd name=cmdFilteredAdd class="btn" value="Filtered Add" style="WIDTH: 100%"  
-																	onclick="filteredAddClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdFilteredAdd name=cmdFilteredAdd class="btn" value="Filtered Add" style="WIDTH: 100%" onclick="filteredAddClick()" />
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1086,12 +1038,7 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdRemove name=cmdRemove class="btn" value="Remove" style="WIDTH: 100%"  
-																	onclick="removeClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdRemove name=cmdRemove class="btn" value="Remove" style="WIDTH: 100%" onclick="removeClick()" />
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1099,12 +1046,7 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdRemoveAll name=cmdRemoveAll class="btn" value="Remove All" style="WIDTH: 100%"  
-																	onclick="removeAllClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdRemoveAll name=cmdRemoveAll class="btn" value="Remove All" style="WIDTH: 100%" onclick="removeAllClick()" />
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1115,12 +1057,7 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdOK name=cmdOK class="btn" value=OK style="WIDTH: 100%"
-																	onclick="okClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdOK name=cmdOK class="btn" value=OK style="WIDTH: 100%" onclick="okClick()" />
 														</TD>
 													</TR>
 													<TR height=10>
@@ -1128,15 +1065,11 @@
 													</TR>
 													<TR height=10>
 														<TD width=100>
-															<input type=button id=cmdCancel name=cmdCancel class="btn" value=Cancel style="WIDTH: 100%"  
-																	onclick="cancelClick()"
-																														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																														onfocus="try{button_onFocus(this);}catch(e){}"
-																														onblur="try{button_onBlur(this);}catch(e){}" />
+															<input type=button id=cmdCancel name=cmdCancel class="btn" value=Cancel style="WIDTH: 100%" onclick="cancelClick()" />
 														</TD>
 													</TR>
 												</TABLE>
+												<div id="RecordCountDIV"></div>
 											</TD>
 										</TR>
 											

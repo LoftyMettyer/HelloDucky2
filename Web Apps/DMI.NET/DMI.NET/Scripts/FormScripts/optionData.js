@@ -1,6 +1,6 @@
 ﻿
 function optiondata_onload() {
-
+	
 	var frmOptionData = document.getElementById("frmOptionData");
 
 	var sFatalErrorMsg = frmOptionData.txtErrorDescription.value;
@@ -456,6 +456,9 @@ function optiondata_onload() {
 			}
 
 			grdFind.redraw = true;
+
+			// Display the number of records returned
+			$('#RecordCountDIV').html(iCount.toString() + " Record(s)");
 
 			if (frmOptionData.txtExpectedCount.value > iCount) {
 				if (iCount == 0) {
