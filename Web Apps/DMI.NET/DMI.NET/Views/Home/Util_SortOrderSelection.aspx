@@ -355,13 +355,15 @@
 									Dim rstSortOrder = cmdSortOrder.Execute
 	
 									If rstSortOrder.eof Then
+										
+										
 								%>
-								<h3>Error</h3>
+								<h3>Warning</h3>
 							</td>
 						</tr>
 						<tr>
 							<td width="20" height="10"></td>
-							<td colspan="3">The are no non-calculated columns to add!</td>
+							<td colspan="3" style="text-align: center">There are no non-calculated columns to add!</td>
 							<td width="20"></td>
 						</tr>
 						<tr>
