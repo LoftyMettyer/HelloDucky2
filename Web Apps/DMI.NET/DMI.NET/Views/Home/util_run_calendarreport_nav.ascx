@@ -163,12 +163,17 @@ End If
 								<tr height="5" valign="middle">
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="First Month" align="center" valign="middle" border="0" src="images/first_disabled.gif" name="imgFirstMonth" id="imgFirstMonth" width="16" height="16"
+										<img alt="First Month" align="center" valign="middle" border="0" src="images/first_disabled.gif" 
+											name="imgFirstMonth" id="imgFirstMonth" width="16" height="16"
+											title="First Month"
 											onclick="firstMonth();">
 									</td>
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="Previous Month" align="center" valign="middle" border="0" src="images/previous_disabled.gif" name="imgPrevMonth" id="imgPrevMonth" width="16" height="16"
+										<img alt="Previous Month" align="center" valign="middle" border="0"
+											src="images/previous_disabled.gif"
+											name="imgPrevMonth" id="imgPrevMonth" width="16" height="16"
+											title="Previous Month"
 											onclick="prevMonth();">
 									</td>
 									<td width="5"></td>
@@ -182,18 +187,23 @@ End If
 										<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 											<tr>
 												<td width="40">
-													<input maxlength="4" value="2003" id="txtYear" name="txtYear" class="text" style="WIDTH: 40px" width="40" value="0"
+													<input maxlength="4" value="2003" id="txtYear" 
+														name="txtYear" class="text" style="WIDTH: 40px" width="40" value="0"
+														title="Year"
 														onkeypress="if(window.event.keyCode==13) {frmNav.txtYear.blur(); return false;}"
 														onblur="setRecordsNumeric();"
 														onchange="setRecordsNumeric();">
 												</td>
 												<td width="15" align="center">
-													<input style="WIDTH: 15px;" type="button" value="+" id="cmdYearUp" name="cmdYearUp" class="btn"
+													<input style="WIDTH: 15px;" type="button" value="+" id="cmdYearUp"
+														name="cmdYearUp" class="btn"
+														title="Add Year"
 														onclick="spinRecords(true); setRecordsNumeric();" />
-
 												</td>
 												<td width="15" align="center">
-													<input style="WIDTH: 15px;" type="button" value="-" id="cmdYearDown" name="cmdYearDown" class="btn"
+													<input style="WIDTH: 15px;" type="button" value="-" id="cmdYearDown" 
+														name="cmdYearDown" class="btn"
+														title="Subtract Year"
 														onclick="spinRecords(false); setRecordsNumeric();" />
 												</td>
 											</tr>
@@ -201,17 +211,26 @@ End If
 									</td>
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="Current Month" align="center" valign="middle" style="margin-top: 1px;" src="images/today_disabled.gif" name="imgToday" id="imgToday" width="16" height="16"
+										<img alt="Current Month" align="center" valign="middle" style="margin-top: 1px;"
+											src="images/today_disabled.gif"
+											title="Current Month"
+											name="imgToday" id="imgToday" width="16" height="16"
 											onclick="thisMonth();">
 									</td>
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="Next Month" align="center" valign="middle" border="0" src="images/next_disabled.gif" name="imgNextMonth" id="imgNextMonth" width="16" height="16"
+										<img alt="Next Month" align="center" valign="middle" border="0"
+											src="images/next_disabled.gif"
+											title="Next Month"
+											name="imgNextMonth" id="imgNextMonth" width="16" height="16"
 											onclick="nextMonth();">
 									</td>
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="Last Month" align="center" valign="middle" border="0" src="images/last_disabled.gif" name="imgLastMonth" id="imgLastMonth" width="16" height="16"
+										<img alt="Last Month" align="center" valign="middle" border="0"
+											src="images/last_disabled.gif"
+											title="Last Month"
+											name="imgLastMonth" id="imgLastMonth" width="16" height="16"
 											onclick="lastMonth();">
 									</td>
 									<td width="5"></td>
