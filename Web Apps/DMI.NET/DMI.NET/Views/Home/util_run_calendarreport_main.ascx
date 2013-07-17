@@ -44,105 +44,105 @@
 		'Dim CalRep_UtilID As Integer
 		Dim aPrompts
 		
-	fBadUtilDef = (session("utiltype") = "") or _ 
-		 (session("utilname") = "") or _ 
-		 (session("utilid") = "") or _ 
-		 (session("action") = "")
+	fBadUtilDef = (Session("utiltype") = "") Or _
+		 (Session("utilname") = "") Or _
+		 (Session("utilid") = "") Or _
+		 (Session("action") = "")
 	
-	fok = not fBadUtilDef
-	fNotCancelled = true
+	fok = Not fBadUtilDef
+	fNotCancelled = True
 	
 		'objCalendar = Nothing
 		Session("objCalendar" & Session("UtilID")) = Nothing
 		Session("objCalendar" & Session("UtilID")) = ""
 	
-	if fOK then	
+	If fok Then
 		' Create the reference to the DLL (Report Class)
 				objCalendar = New HR.Intranet.Server.CalendarReport
 				
 		' Pass required info to the DLL
-		objCalendar.Username = session("username")
+		objCalendar.Username = Session("username")
 				CallByName(objCalendar, "Connection", CallType.Let, Session("databaseConnection"))
 				objCalendar.CalendarReportID = Session("utilid")
-		objCalendar.ClientDateFormat = session("LocaleDateFormat")
-		objCalendar.LocalDecimalSeparator = session("LocaleDecimalSeparator")
+		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
+		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 		objCalendar.SingleRecordID = Session("singleRecordID")
 		
 				aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
-		if fok then 
+		If fok Then
 			fok = objCalendar.SetPromptedValues(aPrompts)
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 
-		if fok then 
+		If fok Then
 			fok = objCalendar.GetCalendarReportDefinition
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 		
-		if fok then 
+		If fok Then
 			fok = objCalendar.GetEventsCollection
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 
-		if fok then 
+		If fok Then
 			fok = objCalendar.GetOrderArray
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 
-		if fok then 
+		If fok Then
 			fok = objCalendar.GenerateSQL 
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 
-		if fok then 
+		If fok Then
 			fok = objCalendar.ExecuteSql  
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 
-		if fok then
+		If fok Then
 			fok = objCalendar.Initialise_WP_Region
 			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
+			If fok Then fok = fNotCancelled
+		End If
 		
 		objCalendar.SetLastRun()
 
 		fNoRecords = objCalendar.NoRecords 
 		
-		if fok then
-			if Response.IsClientConnected then
-				objCalendar.Cancelled = false
-			else
-				objCalendar.Cancelled = true
-			end if
-		else
-			if not fNoRecords then
-				if fNotCancelled then
+		If fok Then
+			If Response.IsClientConnected Then
+				objCalendar.Cancelled = False
+			Else
+				objCalendar.Cancelled = True
+			End If
+		Else
+			If Not fNoRecords Then
+				If fNotCancelled Then
 					objCalendar.FailedMessage = objCalendar.ErrorString
 					objCalendar.Failed = True
-				else
+				Else
 					objCalendar.Cancelled = True
-				end if
-			end if		
-		end if
+				End If
+			End If
+		End If
 		
 		blnShowCalendar = (objCalendar.OutputPreview Or (objCalendar.OutputFormat = 0 And objCalendar.OutputScreen))
 		
 				Session("objCalendar" & Session("UtilID")) = objCalendar
 
 				
-	end if
+	End If
 
-	if fok then
+	If fok Then
 %>	
-<INPUT type='hidden' id=txtLoadCount name=txtLoadCount value=0>
-<input type='hidden' id=txtOK name=txtOK value="True">
+<input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
+<input type='hidden' id="txtOK" name="txtOK" value="True">
 <%
 		Dim objUser As New HR.Intranet.Server.clsSettings
 		Dim cmdEmailAddr As Object
@@ -167,7 +167,7 @@
 				Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=0>" & vbCrLf)
 		End If
 		
-		if blnShowCalendar then
+	If blnShowCalendar Then
 %>		
 
 <div id="calendarframeset">
@@ -202,74 +202,73 @@
 
 
 <%
-		else
+Else
 			'*****************************************
 			'DO THE OUTPUT WITHOUT RUNNING TO PREVIEW
 			'*****************************************
-			if fok then
+	If fok Then
 				fok = objCalendar.OutputGridDefinition 
 				fNotCancelled = Response.IsClientConnected 
-				if fok then fok = fNotCancelled
-			end if
+		If fok Then fok = fNotCancelled
+	End If
 
-			if fok then 
+	If fok Then
 				fok = objCalendar.OutputGridColumns 
 				fNotCancelled = Response.IsClientConnected 
-				if fok then fok = fNotCancelled
-			end if
+		If fok Then fok = fNotCancelled
+	End If
 
-			if fok then 
-				fok = objCalendar.OutputReport(true) 
+	If fok Then
+		fok = objCalendar.OutputReport(True)
 				fNotCancelled = Response.IsClientConnected 
-				if fok then fok = fNotCancelled
-			end if
+		If fok Then fok = fNotCancelled
+	End If
 
-			if fok then
+	If fok Then
 
 				arrayDefinition = objCalendar.OutputArray_Definition 
 				arrayColumnsDefinition = objCalendar.OutputArray_Columns 
 				arrayDataDefinition = objCalendar.OutputArray_Data 
-			end if	
+	End If
 		%>
 
 
 <form id="frmOutput" name="frmOutput">
-		<table align=center class="outline" cellPadding=5 cellSpacing=0> 
+	<table align="center" class="outline" cellpadding="5" cellspacing="0">
 				<tr>
 					<td>
-					<table align=center class="invisible" cellPadding=0 cellSpacing=0> 
+				<table align="center" class="invisible" cellpadding="0" cellspacing="0">
 							<tr>
-									<td colSpan=3 height=10></td>
+						<td colspan="3" height="10"></td>
 							</tr>
 							<tr>
-							<td width=20></td>
-									<td align=center ID=tdDisplay>
-											Outputting Calendar Report.&nbsp;Please Wait...
+						<td width="20"></td>
+						<td align="center" id="tdDisplay">Outputting Calendar Report.&nbsp;Please Wait...
 							</td>
-							<td width=20></td>
+						<td width="20"></td>
 							</tr>
 							<tr>
-									<td colSpan=3 height=20></td>
+						<td colspan="3" height="20"></td>
 							</tr>
 							<tr>
-							<td width=20></td>
-									<td align=center>
-										<INPUT id=Cancel style="WIDTH: 80px" type=button width=80 value=Cancel name=Cancel class="btn"
+						<td width="20"></td>
+						<td align="center">
+							<input id="Cancel" style="WIDTH: 80px" type="button" width="80" value="Cancel" name="Cancel" class="btn"
 																		onclick="closeclick();" />
 							</td>
-							<td width=20></td>
+						<td width="20"></td>
 							</tr>
 							<tr>
-									<td colSpan=5 height=10></td>
+						<td colspan="5" height="10"></td>
 							</tr>
 					</table>
 				</td>
 				</tr>	
-			</TABLE>
+	</table>
 
-			<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
-				id=grdCalendarOutput 
-				name=grdCalendarOutput 
+	<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
+		id="grdCalendarOutput"
+		name="grdCalendarOutput"
 				codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" 
 				style="HEIGHT: 0px; VISIBILITY: visible; WIDTH: 0px; display: block"
 				height="0" 
@@ -288,15 +287,14 @@
 		Next
 
 		%>
-
-		 </OBJECT>
+	</object>
 												
 						<%
 				
-			if fok then
+		If fok Then
 				arrayStyles = objCalendar.OutputArray_Styles
 				arrayMerges = objCalendar.OutputArray_Merges
-			end if	
+		End If
 				
 		'************************* START OF HIDDEN GRID ******************************
 		Response.Write("<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1""    codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" id=ssHiddenGrid name=ssHiddenGrid style=""visibility: visible; display: block; HEIGHT: 0px; WIDTH: 0px"" WIDTH=0 HEIGHT=0>" & vbCrLf)
@@ -421,7 +419,6 @@
 								Response.Write("<INPUT type='hidden' id=txtCalendarPageCount name=txtCalendarPageCount value=" & UBound(arrayMerges) & ">" & vbCrLf)
 		
 		%>
-
 		</form>
 						
 		<%
@@ -455,9 +452,9 @@
 						Next
 				End If
 			
-			if fok then
-				objCalendar.OutputArray_Clear
-			end if
+	If fok Then
+		objCalendar.OutputArray_Clear()
+	End If
 
 		'Write the function that Outputs the report to the Output Classes in the Client DLL.
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
@@ -582,19 +579,19 @@
 				Dim strEmailAttachAs As String
 		Dim strFileName As String
 			
-			lngFormat = cleanStringForJavaScript(objCalendar.OutputFormat)
-			blnScreen = cleanStringForJavaScript(LCase(objCalendar.OutputScreen))
-			blnPrinter = cleanStringForJavaScript(LCase(objCalendar.OutputPrinter))
-			strPrinterName = cleanStringForJavaScript(objCalendar.OutputPrinterName) 
-			blnSave = cleanStringForJavaScript(LCase(objCalendar.OutputSave))
-			lngSaveExisting = cleanStringForJavaScript(objCalendar.OutputSaveExisting)
-			blnEmail = cleanStringForJavaScript(LCase(objCalendar.OutputEmail))
+	lngFormat = CleanStringForJavaScript(objCalendar.OutputFormat)
+	blnScreen = CleanStringForJavaScript(LCase(objCalendar.OutputScreen))
+	blnPrinter = CleanStringForJavaScript(LCase(objCalendar.OutputPrinter))
+	strPrinterName = CleanStringForJavaScript(objCalendar.OutputPrinterName)
+	blnSave = CleanStringForJavaScript(LCase(objCalendar.OutputSave))
+	lngSaveExisting = CleanStringForJavaScript(objCalendar.OutputSaveExisting)
+	blnEmail = CleanStringForJavaScript(LCase(objCalendar.OutputEmail))
 			lngEmailGroupID = CLng(objCalendar.OutputEmailID)
-			strEmailSubject = cleanStringForJavaScript(objCalendar.OutputEmailSubject)
-			strEmailAttachAs = cleanStringForJavaScript(objCalendar.OutputEmailAttachAs)
-			strFileName = cleanStringForJavaScript(objCalendar.OutputFilename)
+	strEmailSubject = CleanStringForJavaScript(objCalendar.OutputEmailSubject)
+	strEmailAttachAs = CleanStringForJavaScript(objCalendar.OutputEmailAttachAs)
+	strFileName = CleanStringForJavaScript(objCalendar.OutputFilename)
 
-			if (blnEmail) and (lngEmailGroupID > 0) then
+	If (blnEmail) And (lngEmailGroupID > 0) Then
 			
 				cmdEmailAddr = CreateObject("ADODB.Command")
 				cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
@@ -852,89 +849,85 @@
 					
 		Response.Write("	}" & vbCrLf)
 		Response.Write("</script>" & vbCrLf & vbCrLf)
-		end if
-	else
-		if fBadUtilDef then 
+End If
+Else
+If fBadUtilDef Then
 		%>
 
-<input type='hidden' id="txtOK" name=txtOK value="False">
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<table class="invisible" cellspacing=0 cellpadding=0>
+<input type='hidden' id="txtOK" name="txtOK" value="False">
+<table align="center" class="outline" cellpadding="5" cellspacing="0">
+	<tr>
+		<td>
+			<table class="invisible" cellspacing="0" cellpadding="0">
 					<tr>
-							<td colspan=3 height=10></td>
+					<td colspan="3" height="10"></td>
 					</tr>
 					<tr> 
-							<td colspan=3 align=center> 
-						<H3>Error</H3>
+					<td colspan="3" align="center">
+						<h3>Error</h3>
 							</td>
 					</tr> 
 					<tr> 
-							<td width=20 height=10></td> 
+					<td width="20" height="10"></td>
 							<td> 
-						<H4>Not all session variables found</H4>
+						<h4>Not all session variables found</h4>
 							</td>
-							<td width=20></td> 
+					<td width="20"></td>
 					</tr>
 					<tr> 
-							<td width=20 height=10></td> 
-							<td>
-									Type = <%Session("utiltype").ToString()%>
+					<td width="20" height="10"></td>
+					<td>Type = <%Session("utiltype").ToString()%>
 							</td>
-							<td width=20></td> 
+					<td width="20"></td>
 					</tr>
 					<tr> 
-							<td width=20 height=10></td> 
-							<td>
-									Utility Name = <%Session("utilname").ToString()%>
+					<td width="20" height="10"></td>
+					<td>Utility Name = <%Session("utilname").ToString()%>
 							</td>
-							<td width=20></td> 
+					<td width="20"></td>
 					</tr>
 					<tr> 
-							<td width=20 height=10></td> 
-							<td>
-									Utility ID = <%Session("utilid").ToString()%>
+					<td width="20" height="10"></td>
+					<td>Utility ID = <%Session("utilid").ToString()%>
 							</td>
-							<td width=20></td> 
+					<td width="20"></td>
 					</tr>
 					<tr> 
-							<td width=20 height=10></td> 
-							<td>
-									Action = <%Session("action").ToString()%>
+					<td width="20" height="10"></td>
+					<td>Action = <%Session("action").ToString()%>
 							</td>
-							<td width=20></td> 
+					<td width="20"></td>
 					</tr>
 					<tr>
-							<td colspan=3 height=10>&nbsp;</td>
+					<td colspan="3" height="10">&nbsp;</td>
 					</tr>
 					<tr> 
-							<td colspan=3 height=10 align=center> 
-						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id=cmdClose class="btn"
+					<td colspan="3" height="10" align="center">
+						<input type="button" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose" class="btn"
 								onclick="closeclick();" />
 							</td>
 					</tr>
 					<tr> 
-							<td colspan=3 height=10></td>
+					<td colspan="3" height="10"></td>
 					</tr>
 			</table>
 		</td>
 	</tr>
 </table>
-<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=1>
+<input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="1">
 
 <%
-		else
+Else
 %>
 
-<input type='hidden' id=txtOK name=txtOK value="False">
-<FORM ID=frmPopup Name=frmPopup>
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<table class="invisible" cellspacing=0 cellpadding=0>
+<input type='hidden' id="txtOK" name="txtOK" value="False">
+<form id="frmPopup" name="frmPopup">
+	<table align="center" class="outline" cellpadding="5" cellspacing="0">
+		<tr>
+			<td>
+				<table class="invisible" cellspacing="0" cellpadding="0">
 					<tr>
-							<td colspan=3 height=10></td>
+						<td colspan="3" height="10"></td>
 							</tr>
 <%
 		Dim sCloseFunction As String
@@ -955,34 +948,34 @@
 		Response.Write("			  </tr>" & vbCrLf)
 %>
 								<tr> 
-							<td width=20 height=10></td> 
-							<td align=center nowrap>
+						<td width="20" height="10"></td>
+						<td align="center" nowrap>
 									<%objCalendar.ErrorString.ToString()%>
 							</td>
-							<td width=20></td> 
+						<td width="20"></td>
 					</tr>
 					<tr>
-							<td colspan=3 height=10>&nbsp;</td>
+						<td colspan="3" height="10">&nbsp;</td>
 					</tr>
 					<tr> 
-							<td colspan=3 height=10 align=center> 
-						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id="cmdClose" class="btn"
+						<td colspan="3" height="10" align="center">
+							<input type="button" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose" class="btn"
 														onclick="closeclick();" />
 										</td>
 					</tr>
 					<tr> 
-							<td colspan=3 height=10></td>
+						<td colspan="3" height="10"></td>
 					</tr>
 			</table>
 		</td>
 	</tr>
 </table>
-</FORM>
-<input type=hidden id=Hidden3 name=txtSuccessFlag value=1>
-<input type='hidden' id=txtPreview name=txtPreview value=0>
+</form>
+<input type="hidden" id="Hidden3" name="txtSuccessFlag" value="1">
+<input type='hidden' id="txtPreview" name="txtPreview" value="0">
 <%
-		end if
-	end if
+End If
+End If
 
 Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.CalendarReportName, """", "&quot;") & """>" & vbCrLf)
 	

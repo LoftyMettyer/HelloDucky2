@@ -1433,7 +1433,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													<tr height="5">
 														<td width="5">&nbsp;</td>
 														<td rowspan="12">
-															<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSortOrder")%>
+															<%Html.RenderPartial("Util_Def_CustomReports/ssCalOleDBGridSortOrder")%>
 														</td>
 
 														<td width="10">&nbsp;</td>

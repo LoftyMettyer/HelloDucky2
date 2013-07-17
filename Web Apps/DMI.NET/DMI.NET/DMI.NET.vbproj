@@ -1076,6 +1076,7 @@
     <Content Include="Views\Shared\ctl_ASRIntranetPrintFunctions.ascx" />
     <Content Include="Views\Shared\gotoOption.ascx" />
     <Content Include="Views\Shared\themeEditor.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssCalOleDBGridSortOrder.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
@@ -1165,7 +1166,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52911</DevelopmentServerPort>
+          <DevelopmentServerPort>60226</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:50115/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
