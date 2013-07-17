@@ -1,6 +1,4 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Register Src="~/Views/Home/WorkflowPendingSteps.ascx" TagPrefix="uc1" TagName="WorkflowPendingSteps" %>
-
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -181,7 +179,6 @@
 								</table>
 							</td>
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<uc1:WorkflowPendingSteps runat="server" ID="WorkflowPendingSteps" />
 						</tr>
 						<tr>
 							<td colspan="5" align="center" height="10"></td>
