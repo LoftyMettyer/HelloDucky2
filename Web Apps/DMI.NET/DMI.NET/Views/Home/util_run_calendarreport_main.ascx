@@ -459,400 +459,400 @@
 				objCalendar.OutputArray_Clear
 			end if
 
-	'Write the function that Outputs the report to the Output Classes in the Client DLL.
-	Response.Write("<script type=""text/javascript"">" & vbCrLf)
+		'Write the function that Outputs the report to the Output Classes in the Client DLL.
+		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
-	Response.Write("function outputCalendarReport() " & vbCrLf)
-	Response.Write("	{" & vbCrLf & vbCrLf)
+				Response.Write("function outputCalendarReport() " & vbCrLf)
+		Response.Write("	{" & vbCrLf & vbCrLf)
 				
-	Response.Write("	var lngPageColumnCount = 3;" & vbCrLf)
-	Response.Write("  var lngActualRow = new Number(0);" & vbCrLf)
-	Response.Write("  var blnSettingsDone = false;" & vbCrLf)
-	Response.Write("	var sColHeading = new String(''); " & vbCrLf)
-	Response.Write("	var iColDataType = new Number(12); " & vbCrLf)
-	Response.Write("	var iColDecimals = new Number(0); " & vbCrLf)
-	Response.Write("  var blnNewPage = false;" & vbCrLf)
-	Response.Write("  var lngPageCount = new Number(0);" & vbCrLf)
+		Response.Write("	var lngPageColumnCount = 3;" & vbCrLf)
+		Response.Write("  var lngActualRow = new Number(0);" & vbCrLf)
+		Response.Write("  var blnSettingsDone = false;" & vbCrLf)
+		Response.Write("	var sColHeading = new String(''); " & vbCrLf)
+		Response.Write("	var iColDataType = new Number(12); " & vbCrLf)
+		Response.Write("	var iColDecimals = new Number(0); " & vbCrLf)
+		Response.Write("  var blnNewPage = false;" & vbCrLf)
+		Response.Write("  var lngPageCount = new Number(0);" & vbCrLf)
 
-	Response.Write("  var strType = new String('');" & vbCrLf)
-	Response.Write("  var lngStartCol = new Number(0);" & vbCrLf)
-	Response.Write("  var lngStartRow = new Number(0);" & vbCrLf)
-	Response.Write("  var lngEndCol = new Number(0);" & vbCrLf)
-	Response.Write("  var lngEndRow = new Number(0);" & vbCrLf)
-	Response.Write("  var lngBackCol = new Number(0);" & vbCrLf)
-	Response.Write("  var lngForeCol = new Number(0);" & vbCrLf)
-	Response.Write("  var blnBold = false;" & vbCrLf)
-	Response.Write("  var blnUnderline = false;" & vbCrLf)
-	Response.Write("  var blnGridlines = false;" & vbCrLf)
+		Response.Write("  var strType = new String('');" & vbCrLf)
+		Response.Write("  var lngStartCol = new Number(0);" & vbCrLf)
+		Response.Write("  var lngStartRow = new Number(0);" & vbCrLf)
+		Response.Write("  var lngEndCol = new Number(0);" & vbCrLf)
+		Response.Write("  var lngEndRow = new Number(0);" & vbCrLf)
+		Response.Write("  var lngBackCol = new Number(0);" & vbCrLf)
+		Response.Write("  var lngForeCol = new Number(0);" & vbCrLf)
+		Response.Write("  var blnBold = false;" & vbCrLf)
+		Response.Write("  var blnUnderline = false;" & vbCrLf)
+		Response.Write("  var blnGridlines = false;" & vbCrLf)
 	
-	CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
+			CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
 			
-	Response.Write("  window.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
-	Response.Write("  window.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
+		Response.Write("  window.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
+		Response.Write("  window.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
 
-	Response.Write("  frmMenuFrame = window.parent.parent.opener.window.parent.frames(""menuframe"");" & vbCrLf)
+		Response.Write("  frmMenuFrame = window.parent.parent.opener.window.parent.frames(""menuframe"");" & vbCrLf)
 		
-	Response.Write("	window.parent.ASRIntranetOutput.SettingOptions(")
-	Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
-	Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
+		Response.Write("	window.parent.ASRIntranetOutput.SettingOptions(")
+		Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
+		Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
 
-	If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
+		If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
+		End If
 
-	If (objUser.GetUserSetting("Output", "ExcelHeaders", "0") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
+		If (objUser.GetUserSetting("Output", "ExcelHeaders", "0") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
+		End If
 
-	If (objUser.GetUserSetting("Output", "AutoFitCols", "1") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
+		If (objUser.GetUserSetting("Output", "AutoFitCols", "1") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
+		End If
 
-	If (objUser.GetUserSetting("Output", "Landscape", "1") = "1") Then
-		Response.Write("true, " & vbCrLf)
-	Else
-		Response.Write("false, " & vbCrLf)
-	End If
+		If (objUser.GetUserSetting("Output", "Landscape", "1") = "1") Then
+				Response.Write("true, " & vbCrLf)
+		Else
+				Response.Write("false, " & vbCrLf)
+		End If
 				 
-	Response.Write("frmMenuFrame.document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
+		Response.Write("frmMenuFrame.document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
 
-	Response.Write("  window.parent.ASRIntranetOutput.SettingLocations(")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
+		Response.Write("  window.parent.ASRIntranetOutput.SettingLocations(")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
 
-	Response.Write("  window.parent.ASRIntranetOutput.SettingTitle(")
-	If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
-
-	If (objUser.GetUserSetting("Output", "TitleBold", "1") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
-
-	If (objUser.GetUserSetting("Output", "TitleUnderline", "0") = "1") Then
-		Response.Write("true, ")
-	Else
-		Response.Write("false, ")
-	End If
-
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))) & ");" & vbCrLf)
-
-	Response.Write("window.parent.ASRIntranetOutput.SettingHeading(")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553"))) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779"))) & ");" & vbCrLf)
-
-	Response.Write("window.parent.ASRIntranetOutput.SettingData(")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214"))) & ", ")
-	Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779"))) & ");" & vbCrLf)
-			
-	Dim lngFormat As Long
-	Dim blnScreen As Boolean
-	Dim blnPrinter As Boolean
-	Dim strPrinterName As String
-	Dim blnSave As Boolean
-	Dim lngSaveExisting As Long
-	Dim blnEmail As Boolean
-	Dim lngEmailGroupID As Long
-	Dim strEmailSubject As String
-	Dim strEmailAttachAs As String
-	Dim strFileName As String
-			
-	lngFormat = CleanStringForJavaScript(objCalendar.OutputFormat)
-	blnScreen = CleanStringForJavaScript(LCase(objCalendar.OutputScreen))
-	blnPrinter = CleanStringForJavaScript(LCase(objCalendar.OutputPrinter))
-	strPrinterName = CleanStringForJavaScript(objCalendar.OutputPrinterName)
-	blnSave = CleanStringForJavaScript(LCase(objCalendar.OutputSave))
-	lngSaveExisting = CleanStringForJavaScript(objCalendar.OutputSaveExisting)
-	blnEmail = CleanStringForJavaScript(LCase(objCalendar.OutputEmail))
-	lngEmailGroupID = CLng(objCalendar.OutputEmailID)
-	strEmailSubject = CleanStringForJavaScript(objCalendar.OutputEmailSubject)
-	strEmailAttachAs = CleanStringForJavaScript(objCalendar.OutputEmailAttachAs)
-	strFileName = CleanStringForJavaScript(objCalendar.OutputFilename)
-
-	If (blnEmail) And (lngEmailGroupID > 0) Then
-			
-		cmdEmailAddr = CreateObject("ADODB.Command")
-		cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-		cmdEmailAddr.CommandType = 4 ' Stored procedure
-		cmdEmailAddr.ActiveConnection = Session("databaseConnection")
-
-		prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
-		cmdEmailAddr.Parameters.Append(prmEmailGroupID)
-		prmEmailGroupID.value = CleanNumeric(lngEmailGroupID)
-
-		Err.Clear()
-		rstEmailAddr = cmdEmailAddr.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
+		Response.Write("  window.parent.ASRIntranetOutput.SettingTitle(")
+		If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
 		End If
 
-		If Len(sErrorDescription) = 0 Then
-			iLoop = 1
-			Do While Not rstEmailAddr.EOF
-				If iLoop > 1 Then
-					sEmailAddresses = sEmailAddresses & ";"
+		If (objUser.GetUserSetting("Output", "TitleBold", "1") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
+		End If
+
+		If (objUser.GetUserSetting("Output", "TitleUnderline", "0") = "1") Then
+				Response.Write("true, ")
+		Else
+				Response.Write("false, ")
+		End If
+
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))) & ");" & vbCrLf)
+
+		Response.Write("window.parent.ASRIntranetOutput.SettingHeading(")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553"))) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779"))) & ");" & vbCrLf)
+
+		Response.Write("window.parent.ASRIntranetOutput.SettingData(")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214"))) & ", ")
+		Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779"))) & ");" & vbCrLf)
+			
+				Dim lngFormat As Long
+				Dim blnScreen As Boolean
+				Dim blnPrinter As Boolean
+				Dim strPrinterName As String
+				Dim blnSave As Boolean
+				Dim lngSaveExisting As Long
+				Dim blnEmail As Boolean
+				Dim lngEmailGroupID As Long
+				Dim strEmailSubject As String
+				Dim strEmailAttachAs As String
+		Dim strFileName As String
+			
+			lngFormat = cleanStringForJavaScript(objCalendar.OutputFormat)
+			blnScreen = cleanStringForJavaScript(LCase(objCalendar.OutputScreen))
+			blnPrinter = cleanStringForJavaScript(LCase(objCalendar.OutputPrinter))
+			strPrinterName = cleanStringForJavaScript(objCalendar.OutputPrinterName) 
+			blnSave = cleanStringForJavaScript(LCase(objCalendar.OutputSave))
+			lngSaveExisting = cleanStringForJavaScript(objCalendar.OutputSaveExisting)
+			blnEmail = cleanStringForJavaScript(LCase(objCalendar.OutputEmail))
+			lngEmailGroupID = CLng(objCalendar.OutputEmailID)
+			strEmailSubject = cleanStringForJavaScript(objCalendar.OutputEmailSubject)
+			strEmailAttachAs = cleanStringForJavaScript(objCalendar.OutputEmailAttachAs)
+			strFileName = cleanStringForJavaScript(objCalendar.OutputFilename)
+
+			if (blnEmail) and (lngEmailGroupID > 0) then
+			
+				cmdEmailAddr = CreateObject("ADODB.Command")
+				cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
+				cmdEmailAddr.CommandType = 4 ' Stored procedure
+				cmdEmailAddr.ActiveConnection = Session("databaseConnection")
+
+				prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
+				cmdEmailAddr.Parameters.Append(prmEmailGroupID)
+				prmEmailGroupID.value = CleanNumeric(lngEmailGroupID)
+
+				Err.Clear()
+				rstEmailAddr = cmdEmailAddr.Execute
+
+				If (Err.Number <> 0) Then
+						sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
 				End If
-				sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-				rstEmailAddr.MoveNext()
-				iLoop = iLoop + 1
-			Loop
+
+				If Len(sErrorDescription) = 0 Then
+						iLoop = 1
+						Do While Not rstEmailAddr.EOF
+								If iLoop > 1 Then
+										sEmailAddresses = sEmailAddresses & ";"
+								End If
+								sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
+								rstEmailAddr.MoveNext()
+								iLoop = iLoop + 1
+						Loop
 					
-			' Release the ADO recordset object.
-			rstEmailAddr.close()
-		End If
+						' Release the ADO recordset object.
+						rstEmailAddr.close()
+				End If
 						
-		rstEmailAddr = Nothing
-		cmdEmailAddr = Nothing
-	End If
+				rstEmailAddr = Nothing
+				cmdEmailAddr = Nothing
+		End If
 			
-	Response.Write("fok = window.parent.ASRIntranetOutput.SetOptions(false, " & _
-																					lngFormat & "," & blnScreen & ", " & _
-																					blnPrinter & ",""" & strPrinterName & """, " & _
-																					blnSave & "," & lngSaveExisting & ", " & _
-																					blnEmail & ", """ & CleanStringForJavaScript(sEmailAddresses) & """, """ & _
-																					strEmailSubject & """,""" & strEmailAttachAs & """,""" & strFileName & """);" & vbCrLf)
+		Response.Write("fok = window.parent.ASRIntranetOutput.SetOptions(false, " & _
+																						lngFormat & "," & blnScreen & ", " & _
+																						blnPrinter & ",""" & strPrinterName & """, " & _
+																						blnSave & "," & lngSaveExisting & ", " & _
+																						blnEmail & ", """ & CleanStringForJavaScript(sEmailAddresses) & """, """ & _
+																						strEmailSubject & """,""" & strEmailAttachAs & """,""" & strFileName & """);" & vbCrLf)
 			
-	Response.Write("if (fok == true) {" & vbCrLf)
-	If (objCalendar.OutputFormat = 0) And (objCalendar.OutputPrinter) Then
-		Response.Write("	window.parent.ASRIntranetOutput.SetPrinter();" & vbCrLf)
-		Response.Write("  dataOnlyPrint();" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.ResetDefaultPrinter();" & vbCrLf)
-	Else
-		Response.Write("if (window.parent.ASRIntranetOutput.GetFile() == true) " & vbCrLf)
-		Response.Write("	{" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.ResetMerges();" & vbCrLf)
+		Response.Write("if (fok == true) {" & vbCrLf)
+		If (objCalendar.OutputFormat = 0) And (objCalendar.OutputPrinter) Then
+				Response.Write("	window.parent.ASRIntranetOutput.SetPrinter();" & vbCrLf)
+				Response.Write("  dataOnlyPrint();" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.ResetDefaultPrinter();" & vbCrLf)
+		Else
+				Response.Write("if (window.parent.ASRIntranetOutput.GetFile() == true) " & vbCrLf)
+				Response.Write("	{" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.ResetMerges();" & vbCrLf)
 
-		Response.Write("	window.parent.ASRIntranetOutput.HeaderRows = 1;" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.HeaderCols = 0;" & vbCrLf)
-		Response.Write("	window.parent.ASRIntranetOutput.SizeColumnsIndependently = true;" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.HeaderRows = 1;" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.HeaderCols = 0;" & vbCrLf)
+				Response.Write("	window.parent.ASRIntranetOutput.SizeColumnsIndependently = true;" & vbCrLf)
 	
-		Response.Write("	window.parent.ASRIntranetOutput.ArrayDim((lngPageColumnCount-1), 0);" & vbCrLf & vbCrLf)
-		Response.Write("  frmOutput.grdCalendarOutput.focus();")
+				Response.Write("	window.parent.ASRIntranetOutput.ArrayDim((lngPageColumnCount-1), 0);" & vbCrLf & vbCrLf)
+				Response.Write("  frmOutput.grdCalendarOutput.focus();")
 
-		Response.Write("  frmOutput.grdCalendarOutput.MoveFirst();" & vbCrLf)
-		Response.Write("  for (var lngRow=0; lngRow<frmOutput.grdCalendarOutput.Rows; lngRow++)" & vbCrLf)
-		Response.Write("		{" & vbCrLf)
-		Response.Write("		bm = frmOutput.grdCalendarOutput.AddItemBookmark(lngRow);" & vbCrLf)
+				Response.Write("  frmOutput.grdCalendarOutput.MoveFirst();" & vbCrLf)
+				Response.Write("  for (var lngRow=0; lngRow<frmOutput.grdCalendarOutput.Rows; lngRow++)" & vbCrLf)
+				Response.Write("		{" & vbCrLf)
+				Response.Write("		bm = frmOutput.grdCalendarOutput.AddItemBookmark(lngRow);" & vbCrLf)
 	
 	
-		Response.Write("		if (lngRow == (frmOutput.grdCalendarOutput.Rows - 1))" & vbCrLf)
-		Response.Write("			{" & vbCrLf)
-		Response.Write("			sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);" & vbCrLf)
-		Response.Write("			if ((sBreakValue == 'Key') && (" & lngFormat & " != 4)) " & vbCrLf)
-		Response.Write("				{ " & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') ,sBreakValue);" & vbCrLf)
-		Response.Write("				} " & vbCrLf)
-		Response.Write("			else " & vbCrLf)
-		Response.Write("				{ " & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') + ' - ' + sBreakValue,sBreakValue);" & vbCrLf)
-		Response.Write("				} " & vbCrLf)
+				Response.Write("		if (lngRow == (frmOutput.grdCalendarOutput.Rows - 1))" & vbCrLf)
+				Response.Write("			{" & vbCrLf)
+				Response.Write("			sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);" & vbCrLf)
+				Response.Write("			if ((sBreakValue == 'Key') && (" & lngFormat & " != 4)) " & vbCrLf)
+				Response.Write("				{ " & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') ,sBreakValue);" & vbCrLf)
+				Response.Write("				} " & vbCrLf)
+				Response.Write("			else " & vbCrLf)
+				Response.Write("				{ " & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') + ' - ' + sBreakValue,sBreakValue);" & vbCrLf)
+				Response.Write("				} " & vbCrLf)
 
-		Response.Write("			var frmMerge = document.forms('frmCalendarMerge_'+lngPageCount);" & vbCrLf)
+				Response.Write("			var frmMerge = document.forms('frmCalendarMerge_'+lngPageCount);" & vbCrLf)
 	
-		Response.Write("			var dataCollection = frmMerge.elements;" & vbCrLf)
-		Response.Write("			if (dataCollection!=null) " & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
-		Response.Write("					{" & vbCrLf)
-		Response.Write("					strMergeString = dataCollection.item(i).value;" & vbCrLf)
-		Response.Write("					if (strMergeString != '')" & vbCrLf)
-		Response.Write("						{" & vbCrLf)
-		Response.Write("						lngStartCol = Number(mergeArgument(strMergeString,'STARTCOL'));" & vbCrLf)
-		Response.Write("						lngStartRow = Number(mergeArgument(strMergeString,'STARTROW'));" & vbCrLf)
-		Response.Write("						lngEndCol = Number(mergeArgument(strMergeString,'ENDCOL'));" & vbCrLf)
-		Response.Write("						lngEndRow = Number(mergeArgument(strMergeString,'ENDROW'));" & vbCrLf)
-		Response.Write("						window.parent.ASRIntranetOutput.AddMerge(lngStartCol,lngStartRow,lngEndCol,lngEndRow);" & vbCrLf)
-		Response.Write("						}" & vbCrLf)
-		Response.Write("					}" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
+				Response.Write("			var dataCollection = frmMerge.elements;" & vbCrLf)
+				Response.Write("			if (dataCollection!=null) " & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
+				Response.Write("					{" & vbCrLf)
+				Response.Write("					strMergeString = dataCollection.item(i).value;" & vbCrLf)
+				Response.Write("					if (strMergeString != '')" & vbCrLf)
+				Response.Write("						{" & vbCrLf)
+				Response.Write("						lngStartCol = Number(mergeArgument(strMergeString,'STARTCOL'));" & vbCrLf)
+				Response.Write("						lngStartRow = Number(mergeArgument(strMergeString,'STARTROW'));" & vbCrLf)
+				Response.Write("						lngEndCol = Number(mergeArgument(strMergeString,'ENDCOL'));" & vbCrLf)
+				Response.Write("						lngEndRow = Number(mergeArgument(strMergeString,'ENDROW'));" & vbCrLf)
+				Response.Write("						window.parent.ASRIntranetOutput.AddMerge(lngStartCol,lngStartRow,lngEndCol,lngEndRow);" & vbCrLf)
+				Response.Write("						}" & vbCrLf)
+				Response.Write("					}" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
 
-		Response.Write("			var frmStyle = document.forms('frmCalendarStyle_'+lngPageCount);" & vbCrLf)
-		Response.Write("			var dataCollection = frmStyle.elements;" & vbCrLf)
-		Response.Write("			if (dataCollection!=null) " & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
-		Response.Write("					{" & vbCrLf)
-		Response.Write("					strStyleString = dataCollection.item(i).value;" & vbCrLf)
-		Response.Write("					if (strStyleString != '')" & vbCrLf)
-		Response.Write("						{" & vbCrLf)
-		Response.Write("						strType = styleArgument(strStyleString,'TYPE');" & vbCrLf)
-		Response.Write("						lngStartCol = Number(styleArgument(strStyleString,'STARTCOL'));" & vbCrLf)
-		Response.Write("						lngStartRow = Number(styleArgument(strStyleString,'STARTROW'));" & vbCrLf)
-		Response.Write("						lngEndCol = Number(styleArgument(strStyleString,'ENDCOL'));" & vbCrLf)
-		Response.Write("						lngEndRow = Number(styleArgument(strStyleString,'ENDROW'));" & vbCrLf)
-		Response.Write("						lngBackCol = Number(styleArgument(strStyleString,'BACKCOLOR'));" & vbCrLf)
-		Response.Write("						lngForeCol = Number(styleArgument(strStyleString,'FORECOLOR'));" & vbCrLf)
-		Response.Write("						blnBold = styleArgument(strStyleString,'BOLD');" & vbCrLf)
-		Response.Write("						blnUnderline = styleArgument(strStyleString,'UNDERLINE');" & vbCrLf)
-		Response.Write("						blnGridlines = styleArgument(strStyleString,'GRIDLINES');" & vbCrLf)
-		Response.Write("						window.parent.ASRIntranetOutput.AddStyle(strType,lngStartCol,lngStartRow,lngEndCol,lngEndRow,lngBackCol,lngForeCol,blnBold,blnUnderline,blnGridlines);" & vbCrLf)
-		Response.Write("						}" & vbCrLf)
-		Response.Write("					}" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
+				Response.Write("			var frmStyle = document.forms('frmCalendarStyle_'+lngPageCount);" & vbCrLf)
+				Response.Write("			var dataCollection = frmStyle.elements;" & vbCrLf)
+				Response.Write("			if (dataCollection!=null) " & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
+				Response.Write("					{" & vbCrLf)
+				Response.Write("					strStyleString = dataCollection.item(i).value;" & vbCrLf)
+				Response.Write("					if (strStyleString != '')" & vbCrLf)
+				Response.Write("						{" & vbCrLf)
+				Response.Write("						strType = styleArgument(strStyleString,'TYPE');" & vbCrLf)
+				Response.Write("						lngStartCol = Number(styleArgument(strStyleString,'STARTCOL'));" & vbCrLf)
+				Response.Write("						lngStartRow = Number(styleArgument(strStyleString,'STARTROW'));" & vbCrLf)
+				Response.Write("						lngEndCol = Number(styleArgument(strStyleString,'ENDCOL'));" & vbCrLf)
+				Response.Write("						lngEndRow = Number(styleArgument(strStyleString,'ENDROW'));" & vbCrLf)
+				Response.Write("						lngBackCol = Number(styleArgument(strStyleString,'BACKCOLOR'));" & vbCrLf)
+				Response.Write("						lngForeCol = Number(styleArgument(strStyleString,'FORECOLOR'));" & vbCrLf)
+				Response.Write("						blnBold = styleArgument(strStyleString,'BOLD');" & vbCrLf)
+				Response.Write("						blnUnderline = styleArgument(strStyleString,'UNDERLINE');" & vbCrLf)
+				Response.Write("						blnGridlines = styleArgument(strStyleString,'GRIDLINES');" & vbCrLf)
+				Response.Write("						window.parent.ASRIntranetOutput.AddStyle(strType,lngStartCol,lngStartRow,lngEndCol,lngEndRow,lngBackCol,lngForeCol,blnBold,blnUnderline,blnGridlines);" & vbCrLf)
+				Response.Write("						}" & vbCrLf)
+				Response.Write("					}" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
 	
-		Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
-		Response.Write("			blnBreakCheck = true;" & vbCrLf)
-		Response.Write("			sBreakValue = '';" & vbCrLf)
-		Response.Write("			lngActualRow = 0;" & vbCrLf)
-		Response.Write("			}" & vbCrLf)
+				Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
+				Response.Write("			blnBreakCheck = true;" & vbCrLf)
+				Response.Write("			sBreakValue = '';" & vbCrLf)
+				Response.Write("			lngActualRow = 0;" & vbCrLf)
+				Response.Write("			}" & vbCrLf)
 	
-		Response.Write("    else if ((frmOutput.grdCalendarOutput.Columns(0).CellText(bm) == '*')" & vbCrLf)
-		Response.Write("					&& (!blnBreakCheck))" & vbCrLf)
-		Response.Write("			{" & vbCrLf)
-		Response.Write("			sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') + ' - ' + sBreakValue,sBreakValue);" & vbCrLf)
+				Response.Write("    else if ((frmOutput.grdCalendarOutput.Columns(0).CellText(bm) == '*')" & vbCrLf)
+				Response.Write("					&& (!blnBreakCheck))" & vbCrLf)
+				Response.Write("			{" & vbCrLf)
+				Response.Write("			sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.AddPage(replace(frmOutput.grdCalendarOutput.Caption,'&&','&') + ' - ' + sBreakValue,sBreakValue);" & vbCrLf)
 	
-		Response.Write("			var frmMerge = document.forms('frmCalendarMerge_'+lngPageCount);" & vbCrLf)
-		Response.Write("			var dataCollection = frmMerge.elements;" & vbCrLf)
-		Response.Write("			if (dataCollection!=null) " & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
-		Response.Write("					{" & vbCrLf)
-		Response.Write("					strMergeString = dataCollection.item(i).value;" & vbCrLf)
-		Response.Write("					if (strMergeString != '')" & vbCrLf)
-		Response.Write("						{" & vbCrLf)
-		Response.Write("						lngStartCol = Number(mergeArgument(strMergeString,'STARTCOL'));" & vbCrLf)
-		Response.Write("						lngStartRow = Number(mergeArgument(strMergeString,'STARTROW'));" & vbCrLf)
-		Response.Write("						lngEndCol = Number(mergeArgument(strMergeString,'ENDCOL'));" & vbCrLf)
-		Response.Write("						lngEndRow = Number(mergeArgument(strMergeString,'ENDROW'));" & vbCrLf)
-		Response.Write("						window.parent.ASRIntranetOutput.AddMerge(lngStartCol,lngStartRow,lngEndCol,lngEndRow);" & vbCrLf)
-		Response.Write("						}" & vbCrLf)
-		Response.Write("					}" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
+				Response.Write("			var frmMerge = document.forms('frmCalendarMerge_'+lngPageCount);" & vbCrLf)
+				Response.Write("			var dataCollection = frmMerge.elements;" & vbCrLf)
+				Response.Write("			if (dataCollection!=null) " & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
+				Response.Write("					{" & vbCrLf)
+				Response.Write("					strMergeString = dataCollection.item(i).value;" & vbCrLf)
+				Response.Write("					if (strMergeString != '')" & vbCrLf)
+				Response.Write("						{" & vbCrLf)
+				Response.Write("						lngStartCol = Number(mergeArgument(strMergeString,'STARTCOL'));" & vbCrLf)
+				Response.Write("						lngStartRow = Number(mergeArgument(strMergeString,'STARTROW'));" & vbCrLf)
+				Response.Write("						lngEndCol = Number(mergeArgument(strMergeString,'ENDCOL'));" & vbCrLf)
+				Response.Write("						lngEndRow = Number(mergeArgument(strMergeString,'ENDROW'));" & vbCrLf)
+				Response.Write("						window.parent.ASRIntranetOutput.AddMerge(lngStartCol,lngStartRow,lngEndCol,lngEndRow);" & vbCrLf)
+				Response.Write("						}" & vbCrLf)
+				Response.Write("					}" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
 
-		Response.Write("			var frmStyle = document.forms('frmCalendarStyle_'+lngPageCount);" & vbCrLf)
-		Response.Write("			var dataCollection = frmStyle.elements;" & vbCrLf)
-		Response.Write("			if (dataCollection!=null) " & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
-		Response.Write("					{" & vbCrLf)
-		Response.Write("					strStyleString = dataCollection.item(i).value;" & vbCrLf)
-		Response.Write("					if (strStyleString != '')" & vbCrLf)
-		Response.Write("						{" & vbCrLf)
-		Response.Write("						strType = styleArgument(strStyleString,'TYPE');" & vbCrLf)
-		Response.Write("						lngStartCol = Number(styleArgument(strStyleString,'STARTCOL'));" & vbCrLf)
-		Response.Write("						lngStartRow = Number(styleArgument(strStyleString,'STARTROW'));" & vbCrLf)
-		Response.Write("						lngEndCol = Number(styleArgument(strStyleString,'ENDCOL'));" & vbCrLf)
-		Response.Write("						lngEndRow = Number(styleArgument(strStyleString,'ENDROW'));" & vbCrLf)
-		Response.Write("						lngBackCol = Number(styleArgument(strStyleString,'BACKCOLOR'));" & vbCrLf)
-		Response.Write("						lngForeCol = Number(styleArgument(strStyleString,'FORECOLOR'));" & vbCrLf)
-		Response.Write("						blnBold = styleArgument(strStyleString,'BOLD');" & vbCrLf)
-		Response.Write("						blnUnderline = styleArgument(strStyleString,'UNDERLINE');" & vbCrLf)
-		Response.Write("						blnGridlines = styleArgument(strStyleString,'GRIDLINES');" & vbCrLf)
-		Response.Write("						window.parent.ASRIntranetOutput.AddStyle(strType,lngStartCol,lngStartRow,lngEndCol,lngEndRow,lngBackCol,lngForeCol,blnBold,blnUnderline,blnGridlines);" & vbCrLf)
-		Response.Write("						}" & vbCrLf)
-		Response.Write("					}" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
+				Response.Write("			var frmStyle = document.forms('frmCalendarStyle_'+lngPageCount);" & vbCrLf)
+				Response.Write("			var dataCollection = frmStyle.elements;" & vbCrLf)
+				Response.Write("			if (dataCollection!=null) " & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				for (i=0; i<dataCollection.length; i++)  " & vbCrLf)
+				Response.Write("					{" & vbCrLf)
+				Response.Write("					strStyleString = dataCollection.item(i).value;" & vbCrLf)
+				Response.Write("					if (strStyleString != '')" & vbCrLf)
+				Response.Write("						{" & vbCrLf)
+				Response.Write("						strType = styleArgument(strStyleString,'TYPE');" & vbCrLf)
+				Response.Write("						lngStartCol = Number(styleArgument(strStyleString,'STARTCOL'));" & vbCrLf)
+				Response.Write("						lngStartRow = Number(styleArgument(strStyleString,'STARTROW'));" & vbCrLf)
+				Response.Write("						lngEndCol = Number(styleArgument(strStyleString,'ENDCOL'));" & vbCrLf)
+				Response.Write("						lngEndRow = Number(styleArgument(strStyleString,'ENDROW'));" & vbCrLf)
+				Response.Write("						lngBackCol = Number(styleArgument(strStyleString,'BACKCOLOR'));" & vbCrLf)
+				Response.Write("						lngForeCol = Number(styleArgument(strStyleString,'FORECOLOR'));" & vbCrLf)
+				Response.Write("						blnBold = styleArgument(strStyleString,'BOLD');" & vbCrLf)
+				Response.Write("						blnUnderline = styleArgument(strStyleString,'UNDERLINE');" & vbCrLf)
+				Response.Write("						blnGridlines = styleArgument(strStyleString,'GRIDLINES');" & vbCrLf)
+				Response.Write("						window.parent.ASRIntranetOutput.AddStyle(strType,lngStartCol,lngStartRow,lngEndCol,lngEndRow,lngBackCol,lngForeCol,blnBold,blnUnderline,blnGridlines);" & vbCrLf)
+				Response.Write("						}" & vbCrLf)
+				Response.Write("					}" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
 	
-		Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
-		Response.Write("      window.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
-		Response.Write("			lngPageColumnCount = frmOutput.grdCalendarOutput.Columns.Count;" & vbCrLf)
-		Response.Write("			if (!blnSettingsDone)" & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.HeaderRows = 2;" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.HeaderCols = 1;" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.SizeColumnsIndependently = true;" & vbCrLf)
-		Response.Write("				blnSettingsDone = true;" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.ResetMerges();" & vbCrLf)
-		Response.Write("			lngPageCount++;" & vbCrLf)
-		Response.Write("			window.parent.ASRIntranetOutput.ArrayDim((lngPageColumnCount-1), 0);" & vbCrLf)
-		Response.Write("			blnBreakCheck = true;" & vbCrLf)
-		Response.Write("			sBreakValue = '';" & vbCrLf)
-		Response.Write("			lngActualRow = 0;" & vbCrLf)
-		Response.Write("			blnNewPage = true;" & vbCrLf)
-		Response.Write("			}" & vbCrLf & vbCrLf)
+				Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
+				Response.Write("      window.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
+				Response.Write("			lngPageColumnCount = frmOutput.grdCalendarOutput.Columns.Count;" & vbCrLf)
+				Response.Write("			if (!blnSettingsDone)" & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.HeaderRows = 2;" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.HeaderCols = 1;" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.SizeColumnsIndependently = true;" & vbCrLf)
+				Response.Write("				blnSettingsDone = true;" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.ResetMerges();" & vbCrLf)
+				Response.Write("			lngPageCount++;" & vbCrLf)
+				Response.Write("			window.parent.ASRIntranetOutput.ArrayDim((lngPageColumnCount-1), 0);" & vbCrLf)
+				Response.Write("			blnBreakCheck = true;" & vbCrLf)
+				Response.Write("			sBreakValue = '';" & vbCrLf)
+				Response.Write("			lngActualRow = 0;" & vbCrLf)
+				Response.Write("			blnNewPage = true;" & vbCrLf)
+				Response.Write("			}" & vbCrLf & vbCrLf)
 
-		Response.Write("		else if (frmOutput.grdCalendarOutput.Columns(0).CellText(bm) != '*')" & vbCrLf)
-		Response.Write("			{" & vbCrLf)
-		Response.Write("			blnBreakCheck = false;" & vbCrLf)
-		Response.Write("			blnNewPage = false;" & vbCrLf)
-		Response.Write("			if (lngActualRow > 0)" & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.ArrayReDim();" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
-		Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
-		Response.Write("				{" & vbCrLf)
-		Response.Write("				window.parent.ASRIntranetOutput.ArrayAddTo(lngCol, (lngActualRow), frmOutput.grdCalendarOutput.Columns(lngCol).CellText(bm));" & vbCrLf)
-		Response.Write("				}" & vbCrLf)
-		Response.Write("			}" & vbCrLf)
+				Response.Write("		else if (frmOutput.grdCalendarOutput.Columns(0).CellText(bm) != '*')" & vbCrLf)
+				Response.Write("			{" & vbCrLf)
+				Response.Write("			blnBreakCheck = false;" & vbCrLf)
+				Response.Write("			blnNewPage = false;" & vbCrLf)
+				Response.Write("			if (lngActualRow > 0)" & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.ArrayReDim();" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
+				Response.Write("			for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)" & vbCrLf)
+				Response.Write("				{" & vbCrLf)
+				Response.Write("				window.parent.ASRIntranetOutput.ArrayAddTo(lngCol, (lngActualRow), frmOutput.grdCalendarOutput.Columns(lngCol).CellText(bm));" & vbCrLf)
+				Response.Write("				}" & vbCrLf)
+				Response.Write("			}" & vbCrLf)
 	
 	
-		Response.Write("		if (!blnNewPage) " & vbCrLf)
-		Response.Write("			{" & vbCrLf)
-		Response.Write("			lngActualRow = lngActualRow + 1; " & vbCrLf)
-		Response.Write("			}" & vbCrLf)
-		Response.Write("		}" & vbCrLf)
-		Response.Write("    window.parent.ASRIntranetOutput.Complete();" & vbCrLf)
-		Response.Write("    window.parent.parent.ShowDataFrame();" & vbCrLf)
-		Response.Write("	}" & vbCrLf)
-	End If
+				Response.Write("		if (!blnNewPage) " & vbCrLf)
+				Response.Write("			{" & vbCrLf)
+				Response.Write("			lngActualRow = lngActualRow + 1; " & vbCrLf)
+				Response.Write("			}" & vbCrLf)
+				Response.Write("		}" & vbCrLf)
+				Response.Write("    window.parent.ASRIntranetOutput.Complete();" & vbCrLf)
+				Response.Write("    window.parent.parent.ShowDataFrame();" & vbCrLf)
+				Response.Write("	}" & vbCrLf)
+		End If
 
-	Response.Write("}" & vbCrLf)
+		Response.Write("}" & vbCrLf)
 
-	If Not objCalendar.OutputPreview Then
-		Response.Write("  window.parent.frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCalendar.EventLogID) & """;" & vbCrLf)
-		Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-		Response.Write("    window.parent.parent.raiseError('',false,true);" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-		Response.Write("  else if (window.parent.ASRIntranetOutput.ErrorMessage != '') {" & vbCrLf)
-		Response.Write("    window.parent.raiseError(window.parent.ASRIntranetOutput.ErrorMessage,false,false);" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-		Response.Write("  else {" & vbCrLf)
-		Response.Write("    window.parent.raiseError('',true,false);" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-	Else
-		Response.Write("  sUtilTypeDesc = window.parent.parent.parent.frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
-		Response.Write("  if (window.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-		Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + window.parent.ASRIntranetOutput.ErrorMessage,48,""Calendar Report"");" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-		Response.Write("  else {" & vbCrLf)
-		Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,""Calendar Report"");" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-	End If
+		If Not objCalendar.OutputPreview Then
+				Response.Write("  window.parent.frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCalendar.EventLogID) & """;" & vbCrLf)
+				Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+				Response.Write("    window.parent.parent.raiseError('',false,true);" & vbCrLf)
+				Response.Write("  }" & vbCrLf)
+				Response.Write("  else if (window.parent.ASRIntranetOutput.ErrorMessage != '') {" & vbCrLf)
+				Response.Write("    window.parent.raiseError(window.parent.ASRIntranetOutput.ErrorMessage,false,false);" & vbCrLf)
+				Response.Write("  }" & vbCrLf)
+				Response.Write("  else {" & vbCrLf)
+				Response.Write("    window.parent.raiseError('',true,false);" & vbCrLf)
+				Response.Write("  }" & vbCrLf)
+		Else
+				Response.Write("  sUtilTypeDesc = window.parent.parent.parent.frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
+				Response.Write("  if (window.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
+				Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + window.parent.ASRIntranetOutput.ErrorMessage,48,""Calendar Report"");" & vbCrLf)
+				Response.Write("  }" & vbCrLf)
+				Response.Write("  else {" & vbCrLf)
+				Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,""Calendar Report"");" & vbCrLf)
+				Response.Write("  }" & vbCrLf)
+		End If
 					
-	Response.Write("	}" & vbCrLf)
-	Response.Write("</script>" & vbCrLf & vbCrLf)
-End If
+		Response.Write("	}" & vbCrLf)
+		Response.Write("</script>" & vbCrLf & vbCrLf)
+		end if
 	else
 		if fBadUtilDef then 
 		%>
