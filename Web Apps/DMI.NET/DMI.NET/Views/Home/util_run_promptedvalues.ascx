@@ -30,7 +30,7 @@
  
 		function promptedvalues_window_onload() {
 
-				var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
+				var frmPromptedValues = document.getElementById("frmPromptedValues");
 
 				frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
 				frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
