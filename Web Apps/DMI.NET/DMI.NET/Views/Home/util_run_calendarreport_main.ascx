@@ -485,7 +485,7 @@
 		Response.Write("  var blnUnderline = false;" & vbCrLf)
 		Response.Write("  var blnGridlines = false;" & vbCrLf)
 	
-			CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
+				objUser.Connection = Session("databaseConnection")
 			
 		Response.Write("  window.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
 		Response.Write("  window.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
