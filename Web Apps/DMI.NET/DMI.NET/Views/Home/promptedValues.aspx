@@ -19,7 +19,7 @@
 	<title>OpenHR Intranet</title>
 
 	<script type="text/javascript">
-		function promptedValues_onload() {			
+		function pradminomptedValues_onload() {
 
 			var frmPromptedValues = document.getElementById("frmPromptedValues");
 		
