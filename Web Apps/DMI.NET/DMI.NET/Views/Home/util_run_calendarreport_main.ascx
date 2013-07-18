@@ -3,26 +3,6 @@
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
 
-<%--<object
-		classid="CLSID:41021C13-8D42-4364-8388-9506F0755AE3"
-		codebase="cabs/COAInt_CalRepDates.cab#version=1,0,0,2"
-		id="tempCalDates"
-		name="TempCalDates"
-		style="VISIBILITY: hidden; WIDTH: 0px"
-		width="0">
-</object>
-
-<object
-		classid="CLSID:252D73AF-D7C6-4833-8539-A2C0293950B1"
-		codebase="cabs/COAInt_CalRepRecord.CAB#version=1,0,0,2"
-		width="0"
-		name="TempCalRec"
-		id="TempCalRec"
-		style="LEFT: 0px; VISIBILITY: hidden; WIDTH: 0px; TOP: 0px">
-		<param name="_ExtentX" value="14737">
-		<param name="_ExtentY" value="714">
-</object>--%>
-
 <object
 	classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
 	codebase="cabs/COAInt_CalRepKey.cab#version=1,0,0,2"
@@ -200,7 +180,6 @@
 	<div id="calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block;"></div>
 </div>
 
-
 <%
 Else
 	'*****************************************
@@ -271,7 +250,6 @@ Else
 		name="grdCalendarOutput"
 		codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
 		style="HEIGHT: 0px; VISIBILITY: visible; WIDTH: 0px; display: block"
-		height="0"
 		width="0">
 		<%
 			For icount = 1 To UBound(arrayDefinition)
@@ -978,7 +956,6 @@ End If
 End If
 
 Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.CalendarReportName, """", "&quot;") & """>" & vbCrLf)
-	
 objCalendar = Nothing
 %>
 
@@ -1007,7 +984,7 @@ objCalendar = Nothing
 	$("#reportframe").show();
 
 	util_run_calendarreport_main_window_onload();
-
+	$(".popup").dialog('option', 'title', $("#txtTitle").val());
 	$("#top").hide();
 	$("#calendarframeset").show();
 
