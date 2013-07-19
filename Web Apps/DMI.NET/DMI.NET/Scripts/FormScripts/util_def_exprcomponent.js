@@ -1,5 +1,5 @@
 ﻿
-var frmMainForm = OpenHR.getForm("workframe", "frmMainForm");
+var frmMainForm = OpenHR.getForm("optionframe", "frmMainForm");
 var util_def_exprcomponent_frmUseful = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmUseful");
 var util_def_exprcomponent_frmOriginalDefinition = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmOriginalDefinition");
 var frmFieldRec = OpenHR.getForm("workframe", "frmFieldRec");
