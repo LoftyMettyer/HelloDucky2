@@ -928,7 +928,7 @@ Else
 					<tr>
 						<td width="20" height="10"></td>
 						<td align="center" nowrap>
-							<%objCalendar.ErrorString.ToString()%>
+							<%=objCalendar.ErrorString%>
 						</td>
 						<td width="20"></td>
 					</tr>
