@@ -1985,12 +1985,13 @@ function sortEdit() {
 	frmDefinition.ssOleDBGridSortOrder.Redraw = true;
 	frmDefinition.ssOleDBGridSortOrder.bookmark = frmDefinition.ssOleDBGridSortOrder.AddItemBookmark(rowNum);
 	sURL = "util_sortorderselection" +
-		"?txtSortInclude=" + escape(frmSortOrder.txtSortInclude.value) +
+		"?txtSortInclude=" + frmSortOrder.txtSortInclude.value + //Escaping this value was producing a value too long for a querystring; it is safe not to escape it (and fix the issue) because it will always be a list of comma-separated numbers, provided by the system, not the user, so it's safe
 		"&txtSortExclude=" + escape(frmSortOrder.txtSortExclude.value) +
 		"&txtSortEditing=" + escape(frmSortOrder.txtSortEditing.value) +
 		"&txtSortColumnID=" + escape(frmSortOrder.txtSortColumnID.value) +
 		"&txtSortColumnName=" + escape(frmSortOrder.txtSortColumnName.value) +
 		"&txtSortOrder=" + escape(frmSortOrder.txtSortOrder.value);
+
 	openDialog(sURL, 500, 275, "yes", "yes");
 
 	frmUseful.txtChanged.value = 1;
