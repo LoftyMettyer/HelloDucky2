@@ -949,6 +949,7 @@
     <Content Include="Scripts\officebar\winkit\TransferBooking64NORM.png" />
     <Content Include="Scripts\officebar\winkit\upblack64DIS.png" />
     <Content Include="Scripts\officebar\winkit\upblack64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\upblack64NORM.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64DIS.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64NORM.png" />
