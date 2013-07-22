@@ -423,7 +423,7 @@ function changeBaseTable() {
 			sControlName = dataCollection.item(i).name;
 			if (sControlName == sReqdControlName) {
 				sRelationNames = dataCollection.item(i).value;
-				frmEventDetails.relationNames.value = sRelationNames;
+				$("#frmEventDetails #relationNames").val(sRelationNames); //frmEventDetails.relationNames.value = sRelationNames;
 				break;
 			}
 		}
