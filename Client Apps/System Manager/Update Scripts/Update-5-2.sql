@@ -1,5 +1,5 @@
 /* --------------------------------------------------- */
-/* Update the database from version 5.0 to version 5.1 */
+/* Update the database from version 5.1 to version 5.2 */
 /* --------------------------------------------------- */
 
 DECLARE @iRecCount integer,
@@ -508,6 +508,23 @@ PRINT 'Step - Function Changes'
 		VALUES (27, '({0})', 0, 'Parentheses', 0, 0, 0, 1);
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step - Changes to Shared Table Transfer for eForms Opt-In'
+/* ------------------------------------------------------------- */
+	
+	-- Add new mappings for Employee transfer
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 220 AND TransferTypeID = 0
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (220,0,0,''eP60 Opt-In'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (221,0,0,''ePayslip Opt-In'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (222,0,0,''eLetters Opt-In'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (223,0,0,''eForms Password'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	END
 
 
 /* ------------------------------------------------------------- */
