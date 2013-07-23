@@ -99,7 +99,7 @@
 					
 					intBaseRecordIndex = objCalendar.BaseIndex_Get(CStr(lngCurrentBaseID))
 
-					strBaseDescription_BD = objCalendar.ConvertDescription(.Fields("Description1").Value, .Fields("Description2").Value, .Fields("DescriptionExpr").Value)
+					strBaseDescription_BD = objCalendar.ConvertDescription(.Fields("Description1").Value, .Fields("Description2").Value, IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value))
 					
 										If IsDBNull(.Fields("Legend").value) Then
 												strKeyCode = ""
