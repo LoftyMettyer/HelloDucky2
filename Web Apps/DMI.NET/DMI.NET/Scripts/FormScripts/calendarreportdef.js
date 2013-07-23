@@ -4359,7 +4359,7 @@ function loadAvailableEventColumns() {
 	var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
 
 	if (frmPopup.cboStartDate.length < 1) {
-		OpenHR.MessageBox("The selected event table has no date columns. Please select an event table that contains date columns.", 48, "Calendar Reports");
+		OpenHR.messageBox("The selected event table has no date columns. Please select an event table that contains date columns.", 48, "Calendar Reports");
 		frmPopup.txtNoDateColumns.value = 1;
 		refreshEventControls();
 		refreshLegendControls();

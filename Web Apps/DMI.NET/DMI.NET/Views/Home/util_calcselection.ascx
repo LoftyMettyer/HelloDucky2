@@ -50,7 +50,7 @@
 				" as it is a hidden calculation" +
 				" and you are not the owner of this definition.";
 
-			OpenHR.MessageBox(sMessage, 48, "Calculation");
+			OpenHR.messageBox(sMessage, 48, "Calculation");
 			self.close();
 			return false;
 		}

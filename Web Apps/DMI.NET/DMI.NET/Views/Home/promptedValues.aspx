@@ -139,7 +139,7 @@
 
 				if (isNaN(sConvertedValue) == true) {
 					fOK = false;
-					OpenHR.MessageBox("Invalid numeric value entered.");
+					OpenHR.messageBox("Invalid numeric value entered.");
 					pctlPrompt.focus();
 				}
 			}

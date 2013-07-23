@@ -475,7 +475,7 @@
 						(frmOutputDef.chkDestination2.checked == false) && 
 						(frmOutputDef.chkDestination3.checked == false)) 
 				{
-						OpenHR.MessageBox("You must select a destination",48,"Output Options");
+						OpenHR.messageBox("You must select a destination",48,"Output Options");
 						window.focus();
 						return;
 				}
@@ -491,7 +491,7 @@
 						(sAttachmentName.indexOf("\\") != -1) || 
 						(sAttachmentName.indexOf("*") != -1)) 
 				{
-						OpenHR.MessageBox("The attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ *",48,"Output Options");
+						OpenHR.messageBox("The attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ *",48,"Output Options");
 						window.focus();
 						return;
 				}
@@ -499,7 +499,7 @@
 				if ((frmOutputDef.txtFilename.value == "") 
 						&& (frmOutputDef.cmdFilename.disabled == false)) 
 				{
-						OpenHR.MessageBox("You must enter a file name",48,"Output Options");
+						OpenHR.messageBox("You must enter a file name",48,"Output Options");
 						window.focus();
 						return;
 				}
@@ -507,7 +507,7 @@
 				if ((frmOutputDef.txtEmailGroup.value == "") 
 						&& (frmOutputDef.cmdEmailGroup.disabled == false)) 
 				{
-						OpenHR.MessageBox("You must select an email group",48,"Output Options");
+						OpenHR.messageBox("You must select an email group",48,"Output Options");
 						window.focus();
 						return;
 				}
@@ -515,7 +515,7 @@
 				if ((frmOutputDef.chkDestination3.checked) 
 						&& (frmOutputDef.txtEmailAttachAs.value == ''))
 				{
-						OpenHR.MessageBox("You must enter an email attachment file name.",48,"Output Options");
+						OpenHR.messageBox("You must enter an email attachment file name.",48,"Output Options");
 						window.focus();
 						return;
 				}
@@ -646,7 +646,7 @@
 
 						if (dialog.FileName.length > 256) 
 						{
-								OpenHR.MessageBox("Path and file name must not exceed 256 characters in length");
+								OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
 								window.focus();
 								return;
 						}
