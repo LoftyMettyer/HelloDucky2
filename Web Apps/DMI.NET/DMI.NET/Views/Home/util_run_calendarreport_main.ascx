@@ -157,28 +157,34 @@
 	</div>
 
 	<div id="navframeset">
-		<div id="calendarworkframe" data-framesource="util_run_calendarreport_nav" style="display: block;">
+		<div id="calendarworkframe" data-framesource="util_run_calendarreport_nav" style="display: block; height: 83px">
 			<%Html.RenderPartial("~/views/home/util_run_calendarreport_nav.ascx")%>
 		</div>
-		<div id="workframefiller" data-framesource="util_run_calendarreport_nav" style="display: block;">
+
+		<div id="workframefiller" data-framesource="util_run_calendarreport_nav" style="display: block ;font-size: xx-small">
 			<%Html.RenderPartial("~/views/home/util_run_calendarreport_navfiller.ascx")%>
 		</div>
 	</div>
 
-	<div id="calendarframe_calendar" data-framesource="util_run_calendarreport_calendar" style="display: block;">
-		<%Html.RenderPartial("~/views/home/util_run_calendarreport_calendar.ascx")%>
+	<div id="calendarframe_calendar" data-framesource="util_run_calendarreport_calendar" style="display: block; overflow: auto; font-size: xx-small; height: 200px">
+	 	<%Html.RenderPartial("~/views/home/util_run_calendarreport_calendar.ascx")%>
+	</div>
+	<div style="height: 10px"></div>
+</div>
+
+<div id="optionsframeset" style="height: 130px">
+	<div id="calendarframe_key" data-framesource="util_run_calendarreport_key" style="display: block; width: 70%; float: left">
+		<%Html.RenderPartial("~/views/home/util_run_calendarreport_key.ascx")%>
 	</div>
 
-	<div id="optionsframeset">
-		<div id="calendarframe_key" data-framesource="util_run_calendarreport_key" style="display: block; width: 75%; float: left">
-			<%Html.RenderPartial("~/views/home/util_run_calendarreport_key.ascx")%>
-		</div>
-		<div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block; width: 25%; float: left">
-			<%Html.RenderPartial("~/views/home/util_run_calendarreport_options.ascx")%>
-		</div>
+	<div style="width: 5%; float: left"></div>
+
+	<div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block; width: 25%; float: left">
+		<%Html.RenderPartial("~/views/home/util_run_calendarreport_options.ascx")%>
 	</div>
-	<div id="calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block;"></div>
 </div>
+<div id="calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block; height: 40px"></div>
+<%--</div>--%>
 
 <%
 Else

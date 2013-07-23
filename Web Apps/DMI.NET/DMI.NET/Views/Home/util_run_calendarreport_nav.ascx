@@ -247,7 +247,7 @@ End If
 		<tr>
 			<td>
 				<table align="center" class="invisible" cellpadding="0" cellspacing="0" width="100%">
-					<tr height="30">
+					<tr height="40">
 						<td align="right" nowrap width="100%" colspan="2">
 							<table class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
 								<tr>
@@ -255,7 +255,9 @@ End If
 										<object classid="CLSID:41021C13-8D42-4364-8388-9506F0755AE3"
 											codebase="cabs/COAInt_CalRepDates.cab#version=1,0,0,2"
 											id="ctlDates" name="ctlDates" style="VISIBILITY: visible; WIDTH: 100%"
-											width="100%" viewastext>
+											width="100%" 
+											height="50px"
+											viewastext>
 											<param name="BackColor" value="16513017">
 										</object>
 									</td>
@@ -263,6 +265,7 @@ End If
 							</table>
 						</td>
 					</tr>
+					<tr height="5"></tr>
 				</table>
 			</td>
 		</tr>
