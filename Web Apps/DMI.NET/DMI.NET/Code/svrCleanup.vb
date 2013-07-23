@@ -79,6 +79,16 @@ Public Module svrCleanup
     CleanStringForJavaScript_NotDoubleQuotes = sCleaned
   End Function
 
+	Function CleanStringSpecialCharacters(psString) As String
+		Dim sCleaned
+
+		sCleaned = psString
+		sCleaned = Replace(sCleaned, "<", "&lt;")
+		sCleaned = Replace(sCleaned, ">", "&gt;")
+		CleanStringSpecialCharacters = sCleaned
+	End Function
+
+
   Function FormatError(psErrMsg) As String
     Dim iStart
     Dim iFound

@@ -573,6 +573,7 @@
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
+    <Content Include="Scripts\ClientDLL.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />
     <Content Include="misc\mainmenu.htm" />
@@ -1168,7 +1169,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52911</DevelopmentServerPort>
+          <DevelopmentServerPort>57795</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:50115/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

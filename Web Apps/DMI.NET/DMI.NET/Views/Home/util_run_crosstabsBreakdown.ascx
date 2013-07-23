@@ -11,7 +11,7 @@
 </form>
 
 <%
-		Dim objCrossTab As Object
+	Dim objCrossTab As Object	' HR.Intranet.Server.CrossTab
 
 		If Session("CT_Mode") = "BREAKDOWN" Then
 		 
@@ -24,13 +24,6 @@
 				End If
 		
 %>
-
-		<object
-				classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-				id="Microsoft_Licensed_Class_Manager_1_0">
-				<param name="LPKPath" value="lpks/main.lpk">
-		</object>
-
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="400px">
 				<tr height="1">
@@ -83,7 +76,7 @@
 
 												Response.Write("<TR HEIGHT=5>" & vbCrLf)
 												Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
-												Response.Write("  <TD>" & Session("CT_IntersectionType") & " :</TD>" & vbCrLf)
+											Response.Write("  <TD>" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & " :</TD>" & vbCrLf)
 												Response.Write("  <TD><INPUT id=txtCellValue name=txtCellValue value="" ")
 				
 												If objCrossTab.CrossTabType = 3 Then
@@ -100,125 +93,8 @@
 										<tr>
 												<td></td>
 												<td colspan="2">
-														<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
-																codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
-																id="ssOutputBreakdown" name="ssOutputBreakdown"
-																style="HEIGHT: 300px; LEFT: 0px; TOP: 0px; WIDTH: 400px">
-																<param name="ScrollBars" value="4">
-																<param name="_Version" value="196617">
-																<param name="DataMode" value="2">
-																<param name="Cols" value="0">
-																<param name="Rows" value="0">
-																<param name="BorderStyle" value="1">
-																<param name="RecordSelectors" value="0">
-																<param name="GroupHeaders" value="1">
-																<param name="ColumnHeaders" value="1">
-																<param name="GroupHeadLines" value="1">
-																<param name="HeadLines" value="1">
-																<param name="FieldDelimiter" value="(None)">
-																<param name="FieldSeparator" value="(Tab)">
-																<param name="Row.Count" value="0">
-																<param name="Col.Count" value="1">
-																<param name="stylesets.count" value="1">
-																<param name="TagVariant" value="EMPTY">
-																<param name="UseGroups" value="0">
-																<param name="HeadFont3D" value="0">
-																<param name="Font3D" value="0">
-																<param name="DividerType" value="3">
-																<param name="DividerStyle" value="1">
-																<param name="DefColWidth" value="3528">
-																<param name="BeveColorScheme" value="2">
-																<param name="BevelColorFrame" value="-2147483642">
-																<param name="BevelColorHighlight" value="-2147483643">
-																<param name="BevelColorShadow" value="-2147483632">
-																<param name="BevelColorFace" value="-2147483633">
-																<param name="CheckBox3D" value="1">
-																<param name="AllowAddNew" value="0">
-																<param name="AllowDelete" value="0">
-																<param name="AllowUpdate" value="1">
-																<param name="MultiLine" value="0">
-																<param name="ActiveCellStyleSet" value="Highlight">
-																<param name="RowSelectionStyle" value="0">
-																<param name="AllowRowSizing" value="1">
-																<param name="AllowGroupSizing" value="1">
-																<param name="AllowColumnSizing" value="1">
-																<param name="AllowGroupMoving" value="0">
-																<param name="AllowColumnMoving" value="0">
-																<param name="AllowGroupSwapping" value="0">
-																<param name="AllowColumnSwapping" value="0">
-																<param name="AllowGroupShrinking" value="0">
-																<param name="AllowColumnShrinking" value="0">
-																<param name="AllowDragDrop" value="0">
-																<param name="UseExactRowCount" value="1">
-																<param name="SelectTypeCol" value="0">
-																<param name="SelectTypeRow" value="0">
-																<param name="SelectByCell" value="1">
-																<param name="BalloonHelp" value="0">
-																<param name="RowNavigation" value="0">
-																<param name="CellNavigation" value="0">
-																<param name="MaxSelectedRows" value="1">
-																<param name="HeadStyleSet" value="">
-																<param name="StyleSet" value="">
-																<param name="ForeColorEven" value="0">
-																<param name="ForeColorOdd" value="0">
-																<param name="BackColorEven" value="-2147483643">
-																<param name="BackColorOdd" value="-2147483643">
-																<param name="Levels" value="1">
-																<param name="RowHeight" value="239">
-																<param name="ExtraHeight" value="239">
-																<param name="ActiveRowStyleSet" value="">
-																<param name="CaptionAlignment" value="2">
-																<param name="SplitterPos" value="0">
-																<param name="SplitterVisible" value="0">
-																<param name="Columns.Count" value="1">
-																<param name="Columns(0).Width" value="3528">
-																<param name="Columns(0).Visible" value="-1">
-																<param name="Columns(0).Columns.Count" value="1">
-																<param name="Columns(0).Caption" value="  ">
-																<param name="Columns(0).Name" value="">
-																<param name="Columns(0).Alignment" value="0">
-																<param name="Columns(0).CaptionAlignment" value="3">
-																<param name="Columns(0).Bound" value="0">
-																<param name="Columns(0).AllowSizing" value="1">
-																<param name="Columns(0).DataField" value="">
-																<param name="Columns(0).DataType" value="8">
-																<param name="Columns(0).Level" value="0">
-																<param name="Columns(0).NumberFormat" value="">
-																<param name="Columns(0).Case" value="0">
-																<param name="Columns(0).FieldLen" value="4096">
-																<param name="Columns(0).VertScrollBar" value="0">
-																<param name="Columns(0).Locked" value="0">
-																<param name="Columns(0).Style" value="0">
-																<param name="Columns(0).ButtonsAlways" value="0">
-																<param name="Columns(0).RowCount" value="0">
-																<param name="Columns(0).ColCount" value="1">
-																<param name="Columns(0).HasHeadForeColor" value="0">
-																<param name="Columns(0).HasHeadBackColor" value="0">
-																<param name="Columns(0).HasForeColor" value="0">
-																<param name="Columns(0).HasBackColor" value="0">
-																<param name="Columns(0).HeadForeColor" value="0">
-																<param name="Columns(0).HeadBackColor" value="0">
-																<param name="Columns(0).ForeColor" value="0">
-																<param name="Columns(0).BackColor" value="0">
-																<param name="Columns(0).HeadStyleSet" value="">
-																<param name="Columns(0).StyleSet" value="">
-																<param name="Columns(0).Nullable" value="1">
-																<param name="Columns(0).Mask" value="">
-																<param name="Columns(0).PromptInclude" value="0">
-																<param name="Columns(0).ClipMode" value="0">
-																<param name="Columns(0).PromptChar" value="95">
-																<param name="UseDefaults" value="-1">
-																<param name="TabNavigation" value="1">
-																<param name="BatchUpdate" value="0">
-																<param name="_ExtentX" value="2646">
-																<param name="_ExtentY" value="1323">
-																<param name="_StockProps" value="79">
-																<param name="Caption" value="">
-																<param name="ForeColor" value="0">
-																<param name="BackColor" value="16777215">
-																<param name="Enabled" value="-1">
-																<param name="DataMember" value="">
-														</object>
+													<table id="ssOutputBreakdown"></table>
+													
 												</td>
 										</tr>
 										<tr height="2">
@@ -226,12 +102,7 @@
 										</tr>
 										<tr height="5">
 												<td colspan="3" align="RIGHT">
-														<input type="button" id="cmdClose" name="cmdClose" value="OK" style="WIDTH: 80px" class="btn"
-																onclick="ShowDataFrame();"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+														<input type="button" id="cmdClose" name="cmdClose" value="OK" style="WIDTH: 80px" class="btn" onclick="ShowDataFrame();" />
 												</td>
 										</tr>
 								</table>
@@ -251,68 +122,65 @@
 				Response.Write("function util_run_crosstabsBreakdown_window_onload()" & vbCrLf)
 			Response.Write("{" & vbCrLf & vbCrLf)
 
-		%>
-	
-	setGridFont(ssOutputBreakdown);
-	
-	<%	    
-		Response.Write("  ssOutputBreakdown.Columns.RemoveAll();" & vbCrLf)
-		Response.Write("  ssOutputBreakdown.Columns.Add(0);" & vbCrLf)
-		Response.Write("  ssOutputBreakdown.Columns(0).Caption = """ & CleanStringForJavaScript(objCrossTab.BaseTableName) & """;" & vbCrLf)
-		Response.Write("  ssOutputBreakdown.Columns(0).Locked = true;" & vbCrLf)
-		Response.Write("  ssOutputBreakdown.Columns(0).Visible = true;" & vbCrLf)
-		Response.Write("  ssOutputBreakdown.Columns(0).Width = 300;" & vbCrLf)
-
-			' Absence Breakdown
-			If objCrossTab.CrossTabType = 3 Then
-					Response.Write("  ssOutputBreakdown.Columns.Add(1);" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(1).Caption = ""Start Date"";" & vbCrLf)
-			Response.Write("  ssOutputBreakdown.Columns(1).Locked = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(1).Visible = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(1).Width = 150;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(1).Alignment = 1;" & vbCrLf)
+			Response.Write("    var colNames = [];" & vbCrLf)
+			Response.Write("    var colData = [];" & vbCrLf)
+			Response.Write("    var colMode = [];" & vbCrLf)
+			Response.Write("    var value;" & vbCrLf)
+			Response.Write("    var i;" & vbCrLf)
+			Response.Write("    var sColumnName;" & vbCrLf)
+			Response.Write("    var iCount2;" & vbCrLf)
+			Response.Write("    var obj;" & vbCrLf)
 		
-					Response.Write("  ssOutputBreakdown.Columns.Add(2);" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(2).Caption = ""End Date"";" & vbCrLf)
-			Response.Write("  ssOutputBreakdown.Columns(2).Locked = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(2).Visible = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(2).Width = 150;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(2).Alignment = 1;" & vbCrLf)
-				
-					Response.Write("  ssOutputBreakdown.Columns.Add(3);" & vbCrLf)
+		Response.Write("  colNames.push('" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "');" & vbCrLf)
+		Response.Write("	colMode.push({ name: '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' });" & vbCrLf)	
 		
-					Response.Write("  ssOutputBreakdown.Columns(3).Caption = """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """;" & vbCrLf)
-			Response.Write("  ssOutputBreakdown.Columns(3).Locked = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(3).Visible = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(3).Width = 150;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(3).Alignment = 1;" & vbCrLf)
+		' Absence Breakdown
+		If objCrossTab.CrossTabType = 3 Then
+
+			Response.Write("  colNames.push('Start Date');" & vbCrLf)
+			Response.Write("	colMode.push({ name: 'Start Date' });" & vbCrLf)
+
+			Response.Write("  colNames.push('End Date');" & vbCrLf)
+			Response.Write("	colMode.push({ name: 'End Date' });" & vbCrLf)
+
+			Response.Write("  colNames.push(""" & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """);" & vbCrLf)
+			Response.Write("	colMode.push({ name: """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """ });" & vbCrLf)
 				
-					iInterSectionColumnCount = 4
-			End If
+			iInterSectionColumnCount = 4
+		End If
+		
+		If objCrossTab.IntersectionColumn = True Then
+			Response.Write("  colNames.push('" & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & "');" & vbCrLf)
+			Response.Write("	colMode.push({ name: '" & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & "' });" & vbCrLf)
+		End If
 
+		
+		Dim objData As String()
+			For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
+								
+				Response.Write("  obj = {};" & vbCrLf)
+				objData = Split(objCrossTab.OutputArrayData(intCount), vbTab)
+				For intCount2 = 0 To UBound(objData)
+					Response.Write("  obj[colNames[" & intCount2 & "]] = '" & objData(intCount2) & "';" & vbCrLf)
+				Next
+				Response.Write("  colData.push(obj);")
+			Next
+		
+		
+		'For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
+		'	Response.Write("  ssOutputBreakdown.AddItem(""" & CleanStringForJavaScript(objCrossTab.OutputArrayData(CLng(intCount))) & """);" & vbCrLf)
+		'Next
+		
+		'Response.Write("  ssOutputBreakdown.RowHeight = 10;" & vbCrLf)
 
-		Response.Write("ssOutputBreakdown.Redraw = false;" & vbCrLf & vbCrLf)
+		'Response.Write("  ssOutputBreakdown.VisibleCols = 2;" & vbCrLf)
+		'Response.Write("  ssOutputBreakdown.VisibleRows = 10;" & vbCrLf)
 			
-			If objCrossTab.IntersectionColumn = True Then
-					Response.Write("  ssOutputBreakdown.Columns.Add(" & iInterSectionColumnCount & ");" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Caption = """ & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & """;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Locked = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Visible = true;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Width = 150;" & vbCrLf)
-					Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Alignment = 1;" & vbCrLf)
-			End If
+		'Response.Write("  ssOutputBreakdown.Redraw = true;" & vbCrLf)
 
-		For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
-			Response.Write("  ssOutputBreakdown.AddItem(""" & CleanStringForJavaScript(objCrossTab.OutputArrayData(CLng(intCount))) & """);" & vbCrLf)
-		Next
-			Response.Write("  ssOutputBreakdown.RowHeight = 10;" & vbCrLf)
-
-			Response.Write("  ssOutputBreakdown.VisibleCols = 2;" & vbCrLf)
-			Response.Write("  ssOutputBreakdown.VisibleRows = 10;" & vbCrLf)
-			
-			Response.Write("  ssOutputBreakdown.Redraw = true;" & vbCrLf)
-
-			
+		Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
+		Response.Write("	, cmTemplate: { editable: true }});")
+		
 			
 		Response.Write("}" & vbCrLf)
 			Response.Write("</script>" & vbCrLf & vbCrLf)

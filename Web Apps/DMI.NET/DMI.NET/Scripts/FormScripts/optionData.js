@@ -128,7 +128,7 @@ function optiondata_onload() {
 						SelectLink();
 					}
 				});
-
+				
 				$("#ssOleDBGridLinkRecords").jqGrid('bindKeys', {
 					"onEnter": function () {
 						SelectLink();

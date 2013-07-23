@@ -189,7 +189,7 @@
 	</div>
 		
 		<div id="reportframeset" class="popup" data-framesource="util_run" style="">
-				<div id="reportframe"></div>
+				<div id="reportframe" style="height:100%"></div>
 		</div>
 
 		<div id="messageframe" style="display: none">Message Page</div>

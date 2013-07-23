@@ -141,7 +141,7 @@
 	<%Html.RenderPartial("~/Views/Home/progress.ascx")%>
 </div>
 
-<div id="main" data-framesource="util_run" style="display: block;">
+<div id="main" data-framesource="util_run" style="display: block; height:100%">
 	<%   
 		If Session("utiltype") = "1" Then
 			Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")

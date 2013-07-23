@@ -367,10 +367,6 @@
 
 		Session("objCrossTab" & Session("utilid")) = objCrossTab
 
-%>
-
-<%
-
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 		Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
 		Response.Write("{" & vbCrLf)
@@ -382,7 +378,7 @@
 		Response.Write("  if (iCount > 0) {	" & vbCrLf)
 		Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
 		Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
-		Response.Write("    getData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
+	Response.Write("    getCrossTabData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
 		Response.Write("  }" & vbCrLf & vbCrLf)
 
 		Response.Write("}" & vbCrLf)
@@ -477,12 +473,10 @@ end if
 
 <script type="text/javascript">
 
-		util_run_crosstabs_addhandlers();
-		util_run_crosstabs_window_onload();
-		
-		$("#reportframe").show();
+	util_run_crosstabs_window_onload();
 
-		$("#top").hide();
-		$("#reportworkframe").show();
+	$("#reportframe").show();
+	$("#top").hide();
+	$("#reportworkframe").show();
 
 </script>

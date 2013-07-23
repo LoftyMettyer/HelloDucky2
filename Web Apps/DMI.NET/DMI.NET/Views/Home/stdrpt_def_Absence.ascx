@@ -28,47 +28,8 @@
 
 				End If
 		Next
-%>
 
-<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
-		id="dialog"
-		codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-		style="LEFT: 0px; TOP: 0px">
-		<param name="_ExtentX" value="847">
-		<param name="_ExtentY" value="847">
-		<param name="_Version" value="393216">
-		<param name="CancelError" value="0">
-		<param name="Color" value="0">
-		<param name="Copies" value="1">
-		<param name="DefaultExt" value="">
-		<param name="DialogTitle" value="">
-		<param name="FileName" value="">
-		<param name="Filter" value="">
-		<param name="FilterIndex" value="0">
-		<param name="Flags" value="0">
-		<param name="FontBold" value="0">
-		<param name="FontItalic" value="0">
-		<param name="FontName" value="">
-		<param name="FontSize" value="8">
-		<param name="FontStrikeThru" value="0">
-		<param name="FontUnderLine" value="0">
-		<param name="FromPage" value="0">
-		<param name="HelpCommand" value="0">
-		<param name="HelpContext" value="0">
-		<param name="HelpFile" value="">
-		<param name="HelpKey" value="">
-		<param name="InitDir" value="">
-		<param name="Max" value="0">
-		<param name="Min" value="0">
-		<param name="MaxFileSize" value="260">
-		<param name="PrinterDefault" value="1">
-		<param name="ToPage" value="0">
-		<param name="Orientation" value="1">
-</object>
-
-
-<%
-		' Settings objects
+	' Settings objects
 		Dim objSettings As New HR.Intranet.Server.clsSettings    
 		objSettings.Connection = Session("databaseConnection")
 

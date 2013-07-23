@@ -91,7 +91,7 @@ function UpdateGrid() {
     var blnSupZeros = (window.chkSuppressZeros.checked == true);
     var blnThousand = (window.chkUse1000.checked == true);
 
-    getData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand);
+    getCrossTabData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand);
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
@@ -104,107 +104,6 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
         "status:no;";
     window.showModalDialog(pDestination, self, dlgwinprops);
 }
-
-
-function util_run_crosstabs_addhandlers() {
-    OpenHR.addActiveXHandler("ssOutputGrid", "PrintInitialize", ssOutputGrid_PrintInitialize);
-    OpenHR.addActiveXHandler("ssOutputGrid", "PrintBegin", ssOutputGrid_PrintBegin);
-    OpenHR.addActiveXHandler("ssOutputGrid", "PrintError", ssOutputGrid_PrintError);
-    OpenHR.addActiveXHandler("ssHiddenGrid", "PrintInitialize", ssHiddenGrid_PrintInitialize);
-    OpenHR.addActiveXHandler("ssHiddenGrid", "PrintBegin", ssHiddenGrid_PrintBegin);
-    OpenHR.addActiveXHandler("ssHiddenGrid", "PrintError", ssHiddenGrid_PrintError);
-
-    // Function generated at runtime
-    OpenHR.addActiveXHandler("ssOutputGrid", "DblClick", window.ssOutputGrid_DblClick);
-
-}
-
-function ssOutputGrid_PrintInitialize(ssPrintInfo) {
-    ssPrintInfo.PrintGridlines = 3;
-
-    ssPrintInfo.PrintHeaders = 0;
-    ssPrintInfo.Portrait = false;
-    ssPrintInfo.Copies = 1;
-    ssPrintInfo.Collate = true;
-    ssPrintInfo.PrintColors = true;
-
-    ssPrintInfo.RowAutoSize = true;
-    ssPrintInfo.PrintColumnHeaders = 1;
-    ssPrintInfo.MaxLinesPerRow = 2;
-
-    ssPrintInfo.PageHeader = "	" + ssHiddenGrid.Caption + frmOriginalDefinition.txtCurrentPrintPage.value + "	";
-    ssPrintInfo.PageFooter = "Printed on <date> at <time> by " + frmOriginalDefinition.txtUserName.value + "	" + "	" + "Page <page number>";
-}
-
-function ssOutputGrid_PrintBegin(ssPrintInfo) {
-
-    if (frmOriginalDefinition.txtOptionsDone.value == 0) {
-        frmOriginalDefinition.txtOptionsPortrait.value = ssPrintInfo.Portrait;
-        frmOriginalDefinition.txtOptionsMarginLeft.value = ssPrintInfo.MarginLeft;
-        frmOriginalDefinition.txtOptionsMarginRight.value = ssPrintInfo.MarginRight;
-        frmOriginalDefinition.txtOptionsMarginTop.value = ssPrintInfo.MarginTop;
-        frmOriginalDefinition.txtOptionsMarginBottom.value = ssPrintInfo.MarginBottom;
-        frmOriginalDefinition.txtOptionsCopies.value = ssPrintInfo.Copies;
-    } else {
-        ssPrintInfo.Portrait = frmOriginalDefinition.txtOptionsPortrait.value;
-        ssPrintInfo.MarginLeft = frmOriginalDefinition.txtOptionsMarginLeft.value;
-        ssPrintInfo.MarginRight = frmOriginalDefinition.txtOptionsMarginRight.value;
-        ssPrintInfo.MarginTop = frmOriginalDefinition.txtOptionsMarginTop.value;
-        ssPrintInfo.MarginBottom = frmOriginalDefinition.txtOptionsMarginBottom.value;
-        ssPrintInfo.Copies = frmOriginalDefinition.txtOptionsCopies.value;
-    }
-}
-
-function ssHiddenGrid_PrintInitialize(ssPrintInfo) {
-
-    ssPrintInfo.PrintGridlines = 3;
-
-    ssPrintInfo.PrintHeaders = 0;
-    ssPrintInfo.Portrait = false;
-    ssPrintInfo.Copies = 1;
-    ssPrintInfo.Collate = true;
-    ssPrintInfo.PrintColors = true;
-
-    ssPrintInfo.RowAutoSize = true;
-    ssPrintInfo.PrintColumnHeaders = 1;
-    ssPrintInfo.MaxLinesPerRow = 2;
-
-    ssPrintInfo.PageHeader = "	" + ssHiddenGrid.Caption + frmOriginalDefinition.txtCurrentPrintPage.value + "	";
-    ssPrintInfo.PageFooter = "Printed on <date> at <time> by " + frmOriginalDefinition.txtUserName.value + "	" + "	" + "Page <page number>";
-}
-
-function ssHiddenGrid_PrintBegin(ssPrintInfo) {
-
-    if (frmOriginalDefinition.txtOptionsDone.value == 0) {
-        frmOriginalDefinition.txtOptionsPortrait.value = ssPrintInfo.Portrait;
-        frmOriginalDefinition.txtOptionsMarginLeft.value = ssPrintInfo.MarginLeft;
-        frmOriginalDefinition.txtOptionsMarginRight.value = ssPrintInfo.MarginRight;
-        frmOriginalDefinition.txtOptionsMarginTop.value = ssPrintInfo.MarginTop;
-        frmOriginalDefinition.txtOptionsMarginBottom.value = ssPrintInfo.MarginBottom;
-        frmOriginalDefinition.txtOptionsCopies.value = ssPrintInfo.Copies;
-    }
-    else {
-        ssPrintInfo.Portrait = frmOriginalDefinition.txtOptionsPortrait.value;
-        ssPrintInfo.MarginLeft = frmOriginalDefinition.txtOptionsMarginLeft.value;
-        ssPrintInfo.MarginRight = frmOriginalDefinition.txtOptionsMarginRight.value;
-        ssPrintInfo.MarginTop = frmOriginalDefinition.txtOptionsMarginTop.value;
-        ssPrintInfo.MarginBottom = frmOriginalDefinition.txtOptionsMarginBottom.value;
-        ssPrintInfo.Copies = frmOriginalDefinition.txtOptionsCopies.value;
-    }
-}
-
-function ssOutputGrid_PrintError(lngPrintError, iResponse) {
-    if (lngPrintError == 30457) {
-        frmOriginalDefinition.txtCancelPrint.value = 1;
-    }
-}
-
-function ssHiddenGrid_PrintError(lngPrintError, iResponse) {
-    if (lngPrintError == 30457) {
-        frmOriginalDefinition.txtCancelPrint.value = 1;
-    }
-}
-
 
 
 function util_run_crosstabs_window_onload() {

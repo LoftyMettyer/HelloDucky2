@@ -1,12 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object
-		id="ClientDLL"
-		classid="CLSID:40E1755A-5A2D-4AEE-99E7-65E7D455F799"
-		codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
-</object>
-
 
 <%		
 	Dim objCrossTab As HR.Intranet.Server.CrossTab
@@ -39,15 +33,17 @@
 	Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
 	Response.Write("    var ssOutputGrid;" & vbCrLf)
 	Response.Write("    var fok;" & vbCrLf)
-			 
-	If Session("CT_Mode") = "OUTPUTRUN" Or _
-		 Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
-		Response.Write("    ssOutputGrid = document.getElementById(""ssHiddenGrid"");" & vbCrLf & vbCrLf)
-	Else
-		Response.Write("    ssOutputGrid = document.getElementById(""ssOutputGrid"");" & vbCrLf & vbCrLf)
-	End If
 
-	 
+	Response.Write("    var colNames = [];" & vbCrLf)
+	Response.Write("    var colData = [];" & vbCrLf)
+	Response.Write("    var colMode = [];" & vbCrLf)
+	Response.Write("    var value;" & vbCrLf)
+	Response.Write("    var i;" & vbCrLf)
+	Response.Write("    var sColumnName;" & vbCrLf)
+	Response.Write("    var iCount2;" & vbCrLf)
+	Response.Write("    var obj;" & vbCrLf)
+	
+	Response.Write("    ssOutputGrid = document.getElementById(""ssOutputGrid"");" & vbCrLf & vbCrLf)
 
 	'**************************************
 	' LOAD
@@ -101,8 +97,10 @@
 	'**************************************
 	' LOAD / PRINT
 	'**************************************
-
+	'		 	If Session("CT_Mode") = "LOAD" Or _
+	'
 	If Session("CT_Mode") = "LOAD" Or _
+			Session("CT_Mode") = "REFRESH" Or _
 		 Session("CT_Mode") = "OUTPUTRUN" Or _
 		 Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
 		'Initalise Grid
@@ -110,55 +108,35 @@
 		objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
 		strCrossTabName = CleanStringForJavaScript(Replace(objCrossTab.CrossTabName, "&", "&&"))
 
-		Response.Write("    ssOutputGrid.Caption = """ & strCrossTabName & """;" & vbCrLf)
-		Response.Write("    ssOutputGrid.focus();" & vbCrLf)
+		Response.Write("  colNames.push('');" & vbCrLf)
+		Response.Write("	colMode.push({ name: '' });" & vbCrLf)
 		
-		Response.Write("    ssOutputGrid.Columns.RemoveAll();" & vbCrLf & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns.Add(0);" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).Caption = """";" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).Locked = true;" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).Visible = true;" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).Alignment = 1;" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).Style = 4;" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).ButtonsAlways = 1;" & vbCrLf)
-		Response.Write("    ssOutputGrid.Columns(0).BackColor = -2147483633;" & vbCrLf & vbCrLf)
-
 		For lngCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-			Response.Write("    ssOutputGrid.Columns.Add(" & CStr(lngCount + 1) & ");" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Caption = """ & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(CLng(0), lngCount), 255)) & """;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Locked = true;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Visible = true;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Alignment = 1;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").CaptionAlignment = 2;" & vbCrLf)
 
-			If objCrossTab.CrossTabType = 3 Then
-				Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Width = 80;" & vbCrLf)
-			End If
+			Dim headerCaption As String
+			headerCaption = Replace(CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(CLng(0), lngCount), 255)), "_", " ")
+			headerCaption = CleanStringSpecialCharacters(headerCaption)
+
+			Response.Write("  colNames.push('" & headerCaption & "');" & vbCrLf)
+			Response.Write("	colMode.push({ name: '" & headerCaption & "' });" & vbCrLf)
 			
 		Next
 
 		If objCrossTab.CrossTabType <> 3 Then
-			lngCount = objCrossTab.ColumnHeadingUbound(0) + 1
-			Response.Write("    ssOutputGrid.Columns.Add(" & CStr(lngCount + 1) & ");" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Locked = true;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Visible = true;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").Alignment = 1;" & vbCrLf)
-			Response.Write("    ssOutputGrid.Columns(" & CStr(lngCount + 1) & ").CaptionAlignment = 2;" & vbCrLf & vbCrLf)
-
-			Response.Write("    ssOutputGrid.SplitterPos = 1;" & vbCrLf)
-			Response.Write("    ssOutputGrid.SplitterVisible = false;" & vbCrLf & vbCrLf)
-
-			Session("CT_ShowPercentage") = objCrossTab.ShowPercentage
-			Session("CT_PercentageOfPage") = objCrossTab.PercentageOfPage
-			Session("CT_SuppressZeros") = objCrossTab.SuppressZeros
-			Session("CT_IntersectionType") = objCrossTab.IntersectionType
-			Session("CT_Use1000") = objCrossTab.Use1000Separator
-
 			If Session("CT_Mode") = "LOAD" Then
+				Session("CT_ShowPercentage") = objCrossTab.ShowPercentage
+				Session("CT_PercentageOfPage") = objCrossTab.PercentageOfPage
+				Session("CT_SuppressZeros") = objCrossTab.SuppressZeros
+				Session("CT_IntersectionType") = objCrossTab.IntersectionType
+				Session("CT_Use1000") = objCrossTab.Use1000Separator
 				Session("CT_PageNumber") = 0
 			End If
-		End If
+			
+			Response.Write("  colNames.push('" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "');" & vbCrLf)
+			Response.Write("	colMode.push({ name: '" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "' });" & vbCrLf)
 
+		End If
+		
 	End If
 
 
@@ -169,7 +147,7 @@
 	If Session("CT_Mode") = "LOAD" Or _
 		 Session("CT_Mode") = "REFRESH" Then
 		'PopulateScreen
-
+		
 		objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
 		objCrossTab.IntersectionType = Session("CT_IntersectionType")
 		objCrossTab.ShowPercentage = Session("CT_ShowPercentage")
@@ -194,23 +172,18 @@
 		Response.Write("  control_disable(chkPercentType, false);" & vbCrLf)
 		Response.Write("  control_disable(chkSuppressZeros, false);" & vbCrLf)
 		Response.Write("  control_disable(chkUse1000, false);" & vbCrLf)
-
-		Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf & vbCrLf)
-				
-		Response.Write("  ssOutputGrid.Redraw = false;" & vbCrLf & vbCrLf)
-		Response.Write("  lngCol = ssOutputGrid.LeftCol;" & vbCrLf)
-		Response.Write("  lngRow = ssOutputGrid.FirstRow;" & vbCrLf)
-
-		Response.Write("  ssOutputGrid.Columns(ssOutputGrid.Columns.Count-1).Caption = cboIntersectionType.options[cboIntersectionType.selectedIndex].text;" & vbCrLf)
-					 
+		
+		Dim objData As String()
 		For intCount = 1 To objCrossTab.OutputArrayDataUBound
-			Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
+								
+			Response.Write("  obj = {};" & vbCrLf)
+			objData = Split(objCrossTab.OutputArrayData(intCount), vbTab)
+			For intCount2 = 0 To UBound(objData)
+				Response.Write("  obj[colNames[" & intCount2 & "]] = '" & objData(intCount2) & "';" & vbCrLf)
+			Next
+			Response.Write("  colData.push(obj);")
 		Next
 
-		Response.Write("  ssOutputGrid.RowHeight = 20;" & vbCrLf)
-		Response.Write("  ssOutputGrid.LeftCol = lngCol;" & vbCrLf)
-		Response.Write("  ssOutputGrid.FirstRow = lngRow;" & vbCrLf)
-		Response.Write("  ssOutputGrid.Redraw = true;" & vbCrLf & vbCrLf)
 
 		' JDM - Fault 4849 - Disable these controls in absence breakdown mode
 		If objCrossTab.CrossTabType = 3 Then
@@ -241,9 +214,9 @@
 		objCrossTab.BuildBreakdownStrings(CLng(Session("CT_Hor")), CLng(Session("CT_Ver")), CLng(Session("CT_Pgb")))
 
 		'Look up the Int Type Text from the Int Type Number...
-		Response.Write("  var frmBreakdown = OpenHR.getForm(""dataframe"", ""frmBreakdown"");" & vbCrLf)
+		Response.Write("  var frmBreakdown = OpenHR.getForm(""reportbreakdownframe"", ""frmBreakdown"");" & vbCrLf)
 		Response.Write("  document.getElementById('txtDataIntersectionType').value = cboIntersectionType.options[document.getElementById('txtDataIntersectionType').value].innerText;" & vbCrLf)
-				
+	
 		Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
 
 		'**************************************
@@ -591,14 +564,21 @@
 		Else
 			Response.Write("  ExportData(""OUTPUTRUN"");" & vbCrLf)
 		End If
-			 
+		 
 
 	ElseIf Session("CT_Mode") = "" Then
 		'Must be the first time this asp is called...
 		Response.Write(" crosstab_loadAddRecords();" & vbCrLf)
-
+	Else
+		Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
+		Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {	" & vbCrLf)
+		Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
+		Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;" & vbCrLf)
+		Response.Write("	    		var txtValue = $('#ssOutputGrid')[0].rows[iRow].cells[iCol].textContent;" & vbCrLf)
+		Response.Write("	    		getBreakdown(iCol -1, iRow -1, lngPage, intType, txtValue);}" & vbCrLf)
+		Response.Write("	, cmTemplate: { sortable: false, editable: true }});")
 	End If
-
+	
 	Response.Write("  try {" & vbCrLf)
 	Response.Write("    refreshCombo(""INTERSECTIONTYPE"");" & vbCrLf)
 	Response.Write("    refreshCombo(""PAGE"");" & vbCrLf)
@@ -612,57 +592,59 @@
 %>
 
 <script type="text/javascript">	
-	
-		function getData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand) {
 
-				control_disable(window.cboIntersectionType, true);
-				control_disable(window.chkPercentPage, true);
-				control_disable(window.chkPercentType, true);
-				control_disable(window.chkSuppressZeros, true);
-				control_disable(window.chkUse1000, true);
-				control_disable(window.cboPage, true);
+	function getCrossTabData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand) {
 
-				var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
-				frmGetData.txtMode.value = strMode;
-				frmGetData.txtPageNumber.value = lngPageNumber;
-				frmGetData.txtIntersectionType.value = lngIntType;
-				frmGetData.txtShowPercentage.value = blnShowPer;
-				frmGetData.txtPercentageOfPage.value = blnPerPage;
-				frmGetData.txtSuppressZeros.value = blnSupZeros;
-				frmGetData.txtUse1000.value = blnThousand;
-				OpenHR.submitForm(frmGetData);
-		}
+		control_disable(window.cboIntersectionType, true);
+		control_disable(window.chkPercentPage, true);
+		control_disable(window.chkPercentType, true);
+		control_disable(window.chkSuppressZeros, true);
+		control_disable(window.chkUse1000, true);
+		control_disable(window.cboPage, true);
+		
+		$('#ssOutputGrid').jqGrid('clearGridData');
+		$('#ssOutputGrid').jqGrid('GridUnload');
+		
+		var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
+		frmGetData.txtMode.value = strMode;
+		frmGetData.txtPageNumber.value = lngPageNumber;
+		frmGetData.txtIntersectionType.value = lngIntType;
+		frmGetData.txtShowPercentage.value = blnShowPer;
+		frmGetData.txtPercentageOfPage.value = blnPerPage;
+		frmGetData.txtSuppressZeros.value = blnSupZeros;
+		frmGetData.txtUse1000.value = blnThousand;
+		OpenHR.submitForm(frmGetData);
+	}
 
-		function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
+	function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
 
-				var frmGetData = OpenHR.getForm("reportbreakdownframe", "frmGetReportData");
-				frmGetData.txtMode.value = "BREAKDOWN";
-				frmGetData.txtHor.value = lngHor;
-				frmGetData.txtVer.value = lngVer;
-				frmGetData.txtPgb.value = lngPgb;
-				frmGetData.txtIntersectionType.value = txtIntType;
-				frmGetData.txtCellValue.value = txtCellValue;
-				OpenHR.submitForm(frmGetData);
-		}
+		var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
+		frmGetData.txtMode.value = "BREAKDOWN";
+		frmGetData.txtHor.value = lngHor;
+		frmGetData.txtVer.value = lngVer;
+		frmGetData.txtPgb.value = lngPgb;
+		frmGetData.txtIntersectionType.value = txtIntType;
+		frmGetData.txtCellValue.value = txtCellValue;
+		OpenHR.submitForm(frmGetData);
+	}
 
-		function ExportData(strMode) {
-				var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
-				frmGetData.txtMode.value = strMode;
-				OpenHR.submitForm(frmGetData);
-		}
+	function ExportData(strMode) {
+		var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
+		frmGetData.txtMode.value = strMode;
+		OpenHR.submitForm(frmGetData);
+	}
 
-		function ViewExportOptions() {
+	function ViewExportOptions() {
 
-				//var frmGetData = OpenHR.getForm("reportdataframe", "frmExportData");
-				//OpenHR.submitForm(frmGetData,"outputoptions");
-				output_setOptions();
+		//var frmGetData = OpenHR.getForm("reportdataframe", "frmExportData");
+		//OpenHR.submitForm(frmGetData,"outputoptions");
+		output_setOptions();
 				
-				$("#reportworkframe").hide();
-				$("#reportbreakdownframe").hide();
-			 $("#outputoptions").show();
+		$("#reportworkframe").hide();
+		$("#reportbreakdownframe").hide();
+		$("#outputoptions").show();
 
-		}
-
+	}
 
 </script>
 
@@ -688,6 +670,8 @@
 
 
 <script type="text/javascript">
-		// Generated by the response.writes above
-		util_run_crosstabs_data_window_onload();    
+	
+	// Generated by the response.writes above
+	util_run_crosstabs_data_window_onload();
+
 </script>

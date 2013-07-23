@@ -297,11 +297,11 @@ Public Class CrossTab
     End Get
   End Property
 
-  Public ReadOnly Property IntersectionColumn() As Boolean
-    Get
-      IntersectionColumn = mblnIntersection
-    End Get
-  End Property
+	Public ReadOnly Property IntersectionColumn() As Boolean
+		Get
+			IntersectionColumn = mblnIntersection
+		End Get
+	End Property
 
   Public ReadOnly Property IntersectionColumnName() As String
     Get
@@ -1527,6 +1527,10 @@ LocalErr:
     End If
 
   End Function
+
+Public Function IntersectionTypeValue(ByVal index) As String
+	Return mstrType(index)
+End Function
 
   Public Function BuildTypeArray() As Boolean
 

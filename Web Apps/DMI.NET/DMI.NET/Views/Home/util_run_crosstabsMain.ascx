@@ -115,7 +115,7 @@
 		if (iCount > 0) {
 			var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
 			<% Response.Write("frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)%>
-			getData("LOAD", 0, 0, 0, 0, 0, 0);
+			getCrossTabData("LOAD", 0, 0, 0, 0, 0, 0);
 		}
 	}
 </script>
@@ -123,32 +123,31 @@
 
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 
-<div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block;">
-		<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
+<div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block; height: auto">
+	<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
 </div>
 
 <div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">
-		<%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
+	<%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
 </div>
 
-<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">   
-		<%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
+<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">
+	<%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
 </div>
 
 <div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
-		<% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
+	<%	Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
 </div>
 
 <form id="frmOutput" name="frmOutput">
-		<input type="hidden" id="fok" name="fok" value="">
-		<input type="hidden" id="cancelled" name="cancelled" value="">
-		<input type="hidden" id="statusmessage" name="statusmessage" value="">
+	<input type="hidden" id="fok" name="fok" value="">
+	<input type="hidden" id="cancelled" name="cancelled" value="">
+	<input type="hidden" id="statusmessage" name="statusmessage" value="">
 </form>
 
 <script type="text/javascript">
 
 	util_run_crosstabs_window_onload();
-	util_run_crosstabs_addhandlers();
 
 	$("#reportframe").show();
 

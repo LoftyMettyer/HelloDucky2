@@ -40,12 +40,13 @@ Namespace App_Start
         "~/Scripts/officebar/jquery.officebar.js"))
 
       ' OpenHR core
-      bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
-        "~/Scripts/openHR.js",
-        "~/Scripts/FormScripts/general.js",
-        "~/Scripts/FormScripts/menu.js",
-        "~/Scripts/ctl_SetFont.js",
-        "~/Scripts/ctl_SetStyles.js"))
+			bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
+				"~/Scripts/openHR.js",
+				"~/Scripts/clientDLL.js",
+				"~/Scripts/FormScripts/general.js",
+				"~/Scripts/FormScripts/menu.js",
+				"~/Scripts/ctl_SetFont.js",
+				"~/Scripts/ctl_SetStyles.js"))
 
       ' Custom Reports
       bundles.Add(New ScriptBundle("~/bundles/utilities_customreports").Include(
