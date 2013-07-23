@@ -36,7 +36,6 @@
 	If Not (rsCalendarBaseInfo.bof And rsCalendarBaseInfo.eof) Then
 		rsCalendarBaseInfo.movefirst()
 		Do Until rsCalendarBaseInfo.eof
-				
 			strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
 
 			blnDescEmpty = (strTempRecordDesc = "")
@@ -59,8 +58,7 @@
 					End If
 					intBaseRecordCount = intBaseRecordCount + 1
 				End If
-				lngCurrentRecordID = rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value
-									
+				lngCurrentRecordID = rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value							
 			Else
 				If rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value <> lngCurrentRecordID Then
 					blnNewBaseRecord = True
