@@ -429,7 +429,7 @@
 				// Convert table to jQuery grid
 				tableToGrid("#ssOleDBGridEventLogDetails", {
 					cmTemplate: { sortable: false, editable: false },
-					beforeSelectRow: function(rowid, e) {
+					beforeSelectRow: function (rowid, e) {
 						return false;
 					},
 					rowNum: 1000
