@@ -376,11 +376,6 @@ Private Sub Form_Load()
   Dim sServerName As String
   Dim bUseWindowsAuthentication As Boolean
   
-  
-  gsApplicationPath = App.Path
-  
-  
-  
   ' Load the CodeJock Styles
   Call LoadSkin(Me, Me.SkinFramework1)
   

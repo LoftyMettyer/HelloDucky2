@@ -61,6 +61,9 @@ End Function
 
 Sub Main()
 
+  gsApplicationPath = App.Path
+
+
   ' If we get problems, just in case...
   gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
 
