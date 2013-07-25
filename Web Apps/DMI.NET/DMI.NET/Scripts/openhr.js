@@ -190,7 +190,7 @@
 		},
 		localeDateFormat = function() {
 			//TODO
-			return "dd/MM/yyyy";
+			return "dd/mm/yyyy";
 		},
 		localeDecimalSeparator = function() {
 			//TODO
