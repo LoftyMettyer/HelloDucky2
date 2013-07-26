@@ -20,4 +20,11 @@
 	[IsPayrollCode] [bit] NULL,
 	[GroupBy] [int] NULL,
 	[PreventModify] [bit] NULL
-) ON [PRIMARY]
+)
+
+
+GO
+
+CREATE CLUSTERED INDEX [IDX_TransferTypeID]
+    ON [dbo].[ASRSysAccordTransferFieldDefinitions]([TransferTypeID] ASC);
+GO

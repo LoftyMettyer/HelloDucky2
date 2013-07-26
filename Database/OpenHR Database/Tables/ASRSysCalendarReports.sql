@@ -48,3 +48,19 @@
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_BaseTableID]
+		ON [dbo].[ASRSysCalendarReports]([BaseTable] ASC);
+GO
+
+CREATE TRIGGER DEL_ASRSysCalendarReports ON dbo.ASRSysCalendarReports 
+FOR DELETE 
+AS
+BEGIN
+	DELETE FROM ASRSysCalendarReportEvents WHERE ASRSysCalendarReportEvents.CalendarReportID IN (SELECT ID FROM deleted)
+	DELETE FROM ASRSysCalendarReportOrder WHERE ASRSysCalendarReportOrder.CalendarReportID IN (SELECT ID FROM deleted)
+	DELETE FROM ASRSysCalendarReportAccess WHERE ASRSysCalendarReportAccess.ID IN (SELECT ID FROM Deleted)
+END
+GO

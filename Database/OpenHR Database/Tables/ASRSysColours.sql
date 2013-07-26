@@ -4,4 +4,10 @@
 	[ColDesc] [varchar](50) NULL,
 	[WordColourIndex] [int] NULL,
 	[CalendarLegendColour] [bit] NULL
-) ON [PRIMARY]
+) 
+
+GO
+
+CREATE CLUSTERED INDEX [IDX_ColOrder]
+		ON [dbo].[ASRSysColours]([ColOrder] ASC);
+GO

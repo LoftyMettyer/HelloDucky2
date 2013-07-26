@@ -4,3 +4,9 @@
 	[ParentID] [int] NOT NULL,
 	[ParentTableID] [int] NULL
 ) ON [PRIMARY]
+
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_ChildViewID]
+    ON [dbo].[ASRSysChildViewParents2]([ChildViewID] ASC);
+GO

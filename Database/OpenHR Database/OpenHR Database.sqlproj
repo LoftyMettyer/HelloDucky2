@@ -59,6 +59,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <SqlTargetName>OpenHR</SqlTargetName>
   </PropertyGroup>
   <!-- VS10 without SP1 will not have VisualStudioVersion set, so do that here -->
   <PropertyGroup />
@@ -76,6 +77,9 @@
     <Folder Include="Views\" />
     <Folder Include="Scripts\" />
     <Folder Include="User Defined Functions" />
+    <Folder Include="Roles" />
+    <Folder Include="Triggers" />
+    <Folder Include="Stored Procedures\Auto Generated" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Web\sp_ASRIntAddEventLogHeader.sql" />
@@ -589,6 +593,24 @@
     <Build Include="User Defined Functions\udfsys_workingdaysbetweentwodates.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetUserGroup.sql" />
     <Build Include="Stored Procedures\Workflow\spASRActionActiveWorkflowSteps.sql" />
+    <Build Include="Stored Procedures\System Manager\spsys_setsystemsetting.sql" />
+    <Build Include="Stored Procedures\System Manager\spsys_getmodulesetting.sql" />
+    <Build Include="Roles\ASRSysGroup.sql" />
+    <Build Include="Roles\ASRSysAdmins.sql" />
+    <Build Include="Stored Procedures\System Manager\spASRApplyScripts.sql" />
+    <Build Include="Views\ASRSysGroups.sql" />
+    <Build Include="Triggers\DEL_ASRSysTables.sql" />
+    <Build Include="Triggers\INS_ASRSysTables.sql" />
+    <Build Include="User Defined Functions\udfsys_getownerid.sql" />
+    <Build Include="Triggers\DEL_ASRSysViews.sql" />
+    <Build Include="Triggers\INS_ASRSysViews.sql" />
+    <Build Include="Triggers\DEL_ASRSysWorkflows.sql" />
+    <Build Include="Triggers\INS_ASRSysWorkflows.sql" />
+    <Build Include="Triggers\DEL_ASRSysColumns.sql" />
+    <Build Include="Triggers\INS_ASRSysColumns.sql" />
+    <Build Include="Stored Procedures\Auto Generated\sp_ASR_TBCheckOverbooking.sql" />
+    <Build Include="Stored Procedures\Auto Generated\sp_ASR_TBCheckPreRequisites.sql" />
+    <Build Include="Stored Procedures\Auto Generated\sp_ASR_TBCheckOverlappedBooking.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
@@ -698,5 +720,12 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\100\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>

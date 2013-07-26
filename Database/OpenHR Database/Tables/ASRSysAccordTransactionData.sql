@@ -4,3 +4,8 @@
 	[OldData] [varchar](max) NULL,
 	[NewData] [varchar](max) NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_TransactionID]
+    ON [dbo].[ASRSysAccordTransactionData]([TransactionID] ASC, [FieldID] ASC);
+GO

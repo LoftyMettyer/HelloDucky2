@@ -21,3 +21,16 @@
 	[TransactionID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 )
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_CreatedDateTime_Archived]
+    ON [dbo].[ASRSysAccordTransactions]([CreatedDateTime] ASC, [Archived] ASC);
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_HRProRecordID]
+    ON [dbo].[ASRSysAccordTransactions]([HRProRecordID] ASC);
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_TransactionID]
+    ON [dbo].[ASRSysAccordTransactions]([TransactionID] ASC);
+GO
