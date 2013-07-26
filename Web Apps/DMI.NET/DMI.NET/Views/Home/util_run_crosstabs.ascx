@@ -2,6 +2,17 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
+<script type="text/javascript">
+	$("#top").hide();
+	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
+
+	$(window).bind('resize', function () {
+		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
+	}).trigger('resize');
+
+</script>
+
+
 <%
 	Dim objCrossTab As HR.Intranet.Server.CrossTab
 		
@@ -35,14 +46,14 @@
 			If objCrossTab.CrossTabType = 3 Then
 				Response.Write("						<H4>Absence Breakdown Completed successfully.</H4>" & vbCrLf)
 			Else
-				Response.Write("						<H4>Cross Tab '" & Session("utilname") & "' Completed successfully.</H4>" & vbCrLf)
+				Response.Write("						<H4>Cross Tab '" & Session("utilname").ToString.Trim & "' Completed successfully.</H4>" & vbCrLf)
 			End If
 			objCrossTab.EventLogChangeHeaderStatus(3)		 'Successful
 		Else
 			If objCrossTab.CrossTabType = 3 Then
 				Response.Write("						<H4>Absence Breakdown Failed." & vbCrLf)
 			Else
-				Response.Write("						<H4>Cross Tab '" & Session("utilname") & "' Failed." & vbCrLf)
+				Response.Write("						<H4>Cross Tab '" & Session("utilname").ToString.Trim & "' Failed." & vbCrLf)
 			End If
 			objCrossTab.EventLogChangeHeaderStatus(2)		 'Failed
 		End If
@@ -294,14 +305,3 @@
 
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>
-
-
-<script type="text/javascript">
-
-	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-
-	$(window).bind('resize', function () {
-		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
-	}).trigger('resize');
-
-</script>
