@@ -697,7 +697,7 @@
 		OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
 	}
 	function abMainMenu_Click(pTool) {
-		alert(pTool.name);
+		//alert(pTool.name);
 		switch (pTool.name) {
 			case "mnutoolFirstRecord":
 				reloadPage("MOVEFIRST", "");
