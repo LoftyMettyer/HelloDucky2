@@ -152,7 +152,7 @@
 
 			<div id="findGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
 
-				<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+				<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 					<tr>
 						<td>
 							<table width="100%" height="100%" cellspacing="0" cellpadding="0">
@@ -163,7 +163,7 @@
 								<tr>
 									<td width="5"></td>
 									<td>
-										<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+										<table width="100%" height="100%" cellspacing="0" cellpadding="5">
 											<tr valign="top">
 												<td>
 													<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -349,13 +349,14 @@
 																<table class="invisible" cellspacing="0" cellpadding="4">
 																	<tr>
 																		<td width="10">
-																			<input id="cmdEmail" type="button" class="btn" value="Email..." name="cmdEmail" style="width: 80px" onclick="emailEvent();" />
+																			<input id="cmdEmail" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Email..." name="cmdEmail" style="width: 80px" onclick="emailEvent();" />
+																			
 																		</td>
 																		<td width="5">
-																			<input id="cmdPrint" class="btn" type="button" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent(true);" />
+																			<input id="cmdPrint"  type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent(true);" />
 																		</td>
 																		<td width="5">
-																			<input id="cmdOK" type="button" class="btn" value="OK" name="cmdOK" style="width: 80px" onclick="okClick();" />
+																			<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="OK" name="cmdOK" style="width: 80px" onclick="okClick();" />
 																		</td>
 																	</tr>
 																</table>
@@ -509,7 +510,7 @@
 					"&txtFromMain=" + frmEmail.txtFromMain.value +
 					"&txtBatchInfo=" + escape(frmEmail.txtBatchInfo.value) +
 					"&txtBatchy=" + frmEmail.txtBatchy.value;
-				openDialog(sURL, 435, 350);
+				openDialog(sURL, 500, 400);
 			}
 
 			function printEvent(pfToPrinter) {

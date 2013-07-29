@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-
 <%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
@@ -24,8 +23,7 @@
 
 	<%--ThemeRoller stylesheet--%>
 	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-
-
+	
 </head>
 
 <body>
@@ -102,7 +100,7 @@
 			else if (frmEventSelection.optSelection3.checked == true) {
 				frmOpenerDelete.txtDeleteSel.value = 2;
 			}
-
+			txtPeriodIndex
 			frmOpenerDelete.txtSelectedIDs.value = sEventIDs;
 
 			frmOpenerDelete.txtCurrentUsername.value = frmOpenerLog.cboUsername.options[frmOpenerLog.cboUsername.selectedIndex].value;
@@ -120,7 +118,7 @@
 
 
 	<form id="frmEventSelection" name="frmEventSelection">
-		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+		<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 			<tr>
 				<td>
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -205,7 +203,7 @@
 												<tr>
 													<td></td>
 													<td width="5">
-														<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" style="WIDTH: 80px" width="80" class="btn"
+														<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 															onclick="deleteClick();"
 															onmouseover="try{button_onMouseOver(this);}catch(e){}"
 															onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -213,7 +211,7 @@
 															onblur="try{button_onBlur(this);}catch(e){}" />
 													</td>
 													<td width="5">
-														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="WIDTH: 80px" width="80" class="btn"
+														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 															onclick="cancelClick();"
 															onmouseover="try{button_onMouseOver(this);}catch(e){}"
 															onmouseout="try{button_onMouseOut(this);}catch(e){}"

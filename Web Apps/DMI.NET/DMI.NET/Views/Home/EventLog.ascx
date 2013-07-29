@@ -395,7 +395,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 500, 225);
+		openDialog(sURL, 600, 220);
 	}
 
 	function purgeEvent() {
@@ -418,7 +418,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 500, 180);
+		openDialog(sURL, 600, 280);
 
 	}
 
@@ -442,7 +442,7 @@
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		openDialog(sURL, 435, 350);
+		openDialog(sURL, 500, 400);
 	}
 
 	function refreshButtons() {
@@ -567,7 +567,7 @@
 	<param name="Color" value="0">
 	<param name="Copies" value="1">
 	<param name="DefaultExt" value="">
-	<param name="DialogTitle" value="">
+	<param name="DialogTitle" value="bob">
 	<param name="FileName" value="">
 	<param name="Filter" value="">
 	<param name="FilterIndex" value="0">
@@ -593,7 +593,7 @@
 </object>
 
 <form id="frmLog">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 		<tr>
 			<td>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -604,12 +604,12 @@
 					<tr>
 						<td width="5"></td>
 						<td>
-							<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+							<table width="100%" height="100%" cellspacing="0" cellpadding="5">
 								<tr valign="top">
 									<td>
 										<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
 											<tr height="10">
-												<td colspan="8">Filters : 
+												<td colspan="8" style="visibility: hidden" >Filters : 
 												</td>
 											</tr>
 											<tr height="10">
@@ -918,11 +918,11 @@
 		
 														Response.Write("											<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" & vbCrLf)
 														Response.Write("													 codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6""" & vbCrLf)
-														Response.Write("													height=""100%""" & vbCrLf)
+														'Response.Write("													height=""100%""" & vbCrLf)
 														Response.Write("													id=ssOleDBGridEventLog" & vbCrLf)
 														Response.Write("													name=ssOleDBGridEventLog" & vbCrLf)
-														Response.Write("													style=""HEIGHT: 100%; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf)
-														Response.Write("													width=""100%"">" & vbCrLf)
+														Response.Write("													style=""HEIGHT: 400px; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf)
+														'Response.Write("													width=""100%"">" & vbCrLf)
 														Response.Write("												<PARAM NAME=""ScrollBars"" VALUE=""3"">" & vbCrLf)
 														Response.Write("												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
 														Response.Write("												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
@@ -1052,7 +1052,7 @@
 									</td>
 									<td width="80">
 										<table width="100%" class="invisible" cellspacing="0" cellpadding="2">
-											<tr height="10">
+											<tr height="30">
 												<td></td>
 											</tr>
 											<tr>
