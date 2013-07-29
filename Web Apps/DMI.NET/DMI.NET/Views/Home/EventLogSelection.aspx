@@ -100,9 +100,8 @@
 			else if (frmEventSelection.optSelection3.checked == true) {
 				frmOpenerDelete.txtDeleteSel.value = 2;
 			}
-			txtPeriodIndex
+			
 			frmOpenerDelete.txtSelectedIDs.value = sEventIDs;
-
 			frmOpenerDelete.txtCurrentUsername.value = frmOpenerLog.cboUsername.options[frmOpenerLog.cboUsername.selectedIndex].value;
 			frmOpenerDelete.txtCurrentType.value = frmOpenerLog.cboType.options[frmOpenerLog.cboType.selectedIndex].value;
 			frmOpenerDelete.txtCurrentMode.value = frmOpenerLog.cboMode.options[frmOpenerLog.cboMode.selectedIndex].value;
