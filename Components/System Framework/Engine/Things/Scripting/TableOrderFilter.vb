@@ -70,6 +70,7 @@ Public Class TableOrderFilter
     Dim bReverseOrder As Boolean
     Dim objIndex As New Index
 
+
     ' What type of rows to retrieve
     Select Case RowDetails.RowSelection
       Case ColumnRowSelection.First

@@ -73,7 +73,7 @@ Partial Class MainForm
 		Me.txtPassword.Name = "txtPassword"
 		Me.txtPassword.Size = New System.Drawing.Size(100, 20)
 		Me.txtPassword.TabIndex = 3
-		Me.txtPassword.Text = "Password1"
+		Me.txtPassword.Text = "asr"
 		'
 		'Label3
 		'
@@ -111,7 +111,7 @@ Partial Class MainForm
 		Me.txtServer.Name = "txtServer"
 		Me.txtServer.Size = New System.Drawing.Size(100, 20)
 		Me.txtServer.TabIndex = 1
-		Me.txtServer.Text = "ABS16091"
+		Me.txtServer.Text = "ron.test.local"
 		'
 		'txtDatabase
 		'
@@ -119,7 +119,7 @@ Partial Class MainForm
 		Me.txtDatabase.Name = "txtDatabase"
 		Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
 		Me.txtDatabase.TabIndex = 2
-		Me.txtDatabase.Text = "std5.1"
+		Me.txtDatabase.Text = "merlin"
 		'
 		'butScriptDB
 		'
@@ -326,7 +326,7 @@ Partial Class MainForm
 		Me.ResumeLayout(False)
 		Me.PerformLayout()
 
-	End Sub
+End Sub
     Friend WithEvents pnlScripting As System.Windows.Forms.Panel
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
