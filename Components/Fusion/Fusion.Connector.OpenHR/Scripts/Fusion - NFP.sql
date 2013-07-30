@@ -299,7 +299,7 @@ BEGIN
 
 		UPDATE fusion.staffContract SET contractName = @contractName, department = @department, primarySite = @primarySite
 			, contractedHoursPerWeek = @contractedHoursPerWeek, maximumHoursPerWeek = @maximumHoursPerWeek
-			, effectiveFrom = @effectiveFrom, effectiveTo = @effectiveTo WHERE ID_Contract = @ID
+			, effectiveFrom = @effectiveFrom, effectiveTo = @effectiveTo, costcenter = @costcenter WHERE ID_Contract = @ID
 
 	END
 
