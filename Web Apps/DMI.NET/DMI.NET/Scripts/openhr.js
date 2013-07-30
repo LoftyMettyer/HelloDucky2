@@ -188,10 +188,6 @@
 		disableMenu = function() {
 			//TODO
 		},
-		localeDateFormat = function() {
-			//TODO
-			return "dd/mm/yyyy";
-		},
 		localeDecimalSeparator = function() {
 			//TODO
 			return ".";
@@ -203,10 +199,6 @@
 		localeDateSeparator = function() {
 			//TODO
 			return "/";
-		},
-		convertSqlDateToLocale = function(z) {
-			var convertDate = Date.parseExact(z, "MM/dd/yyyy");
-			return convertDate.format(OpenHR.LocaleDateFormat());
 		},
 		printerCount = function() {
 			//TODO
@@ -248,6 +240,15 @@
 			//TODO
 			return true;
 		},
+		localeDateFormat = function () {
+		    //TODO
+		    //return "dd/mm/yyyy";
+		    return "dd/MM/yyyy";
+		},
+        convertSqlDateToLocale = function (z) {
+            var convertDate = Date.parseExact(z, "MM/dd/yyyy");
+            return convertDate.format(OpenHR.LocaleDateFormat());
+        },
 		convertLocaleDateToSQL = function(psDateString) {
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */

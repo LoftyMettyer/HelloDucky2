@@ -573,13 +573,13 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 								pctlPrompt.focus();
 						}
 				}
-		
+				
 				if ((fOK == true) && (piDataType == 4)) 
 				{
 						// Date column.
 						// Ensure that the value entered is a date.
 						sValue = pctlPrompt.value;
-			
+
 						if (sValue.length == 0) 
 						{
 								fOK = false;
@@ -588,14 +588,15 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 						{
 								// Convert the date to SQL format (use this as a validation check).
 								// An empty string is returned if the date is invalid.
-								sValue = convertLocaleDateToSQL(sValue);
-								if (sValue.length == 0) 
+							//sValue = OpenHR.convertLocaleDateToSQL(sValue);
+							sValue = localconvertLocaleDateToSQL(sValue);
+							if (sValue.length == 0) 
 								{
 										fOK = false;
 								}
 								else 
 								{
-										pctlPrompt.value = OpenHR.ConvertSQLDateToLocale(sValue);
+									pctlPrompt.value = OpenHR.ConvertSQLDateToLocale(sValue);
 								}
 						}
 			
@@ -767,7 +768,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 				return fOK;
 		}
 
-		function convertLocaleDateToSQL(psDateString)
+		function localconvertLocaleDateToSQL(psDateString)
 		{ 
 				/* Convert the given date string (in locale format) into 
 				SQL format (mm/dd/yyyy). */

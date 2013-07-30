@@ -1548,12 +1548,12 @@ function cancelClick() {
 	}
 	if (answer == 6) {
 		// Yes
-		okClick();
+		okCalClick();
 	}
 }
 
 
-function okClick() {
+function okCalClick() {
 	menu_disableMenu();
 	frmSend.txtSend_reaction.value = "CALENDARREPORTS";
 	submitDefinition();
@@ -2153,7 +2153,7 @@ function validateTab3() {
 			return (false);
 		}
 
-		if (optFixedStart.checked && (!validateCalDate(txtFixedStart))) {
+		if (optFixedStart.checked && (!validateStringDate(txtFixedStart))) {
 		    OpenHR.messageBox("You must enter a valid Fixed Start Date for the report.", 48, "Calendar Reports");
 		    displayPage(3);
 		    return (false);
@@ -2164,7 +2164,7 @@ function validateTab3() {
 			displayPage(3);
 			return (false);
 		}
-		if (optFixedEnd.checked && (!validateCalDate(txtFixedEnd))) {
+		if (optFixedEnd.checked && (!validateStringDate(txtFixedEnd))) {
 			OpenHR.messageBox("You must enter a valid Fixed End Date for the report.", 48, "Calendar Reports");
 			displayPage(3);
 			return (false);
@@ -2573,7 +2573,7 @@ function populateSendForm() {
 
 	if (frmDefinition.optFixedStart.checked == true) {
 		frmSend.txtSend_StartType.value = 0;
-		frmSend.txtSend_FixedStart.value = convertLocaleDateToSQL(frmDefinition.txtFixedStart.value);
+		frmSend.txtSend_FixedStart.value = OpenHR.convertLocaleDateToSQL(frmDefinition.txtFixedStart.value);
 		frmSend.txtSend_StartFrequency.value = 0;
 		frmSend.txtSend_StartPeriod.value = -1;
 		frmSend.txtSend_CustomStart.value = 0;
@@ -2599,7 +2599,7 @@ function populateSendForm() {
 
 	if (frmDefinition.optFixedEnd.checked == true) {
 		frmSend.txtSend_EndType.value = 0;
-		frmSend.txtSend_FixedEnd.value = convertLocaleDateToSQL(frmDefinition.txtFixedEnd.value);
+		frmSend.txtSend_FixedEnd.value = OpenHR.convertLocaleDateToSQL(frmDefinition.txtFixedEnd.value);
 		frmSend.txtSend_EndFrequency.value = 0;
 		frmSend.txtSend_EndPeriod.value = -1;
 		frmSend.txtSend_CustomEnd.value = 0;
@@ -3199,149 +3199,6 @@ function loadSortDefinition() {
 	}
 }
 
-function convertLocaleDateToSQL(psDateString) {
-	/* Convert the given date string (in locale format) into 
-		SQL format (mm/dd/yyyy). */
-	var sDateFormat;
-	var iDays;
-	var iMonths;
-	var iYears;
-	var sDays;
-	var sMonths;
-	var sYears;
-	var iValuePos;
-	var sTempValue;
-	var sValue;
-	var iLoop;
-
-	sDateFormat = OpenHR.LocaleDateFormat;
-
-	sDays = "";
-	sMonths = "";
-	sYears = "";
-	iValuePos = 0;
-
-	// Trim leading spaces.
-	sTempValue = psDateString.substr(iValuePos, 1);
-	while (sTempValue.charAt(0) == " ") {
-		iValuePos = iValuePos + 1;
-		sTempValue = psDateString.substr(iValuePos, 1);
-	}
-
-	for (iLoop = 0; iLoop < sDateFormat.length; iLoop++) {
-		if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'D') && (sDays.length == 0)) {
-			sDays = psDateString.substr(iValuePos, 1);
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-
-			if (isNaN(sTempValue) == false) {
-				sDays = sDays.concat(sTempValue);
-			}
-			iValuePos = iValuePos + 1;
-		}
-
-		if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'M') && (sMonths.length == 0)) {
-			sMonths = psDateString.substr(iValuePos, 1);
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-
-			if (isNaN(sTempValue) == false) {
-				sMonths = sMonths.concat(sTempValue);
-			}
-			iValuePos = iValuePos + 1;
-		}
-
-		if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'Y') && (sYears.length == 0)) {
-			sYears = psDateString.substr(iValuePos, 1);
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-
-			if (isNaN(sTempValue) == false) {
-				sYears = sYears.concat(sTempValue);
-			}
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-
-			if (isNaN(sTempValue) == false) {
-				sYears = sYears.concat(sTempValue);
-			}
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-
-			if (isNaN(sTempValue) == false) {
-				sYears = sYears.concat(sTempValue);
-			}
-			iValuePos = iValuePos + 1;
-		}
-
-		// Skip non-numerics
-		sTempValue = psDateString.substr(iValuePos, 1);
-		while (isNaN(sTempValue) == true) {
-			iValuePos = iValuePos + 1;
-			sTempValue = psDateString.substr(iValuePos, 1);
-		}
-	}
-
-	while (sDays.length < 2) {
-		sTempValue = "0";
-		sDays = sTempValue.concat(sDays);
-	}
-
-	while (sMonths.length < 2) {
-		sTempValue = "0";
-		sMonths = sTempValue.concat(sMonths);
-	}
-
-	while (sYears.length < 2) {
-		sTempValue = "0";
-		sYears = sTempValue.concat(sYears);
-	}
-
-	if (sYears.length == 2) {
-		iValue = parseInt(sYears);
-		if (iValue < 30) {
-			sTempValue = "20";
-		} else {
-			sTempValue = "19";
-		}
-
-		sYears = sTempValue.concat(sYears);
-	}
-
-	while (sYears.length < 4) {
-		sTempValue = "0";
-		sYears = sTempValue.concat(sYears);
-	}
-
-	sTempValue = sMonths.concat("/");
-	sTempValue = sTempValue.concat(sDays);
-	sTempValue = sTempValue.concat("/");
-	sTempValue = sTempValue.concat(sYears);
-
-	sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
-
-	iYears = parseInt(sYears);
-
-	while (sMonths.substr(0, 1) == "0") {
-		sMonths = sMonths.substr(1);
-	}
-	iMonths = parseInt(sMonths);
-
-	while (sDays.substr(0, 1) == "0") {
-		sDays = sDays.substr(1);
-	}
-	iDays = parseInt(sDays);
-
-	var newDateObj = new Date(iYears, iMonths - 1, iDays);
-	if ((newDateObj.getDate() != iDays) ||
-		(newDateObj.getMonth() + 1 != iMonths) ||
-		(newDateObj.getFullYear() != iYears)) {
-		return "";
-	} else {
-		return sTempValue;
-	}
-}
-
 function convertLocaleDateToDateObject(psDateString) {
 	/* Convert the given date string (in locale format) into 
 		SQL format (mm/dd/yyyy). */
@@ -3565,33 +3422,12 @@ function populateSaveExisting() {
 
 }
 
-function validateCalDate(pobjDateControl) {
+function validateObjectDate(pobjDateControl) {
     // Date column.
     // Ensure that the value entered is a date.
 
     var sValue = pobjDateControl.value;
-
-    if (sValue.length == 0) {
-        return true;
-    } else {
-        // Convert the date to SQL format (use this as a validation check).
-        // An empty string is returned if the date is invalid.
-        sValue = convertLocaleDateToSQL(sValue);
-        if (sValue.length == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-}
-
-
-function validateCalDate(pobjDateControl) {
-    // Date column.
-    // Ensure that the value entered is a date.
-
-    var sValue = pobjDateControl.value;
-
+    OpenHR.messageBox(sValue + " validate in calendar.js");
     if (sValue.length == 0) {
         //		OpenHR.messageBox("Invalid date value entered.");
         //		pobjDateControl.focus()
@@ -3600,7 +3436,11 @@ function validateCalDate(pobjDateControl) {
     else {
         // Convert the date to SQL format (use this as a validation check).
         // An empty string is returned if the date is invalid.
-        sValue = CalRep_convertLocaleDateToSQL(sValue);
+        sValue = OpenHR.convertLocaleDateToSQL(sValue);
+        OpenHR.messageBox(sValue + "1  validate in calendar.js");
+
+        sValue = OpenHR.ConvertSQLDateToLocale(sValue);
+        OpenHR.messageBox(sValue + " 2  validate in calendar.js");
         if (sValue.length == 0) {
             OpenHR.messageBox("Invalid date value entered.");
             pobjDateControl.value = "";
@@ -3613,170 +3453,38 @@ function validateCalDate(pobjDateControl) {
     }
 }
 
-function CalRep_convertLocaleDateToSQL(psDateString) {
-    /* Convert the given date string (in locale format) into 
-    SQL format (mm/dd/yyyy). */
-    var sDateFormat;
-    var iDays;
-    var iMonths;
-    var iYears;
-    var sDays;
-    var sMonths;
-    var sYears;
-    var iValuePos;
-    var sTempValue;
-    var sValue;
-    var iLoop;
+function validateStringDate(psDate) {
+    // Date column.
+    // Ensure that the value entered is a date.
 
-    sDateFormat = OpenHR.LocaleDateFormat();
-
-    sDays = "";
-    sMonths = "";
-    sYears = "";
-    iValuePos = 0;
-
-    // Trim leading spaces.
-    sTempValue = psDateString.substr(iValuePos, 1);
-    while (sTempValue.charAt(0) == " ") {
-        iValuePos = iValuePos + 1;
-        sTempValue = psDateString.substr(iValuePos, 1);
-    }
-
-    for (iLoop = 0; iLoop < sDateFormat.length; iLoop++) {
-        if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'D') && (sDays.length == 0)) {
-            sDays = psDateString.substr(iValuePos, 1);
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-
-            if (isNaN(sTempValue) == false) {
-                sDays = sDays.concat(sTempValue);
-            }
-            iValuePos = iValuePos + 1;
-        }
-
-        if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'M') && (sMonths.length == 0)) {
-            sMonths = psDateString.substr(iValuePos, 1);
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-
-            if (isNaN(sTempValue) == false) {
-                sMonths = sMonths.concat(sTempValue);
-            }
-            iValuePos = iValuePos + 1;
-        }
-
-        if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'Y') && (sYears.length == 0)) {
-            sYears = psDateString.substr(iValuePos, 1);
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-
-            if (isNaN(sTempValue) == false) {
-                sYears = sYears.concat(sTempValue);
-            }
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-
-            if (isNaN(sTempValue) == false) {
-                sYears = sYears.concat(sTempValue);
-            }
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-
-            if (isNaN(sTempValue) == false) {
-                sYears = sYears.concat(sTempValue);
-            }
-            iValuePos = iValuePos + 1;
-        }
-
-        // Skip non-numerics
-        sTempValue = psDateString.substr(iValuePos, 1);
-        while (isNaN(sTempValue) == true) {
-            iValuePos = iValuePos + 1;
-            sTempValue = psDateString.substr(iValuePos, 1);
-        }
-    }
-
-    while (sDays.length < 2) {
-        sTempValue = "0";
-        sDays = sTempValue.concat(sDays);
-    }
-
-    while (sMonths.length < 2) {
-        sTempValue = "0";
-        sMonths = sTempValue.concat(sMonths);
-    }
-
-    while (sYears.length < 2) {
-        sTempValue = "0";
-        sYears = sTempValue.concat(sYears);
-    }
-
-    if (sYears.length == 2) {
-        iValue = parseInt(sYears);
-        if (iValue < 30) {
-            sTempValue = "20";
-        }
-        else {
-            sTempValue = "19";
-        }
-
-        sYears = sTempValue.concat(sYears);
-    }
-
-    while (sYears.length < 4) {
-        sTempValue = "0";
-        sYears = sTempValue.concat(sYears);
-    }
-
-    sTempValue = sMonths.concat("/");
-    sTempValue = sTempValue.concat(sDays);
-    sTempValue = sTempValue.concat("/");
-    sTempValue = sTempValue.concat(sYears);
-
-    sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
-
-    iYears = parseInt(sYears);
-
-    while (sMonths.substr(0, 1) == "0") {
-        sMonths = sMonths.substr(1);
-    }
-    iMonths = parseInt(sMonths);
-
-    while (sDays.substr(0, 1) == "0") {
-        sDays = sDays.substr(1);
-    }
-    iDays = parseInt(sDays);
-
-    var newDateObj = new Date(iYears, iMonths - 1, iDays);
-    if ((newDateObj.getDate() != iDays) ||
-        (newDateObj.getMonth() + 1 != iMonths) ||
-        (newDateObj.getFullYear() != iYears)) {
-        return "";
+    var sValue = psDate.value;
+    OpenHR.messageBox(sValue + " validate in calendar.js");
+    if (sValue.length == 0) {
+        //		OpenHR.messageBox("Invalid date value entered.");
+        //		pobjDateControl.focus()
+        return false;
     }
     else {
-        return sTempValue;
+        // Convert the date to SQL format (use this as a validation check).
+        // An empty string is returned if the date is invalid.
+        sValue = OpenHR.convertLocaleDateToSQL(sValue);
+        OpenHR.messageBox(sValue + "1  validate in calendar.js");
+
+        sValue = OpenHR.ConvertSQLDateToLocale(sValue);
+        OpenHR.messageBox(sValue + " 2  validate in calendar.js");
+        if (sValue.length == 0) {
+            OpenHR.messageBox("Invalid date value entered.");
+            psDate.value = "";
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
 
-function validateDate(pobjDateControl) {
-	// Date column.
-	// Ensure that the value entered is a date.
 
-	var sValue = pobjDateControl.value;
 
-	if (sValue.length == 0) {
-		return true;
-	} else {
-		// Convert the date to SQL format (use this as a validation check).
-		// An empty string is returned if the date is invalid.
-		sValue = convertLocaleDateToSQL(sValue);
-		if (sValue.length == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-}
 
 function disableAll() {
 	var i;
@@ -4702,8 +4410,6 @@ function setStartSession(piColumnID) {
 	}
 	frmPopup.cboStartSession.selectedIndex = 0;
 }
-
-4
 
 function setEndDate(piColumnID) {
 	var i;

@@ -36,8 +36,12 @@
 	If Not (rsCalendarBaseInfo.bof And rsCalendarBaseInfo.eof) Then
 		rsCalendarBaseInfo.movefirst()
 		Do Until rsCalendarBaseInfo.eof
-			strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
-
+			If Not IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value) Then
+				strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
+			Else
+				strTempRecordDesc = vbNullString
+			End If
+			
 			blnDescEmpty = (strTempRecordDesc = "")
 			If blnDescEmpty Then
 				intDescEmpty = intDescEmpty + 1

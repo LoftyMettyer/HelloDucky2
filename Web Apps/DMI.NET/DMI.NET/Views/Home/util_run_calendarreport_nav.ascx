@@ -163,7 +163,7 @@ End If
 								<tr height="5" valign="middle">
 									<td width="5"></td>
 									<td height="5" align="left" valign="middle" width="5">
-										<img alt="First Month" align="center" valign="middle" border="0" src="images/first_disabled.gif" 
+										<img alt="First Month" align="center" valign="middle" border="0" src="images/first_disabled.gif"
 											name="imgFirstMonth" id="imgFirstMonth" width="16" height="16"
 											title="First Month"
 											onclick="firstMonth();">
@@ -187,7 +187,7 @@ End If
 										<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 											<tr>
 												<td width="40">
-													<input maxlength="4" value="2003" id="txtYear" 
+													<input maxlength="4" value="2003" id="txtYear"
 														name="txtYear" class="text" style="WIDTH: 40px" width="40" value="0"
 														title="Year"
 														onkeypress="if(window.event.keyCode==13) {frmNav.txtYear.blur(); return false;}"
@@ -201,7 +201,7 @@ End If
 														onclick="spinRecords(true); setRecordsNumeric();" />
 												</td>
 												<td width="15" align="center">
-													<input style="WIDTH: 15px;" type="button" value="-" id="cmdYearDown" 
+													<input style="WIDTH: 15px;" type="button" value="-" id="cmdYearDown"
 														name="cmdYearDown" class="btn"
 														title="Subtract Year"
 														onclick="spinRecords(false); setRecordsNumeric();" />
@@ -254,9 +254,8 @@ End If
 									<td width="100%">
 										<object classid="CLSID:41021C13-8D42-4364-8388-9506F0755AE3"
 											codebase="cabs/COAInt_CalRepDates.cab#version=1,0,0,2"
-											id="ctlDates" name="ctlDates" style="VISIBILITY: visible; WIDTH: 100%"
-											width="100%" 
-											height="50px"
+											id="ctlDates" name="ctlDates" style="VISIBILITY: visible; WIDTH: 100%; height: 35px;"
+											width="100%"
 											viewastext>
 											<param name="BackColor" value="16513017">
 										</object>
@@ -265,8 +264,7 @@ End If
 							</table>
 						</td>
 					</tr>
-					<tr height="5"></tr>
-				</table>
+					</table>
 			</td>
 		</tr>
 	</table>

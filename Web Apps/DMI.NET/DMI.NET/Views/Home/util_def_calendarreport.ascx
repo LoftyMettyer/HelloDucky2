@@ -2032,7 +2032,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 								<td>&nbsp;</td>
 								<td width="80">
 									<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
-										onclick="okClick()"
+										onclick="okCalClick()"
 										onmouseover="try{button_onMouseOver(this);}catch(e){}"
 										onmouseout="try{button_onMouseOut(this);}catch(e){}"
 										onfocus="try{button_onFocus(this);}catch(e){}"
