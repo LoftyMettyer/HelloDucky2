@@ -1572,7 +1572,7 @@ function saveChanges(psAction, pfPrompt, pfTBOverride) {
 	}
 	if (answer == 6) {
 		// Yes
-		okClick();
+		okCalClick();
 	}
 
 	return 2; //Cancel.
@@ -3425,9 +3425,7 @@ function populateSaveExisting() {
 function validateObjectDate(pobjDateControl) {
     // Date column.
     // Ensure that the value entered is a date.
-
     var sValue = pobjDateControl.value;
-    OpenHR.messageBox(sValue + " validate in calendar.js");
     if (sValue.length == 0) {
         //		OpenHR.messageBox("Invalid date value entered.");
         //		pobjDateControl.focus()
@@ -3437,10 +3435,7 @@ function validateObjectDate(pobjDateControl) {
         // Convert the date to SQL format (use this as a validation check).
         // An empty string is returned if the date is invalid.
         sValue = OpenHR.convertLocaleDateToSQL(sValue);
-        OpenHR.messageBox(sValue + "1  validate in calendar.js");
-
         sValue = OpenHR.ConvertSQLDateToLocale(sValue);
-        OpenHR.messageBox(sValue + " 2  validate in calendar.js");
         if (sValue.length == 0) {
             OpenHR.messageBox("Invalid date value entered.");
             pobjDateControl.value = "";
@@ -3458,7 +3453,6 @@ function validateStringDate(psDate) {
     // Ensure that the value entered is a date.
 
     var sValue = psDate.value;
-    OpenHR.messageBox(sValue + " validate in calendar.js");
     if (sValue.length == 0) {
         //		OpenHR.messageBox("Invalid date value entered.");
         //		pobjDateControl.focus()
@@ -3468,10 +3462,7 @@ function validateStringDate(psDate) {
         // Convert the date to SQL format (use this as a validation check).
         // An empty string is returned if the date is invalid.
         sValue = OpenHR.convertLocaleDateToSQL(sValue);
-        OpenHR.messageBox(sValue + "1  validate in calendar.js");
-
         sValue = OpenHR.ConvertSQLDateToLocale(sValue);
-        OpenHR.messageBox(sValue + " 2  validate in calendar.js");
         if (sValue.length == 0) {
             OpenHR.messageBox("Invalid date value entered.");
             psDate.value = "";

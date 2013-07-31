@@ -2262,7 +2262,7 @@
 		}
 		if (answer == 6) {
 			// Yes
-			okClick();
+			okCalClick();
 		}
 
 		return 2; //Cancel.
