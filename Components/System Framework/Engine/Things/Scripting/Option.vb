@@ -12,6 +12,7 @@ Public Class [Option]
   Public Property RefreshObjects As Boolean Implements IOptions.RefreshObjects
   Public Property DevelopmentMode As Boolean Implements IOptions.DevelopmentMode
   Public Property OverflowSafety As Boolean Implements IOptions.OverflowSafety
+	Public Property VersionUpgraded As Boolean Implements IOptions.VersionUpgraded
 
 End Class
 

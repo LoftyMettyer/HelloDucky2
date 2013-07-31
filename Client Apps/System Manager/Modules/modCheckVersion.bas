@@ -818,6 +818,8 @@ Private Function UpdateDatabase( _
       
       fReRunScript = False
       
+      gobjHRProEngine.Options.VersionUpgraded = True
+      
     End If
 
   Loop While intMajor < App.Major Or intMinor < App.Minor And Not gobjProgress.Cancelled

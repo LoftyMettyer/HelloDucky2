@@ -1034,198 +1034,207 @@ Namespace ScriptDB
     Public Function CreateObjects() As Boolean Implements ICommitDB.ScriptObjects
 
       Try
-        'Build list of existing system UDF
-        Dim existingFunctions = (From f In DatabaseMetadata.GetFunctions() Where
-                         f.Name.StartsWith(Consts.RecordDescriptionUdf) OrElse
-                         f.Name.StartsWith(Consts.MaskUdf) OrElse
-                         f.Name.StartsWith(Consts.CalculationUdf) OrElse
-                         f.Name.StartsWith(Consts.DefaultValueUdf) OrElse
-                         f.Name.StartsWith(Consts.TableOrderFilterUdf)
-                         ).ToDictionary(Function(f) f.Name, StringComparer.InvariantCultureIgnoreCase)
+				'Build list of existing system UDF
+				Dim existingFunctions = (From f In DatabaseMetadata.GetFunctions() Where
+													 f.Name.StartsWith(Consts.RecordDescriptionUdf) OrElse
+													 f.Name.StartsWith(Consts.MaskUdf) OrElse
+													 f.Name.StartsWith(Consts.CalculationUdf) OrElse
+													 f.Name.StartsWith(Consts.DefaultValueUdf) OrElse
+													 f.Name.StartsWith(Consts.TableOrderFilterUdf)
+													 ).ToDictionary(Function(f) f.Name, StringComparer.InvariantCultureIgnoreCase)
 
-        Dim functions As New List(Of GeneratedUdf)
+				Dim functions As New List(Of GeneratedUdf)
 
-        ' Now create the objects
-        For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
+				' If complete refresh drop existing objects
+				If Options.VersionUpgraded Then
+					For Each func In existingFunctions.Values
+						CommitDb.ScriptStatement(SqlDropUdf("dbo", func.Name), False, True)
+					Next
+					existingFunctions.Clear()
+				End If
 
-          ' Record Descriptions
-          If table.RecordDescription IsNot Nothing Then
-            With table.RecordDescription
-              .GenerateRecordDescription()
-              functions.Add(.Udf)
-            End With
-          End If
+				' Now create the objects
+				For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
 
-          ' Indexes for views
-          Dim index As New Index
-          index.Name = String.Format("IDX_Views_{0}", table.Name)
-          index.IncludePrimaryKey = True
-          index.IsTableIndex = True
+					' Record Descriptions
+					If table.RecordDescription IsNot Nothing Then
+						With table.RecordDescription
+							.GenerateRecordDescription()
+							functions.Add(.Udf)
+						End With
+					End If
 
-          For Each view In table.Views
+					' Indexes for views
+					Dim index As New Index
+					index.Name = String.Format("IDX_Views_{0}", table.Name)
+					index.IncludePrimaryKey = True
+					index.IsTableIndex = True
 
-            If Not view.Filter Is Nothing Then
-              view.Filter.ExpressionType = ExpressionType.Mask
-              view.Filter.AssociatedColumn = table.Columns(0)
-              view.Filter.GenerateCodeForColumn()
+					For Each view In table.Views
 
-              For Each column In view.Filter.Dependencies.Columns
-                index.Columns.AddIfNew(column)
-              Next
-            End If
+						If Not view.Filter Is Nothing Then
+							view.Filter.ExpressionType = ExpressionType.Mask
+							view.Filter.AssociatedColumn = table.Columns(0)
+							view.Filter.GenerateCodeForColumn()
 
-          Next
-          table.Indexes.Add(index)
+							For Each column In view.Filter.Dependencies.Columns
+								index.Columns.AddIfNew(column)
+							Next
+						End If
 
-          ' Calculations
-          For Each column In table.Columns
+					Next
+					table.Indexes.Add(index)
 
-            If column.State <> DataRowState.Deleted Then
+					' Calculations
+					For Each column In table.Columns
 
-              If column.IsCalculated Then
+						If column.State <> DataRowState.Deleted Then
 
-                column.Calculation = table.Expressions.GetById(column.CalcId).Clone
-                column.Calculation.SetRootNode(column.Calculation)
+							If column.IsCalculated Then
 
-                If Not column.Calculation Is Nothing Then
-                  column.Calculation.ExpressionType = ExpressionType.ColumnCalculation
+								column.Calculation = table.Expressions.GetById(column.CalcId).Clone
+								column.Calculation.SetRootNode(column.Calculation)
 
-                  column.Calculation.AssociatedColumn = column
-                  column.Calculation.ConvertToExpression()
-                  column.Calculation.GenerateCodeForColumn()
+								If Not column.Calculation Is Nothing Then
+									column.Calculation.ExpressionType = ExpressionType.ColumnCalculation
 
-                  If column.Calculation.ReturnType <> column.ComponentReturnType Then
-                    ErrorLog.Add(Section.UdFs, column.Name, Severity.Error _
-                      , String.Format("Incorrect return type on {0}", column.Name) _
-                      , String.Format("The calculation selected on {0}.{1} is not the same type as its column. Please reselect the correct calculation for this column" & vbNewLine & _
-                                "This could result in further errors in the save process or conversion failure error messages when saving records on this table or associated tables" _
-                                , column.Table.Name, column.Name))
-                  End If
+									column.Calculation.AssociatedColumn = column
+									column.Calculation.ConvertToExpression()
+									column.Calculation.GenerateCodeForColumn()
 
-                  ' Trap for error 1753 (some system may have duff metadata that's built up over the years
-                  If column.Calculation.Components.Count = 0 Then
-                    ErrorLog.Add(Section.UdFs, column.Name, Severity.Warning _
-                      , String.Format("Invalid expression on {0}", column.Name) _
-                      , String.Format("The calculation on {0}.{1} has no components and is invalid. You will need to redefine this calculation.", column.Table.Name, column.Name))
-                    column.Calculation.IsValid = False
-                  End If
+									If column.Calculation.ReturnType <> column.ComponentReturnType Then
+										ErrorLog.Add(Section.UdFs, column.Name, Severity.Error _
+											, String.Format("Incorrect return type on {0}", column.Name) _
+											, String.Format("The calculation selected on {0}.{1} is not the same type as its column. Please reselect the correct calculation for this column" & vbNewLine & _
+																"This could result in further errors in the save process or conversion failure error messages when saving records on this table or associated tables" _
+																, column.Table.Name, column.Name))
+									End If
 
-                End If
+									' Trap for error 1753 (some system may have duff metadata that's built up over the years
+									If column.Calculation.Components.Count = 0 Then
+										ErrorLog.Add(Section.UdFs, column.Name, Severity.Warning _
+											, String.Format("Invalid expression on {0}", column.Name) _
+											, String.Format("The calculation on {0}.{1} has no components and is invalid. You will need to redefine this calculation.", column.Table.Name, column.Name))
+										column.Calculation.IsValid = False
+									End If
 
-              End If
+								End If
 
-              ' Build default value code
-              If column.DefaultCalcId > 0 Then
-                column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcId)
+							End If
 
-                If column.DefaultCalculation Is Nothing Then
-                  ErrorLog.Add(Section.UdFs, "", Severity.Warning _
-                  , String.Format("Default calculation for {0}.{1} not found.", column.Table.Name, column.Name) _
-                    , "This is likely to be caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations.")
-                Else
-                  column.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
-                  column.DefaultCalculation.AssociatedColumn = column
-                  column.DefaultCalculation.GenerateCodeForColumn()
-                End If
-              End If
+							' Build default value code
+							If column.DefaultCalcId > 0 Then
+								column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcId)
 
-            End If
+								If column.DefaultCalculation Is Nothing Then
+									ErrorLog.Add(Section.UdFs, "", Severity.Warning _
+									, String.Format("Default calculation for {0}.{1} not found.", column.Table.Name, column.Name) _
+										, "This is likely to be caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations.")
+								Else
+									column.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
+									column.DefaultCalculation.AssociatedColumn = column
+									column.DefaultCalculation.GenerateCodeForColumn()
+								End If
+							End If
+
+						End If
 
 
-          Next
+					Next
 
-          '  Validation Masks
-          For Each expression In table.Masks
-            With expression
-              .GenerateMaskCode()
-              functions.Add(.Udf)
-            End With
-          Next
-        Next
+					'  Validation Masks
+					For Each expression In table.Masks
+						With expression
+							.GenerateMaskCode()
+							functions.Add(.Udf)
+						End With
+					Next
+				Next
 
-        ' Generate any table UDFs
-        For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
-          For Each tableOrderFilter In table.TableOrderFilters
-            With tableOrderFilter
-              .GenerateCode()
-              functions.Add(.Udf)
-            End With
-          Next
-        Next
+				' Generate any table UDFs
+				For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
+					For Each tableOrderFilter In table.TableOrderFilters
+						With tableOrderFilter
+							.GenerateCode()
+							functions.Add(.Udf)
+						End With
+					Next
+				Next
 
-        ' Script the column calculations
-        For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
-          For Each column In table.Columns
+				' Script the column calculations
+				For Each table In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
+					For Each column In table.Columns
 
-            If column.State <> DataRowState.Deleted Then
+						If column.State <> DataRowState.Deleted Then
 
-              If column.IsCalculated Then
+							If column.IsCalculated Then
 
-                With column.Calculation
-                  .ExpressionType = ExpressionType.ColumnCalculation
-                  .AssociatedColumn = column
-                  .GenerateCodeForColumn()
+								With column.Calculation
+									.ExpressionType = ExpressionType.ColumnCalculation
+									.AssociatedColumn = column
+									.GenerateCodeForColumn()
 
-                  TuningLog.Expressions.Add(column)
+									TuningLog.Expressions.Add(column)
 
-                  If .IsValid And .IsComplex Then
-                    functions.Add(.Udf)
-                  End If
-                End With
-              End If
+									If .IsValid And .IsComplex Then
+										functions.Add(.Udf)
+									End If
+								End With
+							End If
 
-              If column.DefaultCalcId > 0 And Not column.DefaultCalculation Is Nothing Then
+							If column.DefaultCalcId > 0 And Not column.DefaultCalculation Is Nothing Then
 
-                With column.DefaultCalculation
-                  .ExpressionType = ExpressionType.ColumnDefault
-                  .AssociatedColumn = column
-                  .GenerateCodeForColumn()
-                  TuningLog.Expressions.Add(column)
+								With column.DefaultCalculation
+									.ExpressionType = ExpressionType.ColumnDefault
+									.AssociatedColumn = column
+									.GenerateCodeForColumn()
+									TuningLog.Expressions.Add(column)
 
-                  If .IsValid Then
-                    functions.Add(.Udf)
-                  Else
-                    Dim newUdf = .Udf
-                    newUdf.Code = newUdf.CodeStub
-                    functions.Add(newUdf)
-                  End If
-                End With
-              End If
+									If .IsValid Then
+										functions.Add(.Udf)
+									Else
+										Dim newUdf = .Udf
+										newUdf.Code = newUdf.CodeStub
+										functions.Add(newUdf)
+									End If
+								End With
+							End If
 
-            End If
+						End If
 
-          Next
-        Next
+					Next
+				Next
 
-        'Update the database for all the functions
-        For Each func In functions.Distinct
 
-          If existingFunctions.ContainsKey(func.BaseName) Then
+				'Update the database for all the functions
+				For Each func In functions.Distinct
 
-            If Not IsSameWithoutComments(func.Code, existingFunctions(func.BaseName).Definition) Then
-              'function needs to be updated
-              CommitDb.ScriptStatement(func.SqlAlter, False, True)
-            End If
+					If existingFunctions.ContainsKey(func.BaseName) Then
 
-          Else
+						If Not IsSameWithoutComments(func.Code, existingFunctions(func.BaseName).Definition) Then
+							'function needs to be updated
+							CommitDb.ScriptStatement(func.SqlAlter, False, True)
+						End If
 
-            'create the function it doesnt exist
-            CommitDb.ScriptStatement(func.SqlCreate, False, True)
+					Else
 
-          End If
-          existingFunctions.Remove(func.BaseName)
-        Next
+						'create the function it doesnt exist
+						CommitDb.ScriptStatement(func.SqlCreate, False, True)
 
-        'Drop from the database function no longer needed
-        For Each func In existingFunctions.Values
-          CommitDb.ScriptStatement(SqlDropUdf("dbo", func.Name), False, True)
-        Next
+					End If
+					existingFunctions.Remove(func.BaseName)
+				Next
 
-      Catch ex As Exception
-        ErrorLog.Add(Section.UdFs, String.Empty, Severity.Error, ex.Message, vbNullString)
-        Return False
+				'Drop from the database function no longer needed
+				For Each func In existingFunctions.Values
+					CommitDb.ScriptStatement(SqlDropUdf("dbo", func.Name), False, True)
+				Next
 
-      End Try
+			Catch ex As Exception
+				ErrorLog.Add(Section.UdFs, String.Empty, Severity.Error, ex.Message, vbNullString)
+				Return False
+
+			End Try
 
       Return True
 
