@@ -604,7 +604,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_F8AA754A46FC40D489A47B32DBA1BFFB"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder]Advanced\\OpenHR v5.1"
+            "DefaultLocation" = "8:[ProgramFilesFolder]Advanced\\OpenHR v5.2"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
