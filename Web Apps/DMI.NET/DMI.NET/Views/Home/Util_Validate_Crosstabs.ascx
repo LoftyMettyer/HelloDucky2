@@ -1,61 +1,67 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@Import namespace="DMI.NET" %>
 
-<script type=”text/javascript">
+<script type="text/javascript">
 <%--	<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>--%>
 </script>
 
-<div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id=bdyMain leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
+<script type="text/javascript">
+	function util_validate_crosstab_window_onload() {
+		if (txtErrorCode.value == 0) {
+			////OpenHR.getElementById("frmSend").submit();
+			//var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
+			////window.dialogArguments.OpenHR(frmSubmit);
+			//OpenHR.submitForm(frmSubmit, null, false);
+			////window.dialogArguments.document.getElementById('frmSend').submit();
+			//self.close();
+			//return;
 
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<table class="invisible" cellspacing="0" cellpadding="0">
-				<tr> 
-					<td colspan=5 height=10></td>
-				</tr>
+			var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
+			window.dialogArguments.OpenHR.submitForm(frmSend);
+			self.close();
+		}
+	}
+</script>
 
-				<tr id=trPleaseWait1> 
-					<td width=20></td>
-					<td align=center colspan=3> 
-						Validating Cross Tab
-					</td>
-					<td width=20></td>
-				</tr>
+<%--<div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id=bdyMain leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5> --%>
+<div bgcolor='<%=session("ConvertedDesktopColour")%>' id="Div1" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
+	<table align="center" class="outline" cellpadding="5" cellspacing="0">
+		<tr>
+			<td>
+				<table class="invisible" cellspacing="0" cellpadding="0">
+					<tr>
+						<td colspan="5" height="10"></td>
+					</tr>
 
-				<tr id=trPleaseWait4 height=10> 
-					<td colspan=5></td>
-				</tr>
+					<tr id="trPleaseWait1">
+						<td width="20"></td>
+						<td align="center" colspan="3">Validating Cross Tab
+						</td>
+						<td width="20"></td>
+					</tr>
 
-				<tr id=trPleaseWait2> 
-					<td width=20></td>
-					<td align=center colspan=3> 
-						Please Wait...
-					</td>
-					<td width=20></td>
-				</tr>
-				<tr style="color: red">
-					<td align=center colspan=3> 
-						PS This bit not done yet so press cancel to continue without validating
-					</td>
-				</tr>
+					<tr id="trPleaseWait4" height="10">
+						<td colspan="5"></td>
+					</tr>
 
-				<tr id=trPleaseWait5 height=20> 
-					<td colspan=5></td>
-				</tr>
+					<tr id="trPleaseWait2">
+						<td width="20"></td>
+						<td align="center" colspan="3">Please Wait...
+						</td>
+						<td width="20"></td>
+					</tr>
 
-				<tr id=trPleaseWait3> 
-					<td width=20></td>
-					<td align=center colspan=3> 
-						<INPUT TYPE=button VALUE="Cancel" class="btn" NAME="Cancel" style="WIDTH: 80px" width=80 id=Cancel
-								OnClick="self.close()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
-					</td>
-					<td width=20></td>
-				</tr>
+					<tr id="trPleaseWait5" height="20">
+						<td colspan="5"></td>
+					</tr>
+
+					<tr id="trPleaseWait3">
+						<td width="20"></td>
+						<td align="center" colspan="3">
+							<input type="button" value="Cancel" class="btn" name="Cancel" style="WIDTH: 80px" width="80" id="Cancel" onclick="self.close()" />
+						</td>
+						<td width="20"></td>
+					</tr>
 
 
 <%
@@ -110,174 +116,100 @@
 	Err.Clear()
 	cmdValidate.Execute()
 
-	Response.Write("<INPUT type=hidden id=txtErrorCode name=txtErrorCode value=" & cmdValidate.Parameters("errorCode").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtDeletedFilters name=txtDeletedFilters value=" & cmdValidate.Parameters("deletedFilters").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtHiddenFilters name=txtHiddenFilters value=" & cmdValidate.Parameters("hiddenFilters").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtJobIDsToHide name=txtJobIDsToHide value=""" & cmdValidate.Parameters("jobsToHide").Value & """>" & vbCrLf)
-
-	If cmdValidate.Parameters("errorCode").Value = 1 Then
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("						<H3>Error Saving Cross Tab</H3>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("    				    <INPUT TYPE=button VALUE=Close class=""btn"" NAME=Cancel style=""WIDTH: 80px"" width=80 id=Cancel" & vbCrLf)
-		Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-		Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-	Else
-		If cmdValidate.Parameters("errorCode").Value = 2 Then
-			Response.Write("			  <tr>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-			Response.Write("						<H3>Error Saving Cross Tab</H3>" & vbCrLf)
-			Response.Write("			    </td>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			  </tr>" & vbCrLf)
-			Response.Write("			  <tr>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-			Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-			Response.Write("			    </td>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			  </tr>" & vbCrLf)
-			Response.Write("			  <tr>" & vbCrLf)
-			Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-			Response.Write("			  </tr>" & vbCrLf)
-			Response.Write("			  <tr> " & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			    <td align=right> " & vbCrLf)
-			Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
-			Response.Write("    				        OnClick=""createNew()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-			Response.Write("			    </td>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			    <td align=left> " & vbCrLf)
-			Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
-			Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-			Response.Write("			    </td>" & vbCrLf)
-			Response.Write("					<td width=20></td>" & vbCrLf)
-			Response.Write("			  </tr>" & vbCrLf)
-
-		Else
-			If cmdValidate.Parameters("errorCode").Value = 3 Then
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-				Response.Write("						<H3>Error Saving Cross Tab</H3>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-				Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr> " & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=right> " & vbCrLf)
-				Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
-				Response.Write("    				        OnClick=""overwrite()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=left> " & vbCrLf)
-				Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
-				Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-			Else
-				If cmdValidate.Parameters("errorCode").Value = 4 Then
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-					Response.Write("						<H3>Error Saving Cross Tab</H3>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-					Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr> " & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=right> " & vbCrLf)
-					Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
-					Response.Write("    				        OnClick=""continueSave()""" & vbCrLf)
-					Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=left> " & vbCrLf)
-					Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
-					Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-					Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("				</tr>" & vbCrLf)
-				End If
-			End If
-		End If
+	Dim ResponseString As String = String.Concat( _
+		"<input type='hidden' id='txtErrorCode' 'name='txtErrorCode' value='", cmdValidate.Parameters("errorCode").Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtDeletedFilters' name='txtDeletedFilters' value='", cmdValidate.Parameters("deletedFilters").Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtHiddenFilters' name='txtHiddenFilters' value='", cmdValidate.Parameters("hiddenFilters").Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtJobIDsToHide' name='txtJobIDsToHide' value='", cmdValidate.Parameters("jobsToHide").Value, "'>", vbCrLf)
+	
+	'The following bit is common if an error code was returned
+	If cmdValidate.Parameters("errorCode").Value <> 0 Then
+		ResponseString = String.Concat(ResponseString, _
+			"			  <tr>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			    <td align='center' colspan='3'> ", vbCrLf, _
+			"						<h3>Error Saving Cross Tab</h3>", vbCrLf, _
+			"			    </td>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			  </tr>", vbCrLf, _
+			"			  <tr>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			    <td align='center' colspan='3'> ", vbCrLf, _
+			"						" & cmdValidate.Parameters("errorMsg").Value, vbCrLf, _
+			"			    </td>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			  </tr>", vbCrLf, _
+			"			  <tr>", vbCrLf, _
+			"					<td height='20' colspan='5'></td>", vbCrLf, _
+			"			  </tr>", vbCrLf, _
+			"			  <tr> ", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf)
 	End If
 	
+	If cmdValidate.Parameters("errorCode").Value = 1 Then
+		ResponseString = String.Concat(ResponseString, _
+			"			    <td align='center' colspan='3'> ", vbCrLf, _
+			"    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel' OnClick='self.close()' />", vbCrLf, _
+			"			    </td>", vbCrLf)
+	ElseIf cmdValidate.Parameters("errorCode").Value = 2 Then
+		ResponseString = String.Concat(ResponseString, _
+			"			    <td align='right'>", vbCrLf, _
+			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='createNew()' />", vbCrLf, _
+			"			    </td>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			    <td align='left'> ", vbCrLf, _
+			"    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo' OnClick='self.close()' />", vbCrLf, _
+			"			    </td>", vbCrLf)
+	ElseIf cmdValidate.Parameters("errorCode").Value = 3 Then
+		ResponseString = String.Concat(ResponseString, _
+			"			    <td align='right'> ", vbCrLf, _
+			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='overwrite()' />", vbCrLf, _
+			"			    </td>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			    <td align='left'> ", vbCrLf, _
+			"    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo' OnClick='self.close()' />", vbCrLf, _
+			"			    </td>", vbCrLf)
+	ElseIf cmdValidate.Parameters("errorCode").Value = 4 Then
+		ResponseString = String.Concat(ResponseString, _
+			"			    <td align='right'> ", vbCrLf, _
+			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='continueSave()' />", vbCrLf, _
+			"			    </td>", vbCrLf, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			    <td align='left'> ", vbCrLf, _
+			"    				    <input type='button' value ='No' class='btn' name='btnNo' style='width: 80px' id='btnNo' OnClick='self.close() ' />", vbCrLf, _
+			"			    </td>", vbCrLf)
+	End If
+	
+	'The following bit is common if an error code was returned
+	If cmdValidate.Parameters("errorCode").Value <> 0 Then
+		ResponseString = String.Concat(ResponseString, _
+			"					<td width='20'></td>", vbCrLf, _
+			"			  </tr>", vbCrLf)
+	End If
+	
+	Response.Write(ResponseString)
+	
+	Response.Write("<script type='text/javascript'>" & vbCrLf)
+	Response.Write("	trPleaseWait1.style.display='none';" & vbCrLf)
+	Response.Write("	trPleaseWait2.style.display='none';" & vbCrLf)
+	Response.Write("	trPleaseWait3.style.display='none';" & vbCrLf)
+	Response.Write("	trPleaseWait4.style.display='none';" & vbCrLf)
+	Response.Write("	trPleaseWait5.style.display='none';" & vbCrLf)
+	Response.Write("</script>" & vbCrLf)
+	
 	cmdValidate = Nothing
+	
 %>
-				<tr height=10> 
-					<td colspan=5></td>
-				</tr>
-			</table>
-		</TD>
-	</TR>
-</table>
+
+					<tr height="10">
+						<td colspan="5"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
+
+<script type="text/javascript">
+	util_validate_crosstab_window_onload();
+</script>

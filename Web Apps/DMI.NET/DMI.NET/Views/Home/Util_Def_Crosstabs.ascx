@@ -1573,7 +1573,7 @@
 	<input type="hidden" id="validateUtilID" name="validateUtilID" value=''>
 </form>
 
-<form id="frmSend" name="frmSend" method="post" action="util_def_crosstabs_Submit" style="visibility: hidden; display: none">
+<form id="frmSend" name="frmSend" method="post" action="util_def_crosstabs_submit" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtSend_ID" name="txtSend_ID" value="0">
 	<input type="hidden" id="txtSend_name" name="txtSend_name" value=''>
 	<input type="hidden" id="txtSend_description" name="txtSend_description" value=''>

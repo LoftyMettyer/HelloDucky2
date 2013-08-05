@@ -1348,7 +1348,7 @@ function submitDefinition()
 				"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
 				"&validateUtilID=" + frmValidate.validateUtilID.value +
 				"&destination=util_validate_crosstab";
-		openDialog(sURL, (screen.width)/2,(screen.height)/3,"no", "no");
+	openDialog(sURL, 450, 270, "no", "no");
 }
 
 function HiddenGroups(pgrdAccess) {
@@ -2446,26 +2446,22 @@ function grdAccess_RowLoaded() {
 		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
 
-		if ((fIsNotOwner == true) ||
-				(fViewing == true) ||
-				(frmSelectionAccess.forcedHidden.value == "Y")) {
-				frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
-				frmDefinition.grdAccess.Columns("Access").CellStyleSet("ReadOnly");
-				frmDefinition.grdAccess.ForeColor = "-2147483631";
+		if ((fIsNotOwner == true) || (fViewing == true) || (frmSelectionAccess.forcedHidden.value == "Y")) {
+			frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
+			frmDefinition.grdAccess.Columns("Access").CellStyleSet("ReadOnly");
+			frmDefinition.grdAccess.ForeColor = "-2147483631";
 		}  
 		else {
+			if (typeof Bookmark != 'undefined') {
 				if (frmDefinition.grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
-						frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
-						frmDefinition.grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
-						frmDefinition.grdAccess.ForeColor = "0";
+					frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
+					frmDefinition.grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
+					frmDefinition.grdAccess.ForeColor = "0";
+				} else {
+					frmDefinition.grdAccess.ForeColor = "0";
 				}
-				else {
-						frmDefinition.grdAccess.ForeColor = "0";
-				}
+		 } else {
+				frmDefinition.grdAccess.ForeColor = "0";
+			}
 		}
 }
-
-
-
-
-
