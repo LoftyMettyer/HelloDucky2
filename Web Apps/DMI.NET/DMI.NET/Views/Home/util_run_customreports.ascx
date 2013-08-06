@@ -1,38 +1,33 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
-<object
-		id="ClientDLL"
-		classid="CLSID:40E1755A-5A2D-4AEE-99E7-65E7D455F799"
-		codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
-</object>
-
 <% 
-		Dim bBradfordFactor As Boolean
-		Dim mstrCaption As String
-		Dim sErrMsg As String
+	Dim bBradfordFactor As Boolean
+	Dim mstrCaption As String
+	Dim sErrMsg As String
 		
-	bBradfordFactor = (session("utiltype") = "16")
+	bBradfordFactor = (Session("utiltype") = "16")
 %>
- 
-		<script type="text/javascript">
-				function reports_window_onload() {
-						customreport_loadAddRecords();
-				}
-		</script>
-		
 
-		<%
+<script type="text/javascript">
+	function reports_window_onload() {
+		customreport_loadAddRecords();
+	}
+</script>
+
+
+<%
 	if session("utiltype") = "" or _ 
 		 session("utilname") = "" or _ 
 		 session("utilid") = "" or _ 
 		 session("action") = "" then
 
 						Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0>" & vbCrLf)
-						Response.Write("	<TR>" & vbCrLf)
-						Response.Write("		<TD>" & vbCrLf)
+		Response.Write("	<tr>" & vbCrLf)
+		Response.Write("		<td>" & vbCrLf)
 						Response.Write("			<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
 						Response.Write("			  <tr>" & vbCrLf)
 						Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
@@ -104,8 +99,8 @@
 				Dim objReport As HR.Intranet.Server.Report
 				Dim fNotCancelled As Boolean
 
-				Dim dtStartDate
-				Dim dtEndDate
+			Dim dtStartDate As String
+			Dim dtEndDate As String
 				Dim strAbsenceTypes As String = ""
 				Dim lngFilterID As Long
 				Dim lngPicklistID As Long
@@ -314,12 +309,7 @@
 		fNotCancelled = Response.IsClientConnected 
 		if fok then fok = fNotCancelled
 	end if
-
-				Dim arrayDefinition
-				
-	if fok then
-		arrayDefinition = objreport.OutputArray_Definition 
-	end if	
+		
 
 	' Need to pass in defined output options 
 	'	(standard report reads from definition, which of course we don't have in a standard report)
@@ -335,21 +325,14 @@
 		if fok then fok = fNotCancelled
 	end if
 
-				Dim arrayColumnsDefinition
+	Dim arrayColumnsDefinition() As String
 				Dim arrayPageBreakValues
 				Dim arrayVisibleColumns
 
 	if fok then
-		arrayColumnsDefinition = objreport.OutputArray_Columns 
 
 		if fok then 
 			fok = objreport.PopulateGrid_LoadRecords 
-			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
-
-		if fok then 
-			fok = objreport.PopulateGrid_HideColumns 
 			fNotCancelled = Response.IsClientConnected 
 			if fok then fok = fNotCancelled
 		end if
@@ -367,7 +350,7 @@
 	if fok then
 
 						
-						Response.Write("<FORM action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
+		Response.Write("<form action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
 						Response.Write("  <INPUT type=""hidden"" id=txtPreview name=txtPreview value=""" & objReport.OutputPreview & """>" & vbCrLf)
 						Response.Write("  <INPUT type=""hidden"" id=txtFormat name=txtFormat value=" & objReport.OutputFormat & ">" & vbCrLf)
 						Response.Write("  <INPUT type=""hidden"" id=txtScreen name=txtScreen value=""" & objReport.OutputScreen & """>" & vbCrLf)
@@ -382,8 +365,8 @@
 						Response.Write("  <INPUT type=""hidden"" id=txtEmailAttachAs name=txtEmailAttachAs value=""" & Replace(objReport.OutputEmailAttachAs, """", "&quot;") & """>" & vbCrLf)
 						Response.Write("  <INPUT type=""hidden"" id=txtFileName name=txtFileName value=""" & objReport.OutputFilename & """>" & vbCrLf)
 						Response.Write("  <INPUT type=""hidden"" id=txtUtilType name=txtUtilType value=""" & Session("UtilType") & """>" & vbCrLf)
-
-						
+		Response.Write("  <INPUT type=""hidden"" id=""txtHasSummaryColumns"" name=""txtHasSummaryColumns"" value=""" & objReport.HasSummaryColumns & """>" & vbCrLf)
+		
 						
 		For icount = 0 To (UBound(arrayPageBreakValues))
 				Response.Write("	<INPUT type=hidden id=txtPageBreak_" & icount & " name=txtPageBreak_" & icount & " value=""" & Replace(arrayPageBreakValues(icount), """", "&quot;") & """>" & vbCrLf)
@@ -393,13 +376,13 @@
 		Response.Write("			<input type=hidden id=txtSummaryReport name=txtSummaryReport value=""" & objReport.ReportHasSummaryInfo & """>" & vbCrLf)
 		
 		For icount = 0 To (UBound(arrayVisibleColumns, 2))
-				Response.Write("	<INPUT type=hidden id=txtVisHeading_" & icount & " name=txtVisHeading_" & icount & " value=""" & Replace(Replace(arrayVisibleColumns(0, icount), """", "&quot;"), "_", " ") & """>" & vbCrLf)
-				Response.Write("	<INPUT type=hidden id=txtVisDataType_" & icount & " name=txtVisDataType_" & icount & " value=""" & arrayVisibleColumns(1, icount) & """>" & vbCrLf)
-				Response.Write("	<INPUT type=hidden id=txtVisDecimals_" & icount & " name=txtVisDecimals_" & icount & " value=""" & arrayVisibleColumns(2, icount) & """>" & vbCrLf)
-				Response.Write("	<INPUT type=hidden id=txtVis1000Separator_" & icount & " name=txtVis1000Separator_" & icount & " value=""" & arrayVisibleColumns(3, icount) & """>" & vbCrLf)
+			Response.Write("	<input type=hidden id=txtVisHeading_" & icount & " name=txtVisHeading_" & icount & " value=""" & Replace(Replace(arrayVisibleColumns(0, icount), """", "&quot;"), "_", " ") & """>" & vbCrLf)
+			Response.Write("	<input type=hidden id=txtVisDataType_" & icount & " name=txtVisDataType_" & icount & " value=""" & arrayVisibleColumns(1, icount) & """>" & vbCrLf)
+			Response.Write("	<input type=hidden id=txtVisDecimals_" & icount & " name=txtVisDecimals_" & icount & " value=""" & arrayVisibleColumns(2, icount) & """>" & vbCrLf)
+			Response.Write("	<input type=hidden id=txtVis1000Separator_" & icount & " name=txtVis1000Separator_" & icount & " value=""" & arrayVisibleColumns(3, icount) & """>" & vbCrLf)
 		Next
-		Response.Write("	<INPUT type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
-		Response.Write("</FORM>" & vbCrLf)
+		Response.Write("	<input type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
+		Response.Write("</form>" & vbCrLf)
 	
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
@@ -543,21 +526,21 @@
 								'strFileName = objreport.OutputFilename 
 								strFileName = CleanStringForJavaScript(objReport.OutputFilename)
 			
-								Dim cmdEmailAddr
-								Dim prmEmailGroupID
-								Dim rstEmailAddr
+					Dim cmdEmailAddr As ADODB.Command
+					Dim prmEmailGroupID As ADODB.Parameter
+					Dim rstEmailAddr As ADODB.Recordset
 								Dim sErrorDescription As String = ""
 								Dim iLoop As Integer
 								Dim sEmailAddresses As String = ""
 								
 								If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
 				
-										cmdEmailAddr = CreateObject("ADODB.Command")
+				cmdEmailAddr = New Command()
 										cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-										cmdEmailAddr.CommandType = 4 ' Stored procedure
+				cmdEmailAddr.CommandType = CommandTypeEnum.adCmdStoredProc
 										cmdEmailAddr.ActiveConnection = Session("databaseConnection")
 
-										prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
+						prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 										cmdEmailAddr.Parameters.Append(prmEmailGroupID)
 										prmEmailGroupID.value = CleanNumeric(lngEmailGroupID)
 
@@ -627,11 +610,9 @@
 						Response.Write("  if (ClientDLL.GetFile() == true) " & vbCrLf)
 						Response.Write("		{" & vbCrLf)
 			
-						'Response.Write "		if (frmExportData.pagebreak.value == 'True') " & vbcrlf
-						Response.Write("		if (frmExportData.pagebreak.value.toLowerCase() == ""true"") " & vbCrLf)
+		Response.Write("		if (frmExportData.pagebreak.value.toLowerCase() == ""true"") " & vbCrLf)
 						Response.Write("			{" & vbCrLf)
 						Response.Write("			var lngActualRow = new Number(0);" & vbCrLf)
-						'	Response.Write "			ClientDLL.PageTitles = true;" & vbcrlf
 			
 						Response.Write("			ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
 						Response.Write("			lngActualRow = 0;" & vbCrLf)
@@ -642,8 +623,7 @@
 
 						Response.Write("				lngActualRow = lngActualRow + 1; " & vbCrLf)
 						Response.Write("				bm = frmOutput.ssOleDBGridDefSelRecords.AddItemBookmark(lngRow);" & vbCrLf)
-						'Response.Write "				if (lngRow == (frmOutput.ssOleDBGridDefSelRecords.Rows - 1))" & vbcrlf
-						Response.Write("				if (lngRow == (frmOutput.ssOleDBGridDefSelRecords.Rows))" & vbCrLf)
+		Response.Write("				if (lngRow == (frmOutput.ssOleDBGridDefSelRecords.Rows))" & vbCrLf)
 						Response.Write("					{" & vbCrLf)
 
 						Response.Write("					if (frmExportData.txtSummaryReport.value == 'True') " & vbCrLf)
@@ -849,209 +829,82 @@
 
 				objReport.ClearUp()
 
-				If fok Then
-						Response.Write("<FORM name=frmOutput id=frmOutput method=post>" & vbCrLf)
-						Response.Write("<table height=100% width=100% align=center class=""outline"" cellPadding=5 cellSpacing=0 >" & vbCrLf)
-						Response.Write("	<TR>" & vbCrLf)
-						Response.Write("		<TD>" & vbCrLf)
-						Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-						Response.Write("				<tr>" & vbCrLf)
-						Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
-						Response.Write("				<tr>" & vbCrLf)
-						Response.Write("					<td width=20></td>" & vbCrLf)
-						Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
+			If fok Then
+		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
+				Response.Write("<table height=100% width=100% align=center class=""outline"" cellPadding=5 cellSpacing=0 >" & vbCrLf)
+		Response.Write("	<tr>" & vbCrLf)
+		Response.Write("		<td>" & vbCrLf)
+				Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+				Response.Write("				<tr>" & vbCrLf)
+				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+				Response.Write("				</tr>" & vbCrLf)
+				Response.Write("				<tr>" & vbCrLf)
+				Response.Write("					<td width=20></td>" & vbCrLf)
+				Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 
-						For icount = 1 To UBound(arrayDefinition)
-								Response.Write(arrayDefinition(icount))
-						Next
+%>
 
-						For icount = 1 To UBound(arrayColumnsDefinition)
-								Response.Write(arrayColumnsDefinition(icount))
-						Next
+<table class='outline' style='width: 100%; height: auto' id="ssOleDBGridDefSelRecords">
+	<tbody>
+		<tr class='header' style="text-align: left;">
+			<%			
+				For icount = 1 To UBound(arrayColumnsDefinition)
+					Response.Write(arrayColumnsDefinition(icount))
+				Next				
+			%>
+		</tr>
+	</tbody>
+</table>
 
-						'for iCount = 1 to UBound(arrayDataDefinition)
-						'	if instr(arrayDataDefinition(icount),"<PARAM NAME=") then
-						'		Response.Write "    " & arrayDataDefinition(icount) & vbcrlf
-						'	end if
-						'next 
+<%
 
-						Response.Write("						</OBJECT>" & vbCrLf)
 
-						Response.Write("					</td>" & vbCrLf)
-						Response.Write("					<td width=20></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
-						Response.Write("				<tr>" & vbCrLf)
-						Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
+				Response.Write("					</td>" & vbCrLf)
+				Response.Write("					<td width=20></td>" & vbCrLf)
+				Response.Write("				</tr>" & vbCrLf)
+				Response.Write("				<tr>" & vbCrLf)
+				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+				Response.Write("				</tr>" & vbCrLf)
 
-						Response.Write("				<tr height=25>" & vbCrLf)
-						Response.Write("					<td width=20></td>" & vbCrLf)
-						Response.Write("					<td colspan=8>" & vbCrLf)
-						Response.Write("						<TABLE WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
-						Response.Write("							<TR>" & vbCrLf)
+				Response.Write("				<tr height=25>" & vbCrLf)
+				Response.Write("					<td width=20></td>" & vbCrLf)
+				Response.Write("					<td colspan=8>" & vbCrLf)
+	Response.Write("						<table WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
+	Response.Write("							<tr>" & vbCrLf)
+	Response.Write("								<td>" & vbCrLf)
+	Response.Write("								</td>" & vbCrLf)
+	Response.Write("								<td>&nbsp;</td>" & vbCrLf)
+				Response.Write("								<td width=20>" & vbCrLf)
+				Response.Write("      						<input type=button id=output name=output value=Output style=""WIDTH: 80px"" class=""btn""" & vbCrLf)
+		Response.Write("                            onclick=""ExportDataPrompt();"" />" & vbCrLf)
+		Response.Write("								</td>" & vbCrLf)
+				Response.Write("							</tr>" & vbCrLf)
+				Response.Write("						</table>" & vbCrLf)
+				Response.Write("					</td>" & vbCrLf)
+				Response.Write("					<td width=10></td>" & vbCrLf)
+				Response.Write("					<td width=80> " & vbCrLf)
+				Response.Write("      						<input type=button id=close name=close value=Close style=""WIDTH: 80px"" class=""btn""" & vbCrLf)	'2
+		Response.Write("                            onclick=""closeclick();"" />" & vbCrLf)
+		Response.Write("					</td>" & vbCrLf)
+				Response.Write("					<td width=20></td>" & vbCrLf)
+				Response.Write("				</tr>" & vbCrLf)
+				Response.Write("				<tr>" & vbCrLf)
+				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+				Response.Write("				</tr>" & vbCrLf)
+				Response.Write("			</table>" & vbCrLf)
+				Response.Write("		</td>" & vbCrLf)
+				Response.Write("	</tr>" & vbCrLf)
+				Response.Write("</table>" & vbCrLf)
+		Response.Write("</form>" & vbCrLf)
 		
-						' Put the hidden grid (used for printing with page breaks)
-						' in here as we need it to be in the BODY (so that it picks up on the page font)
-						' but setting visibility to 'hidden' caused the printing to crash.
-						Response.Write("								<TD>" & vbCrLf)
-						Response.Write("									<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" id=ssHiddenGrid name=ssHiddenGrid style=""HEIGHT: 0px; LEFT: 0px; TOP: 0px; WIDTH: 0px; POSITION: absolute"" VIEWASTEXT>" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Cols"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""GroupHeaders"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Col.Count"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""DividerType"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BevelColorFrame"" VALUE=""-2147483642"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BevelColorHighlight"" VALUE=""-2147483628"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BevelColorShadow"" VALUE=""-2147483632"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BevelColorFace"" VALUE=""-2147483633"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""SelectTypeRow"" VALUE=""2"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""SelectByCell"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""RowNavigation"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BackColorEven"" VALUE=""16777215"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BackColorOdd"" VALUE=""16777215"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""RowHeight"" VALUE=""238"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns.Count"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Width"" VALUE=""1000"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Visible"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Columns.Count"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Caption"" VALUE=""PageBreak"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Name"" VALUE=""PageBreak"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Alignment"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Bound"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).AllowSizing"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).DataField"" VALUE=""Column 0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).DataType"" VALUE=""8"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Level"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).NumberFormat"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Case"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).FieldLen"" VALUE=""4096"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).VertScrollBar"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Locked"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Style"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).ButtonsAlways"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).RowCount"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).ColCount"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HasForeColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HasBackColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HeadForeColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HeadBackColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).ForeColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).BackColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).HeadStyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).StyleSet"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Nullable"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).Mask"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).PromptInclude"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).ClipMode"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Columns(0).PromptChar"" VALUE=""95"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BatchUpdate"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""_ExtentX"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""_ExtentY"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
-						Response.Write("										<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-						Response.Write("									</OBJECT>" & vbCrLf)
-						Response.Write("								</TD>" & vbCrLf)
-						Response.Write("								<TD>&nbsp;</TD>" & vbCrLf)
-						Response.Write("								<td width=20>" & vbCrLf)
-						Response.Write("      						<input type=button id=output name=output value=Output style=""WIDTH: 80px"" class=""btn""" & vbCrLf)
-						Response.Write("                            onclick=""ExportDataPrompt();""" & vbCrLf)
-						Response.Write("                            onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
-						Response.Write("								</td>" & vbCrLf)
-						Response.Write("							</tr>" & vbCrLf)
-						Response.Write("						</table>" & vbCrLf)
-						Response.Write("					</td>" & vbCrLf)
-						Response.Write("					<td width=10></td>" & vbCrLf)
-						Response.Write("					<td width=80> " & vbCrLf)
-						Response.Write("      						<input type=button id=close name=close value=Close style=""WIDTH: 80px"" class=""btn""" & vbCrLf) '2
-						Response.Write("                            onclick=""closeclick();""" & vbCrLf)
-						Response.Write("                            onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                            onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
-						Response.Write("					</td>" & vbCrLf)
-						Response.Write("					<td width=20></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
-						Response.Write("				<tr>" & vbCrLf)
-						Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
-						Response.Write("			</table>" & vbCrLf)
-						Response.Write("		</td>" & vbCrLf)
-						Response.Write("	</tr>" & vbCrLf)
-						Response.Write("</table>" & vbCrLf)
-						Response.Write("</FORM>" & vbCrLf)
-		
-						Response.Write("<INPUT type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
-						Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
-					Else%>
+		Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
+				Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
+			Else%>
 	
-		<FORM Name=frmPopup ID=frmPopup>
+		<form Name=frmPopup ID=frmPopup>
 		<table align=center class="outline" cellPadding=5 cellSpacing=0>
-			<TR>
-				<TD>
+			<tr>
+				<td>
 					<table class="invisible" cellspacing=0 cellpadding=0>
 						<tr>
 							<td colspan=3 height=10></td>
@@ -1064,7 +917,7 @@
 <%	if bBradfordFactor = true then
 			mstrCaption = "Bradford Factor"
 		else
-			mstrCaption = "Custom Report '" & session("utilname") & "'"
+		mstrCaption = "Custom Report '" & Session("utilname").ToString() & "'"
 		End If
 
 		If fNoRecords Then
@@ -1098,7 +951,7 @@
 				</td>
 			</tr>
 		</table>
-		</FORM>
+		</form>
 
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="1">
 <input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
@@ -1110,8 +963,8 @@
 
 		<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 				<%
-						Response.Write("	<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("	<INPUT type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
+					Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 				%>
 				<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
 				<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">
@@ -1127,5 +980,5 @@
 		</form>
 
 		<%
-				Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
+			Response.Write("<input type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
 		%>

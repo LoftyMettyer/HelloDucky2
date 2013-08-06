@@ -103,6 +103,9 @@
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 	
+	<link href="<%: Url.LatestContent("~/Content/table.css")%>" rel="stylesheet" type="text/css" />
+	
+
 
 	<%--Placeholders for theme and layout--%>
 	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />

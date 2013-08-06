@@ -181,6 +181,7 @@
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
+    <Content Include="Content\table.css" />
     <Content Include="Content\themes\cupertino\images\animated-overlay.gif" />
     <Content Include="Content\themes\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
     <Content Include="Content\themes\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />

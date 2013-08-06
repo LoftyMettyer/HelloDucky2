@@ -1,0 +1,29 @@
+.hiddentablecolumn {
+	visibility:hidden;
+	display:none;
+}
+
+.tablecolumn {
+	text-align:left;
+	cursor: default;
+}
+
+.summarytablecolumn {
+	visibility:hidden;
+	display:none;
+	text-align:left;
+	cursor: default;
+}
+
+.rowdata {
+	background-color:#ffffff;
+	vertical-align: text-top;
+	text-align:left;
+	cursor: default;
+}
+
+.rowsummary {
+	background-color:#d8d8ff;	
+	text-align:left;
+	cursor: default;
+}

@@ -3,7 +3,6 @@
 
 		<script type="text/javascript">
 				function reportdata_window_onload() {
-//            $("#reportframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
 
 				<%
 				
@@ -21,16 +20,16 @@
 						Session("EmailGroupID") = 0
 				End If
 		
-		Dim cmdReportsCols
-		Dim prmEmailGroupID
-		Dim rstReportColumns
-				Dim sErrorDescription As String = ""
-		Dim iLoop As Integer
+			Dim cmdReportsCols As ADODB.Command
+			Dim prmEmailGroupID As ADODB.Parameter
+			Dim rstReportColumns As ADODB.Recordset
+			Dim sErrorDescription As String = ""
+			Dim iLoop As Integer
 		
 		If Session("EmailGroupID") > 0 Then
-				cmdReportsCols = CreateObject("ADODB.Command")
+				cmdReportsCols = New ADODB.Command()
 				cmdReportsCols.CommandText = "spASRIntGetEmailGroupAddresses"
-				cmdReportsCols.CommandType = 4 ' Stored procedure
+				cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 				cmdReportsCols.ActiveConnection = Session("databaseConnection")
 
 				prmEmailGroupID = cmdReportsCols.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
@@ -83,5 +82,6 @@
 </form>
 
 <script type="text/javascript">
-		reportdata_window_onload();    
+	reportdata_window_onload();
+	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
 </script>

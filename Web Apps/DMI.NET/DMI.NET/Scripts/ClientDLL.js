@@ -64,6 +64,9 @@
 		complete = function() {
 			return;
 		},
+		toImplement = function() {
+			return;
+		},
 		errorMessage = function() {
 			return;
 		};
@@ -77,6 +80,7 @@
 		SettingData: settingData,
 		InitialiseStyles: initialiseStyles,
 		HeaderCols: headerCols,
+		HeaderRows: toImplement,
 		SetOptions: settingOptions,		
 		SettingOptions: settingOptions,
 		GetFile: getFile,
@@ -90,7 +94,13 @@
 		AddToArray: addToArray,
 		DataArray: dataArray,
 		Complete: complete ,
-		ErrorMessage: errorMessage
+		ResetColumns: toImplement,
+		ResetStyles: toImplement,
+		ErrorMessage: errorMessage,
+		ArrayReDim: toImplement,
+		ArrayAddTo: toImplement,
+		PageTitles: toImplement,
+		SizeColumnsIndependently: toImplement
 	};
 
 })(window, jQuery);
