@@ -1025,7 +1025,20 @@ function setComponent(psComponentDefn, psAction, psLinkComponentID, psFunctionPa
 	var sTemp;
 
 	// Expand the work frame and hide the option frame.
-	$("#optionframe").hide();
+
+	//JIRA Bug 3017, TFS Bug 104
+	//The following line was here originally but was crashing IE9
+	//$("#optionframe").hide();
+	//This is a known IE9 bug; see for example
+	//	- http://stackoverflow.com/questions/2567398/jquery-ie-crashing-on-somediv-hide
+	//  - https://www.google.co.uk/#q=jquery+hide+ie9+crash
+	
+	//So after trying the lines below (all of them crashed IE9) I found that the fix is the (uncommented) line
+	//  - $("#optionframe").css('display', 'none');
+	//	- document.getElementById("#optionframe").style.display = "none";
+	$("#optionframe").attr('style', 'display: none;');
+	//End of bug
+
 	$("#workframe").show();
 
 	frmDefinition.SSTree1.style.visibility = "visible";
