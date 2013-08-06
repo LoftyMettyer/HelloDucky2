@@ -47744,3 +47744,39 @@ GO
 
 
 
+
+/*---------------------------------------------*/
+/* Ensure the required permissions are granted */
+/*---------------------------------------------*/
+DECLARE @sObject		nvarchar(MAX),
+		@sObjectType	nvarchar(MAX),
+		@sSQL			nvarchar(MAX);
+
+DECLARE curObjects CURSOR LOCAL FAST_FORWARD FOR
+SELECT sysobjects.name, sysobjects.xtype
+FROM sysobjects
+     INNER JOIN sysusers ON sysobjects.uid = sysusers.uid
+WHERE (((sysobjects.xtype = 'p') AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%'))
+    OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))
+    OR ((sysobjects.xtype = 'fn') AND (sysobjects.name LIKE 'udf_ASRFn%')))
+    AND (sysusers.name = 'dbo')
+
+OPEN curObjects
+FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+WHILE (@@fetch_status = 0)
+BEGIN
+    IF rtrim(@sObjectType) = 'P' OR rtrim(@sObjectType) = 'FN'
+    BEGIN
+        SET @sSQL = 'GRANT EXEC ON [' + @sObject + '] TO [ASRSysGroup]'
+        EXEC(@sSQL)
+    END
+    ELSE
+    BEGIN
+        SET @sSQL = 'GRANT SELECT,INSERT,UPDATE,DELETE ON [' + @sObject + '] TO [ASRSysGroup]'
+        EXEC(@sSQL)
+    END
+
+    FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+END
+CLOSE curObjects
+DEALLOCATE curObjects
