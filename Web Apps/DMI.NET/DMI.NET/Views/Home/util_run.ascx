@@ -1,12 +1,11 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
 <%
-		
 		Session("CALREP_firstLoad") = 1
 		Session("EmailGroupID") = 0
-		
 		Session("OutputOptions_Format") = 0
 		Session("OutputOptions_Screen") = "true"
 		Session("OutputOptions_Printer") = "false"
@@ -48,9 +47,7 @@
 						aPrompts(1, j) = Replace(Request.Form.Item(i), CType(Session("LocaleDecimalSeparator"), String), ".")
 					Case "4"
 						' Date. Reformat to match SQL's mm/dd/yyyy format.
-						'aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
-						'aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
-						'TODO convertdatetosqlformat - function needs to be central - can't append to end of files anymore!
+						aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
 					Case Else
 						aPrompts(1, j) = Request.Form.Item(i)
 				End Select
@@ -76,7 +73,7 @@
 				self.close();
 				return;
 		}
-
+	
 		function pausecomp(millis) {
 				var date = new Date();
 				var curDate;
