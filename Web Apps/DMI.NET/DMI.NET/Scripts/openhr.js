@@ -139,9 +139,11 @@
 					//OK
 
 					if (targetWin != null) {
-						$frame = $form.closest("div[" + targetWin + "]").first();
-						//	    		        $(targetWin.document.body).html(html);	    		        
+
+						//$frame = $form.closest("div[" + targetWin + "]").first();
+						$frame = $("#" + targetWin);
 						$frame.html(html);
+						$frame.show();
 
 					} else {
 						$frame.html('');

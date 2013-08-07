@@ -81,7 +81,7 @@
 		InitialiseStyles: initialiseStyles,
 		HeaderCols: headerCols,
 		HeaderRows: toImplement,
-		SetOptions: settingOptions,		
+		SetOptions: setOptions,		
 		SettingOptions: settingOptions,
 		GetFile: getFile,
 		SetPrinter: setPrinter,

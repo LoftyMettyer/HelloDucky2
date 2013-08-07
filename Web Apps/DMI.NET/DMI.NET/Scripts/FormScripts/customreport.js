@@ -37,8 +37,14 @@ function ShowCustomReport() {
 }
 
 function ExportDataPrompt() {
-		var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
-		OpenHR.submitForm(frmExportData);
+
+	var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
+	OpenHR.submitForm(frmExportData, "outputoptions");
+
+	$("#reportworkframe").hide();
+	$("#reportbreakdownframe").hide();
+	$("#outputoptions").show();
+	
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {

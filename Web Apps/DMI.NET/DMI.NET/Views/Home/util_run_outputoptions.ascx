@@ -3,51 +3,58 @@
 
 
 <script type="text/javascript">
-		function output_setOptions() {
+	function output_setOptions() {
 
-				var frmExport = OpenHR.getForm("reportframe", "frmExportData");
-				var outType = "#optOutputFormat" + frmExport.txtFormat.value;
-				var i;
+		$("#outputoptions").attr("data-framesource", "OUTPUTOPTIONS");
 
-				$(outType)[0].checked = true;
-				frmOutputDef.chkDestination0.checked = frmExport.txtScreen;
+		var frmExport = OpenHR.getForm("reportframe", "frmExportData");
 
-				if (frmExport.txtPrinter.value.toLowerCase() == "false" && frmExport.txtFormat.value != 0) {
-						frmOutputDef.chkDestination1.checked = false;
-				} else {
-						frmOutputDef.chkDestination1.checked = true;
-						populatePrinters();
-						for (i = 0; i < frmOutputDef.cboPrinterName.options.length; i++) {
-								if (frmOutputDef.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
-										frmOutputDef.cboPrinterName.selectedIndex = i;
-										break;
-								}
-						}
-				}
-
-				if (frmExport.txtSave.value.toLowerCase() == "false") {
-						frmOutputDef.chkDestination2.checked = false;
-				} else {
-						frmOutputDef.chkDestination2.checked = true;
-						populateSaveExisting();
-						frmOutputDef.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
-				}
-
-				if (frmExport.txtEmail.value.toLowerCase() == "false") {
-						frmOutputDef.chkDestination3.checked = false;
-				} else {
-						frmOutputDef.chkDestination3.checked = true;
-						frmOutputDef.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
-						frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
-						frmOutputDef.txtEmailSubject.value = frmExport.txtEmailSubject.value;
-						frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
-				}
-
-				frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
-				outputOptionsRefreshControls();
-				frmOutputDef.cmdOK.focus();
-
+		if (frmExport == null) {
+			return;
 		}
+
+		var outType = "#optOutputFormat" + frmExport.txtFormat.value;
+		var i;
+
+		$(outType)[0].checked = true;
+		frmOutputDef.chkDestination0.checked = frmExport.txtScreen;
+
+		if (frmExport.txtPrinter.value.toLowerCase() == "false" && frmExport.txtFormat.value != 0) {
+			frmOutputDef.chkDestination1.checked = false;
+		} else {
+			frmOutputDef.chkDestination1.checked = true;
+			populatePrinters();
+			for (i = 0; i < frmOutputDef.cboPrinterName.options.length; i++) {
+				if (frmOutputDef.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
+					frmOutputDef.cboPrinterName.selectedIndex = i;
+					break;
+				}
+			}
+		}
+
+		if (frmExport.txtSave.value.toLowerCase() == "false") {
+			frmOutputDef.chkDestination2.checked = false;
+		} else {
+			frmOutputDef.chkDestination2.checked = true;
+			populateSaveExisting();
+			frmOutputDef.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
+		}
+
+		if (frmExport.txtEmail.value.toLowerCase() == "false") {
+			frmOutputDef.chkDestination3.checked = false;
+		} else {
+			frmOutputDef.chkDestination3.checked = true;
+			frmOutputDef.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
+			frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
+			frmOutputDef.txtEmailSubject.value = frmExport.txtEmailSubject.value;
+			frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
+		}
+
+		frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
+		outputOptionsRefreshControls();
+		frmOutputDef.cmdOK.focus();
+
+	}
 
 		function outputOptionsFormatClick(index)
 		{
@@ -468,8 +475,8 @@
 				openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
 		}
 
-		function outputOptionsOKClick() 
-		{
+		function outputOptionsOKClick() {
+
 				if ((frmOutputDef.chkDestination0.checked == false) && 
 						(frmOutputDef.chkDestination1.checked == false) && 
 						(frmOutputDef.chkDestination2.checked == false) && 
@@ -526,10 +533,10 @@
 				window.setTimeout('doExport()',1000);	
 		}
 
-		function doExport()
-		{
+		function doExport() {			
+
 				//Send the values back to the calling form...
-				var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
+				var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
 
 				frmExportData.txtFormat.value = 0;
 				if (frmOutputDef.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
@@ -1233,20 +1240,12 @@
 								<TD>&nbsp;</TD>
 								<TD width=80>
 									<input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%"  class="btn" 
-											onclick="outputOptionsOKClick()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="outputOptionsOKClick()" />
 								</TD>
 								<TD width=10></TD>
 								<TD width=80>
 									<input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn" 
-																				onclick="ShowDataFrame();"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="ShowDataFrame();" />
 								</TD>
 							</TR>
 						</TABLE>
@@ -1279,12 +1278,6 @@
 </form>
 
 
-<%--<script type="text/javascript">
-
-		//$("#reportframe").show();
-		//$("#reportdataframe").hide();
-		//$("#reportworkframe").hide();
-		//$("#reportbreakdownframe").hide();
-		//$("#outputoptions").show();
-
-</script>--%>
+<script type="text/javascript">
+	output_setOptions();
+</script>

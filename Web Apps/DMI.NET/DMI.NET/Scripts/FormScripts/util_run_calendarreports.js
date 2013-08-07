@@ -8,25 +8,15 @@ function util_run_calendarreport_window_onload() {
 		loadAddRecords('nav');      
 }
 
-function ExportDataPrompt() 
-{
+function ExportCalendarDataPrompt() {
+	
+	var frmExportData = OpenHR.getForm("calendarworkframe", "frmExportData");
+		OpenHR.submitForm(frmExportData, "outputoptions");
 
-		var sURL = "util_run_outputoptions" +
-				"?txtUtilType=" + escape(frmExportData.txtUtilType.value) +
-				"&txtPreview=" + escape(frmExportData.txtPreview.value) +
-				"&txtFormat=" + escape(frmExportData.txtFormat.value) +
-				"&txtScreen=" + escape(frmExportData.txtScreen.value) +
-				"&txtPrinter=" + escape(frmExportData.txtPrinter.value) +
-				"&txtPrinterName=" + escape(frmExportData.txtPrinterName.value) +
-				"&txtSave=" + escape(frmExportData.txtSave.value) +
-				"&txtSaveExisting=" + escape(frmExportData.txtSaveExisting.value) +
-				"&txtEmail=" + escape(frmExportData.txtEmail.value) +
-				"&txtEmailAddr=" + escape(frmExportData.txtEmailAddr.value) +
-				"&txtEmailAddrName=" + escape(frmExportData.txtEmailAddrName.value) +
-				"&txtEmailSubject=" + escape(frmExportData.txtEmailSubject.value) +
-				"&txtEmailAttachAs=" + escape(frmExportData.txtEmailAttachAs.value) +
-				"&txtFileName=" + escape(frmExportData.txtFileName.value);
-		ShowOutputOptionsFrame(sURL);
+		$("#calendarframeset").hide();
+		$("#optionsframeset").hide();
+		$("#outputoptions").show();
+
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)

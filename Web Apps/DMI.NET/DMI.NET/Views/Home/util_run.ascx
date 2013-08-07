@@ -105,20 +105,13 @@
 
 		}
 
-		//function ShowOutputOptionsFrame(sUrl) {
-
-		//    $("#reportworkframe").hide();
-		//    $("#reportbreakdownframe").hide();
-
-		//    $("#outputoptions").src = sUrl;
-		//    $("#outputoptions").show();
-
-		//}
-
 		function ShowDataFrame() {
 
 				$("#reportbreakdownframe").hide();
+				$("#top").hide();
 				$("#outputoptions").hide();
+				$("#calendarframeset").show();
+				$("#optionsframeset").show();
 				$("#reportframe").show();
 				$("#reportworkframe").show();
 

@@ -67,14 +67,7 @@
 				Response.Write("<INPUT id=txtEmailGroupAddr name=txtEmailGroupAddr class=""text"" value="""">" & vbCrLf)
 		End If
 %>
-		
-		<script type="text/javascript">
-				function ExportData(strMode) {
-						ExportData("OUTPUTREPORT");
-						return;
-				}
-		</script>
-
+	
 
 <form action="util_run_customreportsDataSubmit" method="post" id="frmGetReportData" name="frmGetReportData">
 		<input id="txtMode" name="txtMode" class="text" value="<%=Session("CR_Mode")%>">

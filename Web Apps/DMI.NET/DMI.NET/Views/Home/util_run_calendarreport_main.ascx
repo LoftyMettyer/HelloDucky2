@@ -182,9 +182,29 @@
 	<div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block; width: 25%; float: left">
 		<%Html.RenderPartial("~/views/home/util_run_calendarreport_options.ascx")%>
 	</div>
+
+	<table valign="top" align="right" width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>&nbsp;</td>
+			<td width="80">
+				<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 100%" class="btn"
+					onclick="ExportCalendarDataPrompt();"/>
+			</td>
+			<td width="10"></td>
+			<td width="80">
+				<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 100%" class="btn"
+					onclick="closeclick();"/>
+			</td>
+			<td width="5">&nbsp;</td>
+		</tr>
+	</table>
+	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Request("CalRepUtilID")%>'>
+
 </div>
-<div id="calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block; height: 40px"></div>
-<%--</div>--%>
+
+<div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
+	<%	Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
+</div>
 
 <%
 Else

@@ -390,12 +390,12 @@
 
 						Response.Write("function ExportData(strMode) " & vbCrLf)
 						Response.Write("	{" & vbCrLf & vbCrLf)
-						
+		
 						Response.Write("	var bm;" & vbCrLf)
 						Response.Write("    var fok;" & vbCrLf)
 						Response.Write("	var sBreakValue = new String('');" & vbCrLf)
 						Response.Write("	var blnBreakCheck = false;" & vbCrLf)
-						Response.Write("    var frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData_ORIGINAL"");" & vbCrLf)
+		Response.Write("    var frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
 						
 						Dim objUser As New HR.Intranet.Server.clsSettings          
 						
@@ -577,12 +577,12 @@
 																												blnEmail & ", """ & CleanStringForJavaScript(sEmailAddresses) & """, """ & _
 																												strEmailSubject & """,""" & strEmailAttachAs & """,""" & strFileName & """);" & vbCrLf)
 						Else
-								Response.Write("  fok = ClientDLL.SetOptions(false, " & _
-																								"parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
-																								"frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
-																								"frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
-																								"frmExportData.txtEmail.value, frmDataFrame.txtEmailGroupAddr.value, " & _
-																								"frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
+			Response.Write("  fok = ClientDLL.SetOptions(false, " & _
+																			"parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
+																			"frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
+																			"frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
+																			"frmExportData.txtEmail.value, $(""#txtEmailGroupAddr"")[0].value, " & _
+																			"frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
 		
 						End If
 		
@@ -790,7 +790,7 @@
 								Response.Write("    raiseError('',true,false);" & vbCrLf)
 								Response.Write("  }" & vbCrLf)
 						Else
-								Response.Write("  sUtilTypeDesc = frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
+			Response.Write("  sUtilTypeDesc =(""#txtUtilTypeDesc"")[0];" & vbCrLf)
 								Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
 								Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
 								Response.Write("  }" & vbCrLf)
