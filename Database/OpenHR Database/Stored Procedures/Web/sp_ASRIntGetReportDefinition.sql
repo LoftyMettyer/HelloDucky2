@@ -39,7 +39,7 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetReportDefinition] (
 	@psOutputEmailSubject		varchar(MAX)	OUTPUT,
 	@psOutputEmailAttachAs		varchar(MAX)	OUTPUT,
 	@psOutputFilename			varchar(MAX)	OUTPUT,
- 	@piTimestamp				integer			OUTPUT,
+	@piTimestamp				integer			OUTPUT,
 	@pfParent1AllRecords		bit				OUTPUT,
 	@piParent1PicklistID		integer			OUTPUT,
 	@psParent1PicklistName		varchar(255)	OUTPUT,
@@ -57,10 +57,10 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE	@iCount			integer,
-			@sTempHidden	varchar(8000),
-			@sAccess		varchar(8000),
+			@sTempHidden		varchar(8000),
+			@sAccess				varchar(8000),
 			@sTempUsername	varchar(8000),
-			@fSysSecMgr		bit;
+			@fSysSecMgr			bit;
 
 	SET @psErrorMsg = '';
 	SET @psPicklistName = '';
@@ -78,6 +78,7 @@ BEGIN
 	SET @psParent2PicklistName = '';
 	SET @pfParent2PicklistHidden = 0;
 	SET @psInfoMsg = '';
+	SET @psOutputEmailName = '';
 
 	exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 	

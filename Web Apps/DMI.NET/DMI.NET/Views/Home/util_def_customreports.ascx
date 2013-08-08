@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -14,45 +15,25 @@
 			<TABLE WIDTH="100%" height="100%" class="invisible" cellspacing=0 cellpadding=0>
 				<tr height=5> 
 					<td colspan=3></td>
-				</tr> 
+				</tr>
 
-				<tr height=10>
-					<TD width=10></td>
+				<tr height="10">
+					<td width="10"></td>
 					<td>
-						<INPUT type="button" value="Definition" id=btnTab1 name=btnTab1 disabled="disabled" class="btn btndisabled"
-								onclick="displayPage(1)"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
-						<INPUT type="button" value="Related Tables" id=btnTab2 name=btnTab2  class="btn" 
-								onclick="displayPage(2)"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
-						<INPUT type="button" value="Columns" id=btnTab3 name=btnTab3  class="btn" 
-								onclick="displayPage(3)"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
-						<INPUT type="button" value="Sort Order" id=btnTab4 name=btnTab4  class="btn" 
-								onclick="displayPage(4)"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
-						<INPUT type="button" value="Output" id=btnTab5 name=btnTab5  class="btn" 
-								onclick="displayPage(5)"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+						<input type="button" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled" class="btn btndisabled"
+							onclick="displayPage(1)" />
+						<input type="button" value="Related Tables" id="btnTab2" name="btnTab2" class="btn"
+							onclick="displayPage(2)" />
+						<input type="button" value="Columns" id="btnTab3" name="btnTab3" class="btn"
+							onclick="displayPage(3)" />
+						<input type="button" value="Sort Order" id="btnTab4" name="btnTab4" class="btn"
+							onclick="displayPage(4)" />
+						<input type="button" value="Output" id="btnTab5" name="btnTab5" class="btn"
+							onclick="displayPage(5)" />
 					</td>
-					<TD width=10></td>
-				</tr> 
-				
+					<td width="10"></td>
+				</tr>
+
 				<tr height=10> 
 					<td colspan=3></td>
 				</tr> 
@@ -141,19 +122,13 @@
 														<TR>
 															<TD width=5>
 																<input CHECKED id=optRecordSelection1 name=optRecordSelection type=radio 
-																		onclick="changeBaseTableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeBaseTableRecordOptions()" align=""/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
 																																<label tabindex="-1"
 																																	for="optRecordSelection1"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">All</label>
+																																	class="radio">All</label>
 																</TD>
 															<TD colspan=3>&nbsp;</TD>
 														</TR>
@@ -174,20 +149,14 @@
 														<TR>
 															<TD width=5>
 																<input id=optRecordSelection2 name=optRecordSelection type=radio 
-																		onclick="changeBaseTableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeBaseTableRecordOptions()"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=50 nowrap>
 																																<label 
 																																		tabindex="-1"
 																																	for="optRecordSelection2"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Picklist</label>
+																																	class="radio">Picklist</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -195,11 +164,7 @@
 															</TD>
 															<TD width=30 nowrap>
 																<INPUT id=cmdBasePicklist name=cmdBasePicklist style="WIDTH: 100%" type=button disabled="disabled" class="btn btndisabled" value="..." 
-																		onclick="selectRecordOption('base', 'picklist')"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('base', 'picklist')" />
 															</TD>
 														</TR>
 													</table>
@@ -219,20 +184,14 @@
 														<TR>
 															<td width=5>
 																<input id=optRecordSelection3 name=optRecordSelection type=radio
-																		onclick=changeBaseTableRecordOptions() 
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick=changeBaseTableRecordOptions() />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=50 nowrap>
 																																<label 
 																																		tabindex="-1"
 																																	for="optRecordSelection3"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Filter</label>
+																																	class="radio">Filter</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -240,11 +199,7 @@
 															</TD>
 															<TD width=30 nowrap>
 																<INPUT id=cmdBaseFilter name=cmdBaseFilter style="WIDTH: 100%" type=button disabled="disabled" value="..." class="btn btndisabled" 
-																		onclick="selectRecordOption('base', 'filter')" 
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('base', 'filter')" />
 															</TD>
 														</TR>
 													</TABLE>
@@ -267,20 +222,13 @@
 														<TR>
 															<TD colspan=6 nowrap>
 																<input name=chkPrintFilter id=chkPrintFilter type=checkbox disabled="disabled" tabindex="-1" 
-																																	onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																	onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
 																		onClick="changeTab1Control();"/>
 																																<label 
 																																		id="lblPrintFilter"
 																																		name="lblPrintFilter"
 																														for="chkPrintFilter"
 																														class="checkbox checkboxdisabled"
-																														tabindex=0 
-																														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Display filter or picklist title in the report header</label>
+																														tabindex=0>Display filter or picklist title in the report header</label>
 															</TD>
 														</TR>
 														<TR>	
@@ -324,20 +272,14 @@
 														<TR>
 															<TD width=5>
 																<input CHECKED id=optParent1RecordSelection1 name=optParent1RecordSelection type=radio 
-																		onclick="changeParent1TableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeParent1TableRecordOptions()"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=30>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent1RecordSelection1"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">All</label>
+																																	class="radio">All</label>
 															</TD>
 															<TD>&nbsp;</TD>
 														</TR>
@@ -347,20 +289,14 @@
 														<TR>
 															<TD width=5>
 																<input id=optParent1RecordSelection2 name=optParent1RecordSelection type=radio 
-																		onclick="changeParent1TableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeParent1TableRecordOptions()"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=20>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent1RecordSelection2"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Picklist</label>
+																																	class="radio">Picklist</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -368,11 +304,7 @@
 															</TD>
 															<TD width=30>
 																<INPUT id=cmdParent1Picklist name=cmdParent1Picklist style="WIDTH: 100%" type=button class="btn btndisabled" value="..." disabled="disabled" 
-																		onclick="selectRecordOption('p1', 'picklist')"
-																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('p1', 'picklist')" />
 															</TD>
 														</TR>
 														<TR>
@@ -381,20 +313,14 @@
 														<TR>
 															<TD width=5>
 																<input id=optParent1RecordSelection3 name=optParent1RecordSelection type=radio 
-																		onclick=changeParent1TableRecordOptions() 
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick=changeParent1TableRecordOptions() />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=20>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent1RecordSelection3"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Filter</label>
+																																	class="radio">Filter</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -402,11 +328,7 @@
 															</TD>
 															<TD width=30>
 																<INPUT id=cmdParent1Filter name=cmdParent1Filter style="WIDTH: 100%" type=button value="..." disabled="disabled" class="btn btndisabled"
-																		onclick="selectRecordOption('p1', 'filter')" 
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('p1', 'filter')" />
 															</TD>
 														</TR>
 													</TABLE>
@@ -435,20 +357,14 @@
 														<TR>
 															<TD width=5>
 																<input CHECKED id=optParent2RecordSelection1 name=optParent2RecordSelection type=radio 
-																		onclick="changeParent2TableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeParent2TableRecordOptions()"/>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=30>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent2RecordSelection1"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">All</label>
+																																	class="radio">All</label>
 															</TD>
 															<TD>&nbsp;</TD>
 														</TR>
@@ -458,20 +374,14 @@
 														<TR>
 															<TD width=5>
 																<input id=optParent2RecordSelection2 name=optParent2RecordSelection type=radio 
-																		onclick="changeParent2TableRecordOptions()"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="changeParent2TableRecordOptions()" />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=20>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent2RecordSelection2"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Picklist</label>
+																																	class="radio">Picklist</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -479,11 +389,7 @@
 															</TD>
 															<TD width=30>
 																<INPUT id=cmdParent2Picklist name=cmdParent2Picklist style="WIDTH: 100%" type=button class="btn btndisabled" value="..." disabled="disabled" 
-																		onclick="selectRecordOption('p2', 'picklist')" 
-																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('p2', 'picklist')" />
 															</TD>
 														</TR>
 														<TR>
@@ -492,20 +398,14 @@
 														<TR>
 															<TD width=5>
 																<input id=optParent2RecordSelection3 name=optParent2RecordSelection type=radio
-																		onclick=changeParent2TableRecordOptions() 
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick=changeParent2TableRecordOptions() />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD width=20>
 																																<label 
 																																		tabindex="-1"
 																																	for="optParent2RecordSelection3"
-																																	class="radio"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Filter</label>
+																																	class="radio">Filter</label>
 															</TD>
 															<TD width=5>&nbsp;</TD>
 															<TD>
@@ -513,11 +413,7 @@
 															</TD>
 															<TD width=30>
 																<INPUT id=cmdParent2Filter name=cmdParent2Filter style="WIDTH: 100%" type=button value="..." disabled="disabled" class="btn btndisabled"
-																		onclick="selectRecordOption('p2', 'filter')" 
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="selectRecordOption('p2', 'filter')" />
 															</TD>
 														</TR>
 													</TABLE>
@@ -525,7 +421,6 @@
 												<TD width=5>&nbsp;</TD>
 											</TR>
 
-<!---------------------------------------------------------------------------------------------->
 											
 											<TR height=15>
 												<TD colspan=9>
@@ -553,11 +448,7 @@
 															<TD width=10>&nbsp;</TD>
 															<TD width=90>
 																<input type="button" id=cmdAddChild name=cmdAddChild value="Add..." style="WIDTH: 100%" class="btn"
-																		onclick="childAdd()"
-																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="childAdd()" />
 																											</TD>
 															<TD width=5>&nbsp;</TD>
 														</TR>
@@ -571,11 +462,7 @@
 															<TD width=5>&nbsp;</TD>
 															<TD width=90>
 																<input type="button" id=cmdEditChild name=cmdChildEdit value="Edit..." style="WIDTH: 100%" class="btn" 
-																		onclick="childEdit()"
-																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="childEdit()" />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 														</TR>
@@ -589,11 +476,7 @@
 															<TD width=5>&nbsp;</TD>
 															<TD width=90>
 																<input type="button" id=cmdRemoveChild name=cmdRemoveChild value="Remove" style="WIDTH: 100%" class="btn" 
-																		onclick="childRemove()"
-																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="childRemove()" />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 														</TR>
@@ -607,11 +490,7 @@
 															<TD width=5>&nbsp;</TD>
 															<TD width=90>
 																<input type="button" id=cmdRemoveAllChilds name=cmdRemoveAllChilds value="Remove All" style="WIDTH: 100%" class="btn" 
-																		onclick="childRemoveAll()"
-																										onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onclick="childRemoveAll()" />
 															</TD>
 															<TD width=5>&nbsp;</TD>
 														</TR>
@@ -657,36 +536,24 @@
 															<TD height=5></TD>
 															<TD height=5>
 																<INPUT id=optColumns name=optAvailType type=radio CHECKED disabled="disabled" 
-																		onclick="refreshAvailableColumns();"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="refreshAvailableColumns();"/>
 															</TD>
 															<TD height=5 width=5>
 																																<label 
 																																		tabindex="-1"
 																																	for="optColumns"
-																																	class="radio radiodisabled"
-																																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Columns</label>
+																																	class="radio radiodisabled">Columns</label>
 															</TD>
 															<TD width=5 height=5></TD>
 															<TD height=5>
 																<INPUT id=optCalc name=optAvailType type=radio disabled="disabled" 
-																		onclick="refreshAvailableColumns();"
-																																onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																																		onblur="try{radio_onBlur(this);}catch(e){}"/>
+																		onclick="refreshAvailableColumns();"/>
 															</TD>
 															<TD width=5 height=5>
 																<label 
 																	tabindex="-1"
 																	for="optCalc"
-																	class="radio radiodisabled"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Calculations</label>    
+																	class="radio radiodisabled">Calculations</label>    
 															</TD>
 															<TD height=5></TD>
 														<tr height=10>
@@ -726,11 +593,7 @@
 															<td>&nbsp</TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnAdd id=cmdColumnAdd value="Add..." style="WIDTH: 100%; HEIGHT: 100%" class="btn"
-																		onClick="columnSwap(true)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnSwap(true)"/>
 															</TD>
 															<td>&nbsp</TD>
 														</TR>
@@ -739,11 +602,7 @@
 															<td></TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnAddAll id=cmdColumnAddAll value="Add All" style="WIDTH: 100%; HEIGHT: 100%" class="btn"
-																		onClick="columnSwapAll(true)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnSwapAll(true)"/>
 															</TD>
 															<td></TD>
 														</TR>
@@ -752,11 +611,7 @@
 															<td></TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnRemove id=cmdColumnRemove value="Remove" style="WIDTH: 100%; HEIGHT: 100%" class="btn"
-																		onClick="columnSwap(false)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnSwap(false)"/>
 															</TD>
 															<td></TD>
 														</TR>
@@ -765,11 +620,7 @@
 															<td></TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnRemoveAll id=cmdColumnRemoveAll value="Remove All" style="WIDTH: 100%; HEIGHT: 100%" class="btn" 
-																		onClick="columnSwapAll(false)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnSwapAll(false)"/>
 															</TD>
 															<td></TD>
 														</TR>
@@ -778,11 +629,7 @@
 															<td></TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnMoveUp id=cmdColumnMoveUp value="Up" style="WIDTH: 100%; HEIGHT: 100%" class="btn" 
-																		onClick="columnMove(true)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnMove(true)" />
 															</TD>
 															<td></TD>
 														</TR>
@@ -791,11 +638,7 @@
 															<td></TD>
 															<TD width=90 nowrap align=center>
 																<input type="button" name=cmdColumnMoveDown id=cmdColumnMoveDown value="Down" style="WIDTH: 100%; HEIGHT: 100%" class="btn" 
-																		onClick="columnMove(false)"
-																																		onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{button_onFocus(this);}catch(e){}"
-																																		onblur="try{button_onBlur(this);}catch(e){}" />
+																		onClick="columnMove(false)" />
 															</TD>
 															<td></TD>
 														</TR>
@@ -864,52 +707,31 @@
 														<TR>
 															<TD width="33%" align=left nowrap>
 																<input type=checkbox name=chkColAverage id=chkColAverage tabindex="-1"
-																		onclick="setAggregate(0)"
-																																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																		onclick="setAggregate(0)" />
 																																<label 
 																																	for="chkColAverage"
 																																	class="checkbox"
-																																	tabindex="0"
-																																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																																	tabindex="0">
 																		Average
 																													</label>
 															</TD>
 															<TD width="33%" align=left nowrap>
 																<input type=checkbox name=chkColCount id=chkColCount tabindex="-1"
-																		onclick="setAggregate(1)"
-																																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																		onclick="setAggregate(1)" />
 																																<label 
 																																	for="chkColCount"
 																																	class="checkbox"
-																																	tabindex="0"
-																																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																																	tabindex="0">
 																		Count 
 																													</label>
 															</TD>
 															<TD width="33%" align=left nowrap>
 																<input type=checkbox name=chkColTotal id=chkColTotal tabindex="-1"
-																		onclick="setAggregate(2)"
-																																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																		onclick="setAggregate(2)" />
 																																<label 
 																																	for="chkColTotal"
 																																	class="checkbox"
-																																	tabindex="0"
-																																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																																	tabindex="0">
 																		Total 
 																													</label>
 															</TD>
@@ -920,35 +742,21 @@
 														<TR>
 															<TD width="33%" align=left nowrap>
 																<input type=checkbox name=chkColHidden id=chkColHidden tabindex="-1"
-																		onclick="setAggregate(3);"
-																																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																		onclick="setAggregate(3);" />
 																																<label 
 																																	for="chkColHidden"
 																																	class="checkbox"
-																																	tabindex="0"
-																																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																																	tabindex="0">
 																		Hidden
 																													</label>
 															</TD>
 															<TD colspan=2 align=left nowrap>
 																<input type=checkbox name=chkColGroup id=chkColGroup tabindex="-1"
-																		onclick="setAggregate(4)"
-																																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																		onclick="setAggregate(4)" />
 																																<label 
 																																	for="chkColGroup"
 																																	class="checkbox"
-																																	tabindex="0"
-																																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																																	tabindex="0">
 																		Group With Next 
 																													</label>
 															</TD>
@@ -992,11 +800,7 @@
 												<TD width=10>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortAdd name=cmdSortAdd class="btn" value="Add..." style="WIDTH: 100%" 
-															onclick="sortAdd()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortAdd()"/>
 												</TD>
 												<TD width=5>&nbsp;</TD>
 											</TR>
@@ -1010,11 +814,7 @@
 												<TD width=5>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortEdit name=cmdSortEdit class="btn" value="Edit..." style="WIDTH: 100%" 
-															onclick="sortEdit()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortEdit()" />
 												</TD>
 												<TD width=5>&nbsp;</TD>
 											</TR>
@@ -1029,11 +829,7 @@
 												<TD width=5>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortRemove name=cmdSortRemove class="btn" value="Remove" style="WIDTH: 100%" 
-															onclick="sortRemove()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortRemove()"/>
 												</TD>
 												<TD width=5>&nbsp;</TD>
 											</TR>
@@ -1048,11 +844,7 @@
 												<TD width=5>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortRemoveAll name=cmdSortRemoveAll class="btn" value="Remove All" style="WIDTH: 100%" 
-															onclick="sortRemoveAll()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortRemoveAll()" />
 												</TD>
 												<TD width=5>&nbsp;</TD>
 											</TR>
@@ -1066,11 +858,7 @@
 												<TD width=5>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortMoveUp name=cmdSortMoveUp class="btn" value="Move Up" style="WIDTH: 100%" 
-															onclick="sortMove(true)"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortMove(true)" />
 												</TD>
 												<TD width=5>&nbsp;</TD>
 											</TR>
@@ -1084,11 +872,7 @@
 												<TD width=5>&nbsp;</TD>
 												<TD width=100>
 													<input type="button" id=cmdSortMoveDown name=cmdSortMoveDown class="btn" value="Move Down" style="WIDTH: 100%" 
-															onclick="sortMove(false)"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="sortMove(false)" />
 												</TD>
 
 												<TD width=5>&nbsp;</TD>
@@ -1175,18 +959,12 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left>
 																			<INPUT type="checkbox" id=chkSummary name=chkSummary tabindex="-1"
-																					onclick="changeTab5Control()"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																																						<label 
-																																							for="chkSummary"
-																																							class="checkbox"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Summary report</label>
+																					onclick="changeTab5Control()"/>
+																			<label
+																				for="chkSummary"
+																				class="checkbox"
+																				tabindex="0">
+																				Summary report</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1197,18 +975,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left>
 																			<INPUT type="checkbox" id=chkIgnoreZeros name=chkIgnoreZeros tabindex="-1"
-																					onclick="changeTab5Control()"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onclick="changeTab5Control()" />
 																																						<label 
 																																							for="chkIgnoreZeros"
 																																							class="checkbox"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Ignore zeros when calculating aggregates</label>
+																																							tabindex=0>Ignore zeros when calculating aggregates</label>
 																	</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1232,19 +1003,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat0 value=0
-																					onClick="formatClick(0);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(0);" />
 																		</td>
 																		<td align=left nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat0"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Data Only</label>
+																																								class="radio">Data Only</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1255,19 +1020,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat1 value=1
-																					onClick="formatClick(1);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(1);" />
 																		</td>
 																		<td align=left nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat1"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">CSV File</label>
+																																								class="radio">CSV File</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1278,19 +1037,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat2 value=2
-																					onClick="formatClick(2);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(2);" />
 																		</td>
 																		<td align=left nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat2"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">HTML Document</label>
+																																								class="radio">HTML Document</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1301,19 +1054,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat3 value=3
-																					onClick="formatClick(3);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(3);" />
 																		</td>
 																		<td align=left nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat3"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Word Document</label>
+																																								class="radio">Word Document</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1324,19 +1071,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat4 value=4
-																					onClick="formatClick(4);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(4);" />
 																		</td>
 																		<td align=left nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat4"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Excel Worksheet</label>
+																																								class="radio">Excel Worksheet</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1347,19 +1088,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat5 value=5
-																					onClick="formatClick(5);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(5);" />
 																		</td>
 																		<td>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat5"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Excel Chart</label>
+																																								class="radio">Excel Chart</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1370,19 +1105,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																			<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat6 value=6
-																					onClick="formatClick(6);" 
-																																								onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																																								onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="formatClick(6);" />
 																		</td>
 																		<td nowrap>
 																																						<label 
 																																								tabindex=-1
 																																								for="optOutputFormat6"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">Excel Pivot Table</label>
+																																								class="radio">Excel Pivot Table</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1405,18 +1134,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left colspan=6 nowrap>
 																			<input name=chkPreview id=chkPreview type=checkbox disabled="disabled" tabindex="-1"
-																					onClick="changeTab5Control();"
-																																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onClick="changeTab5Control();" />
 																																						<label 
 																																							for="chkPreview"
 																																							class="checkbox checkboxdisabled"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Preview on screen</label>
+																																							tabindex=0>Preview on screen</label>
 																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -1429,18 +1151,11 @@
 																		<td></td>
 																		<td align=left colspan=6 nowrap>
 																			<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1"
-																					onClick="changeTab5Control();"
-																																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onClick="changeTab5Control();" />
 																																						<label 
 																																							for="chkDestination0"
 																																							class="checkbox checkboxdisabled"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Display output on screen</label>
+																																							tabindex=0>Display output on screen</label>
 																		</td>
 																		<td></td>
 																	</tr>
@@ -1453,18 +1168,11 @@
 																		<td></td>
 																		<td align=left nowrap>
 																			<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1"
-																					onClick="changeTab5Control();"
-																																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onClick="changeTab5Control();" />
 																																						<label 
 																																							for="chkDestination1"
 																																							class="checkbox checkboxdisabled"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Send to printer</label>
+																																							tabindex=0>Send to printer</label>
 																		</td>
 																		<td width=30 nowrap>&nbsp</td>
 																		<td align=left nowrap>
@@ -1487,20 +1195,12 @@
 																		<td></td>
 																		<td align=left nowrap>
 																			<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1"
-																					onClick="changeTab5Control();"
-																																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onClick="changeTab5Control();" />
 																																						<label 
 																																							for="chkDestination2"
 																																							class="checkbox checkboxdisabled"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																					Save to file
-																																			</label>
+																																							tabindex=0>Save to file
+																																						</label>
 																		</td>
 																		<td nowrap></td>
 																		<td align=left nowrap>
@@ -1515,11 +1215,7 @@
 																					</TD>
 																					<TD width=25>
 																						<INPUT id=cmdFilename name=cmdFilename class="btn" style="WIDTH: 100%" type=button value="..."
-																								onClick="saveFile();changeTab5Control();" 
-																																													onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																													onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																													onfocus="try{button_onFocus(this);}catch(e){}"
-																																													onblur="try{button_onBlur(this);}catch(e){}" />
+																								onClick="saveFile();changeTab5Control();"  />
 																					</TD>
 																				</TR>
 																			</TABLE>
@@ -1551,18 +1247,11 @@
 																		<td></td>
 																		<td align=left nowrap>
 																			<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1"
-																					onClick="changeTab5Control();"
-																																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																					onClick="changeTab5Control();" />
 																																						<label 
 																																							for="chkDestination3"
 																																							class="checkbox checkboxdisabled"
-																																							tabindex=0 
-																																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																																								onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																																								onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Send as email</label>
+																																							tabindex=0>Send as email</label>
 																		</td>
 																		<td></td>
 																		<td align=left nowrap>
@@ -1578,11 +1267,7 @@
 																					</TD>
 																					<TD width=25>
 																						<INPUT id=cmdEmailGroup name=cmdEmailGroup style="WIDTH: 100%" type=button value="..." class="btn"
-																								onClick="selectEmailGroup();changeTab5Control();" 
-																																													onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																													onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																													onfocus="try{button_onFocus(this);}catch(e){}"
-																																													onblur="try{button_onBlur(this);}catch(e){}" />
+																								onClick="selectEmailGroup();changeTab5Control();"  />
 																					</TD>
 																				</TR>
 																			</TABLE>
@@ -1642,41 +1327,33 @@
 						</DIV>
 						
 					</td>
-					<TD width=10></td>
+					<td width="10"></td>
 				</tr> 
 
 				<tr height=10> 
 					<td colspan=3></td>
-				</tr> 
+				</tr>
 
-				<TR height=10>
-					<TD width=10></td>
-					<TD>
-						<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-							<TR>
-								<TD>&nbsp;</TD>
-								<TD width=80>
-									<input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%" class="btn"
-											onclick="okClick()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
-								</TD>
-								<TD width=10></TD>
-								<TD width=80>
-									<input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn" 
-											onclick="cancelClick()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
-								</TD>
-							</TR>
-						</TABLE>
+				<tr height="10">
+					<td width="10"></td>
+					<td>
+						<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>&nbsp;</td>
+								<td width="80">
+									<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
+										onclick="okClick()" />
+								</td>
+								<td width="10"></td>
+								<td width="80">
+									<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
+										onclick="cancelClick()" />
+								</td>
+							</tr>
+						</table>
 					</td>
-					<TD width=10></td>
-				</tr> 
+					<td width="10"></td>
+				</tr>
 
 				<tr height=5> 
 					<td colspan=3></td>
@@ -1715,9 +1392,9 @@
 	Dim sErrorDescription = ""
 	
 	' Get the table records.
-	Dim cmdTables = CreateObject("ADODB.Command")
+	Dim cmdTables As New Command
 	cmdTables.CommandText = "sp_ASRIntGetTablesInfo"
-	cmdTables.CommandType = 4 ' Stored Procedure
+	cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdTables.ActiveConnection = Session("databaseConnection")
 	
 	Response.Write("<B>Set Connection</B>")
@@ -1762,9 +1439,9 @@
 	Dim sErrMsg = ""
 
 	if session("action") <> "new"	then
-		Dim cmdDefn = CreateObject("ADODB.Command")
+		Dim cmdDefn As New Command
 		cmdDefn.CommandText = "sp_ASRIntGetReportDefinition"
-		cmdDefn.CommandType = 4 ' Stored Procedure
+		cmdDefn.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdDefn.ActiveConnection = Session("databaseConnection")
 		
 		Dim prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1) ' 3=integer, 1=input
@@ -1847,12 +1524,12 @@
 
 '********************************************************************************
 
-		Dim cmdReportChilds = CreateObject("ADODB.Command")
+		Dim cmdReportChilds As New Command
 		cmdReportChilds.CommandText = "sp_ASRIntGetReportChilds"
-		cmdReportChilds.CommandType = 4	'Stored Procedure
+		cmdReportChilds.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdReportChilds.ActiveConnection = Session("databaseConnection")
 		
-		Dim prmUtilID2 = cmdReportChilds.CreateParameter("utilID2", 3, 1)	' 3=integer, 1=input
+		Dim prmUtilID2 = cmdReportChilds.CreateParameter("utilID2", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 		cmdReportChilds.Parameters.Append(prmUtilID2)
 		prmUtilID2.value = cleanNumeric(session("utilid"))
 		
@@ -1962,8 +1639,8 @@
 		Dim prmOutputEmailAddr = cmdDefn.CreateParameter("outputEmailAddr", 3, 2) '3=integer, 2=output
 		cmdDefn.Parameters.Append(prmOutputEmailAddr)
 		
-		Dim prmOutputEmailAddrName = cmdDefn.CreateParameter("outputEmailAddrName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-		cmdDefn.Parameters.Append(prmOutputEmailAddrName)
+		Dim prmOutputEmailName = cmdDefn.CreateParameter("outputEmailName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
+		cmdDefn.Parameters.Append(prmOutputEmailName)
 		
 		Dim prmOutputEmailSubject = cmdDefn.CreateParameter("outputEmailSubject", 200, 2, 8000) '200=varchar, 2=output, 8000=size
 		cmdDefn.Parameters.Append(prmOutputEmailSubject)
@@ -1973,7 +1650,6 @@
 
 		Dim prmOutputFilename = cmdDefn.CreateParameter("outputFilename", 200, 2, 8000) '200=varchar, 2=output, 8000=size
 		cmdDefn.Parameters.Append(prmOutputFilename)
-		'-----------------------------------------
 		
 		Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2) ' 3=integer, 2=output
 		cmdDefn.Parameters.Append(prmTimestamp)
@@ -2081,7 +1757,7 @@
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & cmdDefn.Parameters("OutputSaveExisting").value & ">" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & cmdDefn.Parameters("OutputEmail").value & ">" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & cmdDefn.Parameters("OutputEmailAddr").value & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailAddrName value=""" & Replace(cmdDefn.Parameters("OutputEmailAddrName").value, """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailAddrName value=""" & Replace(cmdDefn.Parameters("outputEmailName").Value, """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(cmdDefn.Parameters("OutputEmailSubject").value, """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(cmdDefn.Parameters("OutputEmailAttachAs").value, """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & cmdDefn.Parameters("OutputFilename").value & """>" & vbCrLf)
@@ -2112,18 +1788,9 @@
 		' Release the ADO command object.
 		cmdDefn = Nothing
 
-		'if len(sErrMsg) > 0 then
-		'	session("confirmtext") = sErrMsg
-		'	session("confirmtitle") = "OpenHR Intranet"
-		'	Session("followpage") = "defsel"
-		'	Session("reaction") = "CUSTOMREPORTS"
-		'	Response.Clear
-		'	Response.Redirect("confirmok")
-		'end if
-
-	else
-		session("childcount") = 0
-		session("hiddenfiltercount") =  0
+	Else
+		Session("childcount") = 0
+		Session("hiddenfiltercount") = 0
 	end if
 %>
 </form>
@@ -2133,9 +1800,9 @@
 	sErrorDescription = ""
 	
 	' Get the table records.
-	Dim cmdAccess = CreateObject("ADODB.Command")
+	Dim cmdAccess As New Command
 	cmdAccess.CommandText = "spASRIntGetUtilityAccessRecords"
-	cmdAccess.CommandType = 4 ' Stored Procedure
+	cmdAccess.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdAccess.ActiveConnection = Session("databaseConnection")
 
 	Dim prmUtilType = cmdAccess.CreateParameter("utilType", 3, 1) ' 3=integer, 1=input
@@ -2183,29 +1850,29 @@
 %>
 </form>
 
-<FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtUserName name=txtUserName value="<%=session("username")%>">
-	<INPUT type="hidden" id=txtLoading name=txtLoading value="Y">
-	<INPUT type="hidden" id=txtCurrentBaseTableID name=txtCurrentBaseTableID>
-	<INPUT type="hidden" id=txtCurrentChildTableID name=txtCurrentChildTableID value=0>
-	<INPUT type="hidden" id=txtTablesChanged name=txtTablesChanged>
-	<INPUT type="hidden" id=txtSelectedColumnsLoaded name=txtSelectedColumnsLoaded value=0>
-	<INPUT type="hidden" id=txtSortLoaded name=txtSortLoaded value=0>
-	<INPUT type="hidden" id=txtRepetitionLoaded name=txtRepetitionLoaded value=0>
-	<INPUT type="hidden" id=txtChildsLoaded name=txtChildsLoaded value=0>
-	<INPUT type="hidden" id=txtChanged name=txtChanged value=0>
-	<INPUT type="hidden" id=txtUtilID name=txtUtilID value=<%=session("utilid")%>>
-	<INPUT type="hidden" id=txtChildCount name=txtChildCount value=<%=session("childcount")%>>
-	<INPUT type="hidden" id=txtHiddenChildFilterCount name=txtHiddenChildFilterCount value=<%=session("hiddenfiltercount")%>>
-	<INPUT type="hidden" id=txtLockGridEvents name=txtLockGridEvents value=0>
-	<INPUT type="hidden" id=txtChildColumnSelected name=txtChildColumnSelected value=0>
-	<INPUT type="hidden" id=txtGridActionCancelled name=txtGridActionCancelled value=0>
-	<INPUT type="hidden" id=txtGridChangeRecursive name=txtGridChangeRecursive value=0>
+	<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
+		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+		<input type="hidden" id="txtLoading" name="txtLoading" value="Y">
+		<input type="hidden" id="txtCurrentBaseTableID" name="txtCurrentBaseTableID">
+		<input type="hidden" id="txtCurrentChildTableID" name="txtCurrentChildTableID" value="0">
+		<input type="hidden" id="txtTablesChanged" name="txtTablesChanged">
+		<input type="hidden" id="txtSelectedColumnsLoaded" name="txtSelectedColumnsLoaded" value="0">
+		<input type="hidden" id="txtSortLoaded" name="txtSortLoaded" value="0">
+		<input type="hidden" id="txtRepetitionLoaded" name="txtRepetitionLoaded" value="0">
+		<input type="hidden" id="txtChildsLoaded" name="txtChildsLoaded" value="0">
+		<input type="hidden" id="txtChanged" name="txtChanged" value="0">
+		<input type="hidden" id="txtUtilID" name="txtUtilID" value='<%=session("utilid")%>'>
+		<input type="hidden" id="txtChildCount" name="txtChildCount" value='<%=session("childcount")%>'>
+		<input type="hidden" id="txtHiddenChildFilterCount" name="txtHiddenChildFilterCount" value='<%=session("hiddenfiltercount")%>'>
+		<input type="hidden" id="txtLockGridEvents" name="txtLockGridEvents" value="0">
+		<input type="hidden" id="txtChildColumnSelected" name="txtChildColumnSelected" value="0">
+		<input type="hidden" id="txtGridActionCancelled" name="txtGridActionCancelled" value="0">
+		<input type="hidden" id="txtGridChangeRecursive" name="txtGridChangeRecursive" value="0">
 
-<%
-	Dim cmdDefinition = CreateObject("ADODB.Command")
+		<%
+	Dim cmdDefinition As New Command
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
+	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdDefinition.ActiveConnection = Session("databaseConnection")
 
 	Dim prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
@@ -2229,7 +1896,7 @@
 	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 	Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
 %>
-</FORM>
+	</form>
 
 		<form id="frmValidate" name="frmValidate" target="validate" method="post" action="util_validate_customreports" style="visibility: hidden; display: none">
 				<input type="hidden" id="validateBaseFilter" name="validateBaseFilter" value="0">
@@ -2339,10 +2006,10 @@
 				<input type="hidden" id="calcsHiddenCount" name="calcsHiddenCount" value="0">
 		</form>
 
-		<INPUT type='hidden' id=txtTicker name=txtTicker value=0>
-<INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
+	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
+	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-<%Html.RenderPartial("Util_Def_CustomReports/grdColProps")%>
+	<%Html.RenderPartial("Util_Def_CustomReports/grdColProps")%>
 
 </div>
 

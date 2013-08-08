@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <%
 	Dim fGotId As Boolean
@@ -46,7 +47,7 @@
 					sTemp = sTemp & "Workflow"
 			End Select
 					
-			Dim cmdDefSelOnlyMine = CreateObject("ADODB.Command")
+			Dim cmdDefSelOnlyMine As New Command
 			cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
 			cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
 			cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
@@ -344,77 +345,6 @@
 		}
 
 
-		///* Sequential search the grid for the required ID. */
-		//function locateRecordID(psSearchFor, pfIdMatch) {
-		//    var fFound;
-		//    var iIndex;
-		//    var iIdColumnIndex;
-		//    var sColumnName;
-		//    var frmDefSel = document.getElementById('frmDefSel');
-		
-		//    fFound = false;
-
-		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = false;
-
-		//    if (pfIdMatch == true) {
-		//        // Locate the ID column in the grid.
-		//        iIdColumnIndex = -1;
-		//        for (iIndex = 0; iIndex < frmDefSel.ssOleDBGridDefSelRecords.Cols; iIndex++) {
-		//            sColumnName = frmDefSel.ssOleDBGridDefSelRecords.Columns(iIndex).Name;
-		//            if (sColumnName.toUpperCase() == "ID") {
-		//                iIdColumnIndex = iIndex;
-		//                break;
-		//            }
-		//        }
-
-		//        if (iIdColumnIndex >= 0) {
-		//            frmDefSel.ssOleDBGridDefSelRecords.MoveLast();
-		//            frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-
-		//            for (iIndex = 1; iIndex <= frmDefSel.ssOleDBGridDefSelRecords.rows; iIndex++) {
-		//                if (frmDefSel.ssOleDBGridDefSelRecords.Columns(iIdColumnIndex).value == psSearchFor) {
-		//                    frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//                    fFound = true;
-		//                    break;
-		//                }
-
-		//                if (iIndex < frmDefSel.ssOleDBGridDefSelRecords.rows) {
-		//                    frmDefSel.ssOleDBGridDefSelRecords.MoveNext();
-		//                }
-		//                else {
-		//                    break;
-		//                }
-		//            }
-		//        }
-		//    }
-		//    else {
-		//        for (iIndex = 1; iIndex <= frmDefSel.ssOleDBGridDefSelRecords.rows; iIndex++) {
-		//            var sGridValue = new String(frmDefSel.ssOleDBGridDefSelRecords.Columns(0).value);
-		//            sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-		//            if (sGridValue == psSearchFor.toUpperCase()) {
-		//                frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//                fFound = true;
-		//                break;
-		//            }
-
-		//            if (iIndex < frmDefSel.ssOleDBGridDefSelRecords.rows) {
-		//                frmDefSel.ssOleDBGridDefSelRecords.MoveNext();
-		//            }
-		//            else {
-		//                break;
-		//            }
-		//        }
-		//    }
-
-		//    if ((fFound == false) && (frmDefSel.ssOleDBGridDefSelRecords.rows > 0)) {
-		//        // Select the top row.
-		//        frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-		//        frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//    }
-
-		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = true;
-		//}
-
 		function refreshControls() {			
 			//show the utilities menu block.
 			//$("#mnuSectionUtilities").show();
@@ -674,68 +604,8 @@
 		}
 
 
-		///* Sequential search the grid for the required OLE. */
-		//function locateRecord(psFileName, pfExactMatch) {
-		//    var fFound = false;
-		//    var iIndex;
-		
-		//    var frmDefSel = document.getElementById('frmDefSel');
-
-		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = false;
-
-		//    frmDefSel.ssOleDBGridDefSelRecords.MoveLast();
-		//    frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-
-		//    for (iIndex = 1; iIndex <= frmDefSel.ssOleDBGridDefSelRecords.rows; iIndex++) {
-		//        if (pfExactMatch == true) {
-		//            if (frmDefSel.ssOleDBGridDefSelRecords.Columns(0).value == psFileName) {
-		//                frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//                fFound = true;
-		//                break;
-		//            }
-		//        }
-		//        else {
-		//            var sGridValue = new String(frmDefSel.ssOleDBGridDefSelRecords.Columns(0).value);
-		//            sGridValue = sGridValue.substr(0, psFileName.length).toUpperCase();
-		//            if (sGridValue == psFileName.toUpperCase()) {
-		//                frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//                fFound = true;
-		//                break;
-		//            }
-		//        }
-
-		//        if (iIndex < frmDefSel.ssOleDBGridDefSelRecords.rows) {
-		//            frmDefSel.ssOleDBGridDefSelRecords.MoveNext();
-		//        }
-		//        else {
-		//            break;
-		//        }
-		//    }
-
-		//    if ((fFound == false) && (frmDefSel.ssOleDBGridDefSelRecords.rows > 0)) {
-		//        // Select the top row.
-		//        frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-		//        frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		//    }
-
-		//    frmDefSel.ssOleDBGridDefSelRecords.redraw = true;
-		//}
 		
 		function defsel_currentWorkFramePage() {
-				// Work frame is in view.
-				//var sCurrentPage = window.parent.frames("workframe").document.location;
-				//sCurrentPage = sCurrentPage.toString();
-
-				//if (sCurrentPage.lastIndexOf("/") > 0) {
-				//		sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
-				//}
-
-				//if (sCurrentPage.indexOf(".") > 0) {
-				//		sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
-				//}
-
-				//sCurrentPage = sCurrentPage.replace(/ /gi, "");
-				//sCurrentPage = sCurrentPage.toUpperCase();
 
 			var sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
 
@@ -746,9 +616,9 @@
 
 <form id=frmpermissions name=frmpermissions style="visibility:hidden;display:none">
 <%
-	Dim cmdDefSelAccess = CreateObject("ADODB.Command")
+	Dim cmdDefSelAccess As New Command
 	cmdDefSelAccess.CommandText = "sp_ASRIntGetSystemPermissions"
-	cmdDefSelAccess.CommandType = 4 ' Stored Procedure
+	cmdDefSelAccess.CommandType = 4
 	cmdDefSelAccess.ActiveConnection = Session("databaseConnection")
 
 	Err.Clear()
@@ -947,7 +817,7 @@
 	
 																										If (Len(sErrorDescription) = 0) Then
 																												' Get the view records.
-																												Dim cmdTableRecords = CreateObject("ADODB.Command")
+																										Dim cmdTableRecords As New Command
 																												cmdTableRecords.CommandText = "sp_ASRIntGetTables"
 																												cmdTableRecords.CommandType = 4 ' Stored Procedure
 																												cmdTableRecords.ActiveConnection = Session("databaseConnection")
@@ -1006,9 +876,9 @@
 																						<%
 																								If Len(sErrorDescription) = 0 Then
 																										' Get the records.
-																										Dim cmdDefSelRecords = CreateObject("ADODB.Command")
+																								Dim cmdDefSelRecords As New Command
 																										cmdDefSelRecords.CommandText = "sp_ASRIntPopulateDefSel"
-																										cmdDefSelRecords.CommandType = 4 ' Stored Procedure
+																								cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																										cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
 																										Dim prmType = cmdDefSelRecords.CreateParameter("type", 3, 1)
@@ -1073,7 +943,7 @@
 								
 																														Response.Write("<tr disabled='disabled' id='row_" & iIDNumber.ToString() & "'>")
 																														For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
-																																sAddString = Replace(Replace(CStr(rstDefSelRecords.Fields(iLoop).Value), "_", " "), Chr(34), "&quot;") & "	"
+																											sAddString = Replace(Replace(CStr(rstDefSelRecords.Fields(iLoop).Value), "_", " "), Chr(34), "&quot;")
 									 
 																																Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.fields(iLoop).name & "' type='hidden' value='" & sAddString & "'></td>")
 										

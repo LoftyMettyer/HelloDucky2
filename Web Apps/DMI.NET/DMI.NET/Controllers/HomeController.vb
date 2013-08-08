@@ -1,6 +1,7 @@
 ﻿Imports System.Web.Mvc
 Imports System.IO
 Imports System.Web
+Imports ADODB
 Imports HR.Intranet.Server
 
 Namespace Controllers
@@ -3078,9 +3079,9 @@ Namespace Controllers
 		Function util_def_customreports_submit()
 			On Error Resume Next
 
-			Dim cmdSave = CreateObject("ADODB.Command")
+			Dim cmdSave As New Command
 			cmdSave.CommandText = "sp_ASRIntSaveCustomReport"
-			cmdSave.CommandType = 4	' Stored Procedure
+			cmdSave.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdSave.ActiveConnection = Session("databaseConnection")
 
 			Dim prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size

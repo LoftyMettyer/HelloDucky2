@@ -55,7 +55,7 @@
 			}
 			else 
 			{
-				loadDefinition();
+				customreports_loadDefinition();
 			}			
 		
 			setGridFont(frmDefinition.ssOleDBGridAvailableColumns);
@@ -1915,7 +1915,6 @@
 
 	}
 
-
 	function changeBaseTableRecordOptions() {
 
 		frmDefinition.txtBasePicklist.value = '';
@@ -2461,7 +2460,6 @@
 			return false;
 		}
 	}
-
 
 	function getTableName(piTableID) {
 		var i;
@@ -4206,8 +4204,7 @@
 
 		return (true);
 	}
-
-
+	
 	function validateTab4() {
 		var i;
 		var sErrMsg;
@@ -4713,10 +4710,6 @@
 		}
 	}
 
-
-
-
-
 	function populateSaveExisting() {
 
 			var lngCurrentOption;
@@ -4768,7 +4761,6 @@
 			}
 
 	}
-
 
 	function getChildString() {
 		var sChilds = "";
@@ -5185,7 +5177,7 @@
 		return sSelectedIDs;
 	}
 
-	function loadDefinition() {
+	function customreports_loadDefinition() {
 		
 		frmDefinition.txtName.value = frmOriginalDefinition.txtDefn_Name.value;
 
@@ -5538,41 +5530,6 @@
 				}
 			}
 			frmUseful.txtRepetitionLoaded.value = 1;
-		}
-	}
-
-	function disableAll() {
-		var i;
-		
-		var dataCollection = frmDefinition.elements;
-		if (dataCollection != null) {
-			for (i = 0; i < dataCollection.length; i++) {
-				var eElem = frmDefinition.elements[i];
-
-				if ("text" == eElem.type) {
-					text_disable(eElem, true);
-				}
-				else if ("TEXTAREA" == eElem.tagName) {
-					textarea_disable(eElem, true);
-				}
-				else if ("checkbox" == eElem.type) {
-					checkbox_disable(eElem, true);
-				}
-				else if ("radio" == eElem.type) {
-					radio_disable(eElem, true);
-				}
-				else if ("button" == eElem.type) {
-					if (eElem.value != "Cancel") {
-						button_disable(eElem, true);
-					}
-				}
-				else if ("SELECT" == eElem.tagName) {
-					combo_disable(eElem, true);
-				}
-				else {
-					grid_disable(eElem, true);
-				}
-			}
 		}
 	}
 
@@ -5991,7 +5948,6 @@
 		}
 	}
 
-
 	function removeFilters(psChildFilters) {
 		var iCharIndex;
 		var sChildFilters;
@@ -6352,7 +6308,7 @@
 		{
 			return;
 		}
-	
+
 		with (frmDefinition.ssOleDBGridSortOrder)
 		{
 			var sKey = Columns("ColumnID").Value;
