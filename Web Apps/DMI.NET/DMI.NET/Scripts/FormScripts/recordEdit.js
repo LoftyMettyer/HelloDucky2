@@ -1157,25 +1157,70 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				textbox = document.createElement('textarea'); //textbox.disabled = false;  //always enabled.
 			} else {
 				textbox = document.createElement('input');
-				switch (Number(controlItemArray[23])) {
-					case 11: //sqlDate
-						textbox.type = "text";
-						textbox.className = "datepicker";
-						break;
-					case 2, 4: //sqlNumeric, sqlInteger
-						
-						//Need to see why this isn't working:
-						
-						// ah, it's because the itemarray value is 12!
-						textbox.className = "number";
-						break;
-					default:
-						textbox.type = "text";
-						textbox.isMultiLine = false;
+				var controlDataType = Number(controlItemArray[23]);
+				if (controlDataType == 11) { //sqlDate
+					textbox.type = "text";
+					textbox.className = "datepicker";
+				}
+				else if (controlDataType == 2 || controlDataType == 4) { //sqlNumeric, sqlInteger
+					textbox.className = "number";
 
-						if (controlItemArray[35].length > 0) {
-							//TODO: apply mask to control
+					//Add some attributes used by the autoNumeric plugin we are using to validate numeric text boxes
+					var x; //For the loop below
+					var value = "";
+					
+					textbox.setAttribute("data-a-dec", $('#txtRecEditControlNumberDecimalSeparator').val()); //Decimal separator
+					textbox.setAttribute("data-a-sep", $('#txtRecEditControlNumberGroupSeparator').val()); //Thousand separator
+					textbox.setAttribute('data-m-dec', controlItemArray[26]); //Decimal places
+					
+					//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
+					if (controlItemArray[25] == "0") { //No size specified, set a very long limit
+						textbox.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
+						textbox.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
+					} else {
+						//Determine the length we need and "translate" that to use it in the plugin
+						var n = Number(controlItemArray[25]) - Number(controlItemArray[26]); //Size minus decimal places
+						for (x = n; x--;) value += "9"; //Create a string of the form "999"
+						
+						if (controlItemArray[26] != "0") { //If decimal places are specified, add a period and a an appropriate number of "9"s
+							value += ".";
+							for (x = Number(controlItemArray[26]); x--;) value += "9";
 						}
+						
+						textbox.setAttribute('data-v-min', '-' + value);
+						textbox.setAttribute('data-v-max', value);
+					}
+					
+					//Alignment; this is not used by the plugin so we'll add it as a CSS style
+					if (controlItemArray[38] == "0") {
+						$(textbox).css('text-align', 'left');
+					} else if (controlItemArray[38] == "1") {
+						$(textbox).css('text-align', 'right');
+					} else {
+						$(textbox).css('text-align', 'center');
+					}
+					
+					//Blank if zero; set the value of the attribute data-blankIfZeroValue for this textbox depending on its blankIfZero setting and its decimal places
+					if (controlItemArray[36] == "1") { //Blank if zero
+						textbox.setAttribute("data-blankIfZeroValue", "");
+					} else {
+						var decimalPlaces = Number(controlItemArray[26]);
+						if (decimalPlaces == 0) {
+							textbox.setAttribute("data-blankIfZeroValue", "0");
+						} else {
+							value = "0.";
+							for (x = decimalPlaces; x--;) value += "0";
+							textbox.setAttribute("data-blankIfZeroValue", value);
+						}
+					}
+				}
+				else {
+					textbox.type = "text";
+					textbox.isMultiLine = false;
+
+					if (controlItemArray[35].length > 0) {
+							//TODO: apply mask to control
+					}
 				}
 
 				if (!fControlEnabled) textbox.disabled = true;

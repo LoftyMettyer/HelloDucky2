@@ -184,8 +184,18 @@
 
 									});
 									
-										$(".spinner").spinner();
-										$(".number").mask("999999");
+									$(".spinner").spinner();
+									
+									//Loop over the "number" fields
+									$(".number").each(function() {
+										var control = $(this);
+										control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
+										$(control).blur(function () { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
+											if ($(this).val() == 0) {
+												$(this).val($(this).attr('data-blankIfZeroValue'));
+											}
+										});
+									});
 								}
 
 
@@ -715,7 +725,7 @@
 		If Len(sErrorDescription) = 0 Then
 			Dim iloop = 1
 			Do While Not rstScreenControlValues.EOF
-				Response.Write("<INPUT type='hidden' id=txtRecEditControlValues_" & iloop & " name=txtRecEditControlValues_" & iloop & " value=""" & Replace(rstScreenControlValues.Fields("valueDefinition").Value, """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Replace(rstScreenControlValues.Fields("valueDefinition").Value, """", "&quot;") & "'>" & vbCrLf)
 				rstScreenControlValues.MoveNext()
 				iloop = iloop + 1
 			Loop
@@ -723,6 +733,10 @@
 			' Release the ADO recordset object.
 			rstScreenControlValues.close()
 			rstScreenControlValues = Nothing
+			
+			'Add two more culture-specific hidden fields: number decimal separator and thousand separator; they will be used by the autoNumeric plugin
+			Response.Write("<input type='hidden' id='txtRecEditControlNumberDecimalSeparator' name='txtRecEditControlNumberDecimalSeparator' value='" & System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtRecEditControlNumberGroupSeparator' name='txtRecEditControlNumberGroupSeparator' value='" & System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator & "'>" & vbCrLf)
 		End If
 	
 		cmdRecEditControlValues = Nothing

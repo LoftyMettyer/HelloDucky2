@@ -586,6 +586,7 @@
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
+    <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.dll" />

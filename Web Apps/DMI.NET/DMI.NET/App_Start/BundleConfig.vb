@@ -87,7 +87,8 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.jqGrid.src.js",
 				"~/Scripts/FormScripts/find.js",
 				"~/Scripts/FormScripts/optionData.js",
-				"~/Scripts/FormScripts/recordEdit.js"))
+				"~/Scripts/FormScripts/recordEdit.js",
+				"~/Scripts/autoNumeric-1.9.15.js"))
 
 #If DEBUG Then
 
