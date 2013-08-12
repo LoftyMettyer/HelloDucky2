@@ -56,7 +56,7 @@
 		Response.Write("<INPUT type='hidden' id=txtPassByType name=txtPassByType value=" & iPassBy & ">" & vbCrLf)
 	%>
 
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 		<tr>
 			<td>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -68,15 +68,15 @@
 						<td width="10">&nbsp;&nbsp;</td>
 
 						<td width="10%">
-							<table height="100%" width="100%" class="outline" cellspacing="0" cellpadding="0">
+							<table height="100%" width="100%" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top">
 										<table border="0" cellspacing="0" cellpadding="0">
 											<tr height="5">
-												<td colspan="5">&nbsp;&nbsp;</td>
+												<td colspan="5">&nbsp;</td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5"><strong>Type</strong></td>
 												<td colspan="3"></td>
@@ -86,7 +86,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Field" name="optType" type="radio" selected
@@ -94,7 +94,7 @@
 														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
 														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onblur="try{radio_onBlur(this);}catch(e){}" style="height: 20px" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
@@ -103,9 +103,7 @@
 														for="optType_Field"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Field
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Field</label>
 												</td>
 												<td width="5">&nbsp;&nbsp;</td>
 											</tr>
@@ -114,7 +112,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Operator" name="optType" type="radio"
@@ -147,7 +145,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Function" name="optType" type="radio"
@@ -180,7 +178,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Value" name="optType" type="radio" <%
@@ -212,7 +210,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10">
+											<tr height="10" style="height: 10px; display: block; padding-bottom: 10px">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_LookupTableValue" name="optType" type="radio" <% 
@@ -244,7 +242,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10" style="visibility: hidden; display: none" id="trType_PVal">
+											<tr height="10" style="visibility: hidden; display: none; padding-bottom: 10px" id="trType_PVal">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_PromptedValue" name="optType" type="radio" <%If iPassBy = 2 Then
@@ -263,9 +261,7 @@
 														for="optType_PromptedValue"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Prompted Value
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Prompted Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -274,7 +270,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10" style="visibility: hidden; display: none" id="trType_Calc">
+											<tr height="10" style="visibility: hidden; display: none; padding-bottom: 10px" id="trType_Calc">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Calculation" name="optType" type="radio" <%	 If iPassBy = 2 Then
@@ -304,7 +300,7 @@
 												<td colspan="5"></td>
 											</tr>
 
-											<tr height="10" style="visibility: hidden; display: none" id="trType_Filter">
+											<tr height="10" style="visibility: hidden; display: none; padding-bottom: 10px" id="trType_Filter">
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Filter" name="optType" type="radio" <%
@@ -326,9 +322,7 @@
 														for="optType_Filter"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Filter
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Filter</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -345,7 +339,7 @@
 						<td width="10">&nbsp;&nbsp;</td>
 
 						<td>
-							<table height="100%" width="100%" class="outline" cellspacing="0" cellpadding="0">
+							<table height="100%" width="100%" validateCalDate cellspacing="0" cellpadding="0">
 								<tr height="100%">
 									<td valign="top">
 										<div id="divField">
