@@ -1,4 +1,14 @@
-﻿
+﻿var frmDefinition = document.getElementById("frmDefinition");
+var frmUseful = document.getElementById("frmUseful");
+var frmOriginalDefinition = document.getElementById("frmOriginalDefinition");
+var frmCustomReportChilds = document.getElementById("frmCustomReportChilds");
+var frmSortOrder = document.getElementById("frmSortOrder");
+var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+var frmSend = document.getElementById("frmSend");
+var frmAccess = document.getElementById("frmAccess");
+var frmValidate = document.getElementById("frmValidate");
+var frmEmailSelection = document.getElementById("frmEmailSelection");
+var frmTables = document.getElementById("frmTables");
 
 function util_def_crosstabs_window_onload() {
 				var fOK;
