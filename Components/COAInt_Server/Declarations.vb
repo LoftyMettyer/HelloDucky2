@@ -19,7 +19,6 @@ Module Declarations
   Public gcolLinks As Collection
   Public gcolNavigationLinks As Collection
 
-  Public gbEnableUDFFunctions As Boolean
 
   'SQL DatType
   Public Enum SQLDataType

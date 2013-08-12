@@ -64,10 +64,10 @@ ErrorTrap:
 	End Function
 	
 	
-	Public Sub ExecuteSql(ByRef sSQL As String)
+	Public Shared Sub ExecuteSql(ByRef sSQL As String)
 		' Execute the given SQL statement.
-		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
-		
+		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+
 	End Sub
 	
 	Public Function ExecuteSqlReturnAffected(ByRef sSQL As String) As Integer

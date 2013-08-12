@@ -15,55 +15,9 @@ Module modIntranet
 		cmdCreateCache = Nothing
 		
 	End Sub
-	
+
 	Public Function UDFFunctions(ByRef pastrUDFFunctions() As String, ByRef pbCreate As Boolean) As Boolean
-		
-		On Error GoTo UDFFunctions_ERROR
-		
-		Dim iCount As Short
-		Dim strDropCode As String
-		Dim strFunctionName As String
-		Dim sUDFCode As String
-		Dim datData As clsDataAccess
-		Dim iStart As Short
-		Dim iEnd As Short
-		Dim strFunctionNumber As String
-		
-		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-		
-		datData = New clsDataAccess
-		
-		If gbEnableUDFFunctions Then
-			
-			For iCount = 1 To UBound(pastrUDFFunctions)
-				
-				'JPD 20060110 Fault 10509
-				'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-				iStart = InStr(pastrUDFFunctions(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-				iEnd = InStr(1, Mid(pastrUDFFunctions(iCount), 1, 1000), "(@Pers")
-				strFunctionNumber = Mid(pastrUDFFunctions(iCount), iStart, iEnd - iStart)
-				strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-				
-				'Drop existing function (could exist if the expression is used more than once in a report)
-				strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-				datData.ExecuteSql(strDropCode)
-				
-				
-				' Create the new function
-				If pbCreate Then
-					sUDFCode = pastrUDFFunctions(iCount)
-					datData.ExecuteSql(sUDFCode)
-				End If
-				
-			Next iCount
-		End If
-		
-		UDFFunctions = True
-		Exit Function
-		
-UDFFunctions_ERROR: 
-		UDFFunctions = False
-		
+		Return clsGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
 	End Function
 	
 	'UPGRADE_WARNING: Sub Main in a DLL won't get called. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A90BF69E-29C2-4F6F-9E44-92CFC7FAA399"'
@@ -74,9 +28,6 @@ UDFFunctions_ERROR:
 		
 		' Are we in debug mode
 		ASRDEVELOPMENT = Not vbCompiled
-		
-		' Enable UDF functions (this needs to be altered to be SQL Server specific)
-		gbEnableUDFFunctions = True
 		
 	End Sub
 	

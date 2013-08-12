@@ -747,9 +747,6 @@ ExecuteSQL_ERROR:
 
 		Dim rsTemp_Definition As ADODB.Recordset
 		Dim strSQL As String
-		Dim strTable As String
-		Dim strColumn As String
-		Dim objField As ADODB.Field
 		Dim i As Short
 
 		SetupTablesCollection()
@@ -789,18 +786,11 @@ ExecuteSQL_ERROR:
 			mlngCustomReportsParent2Table = .Fields("parent2table").Value
 			mstrCustomReportsParent2TableName = mclsGeneral.GetTableName(mlngCustomReportsParent2Table)
 			mlngCustomReportsParent2FilterID = .Fields("parent2filter").Value
-			'    mlngCustomReportsChildTable = !childtable
-			'    mstrCustomReportsChildTableName = mclsGeneral.GetTableName(mlngCustomReportsChildTable)
-			'    mlngCustomReportsChildFilterID = !childFilter
-			'    mlngCustomReportsChildMaxRecords = !ChildMaxRecords
+
 			mblnCustomReportsSummaryReport = .Fields("Summary").Value
 			mblnIgnoreZerosInAggregates = .Fields("IgnoreZeros").Value
 			mblnCustomReportsPrintFilterHeader = .Fields("PrintFilterHeader").Value
-			'    mintCustomReportsDefaultOutput = IIf(IsNull(!DefaultOutput), 0, !DefaultOutput)
-			'    mintCustomReportsDefaultExportTo = IIf(IsNull(!DefaultExportTo), "", !DefaultExportTo)
-			'    mblnCustomReportsDefaultSave = !DefaultSave
-			'    mstrCustomReportsDefaultSaveAs = IIf(IsNull(!DefaultSaveAs), "", !DefaultSaveAs)
-			'    mblnCustomReportsDefaultCloseApp = !DefaultCloseApp
+
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mlngCustomReportsParent1AllRecords = IIf(IsDBNull(.Fields("parent1AllRecords").Value), 0, .Fields("parent1AllRecords").Value)
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1387,7 +1377,7 @@ GetDetailsRecordsets_ERROR:
 
 		Dim blnOK As Boolean
 		Dim sCalcCode As String
-		Dim alngSourceTables(,) As Object
+		Dim alngSourceTables(,) As Integer
 		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As CTablePrivilege
 
@@ -1416,12 +1406,7 @@ GetDetailsRecordsets_ERROR:
 		End If
 
 		' Start off the select statement
-		'  If glngSQLVersion = 9 Or glngSQLVersion = 11 Then
 		mstrSQLSelect = "SELECT TOP 1000000000000 "
-		'  Else
-		'    mstrSQLSelect = "SELECT "
-		'  End If
-
 
 		' Dimension an array of tables/views joined to the base table/view
 		' Column 1 = 0 if this row is for a table, 1 if it is for a view
@@ -1622,7 +1607,7 @@ GetDetailsRecordsets_ERROR:
 				If blnOK Then
 					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
 
-					If blnOK And gbEnableUDFFunctions Then
+					If blnOK Then
 						blnOK = objCalcExpr.UDFCalculationCode(alngSourceTables, mastrUDFsRequired, True)
 					End If
 
@@ -2366,17 +2351,12 @@ Error_Trap:
 
 				If pblnChildUsed = True Then
 
-					'        Set objChildTable = gcoTablePrivileges.FindTableID(mlngCustomReportsChildTable)
 					objChildTable = gcoTablePrivileges.FindTableID(lngTempChildID)
 
 					If objChildTable.AllowSelect Then
 						sChildJoinCode = sChildJoinCode & " LEFT OUTER JOIN " & objChildTable.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable
 
 						sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN"
-
-						'          sChildJoinCode = sChildJoinCode & _
-						''          " (SELECT TOP" & IIf(mlngCustomReportsChildMaxRecords = 0, " 100 PERCENT", " " & mlngCustomReportsChildMaxRecords) & _
-						''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 
 						'TM20020328 Fault 3714 - ensure the maxrecords is >= zero.
 						sChildJoinCode = sChildJoinCode & " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
@@ -2399,9 +2379,7 @@ Error_Trap:
 
 						' is the child filtered ?
 
-						'        If mlngCustomReportsChildFilterID > 0 Then
 						If lngTempFilterID > 0 Then
-							'            blnOK = datGeneral.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
 							blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
 
 							' Generate any UDFs that are used in this filter
@@ -2413,7 +2391,6 @@ Error_Trap:
 								sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 							Else
 								' Permission denied on something in the filter.
-								'              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
 								mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
 								GenerateSQLJoin = False
 								Exit Function
@@ -2428,7 +2405,6 @@ Error_Trap:
 			Next i
 		End If
 
-		'  mstrSQLJoin = mstrSQLJoin & sChildJoinCode & IIf(Len(sChildOrderString) > 0, " ORDER BY " & sChildOrderString & ")", "")
 		mstrSQLJoin = mstrSQLJoin & sChildJoinCode
 		mstrSQLJoin = mstrSQLJoin & sOtherParentJoinCode
 
@@ -2600,6 +2576,9 @@ GenerateSQLJoin_ERROR:
 
 			rsTemp.MoveNext()
 		Loop
+
+		' JIRA 3180 - Force the ID to be part of the sort order because the UDFs sort by ID too
+		DoChildOrderString = DoChildOrderString & "," & sCurrentTableViewName & ".ID"
 
 		Exit Function
 
@@ -5802,54 +5781,8 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-
-		On Error GoTo UDFFunctions_ERROR
-
-		Dim iCount As Short
-		Dim strDropCode As String
-		Dim strFunctionName As String
-		Dim sUDFCode As String
-		Dim datData As clsDataAccess
-		Dim iStart As Short
-		Dim iEnd As Short
-		Dim strFunctionNumber As String
-
-		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-
-		If gbEnableUDFFunctions Then
-
-			For iCount = 1 To UBound(mastrUDFsRequired)
-
-				'JPD 20060110 Fault 10509
-				'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-				iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-				iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
-				strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-				strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-
-				'Drop existing function (could exist if the expression is used more than once in a report)
-				strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-				mclsData.ExecuteSql(strDropCode)
-
-				' Create the new function
-				'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If pbCreate Then
-					sUDFCode = mastrUDFsRequired(iCount)
-					mclsData.ExecuteSql(sUDFCode)
-				End If
-
-			Next iCount
-		End If
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		UDFFunctions = True
-		Exit Function
-
-UDFFunctions_ERROR:
-		'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		UDFFunctions = False
-
+  Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 

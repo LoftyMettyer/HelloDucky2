@@ -6,8 +6,8 @@ Imports System.Globalization
 Friend Class clsGeneral
 
   Private datData As clsDataAccess
-  Private UI As clsUI
-  Private asViewTables() As String
+
+	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
 
   Public Function ConvertNumberForSQL(ByVal strInput As String) As String
     'Get a number in the correct format for a SQL string
@@ -119,32 +119,32 @@ Friend Class clsGeneral
 
   End Function
 
-  Public Function FilterUDFs(ByRef plngFilterID As Integer, ByRef pastrUDFs() As String) As Boolean
+	Public Function FilterUDFs(ByRef plngFilterID As Integer, ByRef pastrUDFs() As String) As Boolean
 
-    On Error GoTo ErrorTrap
+		On Error GoTo ErrorTrap
 
-    ' Return a string describing the record IDs from the given table
-    ' that satisfy the given criteria.
-    Dim fOK As Boolean
-    Dim objExpr As clsExprExpression
+		' Return a string describing the record IDs from the given table
+		' that satisfy the given criteria.
+		Dim fOK As Boolean
+		Dim objExpr As clsExprExpression
 
-    fOK = True
+		fOK = True
 
-    objExpr = New clsExprExpression
-    With objExpr
-      .Initialise(0, plngFilterID, modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER, modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
-      .UDFFilterCode(pastrUDFs, True, True)
-    End With
-    'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    objExpr = Nothing
+		objExpr = New clsExprExpression
+		With objExpr
+			.Initialise(0, plngFilterID, modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER, modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
+			.UDFFilterCode(pastrUDFs, True, True)
+		End With
+		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		objExpr = Nothing
 
-    FilterUDFs = fOK
+		FilterUDFs = fOK
 
 TidyUpAndExit:
-    Exit Function
+		Exit Function
 ErrorTrap:
 
-  End Function
+	End Function
 
 
   Public Function GetRecordsInTransaction(ByRef sSQL As String) As ADODB.Recordset
@@ -254,11 +254,9 @@ ErrorTrap:
     Dim rsTemp As ADODB.Recordset
     Dim strSQL As String
     Dim fOK As Boolean
-    Dim lngViews() As Long
+		Dim lngViews(,) As Integer
 
-    ReDim lngViews(0)
-
-    On Error GoTo LocalErr
+		On Error GoTo LocalErr
 
     'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     GetValueForRecordIndependantCalc = vbNullString
@@ -877,5 +875,48 @@ ErrorTrap:
     'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsData = Nothing
 
-  End Function
+	End Function
+
+
+	Friend Shared Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
+
+		Dim iCount As Integer
+		Dim strDropCode As String
+		Dim strFunctionName As String
+		Dim sCode As String
+		Dim iStart As Short
+		Dim iEnd As Short
+		Dim strFunctionNumber As String
+
+		Try
+			For iCount = 0 To paFunctions.Length - 1
+
+				If Not paFunctions(iCount) Is Nothing Then
+					iStart = InStr(paFunctions(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
+					iEnd = InStr(1, Mid(paFunctions(iCount), 1, 1000), "(@Per")
+					strFunctionNumber = Mid(paFunctions(iCount), iStart, iEnd - iStart)
+					strFunctionName = FUNCTIONPREFIX & strFunctionNumber
+
+					'Drop existing function (could exist if the expression is used more than once in a report)
+					strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+					clsDataAccess.ExecuteSql(strDropCode)
+
+					' Create the new function
+					If pbCreate Then
+						sCode = paFunctions(iCount)
+						clsDataAccess.ExecuteSql(sCode)
+					End If
+				End If
+
+			Next iCount
+
+		Catch ex As Exception
+			Return False
+
+		End Try
+
+		Return True
+
+	End Function
+
 End Class

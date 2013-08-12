@@ -1585,11 +1585,11 @@ ErrorTrap:
 		
 	End Function
 	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code that defines the expression.
 		' Used when creating the 'where clause' for view definitions.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim iLoop1 As Short
 		Dim iLoop2 As Short
@@ -1602,14 +1602,14 @@ ErrorTrap:
 		Dim sComponentCode As String
 		Dim vParameter1 As Object
 		Dim vParameter2 As Object
-    Dim avValues(,) As Object
-		
+		Dim avValues(,) As Object
+
 		fOK = True
 		sCode = ""
-		
+
 		iMinOperatorPrecedence = -1
 		iMaxOperatorPrecedence = -1
-		
+
 		' Create an array of the components in the expression.
 		' Column 1 = operator id.
 		' Column 2 = component where clause code.
@@ -1629,22 +1629,22 @@ ErrorTrap:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					iMaxOperatorPrecedence = IIf(iMaxOperatorPrecedence < .Component.Precedence Or iMaxOperatorPrecedence = -1, .Component.Precedence, iMaxOperatorPrecedence)
 				End If
-				
+
 				' JPD20020419 Fault 3687
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().RuntimeCode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = .RuntimeCode(sComponentCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
-				
+
 				If fOK Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					avValues(2, iLoop1) = sComponentCode
 				End If
 			End With
-			
+
 			If Not fOK Then
 				Exit For
 			End If
 		Next iLoop1
-		
+
 		If fOK Then
 			' Loop throught the expression's components checking that they are valid.
 			' Evaluate operators in the correct order.
@@ -1659,7 +1659,7 @@ ErrorTrap:
 								' Read the value that follows the current operator.
 								iParameter1Index = 0
 								iParameter2Index = 0
-								
+
 								' Read the index of the first parameter.
 								For iLoop3 = iLoop2 + 1 To UBound(avValues, 2)
 									'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1668,7 +1668,7 @@ ErrorTrap:
 										Exit For
 									End If
 								Next iLoop3
-								
+
 								' If a parameter has been found then read its value.
 								' Otherwise the expression is invalid.
 								If iParameter1Index > 0 Then
@@ -1676,7 +1676,7 @@ ErrorTrap:
 									'UPGRADE_WARNING: Couldn't resolve default property of object vParameter1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									vParameter1 = avValues(2, iParameter1Index)
 								End If
-								
+
 								' Read a second parameter if required.
 								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								If (.Component.OperandCount = 2) Then
@@ -1685,7 +1685,7 @@ ErrorTrap:
 									vParameter2 = vParameter1
 									iParameter2Index = iParameter1Index
 									iParameter1Index = 0
-									
+
 									' Read the index of the parameter's value if there is one.
 									For iLoop3 = iLoop2 - 1 To 1 Step -1
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1694,23 +1694,23 @@ ErrorTrap:
 											Exit For
 										End If
 									Next iLoop3
-									
+
 									' If a parameter has been found then read its value.
 									' Otherwise the expression is invalid.
 									If iParameter1Index > 0 Then
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iParameter1Index). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										'UPGRADE_WARNING: Couldn't resolve default property of object vParameter1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										vParameter1 = avValues(2, iParameter1Index)
-										
+
 										' JPD20020415 Fault 3662 - Need to cast values as float for division operators
 										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										If .Component.CastAsFloat Then
 											'UPGRADE_WARNING: Couldn't resolve default property of object vParameter1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											vParameter1 = "Cast(" & vParameter1 & " As Float)"
 										End If
-										
+
 									End If
-									
+
 									' Update the array to reflect the constructed SQL code.
 									'UPGRADE_WARNING: Couldn't resolve default property of object avValues(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									avValues(1, iLoop2) = vbNullString
@@ -1721,7 +1721,7 @@ ErrorTrap:
 											' JPD20020415 Fault 3638
 											'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											Select Case .Component.OperatorID
-												Case 16 'Modulus
+												Case 16	'Modulus
 													'UPGRADE_WARNING: Couldn't resolve default property of object vParameter2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 													'UPGRADE_WARNING: Couldn't resolve default property of object vParameter1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 													'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1774,7 +1774,7 @@ ErrorTrap:
 									If .Component.SQLType = "O" Then
 										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										Select Case .Component.OperatorID
-											Case 13 'Not
+											Case 13	'Not
 												'UPGRADE_WARNING: Couldn't resolve default property of object vParameter1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 												'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 												avValues(2, iLoop2) = "(CASE WHEN " & vParameter1 & " = 1 THEN 0 ELSE 1 END)"
@@ -1794,7 +1794,7 @@ ErrorTrap:
 									'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iParameter1Index). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									avValues(2, iParameter1Index) = vbNullString
 								End If
-								
+
 								If (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_LINKFILTER) Then
 									'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									If (.Component.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC) And ((.Component.OperatorID <> 5) And (.Component.OperatorID <> 6) And (.Component.OperatorID <> 13)) Then
@@ -1808,7 +1808,7 @@ ErrorTrap:
 					End With
 				Next iLoop2
 			Next iLoop1
-			
+
 			For iLoop1 = 1 To UBound(avValues, 2)
 				'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If avValues(2, iLoop1) <> vbNullString Then
@@ -1817,23 +1817,23 @@ ErrorTrap:
 					Exit For
 				End If
 			Next iLoop1
-			
+
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		If fOK Then
 			psRuntimeCode = sCode
 		Else
 			psRuntimeCode = ""
 		End If
 		RuntimeCode = fOK
-		
+
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
 	
 	
@@ -1990,64 +1990,64 @@ ErrorTrap:
 		
 	End Function
 	
-  Friend Function RuntimeCalculationCode(ByRef palngSourceTables As Object, ByRef psCalcCode As String, ByRef pfApplyPermissions As Boolean _
-                                         , Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing _
-                                         , Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-    ' Return TRUE if the Calculation code was created okay.
-    ' Return the runtime Calculation SQL code in the parameter 'psCalcCode'.
-    ' Apply permissions to the Calculation code only if the 'pfApplyPermissions' parameter is TRUE.
-    On Error GoTo ErrorTrap
+	Friend Function RuntimeCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode As String, ByRef pfApplyPermissions As Boolean _
+																				 , Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing _
+																				 , Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+		' Return TRUE if the Calculation code was created okay.
+		' Return the runtime Calculation SQL code in the parameter 'psCalcCode'.
+		' Apply permissions to the Calculation code only if the 'pfApplyPermissions' parameter is TRUE.
+		On Error GoTo ErrorTrap
 
-    Dim fOK As Boolean
-    Dim sRuntimeSQL As String
-    Dim avDummyPrompts(,) As Object
+		Dim fOK As Boolean
+		Dim sRuntimeSQL As String
+		Dim avDummyPrompts(,) As Object
 
-    ' Check if the 'validating' parameter is set.
-    ' If not, set it to FALSE.
-    'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-    If IsNothing(pfValidating) Then
-      pfValidating = False
-    End If
+		' Check if the 'validating' parameter is set.
+		' If not, set it to FALSE.
+		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+		If IsNothing(pfValidating) Then
+			pfValidating = False
+		End If
 
-    ' Construct the expression from the database definition.
-    fOK = ConstructExpression()
+		' Construct the expression from the database definition.
+		fOK = ConstructExpression()
 
-    If fOK Then
-      ' Get the Calculation code.
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If IsNothing(pavPromptedValues) Then
-        ReDim avDummyPrompts(1, 0)
-        fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
-      Else
-        fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
-      End If
-    End If
+		If fOK Then
+			' Get the Calculation code.
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If IsNothing(pavPromptedValues) Then
+				ReDim avDummyPrompts(1, 0)
+				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
+			Else
+				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+			End If
+		End If
 
-    If fOK Then
-      If pfApplyPermissions Then
-        fOK = (ValidateExpression(True) = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
-      End If
-    End If
+		If fOK Then
+			If pfApplyPermissions Then
+				fOK = (ValidateExpression(True) = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
+			End If
+		End If
 
-    If fOK And (miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC) Then
-      sRuntimeSQL = "convert(bit, " & sRuntimeSQL & ")"
-    End If
+		If fOK And (miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC) Then
+			sRuntimeSQL = "convert(bit, " & sRuntimeSQL & ")"
+		End If
 
 TidyUpAndExit:
-    If fOK Then
-      psCalcCode = sRuntimeSQL
-    Else
-      psCalcCode = ""
-    End If
-    RuntimeCalculationCode = fOK
+		If fOK Then
+			psCalcCode = sRuntimeSQL
+		Else
+			psCalcCode = ""
+		End If
+		RuntimeCalculationCode = fOK
 
-    Exit Function
+		Exit Function
 
 ErrorTrap:
-    fOK = False
-    Resume TidyUpAndExit
+		fOK = False
+		Resume TidyUpAndExit
 
-  End Function
+	End Function
 	
   Friend Function DeleteExistingComponents() As Boolean
     ' Delete the expression's components and sub-expression's
@@ -2400,7 +2400,7 @@ ErrorTrap:
     ' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
     On Error GoTo ErrorTrap
 
-    Dim lngCalcViews(,) As Object
+		Dim lngCalcViews(,) As Integer
     Dim intCount As Short
     Dim sSource As String
     Dim sSPCode As String
@@ -2409,7 +2409,7 @@ ErrorTrap:
     Dim sSQLCode As String
     Dim lngOriginalExprID As Integer
     Dim sOriginalSQLCode As String
-    Dim alngSourceTables(,) As Object
+		Dim alngSourceTables(,) As Integer
     Dim sProcName As String
     Dim avDummyPrompts(,) As Object
     Dim intStart As Short
@@ -2622,25 +2622,7 @@ ErrorTrap:
 				rsExpression = Nothing
 			End If
 		Else
-			'TM20030604 Fault - create different SQL code depending on the Expression Type.
-			'    ' Get the expression definition.
-			'    sSQL = sSQL & "SELECT ASRSysExpressions.name," & _
-			''      " ASRSysExpressions.TableID," & _
-			''      " ASRSysExpressions.returnType," & _
-			''      " ASRSysExpressions.type," & _
-			''      " ASRSysExpressions.parentComponentID," & _
-			''      " ASRSysExpressions.Username," & _
-			''      " ASRSysExpressions.access," & _
-			''      " ASRSysExpressions.description," & _
-			''      " ASRSysExpressions.ViewInColour," & _
-			''      " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & _
-			''      " ASRSysTables.tableName" & _
-			''      " FROM ASRSysExpressions" & _
-			''      " INNER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & _
-			''      " WHERE exprID = " & Trim(Str(mlngExpressionID))
-			'
-			'      '" ASRSysExpressions.owner," &
-			
+
 			' Get the expression definition.
 			If miExpressionType = modExpression.ExpressionTypes.giEXPR_UTILRUNTIMEFILTER Then
 				' Utility runtime filters are not tied to a base table.
@@ -2650,21 +2632,6 @@ ErrorTrap:
 				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
 				
 			Else
-				'TM29102003 Fault 7421 - 'LEFT OUTER' JOIN instead of 'INNER'.
-				'      sSQL = sSQL & "SELECT ASRSysExpressions.name," & _
-				''        " ASRSysExpressions.TableID," & _
-				''        " ASRSysExpressions.returnType," & _
-				''        " ASRSysExpressions.type," & _
-				''        " ASRSysExpressions.parentComponentID," & _
-				''        " ASRSysExpressions.Username," & _
-				''        " ASRSysExpressions.access," & _
-				''        " ASRSysExpressions.description," & _
-				''        " ASRSysExpressions.ViewInColour," & _
-				''        " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & _
-				''        " ASRSysTables.tableName" & _
-				''        " FROM ASRSysExpressions" & _
-				''        " INNER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & _
-				''        " WHERE exprID = " & Trim(Str(mlngExpressionID))
 				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
 			End If
 			
@@ -2790,9 +2757,7 @@ ErrorTrap:
 		ClearComponents()
 		
 	End Sub
-	
-	
-	
+
 	
 	Public Sub ClearComponents()
 		' Clear the expression's component collection.
@@ -2840,18 +2805,12 @@ ErrorTrap:
 	End Function
 	
 	
-	
-	
-	
 	Public Function ValidateSelection() As Boolean
 		' Validate the expression section.
 		On Error GoTo ErrorTrap
 		
 		Dim fOK As Boolean
-		Dim sSQL As String
-		Dim objExpr As clsExprExpression
-		Dim rsCheck As ADODB.Recordset
-		
+
 		fOK = True
 		
 		' Construct the expression to print.
@@ -2903,49 +2862,48 @@ ErrorTrap:
 	End Function
 	
 	
-	Public Function UDFCalculationCode(ByRef palngSourceTables As Object, ByRef psCalcCode() As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function UDFCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode() As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return TRUE if the Calculation code was created okay.
 		' Return the runtime Calculation SQL code in the parameter 'psCalcCode'.
 		' Apply permissions to the Calculation code only if the 'pfApplyPermissions' parameter is TRUE.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
-		Dim sRuntimeSQL As String
-		
+
 		' Check if the 'validating' parameter is set.
 		' If not, set it to FALSE.
 		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
 		If IsNothing(pfValidating) Then
 			pfValidating = False
 		End If
-		
+
 		' Construct the expression from the database definition.
-		fOK = ConstructExpression
-		
+		fOK = ConstructExpression()
+
 		If fOK Then
 			' Get the Calculation code.
 			' JPD20020419 Fault 3687
 			fOK = UDFCode(psCalcCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 		End If
-		
+
 		If fOK Then
 			If pfApplyPermissions Then
 				fOK = (ValidateExpression(True) = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
 			End If
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		If Not fOK Then
 			psCalcCode(UBound(psCalcCode)) = ""
 		End If
 		UDFCalculationCode = fOK
-		
+
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
 	
 	Public Function UDFFilterCode(ByRef pastrFilterCode() As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
@@ -2957,16 +2915,8 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 		
 		Dim fOK As Boolean
-		Dim iLoop1 As Short
-		Dim iLoop2 As Short
-		Dim iNextIndex As Short
-		Dim sSQL As String
-		Dim sWhereCode As String
 		Dim sBaseTableSource As String
-		Dim sRuntimeFilterSQL As String
-    Dim alngSourceTables(,) As Integer
-		Dim avRelatedTables() As Object
-		Dim rsInfo As ADODB.Recordset
+		Dim alngSourceTables(,) As Integer
 		Dim objTableView As CTablePrivilege
 		
 		' Check if the 'validating' parameter is set.
@@ -3016,51 +2966,7 @@ ErrorTrap:
 	End Function
 	
 	Public Sub UDFFunctions(ByRef pbCreate As Boolean)
-		
-		Dim iCount As Short
-		Dim strDropCode As String
-		Dim strFunctionName As String
-		Dim sUDFCode As String
-		Dim clsData As clsDataAccess
-		Dim iStart As Short
-		Dim iEnd As Short
-		Dim strFunctionNumber As String
-		
-		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-		
-		On Error GoTo ExecuteSQL_ERROR
-		
-		If gbEnableUDFFunctions Then
-			
-			clsData = New clsDataAccess
-			
-			For iCount = 1 To UBound(mastrUDFsRequired)
-				
-				'JPD 20060110 Fault 10509
-				'strFunctionName = Mid(mastrUDFsRequired(iCount), 17, 15)
-				iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-				iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Pers")
-				strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-				strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-				
-				'Drop existing function (could exist if the expression is used more than once in a report)
-				strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-				gADOCon.Execute(strDropCode)
-				
-				' Create the new function
-				If pbCreate Then
-					sUDFCode = mastrUDFsRequired(iCount)
-					gADOCon.Execute(sUDFCode)
-				End If
-				
-			Next iCount
-		End If
-		
-		Exit Sub
-		
-ExecuteSQL_ERROR: 
-		
-		msErrorMessage = "Error whilst creating user defined functions." & vbNewLine & Err.Description
-		
+		clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Sub
+
 End Class

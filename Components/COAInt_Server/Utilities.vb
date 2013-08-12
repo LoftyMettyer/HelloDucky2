@@ -80,87 +80,38 @@ ErrorTrap:
 
   End Function
 
+	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+	End Function
 
+	Public Function FormatEventDuration(ByRef lngSeconds As Integer) As String
 
-  Public Function UDFFunctions(ByRef pbCreate As Object) As Object
+		Dim strHours As String
+		Dim strMins As String
+		Dim strSeconds As String
+		Dim dblRemainder As Double
 
-    On Error GoTo UDFFunctions_ERROR
+		Const TIME_SEPARATOR As String = ":"
 
-    Dim iCount As Short
-    Dim strDropCode As String
-    Dim strFunctionName As String
-    Dim sUDFCode As String
-    Dim datData As clsDataAccess
-    Dim iStart As Short
-    Dim iEnd As Short
-    Dim strFunctionNumber As String
+		If Not (lngSeconds < 0) Then
+			strHours = CStr(Fix(lngSeconds / 3600))
+			strHours = New String("0", 2 - Len(strHours)) & strHours
+			dblRemainder = CDbl(lngSeconds Mod 3600)
 
-    Const FUNCTIONPREFIX As String = "udf_ASRSys_"
+			strMins = CStr(Fix(dblRemainder / 60))
+			strMins = New String("0", 2 - Len(strMins)) & strMins
+			'UPGRADE_WARNING: Mod has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
+			dblRemainder = CDbl(dblRemainder Mod 60)
 
-    If gbEnableUDFFunctions Then
+			strSeconds = CStr(Fix(dblRemainder))
+			strSeconds = New String("0", 2 - Len(strSeconds)) & strSeconds
 
-      For iCount = 1 To UBound(mastrUDFsRequired)
+			FormatEventDuration = strHours & TIME_SEPARATOR & strMins & TIME_SEPARATOR & strSeconds
+		Else
+			FormatEventDuration = ""
+		End If
 
-        'JPD 20060110 Fault 10509
-        'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-        iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-        iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
-        strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-        strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-
-        'Drop existing function (could exist if the expression is used more than once in a report)
-        strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-
-        mclsData.ExecuteSql(strDropCode)
-
-        ' Create the new function
-        'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If pbCreate Then
-          sUDFCode = mastrUDFsRequired(iCount)
-          mclsData.ExecuteSql(sUDFCode)
-        End If
-
-      Next iCount
-    End If
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = True
-    Exit Function
-
-UDFFunctions_ERROR:
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = False
-
-  End Function
-
-  Public Function FormatEventDuration(ByRef lngSeconds As Integer) As String
-
-    Dim strHours As String
-    Dim strMins As String
-    Dim strSeconds As String
-    Dim dblRemainder As Double
-
-    Const TIME_SEPARATOR As String = ":"
-
-    If Not (lngSeconds < 0) Then
-      strHours = CStr(Fix(lngSeconds / 3600))
-      strHours = New String("0", 2 - Len(strHours)) & strHours
-      dblRemainder = CDbl(lngSeconds Mod 3600)
-
-      strMins = CStr(Fix(dblRemainder / 60))
-      strMins = New String("0", 2 - Len(strMins)) & strMins
-      'UPGRADE_WARNING: Mod has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-      dblRemainder = CDbl(dblRemainder Mod 60)
-
-      strSeconds = CStr(Fix(dblRemainder))
-      strSeconds = New String("0", 2 - Len(strSeconds)) & strSeconds
-
-      FormatEventDuration = strHours & TIME_SEPARATOR & strMins & TIME_SEPARATOR & strSeconds
-    Else
-      FormatEventDuration = ""
-    End If
-
-  End Function
+	End Function
 
   Public Function GetFilteredIDs(ByRef plngExprID As Integer, ByRef pavPromptedValues As Object) As String
     ' Return a string describing the record IDs from the given table
@@ -231,9 +182,9 @@ UDFFunctions_ERROR:
     blnOK = datGeneral.FilteredIDs(plngExprID, sIDSQL, avPrompts)
 
     ' Generate any UDFs that are used in this filter
-    If blnOK And gbEnableUDFFunctions Then
-      datGeneral.FilterUDFs(plngExprID, mastrUDFsRequired)
-    End If
+		If blnOK Then
+			datGeneral.FilterUDFs(plngExprID, mastrUDFsRequired)
+		End If
 
     GetFilteredIDs = sIDSQL
 

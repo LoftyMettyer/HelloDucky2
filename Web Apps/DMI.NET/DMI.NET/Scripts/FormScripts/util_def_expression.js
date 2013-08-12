@@ -2056,8 +2056,10 @@ function populateSendForm() {
 	var i;
 	var sNames = "";
 	var sComponents = "";
-	var sTemp;
 	var reQuote = new RegExp("\"", "gi");
+
+	var frmSend = OpenHR.getForm("workframe", "frmSend");
+	var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
 
 	// Copy all the header information to frmSend
 	frmSend.txtSend_ID.value = frmUseful.txtUtilID.value;
@@ -2078,7 +2080,7 @@ function populateSendForm() {
 
 	// Now go through the components
 	if (frmDefinition.SSTree1.Nodes(1).children > 0) {
-		objNode = frmDefinition.SSTree1.Nodes(1).child;
+		var objNode = frmDefinition.SSTree1.Nodes(1).child;
 
 		sComponents = "ROOT	" + objNode.key + "	" + objNode.tag;
 		sComponents = sComponents + populateSendForm_subNodes(objNode.key);

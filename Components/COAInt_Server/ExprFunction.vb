@@ -87,10 +87,10 @@ ErrorTrap:
 
   End Function
 
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim fFound As Boolean
 		Dim fSrchColumnOK As Boolean
@@ -104,114 +104,114 @@ ErrorTrap:
 		Dim sSrchColumnCode As String
 		Dim sSrchTableCode As String
 		Dim sRealTableSource As String
-    Dim sParamCode1 As String = ""
-    Dim sParamCode2 As String = ""
-    Dim sParamCode3 As String = ""
-    Dim sParamCode4 As String = ""
-    Dim sSrchColumnName As String = ""
-    Dim sRtnColumnName As String = ""
+		Dim sParamCode1 As String = ""
+		Dim sParamCode2 As String = ""
+		Dim sParamCode3 As String = ""
+		Dim sParamCode4 As String = ""
+		Dim sSrchColumnName As String = ""
+		Dim sRtnColumnName As String = ""
 		Dim sSrchTableName As String
 		Dim rsInfo As ADODB.Recordset
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim objTableView As CTablePrivilege
-    Dim asViews(,) As String
+		Dim asViews(,) As String
 		Dim strRemainString As String
 		Dim strTempTableName As String
 		Dim strTempTableID As String
 		Dim objBaseTable As CTablePrivilege
-		
+
 		'Currency Conversion Values
 		Dim sCConvTable As String
 		Dim sCConvExRateCol As String
 		Dim sCConvCurrDescCol As String
 		Dim sCConvDecCol As String
-		
+
 		fOK = True
 		sCode = ""
-		
+
 		'UPGRADE_NOTE: clsGeneral was upgraded to clsGeneral_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 		Dim clsGeneral_Renamed As clsGeneral
 		clsGeneral_Renamed = New clsGeneral
-		
+
 		' Get the first parameter's runtime code if required.
 		If mcolParameters.Count() >= 1 Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(1).Component.RuntimeCode(sParamCode1, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
 		End If
-		
+
 		' Get the second parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 2) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(2).Component.RuntimeCode(sParamCode2, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
 		End If
-		
+
 		' Get the third parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 3) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(3).Component.RuntimeCode(sParamCode3, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
 		End If
-		
+
 		' Get the fourth parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 4) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(4).Component.RuntimeCode(sParamCode4, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
 		End If
-		
+
 		If fOK Then
 			Select Case mlngFunctionID
 				Case 1 ' System date
 					sCode = "getdate()"
-					
+
 				Case 2 ' Convert to uppercase
 					sCode = "upper(" & sParamCode1 & ")"
-					
+
 				Case 3 ' Convert numeric to string
 					sCode = "IsNull(ltrim(str(" & sParamCode1 & ", 255, " & sParamCode2 & ")),'')"
-					
+
 				Case 4 ' If... Then... Else...
 					sCode = "CASE WHEN (" & sParamCode1 & " = 1) THEN " & sParamCode2 & " ELSE " & sParamCode3 & " END"
-					
+
 				Case 5 ' Remove leading and trailing spaces
 					sCode = "ltrim(rtrim(" & sParamCode1 & "))"
-					
+
 				Case 6 ' Extract characters from the left
 					sCode = "left(" & sParamCode1 & ", " & sParamCode2 & ")"
-					
+
 				Case 7 ' Length of character field
 					sCode = "len(" & sParamCode1 & ")"
-					
+
 				Case 8 ' Convert to lowercase
 					sCode = "lower(" & sParamCode1 & ")"
-					
+
 				Case 9 ' Maximum
 					sCode = "CASE WHEN (" & sParamCode1 & " > " & sParamCode2 & ") THEN " & sParamCode1 & " ELSE " & sParamCode2 & " END"
-					
-				Case 10 ' Minimum
+
+				Case 10	' Minimum
 					sCode = "CASE WHEN (" & sParamCode1 & " < " & sParamCode2 & ") THEN " & sParamCode1 & " ELSE " & sParamCode2 & " END"
-					
-				Case 11 ' Search for character string.
+
+				Case 11	' Search for character string.
 					sCode = "charindex(" & sParamCode2 & ", " & sParamCode1 & ")"
-					
-				Case 12 ' Capitalise Initials
+
+				Case 12	' Capitalise Initials
 					sCode = "(dbo.udf_ASRFn_CapitalizeInitials(" & sParamCode1 & "))"
-					
-				Case 13 ' Extract characters from the right
+
+				Case 13	' Extract characters from the right
 					sCode = "right(" & sParamCode1 & ", " & sParamCode2 & ")"
-					
-				Case 14 ' Extract part of a character string
+
+				Case 14	' Extract part of a character string
 					sCode = "substring(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
-					
-				Case 15 ' System Time
+
+				Case 15	' System Time
 					sCode = "convert(varchar(50), getdate(), 8)"
-					
-				Case 16 ' Is field empty
+
+				Case 16	' Is field empty
 					sCode = "(CASE WHEN ((" & sParamCode1 & ") IS NULL)"
-					
+
 					' Validate the sub-expression. This is done, not to  validate the expression,
 					' but rather to determine the return type of the expression.
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mcolParameters.Item(1).Component.ValidateExpression(False)
-					
+
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters(1).ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Select Case mcolParameters.Item(1).ReturnType
 						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
@@ -221,38 +221,38 @@ ErrorTrap:
 						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
 					End Select
-					
+
 					sCode = sCode & " THEN 1 ELSE 0 END)"
-					
-				Case 17 ' Current user
+
+				Case 17	' Current user
 					sCode = "system_user"
-					
-				Case 18 ' Whole Years Until Current Date
+
+				Case 18	' Whole Years Until Current Date
 					sCode = "datediff(year," & sParamCode1 & ", getdate())" & " - case" & "       when datepart(month," & sParamCode1 & ") > datepart(month, getdate()) then 1" & "       when (datepart(month," & sParamCode1 & ") = datepart(month, getdate())) " & "           and (datepart(day," & sParamCode1 & ") > datepart(day, getdate())) then 1" & "       else 0" & "   end"
-					
-				Case 19 ' Remaining Months Since Whole Years
+
+				Case 19	' Remaining Months Since Whole Years
 					sCode = "datepart(month, getdate())" & " - datepart(month, " & sParamCode1 & ")" & " - case" & "       when datepart(day," & sParamCode1 & ") > datepart(day, getdate()) then 1" & "       else 0" & "   end" & " + case" & "       when (datepart(month, getdate())" & "           - datepart(month," & sParamCode1 & ")" & "           - case" & "               when datepart(day," & sParamCode1 & ") > datepart(day, getdate()) then 1" & "               else 0" & "             end) < 0 then 12" & "       else 0" & "   end"
-					
-				Case 20 ' Capitalise Initials
+
+				Case 20	' Capitalise Initials
 					sCode = "(dbo.udf_ASRFn_InitialsFromForenames(" & sParamCode1 & "))"
-					
-				Case 21 ' First Name from Forenames
+
+				Case 21	' First Name from Forenames
 					sCode = "case" & "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & "))-1)" & "    else ltrim(" & sParamCode1 & ")" & "end"
-					
-				Case 22 ' Weekdays From Start and End Dates
-					
+
+				Case 22	' Weekdays From Start and End Dates
+
 					'MH200600802 Fault 11395
 					'"    when datediff(day, " & sParamCode1 & ", " & sParamCode2 & ") <= 0 then 0" & _
 					'
 					sCode = " case" & "    when datediff(day, " & sParamCode1 & ", " & sParamCode2 & ") < 0 then 0" & "    else datediff(day, " & sParamCode1 & ", " & sParamCode2 & " + 1)" & "        - (2 * (datediff(day, " & sParamCode1 & " - (datepart(dw, " & sParamCode1 & ") - 1), " & "                              " & sParamCode2 & " - (datepart(dw, " & sParamCode2 & ") - 1)) / 7))" & "        - case" & "              when datepart(dw, " & sParamCode1 & ") = 1 then 1" & "              else 0" & "          end" & "        - case" & "              when datepart(dw, " & sParamCode2 & ") = 7 then 1" & "              else 0" & "          end" & " end"
-					
-				Case 23 ' Add months to date
+
+				Case 23	' Add months to date
 					sCode = "dateadd(month, " & sParamCode2 & ", " & sParamCode1 & ")"
-					
-				Case 24 ' Add years to date
+
+				Case 24	' Add years to date
 					sCode = "dateadd(year, " & sParamCode2 & ", " & sParamCode1 & ")"
-					
-				Case 25 ' Convert character to numeric.
+
+				Case 25	' Convert character to numeric.
 					'JPD 20041213 Fault 9568
 					'sCode = _
 					'" case" & _
@@ -260,51 +260,51 @@ ErrorTrap:
 					'"    else 0" & _
 					'" end"
 					sCode = " case" & "    when isnumeric(" & sParamCode1 & ") = 1 then convert(float, convert(money, " & sParamCode1 & "))" & "    else 0" & " end"
-					
-				Case 26 ' Whole Months between 2 Dates.
+
+				Case 26	' Whole Months between 2 Dates.
 					sCode = " case" & "    when " & sParamCode1 & " >= " & sParamCode2 & " then 0" & "    else datediff(month, " & sParamCode1 & ", " & sParamCode2 & ")" & "        - case" & "              when datepart(day, " & sParamCode2 & ") < datepart(day, " & sParamCode1 & ") then 1" & "              else 0" & "          end" & " end"
-					
-				Case 27 ' Parentheses
+
+				Case 27	' Parentheses
 					sCode = sParamCode1
-					
-				Case 28 ' Day of the week
+
+				Case 28	' Day of the week
 					sCode = "DATEPART(weekday, " & sParamCode1 & ")"
-					
-				Case 29 ' Working Days per week
+
+				Case 29	' Working Days per week
 					sCode = "(convert(float, len(replace(left(" & sParamCode1 & ", 14), ' ', ''))) / 2)"
-					
-				Case 30 ' Absence Duration
+
+				Case 30	' Absence Duration
 					'TM08102003
 					If pfValidating Then
 						strTempTableName = mobjBaseComponent.ParentExpression.BaseTableName
 					Else
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
-					
+
 					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
 						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
 					End If
-					
+
 					sCode = "(dbo.udf_ASRFn_AbsenceDuration(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & sParamCode4 & "," & strTempTableName & "." & strTempTableID & "))"
-					
-				Case 31 ' Round down to nearest whole number.
+
+				Case 31	' Round down to nearest whole number.
 					sCode = "round(" & sParamCode1 & ", 0, 1)"
-					
-				Case 32 ' Year of date.
+
+				Case 32	' Year of date.
 					sCode = "datepart(year, " & sParamCode1 & ")"
-					
-				Case 33 ' Month of date.
+
+				Case 33	' Month of date.
 					sCode = "datepart(month, " & sParamCode1 & ")"
-					
-				Case 34 ' Day of date.
+
+				Case 34	' Day of date.
 					sCode = "datepart(day, " & sParamCode1 & ")"
-					
-				Case 35 ' Nice Date
+
+				Case 35	' Nice Date
 					sCode = "datename(day, " & sParamCode1 & ") + ' ' + " & "datename(month, " & sParamCode1 & ") + ' ' + " & "datename(year, " & sParamCode1 & ")"
-					
-				Case 36 ' Nice Time
+
+				Case 36	' Nice Time
 					'sCode = _
 					'"convert(varchar(2), datepart(hour, convert(datetime, " & sParamCode1 & ")) % 12) + ':' " & _
 					'"    + right('00' + datename(minute, convert(datetime, " & sParamCode1 & ")),2)" & _
@@ -314,20 +314,20 @@ ErrorTrap:
 					'"      end"
 					' JPD20020618 Fault 3999
 					sCode = "case when len(ltrim(rtrim(" & sParamCode1 & "))) = 0 then ''" & " else case when isdate(" & sParamCode1 & ") = 0 then '***'" & " else (convert(varchar(2),((datepart(hour,convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) + 11) % 12) + 1)" & " + ':' + right('00' + datename(minute, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)),2)" & " + case when datepart(hour, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) > 11 then ' pm'" & " else ' am' end) end end"
-					
-				Case 37 ' Round Date to Start of nearest month
+
+				Case 37	' Round Date to Start of nearest month
 					sCode = " case" & "     when datediff(day, (" & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1), " & sParamCode1 & ")" & "         <= datediff(day, " & sParamCode1 & ", (dateadd(month, 1, " & sParamCode1 & ") - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1))" & "         then " & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1" & "     else dateadd(month, 1, " & sParamCode1 & ")" & "         - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1" & " end"
-					
-				Case 38 ' Is Between
+
+				Case 38	' Is Between
 					sCode = " case" & "     when (" & sParamCode1 & " >= " & sParamCode2 & ")" & "         and (" & sParamCode1 & " <= " & sParamCode3 & ") then 1" & "     else 0" & " end"
-					
-				Case 39 ' Service Years
+
+				Case 39	' Service Years
 					sCode = "   datepart(year, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end)" & " - datepart(year, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & " - case" & "       when datepart(month, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          > datepart(month, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end) then 1" & "      when (datepart(month, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          = datepart(month, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end))" & "       and (datepart(day, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          > datepart(day, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end)) then 1" & "      else 0" & "  end"
-					
-				Case 40 ' Service Months
+
+				Case 40	' Service Months
 					sCode = " (case" & "    when case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end" & "          >= case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end then 0" & "    else datediff(month, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end)" & "        - case" & "              when datepart(day, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end) < datepart(day, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end) then 1" & "              else 0" & "          end" & " end) % 12"
-					
-				Case 42 ' Get field from database record.
+
+				Case 42	' Get field from database record.
 					' Get the column parameter definitions.
 					sSQL = "SELECT ASRSysColumns.columnID, ASRSysColumns.columnName, ASRSysTables.tableID, ASRSysTables.tableName" & " FROM ASRSysColumns" & " INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & " WHERE ASRSysColumns.columnID IN (" & sParamCode1 & ", " & sParamCode3 & ")"
 					rsInfo = datGeneral.GetRecords(sSQL)
@@ -338,37 +338,37 @@ ErrorTrap:
 								sSrchTableName = .Fields("TableName").Value
 								lngSrchTableID = .Fields("TableID").Value
 							End If
-							
+
 							If Trim(Str(.Fields("ColumnID").Value)) = sParamCode3 Then
 								sRtnColumnName = .Fields("ColumnName").Value
 								lngRtnTableID = .Fields("TableID").Value
 							End If
-							
+
 							.MoveNext()
-						Loop 
-						
+						Loop
+
 						.Close()
 					End With
 					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsInfo = Nothing
-					
+
 					fOK = ((Len(sSrchColumnName) > 0) And (Len(sRtnColumnName) > 0)) And (lngSrchTableID = lngRtnTableID)
-					
+
 					' Construct the select statement to get the required field from the given table,
 					' incorporating permissions.
 					If fOK Then
 						ReDim asViews(2, 0)
-						
+
 						' Check permissions on that return column.
 						objColumnPrivileges = GetColumnPrivileges(sSrchTableName)
 						sRealTableSource = gcoTablePrivileges.Item(sSrchTableName).RealSource
-						
+
 						fRtnColumnOK = objColumnPrivileges.IsValid(sRtnColumnName)
-						
+
 						If fRtnColumnOK Then
 							fRtnColumnOK = objColumnPrivileges.Item(sRtnColumnName).AllowSelect
 						End If
-						
+
 						If fRtnColumnOK Then
 							' The search column can be read direct from the table.
 							sRtnColumnCode = "lookup." & sRtnColumnName
@@ -377,16 +377,16 @@ ErrorTrap:
 							' Loop thru the views on the table, seeing if any have read permis for the column
 							' Column 1 = view name
 							' Column 2 = "S" if the view is used for the search.
-							For	Each objTableView In gcoTablePrivileges.Collection
+							For Each objTableView In gcoTablePrivileges.Collection
 								If (Not objTableView.IsTable) And (objTableView.TableID = lngSrchTableID) And (objTableView.AllowSelect) Then
-									
+
 									' Get the column permission for the view
 									objColumnPrivileges = GetColumnPrivileges((objTableView.ViewName))
-									
+
 									' If we can see the column from this view
 									If objColumnPrivileges.IsValid(sRtnColumnName) Then
 										If objColumnPrivileges.Item(sRtnColumnName).AllowSelect Then
-											
+
 											ReDim Preserve asViews(2, UBound(asViews, 2) + 1)
 											asViews(1, UBound(asViews, 2)) = objTableView.ViewName
 											asViews(2, UBound(asViews, 2)) = ""
@@ -396,7 +396,7 @@ ErrorTrap:
 							Next objTableView
 							'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							objTableView = Nothing
-							
+
 							' Does the user have select permission thru ANY views ?
 							If UBound(asViews, 2) = 0 Then
 								' The search column can be read neither from the table nor any views.
@@ -406,23 +406,23 @@ ErrorTrap:
 									If iLoop = 1 Then
 										sRtnColumnCode = "CASE"
 									End If
-									
+
 									sRtnColumnCode = sRtnColumnCode & " WHEN NOT " & "lookup_" & iLoop & "." & sRtnColumnName & " IS NULL THEN " & "lookup_" & iLoop & "." & sRtnColumnName
 								Next iLoop
-								
+
 								sRtnColumnCode = sRtnColumnCode & " ELSE NULL" & " END"
 							End If
 						End If
-						
-						
+
+
 						objColumnPrivileges = GetColumnPrivileges(sSrchTableName)
-						
+
 						fSrchColumnOK = objColumnPrivileges.IsValid(sSrchColumnName)
-						
+
 						If fSrchColumnOK Then
 							fSrchColumnOK = objColumnPrivileges.Item(sSrchColumnName).AllowSelect
 						End If
-						
+
 						If fSrchColumnOK Then
 							' The search column can be read direct from the table.
 							sSrchColumnCode = "lookup" & "." & sSrchColumnName & " = " & sParamCode2
@@ -431,16 +431,16 @@ ErrorTrap:
 							' Loop thru the views on the table, seeing if any have read permis for the column
 							' Column 1 = view name
 							' Column 2 = "S" if the view is used for the search.
-							For	Each objTableView In gcoTablePrivileges.Collection
+							For Each objTableView In gcoTablePrivileges.Collection
 								If (Not objTableView.IsTable) And (objTableView.TableID = lngSrchTableID) And (objTableView.AllowSelect) Then
-									
+
 									' Get the column permission for the view
 									objColumnPrivileges = GetColumnPrivileges((objTableView.ViewName))
-									
+
 									' If we can see the column from this view
 									If objColumnPrivileges.IsValid(sSrchColumnName) Then
 										If objColumnPrivileges.Item(sSrchColumnName).AllowSelect Then
-											
+
 											fFound = False
 											For iLoop = 1 To UBound(asViews, 2)
 												If asViews(1, iLoop) = objTableView.ViewName Then
@@ -449,7 +449,7 @@ ErrorTrap:
 													Exit For
 												End If
 											Next iLoop
-											
+
 											If Not fFound Then
 												ReDim Preserve asViews(2, UBound(asViews, 2) + 1)
 												asViews(1, UBound(asViews, 2)) = objTableView.ViewName
@@ -461,26 +461,26 @@ ErrorTrap:
 							Next objTableView
 							'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							objTableView = Nothing
-							
+
 							sSrchColumnCode = ""
 							For iLoop = 1 To UBound(asViews, 2)
 								If asViews(2, iLoop) = "S" Then
 									fSrchColumnOK = True
-									
+
 									If Len(sSrchColumnCode) > 0 Then
 										sSrchColumnCode = sSrchColumnCode & " OR "
 									End If
-									
+
 									sSrchColumnCode = sSrchColumnCode & sRealTableSource & ".id IN (SELECT id FROM " & asViews(1, iLoop) & " lookup_" & iLoop & " WHERE " & sSrchColumnName & " = " & sParamCode2 & ")"
 								End If
 							Next iLoop
 						End If
-						
+
 						sSrchTableCode = ""
 						For iLoop = 1 To UBound(asViews, 2)
 							sSrchTableCode = sSrchTableCode & " LEFT OUTER JOIN " & asViews(1, iLoop) & " lookup_" & iLoop & " ON " & sRealTableSource & ".id = " & " lookup_" & iLoop & ".id"
 						Next iLoop
-						
+
 						If fSrchColumnOK Then
 							If UBound(asViews, 2) = 0 Then
 								sCode = "(SELECT TOP 1 " & sRtnColumnCode & " FROM " & sRealTableSource & " lookup" & " " & sSrchTableCode & " WHERE (" & sSrchColumnCode & "))"
@@ -491,55 +491,55 @@ ErrorTrap:
 							sCode = "null"
 						End If
 					End If
-					
-				Case 44 ' Add days to date.
+
+				Case 44	' Add days to date.
 					sCode = "dateadd(day, " & sParamCode2 & ", " & sParamCode1 & ")"
-					
-				Case 45 ' Days Between 2 Dates
-					
+
+				Case 45	' Days Between 2 Dates
+
 					'MH20010220 Fault 1850
 					'This function needs to be inclusive of both start and end
 					'sCode = "datediff(dd, " & sParamCode1 & ", " & sParamCode2 & ")"
 					sCode = "datediff(dd, " & sParamCode1 & ", " & sParamCode2 & ")+1"
-					
-				Case 46 'Working days between two dates
-					
+
+				Case 46	'Working days between two dates
+
 					If pfValidating Then
 						strTempTableName = mobjBaseComponent.ParentExpression.BaseTableName
 					Else
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
-					
+
 					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
 						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
 					End If
-					
+
 					sCode = "(dbo.udf_ASRFn_WorkingDaysBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & strTempTableName & "." & strTempTableID & "))"
-					
-				Case 47 ' Absence between two dates
-					
+
+				Case 47	' Absence between two dates
+
 					If pfValidating Then
 						strTempTableName = mobjBaseComponent.ParentExpression.BaseTableName
 					Else
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
-					
+
 					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
 						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
 					End If
-					
-          sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "MM/dd/yyyy") & "')" & "))"
-					
-				Case 48 ' Round Up to nearest whole number.
+
+					sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "MM/dd/yyyy") & "')" & "))"
+
+				Case 48	' Round Up to nearest whole number.
 					' JPD20030116 Fault 4910
 					'sCode = "ceiling(" & sParamCode1 & ")"
 					sCode = "CASE WHEN (" & sParamCode1 & ") < 0 THEN floor(" & sParamCode1 & ")" & " ELSE ceiling(" & sParamCode1 & ") END"
-					
-				Case 49 ' Round to nearest number.
+
+				Case 49	' Round to nearest number.
 					' JPD20020415 Fault 3701
 					' Changed 'division by 2' to 'division by 2.0' to avoid SQL casting the result to an integer value.
 					strRemainString = "(" & sParamCode1 & ") - ((floor(" & sParamCode1 & "/" & sParamCode2 & "))*" & sParamCode2 & ")"
@@ -548,20 +548,20 @@ ErrorTrap:
 					'" THEN (" + sParamCode1 + ")-(" + strRemainString + ")" & _
 					'" ELSE (" + sParamCode1 + ")+(" + sParamCode2 + ")-(" + strRemainString + ") END"
 					sCode = "CASE WHEN (((" & sParamCode1 & ")<0) AND ((" & strRemainString & ")<=((" & sParamCode2 & ")/2.0)))" & " OR (((" & sParamCode1 & ")>=0) AND ((" & strRemainString & ")<((" & sParamCode2 & ")/2.0)))" & " THEN (" & sParamCode1 & ")-(" & strRemainString & ")" & " ELSE (" & sParamCode1 & ")+(" & sParamCode2 & ")-(" & strRemainString & ") END"
-					
+
 					'MH20100629
 					sCode = "CASE WHEN (" & sParamCode2 & " > 0) THEN " & sCode & " ELSE 0 END"
-					
+
 					'TM20011022 Currency Implementation
 				Case 51
 					'*********** runtime code to go here *************
-					
+
 					' Get the column parameter definitions.
 					sSQL = "SELECT ASRSysModuleSetup.*, ASRSysColumns.ColumnName, ASRSysTables.TableName" & " FROM ASRSysModuleSetup" & "     INNER JOIN ASRSysColumns ON ASRSysModuleSetup.ParameterValue = ASRSysColumns.ColumnID" & "     INNER JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID" & " WHERE ASRSysModuleSetup.ModuleKey = 'MODULE_CURRENCY'"
-					
+
 					rsInfo = datGeneral.GetRecords(sSQL)
 					sSQL = vbNullString
-					
+
 					With rsInfo
 						If .RecordCount > 0 Then
 							.MoveLast()
@@ -574,8 +574,8 @@ ErrorTrap:
 									Case "Param_DecimalColumn" : sCConvDecCol = .Fields("ColumnName").Value
 								End Select
 								.MoveNext()
-							Loop 
-							
+							Loop
+
 							If (Len(sCConvTable) > 0) And (Len(sCConvCurrDescCol) > 0) And (Len(sCConvExRateCol) > 0) And (Len(sCConvDecCol) > 0) Then
 								'              sCode = "(SELECT ROUND((" & sParamCode1
 								'              sCode = sCode & "              / "
@@ -584,7 +584,7 @@ ErrorTrap:
 								'              sCode = sCode & "             (SELECT " & sCConvTable & "." & sCConvExRateCol & " FROM " & sCConvTable & " WHERE " & sCConvTable & "." & sCConvCurrDescCol & " = " & sParamCode3 & ")) "
 								'              sCode = sCode & "        , "
 								'              sCode = sCode & "        (SELECT " & sCConvTable & "." & sCConvDecCol & " FROM " & sCConvTable & " WHERE " & sCConvTable & "." & sCConvCurrDescCol & " = " & sParamCode3 & ")) ) "
-								
+
 								'AE20071204 Fault #12669
 								sCode = vbNullString
 								sCode = sCode & "ROUND(ISNULL((" & sParamCode1 & " / NULLIF((SELECT " & sCConvTable & "." & sCConvExRateCol
@@ -608,55 +608,55 @@ ErrorTrap:
 					End With
 					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsInfo = Nothing
-					
+
 					' Last field change date
 				Case 52
 					objTableView = gcoTablePrivileges.FindTableID(CInt(clsGeneral_Renamed.GetColumnTable(CInt(sParamCode1))))
 					sCode = "(SELECT Top 1 DateTimeStamp FROM ASRSysAuditTrail WHERE ColumnID = " & sParamCode1
 					sCode = sCode & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID ORDER BY DateTimeStamp DESC)"
-					
+
 					' Field changed between two dates
 				Case 53
 					objTableView = gcoTablePrivileges.FindTableID(CInt(clsGeneral_Renamed.GetColumnTable(CInt(sParamCode1))))
 					sCode = " case when " & " Exists(Select DateTimeStamp From ASRSysAuditTrail Where ColumnID = " & sParamCode1 & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID" & " And DateTimeStamp >= " & sParamCode2 & " And DateTimeStamp <= " & sParamCode3 & " + 1)" & " then 1 else 0 end"
-					
+
 					'Whole years between two dates
 				Case 54
 					sCode = " case " & " when " & sParamCode1 & " >= " & sParamCode2 & " then 0 " & " else " & "   datediff(year, " & sParamCode1 & ", " & sParamCode2 & ") " & "   - " & "   case " & "   when DatePart(Month, " & sParamCode2 & ") < DatePart(Month, " & sParamCode1 & ") " & "   then 1 " & "   else " & "     case " & "     when DatePart(Month, " & sParamCode2 & ") = DatePart(Month, " & sParamCode1 & ") " & "     then " & "       case " & "       when DatePart(Day, " & sParamCode2 & ") < DatePart(Day, " & sParamCode1 & ") " & "       then 1 " & "       else 0 " & "       end " & "     else " & "       0 " & "     end " & "   end " & " end "
-					
+
 					' JPD20021121 Fault 3177
-				Case 55 ' First Day of Month - VERSION 2 FUNCTION
+				Case 55	' First Day of Month - VERSION 2 FUNCTION
 					sCode = "dateadd(dd, 1 - datepart(dd, " & sParamCode1 & "), " & sParamCode1 & ")"
-					
+
 					' JPD20021121 Fault 3177
-				Case 56 ' Last Day of Month - VERSION 2 FUNCTION
+				Case 56	' Last Day of Month - VERSION 2 FUNCTION
 					sCode = "dateadd(dd, -1, dateadd(mm, 1, dateadd(dd, 1 - datepart(dd, " & sParamCode1 & "), " & sParamCode1 & ")))"
-					
+
 					' JPD20021121 Fault 3177
-				Case 57 ' First Day of Year - VERSION 2 FUNCTION
+				Case 57	' First Day of Year - VERSION 2 FUNCTION
 					sCode = "dateadd(dd, 1 - datepart(dy, " & sParamCode1 & "), " & sParamCode1 & ")"
-					
+
 					' JPD20021121 Fault 3177
-				Case 58 ' Last Day of Year - VERSION 2 FUNCTION
+				Case 58	' Last Day of Year - VERSION 2 FUNCTION
 					sCode = "dateadd(dd, -1, dateadd(yy, 1, dateadd(dd, 1 - datepart(dy, " & sParamCode1 & "), " & sParamCode1 & ")))"
-					
+
 					' JPD20021129 Fault 4337
-				Case 59 ' Name of Month. - VERSION 2 FUNCTION
+				Case 59	' Name of Month. - VERSION 2 FUNCTION
 					sCode = "datename(month, " & sParamCode1 & ")"
-					
+
 					' JPD20021129 Fault 4337
-				Case 60 ' Name of Day. - VERSION 2 FUNCTION
+				Case 60	' Name of Day. - VERSION 2 FUNCTION
 					sCode = "datename(weekday, " & sParamCode1 & ")"
-					
+
 					' JPD20021129 Fault 3606
-				Case 61 ' Is field populated
+				Case 61	' Is field populated
 					sCode = "(CASE WHEN ((" & sParamCode1 & ") IS NULL)"
-					
+
 					' Validate the sub-expression. This is done, not to  validate the expression,
 					' but rather to determine the return type of the expression.
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mcolParameters.Item(1).Component.ValidateExpression(False)
-					
+
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters(1).ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Select Case mcolParameters.Item(1).ReturnType
 						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
@@ -666,14 +666,14 @@ ErrorTrap:
 						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
 					End Select
-					
+
 					sCode = sCode & " THEN 0 ELSE 1 END)"
-					
+
 					'Case 62 'PARENTAL LEAVE ENTITLEMENT
 					'Case 63 'PARENTAL LEAVE TAKEN
 					'Case 64 'MATERNITY EXPECTED RETURN DATE
-					
-				Case 65 ' Is Post Subordinate Of
+
+				Case 65	' Is Post Subordinate Of
 					'If (Len(gsHierarchyTableName) > 0) Then
 					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_IsPostSubordinateOf(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id) = 1 THEN 1 ELSE 0 END"
@@ -681,8 +681,8 @@ ErrorTrap:
 					'Else
 					'  sCode = "0"
 					'End If
-					
-				Case 66 ' Is Post Subordinate Of User
+
+				Case 66	' Is Post Subordinate Of User
 					If (Len(gsHierarchyTableName) > 0) Then
 						objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPostSubordinateOfUser()) THEN 1 ELSE 0 END"
@@ -691,8 +691,8 @@ ErrorTrap:
 					Else
 						sCode = "0"
 					End If
-					
-				Case 67 ' Is Personnel Subordinate Of
+
+				Case 67	' Is Personnel Subordinate Of
 					'If (Len(gsPersonnelTableName) > 0) Then
 					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_IsPersonnelSubordinateOf(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id," & sParamCode2 & ") = 1 THEN 1 ELSE 0 END"
@@ -700,8 +700,8 @@ ErrorTrap:
 					'Else
 					'  sCode = "0"
 					'End If
-					
-				Case 68 ' Is Personnel Subordinate Of User
+
+				Case 68	' Is Personnel Subordinate Of User
 					If (Len(gsPersonnelTableName) > 0) Then
 						objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPersonnelSubordinateOfUser()) THEN 1 ELSE 0 END"
@@ -710,8 +710,8 @@ ErrorTrap:
 					Else
 						sCode = "0"
 					End If
-					
-				Case 69 'Has Post Subordinate
+
+				Case 69	'Has Post Subordinate
 					'If (Len(gsHierarchyTableName) > 0) Then
 					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_HasPostSubordinate(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id) = 1 THEN 1 ELSE 0 END"
@@ -719,8 +719,8 @@ ErrorTrap:
 					'Else
 					'  sCode = "0"
 					'End If
-					
-				Case 70 'Has Post Subordinate User
+
+				Case 70	'Has Post Subordinate User
 					If (Len(gsHierarchyTableName) > 0) Then
 						objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_HasPostSubordinateUser()) THEN 1 ELSE 0 END"
@@ -729,8 +729,8 @@ ErrorTrap:
 					Else
 						sCode = "0"
 					End If
-					
-				Case 71 'Has Personnel Subordinate
+
+				Case 71	'Has Personnel Subordinate
 					'If (Len(gsPersonnelTableName) > 0) Then
 					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_HasPersonnelSubordinate(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id," & sParamCode2 & ") = 1 THEN 1 ELSE 0 END"
@@ -738,8 +738,8 @@ ErrorTrap:
 					'Else
 					'  sCode = "0"
 					'End If
-					
-				Case 72 'Has Personnel Subordinate User
+
+				Case 72	'Has Personnel Subordinate User
 					If (Len(gsPersonnelTableName) > 0) Then
 						objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_HasPersonnelSubordinateUser()) THEN 1 ELSE 0 END"
@@ -748,39 +748,39 @@ ErrorTrap:
 					Else
 						sCode = "0"
 					End If
-					
-				Case 73 'Bradford Factor
+
+				Case 73	'Bradford Factor
 					If pfValidating Then
 						strTempTableName = mobjBaseComponent.ParentExpression.BaseTableName
 					Else
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
-					
+
 					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
 						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
 					End If
-					
+
 					sCode = "(dbo.udf_ASRFn_BradfordFactor(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "))"
-					
-				Case 77 ' Replace characters within a String
+
+				Case 77	' Replace characters within a String
 					sCode = "REPLACE(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
-					
+
 				Case Else
 					fOK = False
-					
+
 			End Select
 		End If
-		
+
 		If fOK Then
 			' We need to convert date values to varchars in the format 'mm/dd/yyyy'.
 			If miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE Then
 				sCode = "convert(" & vbNewLine & "datetime, " & vbNewLine & "convert(" & vbNewLine & "varchar(20), " & vbNewLine & sCode & "," & vbNewLine & "101)" & vbNewLine & ")"
 			End If
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		If fOK Then
 			' JDM - 20/03/02 - Fault 3667 - Needs some brackets around these functions
 			'psRuntimeCode = sCode
@@ -790,11 +790,11 @@ TidyUpAndExit:
 		End If
 		RuntimeCode = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
 	
 	
@@ -1297,42 +1297,42 @@ ErrorTrap:
 		MyBase.Finalize()
 	End Sub
 	
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
+	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		Dim sParamCode1 As String
 		Dim sParamCode2 As String
 		Dim sParamCode3 As String
 		Dim sParamCode4 As String
 		Dim fOK As Boolean
-		
+
 		'JPD 20031031 Fault 7440
 		fOK = True
-		
+
 		' Get the first parameter's runtime code if required.
 		If mcolParameters.Count() >= 1 Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(1).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 		End If
-		
+
 		' Get the second parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 2) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(2).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 		End If
-		
+
 		' Get the third parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 3) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(3).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 		End If
-		
+
 		' Get the fourth parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 4) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			fOK = mcolParameters.Item(4).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 		End If
-		
+
 		UDFCode = fOK
-		
+
 	End Function
 End Class

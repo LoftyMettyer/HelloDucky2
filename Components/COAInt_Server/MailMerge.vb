@@ -1561,9 +1561,9 @@ LocalErr:
     If fOK Then
       fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, True, False, mvarPrompts)
 
-      If fOK And gbEnableUDFFunctions Then
-        fOK = objCalcExpr.UDFCalculationCode(lngCalcViews, mastrUDFsRequired, True)
-      End If
+			If fOK Then
+				fOK = objCalcExpr.UDFCalculationCode(lngCalcViews, mastrUDFsRequired, True)
+			End If
 
     End If
 
@@ -2018,55 +2018,8 @@ ErrorTrap:
 
   End Function
 
+  Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+	End Function
 
-  Public Function UDFFunctions(ByRef pbCreate As Object) As Boolean
-
-    On Error GoTo UDFFunctions_ERROR
-
-    Dim iCount As Short
-    Dim strDropCode As String
-    Dim strFunctionName As String
-    Dim sUDFCode As String
-    Dim datData As clsDataAccess
-    Dim iStart As Short
-    Dim iEnd As Short
-    Dim strFunctionNumber As String
-
-    Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-
-    If gbEnableUDFFunctions Then
-
-      For iCount = 1 To UBound(mastrUDFsRequired)
-
-        'JPD 20060110 Fault 10509
-        'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-        iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-        iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
-        strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-        strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-
-        'Drop existing function (could exist if the expression is used more than once in a report)
-        strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-        mclsData.ExecuteSql(strDropCode)
-
-        ' Create the new function
-        'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If pbCreate Then
-          sUDFCode = mastrUDFsRequired(iCount)
-          mclsData.ExecuteSql(sUDFCode)
-        End If
-
-      Next iCount
-    End If
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = True
-    Exit Function
-
-UDFFunctions_ERROR:
-    mstrStatusMessage = "Error within filters/calculation UDFs (" & Err.Description & ")"
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = False
-
-  End Function
 End Class

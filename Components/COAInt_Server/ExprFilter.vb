@@ -14,13 +14,13 @@ Friend Class clsExprFilter
 	
 	
 	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		Dim objFilter As clsExprExpression
-		
-    Dim strRuntimeCode As String = ""
+
+		Dim strRuntimeCode As String = ""
 		Dim bOK As Boolean
-		
+
 		' Instantiate and generate the runtime for the filter expression.
 		objFilter = New clsExprExpression
 		With objFilter
@@ -28,7 +28,7 @@ Friend Class clsExprFilter
 			.ConstructExpression()
 			bOK = .RuntimeCode(strRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
 		End With
-		
+
 		' Return different value depending on passed in parameters
 		If mlngFilterID = plngFixedExprID Then
 			psRuntimeCode = psFixedSQLCode
@@ -37,11 +37,11 @@ Friend Class clsExprFilter
 			psRuntimeCode = strRuntimeCode
 			RuntimeCode = bOK
 		End If
-		
+
 		'UPGRADE_NOTE: Object objFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objFilter = Nothing
-		
-		
+
+
 		'  If mlngFilterID = plngFixedExprID Then
 		'    psRuntimeCode = psFixedSQLCode
 		'    RuntimeCode = True
@@ -58,7 +58,7 @@ Friend Class clsExprFilter
 		'
 		'    Set objFilter = Nothing
 		'  End If
-		
+
 	End Function
 	
 	
@@ -278,26 +278,26 @@ ErrorTrap:
 		
 	End Sub
 	
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
+	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		Dim objFilter As clsExprExpression
-		
+
 		If mlngFilterID = plngFixedExprID Then
 			UDFCode = True
 		Else
 			' Instantiate the filter expression.
 			objFilter = New clsExprExpression
-			
+
 			With objFilter
 				' Construct the filter expression.
 				.ExpressionID = mlngFilterID
 				.ConstructExpression()
 				UDFCode = .UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 			End With
-			
+
 			'UPGRADE_NOTE: Object objFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objFilter = Nothing
 		End If
-		
+
 	End Function
 End Class

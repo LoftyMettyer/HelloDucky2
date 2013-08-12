@@ -36,55 +36,51 @@ ErrorTrap:
 		
 	End Function
 	
-	
-	
-	
-	
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
+	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		Dim objCalc As clsExprExpression
-		
+
 		If mlngCalculationID = plngFixedExprID Then
 			UDFCode = True
 		Else
 			' Instantiate the calculation expression.
 			objCalc = New clsExprExpression
-			
+
 			With objCalc
 				' Construct the calculation expression.
 				.ExpressionID = mlngCalculationID
 				.ConstructExpression()
 				UDFCode = .UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
 			End With
-			
+
 			'UPGRADE_NOTE: Object objCalc may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objCalc = Nothing
 		End If
-		
+
 	End Function
 	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		Dim objCalc As clsExprExpression
-		
+
 		If mlngCalculationID = plngFixedExprID Then
 			RuntimeCode = True
 			psRuntimeCode = psFixedSQLCode
 		Else
 			' Instantiate the calculation expression.
 			objCalc = New clsExprExpression
-			
+
 			With objCalc
 				' Construct the calculation expression.
 				.ExpressionID = mlngCalculationID
 				.ConstructExpression()
 				RuntimeCode = .RuntimeCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
 			End With
-			
+
 			'UPGRADE_NOTE: Object objCalc may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objCalc = Nothing
 		End If
-		
+
 	End Function
 	
 	

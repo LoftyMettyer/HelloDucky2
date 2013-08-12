@@ -118,7 +118,7 @@ Public Class CrossTab
   Private mstrLocalDecimalSeparator As String
 
   ' Array holding the User Defined functions that are needed for this report
-  Private mastrUDFsRequired() As String
+	Private mastrUDFsRequired() As String
 
 	Public WriteOnly Property Connection() As ADODB.Connection
 		Set(ByVal Value As ADODB.Connection)
@@ -521,10 +521,6 @@ Public Class CrossTab
     'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mobjEventLog = Nothing
 
-    ' JPD20030313 Do not drop the tables & columns collections as they can be reused.
-    'Set gcoTablePrivileges = Nothing
-    'Set gcolColumnPrivilegesCollection = Nothing
-
   End Sub
   Protected Overrides Sub Finalize()
     Class_Terminate_Renamed()
@@ -606,7 +602,6 @@ ErrorTrap:
 
   End Function
 
-
   Public Function RetreiveDefinition() As Boolean
 
     On Error GoTo LocalErr
@@ -651,12 +646,7 @@ ErrorTrap:
       mblnSuppressZeros = .Fields("SuppressZeros").Value
       mbUse1000Separator = .Fields("ThousandSeparators").Value
 
-      'mintDefaultOutput = !DefaultOutput
-      'mintDefaultExportTo = !DefaultExportTo
-      'mblnDefaultSave = !DefaultSave
-      'mstrDefaultSaveAs = !DefaultSaveAs
-      'mblnDefaultCloseApp = !DefaultCloseApp
-      mblnOutputPreview = .Fields("OutputPreview").Value
+			mblnOutputPreview = .Fields("OutputPreview").Value
       mlngOutputFormat = .Fields("OutputFormat").Value
       mblnOutputScreen = .Fields("OutputScreen").Value
       mblnOutputPrinter = .Fields("OutputPrinter").Value
@@ -706,14 +696,10 @@ ErrorTrap:
         mlngType = .Fields("IntersectionType").Value
         mlngColID(INS) = .Fields("IntersectionColID").Value
         mstrColName(INS) = .Fields("IntersectionColName").Value
-        'mstrIntersectionMask = String$(20, "#") & "0." & _
-        'String$(CLng(!IntersectionDecimals), "0")
-        mlngIntersectionDecimals = CInt(.Fields("IntersectionDecimals").Value)
+				mlngIntersectionDecimals = CInt(.Fields("IntersectionDecimals").Value)
         mstrIntersectionMask = New String("#", 20) & "0"
         If CInt(.Fields("IntersectionDecimals").Value) > 0 Then
-          'mstrIntersectionMask = mstrIntersectionMask & _
-          'UI.GetSystemDecimalSeparator & String$(CLng(!IntersectionDecimals), "0")
-          mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(.Fields("IntersectionDecimals").Value))
+					mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(.Fields("IntersectionDecimals").Value))
         End If
       Else
         mlngType = 0
@@ -749,10 +735,7 @@ LocalErr:
 
   Private Function IsRecordSelectionValid(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As Boolean
 
-    Dim sSQL As String
-    Dim lCount As Integer
-    Dim rsTemp As ADODB.Recordset
-    Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
+		Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
     Dim fCurrentUserIsSysSecMgr As Boolean
 
     fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr()
@@ -796,8 +779,7 @@ LocalErr:
 
       mstrStatusMessage = IsPicklistValid(lngPicklistID)
       If mstrStatusMessage <> vbNullString Then
-        'mblnInvalidPicklistFilter = True
-        fOK = False
+				fOK = False
         Exit Function
       End If
 
@@ -874,8 +856,7 @@ LocalErr:
       Case Declarations.SQLDataType.sqlNumeric
         GetFormat = New String("#", rsTemp.Fields("Size").Value - 1) & "0"
         If rsTemp.Fields("Decimals").Value > 0 Then
-          'GetFormat = GetFormat & UI.GetSystemDecimalSeparator & String$(rsTemp!Decimals, "0")
-          GetFormat = GetFormat & "." & New String("0", rsTemp.Fields("Decimals").Value)
+					GetFormat = GetFormat & "." & New String("0", rsTemp.Fields("Decimals").Value)
         End If
 
       Case Declarations.SQLDataType.sqlInteger
@@ -977,50 +958,18 @@ LocalErr:
     mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
     mstrSQLSelect = mstrSQLSelect & ", " & "space(255) as 'RecDesc' INTO " & mstrTempTableName
 
-
     strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & vbNewLine & mstrSQLJoin & vbNewLine & mstrSQLWhere
 
     'MH20010327 Seems that it might be moving on pass this line of code too
     'quickly so I've tried returning the number of rows effected to make
     'sure that it completes fully
-    'mclsData.Execute strSQL
-    mclsData.ExecuteSqlReturnAffected(strSQL)
-
-    'Dim tt As Double
-    'tt = Timer + 2
-    'Do While Timer < tt
-    '  DoEvents
-    'Loop
-
-    '  Set mcmdUpdateRecDescs = New ADODB.Command
-    '  mcmdUpdateRecDescs.ActiveConnection = gADOCon
-    '  mcmdUpdateRecDescs.CommandText = strSQL
-    '  mcmdUpdateRecDescs.CommandTimeout = 0
-    '  mcmdUpdateRecDescs.Execute , , adAsyncExecute
-    '
-    '  Do While mcmdUpdateRecDescs.State = adStateExecuting
-    '    DoEvents
-    '  Loop
-    '
-    '  Set mcmdUpdateRecDescs = Nothing
-
+		mclsData.ExecuteSqlReturnAffected(strSQL)
 
     strSQL = "SELECT * FROM " & mstrTempTableName
 
-    'MH20020321 Remmed out for INT
-    '  If mlngCrossTabType <> cttNormal Then
-    '    If mlngCrossTabType <> cttAbsenceBreakdown Then
-    '      strSQL = strSQL & " WHERE " & _
-    ''        SQLEmployedAtStartOfReport("startdate", "leavingdate")
-    '    End If
-    '  End If
-
-    rsCrossTabData = New ADODB.Recordset
+		rsCrossTabData = New ADODB.Recordset
     rsCrossTabData.let_ActiveConnection(gADOCon)
-    'rsCrossTabData.Properties("Preserve On Commit") = True
-    'rsCrossTabData.Properties("Preserve On Abort") = True
-    ' rsCrossTabData.Open strSQL, , adOpenKeyset, adLockReadOnly, adCmdText
-    rsCrossTabData = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+		rsCrossTabData = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
 
     If rsCrossTabData.EOF Then
       mstrStatusMessage = "No records meet selection criteria"
@@ -1038,14 +987,7 @@ LocalErr:
       mcmdUpdateRecDescs.CommandText = "EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID)
       mcmdUpdateRecDescs.CommandTimeout = 0
 
-      'MH20020321 Remmed out for INT (but would prefer record descriptions now anyway!)
-      ' JDM - Fault 2421 - Must have record description calculated NOW.
-      '    If mlngCrossTabType = cttAbsenceBreakdown Then
-      mcmdUpdateRecDescs.Execute()
-      '    Else
-      '      mcmdUpdateRecDescs.Execute , , adAsyncExecute
-      '    End If
-      'End If
+			mcmdUpdateRecDescs.Execute()
 
     End If
 
@@ -1054,8 +996,7 @@ LocalErr:
     Exit Function
 
 LocalErr:
-    'mstrStatusMessage = "Error retrieving data" & vbNewLine & _
-    '"(" & Err.Description & ")"
+
     mstrStatusMessage = Err.Description
     CreateTempTable = False
 
@@ -1121,21 +1062,15 @@ LocalErr:
 
         If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
 
-          'MH20020321 Remmed out for INT
-          If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-            strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
-          Else
-            strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
-          End If
+					If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
+					Else
+						strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
+					End If
 
         End If
 
-        'mstrSQLSelect = mstrSQLSelect & _
-        'IIf(Len(mstrSQLSelect) > 0, ", ", "") & _
-        'mstrSQLFrom & "." & strCol(1, lngCount) & _
-        '" AS '" & strCol(2, lngCount) & "'"
-
-        strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
+				strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
         If blnCharColumn Then
           strColumn = FormatSQLColumn(strColumn)
         End If
@@ -1217,23 +1152,7 @@ LocalErr:
           mstrStatusMessage = "You do not have permission to see the " & IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & "' either directly or through any views." & vbNewLine
           Exit Sub
         Else
-          ' Add the column to the column list.
-          '        sCaseStatement = "CASE"
-          '        sWhereColumn = vbNullString
-          '        For iNextIndex = 1 To UBound(asViews)
-          '          sCaseStatement = sCaseStatement & _
-          ''            " WHEN NOT " & asViews(iNextIndex) & "." & strCol(1, lngCount) & " IS NULL THEN " & asViews(iNextIndex) & "." & strCol(1, lngCount) & vbNewLine
-          '        Next iNextIndex
-          '
-          '        If Len(sCaseStatement) > 0 Then
-          '          sCaseStatement = sCaseStatement & _
-          ''            " ELSE NULL END AS " & _
-          ''            "'" & strCol(2, lngCount) & "'"
-          '
-          '          mstrSQLSelect = mstrSQLSelect & _
-          ''            IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbNewLine & _
-          ''            sCaseStatement
-          '        End If
+
           sCaseStatement = ""
           For iNextIndex = 1 To UBound(asViews)
             'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1241,12 +1160,7 @@ LocalErr:
           Next iNextIndex
 
           If Len(sCaseStatement) > 0 Then
-            ' NPG20100820 Fault HRPRO 1080
-            '          If InStr(strColumn, ",") > 0 Then
-            '            strColumn = "COALESCE(" & sCaseStatement & ")"
-            '          Else
-            strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
-            '          End If
+						strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
 
             If blnCharColumn Then
               strColumn = FormatSQLColumn(strColumn)
@@ -1265,8 +1179,7 @@ LocalErr:
 
     If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
       mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
-      '" >= CONVERT(datetime, '" & mstrReportStartDate & "'))"
-      'MH20060626 Fault 11260
+
     End If
 
     If strSelectedRecords <> vbNullString Then
@@ -1346,16 +1259,7 @@ LocalErr:
         strWhereEmpty = strWhereEmpty & " OR RTrim(" & strColumnName & ") = ''"
       End If
 
-      'MH20010327 Always add <empty> to see if that helps problems
-      '''Check for Empty
-      ''strSQL = "SELECT DISTINCT " & strColumnName & _
-      '''         " FROM " & mstrTempTableName & _
-      '''         " WHERE " & strWhereEmpty
-      ''Set rsTemp = mclsData.OpenRecordset(strSQL, adOpenDynamic, adLockReadOnly)
-
-      ''If Not (rsTemp.BOF And rsTemp.EOF) Then
-
-      ' Don't put in empty clauses if we're running an absence breakdown
+			' Don't put in empty clauses if we're running an absence breakdown
       If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
         ReDim Preserve strHeading(lngCount)
         ReDim Preserve strSearch(lngCount)
@@ -1363,7 +1267,6 @@ LocalErr:
         strSearch(lngCount) = strWhereEmpty
         lngCount = lngCount + 1
       End If
-      ''End If
 
       If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And strColumnName = "Hor" Then
         strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & ",Day_Number, DisplayOrder" & " FROM " & mstrTempTableName & " ORDER BY DisplayOrder"
@@ -1380,73 +1283,42 @@ LocalErr:
         End If
 
         .MoveFirst()
-        Do While Not .EOF 'And Not gobjProgress.Cancelled
+				Do While Not .EOF
 
-          'MH20010213 Had to make this change so that working pattern would work
-          'The field has spaces at the begining
-          'strFieldValue = IIf(IsNull(.Fields(0).Value), vbNullString, Trim(.Fields(0).Value))
-          'If strFieldValue <> vbNullString Then
-          'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          strFieldValue = IIf(IsDBNull(.Fields(0).Value), vbNullString, .Fields(0).Value)
+					'MH20010213 Had to make this change so that working pattern would work
 
-          If Trim(strFieldValue) <> vbNullString Then
-            ReDim Preserve strHeading(lngCount)
-            ReDim Preserve strSearch(lngCount)
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					strFieldValue = IIf(IsDBNull(.Fields(0).Value), vbNullString, .Fields(0).Value)
 
-            Select Case mlngColDataType(lngLoop)
-              Case CStr(Declarations.SQLDataType.sqlDate)
-                'strHeading(lngCount) = Format(.Fields(0).Value, mclsUI.DateFormat)
-                strHeading(lngCount) = VB6.Format(.Fields(0).Value, mstrClientDateFormat)
-                strSearch(lngCount) = strColumnName & " = '" & VB6.Format(.Fields(0).Value, "MM/dd/yyyy") & "'"
+					If Trim(strFieldValue) <> vbNullString Then
+						ReDim Preserve strHeading(lngCount)
+						ReDim Preserve strSearch(lngCount)
 
-              Case CStr(Declarations.SQLDataType.sqlBoolean)
-                strHeading(lngCount) = IIf(.Fields(0).Value, "True", "False")
-                strSearch(lngCount) = strColumnName & " = " & IIf(.Fields(0).Value, "1", "0")
+						Select Case mlngColDataType(lngLoop)
+							Case CStr(Declarations.SQLDataType.sqlDate)
+								strHeading(lngCount) = VB6.Format(.Fields(0).Value, mstrClientDateFormat)
+								strSearch(lngCount) = strColumnName & " = '" & VB6.Format(.Fields(0).Value, "MM/dd/yyyy") & "'"
 
-              Case CStr(Declarations.SQLDataType.sqlNumeric), CStr(Declarations.SQLDataType.sqlInteger)
-                'strHeading(lngCount) = .Fields(0).Value
-                'strSearch(lngCount) = strColumnName & " = " & .Fields(0).Value
+							Case CStr(Declarations.SQLDataType.sqlBoolean)
+								strHeading(lngCount) = IIf(.Fields(0).Value, "True", "False")
+								strSearch(lngCount) = strColumnName & " = " & IIf(.Fields(0).Value, "1", "0")
 
-                strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(.Fields(0).Value, mstrFormat(lngLoop)))
-                strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(.Fields(0).Value)
+							Case CStr(Declarations.SQLDataType.sqlNumeric), CStr(Declarations.SQLDataType.sqlInteger)
+								strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(.Fields(0).Value, mstrFormat(lngLoop)))
+								strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(.Fields(0).Value)
 
-              Case Else
-                '''MH20011008 Fault 2922
-                '''strHeading(lngCount) = .Fields(0).Value
-                '''strSearch(lngCount) = strColumnName & " = '" & Replace(strFieldValue, "'", "''") & "'"
+							Case Else
+								strHeading(lngCount) = FormatString(.Fields(0).Value)
+								strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
 
-                'MH20050105 Fault 9608
-                'strHeading(lngCount) = Trim(.Fields(0).Value)
-                'strSearch(lngCount) = strColumnName & " = '" & Trim(Replace(strFieldValue, "'", "''")) & "'"
-                'strHeading(lngCount) = Trim(.Fields(0).Value)
-                'strSearch(lngCount) = "ltrim(rtrim(" & strColumnName & ")) = '" & Trim(Replace(strFieldValue, "'", "''")) & "'"
-                strHeading(lngCount) = FormatString(.Fields(0).Value)
-                strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
+						End Select
 
-            End Select
+						lngCount = lngCount + 1
 
-            lngCount = lngCount + 1
+					End If
 
-            '        Else
-            '
-            '          ReDim Preserve strHeading(lngCount) As String
-            '          ReDim Preserve strSearch(lngCount) As String
-            '          strHeading(lngCount) = "<Empty>"
-            '          strSearch(lngCount) = strColumnName & " IS NULL"
-            '
-            '          If mlngColDataType(lngLoop) <> sqlNumeric And _
-            ''             mlngColDataType(lngLoop) <> sqlInteger And _
-            ''             mlngColDataType(lngLoop) <> sqlBoolean Then
-            '            strSearch(lngCount) = strSearch(lngCount) & _
-            ''                " OR RTrim(" & strColumnName & ") = ''"
-            '          End If
-            '
-            '          lngCount = lngCount + 1
-            '
-          End If
-
-          .MoveNext()
-        Loop
+					.MoveNext()
+				Loop
       End With
 
     Else
@@ -1461,8 +1333,7 @@ LocalErr:
       'Second element of range for those less than minimum value of range...
       strHeading(1) = "< " & datGeneral.ConvertNumberForDisplay(Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
       'MH20010411 Fault 1978 Convert to int stops overflow error !
-      'strSearch(1) = "Convert(int," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(mdblMin(lngLoop))
-      strSearch(1) = "Convert(float," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
+			strSearch(1) = "Convert(float," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
 
       dblUnit = GetSmallestUnit(lngLoop)
 
@@ -1479,9 +1350,7 @@ LocalErr:
         dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
         strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & datGeneral.ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
         'MH20010411 Fault 1978 Convert to int stops overflow error !
-        'strSearch(lngCount) = "Convert(int," & strColumnName & ") BETWEEN " & _
-        'datGeneral.ConvertNumberForSQL(dblGroup) & " AND " & datGeneral.ConvertNumberForSQL(dblGroupMax)
-        strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & datGeneral.ConvertNumberForSQL(CStr(dblGroup)) & " AND " & datGeneral.ConvertNumberForSQL(CStr(dblGroupMax))
+				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & datGeneral.ConvertNumberForSQL(CStr(dblGroup)) & " AND " & datGeneral.ConvertNumberForSQL(CStr(dblGroupMax))
 
         lngCount = lngCount + 1
       Next
@@ -1491,8 +1360,7 @@ LocalErr:
       'Last element of range for those more than maximum value of range...
       strHeading(lngCount) = "> " & datGeneral.ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
       'MH20010411 Fault 1978 Convert to int stops overflow error !
-      'strSearch(lngCount) = "Convert(int," & strColumnName & ") > " & datGeneral.ConvertNumberForSQL(dblGroup - dblUnit)
-      strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & datGeneral.ConvertNumberForSQL(CStr(dblGroup - dblUnit))
+			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & datGeneral.ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
       lngCount = lngCount + 1
     End If
@@ -1506,16 +1374,7 @@ LocalErr:
     '     mstrFormat(lngLoop) = #0,    GetSmallestUnit = 1
     '     mstrFormat(lngLoop) = #0.00, GetSmallestUnit = 0.01
 
-    '  Dim intFound As Integer
-    '
-    '  intFound = InStr(mstrFormat(lngLoop), UI.GetSystemDecimalSeparator)
-    '  If intFound > 0 Then
-    '    GetSmallestUnit = Mid$(mstrFormat(lngLoop), intFound, Len(mstrFormat(lngLoop)) - intFound) & "1"
-    '  Else
-    '    GetSmallestUnit = 1
-    '  End If
-
-    Dim strTemp As String
+		Dim strTemp As String
     Dim intFound As Short
 
     intFound = InStr(mstrFormat(lngLoop), ".")
@@ -1799,9 +1658,7 @@ LocalErr:
 
           Case Else
 
-            'MH20021018 Faults 4532 & 4533
-            'If LCase(mvarHeadings(Index)(lngCount)) = LCase(Trim(strValue)) Then
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             If LCase(mvarHeadings(Index)(lngCount)) = LCase(FormatString(strValue)) Then
               'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               GetGroupNumber = lngCount
@@ -1876,8 +1733,7 @@ LocalErr:
     Dim lngCol As Integer
     Dim lngRow As Integer
     Dim lngPage As Integer
-    Dim lngPointer As Integer
-    Dim lngTYPE As Integer
+		Dim lngTYPE As Integer
 
     Dim sngAverage As Single
     Dim iAverageColumn As Short
@@ -1891,7 +1747,7 @@ LocalErr:
 
     ' JDM - 22/06/01 - Fault 2476 - Display totals instead
     If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
-      lngTYPE = mlngType 'cboType.ItemData(cboType.ListIndex)
+			lngTYPE = mlngType
     Else
       lngTYPE = TYPETOTAL
     End If
@@ -1962,22 +1818,20 @@ LocalErr:
       Next
 
       'Add the last column details (Vertical totals)
-      'If mlngCrossTabType <> cttAbsenceBreakdown Then
-      If mlngCrossTabType = Declarations.CrossTabType.cttNormal Then
-        mstrOutput(0) = mstrOutput(0) & strDelim & mstrType(mlngType)
-        For lngRow = 0 To lngNumRows
-          mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
-        Next
-        mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
-      End If
+			If mlngCrossTabType = Declarations.CrossTabType.cttNormal Then
+				mstrOutput(0) = mstrOutput(0) & strDelim & mstrType(mlngType)
+				For lngRow = 0 To lngNumRows
+					mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
+				Next
+				mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
+			End If
     End If
 
     Exit Sub
 
 LocalErr:
     mstrStatusMessage = "Error building output strings (" & Err.Description & ")"
-    'Resume 0
-    fOK = False
+		fOK = False
 
   End Sub
 
@@ -1990,54 +1844,44 @@ LocalErr:
     strMask = vbNullString
     FormatCell = vbNullString
 
-
     If dblCellValue <> 0 Or mblnSuppressZeros = False Then
 
+			If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
 
-      If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
+				' 1000 seperators
+				If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+					strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
+				Else
+					strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
 
-        ' 1000 seperators
-        'strMask = IIf(mbUse1000Separator, "#,0", "#0")
+					If lngHOR = 2 Then
+						strMask = New String("#", 20) & "0.00%"
+					ElseIf lngHOR = 0 And mlngCrossTabType = Declarations.CrossTabType.cttTurnover Then
+						strMask = New String("#", 20) & "0.0"
+					End If
+				End If
 
-        If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-          'strMask = String$(20, "#") & "0.0"
-          strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
-        Else
-          'strMask = String$(20, "#") & "0"
-          strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
+			Else
 
-          If lngHOR = 2 Then
-            'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "00%"
-            strMask = New String("#", 20) & "0.00%"
-          ElseIf lngHOR = 0 And mlngCrossTabType = Declarations.CrossTabType.cttTurnover Then
-            'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "0"
-            strMask = New String("#", 20) & "0.0"
-          End If
-        End If
+				' 1000 seperators
+				strMask = IIf(mbUse1000Separator, "#,0", "#0")
 
-      Else
+				If mblnShowPercentage Then
+					'If percentage
+					dblCellValue = dblCellValue * mdblPercentageFactor
+					strMask = strMask & ".00%"
 
-        ' 1000 seperators
-        strMask = IIf(mbUse1000Separator, "#,0", "#0")
+				ElseIf mlngType > 0 Then
+					'if not count then
+					'value should be displayed as per field definition
 
-        If mblnShowPercentage Then
-          'If percentage
-          dblCellValue = dblCellValue * mdblPercentageFactor
-          'strMask = strMask & UI.GetSystemDecimalSeparator & "00%"
-          strMask = strMask & ".00%"
+					If mlngIntersectionDecimals > 0 Then
+						strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
+					End If
 
-        ElseIf mlngType > 0 Then
-          'if not count then
-          'value should be displayed as per field definition
-          'strMask = mstrIntersectionMask
+				End If
 
-          If mlngIntersectionDecimals > 0 Then
-            strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
-          End If
-
-        End If
-
-      End If
+			End If
 
       If strMask <> vbNullString Then
         FormatCell = Format(dblCellValue, strMask)
@@ -2076,15 +1920,12 @@ LocalErr:
 
     Dim rsTemp As ADODB.Recordset
     Dim strSQL As String
-    Dim objColumnPrivileges As CColumnPrivileges
-    Dim strOutput As String
+		Dim strOutput As String
 
-    Dim strColumnName() As String
-    Dim strWhere As String
+		Dim strWhere As String
     Dim lngCount As Integer
 
-
-    On Error GoTo LocalErr
+		On Error GoTo LocalErr
 
     'BuildBreakdownStrings = False
 
@@ -2154,8 +1995,7 @@ LocalErr:
             strOutput = strOutput & vbTab
           Else
             'MH20040128 Fault 7995 - Round average to 2 decimal places
-            'strOutput = strOutput & .Fields("Value").Value & vbTab
-            strOutput = strOutput & Format(.Fields("Value").Value, "0.00") & vbTab
+						strOutput = strOutput & Format(.Fields("Value").Value, "0.00") & vbTab
           End If
 
         End If
@@ -2175,23 +2015,16 @@ LocalErr:
       Loop
     End With
 
-    'BuildBreakdownStrings = True
-
-    Exit Sub
+		Exit Sub
 
 LocalErr:
     mstrStatusMessage = "Error reading breakdown"
-    'PopulateCellBreakdown2 = False
 
   End Sub
 
   Public Sub CreateTablesCollection()
 
-    ' JPD20030313 Do not drop the tables & columns collections as they can be reused.
-    'Set gcoTablePrivileges = Nothing
-    'Set gcolColumnPrivilegesCollection = Nothing
-
-    SetupTablesCollection()
+		SetupTablesCollection()
 
   End Sub
 
@@ -2551,54 +2384,8 @@ LocalErr:
   End Function
 
   Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-
-    On Error GoTo UDFFunctions_ERROR
-
-    Dim iCount As Short
-    Dim strDropCode As String
-    Dim strFunctionName As String
-    Dim sUDFCode As String
-    Dim datData As clsDataAccess
-    Dim iStart As Short
-    Dim iEnd As Short
-    Dim strFunctionNumber As String
-
-    Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-
-    If gbEnableUDFFunctions Then
-
-      For iCount = 1 To UBound(mastrUDFsRequired)
-
-        'JPD 20060110 Fault 10509
-        'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-        iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-        iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
-        strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-        strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-
-        'Drop existing function (could exist if the expression is used more than once in a report)
-        strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-        mclsData.ExecuteSql(strDropCode)
-
-        ' Create the new function
-        'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If pbCreate Then
-          sUDFCode = mastrUDFsRequired(iCount)
-          mclsData.ExecuteSql(sUDFCode)
-        End If
-
-      Next iCount
-    End If
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = True
-    Exit Function
-
-UDFFunctions_ERROR:
-    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    UDFFunctions = False
-
-  End Function
+		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+	End Function
 
   Public Sub GetPivotRecordset()
 
@@ -2618,10 +2405,7 @@ UDFFunctions_ERROR:
       strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
 
     ElseIf mblnPageBreak Then
-      'If objOutput.cboPageBreak.ListIndex > 0 Then
-      '  strSQL = strSQL & " WHERE " & mvarSearches(PGB)(objOutput.cboPageBreak.ListIndex - 1)
-      'End If
-      strSQL = strSQL & " ORDER BY PGB"
+			strSQL = strSQL & " ORDER BY PGB"
     End If
 
     rsPivot = datGeneral.GetReadOnlyRecords(strSQL)
@@ -2648,10 +2432,7 @@ UDFFunctions_ERROR:
 
             If strPageValue <> vbNullString Then
 
-              '              objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), strPageValue
-              '              objOutput.DataArray strOutput
-
-              PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Left(Replace(strPageValue, """", "\"""), 255) & """);")
+							PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Left(Replace(strPageValue, """", "\"""), 255) & """);")
               PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
               For lngCol = 0 To UBound(strOutput, 1)
                 For lngRow = 0 To UBound(strOutput, 2)
@@ -2679,8 +2460,6 @@ UDFFunctions_ERROR:
         ReDim Preserve strOutput(.Fields.Count - 1, lngRow)
         For lngCol = 0 To .Fields.Count - 1
 
-          'MH20070226 Fault 11962
-          'If lngCol <= UBound(mvarHeadings) Then
           If lngCol < 2 Or (lngCol = 2 And mblnPageBreak) Then
 
             'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -2697,9 +2476,7 @@ UDFFunctions_ERROR:
       Loop
     End With
 
-    '    objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), IIf(strPageValue <> vbNullString, strPageValue, mstrCrossTabName)
-    '    objOutput.DataArray strOutput
-    PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
+		PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
 
     PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
     For lngCol = 0 To UBound(strOutput, 1)
@@ -2722,8 +2499,7 @@ UDFFunctions_ERROR:
 
     lngIndex = UBound(mstrOutputPivotArray) + 1
     ReDim Preserve mstrOutputPivotArray(lngIndex)
-    'mstrOutputPivotArray(lngIndex) = Replace(strInput, String(1, 34), String(2, 34)) & vbNewLine
-    mstrOutputPivotArray(lngIndex) = strInput & vbNewLine
+		mstrOutputPivotArray(lngIndex) = strInput & vbNewLine
 
   End Function
 
@@ -2731,8 +2507,7 @@ UDFFunctions_ERROR:
 
     Dim sReturnValue As String
 
-    'sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
-    sReturnValue = sColumn
+		sReturnValue = sColumn
     sReturnValue = "left(rtrim(" & sReturnValue & "), 100)"
     sReturnValue = "replace(" & sReturnValue & ",char(9),'')"
     sReturnValue = "replace(" & sReturnValue & ",char(10),'')"
@@ -2746,14 +2521,10 @@ UDFFunctions_ERROR:
 
     Dim sReturnValue As String
 
-    'sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
-    sReturnValue = Left(Trim(sHeading), 100)
+		sReturnValue = Left(Trim(sHeading), 100)
     sReturnValue = Replace(sReturnValue, Chr(9), "")
     sReturnValue = Replace(sReturnValue, Chr(10), "")
     sReturnValue = Replace(sReturnValue, Chr(13), "")
-
-    'Intranet Only
-    'sReturnValue = HTMLEncode(sReturnValue)
 
     FormatString = sReturnValue
 

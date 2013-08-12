@@ -35,21 +35,16 @@ ErrorTrap:
 		
 	End Function
 	
-	
-	
-	
-	
-	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim sCode As String
-		
+
 		fOK = True
 		sCode = ""
-		
+
 		Select Case miType
 			Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
 				sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
@@ -62,23 +57,23 @@ ErrorTrap:
 				'sCode = "convert(datetime, '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
 				'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				sCode = IIf(IsDbNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')")
+				sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')")
 		End Select
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		If fOK Then
 			psRuntimeCode = sCode
 		Else
 			psRuntimeCode = ""
 		End If
-		
+
 		RuntimeCode = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
 	
 	
@@ -274,9 +269,9 @@ ErrorTrap:
 		End Set
 	End Property
 	
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		
-		UDFCode = True
-		
+	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
+		Return True
+
 	End Function
 End Class
