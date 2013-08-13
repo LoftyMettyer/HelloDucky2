@@ -98,17 +98,19 @@
 					strEventID = rsEvents.Fields(objCalendar.EventIDColumn).value
 					intBaseRecordIndex = objCalendar.BaseIndex_Get(CStr(lngCurrentBaseID))
 
-					If Not IsDBNull(.Fields("DescriptionExpr").Value) Then
-						strBaseDescription_BD = objCalendar.ConvertDescription(.Fields("Description1").Value, .Fields("Description2").Value, IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value))
-					Else
-						strBaseDescription_BD = vbNullString
-					End If
+					strBaseDescription_BD = objCalendar.ConvertDescription(CStr(.Fields("Description1").Value), CType(IIf(IsDBNull(.Fields("Description2").Value), "", .Fields("Description2").Value), String), CType(IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value), String))
+					'If Not IsDBNull(.Fields("DescriptionExpr").Value) Then
+					'	strBaseDescription_BD = objCalendar.ConvertDescription(.Fields("Description1").Value, .Fields("Description2").Value, IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value))
+					'Else
+					'	strBaseDescription_BD = vbNullString
+					'End If
 					
 					If IsDBNull(.Fields("Legend").value) Then
 						strKeyCode = ""
 					Else
 						strKeyCode = Left(.Fields("Legend").value, 2)
 					End If
+					
 					If IsDBNull(.Fields("EventDescription1Column").Value) Then
 						strEventDesc1ColumnName_BD = vbNullString
 					Else

@@ -36,12 +36,13 @@
 	If Not (rsCalendarBaseInfo.bof And rsCalendarBaseInfo.eof) Then
 		rsCalendarBaseInfo.movefirst()
 		Do Until rsCalendarBaseInfo.eof
-			If Not IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value) Then
-				strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
-			Else
-				strTempRecordDesc = vbNullString
-			End If
-			
+			strTempRecordDesc = objCalendar.ConvertDescription(CStr(rsCalendarBaseInfo.Fields("Description1").Value), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("Description2").Value), "", rsCalendarBaseInfo.Fields("Description2").Value), String), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value), String))
+			'If Not IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr ").Value) Then
+			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
+			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
+			'Else
+			'	strTempRecordDesc = vbNullString
+			'End If
 			blnDescEmpty = (strTempRecordDesc = "")
 			If blnDescEmpty Then
 				intDescEmpty = intDescEmpty + 1
@@ -62,7 +63,7 @@
 					End If
 					intBaseRecordCount = intBaseRecordCount + 1
 				End If
-				lngCurrentRecordID = rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value							
+				lngCurrentRecordID = rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value
 			Else
 				If rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value <> lngCurrentRecordID Then
 					blnNewBaseRecord = True
