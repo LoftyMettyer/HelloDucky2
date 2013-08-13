@@ -112,7 +112,7 @@
 </object>
 
 <form id="frmDefinition">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 		<tr>
 			<td>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -138,9 +138,9 @@
 												<td width="10">Owner :</td>
 												<td width="5">&nbsp;</td>
 												<td width="40%">
-													<input id="txtOwner" name="txtOwner" class="text textdisabled" style="WIDTH: 100%" disabled="disabled" tabindex="-1">
+													<input id="txtOwner" name="txtOwner" class="text textdisabled" style="WIDTH: 70%" disabled="disabled" tabindex="-1">
 												</td>
-												<td width="5">&nbsp;</td>
+												<td style="width:50px">&nbsp;</td>
 											</tr>
 
 											<tr>
@@ -178,9 +178,7 @@
 																	for="optAccessRW"
 																	class="radio"
 																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																Read/Write
-																											</label>
+																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Read/Write</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -221,9 +219,7 @@
 																	for="optAccessRO"
 																	class="radio"
 																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																Read Only
-																											</label>
+																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Read Only</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -261,9 +257,7 @@
 																	for="optAccessHD"
 																	class="radio"
 																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																Hidden
-																											</label>
+																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Hidden</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -277,13 +271,14 @@
 													<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 														<tr>
 															<%--<TD colspan=3 height=30><hr></TD>--%>
+															<TD colspan=3 height=10></TD>
 														</tr>
 														<tr height="10">
 															<td rowspan="16">
 																<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSTree1"
 																	codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px; VISIBILITY: visible;" viewastext>
-																	<param name="_ExtentX" value="31882">
-																	<param name="_ExtentY" value="16404">
+																	<param name="_ExtentX" value="30163">
+																	<param name="_ExtentY" value="10583">
 																	<param name="_Version" value="65538">
 																	<param name="BackColor" value="-2147483643">
 																	<param name="ForeColor" value="-2147483640">

@@ -60,14 +60,14 @@
 		<tr>
 			<td>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr height="5">
+					<%--					<tr height="5">
 						<td height="5" colspan="5"></td>
-					</tr>
+					</tr>--%>
 
 					<tr>
-						<td width="10">&nbsp;&nbsp;</td>
+						<%--<td style="width: 10px; vertical-align: top">&nbsp;&nbsp;</td>--%>
 
-						<td width="10%">
+						<td style="width: 10px; vertical-align: top">
 							<table height="100%" width="100%" cellspacing="0" cellpadding="0">
 								<tr>
 									<td valign="top">
@@ -103,7 +103,8 @@
 														for="optType_Field"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Field</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Field</label>
 												</td>
 												<td width="5">&nbsp;&nbsp;</td>
 											</tr>
@@ -134,9 +135,8 @@
 														for="optType_Operator"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Operator
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Operator</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -167,9 +167,8 @@
 														for="optType_Function"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Function
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Function</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -199,9 +198,8 @@
 														for="optType_Value"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Value
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -231,9 +229,8 @@
 														for="optType_LookupTableValue"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-													Lookup Table Value
-																						</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Lookup Table Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -247,7 +244,7 @@
 												<td width="5">
 													<input id="optType_PromptedValue" name="optType" type="radio" <%If iPassBy = 2 Then
 															Response.Write("disabled")
-																		End If%>
+																	End If%>
 														onclick="changeType(7)"
 														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
@@ -261,7 +258,8 @@
 														for="optType_PromptedValue"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Prompted Value</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Prompted Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -275,7 +273,7 @@
 												<td width="5">
 													<input id="optType_Calculation" name="optType" type="radio" <%	 If iPassBy = 2 Then
 															Response.Write("disabled")
-																		End If%>
+																	End If%>
 														onclick="changeType(3)"
 														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
@@ -322,7 +320,8 @@
 														for="optType_Filter"
 														class="radio"
 														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Filter</label>
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														Filter</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -336,10 +335,10 @@
 							</table>
 						</td>
 
-						<td width="10">&nbsp;&nbsp;</td>
+						<td style="vertical-align: top; width: 10px">&nbsp;&nbsp;</td>
 
-						<td>
-							<table height="100%" width="100%" validateCalDate cellspacing="0" cellpadding="0">
+						<td style="vertical-align: top">
+							<table height="100%" width="100%" validatecaldate cellspacing="0" cellpadding="0">
 								<tr height="100%">
 									<td valign="top">
 										<div id="divField">
@@ -378,9 +377,8 @@
 																		for="optField_Field"
 																		class="radio"
 																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																	Field
-																														</label>
+																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		Field</label>
 																</td>
 																<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																<td>
@@ -398,9 +396,8 @@
 																		for="optField_Count"
 																		class="radio"
 																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																	Count
-																														</label>
+																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		Count</label>
 																</td>
 																<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																<td>
@@ -418,9 +415,8 @@
 																		for="optField_Total"
 																		class="radio"
 																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																	Total
-																														</label>
+																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		Total</label>
 																</td>
 																<td width="100%"></td>
 															</tr>
@@ -473,7 +469,8 @@
 												<tr height="10">
 													<td width="10">&nbsp;</td>
 													<td colspan="4">
-														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
+														<%--<table width="100%" height="100%">--%>
+															<table width="100%" height="100%" class="outline">
 															<tr>
 																<td>
 																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -511,9 +508,8 @@
 																								for="optFieldRecSel_First"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							First
-																																										</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																								First</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																						<td>
@@ -531,9 +527,8 @@
 																								for="optFieldRecSel_Last"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Last
-																																										</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																								Last</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																						<td>
@@ -552,9 +547,8 @@
 																									for="optFieldRecSel_Specific"
 																									class="radio"
 																									onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																								Specific
-																																												</label>
+																									onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																									Specific</label>
 																							</div>
 																						</td>
 																						<td width="5">&nbsp;</td>
@@ -1223,13 +1217,18 @@
 										</div>
 
 										<div id="divPromptedValue" style="visibility: hidden; display: none">
-											<table class="invisible" cellspacing="0" cellpadding="0">
-												<tr height="10">
+											<div style="padding-bottom: 10px">
+													<br/>
+													<strong>Prompted Value</strong>
+											</div>
+											<div>Prompt : <input id="Text1" name="txtPrompt" class="text" onkeyup="pVal_changePrompt()" style="width: 500px"></div>
+
+											<table class="invisible">
+<%--												<tr height="10">
 													<td colspan="6">&nbsp;&nbsp;</td>
 												</tr>
-
 												<tr height="10">
-													<td width="10">&nbsp;</td>
+													td width="10">&nbsp;</td>
 													<td colspan="4"><strong>Prompted Value</strong></td>
 													<td width="10">&nbsp;</td>
 												</tr>
@@ -1239,24 +1238,21 @@
 												</tr>
 
 												<tr height="10">
-													<td width="20">&nbsp;&nbsp;</td>
-													<td width="10" nowrap>Prompt :</td>
-													<td width="20">&nbsp;&nbsp;</td>
-													<td width="50%">
-														<input id="txtPrompt" name="txtPrompt" class="text" onkeyup="pVal_changePrompt()" style="WIDTH: 100%" maxlength="40">
+													<td style="width: 50px">Prompt :</td>
+													<td>
+														<input id="txtPrompt" name="txtPrompt" class="text" onkeyup="pVal_changePrompt()">
 													</td>
-													<td width="50%">&nbsp;</td>
-													<td width="10">&nbsp;</td>
 												</tr>
-
+--%>
 												<tr height="5">
 													<td colspan="6">&nbsp;</td>
 												</tr>
 
 												<tr height="10">
-													<td width="10">&nbsp;</td>
+													<%--<td width="10">&nbsp;</td>--%>
 													<td colspan="4">
 														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
+														<%--<table width="100%" height="100%">--%>
 															<tr>
 																<td>
 																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1319,37 +1315,36 @@
 													<td width="20">&nbsp;&nbsp;</td>
 												</tr>
 
-												<tr height="5">
+<%--												<tr height="5">
 													<td colspan="6">&nbsp;</td>
-												</tr>
+												</tr>--%>
 
-												<tr height="10" id="trPValFormat">
-													<td width="10">&nbsp;</td>
-													<td colspan="4">
-														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
+												<tr height="10" id="trPValFormat" style="height: 10px">
+													<%--<td width="10">&nbsp;</td>--%>
+													<td colspan="8">
+														<table style="width:100%; height:100%">
 															<tr>
+																<%--<td style="height: 125px">--%>
 																<td>
-																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-																		<tr height="5">
+																	<table width="100%" class="invisible">
+<%--																		<tr height="5">
 																			<td colspan="8"></td>
-																		</tr>
+																		</tr>--%>
 
 																		<tr height="10">
-																			<td width="10">&nbsp;</td>
 																			<td colspan="6"><strong>Mask</strong></td>
 																			<td width="10">&nbsp;</td>
 																		</tr>
 
 																		<tr height="10">
-																			<td colspan="8"></td>
 																		</tr>
 
 																		<tr height="10">
-																			<td width="20">&nbsp;&nbsp;</td>
-																			<td width="100%" colspan="6">
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
+																			<td width="100%" colspan="7">
 																				<input id="txtPValFormat" name="txtPValFormat" class="text" style="WIDTH: 100%">
 																			</td>
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<td style="width:20px">&nbsp;&nbsp;</td>
 																		</tr>
 
 																		<tr height="5">
@@ -1389,7 +1384,7 @@
 														</table>
 
 													</td>
-													<td width="20">&nbsp;&nbsp;</td>
+													<%--<td width="20">&nbsp;&nbsp;</td>--%>
 												</tr>
 
 												<tr height="5" id="trPValFormat2">
@@ -1397,9 +1392,9 @@
 												</tr>
 
 												<tr height="10" id="trPValLookup" style="visibility: hidden; display: none">
-													<td width="10">&nbsp;</td>
+													<%--<td width="10">&nbsp;</td>--%>
 													<td colspan="4">
-														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
+														<table width="100%" height="100%"  cellspacing="0" cellpadding="0">
 															<tr>
 																<td>
 																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1422,7 +1417,7 @@
 																			<td width="10" nowrap>Table :</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="50%">
-																				<select id="cboPValTable" name="cboPValTable" class="combo" style="WIDTH: 100%" onchange="pVal_changeTable()">
+																				<select id="cboPValTable" name="cboPValTable" class="combo" style="WIDTH: 400px" onchange="pVal_changeTable()">
 																				</select>
 																			</td>
 																			<td width="50%">&nbsp;</td>
@@ -1460,27 +1455,31 @@
 												<tr height="5" id="trPValLookup2">
 													<td colspan="6">&nbsp;</td>
 												</tr>
+												<%--<tr height="100%">
+													<td colspan="6">&nbsp;</td>
+												</tr>--%>
 
 												<tr height="10">
-													<td width="10">&nbsp;</td>
+													<%--<td width="10">&nbsp;</td>--%>
 													<td colspan="4">
-														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
+														<%--<table width="100%" height="100%">--%>
+															<table width="100%" height="100%" >
 															<tr>
 																<td>
-																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																	<table width="100%" class="invisible" >
 																		<tr height="5">
 																			<td colspan="8"></td>
 																		</tr>
 
 																		<tr height="10">
-																			<td width="10">&nbsp;</td>
+																			<%--<td width="10">&nbsp;</td>--%>
 																			<td colspan="6"><strong>Default Value</strong></td>
 																			<td width="10">&nbsp;</td>
 																		</tr>
 
-																		<tr height="10">
-																			<td colspan="8"></td>
-																		</tr>
+																		<%--<tr height="10">
+																			<td></td>
+																		</tr>--%>
 
 																		<tr height="10" id="trPValDateOptions">
 																			<td width="20">&nbsp;&nbsp;</td>
@@ -1502,9 +1501,7 @@
 																								for="optPValDate_Explicit"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Explicit
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Explicit</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
@@ -1522,9 +1519,7 @@
 																								for="optPValDate_MonthStart"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Month Start
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Month Start</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
@@ -1542,9 +1537,7 @@
 																								for="optPValDate_YearStart"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Year Start
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Year Start</label>
 																						</td>
 																						<td width="100%">&nbsp;</td>
 																					</tr>
@@ -1565,9 +1558,7 @@
 																								for="optPValDate_Current"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Current
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Current</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
@@ -1585,9 +1576,7 @@
 																								for="optPValDate_MonthEnd"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Month End
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Month End</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
@@ -1605,9 +1594,7 @@
 																								for="optPValDate_YearEnd"
 																								class="radio"
 																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																							Year End
-																																							</label>
+																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Year End</label>
 																						</td>
 																						<td width="100%">&nbsp;</td>
 																					</tr>
@@ -1621,7 +1608,7 @@
 																		</tr>
 
 																		<tr height="10" id="trPValTextDefault">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="100%" colspan="6">
 																				<input id="txtPValDefault" name="txtPValDefault" class="text" style="WIDTH: 100%">
 																			</td>
@@ -1629,7 +1616,7 @@
 																		</tr>
 
 																		<tr height="10" id="trPValComboDefault" style="visibility: hidden; display: none">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="100%" colspan="6">
 																				<select id="cboPValDefault" name="cboPValDefault" style="WIDTH: 100%">
 																				</select>

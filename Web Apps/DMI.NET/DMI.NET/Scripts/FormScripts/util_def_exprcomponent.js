@@ -65,14 +65,14 @@ function formatComponentTypeFrame() {
 		var sType_Calc_Display;
 		var sType_Filter_Visibility;
 		var sType_Filter_Display;
-
+    
 		sType_PVal_Visibility = "visible";
 		sType_PVal_Display = "block";
 		sType_Calc_Visibility = "visible";
 		sType_Calc_Display = "block";
 		sType_Filter_Visibility = "visible";
 		sType_Filter_Display = "block";
-
+    
 		switch (util_def_exprcomponent_frmUseful.txtExprType.value) {
 				case "10":
 						// Runtime Calculation
@@ -1169,7 +1169,7 @@ function pVal_changeType() {
 				// Character
 				sSizeVisibility = "visible";
 				sFormatVisibility = "visible";
-				sFormatDisplay = "block";
+				sFormatDisplay = "inline";
 				sTextDefaultVisibility = "visible";
 				sTextDefaultDisplay = "block";
 				text_disable(frmMainForm.txtPValDefault, false);		
@@ -1212,7 +1212,7 @@ function pVal_changeType() {
 				sTextDefaultVisibility = "visible";
 				sTextDefaultDisplay = "block";
 				sDateOptionsVisibility = "visible";
-				sDateOptionsDisplay = "block";
+				sDateOptionsDisplay = "inline";
 		
 				frmMainForm.optPValDate_Explicit.checked = true;
 		}
@@ -1220,7 +1220,8 @@ function pVal_changeType() {
 		if (iPValType == 5) {
 				// Lookup Table Value
 				sLookupVisibility = "visible";
-				sLookupDisplay = "block";
+				//sLookupDisplay = "block";
+				sLookupDisplay = "inline";
 				sComboDefaultVisibility = "visible";
 				sComboDefaultDisplay = "block";
 
