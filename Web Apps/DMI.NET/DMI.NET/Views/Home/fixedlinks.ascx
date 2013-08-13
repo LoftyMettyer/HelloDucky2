@@ -86,7 +86,7 @@
 								<h6>SSI</h6></a></div>
 							<div class="button">
 								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Logoff64HOVER.png")%>" alt="" />
 									<i class="icon-off"></i>
 									<h6>Log Off</h6>
 								</a>
@@ -122,7 +122,7 @@
 							</div>
 							<div class="button">
 								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR v8">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/info64HOVER.png")%>" alt="" />
 									<i class="icon-question-sign"></i>
 									<h6>Help</h6>
 								</a>
@@ -144,7 +144,7 @@
 							</a></div>
 							<div id="mnutoolCopyRecord" class="button">
 								<a href="#" rel="table" title="Copy Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/arrangeall64HOVER.png") %>"
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>"
 										alt="" />
 									<i class="icon-copy"></i>
 									<h6>Copy</h6></a>
@@ -292,7 +292,7 @@
 							</div>
 							<div id="mnutoolAddFromWaitingList" class="button">
 								<a href="#" rel="table" title="Add from Waiting List">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AddFormWaitingList64HOVER.png") %>"
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AddFromWaitingList64HOVER.png")%>"
 										alt="" /><i class="icon-print"></i><h6>Add from<br />Waiting List</h6></a>
 							</div>
 							<div id="mnutoolTransferBooking" class="button">
@@ -357,7 +357,7 @@
 							</div>
 							<div id="mnutoolCopyUtil" class="button">
 								<a href="javascript:setcopy();" rel="table" title="Copy...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/arrangeall64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 								<i class="icon-copy"></i>
 								<h6>Copy</h6></a>
 							</div>
@@ -380,12 +380,12 @@
 							</div>
 							<div id="mnutillRunUtil" class="button">
 								<a href="javascript:setrun();" rel="table" title="Run...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 								<h6>Run</h6></a>
 							</div>
 							<div id="mnuutilCancelUtil" class="button">
 								<a href="javascript:setcancel();" rel="table" title="Close...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<h6>Close</h6></a>
 							</div>
 						</li>						
