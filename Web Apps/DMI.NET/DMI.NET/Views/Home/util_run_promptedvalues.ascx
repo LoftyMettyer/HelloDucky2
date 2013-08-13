@@ -584,7 +584,6 @@
 			}
 
 			if (fOK == false) {
-				stop;
 				OpenHR.messageBox("Invalid date value entered.");
 				window.focus();
 				pctlPrompt.focus();
