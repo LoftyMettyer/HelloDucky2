@@ -852,6 +852,9 @@
     <Content Include="Scripts\officebar\winkit\AddFormWaitingList64DIS.png" />
     <Content Include="Scripts\officebar\winkit\AddFormWaitingList64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\AddFormWaitingList64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\AddFromWaitingList64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\AddFromWaitingList64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\AddFromWaitingList64NORM.png" />
     <Content Include="Scripts\officebar\winkit\arrangeall64DIS.png" />
     <Content Include="Scripts\officebar\winkit\arrangeall64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\arrangeall64NORM.png" />
@@ -869,6 +872,7 @@
     <Content Include="Scripts\officebar\winkit\BradfordFactor64NORM.png" />
     <Content Include="Scripts\officebar\winkit\BulkBooking64DIS.png" />
     <Content Include="Scripts\officebar\winkit\BulkBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\BulkBooking64NORM.png" />
     <Content Include="Scripts\officebar\winkit\buttoncancel64DIS.png" />
     <Content Include="Scripts\officebar\winkit\buttoncancel64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\buttoncancel64NORM.png" />
@@ -877,6 +881,7 @@
     <Content Include="Scripts\officebar\winkit\CalendarReports64NORM.png" />
     <Content Include="Scripts\officebar\winkit\CancelBooking64DIS.png" />
     <Content Include="Scripts\officebar\winkit\CancelBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\CancelBooking64NORM.png" />
     <Content Include="Scripts\officebar\winkit\CancelCourse64DIS.png" />
     <Content Include="Scripts\officebar\winkit\CancelCourse64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\CancelCourse64NORM.png" />
