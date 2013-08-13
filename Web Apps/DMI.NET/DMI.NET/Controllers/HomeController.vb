@@ -3978,10 +3978,6 @@ Namespace Controllers
 
 		End Function
 
-		Function util_dialog_picklist() As ActionResult
-			Return View()
-		End Function
-
 		Function picklistSelectionMain() As ActionResult
 			Return View()
 		End Function

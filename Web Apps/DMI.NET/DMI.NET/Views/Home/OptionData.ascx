@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
 
@@ -120,9 +121,9 @@
 		
 				Dim fOK As Boolean
 
-				Dim prmErrMsg
-				Dim cmdPicklist
-				Dim prmExpectedCount
+			Dim prmErrMsg As ADODB.Parameter
+			Dim cmdPicklist As Command
+			Dim prmExpectedCount
 				Dim cmdBulkBook
 				Dim prmEmployeeRecordIDs
 				Dim prmOnlyNumerics
@@ -1833,9 +1834,9 @@
 								objUtilities = Nothing
 						End If
 								
-						cmdPicklist = CreateObject("ADODB.Command")
+				cmdPicklist = New ADODB.Command()
 						cmdPicklist.CommandText = "sp_ASRIntGetSelectedPicklistRecords"
-						cmdPicklist.CommandType = 4 ' Stored procedure
+				cmdPicklist.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdPicklist.CommandTimeout = 180
 						cmdPicklist.ActiveConnection = Session("databaseConnection")
 
@@ -1863,7 +1864,7 @@
 						cmdPicklist.Parameters.Append(prmTableID)
 						prmTableID.value = CleanNumeric(Session("optionTableID"))
 
-						prmErrMsg = cmdPicklist.CreateParameter("errMsg", 200, 2, 2147483646) '200=varchar,2=output,8000=size
+				prmErrMsg = cmdPicklist.CreateParameter("errMsg", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 2147483646)
 						cmdPicklist.Parameters.Append(prmErrMsg)
 
 						prmExpectedCount = cmdPicklist.CreateParameter("expectedCount", 3, 2) '3=integer,2=output
@@ -1937,13 +1938,6 @@
 
 						End If
 						rstFindRecords = Nothing
-
-						' NB. IMPORTANT ADO NOTE.
-						' When calling a stored procedure which returns a recordset AND has output parameters
-						' you need to close the recordset and set it to nothing before using the output parameters. 
-						If Len(cmdPicklist.Parameters("errMsg").Value) > 0 Then
-								sErrorDescription = cmdPicklist.Parameters("errMsg").Value
-						End If
 
 						Response.Write("<INPUT type='hidden' id=txtExpectedCount name=txtExpectedCount value=" & cmdPicklist.Parameters("expectedCount").Value & ">" & vbCrLf)
 			

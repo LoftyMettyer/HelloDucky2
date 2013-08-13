@@ -1,8 +1,9 @@
 ﻿
 function closeclick() {
-		try {
+	try {
 				$(".popup").dialog("close");
 				$("#optionframe").hide();
+				$("#workframeset").show();
 				$("#workframe").show();
 		}
 		catch (e) { }

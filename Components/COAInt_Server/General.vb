@@ -889,26 +889,29 @@ ErrorTrap:
 		Dim strFunctionNumber As String
 
 		Try
-			For iCount = 0 To paFunctions.Length - 1
 
-				If Not paFunctions(iCount) Is Nothing Then
-					iStart = InStr(paFunctions(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-					iEnd = InStr(1, Mid(paFunctions(iCount), 1, 1000), "(@Per")
-					strFunctionNumber = Mid(paFunctions(iCount), iStart, iEnd - iStart)
-					strFunctionName = FUNCTIONPREFIX & strFunctionNumber
+			If Not paFunctions Is Nothing Then
+				For iCount = 0 To paFunctions.Length - 1
 
-					'Drop existing function (could exist if the expression is used more than once in a report)
-					strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-					clsDataAccess.ExecuteSql(strDropCode)
+					If Not paFunctions(iCount) Is Nothing Then
+						iStart = InStr(paFunctions(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
+						iEnd = InStr(1, Mid(paFunctions(iCount), 1, 1000), "(@Per")
+						strFunctionNumber = Mid(paFunctions(iCount), iStart, iEnd - iStart)
+						strFunctionName = FUNCTIONPREFIX & strFunctionNumber
 
-					' Create the new function
-					If pbCreate Then
-						sCode = paFunctions(iCount)
-						clsDataAccess.ExecuteSql(sCode)
+						'Drop existing function (could exist if the expression is used more than once in a report)
+						strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+						clsDataAccess.ExecuteSql(strDropCode)
+
+						' Create the new function
+						If pbCreate Then
+							sCode = paFunctions(iCount)
+							clsDataAccess.ExecuteSql(sCode)
+						End If
 					End If
-				End If
 
-			Next iCount
+				Next iCount
+			End If
 
 		Catch ex As Exception
 			Return False

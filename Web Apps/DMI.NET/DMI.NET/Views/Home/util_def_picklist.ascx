@@ -1,14 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="lpks/main.lpk">
-</object>
-
 <script type="text/javascript">
+
 	function util_def_picklist_onload() {
 
 		var fOK;
@@ -113,21 +107,12 @@
 			frmValidate.validateUtilID.value = 0;
 		}
 
-		//        sURL = "util_validate_picklist" +
-		//            "?validatePass=" + frmValidate.validatePass.value +
-		//            "&validateName=" + escape(frmValidate.validateName.value) + 
-		//            "&validateTimestamp=" + frmValidate.validateTimestamp.value +
-		//            "&validateUtilID=" + frmValidate.validateUtilID.value +
-		//            "&validateAccess=" + frmValidate.validateAccess.value +
-		//            "&validateBaseTableID=" + frmValidate.validateBaseTableID.value;
-		//        openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 		OpenHR.showInReportFrame(frmValidate);
-		//OpenHR.submitForm(frmValidate);
+
 	}
 
 	function addClick() {
 
-		var sURL;
 		var vBM;
 
 		/* Get the current selected delegate IDs. */
@@ -148,14 +133,10 @@
 		}
 		frmDefinition.ssOleDBGrid.redraw = true;
 
-		frmPicklistSelection.selectionType.value = "ALL";
-		frmPicklistSelection.selectedIDs1.value = sSelectedIDs1;
-
-		//        sURL = "util_dialog_picklist" + "?action=add";
-		//      openDialog(sURL, (screen.width) / 3, (screen.height) / 2);
-
-		var frmSend = document.getElementById("frmAddSelection");
+		var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
 		frmSend.selectionAction = "add";
+		frmSend.selectionType.value = "ALL";
+		frmSend.selectedIDs1.value = sSelectedIDs1;
 
 		$("#workframeset").hide();
 		OpenHR.showInReportFrame(frmSend);
@@ -202,11 +183,10 @@
 		}
 		frmDefinition.ssOleDBGrid.redraw = true;
 
-		frmPicklistSelection.selectionType.value = "FILTER";
-		frmPicklistSelection.selectedIDs1.value = sSelectedIDs1;
-
-		var frmSend = document.getElementById("frmAddSelection");
+		var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
 		frmSend.selectionAction = "add";
+		frmSend.selectionType.value = "FILTER";
+		frmSend.selectedIDs1.value = sSelectedIDs1;
 
 		OpenHR.showInReportFrame(frmSend);
 
@@ -782,17 +762,17 @@
 															<td rowspan="14">
 																<%
 																	' Get the employee find columns.
-																	Dim cmdFindRecords
-																	Dim prmTableID
-																	Dim prmErrorMsg
-																	Dim prm1000SepCols
-																	Dim rstFindRecords
+																	Dim cmdFindRecords As ADODB.Command
+																	Dim prmTableID As ADODB.Parameter
+																	Dim prmErrorMsg As ADODB.Parameter
+																	Dim prm1000SepCols As ADODB.Parameter
+																	Dim rstFindRecords As ADODB.Recordset
 																	Dim sErrorDescription As String
 																	Dim lngColCount As Long
 
-																	cmdFindRecords = Server.CreateObject("ADODB.Command")
+																	cmdFindRecords = New ADODB.Command
 																	cmdFindRecords.CommandText = "sp_ASRIntGetDefaultOrderColumns"
-																	cmdFindRecords.CommandType = 4 ' Stored Procedure
+																	cmdFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 																	cmdFindRecords.ActiveConnection = Session("databaseConnection")
 																	cmdFindRecords.CommandTimeout = 180
 
@@ -1071,25 +1051,25 @@
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
 		Dim sErrMsg As String
-		Dim cmdDefn
-		Dim prmUtilID
-		Dim prmAction
-		Dim prmErrMsg
-		Dim prmName
-		Dim prmOwner
+		Dim cmdDefn As ADODB.Command
+		Dim prmUtilID As ADODB.Parameter
+		Dim prmAction As ADODB.Parameter
+		Dim prmErrMsg As ADODB.Parameter
+		Dim prmName As ADODB.Parameter
+		Dim prmOwner As ADODB.Parameter
 		
-		Dim prmDescription
-		Dim prmAccess
-		Dim prmTimestamp
-		Dim rstDefinition
-		Dim sSelectedRecords
+		Dim prmDescription As ADODB.Parameter
+		Dim prmAccess As ADODB.Parameter
+		Dim prmTimestamp As ADODB.Parameter
+		Dim rstDefinition As ADODB.Recordset
+		Dim sSelectedRecords As String
 		
 		sErrMsg = ""
 
 		If Session("action") <> "new" Then
-			cmdDefn = Server.CreateObject("ADODB.Command")
+			cmdDefn = New ADODB.Command
 			cmdDefn.CommandText = "sp_ASRIntGetPicklistDefinition"
-			cmdDefn.CommandType = 4	' Stored Procedure
+			cmdDefn.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 			cmdDefn.ActiveConnection = Session("databaseConnection")
 
 			prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
@@ -1119,27 +1099,17 @@
 			cmdDefn.Parameters.Append(prmTimestamp)
 
 			Err.Clear()
-			'       rstDefinition = cmdDefn.Execute
+			rstDefinition = cmdDefn.Execute
 
-			cmdDefn.Execute()
 
 			If (Err.Number <> 0) Then
 				sErrMsg = "'" & Session("utilname") & "' picklist definition could not be read." & vbCrLf & formatError(Err.Description)
 			Else
-				'			if rstDefinition.state <> 0 then
-				'				' Read recordset values.
 				sSelectedRecords = "0"
-				'				do while not rstDefinition.EOF
-				'					sSelectedRecords = sSelectedRecords & "," & cstr(rstDefinition.fields("recordID").value)
-				'
-				'					rstDefinition.MoveNext
-				'				loop
-
 				Response.Write("<input type='hidden' id='txtSelectedRecords' name='txtSelectedRecords' value='" & sSelectedRecords & "'>" & vbCrLf)
 	
 				' Release the ADO recordset object.
-				'            rstDefinition.close()
-				'			end if
+				rstDefinition.Close()
 				rstDefinition = Nothing
 			
 				' NB. IMPORTANT ADO NOTE.
@@ -1184,10 +1154,6 @@
 	<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
 </form>
 
-<form id="frmAddSelection" name="frmAddSelection" target="validate" method="post" action="util_dialog_picklist" style="visibility: hidden; display: none">
-	<input type="hidden" id="selectionAction" name="selectionAction" value="0">
-</form>
-
 <form id="frmSend" name="frmSend" method="post" action="util_def_picklist_Submit" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtSend_ID" name="txtSend_ID">
 	<input type="hidden" id="txtSend_name" name="txtSend_name">
@@ -1205,7 +1171,7 @@
 
 <form id="frmPicklistSelection" name="frmPicklistSelection" action="picklistSelectionMain" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="selectionType" name="selectionType">
-	<input type="hidden" id="Hidden1" name="txtTableID" value='<% =session("utiltableid")%>'>
+	<input type="hidden" id="txtTableID" name="txtTableID" value='<% =session("utiltableid")%>'>
 	<input type="hidden" id="selectedIDs1" name="selectedIDs1">
 </form>
 

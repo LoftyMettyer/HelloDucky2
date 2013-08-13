@@ -1,12 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
-
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0">
-		<param name="LPKPath" value="lpks/main.lpk">
-</object>
 
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
 		<input type="hidden" id="txtIEVersion" name="txtIEVersion" value='<%=session("IEVersion")%>'>
@@ -20,7 +14,7 @@
 
 				$("#picklistworkframe").attr("data-framesource", "PICKLISTSELECTION");
 
-				fOK = true;
+				var fOK = true;
 
 				var frmUseful = document.getElementById("frmpicklistSelectionUseful");
 
@@ -113,11 +107,6 @@
 				}
 		}
 
-		function cancelClick() {
-				$(".popup").dialog("close");
-				$("#workframeset").show();
-		}
-
 		function makeSelection() {
 
 				var frmUseful = document.getElementById("frmpicklistSelectionUseful");
@@ -175,8 +164,6 @@
 		function selectedRecordID() {
 				var iRecordID;
 
-				debugger;
-
 				iRecordID = 0;
 
 				if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {
@@ -232,7 +219,7 @@
 		function goView() {
 
 				// Get the picklistSelectionData.asp to get the find records.
-				var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
+			var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 				dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
 				dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
 				dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -240,12 +227,12 @@
 				dataForm.txtCurrentRecCount.value = 0;
 				dataForm.txtPageAction.value = "LOAD";
 
-				refreshData();
+				picklist_refreshData();
 		}
 
 		function goOrder() {
 				// Get the picklistSelectionData.asp to get the find records.
-				var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
+			var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 				dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
 				dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
 				dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -253,7 +240,7 @@
 				dataForm.txtCurrentRecCount.value = 0;
 				dataForm.txtPageAction.value = "LOAD";
 
-				refreshData();
+				picklist_refreshData();
 		}
 
 		function selectedOrderID() {
@@ -361,8 +348,8 @@
 
 				fValidLocateValue = true;
 
-				var dataForm = OpenHR.getForm("dataframe","frmPicklistData");        
-				var getDataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
+				var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistData");
+				var getDataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 
 				if (psAction == "LOCATE") {
 						// Check that the entered value is valid for the first order column type.
@@ -462,7 +449,7 @@
 						getDataForm.txtGotoLocateValue.value = psLocateValue;
 						getDataForm.txtPageAction.value = psAction;
 
-						refreshData();
+						picklist_refreshData();
 				}
 
 				// Clear the locate value from the menu.
@@ -828,19 +815,19 @@
 												<td width="20"></td>
 												<td>
 														<%
-																		Dim sErrorDescription As String
-																		Dim cmdSelRecords
-																		Dim prmTableID
-																		Dim prmUser
-																		Dim rstSelRecords
-																		Dim lngRowCount As Long
-																		Dim cmdViewRecords
-																		Dim prmDfltOrderID
-																		Dim rstViewRecords
-																		Dim sFailureDescription As String
-																		Dim cmdOrderRecords
-																		Dim prmViewID
-																		Dim rstOrderRecords                                   
+															Dim sErrorDescription As String
+															Dim cmdSelRecords As ADODB.Command
+															Dim prmTableID As ADODB.Parameter
+															Dim prmUser As ADODB.Parameter
+															Dim rstSelRecords As ADODB.Recordset
+															Dim lngRowCount As Long
+															Dim cmdViewRecords As ADODB.Command
+															Dim prmDfltOrderID As ADODB.Parameter
+															Dim rstViewRecords As ADODB.Recordset
+															Dim sFailureDescription As String
+															Dim cmdOrderRecords As ADODB.Command
+															Dim prmViewID As ADODB.Parameter
+															Dim rstOrderRecords As ADODB.Recordset
 																		
 																		Session("optionLinkViewID") = 0
 																		Session("optionLinkOrderID") = 0
@@ -850,7 +837,7 @@
 																		If (UCase(Session("selectionType")) = UCase("picklist")) Or _
 																				(UCase(Session("selectionType")) = UCase("filter")) Then
 
-																				cmdSelRecords = Server.CreateObject("ADODB.Command")
+																cmdSelRecords = New ADODB.Command
 																				cmdSelRecords.CommandType = 4
 																				cmdSelRecords.ActiveConnection = Session("databaseConnection")
 
@@ -1043,11 +1030,11 @@
 																								<td width="10" height="10">&nbsp;
 																								</td>
 																								<td width="175" height="10">
-																										<select id="selectView" name="selectView" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+																										<select id="selectView" name="selectView" class="combo" style="width: 200px">
 																												<%
 																																If Len(sErrorDescription) = 0 Then
 																																		' Get the view records.
-																																		cmdViewRecords = Server.CreateObject("ADODB.Command")
+																														cmdViewRecords = New ADODB.Command
 																																		cmdViewRecords.CommandText = "sp_ASRIntGetLinkViews"
 																																		cmdViewRecords.CommandType = 4 ' Stored Procedure
 																																		cmdViewRecords.ActiveConnection = Session("databaseConnection")
@@ -1113,11 +1100,7 @@
 																								</td>
 																								<td width="10" height="10">
 																										<input type="button" value="Go" id="btnGoView" name="btnGoView" class="btn"
-																												onclick="goView()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+																												onclick="goView()" />
 																								</td>
 																								<td height="10">&nbsp;
 																								</td>
@@ -1126,13 +1109,13 @@
 																								<td width="10" height="10">&nbsp;
 																								</td>
 																								<td width="175" height="10">
-																										<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+																										<select id="selectOrder" name="selectOrder" class="combo" style="width: 200px">
 																												<%
 																																If Len(sErrorDescription) = 0 Then
 																																		' Get the order records.
-																																		cmdOrderRecords = Server.CreateObject("ADODB.Command")
+																														cmdOrderRecords = New ADODB.Command
 																																		cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-																																		cmdOrderRecords.CommandType = 4 ' Stored Procedure
+																														cmdOrderRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 																																		cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
 																																		prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
@@ -1178,11 +1161,7 @@
 																								</td>
 																								<td width="10" height="10">
 																										<input type="button" value="Go" id="btnGoOrder" name="btnGoOrder" class="btn"
-																												onclick="goOrder()"
-																												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																												onfocus="try{button_onFocus(this);}catch(e){}"
-																												onblur="try{button_onBlur(this);}catch(e){}" />
+																												onclick="goOrder()" />
 																								</td>
 																						</tr>
 																				</table>
@@ -1293,20 +1272,12 @@
 																		<td>&nbsp;</td>
 																		<td width="10">
 																				<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
-																						onclick="makeSelection()"
-																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" />
+																						onclick="makeSelection()" />
 																		</td>
 																		<td width="10">&nbsp;</td>
 																		<td width="10">
 																				<input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="WIDTH: 80px" width="80"
-																						onclick="cancelClick();"
-																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" />
+																						onclick="closeclick();" />
 																		</td>
 																</tr>
 														</table>
@@ -1322,7 +1293,6 @@
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
 
 <form name="frmPrompt" method="post" action="promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
 		<input type="hidden" id="filterID" name="filterID">

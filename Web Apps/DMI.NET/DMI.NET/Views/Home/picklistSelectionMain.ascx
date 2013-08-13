@@ -2,6 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <%
+	
 	Session("selectionType") = Request.Form("selectionType")
 	Session("selectionTableID") = Request.Form("txtTableID")
 	
@@ -19,7 +20,7 @@
 				txtLoadCount.value = iCount + 1;
 				 
 				if (iCount > 0) {	
-						var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
+					var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 
 						dataForm.txtTableID.value = txtTableID.value;
 						dataForm.txtViewID.value = txtViewID.value;
@@ -28,12 +29,11 @@
 						dataForm.txtCurrentRecCount.value = 0;
 						dataForm.txtPageAction.value = "LOAD";
 
-						refreshData();
+						picklist_refreshData();
 				}
 		}
 
 </script>
-
 
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 <input type='hidden' id="txtTableID" name="txtTableID" value="0">
@@ -54,5 +54,10 @@
 		picklistSelectionData_window_onload();
 		picklistSelection_window_onload();
 		picklistSelection_addhandlers();
+
+		$('.popup').bind('dialogclose', function (event) {
+			closeclick();
+		});
+
 
 </script>

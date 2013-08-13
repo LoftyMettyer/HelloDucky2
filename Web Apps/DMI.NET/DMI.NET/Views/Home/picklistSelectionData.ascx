@@ -5,7 +5,7 @@
 
 		function picklistSelectionData_window_onload() {
 
-				//$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
+				$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
 				$("#workframeset").hide();
 				$("#reportframe").show();
 
@@ -98,16 +98,15 @@
 
 						refreshControls();
 
-						// Get menu.asp to refresh the menu.
-				 //   OpenHR.menu_refreshMenu();
 				}
 		}
 
-		function refreshData() {
-				OpenHR.submitForm(frmPicklistGetData);
+		function picklist_refreshData() {
+
+			OpenHR.submitForm(frmPicklistGetData);
 		}
 
-</script>
+		</script>
 
 <form action="picklistSelectionData_Submit" method="post" id="frmPicklistGetData" name="frmPicklistGetData">
 		<input type="hidden" id="txtTableID" name="txtTableID">
@@ -131,42 +130,42 @@
 		Dim sErrorDescription As String = ""
 		Dim sThousandColumns As String
 		
-		Dim cmdThousandFindColumns
-		Dim prmError
-		Dim prmTableID
-		Dim prmViewID
-		Dim prmOrderID
-		Dim prmThousandColumns
-		Dim cmdGetFindRecords
-		Dim prmReqRecs
-		Dim prmIsFirstPage
-		Dim prmIsLastPage
-		Dim prmLocateValue
-		Dim prmColumnType
-		Dim prmAction
-		Dim prmTotalRecCount
-		Dim prmFirstRecPos
-		Dim prmCurrentRecCount
-		Dim prmExcludedIDs
-		Dim prmColumnSize
-		Dim prmColumnDecimals
-		Dim rstFindRecords
+	Dim cmdThousandFindColumns As ADODB.Command
+	Dim prmError As ADODB.Parameter
+	Dim prmTableID As ADODB.Parameter
+	Dim prmViewID As ADODB.Parameter
+	Dim prmOrderID As ADODB.Parameter
+	Dim prmThousandColumns As ADODB.Parameter
+	Dim cmdGetFindRecords As ADODB.Command
+	Dim prmReqRecs As ADODB.Parameter
+	Dim prmIsFirstPage As ADODB.Parameter
+	Dim prmIsLastPage As ADODB.Parameter
+	Dim prmLocateValue As ADODB.Parameter
+	Dim prmColumnType As ADODB.Parameter
+	Dim prmAction As ADODB.Parameter
+	Dim prmTotalRecCount As ADODB.Parameter
+	Dim prmFirstRecPos As ADODB.Parameter
+	Dim prmCurrentRecCount As ADODB.Parameter
+	Dim prmExcludedIDs As ADODB.Parameter
+	Dim prmColumnSize As ADODB.Parameter
+	Dim prmColumnDecimals As ADODB.Parameter
+	Dim rstFindRecords As ADODB.Recordset
 		Dim iCount As Integer
 		Dim sAddString As String
 		Dim sColDef As String
 		Dim sTemp As String
 		
 		
-		Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
 	' Get the required record count if we have a query.
 	if session("picklistSelectionDataLoading") = false then
 
 		sThousandColumns = ""
 			
-				cmdThousandFindColumns = Server.CreateObject("ADODB.Command")
+		cmdThousandFindColumns = New ADODB.Command
 		cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-		cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+		cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 		cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -202,10 +201,10 @@
 		' Release the ADO command object.
 				cmdThousandFindColumns = Nothing
 
-				cmdGetFindRecords = Server.CreateObject("ADODB.Command")
+		cmdGetFindRecords = New ADODB.Command
 		cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
-		cmdGetFindRecords.CommandType = 4 ' Stored procedure
-				cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
+		cmdGetFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+		cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 		cmdGetFindRecords.CommandTimeout = 180
 			
 				prmTableID = cmdGetFindRecords.CreateParameter("tableID", 3, 1)
@@ -284,7 +283,7 @@
 							
 												If iCount = 0 Then
 														sColDef = Replace(rstFindRecords.fields(iloop).name, "_", " ") & "	" & rstFindRecords.fields(iloop).type
-														Response.Write("<INPUT type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
 												End If
 							
 												If rstFindRecords.fields(iloop).type = 135 Then
@@ -312,7 +311,7 @@
 												End If
 										Next
 
-										Response.Write("<INPUT type='hidden' id=txtData_" & iCount & " name=txtData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtData_" & iCount & " name=txtData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
 					
 										iCount = iCount + 1
 										rstFindRecords.moveNext()
@@ -327,27 +326,21 @@
 		' NB. IMPORTANT ADO NOTE.
 		' When calling a stored procedure which returns a recordset AND has output parameters
 		' you need to close the recordset and set it to nothing before using the output parameters. 
-				'		if cmdGetFindRecords.Parameters("error").Value <> 0 then
-				'Session("ErrorTitle") = "Picklist Selection Find Page"
-				'Session("ErrorText") = "Error reading records definition."
-				'Response.Clear()
-				'Response.Redirect("error.asp")
-				'End If
 
-				Response.Write("<INPUT type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & cmdGetFindRecords.Parameters("isFirstPage").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & cmdGetFindRecords.Parameters("isLastPage").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & cmdGetFindRecords.Parameters("columnType").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & cmdGetFindRecords.Parameters("totalRecCount").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & cmdGetFindRecords.Parameters("firstRecPos").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & cmdGetFindRecords.Parameters("columnSize").Value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & cmdGetFindRecords.Parameters("columnDecimals").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & cmdGetFindRecords.Parameters("isFirstPage").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & cmdGetFindRecords.Parameters("isLastPage").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & cmdGetFindRecords.Parameters("columnType").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & cmdGetFindRecords.Parameters("totalRecCount").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & cmdGetFindRecords.Parameters("firstRecPos").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & cmdGetFindRecords.Parameters("columnSize").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & cmdGetFindRecords.Parameters("columnDecimals").Value & ">" & vbCrLf)
 
 				cmdGetFindRecords = Nothing
 			
 		End If
 
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 </FORM>
 
