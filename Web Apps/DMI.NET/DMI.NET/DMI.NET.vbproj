@@ -583,6 +583,7 @@
     <Content Include="Scripts\FormScripts\stdrpt_def_absence.js" />
     <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\FormScripts\util_run_calendarreports.js" />
+    <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
@@ -973,6 +974,7 @@
     <Content Include="Scripts\jquery\jquery.rightClick.js" />
     <Content Include="Scripts\jquery\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\jquery\jquery.menu.js" />
+    <Content Include="Scripts\_references.js" />
     <Content Include="Views\Account\About.ascx" />
     <Content Include="Views\Account\Loginerror.aspx" />
     <Content Include="Views\Account\ForcedPasswordChange.aspx" />
