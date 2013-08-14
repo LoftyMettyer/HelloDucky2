@@ -94,7 +94,7 @@
 														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
 														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
 														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" style="height: 20px" />
+														onblur="try{radio_onBlur(this);}catch(e){}" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
