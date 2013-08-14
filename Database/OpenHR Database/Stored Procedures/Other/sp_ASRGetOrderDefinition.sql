@@ -14,7 +14,7 @@ BEGIN
 			ASRSysColumns.blankIfZero
 	FROM ASRSysOrderItems
 	INNER JOIN ASRSysColumns 
-		ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+		ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables 
 		ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID

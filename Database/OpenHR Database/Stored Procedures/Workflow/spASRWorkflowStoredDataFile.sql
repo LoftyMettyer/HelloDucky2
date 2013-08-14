@@ -85,7 +85,7 @@ BEGIN
 			@piOLEType = ASRSysColumns.OLEType
 		FROM ASRSysColumns
 		INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-		WHERE ASRSysColumns.columnID = @iDBColumnID;
+		WHERE ASRSysColumns.columnId = @iDBColumnID;
 
 		IF @iDBRecord = 0
 		BEGIN

@@ -33,7 +33,7 @@ BEGIN
 		orderID, 
 		orderName,
 		defaultOrder)	
-	(SELECT ASRSysOrders.orderID, 
+	(SELECT ASRSysOrders.OrderID, 
 		ASRSysOrders.name,
 		0
 	FROM ASRSysOrders

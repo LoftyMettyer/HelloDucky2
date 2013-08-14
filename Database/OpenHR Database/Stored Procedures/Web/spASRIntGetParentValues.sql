@@ -49,7 +49,7 @@ BEGIN
 
 	SELECT @iTempCount = COUNT(*)
 	FROM ASRSysControls
-	INNER JOIN ASRSysColumns ON ASRSysControls.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysControls.columnID = ASRSysColumns.columnId
 		AND ASRSysColumns.tableID = @piParentTableID
 	WHERE ASRSysControls.screenID = @piScreenID
 		AND ASRSysControls.columnID > 0;
@@ -134,7 +134,7 @@ BEGIN
 		ASRSysColumns.columnName, 
 		ASRSysColumns.dataType
 	FROM ASRSysControls
-	INNER JOIN ASRSysColumns ON ASRSysColumns.columnID = ASRSysControls.columnID
+	INNER JOIN ASRSysColumns ON ASRSysColumns.columnId = ASRSysControls.columnID
 	WHERE ASRSysControls.screenID = @piScreenID
 		AND ASRSysControls.columnID > 0
 		AND ASRSysColumns.tableID = @piParentTableID;

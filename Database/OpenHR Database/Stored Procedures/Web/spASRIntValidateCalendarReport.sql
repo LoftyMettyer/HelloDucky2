@@ -474,7 +474,7 @@ BEGIN
 				ASRSysCalendarReports.Name AS 'JobName'
 	 		FROM ASRSysBatchJobDetails
 			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID 
-			INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobDetails.jobID
+			INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobDetails.JobID
 			LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 				AND ASRSysBatchJobAccess.access <> 'HD'
 				AND ASRSysBatchJobAccess.groupName IN (SELECT name FROM sysusers WHERE uid IN (SELECT groupID FROM @HiddenGroups))

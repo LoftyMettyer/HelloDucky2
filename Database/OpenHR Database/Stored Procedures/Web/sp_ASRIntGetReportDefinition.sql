@@ -440,7 +440,7 @@ BEGIN
 		END AS [definitionString],
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails 
-	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type = 'C'
@@ -517,7 +517,7 @@ BEGIN
 		convert(varchar(255), ASRSysTables.tableID) AS [definitionString],
 		ASRSysCustomReportsDetails.sortOrderSequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
-	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type = 'C'
@@ -532,7 +532,7 @@ BEGIN
 		convert(varchar(255), ASRSysCustomReportsDetails.Hidden) AS [definitionString],
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
-		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnID
+		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
 		INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type = 'C'

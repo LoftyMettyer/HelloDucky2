@@ -222,7 +222,7 @@ BEGIN
 							END
 						END
 
-						SELECT @sTempAccess = access ,
+						SELECT @sTempAccess = Access ,
 							 @sTempOwner = userName 
 						FROM ASRSysExpressions
 						WHERE exprID = @iCalculationID
@@ -319,7 +319,7 @@ BEGIN
 		ELSE
 		BEGIN
 			SELECT @iTimestamp = convert(integer, timestamp), 
-				@sAccess = access, 
+				@sAccess = Access, 
 				@sOwner = userName
 			FROM ASRSysExpressions
 			WHERE exprID = @piUtilID

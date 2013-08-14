@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[AsrSysBatchJobName](
+﻿CREATE TABLE [dbo].[ASRSysBatchJobName](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[Scheduled] [bit] NOT NULL,
 	[Name] [varchar](50) NOT NULL,
@@ -49,7 +49,7 @@
 GO
 
 CREATE CLUSTERED INDEX [IDX_Name]
-    ON [dbo].[AsrSysBatchJobName]([Name] ASC);
+    ON [dbo].[ASRSysBatchJobName]([Name] ASC);
 GO
 
 CREATE TRIGGER DEL_ASRSysBatchJobName ON dbo.ASRSysBatchJobName 

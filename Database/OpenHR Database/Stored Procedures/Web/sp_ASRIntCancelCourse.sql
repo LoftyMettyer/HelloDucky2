@@ -56,9 +56,9 @@ BEGIN
 		AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 		OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 		AND ASRSysGroupPermissions.permitted = 1
-		AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 
-	SELECT @sTBTableName = tableName
+	SELECT @sTBTableName = tablename
 	FROM ASRSysTables
 	WHERE tableID = @piTrainBookTableID;
 	
@@ -159,7 +159,7 @@ BEGIN
 
 		INSERT INTO @courseColumnPermissions
 		SELECT 
-			ASRSysColumns.columnID,
+			ASRSysColumns.columnId,
 			sysprotects.action,
 			CASE protectType
 				WHEN 205 THEN 1
@@ -171,9 +171,9 @@ BEGIN
 		INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
 		INNER JOIN ASRSysColumns ON (syscolumns.name = ASRSysColumns.columnName
 			AND ASRSysColumns.tableID = @piCourseTableID
-			AND ((ASRSysColumns.columnID = @iCourseTitleColumnID) 
-				OR (ASRSysColumns.columnID = @iCourseCancelDateColumnID)
-				OR (ASRSysColumns.columnID = @iCourseCancelByColumnID)))
+			AND ((ASRSysColumns.columnId = @iCourseTitleColumnID) 
+				OR (ASRSysColumns.columnId = @iCourseCancelDateColumnID)
+				OR (ASRSysColumns.columnId = @iCourseCancelByColumnID)))
 		WHERE sysprotects.uid = @iUserGroupID
 			AND (sysprotects.action = 193 OR sysprotects.action = 197)
 			AND sysobjects.name = @psCourseRealSource

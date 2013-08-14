@@ -12,7 +12,7 @@ BEGIN
 	SELECT @sUserName = SYSTEM_USER;
 
 	SELECT 	ASRSysColumns.tableID,
-			ASRSysColumns.columnID,
+			ASRSysColumns.columnId,
 			ASRSysTables.tableName,
 			ASRSysColumns.columnName
 	FROM ASRSysColumns

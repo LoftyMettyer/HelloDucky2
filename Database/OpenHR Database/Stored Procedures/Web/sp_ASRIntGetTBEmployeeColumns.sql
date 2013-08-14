@@ -97,7 +97,7 @@ BEGIN
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
 	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
 	WHERE ASRSysOrderItems.orderID = @iOrderID
 		AND ASRSysOrderItems.type = 'F'
@@ -190,7 +190,7 @@ BEGIN
 		ASRSysTables.tableName,
 		ASRSysColumns.Use1000Separator
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @iOrderID
 		AND ASRSysOrderItems.type = 'F'

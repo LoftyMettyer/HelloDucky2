@@ -10,5 +10,5 @@ BEGIN
 	SELECT tableID, columnID, controlType,
 		topCoord, leftCoord, height, width,	caption
 	FROM [dbo].[ASRSysControls]
-	WHERE screenID = @plngScreenID;
+	WHERE ScreenID = @plngScreenID;
 END

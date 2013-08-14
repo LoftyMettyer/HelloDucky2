@@ -171,7 +171,7 @@ BEGIN
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT DISTINCT ASRSysColumns.tableID
 	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 
 	OPEN tablesCursor
@@ -249,7 +249,7 @@ BEGIN
 		ASRSysColumns.size,
 		ASRSysColumns.decimals
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 	ORDER BY ASRSysOrderItems.sequence

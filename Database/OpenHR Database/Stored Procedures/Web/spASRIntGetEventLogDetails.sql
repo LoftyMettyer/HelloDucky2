@@ -33,18 +33,18 @@ BEGIN
 	/* create SELECT statment string */
 	SET @sSelectString = 'SELECT [ID], [EventLogID], IsNull([Notes],'''') AS ''Notes'' ';
 
-	SET @sFromString = ' FROM AsrSysEventLogDetails ';
+	SET @sFromString = ' FROM ASRSysEventLogDetails ';
 
 	IF @piBatchRunID > 0
 		BEGIN
-			SET @sWhereString = ' WHERE AsrSysEventLogDetails.EventLogID IN (SELECT ID FROM ASRSysEventLog WHERE BatchRunID = ' + convert(varchar, @piBatchRunID) + ')';
+			SET @sWhereString = ' WHERE ASRSysEventLogDetails.EventLogID IN (SELECT ID FROM ASRSysEventLog WHERE BatchRunID = ' + convert(varchar, @piBatchRunID) + ')';
 		END
 	ELSE
 		BEGIN
-			SET @sWhereString = ' WHERE AsrSysEventLogDetails.EventLogID = ' + convert(varchar, @piEventID);
+			SET @sWhereString = ' WHERE ASRSysEventLogDetails.EventLogID = ' + convert(varchar, @piEventID);
 		END
 
-	SET @sOrderString = ' ORDER BY AsrSysEventLogDetails.[ID] ';
+	SET @sOrderString = ' ORDER BY ASRSysEventLogDetails.[ID] ';
 	
 	SET @sTempExecString = @sSelectString + @sFromString + @sWhereString + @sOrderString;
 	EXEC sp_executesql @sTempExecString;

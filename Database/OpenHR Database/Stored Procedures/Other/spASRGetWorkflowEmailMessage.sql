@@ -155,7 +155,7 @@ BEGIN
 				@iSourceItemType = ASRSysColumns.dataType
 			FROM ASRSysColumns
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-			WHERE ASRSysColumns.columnID = @iDBColumnID;
+			WHERE ASRSysColumns.columnId = @iDBColumnID;
 
 			IF @iDBRecord = 0
 			BEGIN
@@ -391,7 +391,7 @@ BEGIN
 						ELSE 3
 					END
 				FROM ASRSysColumns
-				WHERE ASRSysColumns.columnID = @iColumnID;
+				WHERE ASRSysColumns.columnId = @iColumnID;
 			END
 					
 			/* Format dates */

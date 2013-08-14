@@ -39,7 +39,7 @@ BEGIN
 		AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 		OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 		AND ASRSysGroupPermissions.permitted = 1
-		AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 
 	/* Get the parent table type and name. */
 	SELECT @iParentTableType = tableType,
@@ -151,7 +151,7 @@ BEGIN
 	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT ASRSysColumns.columnName
 	FROM ASRSysSummaryFields 
-	INNER JOIN ASRSysColumns ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnId
 	WHERE ASRSysSummaryFields.historyTableID = @piHistoryTableID
 		AND ASRSysColumns.tableID = @piParentTableID 
 	ORDER BY ASRSysSummaryFields.sequence
@@ -184,7 +184,7 @@ BEGIN
 	SELECT DISTINCT ASRSysSummaryFields.sequence, 
     	ASRSysSummaryFields.startOfGroup, 
 		ASRSysColumns.columnName, 
-		ASRSysColumns.columnID, 
+		ASRSysColumns.columnId, 
 		ASRSysColumns.dataType, 
 		ASRSysColumns.size, 
 		ASRSysColumns.decimals, 
@@ -193,7 +193,7 @@ BEGIN
 		ASRSysColumns.Use1000Separator
 	FROM ASRSysSummaryFields 
 	INNER JOIN ASRSysColumns 
-		ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnID
+		ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnId
 	WHERE ASRSysSummaryFields.historyTableID = @piHistoryTableID
 		AND ASRSysColumns.tableID = @piParentTableID 
 	ORDER BY ASRSysSummaryFields.sequence;

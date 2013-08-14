@@ -6,7 +6,7 @@ BEGIN
 	SELECT DISTINCT ASRSysSummaryFields.sequence, 
 	    ASRSysSummaryFields.startOfGroup, 
 		ASRSysColumns.columnName, 
-		ASRSysColumns.columnID, 
+		ASRSysColumns.columnId, 
 		ASRSysColumns.tableID, 
 		ASRSysColumns.dataType, 
 		ASRSysColumns.size, 
@@ -20,7 +20,7 @@ BEGIN
 	    ASRSysSummaryFields.StartOfColumn
 	FROM ASRSysSummaryFields 
 	INNER JOIN ASRSysColumns 
-		ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnID
+		ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnId
 	WHERE ASRSysSummaryFields.historyTableID = @piHistoryTableID
 		AND ASRSysColumns.tableID = @piParentTableID 
 	ORDER BY ASRSysSummaryFields.sequence;

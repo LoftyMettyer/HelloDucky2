@@ -35,7 +35,7 @@ BEGIN
 		@sTableName = ASRSysTables.tableName
 	FROM ASRSysScreens
 	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID
+	WHERE ASRSysScreens.ScreenID = @piScreenID
 
 	/* Check if the current user is a System or Security manager. */
 	SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
@@ -47,7 +47,7 @@ BEGIN
 	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+	AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 
 	/* Get the real source and insert/delete permissions for the table. */
 	IF @fSysSecMgr = 1 

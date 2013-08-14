@@ -14,7 +14,7 @@ FROM ASRSysTables INNER JOIN
     ASRSysColumns ON 
     ASRSysTables.TableID = ASRSysColumns.tableID INNER JOIN
     ASRSysControls ON 
-    ASRSysColumns.columnID = ASRSysControls.ColumnID
+    ASRSysColumns.columnId = ASRSysControls.ColumnID
 
 WHERE ASRSysControls.ScreenID = @lScreenID AND 
     ASRSysControls.TableID <> @lTableID

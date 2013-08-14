@@ -71,7 +71,7 @@ BEGIN
 		AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 		OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 		AND ASRSysGroupPermissions.permitted = 1
-		AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 
 	/* Get the EMPLOYEE table information. */
 	SELECT @iEmpTableID = convert(integer, parameterValue)
@@ -296,7 +296,7 @@ BEGIN
 
 		INSERT INTO @tbColumnPermissions
 		SELECT 
-			ASRSysColumns.columnID,
+			ASRSysColumns.columnId,
 			sysprotects.action,
 			CASE protectType
 				WHEN 205 THEN 1
@@ -308,7 +308,7 @@ BEGIN
 		INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
 		INNER JOIN ASRSysColumns ON (syscolumns.name = ASRSysColumns.columnName
 			AND ASRSysColumns.tableID = @iTBTableID
-			AND ASRSysColumns.columnID = @iTBCancelDateColumnID)
+			AND ASRSysColumns.columnId = @iTBCancelDateColumnID)
 		WHERE sysprotects.uid = @iUserGroupID
 			AND (sysprotects.action = 197)
 			AND sysobjects.name = @sTBRealSource
@@ -370,7 +370,7 @@ BEGIN
 
 				INSERT INTO @columnPermissions
 				SELECT 
-					ASRSysColumns.columnID,
+					ASRSysColumns.columnId,
 					sysprotects.action,
 					CASE protectType
 						WHEN 205 THEN 1

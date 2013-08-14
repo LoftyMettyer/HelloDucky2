@@ -67,7 +67,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER' 
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 	END
 
 	/* Get the EMPLOYEE table information. */
@@ -234,7 +234,7 @@ BEGIN
 
 		INSERT INTO #columnPermissions
 		SELECT 
-			ASRSysColumns.columnID,
+			ASRSysColumns.columnId,
 			sysprotects.action,
 			CASE protectType
 				WHEN 205 THEN 1

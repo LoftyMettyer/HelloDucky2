@@ -71,7 +71,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 	END
 
 	/* Get the real source of the given table/view. */
@@ -180,7 +180,7 @@ BEGIN
 	FROM ASRSysControls
 	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
 	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID 
-		AND ASRSysColumns.columnID = ASRSysControls.columnID
+		AND ASRSysColumns.columnId = ASRSysControls.columnID
 	WHERE screenID = @piChildScreenID
 	AND ASRSysControls.columnID > 0
 	AND ASRSysControls.tableID = @piTableID

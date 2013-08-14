@@ -83,7 +83,7 @@ BEGIN
 	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+	AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 
 	-- Activate module
 	EXEC [dbo].[spASRIntActivateModule] 'TRAINING', @fOK OUTPUT
@@ -231,7 +231,7 @@ BEGIN
 
 					INSERT INTO @tbColumnPermissions
 					SELECT 
-						ASRSysColumns.columnID,
+						ASRSysColumns.columnId,
 						p.action,
 						CASE protectType
 							WHEN 205 THEN 1
@@ -243,8 +243,8 @@ BEGIN
 					INNER JOIN syscolumns ON p.id = syscolumns.id
 					INNER JOIN ASRSysColumns ON (syscolumns.name = ASRSysColumns.columnName
 						AND ASRSysColumns.tableID = @piTBTableID
-						AND (ASRSysColumns.columnID = @piTBStatusColumnID
-							OR ASRSysColumns.columnID = @piTBCancelDateColumnID))
+						AND (ASRSysColumns.columnId = @piTBStatusColumnID
+							OR ASRSysColumns.columnId = @piTBCancelDateColumnID))
 					WHERE p.action IN (193, 197)
 						AND sysobjects.name = @sRealSource
 						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
@@ -355,7 +355,7 @@ BEGIN
 
 					INSERT INTO @waitListColumnPermissions
 					SELECT 
-						ASRSysColumns.columnID,
+						ASRSysColumns.columnId,
 						p.action,
 						CASE protectType
 							WHEN 205 THEN 1
@@ -367,7 +367,7 @@ BEGIN
 					INNER JOIN syscolumns ON p.id = syscolumns.id
 					INNER JOIN ASRSysColumns ON (syscolumns.name = ASRSysColumns.columnName
 						AND ASRSysColumns.tableID = @piWaitListTableID
-						AND ASRSysColumns.columnID = @piWaitListCourseTitleColumnID)
+						AND ASRSysColumns.columnId = @piWaitListCourseTitleColumnID)
 					WHERE p.action IN (193, 197)
 						AND sysobjects.name = @sRealSource
 						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0

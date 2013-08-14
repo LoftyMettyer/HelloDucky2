@@ -69,7 +69,7 @@ BEGIN
 				END
 	FROM ASRSysScreens
 	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID;
+	WHERE ASRSysScreens.ScreenID = @piScreenID;
 	
 	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
 	
@@ -146,7 +146,7 @@ BEGIN
 	UNION
 	SELECT DISTINCT ASRSysColumns.tableID 
 	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	WHERE ASRSysOrderItems.type = 'O' 
 		AND ASRSysOrderItems.orderID = @piOrderID;
 	
@@ -291,7 +291,7 @@ BEGIN
 		ASRSysColumns.linkTableID
 	FROM ASRSysControls
 		LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-		LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnID = ASRSysControls.columnID
+		LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
 	WHERE screenID = @piScreenID
 		AND ASRSysControls.columnID > 0;
 	
@@ -515,7 +515,7 @@ BEGIN
 	    		ASRSysTables.tableName,
 			ASRSysOrderItems.ascending
 		FROM ASRSysOrderItems
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 		WHERE ASRSysOrderItems.orderID = @piOrderID
 			AND ASRSysOrderItems.type = 'O'

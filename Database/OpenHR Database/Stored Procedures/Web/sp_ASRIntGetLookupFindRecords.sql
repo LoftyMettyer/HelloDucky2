@@ -64,7 +64,7 @@ BEGIN
 		@piColumnSize = ASRSysColumns.size,
 		@piColumnDecimals = ASRSysColumns.decimals
 	FROM [dbo].[ASRSysColumns]
-	WHERE ASRSysColumns.columnID = @piColumnID;
+	WHERE ASRSysColumns.columnId = @piColumnID;
 
 	/* Get the table name and default order. */
 	SELECT @sTableName = ASRSysTables.tableName,
@@ -79,7 +79,7 @@ BEGIN
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT ASRSysColumns.columnName
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @iOrderID
 		AND ASRSysOrderItems.type = 'F'

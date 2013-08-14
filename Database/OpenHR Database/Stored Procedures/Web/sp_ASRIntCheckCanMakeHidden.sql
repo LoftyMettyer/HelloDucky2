@@ -63,15 +63,15 @@ BEGIN
 	DECLARE @batchJobIDs TABLE(id integer)
 	DECLARE @calendarReportsIDs TABLE(id integer)
 	DECLARE @careerIDs TABLE(id integer)
-    DECLARE @crossTabIDs TABLE(id integer)
+		DECLARE @crossTabIDs TABLE(id integer)
 	DECLARE @customReportsIDs TABLE(id integer)
 	DECLARE @dataTransferIDs TABLE(id integer)
 	DECLARE @exportIDs TABLE(id integer)
 	DECLARE @globalAddIDs TABLE(id integer)
-    DECLARE @globalUpdateIDs TABLE(id integer)
-    DECLARE @globalDeleteIDs TABLE(id integer)
+		DECLARE @globalUpdateIDs TABLE(id integer)
+		DECLARE @globalDeleteIDs TABLE(id integer)
 	DECLARE @labelsIDs TABLE(id integer)
-    DECLARE @mailMergeIDs TABLE(id integer)
+		DECLARE @mailMergeIDs TABLE(id integer)
 	DECLARE @matchReportIDs TABLE(id integer)
 	DECLARE @recordProfileIDs TABLE(id integer)
 	DECLARE @successionIDs TABLE(id integer)
@@ -83,11 +83,11 @@ BEGIN
 	IF (@piUtilityType = 12) OR (@piUtilityType = 11)
 	BEGIN
 		/* Calculation/Filter. */
-    
-    /*---------------------------------------------------*/
-    /* Check Calculations/Filters For This Expression		*/
-    /* NB. This check must be made before checking the reports/utilities	*/
-    /*---------------------------------------------------*/
+		
+		/*---------------------------------------------------*/
+		/* Check Calculations/Filters For This Expression		*/
+		/* NB. This check must be made before checking the reports/utilities	*/
+		/*---------------------------------------------------*/
 		INSERT INTO @expressionIDs (id) VALUES (@piUtilityID)
 		
 		exec spASRIntGetAllExprRootIDs @piUtilityID, @superCursor output
@@ -106,11 +106,11 @@ BEGIN
 
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysExpressions.Name,
-				ASRSysExpressions.exprID AS [ID],
+				ASRSysExpressions.ExprID AS [ID],
 				ASRSysExpressions.Username,
 				ASRSysExpressions.Access
 			FROM ASRSysExpressions
-			WHERE ASRSysExpressions.exprID IN (SELECT id FROM @superExpressionIDs)
+			WHERE ASRSysExpressions.ExprID IN (SELECT id FROM @superExpressionIDs)
 				AND ASRSysExpressions.type = 10
 
 		OPEN check_cursor
@@ -131,7 +131,7 @@ BEGIN
 			BEGIN
 				/* Found a Calculation whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 				BEGIN
 					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Calculation : <Hidden> by ' + @sUtilOwner + '<BR>'
@@ -174,7 +174,7 @@ BEGIN
 			BEGIN
 				/* Found a Filter whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 				BEGIN
 					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Filter : <Hidden> by ' + @sUtilOwner + '<BR>'
@@ -194,33 +194,33 @@ BEGIN
 		/* Check Calendar Reports for this Expression. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
-			AsrSysCalendarReports.Username,
+		SELECT ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username,
 			COUNT (ASRSYSCalendarReportAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCalendarReports
-		LEFT OUTER JOIN ASRSYSCalendarReportEvents ON AsrSysCalendarReports.ID = ASRSYSCalendarReportEvents.calendarReportID
-		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON AsrSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
+		FROM ASRSysCalendarReports
+		LEFT OUTER JOIN ASRSYSCalendarReportEvents ON ASRSysCalendarReports.ID = ASRSYSCalendarReportEvents.calendarReportID
+		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON ASRSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
 			AND ASRSYSCalendarReportAccess.access <> 'HD'
 			AND ASRSYSCalendarReportAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE AsrSysCalendarReports.DescriptionExpr IN (SELECT id FROM @expressionIDs)
-			OR AsrSysCalendarReports.StartDateExpr IN (SELECT id FROM @expressionIDs)
-      OR AsrSysCalendarReports.EndDateExpr IN (SELECT id FROM @expressionIDs)
-      OR ASRSysCalendarReports.Filter IN (SELECT id FROM @expressionIDs)
-      OR ASRSYSCalendarReportEvents.FilterID IN (SELECT id FROM @expressionIDs)
-		GROUP BY AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
- 			AsrSysCalendarReports.Username
+		WHERE ASRSysCalendarReports.DescriptionExpr IN (SELECT id FROM @expressionIDs)
+			OR ASRSysCalendarReports.StartDateExpr IN (SELECT id FROM @expressionIDs)
+			OR ASRSysCalendarReports.EndDateExpr IN (SELECT id FROM @expressionIDs)
+			OR ASRSysCalendarReports.Filter IN (SELECT id FROM @expressionIDs)
+			OR ASRSYSCalendarReportEvents.FilterID IN (SELECT id FROM @expressionIDs)
+		GROUP BY ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -240,7 +240,7 @@ BEGIN
 			BEGIN
 				/* Found a Calendar Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					17,
 					@iUtilID,
@@ -276,7 +276,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCalendarReports.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -318,7 +318,7 @@ BEGIN
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -342,7 +342,7 @@ BEGIN
 				BEGIN
 					/* Found a Calendar Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -375,18 +375,18 @@ BEGIN
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 2
+		WHERE ASRSysMatchReportName.matchReportType = 2
 			AND (ASRSysMatchReportName.table1Filter IN (SELECT id FROM @expressionIDs)
-      OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
+			OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -406,7 +406,7 @@ BEGIN
 			BEGIN
 				/* Found a Career Progression whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					24,
 					@iUtilID,
@@ -442,7 +442,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -484,7 +484,7 @@ BEGIN
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -508,7 +508,7 @@ BEGIN
 				BEGIN
 					/* Found a Career Progression in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -529,28 +529,28 @@ BEGIN
 		/* Check Cross Tabs for this Expression. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCrossTab.Name,
-			AsrSysCrossTab.[CrossTabID] AS [ID],
-			AsrSysCrossTab.Username,
+		SELECT ASRSysCrossTab.Name,
+			ASRSysCrossTab.[CrossTabID] AS [ID],
+			ASRSysCrossTab.Username,
 			COUNT (ASRSYSCrossTabAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCrossTab
-		LEFT OUTER JOIN ASRSYSCrossTabAccess ON AsrSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
+		FROM ASRSysCrossTab
+		LEFT OUTER JOIN ASRSYSCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
 			AND ASRSYSCrossTabAccess.access <> 'HD'
 			AND ASRSYSCrossTabAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-		WHERE AsrSysCrossTab.FilterID IN (SELECT id FROM @expressionIDs)
-		GROUP BY AsrSysCrossTab.Name,
-			AsrSysCrossTab.crossTabID,
- 			AsrSysCrossTab.Username
+		WHERE ASRSysCrossTab.FilterID IN (SELECT id FROM @expressionIDs)
+		GROUP BY ASRSysCrossTab.Name,
+			ASRSysCrossTab.crossTabID,
+			ASRSysCrossTab.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -570,7 +570,7 @@ BEGIN
 			BEGIN
 				/* Found a Cross Tab whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					1,
 					@iUtilID,
@@ -606,7 +606,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCrossTab.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -648,9 +648,9 @@ BEGIN
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
-          
+					
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
 							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sUtilOwner + '<BR>'
@@ -673,7 +673,7 @@ BEGIN
 				BEGIN
 					/* Found a Cross Tab in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -695,15 +695,15 @@ BEGIN
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysCustomReportsName.Name,
-        ASRSysCustomReportsName.ID,
-        ASRSysCustomReportsName.Username,
-        COUNT (ASRSYSCustomReportAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysCustomReportsName
-       LEFT OUTER JOIN ASRSysCustomReportsDetails ON ASRSysCustomReportsName.ID = AsrSysCustomReportsDetails.CustomReportID
-       LEFT OUTER JOIN ASRSYSCustomReportsChildDetails ON ASRSysCustomReportsName.ID = ASRSYSCustomReportsChildDetails.customReportID
+				ASRSysCustomReportsName.ID,
+				ASRSysCustomReportsName.Username,
+				COUNT (ASRSYSCustomReportAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysCustomReportsName
+			 LEFT OUTER JOIN ASRSysCustomReportsDetails ON ASRSysCustomReportsName.ID = ASRSysCustomReportsDetails.CustomReportID
+			 LEFT OUTER JOIN ASRSYSCustomReportsChildDetails ON ASRSysCustomReportsName.ID = ASRSYSCustomReportsChildDetails.customReportID
 LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSCustomReportAccess.ID
 				AND ASRSYSCustomReportAccess.access <> 'HD'
-        AND ASRSYSCustomReportAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSCustomReportAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -716,13 +716,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND sysusers.uid <> 0)
 			WHERE ASRSysCustomReportsName.Filter IN (SELECT id FROM @expressionIDs)
 				OR ASRSysCustomReportsName.Parent1Filter IN (SELECT id FROM @expressionIDs)
-        OR ASRSysCustomReportsName.Parent2Filter IN (SELECT id FROM @expressionIDs)
-        OR ASRSYSCustomReportsChildDetails.ChildFilter IN (SELECT id FROM @expressionIDs)
-        OR(AsrSysCustomReportsDetails.Type = 'E' 
-					AND AsrSysCustomReportsDetails.ColExprID IN (SELECT id FROM @expressionIDs))
-      GROUP BY ASRSysCustomReportsName.Name,
+				OR ASRSysCustomReportsName.Parent2Filter IN (SELECT id FROM @expressionIDs)
+				OR ASRSYSCustomReportsChildDetails.ChildFilter IN (SELECT id FROM @expressionIDs)
+				OR(ASRSysCustomReportsDetails.Type = 'E' 
+					AND ASRSysCustomReportsDetails.ColExprID IN (SELECT id FROM @expressionIDs))
+			GROUP BY ASRSysCustomReportsName.Name,
 				ASRSysCustomReportsName.ID,
-        ASRSysCustomReportsName.Username
+				ASRSysCustomReportsName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -742,7 +742,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Custom Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					2,
 					@iUtilID,
@@ -778,8 +778,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysCustomReportsName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysCustomReportsName ON AsrSysCustomReportsname.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsname.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -820,7 +820,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -844,7 +844,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Custom Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -866,13 +866,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysDataTransferName.Name,
-        ASRSysDataTransferName.DataTransferID AS [ID],
-        ASRSysDataTransferName.Username,
-        COUNT (ASRSYSDataTransferAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysDataTransferName
-       LEFT OUTER JOIN ASRSYSDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSYSDataTransferAccess.ID
+				ASRSysDataTransferName.DataTransferID AS [ID],
+				ASRSysDataTransferName.Username,
+				COUNT (ASRSYSDataTransferAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysDataTransferName
+			 LEFT OUTER JOIN ASRSYSDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSYSDataTransferAccess.ID
 				AND ASRSYSDataTransferAccess.access <> 'HD'
-        AND ASRSYSDataTransferAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSDataTransferAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -884,9 +884,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
 			WHERE ASRSysDataTransferName.FilterID IN (SELECT id FROM @expressionIDs)
-      GROUP BY ASRSysDataTransferName.Name,
+			GROUP BY ASRSysDataTransferName.Name,
 				ASRSysDataTransferName.DataTransferID,
-        ASRSysDataTransferName.Username
+				ASRSysDataTransferName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -906,7 +906,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Data Transfer whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					3,
 					@iUtilID,
@@ -942,8 +942,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysDataTransferName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -984,7 +984,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1008,7 +1008,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Data Transfer in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1029,15 +1029,15 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/* Check Envelopes & Labels For This Expression. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
-        COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+			SELECT ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID AS [ID],
+				ASRSysMailMergeName.Username,
+				COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+			 LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
-        AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1048,13 +1048,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 1
-        AND ((AsrSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysMailMergeColumns.Type = 'E' 
-					AND AsrSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+			WHERE ASRSysMailMergeName.isLabel = 1
+				AND ((ASRSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysMailMergeColumns.Type = 'E' 
+					AND ASRSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
+			GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+				ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1074,7 +1074,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Envelopes & Labels whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					18,
 					@iUtilID,
@@ -1108,10 +1108,10 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -1132,7 +1132,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -1152,7 +1152,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1176,7 +1176,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Envelopes & Labels in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1198,14 +1198,14 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysExportName.Name,
-        ASRSysExportName.ID,
-        ASRSysExportName.Username,
-        COUNT (ASRSYSExportAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysExportName
-			 LEFT OUTER JOIN AsrSysExportDetails ON ASRSysExportName.ID = AsrSysExportDetails.exportID
-       LEFT OUTER JOIN ASRSYSExportAccess ON ASRSysExportName.ID = ASRSYSExportAccess.ID
+				ASRSysExportName.ID,
+				ASRSysExportName.Username,
+				COUNT (ASRSYSExportAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysExportName
+			 LEFT OUTER JOIN ASRSysExportDetails ON ASRSysExportName.ID = ASRSysExportDetails.exportID
+			 LEFT OUTER JOIN ASRSYSExportAccess ON ASRSysExportName.ID = ASRSYSExportAccess.ID
 				AND ASRSYSExportAccess.access <> 'HD'
-        AND ASRSYSExportAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSExportAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1216,15 +1216,15 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysExportName.Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.Parent1Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.Parent2Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.ChildFilter IN (SELECT id FROM @expressionIDs)
-        OR (AsrSysExportDetails.Type = 'X' 
-					AND AsrSysExportDetails.ColExprID IN (SELECT id FROM @expressionIDs))
-      GROUP BY AsrSysExportName.Name,
-				AsrSysExportName.ID,
-        AsrSysExportName.Username
+			WHERE ASRSysExportName.Filter IN (SELECT id FROM @expressionIDs)
+				OR ASRSysExportName.Parent1Filter IN (SELECT id FROM @expressionIDs)
+				OR ASRSysExportName.Parent2Filter IN (SELECT id FROM @expressionIDs)
+				OR ASRSysExportName.ChildFilter IN (SELECT id FROM @expressionIDs)
+				OR (ASRSysExportDetails.Type = 'X' 
+					AND ASRSysExportDetails.ColExprID IN (SELECT id FROM @expressionIDs))
+			GROUP BY ASRSysExportName.Name,
+				ASRSysExportName.ID,
+				ASRSysExportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1244,7 +1244,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Export whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					4,
 					@iUtilID,
@@ -1280,8 +1280,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysExportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -1322,7 +1322,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1346,7 +1346,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Export in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1368,14 +1368,14 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-			 LEFT OUTER JOIN AsrSysGlobalItems ON ASRSysGlobalFunctions.functionID = AsrSysGlobalItems.FunctionID
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSysGlobalItems ON ASRSysGlobalFunctions.functionID = ASRSysGlobalItems.FunctionID
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1386,13 +1386,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'A' 
-				AND ((AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysGlobalItems.ValueType = 4 
-					AND AsrSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY ASRSysGlobalFunctions.Name,
+			WHERE ASRSysGlobalFunctions.Type = 'A' 
+				AND ((ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysGlobalItems.ValueType = 4 
+					AND ASRSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-        ASRSysGlobalFunctions.Username
+				ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1412,7 +1412,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Add whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					5,
 					@iUtilID,
@@ -1448,7 +1448,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1490,7 +1490,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1514,7 +1514,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Add in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1536,14 +1536,14 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-			 LEFT OUTER JOIN AsrSysGlobalItems ON ASRSysGlobalFunctions.functionID = AsrSysGlobalItems.FunctionID
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSysGlobalItems ON ASRSysGlobalFunctions.functionID = ASRSysGlobalItems.FunctionID
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1554,13 +1554,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'U' 
-				AND ((AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysGlobalItems.ValueType = 4 
-					AND AsrSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY ASRSysGlobalFunctions.Name,
+			WHERE ASRSysGlobalFunctions.Type = 'U' 
+				AND ((ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysGlobalItems.ValueType = 4 
+					AND ASRSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-        ASRSysGlobalFunctions.Username
+				ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1580,7 +1580,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Update whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					7,
 					@iUtilID,
@@ -1616,7 +1616,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1658,7 +1658,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1682,7 +1682,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Update in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1704,13 +1704,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1721,11 +1721,11 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'D' 
-				AND AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs)
-      GROUP BY ASRSysGlobalFunctions.Name,
+			WHERE ASRSysGlobalFunctions.Type = 'D' 
+				AND ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs)
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-        ASRSysGlobalFunctions.Username
+				ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1745,7 +1745,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Delete whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					6,
 					@iUtilID,
@@ -1781,7 +1781,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1823,7 +1823,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -1847,7 +1847,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Delete in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -1868,15 +1868,15 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/* Check Mail Merge For This Expression. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
-        COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+			SELECT ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID AS [ID],
+				ASRSysMailMergeName.Username,
+				COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+			 LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
-        AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -1887,13 +1887,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 0
-        AND ((AsrSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysMailMergeColumns.Type = 'E' 
-					AND AsrSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+			WHERE ASRSysMailMergeName.isLabel = 0
+				AND ((ASRSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysMailMergeColumns.Type = 'E' 
+					AND ASRSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
+			GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+				ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1913,7 +1913,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Mail Merge whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					9,
 					@iUtilID,
@@ -1947,10 +1947,10 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -1971,7 +1971,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -1991,7 +1991,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2015,7 +2015,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Mail Merge in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2048,18 +2048,18 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 0
+		WHERE ASRSysMatchReportName.matchReportType = 0
 			AND (ASRSysMatchReportName.table1Filter IN (SELECT id FROM @expressionIDs)
-      OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
+			OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2079,7 +2079,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Match Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					14,
 					@iUtilID,
@@ -2115,7 +2115,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2157,7 +2157,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2181,7 +2181,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Match Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2215,7 +2215,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
@@ -2225,7 +2225,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			OR ASRSYSRecordProfileTables.FilterID IN (SELECT id FROM @expressionIDs)
 		GROUP BY ASRSysRecordProfileName.Name,
 			ASRSysRecordProfileName.recordProfileID,
- 			ASRSysRecordProfileName.Username
+			ASRSysRecordProfileName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2245,7 +2245,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Record Profile whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					20,
 					@iUtilID,
@@ -2281,7 +2281,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysRecordProfileName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysRecordProfileName ON ASRSysRecordProfileName.recordProfileID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2323,7 +2323,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2347,7 +2347,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Record Profile in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2380,18 +2380,18 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 1
+		WHERE ASRSysMatchReportName.matchReportType = 1
 			AND (ASRSysMatchReportName.table1Filter IN (SELECT id FROM @expressionIDs)
-      OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
+			OR ASRSysMatchReportName.table2Filter IN (SELECT id FROM @expressionIDs))
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2411,7 +2411,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Succession Planning whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					23,
 					@iUtilID,
@@ -2447,7 +2447,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2489,7 +2489,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2513,7 +2513,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Succession Planning in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2541,7 +2541,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			SET @piResult = 0
 			RETURN
 		END
-      
+			
 		IF (@iCount_Owner > 0) AND
 			(@iCount_NotOwner = 0) AND
 			(@fBatchJobsOK = 1)
@@ -2551,7 +2551,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			SET @piResult = 1
 			RETURN
 		END
-        
+				
 		IF (@iCount_Owner > 0) AND
 			(@iCount_NotOwner = 0) AND
 			(@fBatchJobsOK = 0)
@@ -2582,34 +2582,34 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 
 	IF @piUtilityType = 10
 	BEGIN
-    /* Picklist */
-    
+		/* Picklist */
+		
 		/*---------------------------------------------------*/
 		/* Check Calendar Reports for this Picklist. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
-			AsrSysCalendarReports.Username,
+		SELECT ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username,
 			COUNT (ASRSYSCalendarReportAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCalendarReports
-		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON AsrSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
+		FROM ASRSysCalendarReports
+		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON ASRSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
 			AND ASRSYSCalendarReportAccess.access <> 'HD'
 			AND ASRSYSCalendarReportAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE AsrSysCalendarReports.Picklist = @piUtilityID
-		GROUP BY AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
- 			AsrSysCalendarReports.Username
+		WHERE ASRSysCalendarReports.Picklist = @piUtilityID
+		GROUP BY ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2629,7 +2629,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Calendar Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					17,
 					@iUtilID,
@@ -2665,7 +2665,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysCalendarReports.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2707,7 +2707,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2731,7 +2731,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Calendar Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2764,18 +2764,18 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 2
+		WHERE ASRSysMatchReportName.matchReportType = 2
 			AND (ASRSysMatchReportName.table1Picklist = @piUtilityID
-      OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
+			OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2795,7 +2795,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Career Progression whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					24,
 					@iUtilID,
@@ -2831,7 +2831,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2873,7 +2873,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -2897,7 +2897,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Career Progression in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2918,28 +2918,28 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/* Check Cross Tabs for this Picklist. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCrossTab.Name,
-			AsrSysCrossTab.[CrossTabID] AS [ID],
-			AsrSysCrossTab.Username,
+		SELECT ASRSysCrossTab.Name,
+			ASRSysCrossTab.[CrossTabID] AS [ID],
+			ASRSysCrossTab.Username,
 			COUNT (ASRSYSCrossTabAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCrossTab
-		LEFT OUTER JOIN ASRSYSCrossTabAccess ON AsrSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
+		FROM ASRSysCrossTab
+		LEFT OUTER JOIN ASRSYSCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
 			AND ASRSYSCrossTabAccess.access <> 'HD'
 			AND ASRSYSCrossTabAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-		WHERE AsrSysCrossTab.PicklistID = @piUtilityID
-		GROUP BY AsrSysCrossTab.Name,
-			AsrSysCrossTab.crossTabID,
- 			AsrSysCrossTab.Username
+		WHERE ASRSysCrossTab.PicklistID = @piUtilityID
+		GROUP BY ASRSysCrossTab.Name,
+			ASRSysCrossTab.crossTabID,
+			ASRSysCrossTab.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2959,7 +2959,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Cross Tab whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					1,
 					@iUtilID,
@@ -2995,7 +2995,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysCrossTab.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -3037,9 +3037,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
-          
+					
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
 							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sUtilOwner + '<BR>'
@@ -3062,7 +3062,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Cross Tab in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3084,13 +3084,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysCustomReportsName.Name,
-        ASRSysCustomReportsName.ID,
-        ASRSysCustomReportsName.Username,
-        COUNT (ASRSYSCustomReportAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysCustomReportsName
-       LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSCustomReportAccess.ID
+				ASRSysCustomReportsName.ID,
+				ASRSysCustomReportsName.Username,
+				COUNT (ASRSYSCustomReportAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysCustomReportsName
+			 LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSCustomReportAccess.ID
 				AND ASRSYSCustomReportAccess.access <> 'HD'
-        AND ASRSYSCustomReportAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSCustomReportAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3104,9 +3104,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			WHERE ASRSysCustomReportsName.Picklist = @piUtilityID
 				OR ASRSysCustomReportsName.Parent1Picklist = @piUtilityID
 				OR ASRSysCustomReportsName.Parent2Picklist = @piUtilityID
-      GROUP BY ASRSysCustomReportsName.Name,
+			GROUP BY ASRSysCustomReportsName.Name,
 				ASRSysCustomReportsName.ID,
-        ASRSysCustomReportsName.Username
+				ASRSysCustomReportsName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3126,7 +3126,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Custom Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					2,
 					@iUtilID,
@@ -3162,8 +3162,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysCustomReportsName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysCustomReportsName ON AsrSysCustomReportsname.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsname.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -3204,7 +3204,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -3228,7 +3228,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Custom Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3250,13 +3250,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysDataTransferName.Name,
-        ASRSysDataTransferName.DataTransferID AS [ID],
-        ASRSysDataTransferName.Username,
-        COUNT (ASRSYSDataTransferAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysDataTransferName
-       LEFT OUTER JOIN ASRSYSDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSYSDataTransferAccess.ID
+				ASRSysDataTransferName.DataTransferID AS [ID],
+				ASRSysDataTransferName.Username,
+				COUNT (ASRSYSDataTransferAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysDataTransferName
+			 LEFT OUTER JOIN ASRSYSDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSYSDataTransferAccess.ID
 				AND ASRSYSDataTransferAccess.access <> 'HD'
-        AND ASRSYSDataTransferAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSDataTransferAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3268,9 +3268,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
 			WHERE ASRSysDataTransferName.PicklistID = @piUtilityID	
-      GROUP BY ASRSysDataTransferName.Name,
+			GROUP BY ASRSysDataTransferName.Name,
 				ASRSysDataTransferName.DataTransferID,
-        ASRSysDataTransferName.Username
+				ASRSysDataTransferName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3290,7 +3290,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Data Transfer whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					3,
 					@iUtilID,
@@ -3326,8 +3326,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysDataTransferName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -3368,7 +3368,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -3392,7 +3392,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Data Transfer in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3413,14 +3413,14 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/* Check Envelopes & Labels For This Picklist. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
-        COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+			SELECT ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID AS [ID],
+				ASRSysMailMergeName.Username,
+				COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
-        AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3431,11 +3431,11 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 1
-        AND AsrSysMailMergeName.PicklistID = @piUtilityID
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+			WHERE ASRSysMailMergeName.isLabel = 1
+				AND ASRSysMailMergeName.PicklistID = @piUtilityID
+			GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+				ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3455,7 +3455,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Envelopes & Labels whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					18,
 					@iUtilID,
@@ -3489,10 +3489,10 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -3513,7 +3513,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -3533,7 +3533,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -3557,7 +3557,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Envelopes & Labels in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3579,13 +3579,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysExportName.Name,
-        ASRSysExportName.ID,
-        ASRSysExportName.Username,
-        COUNT (ASRSYSExportAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysExportName
-       LEFT OUTER JOIN ASRSYSExportAccess ON ASRSysExportName.ID = ASRSYSExportAccess.ID
+				ASRSysExportName.ID,
+				ASRSysExportName.Username,
+				COUNT (ASRSYSExportAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysExportName
+			 LEFT OUTER JOIN ASRSYSExportAccess ON ASRSysExportName.ID = ASRSYSExportAccess.ID
 				AND ASRSYSExportAccess.access <> 'HD'
-        AND ASRSYSExportAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSExportAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3599,9 +3599,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			WHERE ASRSysExportName.Picklist = @piUtilityID
 				OR ASRSysExportName.Parent1Picklist = @piUtilityID
 				OR ASRSysExportName.Parent2Picklist = @piUtilityID
-      GROUP BY AsrSysExportName.Name,
-				AsrSysExportName.ID,
-        AsrSysExportName.Username
+			GROUP BY ASRSysExportName.Name,
+				ASRSysExportName.ID,
+				ASRSysExportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3621,7 +3621,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Export whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					4,
 					@iUtilID,
@@ -3657,8 +3657,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysExportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -3699,7 +3699,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -3723,7 +3723,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Export in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3745,13 +3745,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3764,9 +3764,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND sysusers.uid <> 0)
 			WHERE ASRSysGlobalFunctions.Type = 'A' 
 				AND ASRSysGlobalFunctions.PicklistID = @piUtilityID
-      GROUP BY ASRSysGlobalFunctions.Name,
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-        ASRSysGlobalFunctions.Username
+				ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3786,7 +3786,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Add whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					5,
 					@iUtilID,
@@ -3822,7 +3822,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -3864,7 +3864,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -3888,7 +3888,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Add in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -3910,13 +3910,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -3929,9 +3929,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND sysusers.uid <> 0)
 			WHERE ASRSysGlobalFunctions.Type = 'U' 
 				AND ASRSysGlobalFunctions.PicklistID = @piUtilityID
-      GROUP BY ASRSysGlobalFunctions.Name,
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-        ASRSysGlobalFunctions.Username
+				ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -3951,7 +3951,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Update whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					7,
 					@iUtilID,
@@ -3987,7 +3987,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -4029,7 +4029,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4053,7 +4053,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Update in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4075,13 +4075,13 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysGlobalFunctions.Name,
-        ASRSysGlobalFunctions.functionID AS [ID],
-        ASRSysGlobalFunctions.Username,
-        COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
-       FROM ASRSysGlobalFunctions
-       LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
+				ASRSysGlobalFunctions.functionID AS [ID],
+				ASRSysGlobalFunctions.Username,
+				COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysGlobalFunctions
+			 LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
-        AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -4094,9 +4094,9 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND sysusers.uid <> 0)
 			WHERE ASRSysGlobalFunctions.Type = 'D' 
 				AND ASRSysGlobalFunctions.PicklistID = @piUtilityID
-      GROUP BY ASRSysGlobalFunctions.Name,
+			GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
-      ASRSysGlobalFunctions.Username
+			ASRSysGlobalFunctions.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -4116,7 +4116,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Global Delete whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					6,
 					@iUtilID,
@@ -4152,7 +4152,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -4194,7 +4194,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4218,7 +4218,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Global Delete in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4239,15 +4239,15 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		/* Check Mail Merge For This Picklist. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
-        COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+			SELECT ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID AS [ID],
+				ASRSysMailMergeName.Username,
+				COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
+			 FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+			 LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
-        AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
+				AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
 					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 						AND ASRSysGroupPermissions.permitted = 1
@@ -4258,11 +4258,11 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 0
+			WHERE ASRSysMailMergeName.isLabel = 0
 				AND ASRSysMailMergeName.PicklistID = @piUtilityID
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+			GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+				ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -4282,7 +4282,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Mail Merge whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					9,
 					@iUtilID,
@@ -4316,10 +4316,10 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -4340,7 +4340,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -4360,7 +4360,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4384,7 +4384,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Mail Merge in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4417,18 +4417,18 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 0
+		WHERE ASRSysMatchReportName.matchReportType = 0
 			AND (ASRSysMatchReportName.table1Picklist = @piUtilityID
-      OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
+			OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -4448,7 +4448,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Match Report whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					14,
 					@iUtilID,
@@ -4484,7 +4484,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -4526,7 +4526,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4550,7 +4550,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Match Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4583,7 +4583,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
@@ -4592,7 +4592,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		WHERE ASRSysRecordProfileName.PicklistID = @piUtilityID
 		GROUP BY ASRSysRecordProfileName.Name,
 			ASRSysRecordProfileName.recordProfileID,
- 			ASRSysRecordProfileName.Username
+			ASRSysRecordProfileName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -4612,7 +4612,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Record Profile whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					20,
 					@iUtilID,
@@ -4648,7 +4648,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysRecordProfileName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysRecordProfileName ON ASRSysRecordProfileName.recordProfileID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -4690,7 +4690,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4714,7 +4714,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Record Profile in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4747,18 +4747,18 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
 					AND ASRSysGroupPermissions.permitted = 1
 				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
- 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE ASRSysMatchReportName.matchReportType = 1
+		WHERE ASRSysMatchReportName.matchReportType = 1
 			AND (ASRSysMatchReportName.table1Picklist = @piUtilityID
-      OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
+			OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 		GROUP BY ASRSysMatchReportName.Name,
 			ASRSysMatchReportName.MatchReportID,
- 			ASRSysMatchReportName.Username
+			ASRSysMatchReportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -4778,7 +4778,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			BEGIN
 				/* Found a Succession Planning whose owner is not the same */        
 				SET @iCount_NotOwner = @iCount_NotOwner + 1
-          
+					
 				exec spASRIntCurrentUserAccess 
 					23,
 					@iUtilID,
@@ -4814,7 +4814,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -4856,7 +4856,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 					BEGIN
 						/*Found a Batch Job which is scheduled for another user group to run. */
 						SET @fBatchJobsOK = 0
-      
+			
 						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
 						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 						BEGIN
@@ -4880,7 +4880,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Succession Planning in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-            		
+								
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -4897,7 +4897,7 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			DEALLOCATE check_cursor
 		END
 
- 		/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+		/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 		/* Ok, all relevant utility definitions have now been checked, so check the counts and act accordingly */
 		/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 		IF (@iCount_Owner = 0) AND
@@ -4906,19 +4906,19 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			(len(@sBatchJobDetails_Owner) = 0)
 		BEGIN
 			SET @piResult = 0
-          			RETURN
+								RETURN
 		END
-           
+					 
 		IF (@iCount_Owner > 0) AND
 			(@iCount_NotOwner = 0) AND
-      (@fBatchJobsOK = 1)
+			(@fBatchJobsOK = 1)
 		BEGIN
 			/* Can change utils and no utils are contained within batch jobs that cant be changed. */
 			SET @psMessage = @sDetails_Owner + @sBatchJobDetails_Owner
 			SET @piResult = 1
 			RETURN
 		END
-        
+				
 		IF (@iCount_Owner > 0) AND
 			(@iCount_NotOwner = 0) AND
 			(@fBatchJobsOK = 0)

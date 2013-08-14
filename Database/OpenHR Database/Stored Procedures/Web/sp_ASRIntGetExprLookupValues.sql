@@ -16,7 +16,7 @@ BEGIN
 		@piDataType = ASRSysColumns.dataType
 	FROM ASRSysColumns
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-	WHERE ASRSysColumns.columnID = @piColumnID
+	WHERE ASRSysColumns.columnId = @piColumnID
 
 	IF @piDataType = 11
 	BEGIN

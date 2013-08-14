@@ -9,7 +9,7 @@ BEGIN
 	DECLARE @iParentCompID	integer;
 
 	SELECT @iParentCompID = ASRSysExpressions.parentComponentID, 
-		@piRootExprID = ASRSysExpressions.exprID
+		@piRootExprID = ASRSysExpressions.ExprID
 	FROM [dbo].[ASRSysExpressions]
 	JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID
 	WHERE ASRSysExprComponents.componentID = @piCompID;

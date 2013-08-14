@@ -33,7 +33,7 @@ BEGIN
 	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+	AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 
 	-- Activate module
 	EXEC [dbo].[spASRIntActivateModule] 'PERSONNEL', @fOK OUTPUT;

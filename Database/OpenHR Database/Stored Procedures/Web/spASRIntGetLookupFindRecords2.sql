@@ -124,7 +124,7 @@ BEGIN
 		@iLookupColumnSize = ASRSysColumns.size,
 		@iLookupColumnDecimals = ASRSysColumns.decimals
 	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piLookupColumnID
+	WHERE ASRSysColumns.columnId = @piLookupColumnID
 
 	/* Get the table type and name. */
 	SELECT @iTableType = ASRSysTables.tableType,
@@ -187,7 +187,7 @@ BEGIN
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT DISTINCT ASRSysColumns.tableID
 	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 
 	OPEN tablesCursor
@@ -256,14 +256,14 @@ BEGIN
 	SELECT @iLookupFilterColumnID = ASRSysColumns.LookupFilterColumnID,
 		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
 	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piCallingColumnID
+	WHERE ASRSysColumns.columnId = @piCallingColumnID
 
 	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
 	BEGIN
 		SELECT @sColumnTemp = ASRSysColumns.columnName,
 			@iLookupFilterColumnDataType = ASRSysColumns.dataType
 		FROM ASRSysColumns
-		WHERE ASRSysColumns.columnID = @iLookupFilterColumnID
+		WHERE ASRSysColumns.columnId = @iLookupFilterColumnID
 
 		SELECT @iCount = COUNT(*)
 		FROM @columnPermissions
@@ -502,7 +502,7 @@ BEGIN
 		ASRSysColumns.size,
 		ASRSysColumns.decimals
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 	ORDER BY ASRSysOrderItems.sequence

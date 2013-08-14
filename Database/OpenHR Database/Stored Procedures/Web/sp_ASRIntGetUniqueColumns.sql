@@ -60,7 +60,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 	END
 
 	/* Create a temporary table to hold our resultset. */
@@ -90,14 +90,14 @@ BEGIN
 				columnSize,
 				readGranted,
 				columnDecimals)
-			(SELECT ASRSysColumns.columnID, 
+			(SELECT ASRSysColumns.columnId, 
 				ASRSysColumns.columnName,
 				ASRSysColumns.dataType,
 				ASRSysColumns.size,
 				1, 
 				ASRSysColumns.decimals
 			FROM ASRSysColumns
-			INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnID = ASRSysViewColumns.columnID
+			INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnId = ASRSysViewColumns.columnID
 			WHERE ASRSysColumns.tableID = @lngTableID
 				AND ASRSysColumns.columnType <> 4
 				AND ASRSysColumns.columnType <> 3
@@ -143,7 +143,7 @@ BEGIN
 				columnSize,
 				readGranted,
 				columnDecimals)
-			(SELECT ASRSysColumns.columnID, 
+			(SELECT ASRSysColumns.columnId, 
 				ASRSysColumns.columnName,
 				ASRSysColumns.dataType,
 				ASRSysColumns.size,
@@ -204,7 +204,7 @@ BEGIN
 			readGranted,
 			columnDecimals)
 		(SELECT 
-			ASRSysColumns.columnID,
+			ASRSysColumns.columnId,
 			syscolumns.name,
 			ASRSysColumns.dataType,
 			ASRSysColumns.size,

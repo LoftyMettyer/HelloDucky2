@@ -3,11 +3,11 @@ CREATE PROCEDURE [dbo].[sp_ASRGetOrders] (
 	@piTableID	int)
 AS
 BEGIN
-	SELECT DISTINCT ASRSysOrders.orderID, 
+	SELECT DISTINCT ASRSysOrders.OrderID, 
 		ASRSysOrders.name, 
 		ASRSysOrders.tableID 
 	FROM ASRSysOrders 
-	INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID 
+	INNER JOIN ASRSysOrderItems ON ASRSysOrders.OrderID = ASRSysOrderItems.orderID 
 	INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID 
 	WHERE ASRSysOrders.tableID = @piTableID  
 		AND ASRSysViewColumns.viewID = @piViewID  

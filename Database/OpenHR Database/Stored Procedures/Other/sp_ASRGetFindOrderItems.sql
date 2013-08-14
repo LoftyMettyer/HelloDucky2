@@ -16,7 +16,7 @@ IF @bUseDef = 1
 BEGIN
 
 	SELECT ASRSysColumns.columnName, ASRSysColumns.DataType FROM ASRSysViewColumns 
-	            INNER JOIN ASRSysColumns ON ASRSysViewColumns.columnID = ASRSysColumns.columnID 
+	            INNER JOIN ASRSysColumns ON ASRSysViewColumns.columnID = ASRSysColumns.columnId 
 	            WHERE ASRSysViewColumns.InView = 1 AND ASRSysViewColumns.ViewID = @lViewID
 	            AND ASRSysColumns.datatype <> 4
 END
@@ -29,7 +29,7 @@ BEGIN
 
 	SELECT ASRSysOrderItems.*, ASRSysColumns.columnName, ASRSysColumns.DataType FROM 
              		 ASRSysOrderItems INNER JOIN 
-	              ASRSysColumns ON ASRSysColumns.tableID = @lTableID  AND ASRSysColumns.columnID = 
+	              ASRSysColumns ON ASRSysColumns.tableID = @lTableID  AND ASRSysColumns.columnId = 
 	              ASRSysOrderItems.ColumnID INNER Join ASRSysViewColumns ON ASRSysColumns.ColumnID = 
 	              ASRSysViewColumns.ColumnID WHERE ASRSysOrderItems.Type = 'F' AND 
 	              ASRSysOrderItems.OrderID = @lOrderID  AND ASRSysViewColumns.ViewID = @lViewID

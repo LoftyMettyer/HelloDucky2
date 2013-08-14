@@ -53,7 +53,7 @@ BEGIN
 	FROM ASRSysColumns
 	JOIN ASRSysTables 
 		ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysColumns.columnID = @piSearchColumnID;
+	WHERE ASRSysColumns.columnId = @piSearchColumnID;
 
 	/* Get the name of the return column. */
 	SELECT @sReturnColumnName = ASRSysColumns.columnName, 
@@ -62,7 +62,7 @@ BEGIN
 	FROM ASRSysColumns
 	JOIN ASRSysTables 
 		ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysColumns.columnID = @piReturnColumnID;
+	WHERE ASRSysColumns.columnId = @piReturnColumnID;
 
 	IF (NOT @sSearchColumnName IS NULL) 
 		AND (NOT @sSearchTableName IS NULL) 

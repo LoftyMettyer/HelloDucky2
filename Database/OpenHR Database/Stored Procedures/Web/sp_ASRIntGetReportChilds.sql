@@ -11,11 +11,11 @@ BEGIN
 		CONVERT(varchar(255), C.ChildTable) + char(9) 
 			+ T.TableName + char(9) 
 			+ CONVERT(varchar(10), CASE 
-				WHEN (X.access <> 'HD') OR (X.userName = system_user) THEN isnull(X.ExprID, 0)
+				WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.ExprID, 0)
 				ELSE 0
 			END) + char(9)
 			+ CASE 
-				WHEN (X.access <> 'HD') OR (X.userName = system_user) THEN isnull(X.Name, '')
+				WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.Name, '')
 				ELSE ''
 			END + char(9)
 			+ CONVERT(varchar(255), isnull(O.OrderID, 0)) + char(9) 
@@ -27,18 +27,18 @@ BEGIN
 		C.ChildTable AS [TableID],
 		T.TableName AS [Table],
 		CASE 
-			WHEN (X.access <> 'HD') OR (X.userName = system_user) THEN isnull(X.ExprID, 0)
+			WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.ExprID, 0)
 			ELSE 0
 		END AS [FilterID],
 		CASE 
-			WHEN (X.access <> 'HD') OR (X.userName = system_user) THEN isnull(X.Name, '')
+			WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.Name, '')
 			ELSE ''
 		END AS [Filter],
 		isnull(O.OrderID, 0) AS [OrderID],
 	  O.Name AS [Order],
 	  C.ChildMaxRecords AS [Records], 
 		CASE 
-			WHEN (X.access = 'HD') AND (X.userName = system_user) THEN 'Y'
+			WHEN (X.Access = 'HD') AND (X.userName = system_user) THEN 'Y'
 			ELSE 'N'
 		END AS [FilterHidden],
 		CASE 
@@ -50,7 +50,7 @@ BEGIN
 			ELSE 'N'
 		END AS [FilterDeleted],
 		CASE 
-			WHEN (X.access = 'HD') AND (X.userName <> system_user) THEN 'Y'
+			WHEN (X.Access = 'HD') AND (X.userName <> system_user) THEN 'Y'
 			ELSE 'N'
 		END AS [FilterHiddenByOther]
 	FROM [dbo].[ASRSysCustomReportsChildDetails] C 

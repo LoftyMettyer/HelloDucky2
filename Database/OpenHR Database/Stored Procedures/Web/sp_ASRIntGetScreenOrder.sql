@@ -15,7 +15,7 @@ BEGIN
 	FROM ASRSysScreens
 	INNER JOIN ASRSysTables 
 		ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @plngScreenID;
+	WHERE ASRSysScreens.ScreenID = @plngScreenID;
 
 	/* If no order is defined then use the associated table's default order. */
 	IF (@plngOrderID IS NULL) OR (@plngOrderID <= 0)

@@ -39,7 +39,7 @@ BEGIN
 
 	IF @intType = 1 /*'crosstabs'*/
 	BEGIN
-		SET @strTableName = 'AsrSysCrossTab';
+		SET @strTableName = 'ASRSysCrossTab';
 		SET @strIDName = 'CrossTabID';
 		SET @fNewAccess = 1;
 		SET @sAccessTableName= 'ASRSysCrossTabAccess';
@@ -47,7 +47,7 @@ BEGIN
 
 	IF @intType = 2 /*'customreports'*/
 	BEGIN
-		SET @strTableName = 'AsrSysCustomReportsName';
+		SET @strTableName = 'ASRSysCustomReportsName';
 		SET @strIDName = 'ID';
 		SET @fNewAccess = 1;
 		SET @sAccessTableName= 'ASRSysCustomReportAccess';
@@ -55,7 +55,7 @@ BEGIN
 
 	IF @intType = 9 /*'mailmerge'*/
 	BEGIN
-		SET @strTableName = 'AsrSysMailMergeName';
+		SET @strTableName = 'ASRSysMailMergeName';
 		SET @strIDName = 'MailMergeID';
 		SET @fNewAccess = 1;
 		SET @sRecordSourceWhere = 'ASRSysMailMergeName.IsLabel = 0';

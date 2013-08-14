@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[AsrSysBatchJobDetails](
+﻿CREATE TABLE [dbo].[ASRSysBatchJobDetails](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[BatchJobNameID] [int] NOT NULL,
 	[JobType] [varchar](50) NOT NULL,

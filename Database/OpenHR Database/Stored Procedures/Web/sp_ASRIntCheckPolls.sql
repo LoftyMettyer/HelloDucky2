@@ -66,7 +66,7 @@ BEGIN
 						
 				IF @UserGroupName IS null SET @UserGroupName = '<Unknown>';
 						
-				SET @sExecSQL = 'INSERT INTO AsrSysAuditAccess (DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action)
+				SET @sExecSQL = 'INSERT INTO ASRSysAuditAccess (DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action)
 				                 VALUES (GetDate(), '''+replace(@UserGroupName,'''','''''')+''', '''+replace(rtrim(@sLoginName),'''','''''')+''', LOWER(HOST_NAME()), ''Intranet'', ''Log Out'')';
 				EXECUTE sp_executeSQL @sExecSQL;
 			END

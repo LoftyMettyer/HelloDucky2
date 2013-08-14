@@ -39,7 +39,7 @@ BEGIN
 	FROM ASRSysColumns
 	LEFT OUTER JOIN ASRSysColumns a ON ASRSysColumns.lookupColumnID = a.columnID
 	LEFT OUTER JOIN ASRSysColumns b ON ASRSysColumns.lookupFilterColumnID = b.columnID
-	WHERE ASRSysColumns.columnID = @plngColumnID
+	WHERE ASRSysColumns.columnId = @plngColumnID
 
 	IF @sLookupColumnName IS null SET @sLookupColumnName = ''
 	IF @sFilterColumnName IS null SET @sFilterColumnName = ''
@@ -61,7 +61,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 	END
 
 	/* Create a temporary table to hold our resultset. */

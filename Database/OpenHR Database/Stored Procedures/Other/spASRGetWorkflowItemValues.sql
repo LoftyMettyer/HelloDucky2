@@ -146,7 +146,7 @@ CREATE PROCEDURE [dbo].[spASRGetWorkflowItemValues]
 						@iDataType = ASRSysColumns.dataType
 					FROM ASRSysColumns
 					INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-					WHERE ASRSysColumns.columnID = @iLookupColumnID;		
+					WHERE ASRSysColumns.columnId = @iLookupColumnID;		
 
 					IF @iDataType = 11 -- Date 
 						AND UPPER(LTRIM(RTRIM(@sDefaultValue))) = 'NULL'
@@ -165,12 +165,12 @@ CREATE PROCEDURE [dbo].[spASRGetWorkflowItemValues]
 					SELECT ASRSysOrderItems.type,
 						ASRSysTables.tableName,
 						ASRSysColumns.columnName,
-						ASRSysColumns.columnID,
+						ASRSysColumns.columnId,
 						ASRSysColumns.tableID,
 						ASRSysOrderItems.ascending
 					FROM ASRSysOrderItems
 					INNER JOIN ASRSysColumns 
-						ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+						ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 					INNER JOIN ASRSysTables 
 						ON ASRSysTables.tableID = ASRSysColumns.tableID
 					WHERE ASRSysOrderItems.orderID = @iOrderID

@@ -33,7 +33,7 @@ BEGIN
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT ASRSysColumns.Use1000Separator
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @iOrderID
 		AND ASRSysOrderItems.type = 'F'

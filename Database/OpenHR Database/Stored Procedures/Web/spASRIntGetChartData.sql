@@ -46,7 +46,7 @@ BEGIN
 		AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 		OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 		AND ASRSysGroupPermissions.permitted = 1
-		AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 	/* Get the parent table type and name. */
 	SELECT @iParentTableType = tableType,
 		@sParentTableName = tableName
@@ -158,15 +158,15 @@ BEGIN
 	/*populate the temp table with info from ssi - i.e. chart column details*/
 	
 	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	--SELECT ASRSysColumns.columnID, 
+	--SELECT ASRSysColumns.columnId, 
 	--	ASRSysColumns.columnName, 
 	--	ASRSysColumns.dataType
 	--FROM ASRSysSummaryFields 
-	--INNER JOIN ASRSysColumns ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnID
+	--INNER JOIN ASRSysColumns ON ASRSysSummaryFields.parentColumnID = ASRSysColumns.columnId
 	--WHERE ASRSysSummaryFields.historyTableID = @piHistoryTableID
 	--	AND ASRSysColumns.tableID = @piParentTableID 
 	--ORDER BY ASRSysSummaryFields.sequence;
-	SELECT ASRSysColumns.columnID, 
+	SELECT ASRSysColumns.columnId, 
 		ASRSysColumns.columnName, 
 		ASRSysColumns.dataType
 	FROM ASRSysColumns

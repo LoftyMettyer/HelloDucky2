@@ -133,13 +133,13 @@ BEGIN
 		/* Check Calendar Reports for this Expression. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
-			AsrSysCalendarReports.Username,
+		SELECT ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username,
 			COUNT (ASRSYSCalendarReportAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCalendarReports
-		LEFT OUTER JOIN ASRSYSCalendarReportEvents ON AsrSysCalendarReports.ID = ASRSYSCalendarReportEvents.calendarReportID
-		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON AsrSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
+		FROM ASRSysCalendarReports
+		LEFT OUTER JOIN ASRSYSCalendarReportEvents ON ASRSysCalendarReports.ID = ASRSYSCalendarReportEvents.calendarReportID
+		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON ASRSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
 			AND ASRSYSCalendarReportAccess.access <> 'HD'
 			AND ASRSYSCalendarReportAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
@@ -152,14 +152,14 @@ BEGIN
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE AsrSysCalendarReports.DescriptionExpr IN (SELECT id FROM @expressionIDs)
-			OR AsrSysCalendarReports.StartDateExpr IN (SELECT id FROM @expressionIDs)
-      OR AsrSysCalendarReports.EndDateExpr IN (SELECT id FROM @expressionIDs)
+    WHERE ASRSysCalendarReports.DescriptionExpr IN (SELECT id FROM @expressionIDs)
+			OR ASRSysCalendarReports.StartDateExpr IN (SELECT id FROM @expressionIDs)
+      OR ASRSysCalendarReports.EndDateExpr IN (SELECT id FROM @expressionIDs)
       OR ASRSysCalendarReports.Filter IN (SELECT id FROM @expressionIDs)
       OR ASRSYSCalendarReportEvents.FilterID IN (SELECT id FROM @expressionIDs)
-		GROUP BY AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
- 			AsrSysCalendarReports.Username
+		GROUP BY ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+ 			ASRSysCalendarReports.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -194,7 +194,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCalendarReports.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -309,7 +309,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -366,12 +366,12 @@ BEGIN
 		/* Check Cross Tabs for this Expression. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCrossTab.Name,
-			AsrSysCrossTab.[CrossTabID] AS [ID],
-			AsrSysCrossTab.Username,
+		SELECT ASRSysCrossTab.Name,
+			ASRSysCrossTab.[CrossTabID] AS [ID],
+			ASRSysCrossTab.Username,
 			COUNT (ASRSYSCrossTabAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCrossTab
-		LEFT OUTER JOIN ASRSYSCrossTabAccess ON AsrSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
+		FROM ASRSysCrossTab
+		LEFT OUTER JOIN ASRSYSCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
 			AND ASRSYSCrossTabAccess.access <> 'HD'
 			AND ASRSYSCrossTabAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
@@ -384,10 +384,10 @@ BEGIN
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-		WHERE AsrSysCrossTab.FilterID IN (SELECT id FROM @expressionIDs)
-		GROUP BY AsrSysCrossTab.Name,
-			AsrSysCrossTab.crossTabID,
- 			AsrSysCrossTab.Username
+		WHERE ASRSysCrossTab.FilterID IN (SELECT id FROM @expressionIDs)
+		GROUP BY ASRSysCrossTab.Name,
+			ASRSysCrossTab.crossTabID,
+ 			ASRSysCrossTab.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -422,7 +422,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCrossTab.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -484,7 +484,7 @@ BEGIN
         ASRSysCustomReportsName.Username,
         COUNT (ASRSYSCustomReportAccess.Access) AS [nonHiddenCount]
        FROM ASRSysCustomReportsName
-       LEFT OUTER JOIN ASRSysCustomReportsDetails ON ASRSysCustomReportsName.ID = AsrSysCustomReportsDetails.CustomReportID
+       LEFT OUTER JOIN ASRSysCustomReportsDetails ON ASRSysCustomReportsName.ID = ASRSysCustomReportsDetails.CustomReportID
        LEFT OUTER JOIN ASRSYSCustomReportsChildDetails ON ASRSysCustomReportsName.ID = ASRSYSCustomReportsChildDetails.customReportID
        LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSCustomReportAccess.ID
 				AND ASRSYSCustomReportAccess.access <> 'HD'
@@ -503,8 +503,8 @@ BEGIN
 				OR ASRSysCustomReportsName.Parent1Filter IN (SELECT id FROM @expressionIDs)
         OR ASRSysCustomReportsName.Parent2Filter IN (SELECT id FROM @expressionIDs)
         OR ASRSYSCustomReportsChildDetails.ChildFilter IN (SELECT id FROM @expressionIDs)
-        OR(AsrSysCustomReportsDetails.Type = 'E' 
-					AND AsrSysCustomReportsDetails.ColExprID IN (SELECT id FROM @expressionIDs))
+        OR(ASRSysCustomReportsDetails.Type = 'E' 
+					AND ASRSysCustomReportsDetails.ColExprID IN (SELECT id FROM @expressionIDs))
       GROUP BY ASRSysCustomReportsName.Name,
 				ASRSysCustomReportsName.ID,
         ASRSysCustomReportsName.Username
@@ -542,8 +542,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCustomReportsName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysCustomReportsName ON AsrSysCustomReportsname.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsname.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -654,8 +654,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysDataTransferName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -711,13 +711,13 @@ BEGIN
 		/* Check Envelopes & Labels For This Expression. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
+			SELECT ASRSysMailMergeName.Name,
+        ASRSysMailMergeName.MailMergeID AS [ID],
+        ASRSysMailMergeName.Username,
         COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+       FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+       LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
         AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
@@ -730,13 +730,13 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 1
-        AND ((AsrSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysMailMergeColumns.Type = 'E' 
-					AND AsrSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+      WHERE ASRSysMailMergeName.isLabel = 1
+        AND ((ASRSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysMailMergeColumns.Type = 'E' 
+					AND ASRSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
+      GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+        ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -769,10 +769,10 @@ BEGIN
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -793,7 +793,7 @@ BEGIN
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -833,7 +833,7 @@ BEGIN
         ASRSysExportName.Username,
         COUNT (ASRSYSExportAccess.Access) AS [nonHiddenCount]
        FROM ASRSysExportName
-			 LEFT OUTER JOIN AsrSysExportDetails ON ASRSysExportName.ID = AsrSysExportDetails.exportID
+			 LEFT OUTER JOIN ASRSysExportDetails ON ASRSysExportName.ID = ASRSysExportDetails.exportID
        LEFT OUTER JOIN ASRSYSExportAccess ON ASRSysExportName.ID = ASRSYSExportAccess.ID
 				AND ASRSYSExportAccess.access <> 'HD'
         AND ASRSYSExportAccess.groupName NOT IN (SELECT sysusers.name
@@ -847,15 +847,15 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysExportName.Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.Parent1Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.Parent2Filter IN (SELECT id FROM @expressionIDs)
-        OR AsrSysExportName.ChildFilter IN (SELECT id FROM @expressionIDs)
-        OR (AsrSysExportDetails.Type = 'X' 
-					AND AsrSysExportDetails.ColExprID IN (SELECT id FROM @expressionIDs))
-      GROUP BY AsrSysExportName.Name,
-				AsrSysExportName.ID,
-        AsrSysExportName.Username
+      WHERE ASRSysExportName.Filter IN (SELECT id FROM @expressionIDs)
+        OR ASRSysExportName.Parent1Filter IN (SELECT id FROM @expressionIDs)
+        OR ASRSysExportName.Parent2Filter IN (SELECT id FROM @expressionIDs)
+        OR ASRSysExportName.ChildFilter IN (SELECT id FROM @expressionIDs)
+        OR (ASRSysExportDetails.Type = 'X' 
+					AND ASRSysExportDetails.ColExprID IN (SELECT id FROM @expressionIDs))
+      GROUP BY ASRSysExportName.Name,
+				ASRSysExportName.ID,
+        ASRSysExportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -890,8 +890,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysExportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -952,7 +952,7 @@ BEGIN
         ASRSysGlobalFunctions.Username,
         COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
        FROM ASRSysGlobalFunctions
-			 LEFT OUTER JOIN AsrSysGlobalItems ON ASRSysGlobalFunctions.functionID = AsrSysGlobalItems.FunctionID
+			 LEFT OUTER JOIN ASRSysGlobalItems ON ASRSysGlobalFunctions.functionID = ASRSysGlobalItems.FunctionID
        LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
         AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
@@ -966,10 +966,10 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'A' 
-				AND ((AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysGlobalItems.ValueType = 4 
-					AND AsrSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
+			WHERE ASRSysGlobalFunctions.Type = 'A' 
+				AND ((ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysGlobalItems.ValueType = 4 
+					AND ASRSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
       GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
         ASRSysGlobalFunctions.Username
@@ -1007,7 +1007,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1069,7 +1069,7 @@ BEGIN
         ASRSysGlobalFunctions.Username,
         COUNT (ASRSYSGlobalAccess.Access) AS [nonHiddenCount]
        FROM ASRSysGlobalFunctions
-			 LEFT OUTER JOIN AsrSysGlobalItems ON ASRSysGlobalFunctions.functionID = AsrSysGlobalItems.FunctionID
+			 LEFT OUTER JOIN ASRSysGlobalItems ON ASRSysGlobalFunctions.functionID = ASRSysGlobalItems.FunctionID
        LEFT OUTER JOIN ASRSYSGlobalAccess ON ASRSysGlobalFunctions.functionID = ASRSYSGlobalAccess.ID
 				AND ASRSYSGlobalAccess.access <> 'HD'
         AND ASRSYSGlobalAccess.groupName NOT IN (SELECT sysusers.name
@@ -1083,10 +1083,10 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'U' 
-				AND ((AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysGlobalItems.ValueType = 4 
-					AND AsrSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
+			WHERE ASRSysGlobalFunctions.Type = 'U' 
+				AND ((ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysGlobalItems.ValueType = 4 
+					AND ASRSysGlobalItems.ExprID IN (SELECT id FROM @expressionIDs)))
       GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
         ASRSysGlobalFunctions.Username
@@ -1124,7 +1124,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1199,8 +1199,8 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE AsrSysGlobalFunctions.Type = 'D' 
-				AND AsrSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs)
+			WHERE ASRSysGlobalFunctions.Type = 'D' 
+				AND ASRSysGlobalFunctions.FilterID IN (SELECT id FROM @expressionIDs)
       GROUP BY ASRSysGlobalFunctions.Name,
 				ASRSysGlobalFunctions.functionID,
         ASRSysGlobalFunctions.Username
@@ -1238,7 +1238,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1295,13 +1295,13 @@ BEGIN
 		/* Check Mail Merge For This Expression. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
+			SELECT ASRSysMailMergeName.Name,
+        ASRSysMailMergeName.MailMergeID AS [ID],
+        ASRSysMailMergeName.Username,
         COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+       FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+       LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
         AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
@@ -1314,13 +1314,13 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 0
-        AND ((AsrSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
-				OR (AsrSysMailMergeColumns.Type = 'E' 
-					AND AsrSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+      WHERE ASRSysMailMergeName.isLabel = 0
+        AND ((ASRSysMailMergeName.FilterID IN (SELECT id FROM @expressionIDs))
+				OR (ASRSysMailMergeColumns.Type = 'E' 
+					AND ASRSysMailMergeColumns.ColumnID IN (SELECT id FROM @expressionIDs)))
+      GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+        ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1353,10 +1353,10 @@ BEGIN
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -1377,7 +1377,7 @@ BEGIN
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -1470,7 +1470,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1585,7 +1585,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysRecordProfileName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysRecordProfileName ON ASRSysRecordProfileName.recordProfileID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1700,7 +1700,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1762,12 +1762,12 @@ BEGIN
 		/* Check Calendar Reports for this Picklist. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
-			AsrSysCalendarReports.Username,
+		SELECT ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+			ASRSysCalendarReports.Username,
 			COUNT (ASRSYSCalendarReportAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCalendarReports
-		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON AsrSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
+		FROM ASRSysCalendarReports
+		LEFT OUTER JOIN ASRSYSCalendarReportAccess ON ASRSysCalendarReports.ID = ASRSYSCalendarReportAccess.ID
 			AND ASRSYSCalendarReportAccess.access <> 'HD'
 			AND ASRSYSCalendarReportAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
@@ -1780,10 +1780,10 @@ BEGIN
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-    WHERE AsrSysCalendarReports.Picklist = @piUtilityID
-		GROUP BY AsrSysCalendarReports.Name,
-			AsrSysCalendarReports.ID,
- 			AsrSysCalendarReports.Username
+    WHERE ASRSysCalendarReports.Picklist = @piUtilityID
+		GROUP BY ASRSysCalendarReports.Name,
+			ASRSysCalendarReports.ID,
+ 			ASRSysCalendarReports.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -1818,7 +1818,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCalendarReports.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCalendarReports ON ASRSysCalendarReports.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1933,7 +1933,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -1990,12 +1990,12 @@ BEGIN
 		/* Check Cross Tabs for this Picklist. */
 		/*---------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT AsrSysCrossTab.Name,
-			AsrSysCrossTab.[CrossTabID] AS [ID],
-			AsrSysCrossTab.Username,
+		SELECT ASRSysCrossTab.Name,
+			ASRSysCrossTab.[CrossTabID] AS [ID],
+			ASRSysCrossTab.Username,
 			COUNT (ASRSYSCrossTabAccess.Access) AS [nonHiddenCount]
-		FROM AsrSysCrossTab
-		LEFT OUTER JOIN ASRSYSCrossTabAccess ON AsrSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
+		FROM ASRSysCrossTab
+		LEFT OUTER JOIN ASRSYSCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSYSCrossTabAccess.ID
 			AND ASRSYSCrossTabAccess.access <> 'HD'
 			AND ASRSYSCrossTabAccess.groupName NOT IN (SELECT sysusers.name
 				FROM sysusers
@@ -2008,10 +2008,10 @@ BEGIN
 					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 				WHERE sysusers.uid = sysusers.gid
 					AND sysusers.uid <> 0)
-		WHERE AsrSysCrossTab.PicklistID = @piUtilityID
-		GROUP BY AsrSysCrossTab.Name,
-			AsrSysCrossTab.crossTabID,
- 			AsrSysCrossTab.Username
+		WHERE ASRSysCrossTab.PicklistID = @piUtilityID
+		GROUP BY ASRSysCrossTab.Name,
+			ASRSysCrossTab.crossTabID,
+ 			ASRSysCrossTab.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2046,7 +2046,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCrossTab.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2161,8 +2161,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysCustomReportsName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysCustomReportsName ON AsrSysCustomReportsname.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsname.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -2274,8 +2274,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysDataTransferName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysDataTransferName ON ASRSysDataTransferName.DataTransferID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -2331,12 +2331,12 @@ BEGIN
 		/* Check Envelopes & Labels For This Picklist. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
+			SELECT ASRSysMailMergeName.Name,
+        ASRSysMailMergeName.MailMergeID AS [ID],
+        ASRSysMailMergeName.Username,
         COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+       FROM ASRSysMailMergeName
+       LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
         AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
@@ -2349,11 +2349,11 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 1
-        AND AsrSysMailMergeName.PicklistID = @piUtilityID
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+      WHERE ASRSysMailMergeName.isLabel = 1
+        AND ASRSysMailMergeName.PicklistID = @piUtilityID
+      GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+        ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2386,10 +2386,10 @@ BEGIN
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -2410,7 +2410,7 @@ BEGIN
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -2466,9 +2466,9 @@ BEGIN
 			WHERE ASRSysExportName.Picklist = @piUtilityID
 				OR ASRSysExportName.Parent1Picklist = @piUtilityID
 				OR ASRSysExportName.Parent2Picklist = @piUtilityID
-      GROUP BY AsrSysExportName.Name,
-				AsrSysExportName.ID,
-        AsrSysExportName.Username
+      GROUP BY ASRSysExportName.Name,
+				ASRSysExportName.ID,
+        ASRSysExportName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2503,8 +2503,8 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysExportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysExportName ON ASRSysExportName.ID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -2617,7 +2617,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2731,7 +2731,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2845,7 +2845,7 @@ BEGIN
 					ASRSysBatchJobName.[Username],
 					ASRSysGlobalFunctions.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalFunctions.FunctionID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -2902,13 +2902,13 @@ BEGIN
 		/* Check Mail Merge For This Picklist. */
 		/*-----------------------------------------------------------------------*/
 		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT AsrSysMailMergeName.Name,
-        AsrSysMailMergeName.MailMergeID AS [ID],
-        AsrSysMailMergeName.Username,
+			SELECT ASRSysMailMergeName.Name,
+        ASRSysMailMergeName.MailMergeID AS [ID],
+        ASRSysMailMergeName.Username,
         COUNT (ASRSYSMailMergeAccess.Access) AS [nonHiddenCount]
-       FROM AsrSysMailMergeName
-			 LEFT OUTER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
-       LEFT OUTER JOIN ASRSYSMailMergeAccess ON AsrSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
+       FROM ASRSysMailMergeName
+			 LEFT OUTER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
+       LEFT OUTER JOIN ASRSYSMailMergeAccess ON ASRSysMailMergeName.MailMergeID = ASRSYSMailMergeAccess.ID
 				AND ASRSYSMailMergeAccess.access <> 'HD'
         AND ASRSYSMailMergeAccess.groupName NOT IN (SELECT sysusers.name
 					FROM sysusers
@@ -2921,11 +2921,11 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-      WHERE AsrSysMailMergeName.isLabel = 0
+      WHERE ASRSysMailMergeName.isLabel = 0
 				AND ASRSysMailMergeName.PicklistID = @piUtilityID
-      GROUP BY AsrSysMailMergeName.Name,
-				AsrSysMailMergeName.MailMergeID,
-        AsrSysMailMergeName.Username
+      GROUP BY ASRSysMailMergeName.Name,
+				ASRSysMailMergeName.MailMergeID,
+        ASRSysMailMergeName.Username
 
 		OPEN check_cursor
 		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
@@ -2958,10 +2958,10 @@ BEGIN
 					ASRSysBatchJobName.roleToPrompt,
 					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 					ASRSysBatchJobName.[Username],
-					AsrSysMailMergeName.[Name] AS 'JobName' 
+					ASRSysMailMergeName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
-				INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = AsrSysBatchJobdetails.JobID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
 					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
@@ -2982,7 +2982,7 @@ BEGIN
 					convert(integer, ASRSysBatchJobName.scheduled),
 					ASRSysBatchJobName.roleToPrompt,
 					ASRSysBatchJobName.Username,
-					AsrSysMailMergeName.Name
+					ASRSysMailMergeName.Name
 
 			OPEN check_cursor
 			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
@@ -3075,7 +3075,7 @@ OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -3188,7 +3188,7 @@ OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 					ASRSysBatchJobName.[Username],
 					ASRSysRecordProfileName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysRecordProfileName ON ASRSysRecordProfileName.recordProfileID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -3303,7 +3303,7 @@ OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 					ASRSysBatchJobName.[Username],
 					ASRSysMatchReportName.[Name] AS 'JobName' 
 				FROM ASRSysBatchJobDetails
-				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID
 				INNER JOIN ASRSysMatchReportName ON ASRSysMatchReportName.matchReportID = ASRSysBatchJobdetails.JobID
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 					AND ASRSysBatchJobAccess.access <> 'HD'
@@ -3738,7 +3738,7 @@ OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 
 	INSERT INTO ASRSysDataTransferAccess
 		(ID, groupName, access)
-		(SELECT ASRSysDataTransferName.dataTransferID, 
+		(SELECT ASRSysDataTransferName.DataTransferID, 
 			sysusers.name,
 			CASE
 				WHEN (SELECT count(*)
@@ -3756,7 +3756,7 @@ OR ASRSysMatchReportName.table2Picklist = @piUtilityID)
 			ASRSysDataTransferName
 		WHERE sysusers.uid = sysusers.gid
 			AND sysusers.uid <> 0
-			AND ASRSysDataTransferName.dataTransferID IN (SELECT id FROM @dataTransferIDs))
+			AND ASRSysDataTransferName.DataTransferID IN (SELECT id FROM @dataTransferIDs))
 
 	DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
 		SELECT id

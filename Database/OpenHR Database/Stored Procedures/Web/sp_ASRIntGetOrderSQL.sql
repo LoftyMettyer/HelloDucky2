@@ -49,7 +49,7 @@ BEGIN
 		@sScreenTableName = ASRSysTables.tableName
 	FROM ASRSysScreens
 	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID
+	WHERE ASRSysScreens.ScreenID = @piScreenID
 
 	/* Check if the current user is a System or Security manager. */
 	IF UPPER(LTRIM(RTRIM(SYSTEM_USER))) = 'SA'
@@ -68,7 +68,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 	END
 
 	/* Get the real source of the given screen's table/view. */
@@ -131,7 +131,7 @@ BEGIN
 	UNION
 	SELECT DISTINCT ASRSysColumns.tableID 
 	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	WHERE ASRSysOrderItems.type = 'O' 
 		AND ASRSysOrderItems.orderID = @piOrderID
 
@@ -322,7 +322,7 @@ BEGIN
 		ASRSysColumns.dataType
 	FROM ASRSysControls
 	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnID = ASRSysControls.columnID
+	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
 	WHERE screenID = @piScreenID
 		AND ASRSysControls.columnID > 0
 
@@ -405,7 +405,7 @@ BEGIN
 	    	ASRSysTables.tableName,
 		ASRSysOrderItems.ascending
 	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 		AND ASRSysOrderItems.type = 'O'

@@ -20,7 +20,7 @@ IF @lViewID = 0
     		ASRSysOrderItems.ColumnID
 
 	FROM	ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.ColumnID = ASRSysColumns.columnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.ColumnID = ASRSysColumns.columnId
 
 	WHERE	(ASRSysColumns.tableID = @lTableID) AND 
     		(ASRSysOrderItems.Type = @sType) AND 
@@ -34,8 +34,8 @@ ELSE
 	    	ASRSysColumns.datatype, ASRSysOrderItems.ColumnID
 
 	FROM	ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.ColumnID = ASRSysColumns.columnID 
-	INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnID = ASRSysViewColumns.ColumnID
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.ColumnID = ASRSysColumns.columnId 
+	INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnId = ASRSysViewColumns.ColumnID
 
 	WHERE 	(ASRSysColumns.tableID = @lTableID) AND 
 		(ASRSysOrderItems.Type = @sType) AND 

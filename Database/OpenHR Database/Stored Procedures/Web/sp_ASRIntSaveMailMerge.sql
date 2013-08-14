@@ -66,7 +66,7 @@ BEGIN
 	IF @piID = 0
 	BEGIN
 		/* Creating a new report. */
-		INSERT AsrSysMailMergeName (
+		INSERT ASRSysMailMergeName (
 			Name, 
 			Description, 
 			TableID, 
@@ -125,7 +125,7 @@ BEGIN
 	ELSE
 	BEGIN
 		/* Updating an existing report. */
-		UPDATE AsrSysMailMergeName SET 
+		UPDATE ASRSysMailMergeName SET 
 			Name = @psName,
 			Description = @psDescription,
 			TableID = @piTableID,

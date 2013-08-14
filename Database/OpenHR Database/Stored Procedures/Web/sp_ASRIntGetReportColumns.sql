@@ -42,7 +42,7 @@ BEGIN
 	SELECT 	
 		'C' + char(9) +
 		convert(varchar(255), ASRSysColumns.tableID) + char(9) +
-		convert(varchar(255), ASRSysColumns.columnID)+ char(9) +
+		convert(varchar(255), ASRSysColumns.columnId)+ char(9) +
 		--ASRSysTables.tableName + '.' + 
 		ASRSysColumns.columnName + char(9) +	
 		convert(varchar(255), ASRSysColumns.defaultDisplayWidth) + char(9) +
@@ -63,7 +63,7 @@ BEGIN
 	SELECT 	
 		'C' + char(9) +
 		convert(varchar(255), ASRSysColumns.tableID)+ char(9) +
-		convert(varchar(255), ASRSysColumns.columnID) + char(9) +
+		convert(varchar(255), ASRSysColumns.columnId) + char(9) +
 		--ASRSysTables.tableName + '.' + 
 		ASRSysColumns.columnName + char(9) +
 		convert(varchar(255), ASRSysColumns.defaultDisplayWidth) + char(9) +
@@ -84,7 +84,7 @@ BEGIN
 	SELECT 	
 		'C' + char(9) +
 		convert(varchar(255), ASRSysColumns.tableID)+ char(9) +
-		convert(varchar(255), ASRSysColumns.columnID) + char(9) +
+		convert(varchar(255), ASRSysColumns.columnId) + char(9) +
 		--ASRSysTables.tableName + '.' + 
 		ASRSysColumns.columnName + char(9) +
 		convert(varchar(255), ASRSysColumns.defaultDisplayWidth) + char(9) +
@@ -105,7 +105,7 @@ BEGIN
 	SELECT 	
 		'C' + char(9) +
 		convert(varchar(255), ASRSysColumns.tableID)+ char(9) +
-		convert(varchar(255), ASRSysColumns.columnID) + char(9) +
+		convert(varchar(255), ASRSysColumns.columnId) + char(9) +
 		--ASRSysTables.tableName + '.' + 
 		ASRSysColumns.columnName + char(9) +
 		convert(varchar(255), ASRSysColumns.defaultDisplayWidth) + char(9) +

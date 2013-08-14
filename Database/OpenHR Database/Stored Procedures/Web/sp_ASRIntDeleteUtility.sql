@@ -13,7 +13,7 @@ BEGIN
 	BEGIN
 		/* Batch Jobs */
 		DELETE FROM ASRSysBatchJobName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysBatchJobDetails WHERE BatchJobNameID = @piUtilID;
+		DELETE FROM ASRSysBatchJobDetails WHERE BatchJobNameID = @piUtilID;
 		DELETE FROM ASRSysBatchJobAccess WHERE ID = @piUtilID;
 	END
 
@@ -43,7 +43,7 @@ BEGIN
 	BEGIN
 		/* Export. */
 		DELETE FROM ASRSysExportName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysExportDetails WHERE ExportID = @piUtilID;
+		DELETE FROM ASRSysExportDetails WHERE ExportID = @piUtilID;
 		DELETE FROM ASRSysExportAccess WHERE ID = @piUtilID;
 	END
 
@@ -65,7 +65,7 @@ BEGIN
 	IF (@piUtilType = 9) OR (@piUtilType = 18)
 	BEGIN
 		/* Mail Merge/ Envelopes & Labels. */
-		DELETE FROM AsrSysMailMergeName  WHERE MailMergeID = @piUtilID;
+		DELETE FROM ASRSysMailMergeName  WHERE MailMergeID = @piUtilID;
 		DELETE FROM ASRSysMailMergeColumns  WHERE MailMergeID = @piUtilID;
 		DELETE FROM ASRSysMailMergeAccess WHERE ID = @piUtilID;
 	END

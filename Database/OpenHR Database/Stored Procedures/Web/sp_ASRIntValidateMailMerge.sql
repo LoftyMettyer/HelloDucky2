@@ -297,10 +297,10 @@ BEGIN
 				ASRSysBatchJobName.roleToPrompt,
 				COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 				ASRSysBatchJobName.Username,
-				AsrSysMailMergeName.Name AS 'JobName'
+				ASRSysMailMergeName.Name AS 'JobName'
 	 		FROM ASRSysBatchJobDetails
 			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID 
-			INNER JOIN AsrSysMailMergeName ON AsrSysMailMergeName.MailMergeID = ASRSysBatchJobDetails.jobID
+			INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobDetails.JobID
 			LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 				AND ASRSysBatchJobAccess.access <> 'HD'
 				AND ASRSysBatchJobAccess.groupName IN (SELECT name FROM sysusers WHERE uid IN (SELECT groupID FROM @HiddenGroups))
@@ -322,7 +322,7 @@ BEGIN
 				convert(integer, ASRSysBatchJobName.scheduled),
 				ASRSysBatchJobName.roleToPrompt,
 				ASRSysBatchJobName.Username,
-				AsrSysMailMergeName.Name
+				ASRSysMailMergeName.Name
 
 			OPEN batchjob_cursor
 			FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 

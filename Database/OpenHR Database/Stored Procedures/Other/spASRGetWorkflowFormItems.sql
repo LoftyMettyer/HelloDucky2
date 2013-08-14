@@ -195,7 +195,7 @@ BEGIN
 				@iDBColumnDataType = ASRSysColumns.dataType
 			FROM ASRSysColumns
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-			WHERE ASRSysColumns.columnID = @iDBColumnID
+			WHERE ASRSysColumns.columnId = @iDBColumnID
 
 			SET @iType = @iDBColumnDataType
 
@@ -403,7 +403,7 @@ BEGIN
 						ELSE 3
 					END
 				FROM ASRSysColumns
-				WHERE ASRSysColumns.columnID = @iColumnID
+				WHERE ASRSysColumns.columnId = @iColumnID
 			END
 		END
 

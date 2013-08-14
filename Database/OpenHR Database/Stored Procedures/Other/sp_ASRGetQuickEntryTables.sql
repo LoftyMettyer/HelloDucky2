@@ -6,11 +6,11 @@ BEGIN
 		ASRSysControls.tableID
 	FROM ASRSysScreens 
 	INNER JOIN ASRSysControls 
-		ON ASRSysScreens.screenID = ASRSysControls.screenID 
+		ON ASRSysScreens.ScreenID = ASRSysControls.screenID 
 		AND ASRSysScreens.tableID <> ASRSysControls.tableID 
 	INNER JOIN ASRSysTables 
 		ON ASRSysControls.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID
+	WHERE ASRSysScreens.ScreenID = @piScreenID
 END
 
 

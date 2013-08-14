@@ -18,7 +18,7 @@ BEGIN
 	SELECT @psTitle = ASRSysScreens.name,
 		@pfQuickEntry = ASRSysScreens.quickEntry
 	FROM ASRSysScreens
-	WHERE ASRSysScreens.screenID = @piScreenID;
+	WHERE ASRSysScreens.ScreenID = @piScreenID;
 
 	IF @psTitle IS NULL 
 	BEGIN

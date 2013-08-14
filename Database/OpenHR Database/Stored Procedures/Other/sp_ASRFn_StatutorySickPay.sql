@@ -103,7 +103,7 @@ BEGIN
 	SELECT @sDateOfBirth_ColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_PERSONNEL'
 	AND parameterKey = 'Param_FieldsDateOfBirth';
 
@@ -119,7 +119,7 @@ BEGIN
 	SELECT @sAbsence_StartDateColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldStartDate';
 
@@ -127,7 +127,7 @@ BEGIN
 	SELECT @sAbsence_EndDateColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldEndDate';
 
@@ -135,7 +135,7 @@ BEGIN
 	SELECT @sAbsence_StartSessionColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldStartSession';
 
@@ -143,7 +143,7 @@ BEGIN
 	SELECT @sAbsence_EndSessionColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldEndSession';
 
@@ -151,7 +151,7 @@ BEGIN
 	SELECT @sAbsence_TypeColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldType';
 
@@ -159,7 +159,7 @@ BEGIN
 	SELECT @sAbsence_SSPAppliesColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldSSPApplies';
 
@@ -167,7 +167,7 @@ BEGIN
 	SELECT @sAbsence_QualifyingDaysColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldQualifyingDays';
 
@@ -175,7 +175,7 @@ BEGIN
 	SELECT @sAbsence_WaitingDaysColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldWaitingDays';
 
@@ -183,7 +183,7 @@ BEGIN
 	SELECT @sAbsence_PaidDaysColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldPaidDays';
 
@@ -205,7 +205,7 @@ BEGIN
 	SELECT @sAbsenceType_TypeColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldTypeType';
 
@@ -213,7 +213,7 @@ BEGIN
 	SELECT @sAbsenceType_SSPAppliesColumnName = ASRSysColumns.columnName
 	FROM ASRSysModuleSetup
 	INNER JOIN ASRSysColumns
-		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+		ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 	WHERE moduleKey = 'MODULE_ABSENCE'
 	AND parameterKey = 'Param_FieldTypeSSP';
 
@@ -291,7 +291,7 @@ BEGIN
 			SELECT @sWorkingDaysNum_ColumnName = ASRSysColumns.columnName
 			FROM ASRSysModuleSetup
 			INNER JOIN ASRSysColumns
-				ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+				ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 			WHERE moduleKey = 'MODULE_ABSENCE'
 			AND parameterKey = 'Param_FieldWorkingDays';
 
@@ -314,7 +314,7 @@ BEGIN
 			SELECT @sWorkingDaysPattern_ColumnName = ASRSysColumns.columnName
 			FROM ASRSysModuleSetup
 			INNER JOIN ASRSysColumns
-				ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnID
+				ON convert(integer, ASRSysModuleSetup.parameterValue) = ASRSysColumns.columnId
 			WHERE moduleKey = 'MODULE_ABSENCE'
 			AND parameterKey = 'Param_FieldWorkingDays';
 

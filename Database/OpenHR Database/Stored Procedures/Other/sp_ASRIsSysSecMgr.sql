@@ -19,5 +19,5 @@ BEGIN
 	WHERE sysusers.uid = @iUserGroupID
 		AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER' OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 		AND ASRSysGroupPermissions.permitted = 1
-		AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 END

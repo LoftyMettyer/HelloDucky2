@@ -393,7 +393,7 @@ BEGIN
 			ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID
 				AND ASRSysSSIntranetLinks.utilityType = 2
 			LEFT OUTER JOIN ASRSysColumns
-			ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnID		
+			ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
 			LEFT OUTER JOIN @Links tvL
 			ON ASRSysSSIntranetLinks.ID = tvL.ID
 	WHERE ASRSysSSIntranetLinks.ID IN (SELECT ID FROM @Links)

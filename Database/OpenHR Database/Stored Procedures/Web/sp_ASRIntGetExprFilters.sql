@@ -19,7 +19,7 @@ BEGIN
 	FROM [dbo].[ASRSysExpressions]
 	WHERE exprID <> @piCurrentExprID
 		AND type = 11
-		AND tableID = @piBaseTableID
+		AND TableID = @piBaseTableID
 		AND parentComponentID = 0
 		AND (Username = @sUserName OR access <> 'HD')
 	ORDER BY name;

@@ -101,7 +101,7 @@ CREATE PROCEDURE dbo.spASRGetWorkflowGridItems
 					upper(isnull(ASRSysOrderItems.type, '')),
 					ASRSysOrderItems.ascending
 				FROM ASRSysOrderItems
-				INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+				INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 				INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 				WHERE ASRSysOrderItems.orderID = @iOrderID
 				ORDER BY ASRSysOrderItems.type,

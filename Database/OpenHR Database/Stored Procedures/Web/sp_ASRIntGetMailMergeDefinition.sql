@@ -156,7 +156,7 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (
 				ASRSysMailMergeColumns.SortOrderSequence AS [sequence],		
 				ASRSysMailMergeColumns.type		
 			FROM ASRSysMailMergeColumns		
-			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnID = ASRSysColumns.columnID		
+			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnID = ASRSysColumns.columnId		
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID		
 			WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 				AND ASRSysMailMergeColumns.type = 'C'		
@@ -188,7 +188,7 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (
 				ASRSysMailMergeColumns.sortOrderSequence AS [sequence],		
 				ASRSysMailMergeColumns.type		
 			FROM ASRSysMailMergeColumns		
-			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnid = ASRSysColumns.columnID		
+			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnid = ASRSysColumns.columnId		
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID		
 			WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 				AND ASRSysMailMergeColumns.type = 'C'		

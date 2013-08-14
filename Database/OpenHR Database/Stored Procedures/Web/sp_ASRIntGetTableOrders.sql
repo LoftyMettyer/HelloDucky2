@@ -14,9 +14,9 @@ BEGIN
 	IF @piViewID > 0 
 	BEGIN
 		SELECT DISTINCT ASRSysOrders.name AS Name, 
-			ASRSysOrders.orderID
+			ASRSysOrders.OrderID
 		FROM ASRSysOrders
-		INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID
+		INNER JOIN ASRSysOrderItems ON ASRSysOrders.OrderID = ASRSysOrderItems.orderID
 		INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID
 		WHERE ASRSysOrders.tableID = @piTableID
 			AND ASRSysOrders.[type] = 1

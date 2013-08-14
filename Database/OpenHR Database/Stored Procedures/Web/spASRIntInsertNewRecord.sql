@@ -65,7 +65,7 @@ BEGIN
 				@iDataType = ASRSysColumns.dataType,
 				@sMask = ASRSysColumns.mask
 			FROM ASRSysColumns
-			WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
+			WHERE ASRSysColumns.columnId = convert(integer, @sColumnID);
 
 			-- Date
 			IF (@iDataType = 11 AND @sValue <> 'null') SET @sValue = '''' + @sValue + '''';

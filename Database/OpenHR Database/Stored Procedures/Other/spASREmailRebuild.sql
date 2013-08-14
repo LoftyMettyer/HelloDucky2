@@ -14,7 +14,7 @@ BEGIN
 		FROM ASRSysTables
 	OPEN curTables;
 
-	DELETE FROM AsrSysEmailQueue WHERE DateSent Is Null AND [Immediate] = 0;
+	DELETE FROM ASRSysEmailQueue WHERE DateSent Is Null AND [Immediate] = 0;
 
 	/* Loop through the tables in the database. */
 	FETCH NEXT FROM curTables INTO @sTableName, @iTableID;

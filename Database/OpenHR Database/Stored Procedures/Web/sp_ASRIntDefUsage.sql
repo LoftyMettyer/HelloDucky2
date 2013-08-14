@@ -75,7 +75,7 @@ BEGIN
 				ASRSysBatchJobAccess.Access
 			FROM ASRSysBatchJobDetails
 			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID
-			INNER JOIN ASRSysBatchJobAccess ON AsrSysBatchJobName.ID = ASRSysBatchJobAccess.ID
+			INNER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 				AND ASRSysBatchJobAccess.groupname = @sRoleName
 			WHERE ASRSysBatchJobDetails.JobType = @sJobTypeName
 				AND ASRSysBatchJobDetails.JobID = @intID
@@ -131,18 +131,18 @@ BEGIN
 					ASRSysDataTransferName.UserName,
 					ASRSysDataTransferAccess.Access
 				FROM ASRSysDataTransferName
-				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.dataTransferID = ASRSysDataTransferAccess.ID
+				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSysDataTransferAccess.ID
 					AND ASRSysDataTransferAccess.groupname = @sRoleName
 				WHERE ASRSysDataTransferName.pickListID = @intID
 			UNION
 				SELECT DISTINCT 'Export',
-					AsrSysExportName.Name,
-					AsrSysExportName.UserName,
+					ASRSysExportName.Name,
+					ASRSysExportName.UserName,
 					ASRSysExportAccess.Access
-				FROM AsrSysExportName
-				INNER JOIN ASRSysExportAccess ON AsrSysExportName.ID = ASRSysExportAccess.ID
+				FROM ASRSysExportName
+				INNER JOIN ASRSysExportAccess ON ASRSysExportName.ID = ASRSysExportAccess.ID
 					AND ASRSysExportAccess.groupname = @sRoleName
-				WHERE AsrSysExportName.pickList = @intID OR AsrSysExportName.Parent1Picklist = @intID OR AsrSysExportName.Parent2Picklist = @intID
+				WHERE ASRSysExportName.pickList = @intID OR ASRSysExportName.Parent1Picklist = @intID OR ASRSysExportName.Parent2Picklist = @intID
 			UNION
 				SELECT DISTINCT 
 					CASE 
@@ -200,13 +200,13 @@ BEGIN
 					OR ASRSysMatchReportName.Table2Picklist = @intID
 			UNION
 				SELECT DISTINCT 'Calendar Report', 
-					AsrSysCalendarReports.Name, 
-					AsrSysCalendarReports.UserName, 
+					ASRSysCalendarReports.Name, 
+					ASRSysCalendarReports.UserName, 
 					ASRSysCalendarReportAccess.Access
-				FROM AsrSysCalendarReports
-				INNER JOIN ASRSysCalendarReportAccess ON AsrSysCalendarReports.ID = ASRSysCalendarReportAccess.ID
+				FROM ASRSysCalendarReports
+				INNER JOIN ASRSysCalendarReportAccess ON ASRSysCalendarReports.ID = ASRSysCalendarReportAccess.ID
 					AND ASRSysCalendarReportAccess.groupname = @sRoleName
-				WHERE AsrSysCalendarReports.PickList = @intID
+				WHERE ASRSysCalendarReports.PickList = @intID
 			UNION
 				SELECT DISTINCT 'Record Profile',
 					ASRSysRecordProfileName.Name,
@@ -266,7 +266,7 @@ BEGIN
 					ASRSysCustomReportAccess.Access
 				FROM ASRSysCustomReportsName
 				LEFT OUTER JOIN ASRSYSCustomReportsChildDetails ON ASRSysCustomReportsName.ID = ASRSYSCustomReportsChildDetails.customReportID
-				INNER JOIN ASRSysCustomReportAccess ON AsrSysCustomReportsName.ID = ASRSysCustomReportAccess.ID
+				INNER JOIN ASRSysCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSysCustomReportAccess.ID
 					AND ASRSysCustomReportAccess.groupname = @sRoleName
 				WHERE ASRSysCustomReportsName.Filter = @intID
 					OR ASRSysCustomReportsName.Parent1Filter = @intID
@@ -278,21 +278,21 @@ BEGIN
 					ASRSysDataTransferName.UserName,
 					ASRSysDataTransferAccess.Access
 				FROM ASRSysDataTransferName
-				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.dataTransferID = ASRSysDataTransferAccess.ID
+				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSysDataTransferAccess.ID
 					AND ASRSysDataTransferAccess.groupname = @sRoleName
 				WHERE ASRSysDataTransferName.FilterID = @intID
 			UNION
 				SELECT DISTINCT 'Export',
-					AsrSysExportName.Name,
-					AsrSysExportName.UserName,
+					ASRSysExportName.Name,
+					ASRSysExportName.UserName,
 					ASRSysExportAccess.Access
-				FROM AsrSysExportName
-				INNER JOIN ASRSysExportAccess ON AsrSysExportName.ID = ASRSysExportAccess.ID
+				FROM ASRSysExportName
+				INNER JOIN ASRSysExportAccess ON ASRSysExportName.ID = ASRSysExportAccess.ID
 					AND ASRSysExportAccess.groupname = @sRoleName
-				WHERE AsrSysExportName.Filter = @intID 
-					OR AsrSysExportName.Parent1Filter = @intID
-					OR AsrSysExportName.Parent2Filter = @intID
-					OR AsrSysExportName.ChildFilter = @intID
+				WHERE ASRSysExportName.Filter = @intID 
+					OR ASRSysExportName.Parent1Filter = @intID
+					OR ASRSysExportName.Parent2Filter = @intID
+					OR ASRSysExportName.ChildFilter = @intID
 			UNION
 				SELECT DISTINCT 'Filter', Name, UserName, Access
 				FROM ASRSysExpressions
@@ -344,8 +344,8 @@ BEGIN
 					OR ASRSysMatchReportName.Table2Filter = @intID
 			UNION
 				SELECT DISTINCT 'Calendar Report', 
-					AsrSysCalendarReports.Name, 
-					AsrSysCalendarReports.UserName, 
+					ASRSysCalendarReports.Name, 
+					ASRSysCalendarReports.UserName, 
 					ASRSysCalendarReportAccess.Access
 				FROM ASRSysCalendarReports
 				LEFT OUTER JOIN ASRSysCalendarReportEvents ON ASRSysCalendarReports.ID = ASRSysCalendarReportEvents.CalendarReportID
@@ -406,17 +406,17 @@ BEGIN
 				FROM ASRSysCalendarReports 
 				INNER JOIN ASRSysCalendarReportAccess ON ASRSysCalendarReportAccess.ID = ASRSysCalendarReports.ID
 					AND ASRSysCalendarReportAccess.groupname = @sRoleName
-				WHERE AsrSysCalendarReports.DescriptionExpr =@intID 
-					OR AsrSysCalendarReports.StartDateExpr = @intID 
-					OR AsrSysCalendarReports.EndDateExpr = @intID
+				WHERE ASRSysCalendarReports.DescriptionExpr =@intID 
+					OR ASRSysCalendarReports.StartDateExpr = @intID 
+					OR ASRSysCalendarReports.EndDateExpr = @intID
 			UNION
 				SELECT DISTINCT 'Custom Report', 
-					AsrSysCustomReportsName.Name,
-					AsrSysCustomReportsName.UserName,
+					ASRSysCustomReportsName.Name,
+					ASRSysCustomReportsName.UserName,
 					ASRSysCustomReportAccess.Access
 				FROM ASRSysCustomReportsDetails
 				INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsDetails.CustomReportID = ASRSysCustomReportsName.ID
-				INNER JOIN ASRSysCustomReportAccess ON AsrSysCustomReportsName.ID = ASRSysCustomReportAccess.ID
+				INNER JOIN ASRSysCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSysCustomReportAccess.ID
 					AND ASRSysCustomReportAccess.groupname = @sRoleName
 				WHERE UPPER(ASRSysCustomReportsDetails.type) = 'E' 
 					AND ASRSysCustomReportsDetails.colExprID = @intID
@@ -463,7 +463,7 @@ BEGIN
 					ASRSysMailMergeName.UserName,
 					ASRSysMailMergeAccess.Access
 				FROM ASRSysMailMergeName
-				INNER JOIN AsrSysMailMergeColumns ON AsrSysMailMergeName.mailMergeID = AsrSysMailMergeColumns.mailMergeID
+				INNER JOIN ASRSysMailMergeColumns ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeColumns.mailMergeID
 				INNER JOIN ASRSysMailMergeAccess ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeAccess.ID
 					AND ASRSysMailMergeAccess.groupname = @sRoleName
 				WHERE ASRSysMailMergeColumns.ColumnID = @intID

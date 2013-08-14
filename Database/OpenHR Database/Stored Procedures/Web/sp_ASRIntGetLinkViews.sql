@@ -48,7 +48,7 @@ BEGIN
 			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
 			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
 			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
 	END
 
 	/* Create a temporary table to hold our resultset. */

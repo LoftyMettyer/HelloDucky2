@@ -20,7 +20,7 @@ BEGIN
 		@piTableType = ASRSysTables.TableType
 	FROM ASRSysSSIntranetLinks
 			INNER JOIN ASRSysScreens 
-			ON ASRSysSSIntranetLinks.screenID = ASRSysScreens.screenID
+			ON ASRSysSSIntranetLinks.screenID = ASRSysScreens.ScreenID
 				INNER JOIN ASRSysTables
 				ON ASRSysScreens.TableID = ASRSysTables.TableID
 	WHERE ID = @piLinkID;
