@@ -242,16 +242,28 @@
 			//TODO
 			return true;
 		},
-		localeDateFormat = function () {
-		    //TODO
-		    //return "dd/mm/yyyy";
-		    return "dd/MM/yyyy";
+		isValidDate = function (d) {
+
+			//TODO - Get the proper regional settings
+			if (Date.parseExact(d, "d/M/yyyy") == null) {
+				return false;
+			}
+			return true;
 		},
-        convertSqlDateToLocale = function (z) {
-            var convertDate = Date.parseExact(z, "MM/dd/yyyy");
-            return convertDate.format(OpenHR.LocaleDateFormat());
-        },
-		convertLocaleDateToSQL = function(psDateString) {
+		localeDateFormat = function () {
+			//TODO - Get the proper regional settings
+		  return "dd/MM/yyyy";
+		},
+    convertSqlDateToLocale = function (z) {
+    	//TODO - Get the proper regional settings
+    	var convertDate = Date.parseExact(z, "M/d/yyyy");
+	    if (convertDate != null) {
+		    return convertDate.format(OpenHR.LocaleDateFormat());
+	    } else {
+		    return "";
+	    }
+    },
+		convertLocaleDateToSql = function(psDateString) {
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */
 			var sDateFormat;
@@ -265,6 +277,8 @@
 			var sTempValue;
 			var sValue;
 			var iLoop;
+
+			if (!isValidDate(psDateString)) return "";
 
 			sDateFormat = OpenHR.LocaleDateFormat();
 
@@ -419,7 +433,7 @@
 		sendMail: sendMail,
 		currentWorkPage: currentWorkPage,
 		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
-		convertLocaleDateToSQL: convertLocaleDateToSQL
+		convertLocaleDateToSQL: convertLocaleDateToSql
 	};
 
 })(window, jQuery);

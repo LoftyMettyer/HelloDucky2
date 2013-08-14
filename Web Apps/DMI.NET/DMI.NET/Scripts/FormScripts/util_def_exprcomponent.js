@@ -217,7 +217,7 @@ function loadComponentDefinition() {
 						// Date value
 						frmMainForm.cboValueType.selectedIndex = 3;
 						value_changeType();
-						frmMainForm.txtValue.value = menu_ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
+						frmMainForm.txtValue.value = OpenHR.ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
 				}
 		}
 
@@ -280,7 +280,7 @@ function loadComponentDefinition() {
 						if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 0) {
 								if ((util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value != "12/30/1899") &&
 										(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value != "")) {
-										frmMainForm.txtPValDefault.value = menu_ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
+									frmMainForm.txtPValDefault.value = OpenHR.ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
 								}
 								frmMainForm.optPValDate_Explicit.checked = true;
 						}
@@ -716,6 +716,8 @@ function field_changeTable() {
 function field_selectRecOrder() {
 		var sURL;
 
+		var frmFieldRec = OpenHR.getForm("optionframe", "frmFieldRec");
+
 		frmFieldRec.selectionType.value = "ORDER";
 		frmFieldRec.txtTableID.value = frmMainForm.cboFieldTable.options[frmMainForm.cboFieldTable.selectedIndex].Value;
 		frmFieldRec.selectedID.value = util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value;
@@ -729,6 +731,8 @@ function field_selectRecOrder() {
 
 function field_selectRecFilter() {
 		var sURL;
+
+		var frmFieldRec = OpenHR.getForm("optionframe", "frmFieldRec");
 
 		frmFieldRec.selectionType.value = "FILTER";
 		frmFieldRec.txtTableID.value = frmMainForm.cboFieldTable.options[frmMainForm.cboFieldTable.selectedIndex].Value;
@@ -1085,9 +1089,10 @@ function lookupValue_refreshValues() {
 						(columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "COLUMNID") == util_def_exprcomponent_frmOriginalDefinition.txtLookupColumnID.value)) {
 
 						if (iDataType == 11) {
-								// Date type lookup column.
-								sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value;
-								sDefaultValue = menu_ConvertSQLDateToLocale(sDefaultValue);
+							// Date type lookup column.
+							sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value;
+							sDefaultValue = OpenHR.ConvertSQLDateToLocale(sDefaultValue);
+
 						}
 						if (iDataType == 12) {
 								// Character type lookup column.
@@ -1374,7 +1379,7 @@ function pVal_refreshValues() {
 						if (iDataType == 11) {
 								// Date type lookup column.
 								sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
-								sDefaultValue = menu_ConvertSQLDateToLocale(sDefaultValue);
+								sDefaultValue = OpenHR.ConvertSQLDateToLocale(sDefaultValue);
 						}
 						if (iDataType == 12) {
 								// Character type lookup column.
@@ -1534,7 +1539,7 @@ function component_addValue(psValue) {
 		fOK = true;
 		if(columnParameter(cboColumnCombo.options[cboColumnCombo.selectedIndex].Value, "DATATYPE") == 11) {
 				// Date type lookup column.
-				psValue = menu_ConvertSQLDateToLocale(psValue);
+			psValue = OpenHR.ConvertSQLDateToLocale(psValue);
 		}
 		else {
 				if (psValue.length == 0) {
@@ -2024,7 +2029,7 @@ function component_OKClick()
 			
 						if (frmMainForm.cboValueType.selectedIndex == 3) {
 								// Date value.
-								sDefn = sDefn + menu_convertLocaleDateToSQL(frmMainForm.txtValue.value) + "	";
+								sDefn = sDefn + OpenHR.convertLocaleDateToSQL(frmMainForm.txtValue.value) + "	";
 						}
 						else {
 								sDefn = sDefn + "	";
@@ -2045,7 +2050,7 @@ function component_OKClick()
 												iDataType = columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "DATATYPE");
 												if (iDataType == 11) {
 														// Date type lookup column.
-														sDefn = sDefn + menu_convertLocaleDateToSQL(frmMainForm.cboPValDefault.options[frmMainForm.cboPValDefault.selectedIndex].Value) + "	";
+													sDefn = sDefn + OpenHR.convertLocaleDateToSQL(frmMainForm.cboPValDefault.options[frmMainForm.cboPValDefault.selectedIndex].Value) + "	";
 												}
 												else  {
 														// Character /Numeric/integer type lookup column.
@@ -2087,7 +2092,7 @@ function component_OKClick()
 			
 								if (frmMainForm.cboPValType.selectedIndex == 3) {
 										// Date value.
-										sDefn = sDefn + menu_convertLocaleDateToSQL(frmMainForm.txtPValDefault.value) + "	";
+									sDefn = sDefn + OpenHR.convertLocaleDateToSQL(frmMainForm.txtPValDefault.value) + "	";
 								}
 								else {
 										sDefn = sDefn + "	";
@@ -2131,7 +2136,7 @@ function component_OKClick()
 			
 										if (iDataType == 11) {
 												// Date value.
-												sDefn = sDefn + menu_convertLocaleDateToSQL(frmMainForm.cboLookupValueValue.options[frmMainForm.cboLookupValueValue.selectedIndex].Value) + "	";
+											sDefn = sDefn + OpenHR.convertLocaleDateToSQL(frmMainForm.cboLookupValueValue.options[frmMainForm.cboLookupValueValue.selectedIndex].Value) + "	";
 										}
 										else {
 												sDefn = sDefn + "	";
@@ -2503,7 +2508,7 @@ function validateComponent() {
 						// Date
 						// Convert the date to SQL format (use this as a validation check).
 						// An empty string is returned if the date is invalid.
-						sValue = menu_convertLocaleDateToSQL(sValue);
+					sValue = OpenHR.convertLocaleDateToSQL(sValue);
 						if (sValue.length == 0) {
 								sErrorMsg = "Invalid date value entered.";
 						}
@@ -2683,7 +2688,7 @@ function validateComponent() {
 								if (sValue.length > 0) {
 										// Convert the date to SQL format (use this as a validation check).
 										// An empty string is returned if the date is invalid.
-										sValue = menu_convertLocaleDateToSQL(sValue);
+									sValue = OpenHR.convertLocaleDateToSQL(sValue);
 										if (sValue.length == 0) {
 												sErrorMsg = "Invalid default date value entered.";
 										}

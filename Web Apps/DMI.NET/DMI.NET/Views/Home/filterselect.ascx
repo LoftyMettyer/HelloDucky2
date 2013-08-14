@@ -378,7 +378,7 @@
 					// Date column.
 					if (sValue.length > 0) {
 						// Convert the locale date into the SQL format.
-						sFilterValue = menu_convertLocaleDateToSQL(sValue);
+						sFilterValue = OpenHR.convertLocaleDateToSQL(sValue);
 					}
 
 					if ((sValue.length == 0) || (sFilterValue.length > 0)) {
@@ -823,14 +823,14 @@
 				else {
 					// Convert the date to SQL format (use this as a validation check).
 					// An empty string is returned if the date is invalid.
-					sValue = menu_convertLocaleDateToSQL(sValue);
+					sValue = OpenHR.convertLocaleDateToSQL(sValue);
 					if (sValue.length == 0) {
 						fOK = false;
 						OpenHR.messageBox("Invalid date value entered.");
 						frmFilterForm.txtValue.focus();
 					}
 					else {
-						sValue = menu_convertLocaleDateToSQL(sValue);
+						sValue = OpenHR.convertLocaleDateToSQL(sValue);
 
 						sAddString = sAddString.concat(frmFilterForm.selectConditionDate.options[frmFilterForm.selectConditionDate.selectedIndex].text);
 						sAddString = sAddString.concat("	");

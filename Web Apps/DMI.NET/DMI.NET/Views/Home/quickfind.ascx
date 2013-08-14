@@ -263,7 +263,7 @@
 			else {
 				// Convert the date to SQL format (use this as a validation check).
 				// An empty string is returned if the date is invalid.
-				sValue = menu_convertLocaleDateToSQL(sValue);		//TODO: empty function.
+				sValue = OpenHR.convertLocaleDateToSQL(sValue);		//TODO: empty function.
 				if (sValue.length == 0) {
 					fOK = false;
 					OpenHR.messageBox("Invalid date value entered.");

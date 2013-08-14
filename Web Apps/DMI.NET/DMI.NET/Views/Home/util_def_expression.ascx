@@ -3,13 +3,6 @@
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
-<object
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="lpks/main.lpk">
-</object>
-
 
 <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
 	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;" viewastext>
@@ -326,11 +319,7 @@
 															<td rowspan="16" width="10">&nbsp;</td>
 															<td width="80">
 																<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" style="WIDTH: 100%"
-																	onclick="addClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="addClick()" />
 															</td>
 														</tr>
 														<tr height="10">
@@ -339,11 +328,7 @@
 														<tr height="10">
 															<td width="80">
 																<input type="button" id="cmdInsert" name="cmdInsert" class="btn" value="Insert" style="WIDTH: 100%"
-																	onclick="insertClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="insertClick()" />
 															</td>
 														</tr>
 														<tr height="10">
@@ -353,11 +338,7 @@
 															<td width="80">
 																<input type="button" id="cmdEdit" name="cmdEdit" class="btn" value="Edit"
 																	style="WIDTH: 100%"
-																	onclick="editClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="editClick()" />
 															</td>
 														</tr>
 														<tr height="10">
@@ -367,11 +348,7 @@
 															<td width="80">
 																<input type="button" id="cmdDelete" name="cmdDelete" class="btn" value="Delete"
 																	style="WIDTH: 100%"
-																	onclick="deleteClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="deleteClick()" />
 															</td>
 														</tr>
 														<tr height="10">
@@ -381,11 +358,7 @@
 															<td width="80">
 																<input type="button" id="cmdPrint" name="cmdPrint" class="btn" value="Print"
 																	style="WIDTH: 100%"
-																	onclick="printClick(true)"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="printClick(true)" />
 															</td>
 														</tr>
 
@@ -398,11 +371,7 @@
 														<tr height="10">
 															<td width="80">
 																<input type="button" id="cmdTest" name="cmdTest" class="btn" value="Test" style="WIDTH: 100%"
-																	onclick="testClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="testClick()" />
 															</td>
 														</tr>
 														<%	
@@ -417,11 +386,7 @@
 														<tr height="10">
 															<td width="80">
 																<input type="button" id="cmdOK" name="cmdOK" class="btn" value="OK" style="WIDTH: 100%"
-																	onclick="okClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="okClick()" />
 															</td>
 														</tr>
 														<tr height="10">
@@ -430,11 +395,7 @@
 														<tr height="10">
 															<td width="80">
 																<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" style="WIDTH: 100%"
-																	onclick="cancelClick()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																	onclick="cancelClick()" />
 															</td>
 														</tr>
 													</table>

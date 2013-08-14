@@ -5,14 +5,6 @@
 <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 
 
-<object
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="lpks/main.lpk">
-</object>
-
-
 <form action="" method="POST" id="frmMainForm" name="frmMainForm">
 	<%
 		Dim cmdParameter
@@ -90,20 +82,14 @@
 												<td width="5">&nbsp;</td>
 												<td width="5">
 													<input id="optType_Field" name="optType" type="radio" selected
-														onclick="changeType(1)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(1)"/>
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Field"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Field</label>
 												</td>
 												<td width="5">&nbsp;&nbsp;</td>
@@ -122,20 +108,14 @@
 															Response.Write("disabled")
 														End If
 														%>
-														onclick="changeType(5)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(5)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Operator"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Operator</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -154,20 +134,14 @@
 															Response.Write("disabled")
 														End If
 														%>
-														onclick="changeType(2)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(2)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Function"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Function</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -185,20 +159,14 @@
 															Response.Write("disabled")
 														End If
 														%>
-														onclick="changeType(4)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(4)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Value"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -216,20 +184,14 @@
 															Response.Write("disabled")
 														End If
 																										%>
-														onclick="changeType(6)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(6)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_LookupTableValue"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Lookup Table Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -245,20 +207,14 @@
 													<input id="optType_PromptedValue" name="optType" type="radio" <%If iPassBy = 2 Then
 															Response.Write("disabled")
 																	End If%>
-														onclick="changeType(7)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(7)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_PromptedValue"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Prompted Value</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -274,20 +230,14 @@
 													<input id="optType_Calculation" name="optType" type="radio" <%	 If iPassBy = 2 Then
 															Response.Write("disabled")
 																	End If%>
-														onclick="changeType(3)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(3)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Calculation"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
+														class="radio">
 													Calculation
 																						</label>
 												</td>
@@ -307,20 +257,14 @@
 														End If
 
 														%>
-														onclick="changeType(10)"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="changeType(10)" />
 												</td>
 												<td width="5">&nbsp;</td>
 												<td nowrap>
 													<label
 														tabindex="-1"
 														for="optType_Filter"
-														class="radio"
-														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														class="radio">
 														Filter</label>
 												</td>
 												<td width="5">&nbsp;</td>
@@ -364,58 +308,40 @@
 															<tr>
 																<td>
 																	<input id="optField_Field" name="optField" type="radio" selected
-																		onclick="field_refreshTable()"
-																		onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																		onblur="try{radio_onBlur(this);}catch(e){}" />
+																		onclick="field_refreshTable()" />
 																</td>
 																<td width="5">&nbsp;</td>
 																<td nowrap>
 																	<label
 																		tabindex="-1"
 																		for="optField_Field"
-																		class="radio"
-																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		class="radio">
 																		Field</label>
 																</td>
 																<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																<td>
 																	<input id="optField_Count" name="optField" type="radio" selected
-																		onclick="field_refreshTable()"
-																		onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																		onblur="try{radio_onBlur(this);}catch(e){}" />
+																		onclick="field_refreshTable()" />
 																</td>
 																<td width="5">&nbsp;</td>
 																<td nowrap>
 																	<label
 																		tabindex="-1"
 																		for="optField_Count"
-																		class="radio"
-																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		class="radio">
 																		Count</label>
 																</td>
 																<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																<td>
 																	<input id="optField_Total" name="optField" type="radio" selected
-																		onclick="field_refreshTable()"
-																		onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																		onfocus="try{radio_onFocus(this);}catch(e){}"
-																		onblur="try{radio_onBlur(this);}catch(e){}" />
+																		onclick="field_refreshTable()" />
 																</td>
 																<td width="5">&nbsp;</td>
 																<td nowrap>
 																	<label
 																		tabindex="-1"
 																		for="optField_Total"
-																		class="radio"
-																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																		class="radio">
 																		Total</label>
 																</td>
 																<td width="100%"></td>
@@ -495,49 +421,33 @@
 																					<tr>
 																						<td>
 																							<input id="optFieldRecSel_First" name="optFieldRecSel" type="radio"
-																								onclick="field_refreshChildFrame()"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="field_refreshChildFrame()" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optFieldRecSel_First"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																								class="radio">
 																								First</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																						<td>
 																							<input id="optFieldRecSel_Last" name="optFieldRecSel" type="radio"
-																								onclick="field_refreshChildFrame()"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="field_refreshChildFrame()" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optFieldRecSel_Last"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																								class="radio">
 																								Last</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;&nbsp;</td>
 																						<td>
 																							<input id="optFieldRecSel_Specific" name="optFieldRecSel" type="radio"
-																								onclick="field_refreshChildFrame()"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="field_refreshChildFrame()" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
@@ -545,9 +455,7 @@
 																								<label
 																									tabindex="-1"
 																									for="optFieldRecSel_Specific"
-																									class="radio"
-																									onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																									class="radio">
 																									Specific</label>
 																							</div>
 																						</td>
@@ -577,11 +485,7 @@
 																						</td>
 																						<td style="width: 30px;">
 																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="WIDTH: 100%" class="btn" type="button" value="..."
-																								onclick="field_selectRecOrder()"
-																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																								onfocus="try{button_onFocus(this);}catch(e){}"
-																								onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecOrder()" />
 																						</td>
 																					</tr>
 																				</table>
@@ -606,11 +510,7 @@
 																						</td>
 																						<td width="30">
 																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="WIDTH: 100%" type="button" value="..."
-																								onclick="field_selectRecFilter()"
-																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																								onfocus="try{button_onFocus(this);}catch(e){}"
-																								onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecFilter()" />
 																						</td>
 																					</tr>
 																				</table>
@@ -972,18 +872,12 @@
 													<td width="10">&nbsp;</td>
 													<td height="10">
 														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="-1"
-															onclick="calculationAndFilter_refresh();"
-															onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-															onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+															onclick="calculationAndFilter_refresh();"/>
 														<label
 															for="chkOwnersCalcs"
 															class="checkbox"
 															tabindex="0"
-															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-															onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-															onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-															onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
 															Only show calculations where owner is '<% =session("Username") %>'
 														</label>
 													</td>
@@ -1192,18 +1086,12 @@
 													<td width="10">&nbsp;</td>
 													<td height="10">
 														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="-1"
-															onclick="calculationAndFilter_refresh();"
-															onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-															onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+															onclick="calculationAndFilter_refresh();"/>
 														<label
 															for="chkOwnersFilters"
 															class="checkbox"
 															tabindex="0"
-															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-															onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-															onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-															onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
 															Only show filters where owner is '<% =session("Username") %>'
 														</label>
 													</td>
@@ -1224,26 +1112,7 @@
 											<div>Prompt : <input id="Text1" name="txtPrompt" class="text" onkeyup="pVal_changePrompt()" style="width: 500px"></div>
 
 											<table class="invisible">
-<%--												<tr height="10">
-													<td colspan="6">&nbsp;&nbsp;</td>
-												</tr>
-												<tr height="10">
-													td width="10">&nbsp;</td>
-													<td colspan="4"><strong>Prompted Value</strong></td>
-													<td width="10">&nbsp;</td>
-												</tr>
 
-												<tr height="10">
-													<td colspan="6"></td>
-												</tr>
-
-												<tr height="10">
-													<td style="width: 50px">Prompt :</td>
-													<td>
-														<input id="txtPrompt" name="txtPrompt" class="text" onkeyup="pVal_changePrompt()">
-													</td>
-												</tr>
---%>
 												<tr height="5">
 													<td colspan="6">&nbsp;</td>
 												</tr>
@@ -1488,56 +1357,38 @@
 																					<tr height="10">
 																						<td width="5">
 																							<input id="optPValDate_Explicit" name="optPValDate" type="radio" selected
-																								onclick="pVal_changeDateOption(0)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(0)" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_Explicit"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Explicit</label>
+																								class="radio">Explicit</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
 																							<input id="optPValDate_MonthStart" name="optPValDate" type="radio"
-																								onclick="pVal_changeDateOption(2)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(2)"/>
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_MonthStart"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Month Start</label>
+																								class="radio" >Month Start</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
 																							<input id="optPValDate_YearStart" name="optPValDate" type="radio"
-																								onclick="pVal_changeDateOption(4)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(4)"/>
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_YearStart"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Year Start</label>
+																								class="radio">Year Start</label>
 																						</td>
 																						<td width="100%">&nbsp;</td>
 																					</tr>
@@ -1545,56 +1396,38 @@
 																					<tr height="10">
 																						<td width="5">
 																							<input id="optPValDate_Current" name="optPValDate" type="radio"
-																								onclick="pVal_changeDateOption(1)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(1)" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_Current"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Current</label>
+																								class="radio" >Current</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
 																							<input id="optPValDate_MonthEnd" name="optPValDate" type="radio"
-																								onclick="pVal_changeDateOption(3)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(3)" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_MonthEnd"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Month End</label>
+																								class="radio">Month End</label>
 																						</td>
 																						<td width="20">&nbsp;&nbsp;</td>
 																						<td width="5">
 																							<input id="optPValDate_YearEnd" name="optPValDate" type="radio"
-																								onclick="pVal_changeDateOption(5)"
-																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																								onfocus="try{radio_onFocus(this);}catch(e){}"
-																								onblur="try{radio_onBlur(this);}catch(e){}" />
+																								onclick="pVal_changeDateOption(5)" />
 																						</td>
 																						<td width="5">&nbsp;</td>
 																						<td nowrap>
 																							<label
 																								tabindex="-1"
 																								for="optPValDate_YearEnd"
-																								class="radio"
-																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Year End</label>
+																								class="radio" >Year End</label>
 																						</td>
 																						<td width="100%">&nbsp;</td>
 																					</tr>
@@ -1663,20 +1496,12 @@
 									<td></td>
 									<td width="10">
 										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-											onclick="component_OKClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_OKClick()" />
 									</td>
 									<td width="40"></td>
 									<td width="10">
 										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-											onclick="component_CancelClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_CancelClick()" />
 									</td>
 								</tr>
 							</table>
