@@ -210,6 +210,10 @@
 		}
 
 		frmUseful.txtChanged.value = 1;
+
+		//Display the number of records
+		$('#RecordCountDIV').html(frmDefinition.ssOleDBGrid.Rows.toString() + " Record(s)");
+
 		refreshControls();
 	}
 
@@ -225,6 +229,9 @@
 		frmDefinition.ssOleDBGrid.redraw = true;
 
 		frmUseful.txtChanged.value = 1;
+
+		//Display the number of records
+		$('#RecordCountDIV').html(frmDefinition.ssOleDBGrid.Rows.toString() + " Record(s)");
 
 		refreshControls();
 	}

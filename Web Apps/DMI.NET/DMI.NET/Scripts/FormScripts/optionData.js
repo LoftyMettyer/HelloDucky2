@@ -457,7 +457,7 @@ function optiondata_onload() {
 
 			grdFind.redraw = true;
 
-			// Display the number of records returned
+			//Display the number of records
 			$('#RecordCountDIV').html(iCount.toString() + " Record(s)");
 
 			if (frmOptionData.txtExpectedCount.value > iCount) {
