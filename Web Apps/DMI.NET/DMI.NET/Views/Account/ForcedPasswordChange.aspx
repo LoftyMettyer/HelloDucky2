@@ -61,13 +61,9 @@
 	}
 </script>
 
-<div <%=session("BodyTag")%>>
+<div <%=session("BodyTag")%> style="top: 190px; position: absolute; left: 37%;">
 
 <form action="forcedPasswordChange_Submit" method="post" id="frmPasswordChangeForm" name="frmPasswordChangeForm">
-
-    <br />
-    <br />
-    <br />
     <table class="outline" align="center" cellpadding="5" cellspacing="0">
         <tr>
             <td>
