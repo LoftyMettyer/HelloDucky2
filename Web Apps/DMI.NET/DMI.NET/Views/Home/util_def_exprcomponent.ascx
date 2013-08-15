@@ -237,9 +237,9 @@
 													<label
 														tabindex="-1"
 														for="optType_Calculation"
-														class="radio">
-													Calculation
-																						</label>
+														class="radio"
+														onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
+														onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Calculation</label>
 												</td>
 												<td width="5">&nbsp;</td>
 											</tr>
@@ -282,7 +282,7 @@
 						<td style="vertical-align: top; width: 10px">&nbsp;&nbsp;</td>
 
 						<td style="vertical-align: top">
-							<table height="100%" width="100%" validatecaldate cellspacing="0" cellpadding="0">
+							<table height="100%" width="100%" cellspacing="0" cellpadding="0">
 								<tr height="100%">
 									<td valign="top">
 										<div id="divField">
@@ -361,7 +361,7 @@
 													<td width="10" nowrap>Table :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboFieldTable" name="cboFieldTable" class="combo" style="WIDTH: 100%"
+														<select id="cboFieldTable" name="cboFieldTable" class="combo" style="width: 100%"
 															onchange="field_changeTable()">
 														</select>
 													</td>
@@ -378,9 +378,9 @@
 													<td width="10" nowrap>Column :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboFieldColumn" name="cboFieldColumn" class="combo" style="WIDTH: 100%">
+														<select id="cboFieldColumn" name="cboFieldColumn" class="combo" style="width: 100%">
 														</select>
-														<select id="cboFieldDummyColumn" name="cboFieldDummyColumn" class="combo combodisabled" style="WIDTH: 100%; visibility: hidden; display: none" disabled="disabled">
+														<select id="cboFieldDummyColumn" name="cboFieldDummyColumn" class="combo combodisabled" style="width: 100%; visibility: hidden; display: none" disabled="disabled">
 														</select>
 													</td>
 													<td width="50%">&nbsp;</td>
@@ -395,8 +395,7 @@
 												<tr height="10">
 													<td width="10">&nbsp;</td>
 													<td colspan="4">
-														<%--<table width="100%" height="100%">--%>
-															<table width="100%" height="100%" class="outline">
+														<table width="100%" height="100%">
 															<tr>
 																<td>
 																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -405,7 +404,7 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="10">&nbsp;</td>
+																			<%--<td width="10">&nbsp;</td>--%>
 																			<td colspan="4"><strong>Child Field Options</strong></td>
 																			<td width="10">&nbsp;</td>
 																		</tr>
@@ -415,7 +414,7 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="10">&nbsp;</td>
+																			<%--<td width="10">&nbsp;</td>--%>
 																			<td colspan="4">
 																				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
@@ -474,18 +473,22 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="110" nowrap>Order :</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="50%">
 																				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
 																						<td>
-																							<input type="text" id="txtFieldRecOrder" name="txtFieldRecOrder" class="text textdisabled" style="WIDTH: 100%" disabled="disabled">
+																							<input type="text" id="txtFieldRecOrder" name="txtFieldRecOrder" class="text textdisabled" style="width: 100%" disabled="disabled">
 																						</td>
 																						<td style="width: 30px;">
-																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="WIDTH: 100%" class="btn" type="button" value="..."
-																								onclick="field_selectRecOrder()" />
+																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="width: 100%" class="btn" type="button" value="..."
+																								onclick="field_selectRecOrder()"
+																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																								onfocus="try{button_onFocus(this);}catch(e){}"
+																								onblur="try{button_onBlur(this);}catch(e){}" />
 																						</td>
 																					</tr>
 																				</table>
@@ -499,18 +502,22 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="110" nowrap>Filter :</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="50%">
 																				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
 																						<td>
-																							<input type="text" id="txtFieldRecFilter" name="txtFieldRecFilter" class="text textdisabled" style="WIDTH: 100%" disabled="disabled">
+																							<input type="text" id="txtFieldRecFilter" name="txtFieldRecFilter" class="text textdisabled" style="width: 100%" disabled="disabled">
 																						</td>
 																						<td width="30">
-																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="WIDTH: 100%" type="button" value="..."
-																								onclick="field_selectRecFilter()" />
+																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="width: 100%" type="button" value="..."
+																								onclick="field_selectRecFilter()"
+																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																								onfocus="try{button_onFocus(this);}catch(e){}"
+																								onblur="try{button_onBlur(this);}catch(e){}" />
 																						</td>
 																					</tr>
 																				</table>
@@ -708,7 +715,7 @@
 													<td width="10" nowrap>Type :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboValueType" name="cboValueType" class="combo" style="WIDTH: 100%" onchange="value_changeType()">
+														<select id="cboValueType" name="cboValueType" class="combo" style="width: 100%" onchange="value_changeType()">
 															<option value="1">
 															Character
 														<option value="2">
@@ -732,7 +739,7 @@
 													<td width="10" nowrap>Value :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="selectValue" name='selectValue"' class="combo" style="WIDTH: 100%">
+														<select id="selectValue" name='selectValue"' class="combo" style="width: 100%">
 															<option value="1">True</option>
 															<option value="0">False</option>
 														</select>
@@ -769,7 +776,7 @@
 													<td width="10" nowrap>Table :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboLookupValueTable" name="cboLookupValueTable" class="combo" style="WIDTH: 100%" onchange="lookupValue_changeTable()">
+														<select id="cboLookupValueTable" name="cboLookupValueTable" class="combo" style="width: 100%" onchange="lookupValue_changeTable()">
 														</select>
 													</td>
 													<td width="50%">&nbsp;</td>
@@ -785,7 +792,7 @@
 													<td width="10" nowrap>Column :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboLookupValueColumn" name="cboLookupValueColumn" class="combo" style="WIDTH: 100%" onchange="lookupValue_changeColumn()">
+														<select id="cboLookupValueColumn" name="cboLookupValueColumn" class="combo" style="width: 100%" onchange="lookupValue_changeColumn()">
 														</select>
 													</td>
 													<td width="50%">&nbsp;</td>
@@ -801,7 +808,7 @@
 													<td width="10" nowrap>Value :</td>
 													<td width="20">&nbsp;&nbsp;</td>
 													<td width="50%">
-														<select id="cboLookupValueValue" name="cboLookupValueValue" class="combo" style="WIDTH: 100%">
+														<select id="cboLookupValueValue" name="cboLookupValueValue" class="combo" style="width: 100%">
 														</select>
 													</td>
 													<td width="50%">&nbsp;</td>
@@ -1118,10 +1125,8 @@
 												</tr>
 
 												<tr height="10">
-													<%--<td width="10">&nbsp;</td>--%>
 													<td colspan="4">
-														<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="0">
-														<%--<table width="100%" height="100%">--%>
+														<table width="100%" height="100%" cellspacing="0" cellpadding="0">
 															<tr>
 																<td>
 																	<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1142,7 +1147,7 @@
 																		<tr height="10">
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="40%">
-																				<select id="cboPValType" name="cboPValType" class="combo" style="WIDTH: 100%" onchange="pVal_changeType()">
+																				<select id="cboPValType" name="cboPValType" class="combo" style="width: 100%" onchange="pVal_changeType()">
 																					<option value="1">
 																					Character
 																			<option value="2">
@@ -1160,14 +1165,14 @@
 																			</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="30%">
-																				<input class="text" id="txtPValSize" name="txtPValSize" style="WIDTH: 100%">
+																				<input class="text" id="txtPValSize" name="txtPValSize" style="width: 100%">
 																			</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="10" nowrap id="tdPValDecimalsPrompt" name="tdPValDecimalsPrompt">Decimals :
 																			</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="30%">
-																				<input class="text" id="txtPValDecimals" name="txtPValDecimals" style="WIDTH: 100%">
+																				<input class="text" id="txtPValDecimals" name="txtPValDecimals" style="width: 100%">
 																			</td>
 																			<td width="10">&nbsp;&nbsp;</td>
 																		</tr>
@@ -1211,7 +1216,7 @@
 																		<tr height="10">
 																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="100%" colspan="7">
-																				<input id="txtPValFormat" name="txtPValFormat" class="text" style="WIDTH: 100%">
+																				<input id="txtPValFormat" name="txtPValFormat" class="text" style="width: 100%">
 																			</td>
 																			<td style="width:20px">&nbsp;&nbsp;</td>
 																		</tr>
@@ -1221,7 +1226,7 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td nowrap width="5%">A - Uppercase</td>
 																			<td width="20%">&nbsp;&nbsp;</td>
 																			<td nowrap width="5%">9 - Numbers (0-9)</td>
@@ -1235,7 +1240,7 @@
 																		</tr>
 
 																		<tr height="10">
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td nowrap width="5%">a - Lowercase</td>
 																			<td width="20%">&nbsp;&nbsp;</td>
 																			<td nowrap width="5%"># - Numbers, Symbols</td>
@@ -1286,7 +1291,7 @@
 																			<td width="10" nowrap>Table :</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="50%">
-																				<select id="cboPValTable" name="cboPValTable" class="combo" style="WIDTH: 400px" onchange="pVal_changeTable()">
+																				<select id="cboPValTable" name="cboPValTable" class="combo" style="width: 400px" onchange="pVal_changeTable()">
 																				</select>
 																			</td>
 																			<td width="50%">&nbsp;</td>
@@ -1302,7 +1307,7 @@
 																			<td width="10" nowrap>Column :</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																			<td width="50%">
-																				<select id="cboPValColumn" name="cboPValColumn" class="combo" style="WIDTH: 100%" onchange="pVal_changeColumn()">
+																				<select id="cboPValColumn" name="cboPValColumn" class="combo" style="width: 100%" onchange="pVal_changeColumn()">
 																				</select>
 																			</td>
 																			<td width="50%">&nbsp;</td>
@@ -1443,7 +1448,7 @@
 																		<tr height="10" id="trPValTextDefault">
 																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="100%" colspan="6">
-																				<input id="txtPValDefault" name="txtPValDefault" class="text" style="WIDTH: 100%">
+																				<input id="txtPValDefault" name="txtPValDefault" class="text" style="width: 100%">
 																			</td>
 																			<td width="20">&nbsp;&nbsp;</td>
 																		</tr>
@@ -1451,7 +1456,7 @@
 																		<tr height="10" id="trPValComboDefault" style="visibility: hidden; display: none">
 																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="100%" colspan="6">
-																				<select id="cboPValDefault" name="cboPValDefault" style="WIDTH: 100%">
+																				<select id="cboPValDefault" name="cboPValDefault" style="width: 100%">
 																				</select>
 																			</td>
 																			<td width="20">&nbsp;&nbsp;</td>
@@ -1495,13 +1500,21 @@
 								<tr>
 									<td></td>
 									<td width="10">
-										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-											onclick="component_OKClick()" />
+										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="width: 75px" width="75"
+											onclick="component_OKClick()"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
 									</td>
 									<td width="40"></td>
 									<td width="10">
-										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-											onclick="component_CancelClick()" />
+										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="width: 75px" width="75"
+											onclick="component_CancelClick()"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
 									</td>
 								</tr>
 							</table>
