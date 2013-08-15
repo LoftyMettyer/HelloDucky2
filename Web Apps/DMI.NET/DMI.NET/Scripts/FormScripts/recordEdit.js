@@ -230,7 +230,6 @@ function insertUpdateDef() {
 				}
 
 				if (!fColumnDone) {
-					if (uniqueIdentifier == 384) debugger;
 					if (objScreenControl.ControlType == 1024) fDoControl = false;
 					if ((objScreenControl.ControlType == 4) || (objScreenControl.ControlType == 8)) { //coa_image or coaint_OLE
 						fFound = false;
