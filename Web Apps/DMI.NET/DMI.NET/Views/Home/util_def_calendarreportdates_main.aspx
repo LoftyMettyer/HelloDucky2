@@ -2,6 +2,8 @@
 
 <%@ Import Namespace="DMI.NET" %>
 
+<!DOCTYPE html>
+
 <html>
 <head>
 	<script src="<%:Url.Content("~/Include/ctl_SetFont.txt")%>" type="text/javascript"> </script>
