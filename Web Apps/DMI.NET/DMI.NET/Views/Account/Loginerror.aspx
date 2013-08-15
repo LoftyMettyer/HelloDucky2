@@ -78,7 +78,7 @@
 
 </script>
 
-<div class="COAwallpapered" <%=session("BodyTag")%>>
+<div class="COAwallpapered" <%=session("BodyTag")%> style="top: 190px; position: absolute;">
 
     <table class="outline" align="center" cellpadding="0" cellspacing="0">
         <tr>
