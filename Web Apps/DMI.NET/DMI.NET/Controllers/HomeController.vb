@@ -1,8 +1,10 @@
 ﻿Imports System.Web.Mvc
 Imports System.IO
 Imports System.Web
+Imports System.Web.Services.Description
 Imports ADODB
 Imports HR.Intranet.Server
+Imports System.Web.Script.Serialization
 
 Namespace Controllers
 
@@ -1574,7 +1576,7 @@ Namespace Controllers
 				Session("reaction") = Request.Form("txtSend_reaction")
 				Session("utilid") = cmdSave.Parameters("id").Value
 
-				Response.Redirect("confirmok")
+				Return RedirectToAction("confirmok")
 			Else
 				Response.Write("<HTML>" & vbCrLf)
 				Response.Write("	<HEAD>" & vbCrLf)
@@ -3542,13 +3544,13 @@ Namespace Controllers
 
 			If sAction = "" Then
 				' Go to the requested page.
-				Response.Redirect(sNextPage)
+				Return RedirectToAction(sNextPage)
 			End If
 
 			If sAction = "CANCEL" Then
 				' Go to the requested page.
 				Session("errorMessage") = sErrorMsg
-				Response.Redirect(sNextPage)
+				Return RedirectToAction(sNextPage)
 			End If
 
 			If sAction = "QUICKFIND" Then
@@ -4150,7 +4152,7 @@ Namespace Controllers
 				Session("reaction") = Request.Form("txtSend_reaction")
 				Session("utilid") = cmdSave.Parameters("id").Value
 
-				Response.Redirect("confirmok")
+				Return RedirectToAction("confirmok")
 			Else
 				Response.Write("<HTML>" & vbCrLf)
 				Response.Write("	<HEAD>" & vbCrLf)
@@ -5290,6 +5292,331 @@ Namespace Controllers
 		End Function
 
 
+		Function oleFind() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()> _
+		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
+			' On Error Resume Next
+
+			'Dim objOLE
+			Dim filesize As Integer = 0
+			Dim buffer As Byte()
+
+			Dim sErrorMsg = ""
+			' Read the information from the calling form.
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			If CInt(Request.Form("txtOLEType")) < 2 And sAction = "" Then
+				' We're just copying a file from client to server.
+				' Read custom attributes
+				Dim fileName As String = Request.Form("txtOLEJustFileName")
+				Dim serverPath As String = Request.Form("txtOLEServerPath")
+
+				If serverPath.Substring(serverPath.Length - 1) <> "\" And serverPath.Length > 0 Then
+					serverPath &= "\"
+				End If
+
+				Try
+					' Read input stream from request
+					buffer = New Byte(filSelectFile.InputStream.Length - 1) {}
+					Dim offset As Integer = 0
+					Dim cnt As Integer = 0
+					While (InlineAssignHelper(cnt, filSelectFile.InputStream.Read(buffer, offset, 10))) > 0
+						offset += cnt
+					End While
+
+					IO.File.WriteAllBytes(serverPath + fileName, buffer)
+
+				Catch generatedExceptionName As Exception
+					Session("ErrorTitle") = "File upload"
+					Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
+					Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+					'Return Json(data1, JsonRequestBehavior.AllowGet)
+				End Try
+
+			Else
+				' Moved to embedfile:
+				' Commit changes to the database		
+				If sAction = "LINKOLE" Then
+
+					If Not filSelectFile Is Nothing Then
+						filesize = filSelectFile.InputStream.Length
+						buffer = New Byte(filSelectFile.InputStream.Length - 1) {}
+						Dim offset As Integer = 0
+						Dim cnt As Integer = 0
+
+						While (InlineAssignHelper(cnt, filSelectFile.InputStream.Read(buffer, offset, 10))) > 0
+							offset += cnt
+						End While
+					End If
+
+					' The file will (should) have already been copied from the client to the temp path
+					Dim objOLE = Session("OLEObject")
+					With objOLE
+						.UseEncryption = Request.Form("txtOLEEncryption")
+						.OLEType = Request.Form("txtOLEType")
+						.FileName = Request.Form("txtOLEFile")
+						.DisplayFilename = Request.Form("txtOLEJustFileName")
+						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
+						.OLEModifiedDate = Request.Form("txtOLEModifiedDate")
+						.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+						' .DeleteTempFile()
+					End With
+					Session("OLEObject") = objOLE
+					objOLE = Nothing
+
+					' Just saved the OLE so we need to get the updated timestamp.
+					Dim cmdTimestamp = CreateObject("ADODB.Command")
+					cmdTimestamp.CommandText = "spASRIntGetTimestamp"
+					cmdTimestamp.CommandType = 4 ' Stored Procedure
+					cmdTimestamp.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTimestamp = cmdTimestamp.CreateParameter("timestamp", 3, 2) '3=integer, 2=output
+					cmdTimestamp.Parameters.Append(prmTimestamp)
+
+					Dim prmRecordID = cmdTimestamp.CreateParameter("recordID", 3, 1) ' 3=integer, 1=input
+					cmdTimestamp.Parameters.Append(prmRecordID)
+					prmRecordID.value = CleanNumeric(Session("optionRecordID"))
+
+					Dim prmRealsource = cmdTimestamp.CreateParameter("realSource", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+					cmdTimestamp.Parameters.Append(prmRealsource)
+					prmRealsource.value = Session("realSource")
+
+					Err.Clear()
+					cmdTimestamp.Execute()
+
+					Session("timestamp") = cmdTimestamp.Parameters("timestamp").value
+
+					cmdTimestamp = Nothing
+
+				End If
+
+				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+				Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+				Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+				Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+				Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+				Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+				Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+				Session("optionValue") = Request.Form("txtGotoOptionValue")
+				Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+				Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+				Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+				Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+				Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+				Session("optionFile") = Request.Form("txtGotoOptionFile")
+				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+				'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+				Session("optionAction") = sAction
+				Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+				Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+				Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+				Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+				Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+				Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+				Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+				Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+				Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+				Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
+
+				If sAction = "" Then
+					' Go to the requested page.
+					'Return PartialView(sNextPage)	' Moved to oleFind.ascx, after .submit()
+				End If
+
+				If sAction = "CANCEL" Then
+
+					' Clear up any temp files
+					If Request.Form("txtOLEType") > 1 Then
+						' No temp files, so skip this bit.
+						' objOLE = Session("OLEObject")
+						' objOLE.DeleteTempFile()
+						' Session("OLEObject") = objOLE
+						' objOLE = Nothing
+					End If
+
+					' Go to the requested page.
+					Session("errorMessage") = sErrorMsg
+					' Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
+				End If
+
+				If sAction = "SELECTOLE" Then
+					' Go to the requested page.
+					'Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
+				End If
+
+				' Commit changes to the database		
+				If sAction = "LINKOLE" Then
+					' Go to the requested page.
+					'Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
+				End If
+			End If
+
+		End Function
+
+
+		Public Function FolderList(folderPath As String) As ActionResult
+
+			Dim directory As New DirectoryInfo(folderPath)
+
+			Dim filelist As List(Of String) = (From filedetail In directory.GetFiles() Select filedetail.Name).ToList()
+			Dim files() As String = filelist.ToArray()
+
+			'Dim s As JavaScriptSerializer = New JavaScriptSerializer()
+			'Dim result As String = s.Serialize(files)
+
+			Return Json(files, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+		<HttpPost> _
+	 Public Function Upload(filSelectFile As HttpPostedFileBase) As ActionResult
+			Const path As String = "D:\Temp\"
+
+			If filSelectFile IsNot Nothing Then
+				filSelectFile.SaveAs(path & Convert.ToString(filSelectFile.FileName))
+			End If
+
+			'Return RedirectToAction("Index")
+		End Function
+
+		<HttpPost()> _
+		Public Function EmbedFile(filSelectFile As HttpPostedFileBase) As JsonResult
+
+			' Commit changes to the database		
+			' The file will (should) have already been copied from the client to the temp path
+
+			Try
+				' Read input stream from request
+				Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
+				Dim offset As Integer = 0
+				Dim cnt As Integer = 0
+
+				While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
+					offset += cnt
+				End While
+
+				Dim objOLE = Session("OLEObject")
+				With objOLE
+					.UseEncryption = Request("HTTP_X_USEENCRYPTION")
+					.OLEType = Request("HTTP_X_OLETYPE")
+					.FileName = Request("HTTP_X_FILE_NAME")
+					.DisplayFilename = Request("HTTP_X_DISPLAYFILENAME")
+					.OLEFileSize = Request("HTTP_X_FILE_SIZE")
+					.OLEModifiedDate = Request("HTTP_X_OLEMODIFIEDDATE")
+
+					.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+					'.DeleteTempFile()
+				End With
+				Session("OLEObject") = objOLE
+				objOLE = Nothing
+
+				' Just saved the OLE so we need to get the updated timestamp.
+				Dim cmdTimestamp = CreateObject("ADODB.Command")
+				cmdTimestamp.CommandText = "spASRIntGetTimestamp"
+				cmdTimestamp.CommandType = 4 ' Stored Procedure
+				cmdTimestamp.ActiveConnection = Session("databaseConnection")
+
+				Dim prmTimestamp = cmdTimestamp.CreateParameter("timestamp", 3, 2) '3=integer, 2=output
+				cmdTimestamp.Parameters.Append(prmTimestamp)
+
+				Dim prmRecordID = cmdTimestamp.CreateParameter("recordID", 3, 1) ' 3=integer, 1=input
+				cmdTimestamp.Parameters.Append(prmRecordID)
+				prmRecordID.value = CleanNumeric(Session("optionRecordID"))
+
+				Dim prmRealsource = cmdTimestamp.CreateParameter("realSource", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+				cmdTimestamp.Parameters.Append(prmRealsource)
+				prmRealsource.value = Session("realSource")
+
+				Err.Clear()
+				cmdTimestamp.Execute()
+
+				Session("timestamp") = cmdTimestamp.Parameters("timestamp").value
+
+				cmdTimestamp = Nothing
+
+			Catch generatedExceptionName As Exception
+				Session("ErrorTitle") = "File upload"
+				Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
+				Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+				Return Json(data1, JsonRequestBehavior.AllowGet)
+			End Try
+
+		End Function
+
+		'<HttpPost()>
+		'Public Function UploadFile() As JsonResult
+
+		'	' Read custom attributes
+		'	Dim fileName As String = Request("HTTP_X_FILE_NAME")
+		'	Dim fileSize As String = Request("HTTP_X_FILE_SIZE")
+		'	Dim serverPath As String = Request("HTTP_X_OLE_PATH")
+		'	If serverPath.Substring(serverPath.Length - 1) <> "\" And serverPath.Length > 0 Then
+		'		serverPath &= "\"
+		'	End If
+
+		'	Try
+		'		' Read input stream from request
+		'		Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
+		'		Dim offset As Integer = 0
+		'		Dim cnt As Integer = 0
+		'		While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
+		'			offset += cnt
+		'		End While
+
+		'		IO.File.WriteAllBytes(serverPath + fileName, buffer)
+
+		'	Catch generatedExceptionName As Exception
+		'		Session("ErrorTitle") = "File upload"
+		'		Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
+		'		Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+		'		Return Json(data1, JsonRequestBehavior.AllowGet)
+		'	End Try
+
+		'End Function
+
+		Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+			target = value
+			Return value
+		End Function
+
+
+		Public Function DownloadFile(filename As String, serverpath As String) As ActionResult
+
+			If filename.Length > 0 And serverpath.Length > 0 Then
+
+				If serverpath.Substring(serverpath.Length - 1) <> "\" Then serverpath &= "\"
+
+				' TODO: add the file path!
+				Response.ContentType = "application/octet-stream"
+				Response.AppendHeader("Content-Disposition", "attachment; filename=" & filename)
+				Dim fullpath = serverpath & filename
+				Response.TransmitFile(fullpath)
+				Response.End()
+			End If
+
+		End Function
+
+		Public Function EditFile(plngRecordID As Integer, plngColumnID As Integer, pstrRealSource As String)
+
+			Dim objOLE = Session("OLEObject")
+			Dim fileResponse As Byte() = objOLE.CreateOLEDocument(plngRecordID, plngColumnID, pstrRealSource)
+
+			Response.ContentType = "application/octet-stream"
+			Response.AppendHeader("Content-Disposition", "attachment; filename=" & objOLE.DisplayFilename)
+
+			Response.BinaryWrite(fileResponse)
+			Response.Flush()
+			Response.End()
+
+		End Function
+
 #Region "Standard Reports"
 
 		Public Function stdrpt_AbsenceCalendar() As ActionResult
@@ -5335,7 +5662,10 @@ Namespace Controllers
 		Public Property Redirect As String
 	End Class
 
-
+	Public Class ViewDataUploadFilesResult
+		Public Property Name As String
+		Public Property Length As Integer
+	End Class
 
 
 

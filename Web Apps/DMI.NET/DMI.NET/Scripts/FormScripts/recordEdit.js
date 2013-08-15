@@ -1,6 +1,9 @@
 ﻿
 //functions that replicate COAIntRecordDMI.ocx
 
+//array to hold changed photos/oles.
+window.malngChangedOLEPhotos = [];
+
 function addControl(tabNumber, controlDef) {
 
 	var tabID = "FI_21_" + tabNumber;
@@ -122,7 +125,6 @@ function CalculatedDefaultColumns() {
 
 function insertUpdateDef() {
 
-
 	// Adapted from recordDMI.ocx.
 	//	Return the SQL string for inserting/updating the current record.
 	var fFound = false;
@@ -164,7 +166,7 @@ function insertUpdateDef() {
 	$('input[id^="txtRecEditControl_"]').each(function (index) {
 
 		uniqueIdentifier += 1;
-
+		
 		var objScreenControl = getScreenControl_Collection($(this).val()); //the properties for the screen element
 
 		//because we can display a column on the screen multiple times, with different properties (e.g. readonly),
@@ -228,20 +230,21 @@ function insertUpdateDef() {
 				}
 
 				if (!fColumnDone) {
-					//TODO: ready to go when we have a malngChangedOLEPhotos array....
+					if (uniqueIdentifier == 384) debugger;
 					if (objScreenControl.ControlType == 1024) fDoControl = false;
-					//if ((objScreenControl.ControlType == 4) || (objScreenControl.ControlType == 8)) { //coa_image or coaint_OLE
-					//	fFound = false;
-					//	for (iLoop2 = 1; iLoop2 <= malngChangedOLEPhotos.length; iLoop2++) {
-					//		if (malngChangedOLEPhotos(iLoop2) == objScreenControl.ColumnID) {
-					//			fFound = true;
-					//			break;
-					//		}
-					//	}
-					//	if (!fFound) {
-					//		fColumnDone = true;
-					//	}
-					//}
+					if ((objScreenControl.ControlType == 4) || (objScreenControl.ControlType == 8)) { //coa_image or coaint_OLE
+						fFound = false;
+						ubound = Math.max(0, window.malngChangedOLEPhotos.length - 1);
+						for (iLoop2 = 0; iLoop2 <= ubound; iLoop2++) {
+							if (window.malngChangedOLEPhotos[iLoop2] == objScreenControl.ColumnID) {
+								fFound = true;
+								break;
+							}
+						}
+						if (!fFound) {
+							fColumnDone = true;
+						}
+					}
 				}
 
 				if (!fColumnDone) {
@@ -407,22 +410,21 @@ function insertUpdateDef() {
 					}
 
 					else if (objScreenControl.ControlType == 8) {
-						fDoControl = false;
-						//TODO: OLE stuff....
 						//TypeOf objControl Is COAInt_OLE Then
-						//	' OLE field (CHAR type column). Save the name of the OLE file.
-						//if Len(objControl.FileName) > 0 And objControl.OLEType < 2 Then
-						//	asColumns(2, iNextIndex) = "'" & Replace(Mid(objControl.FileName, InStrRev(objControl.FileName, "\") + 1), "'", "''") & "'"
-						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & Mid(objControl.FileName, InStrRev(objControl.FileName, "\") + 1)
-						//ElseIf objControl.OLEType < 2 Then
-						//	asColumns(2, iNextIndex) = "''"
-						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType)
-						//	Else
-						//	asColumns(2, iNextIndex) = asColumns(1, iNextIndex)
-						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & asColumns(1, iNextIndex)
-						//	bCopyImageDataType = True
-
-						//	End If
+						// OLE field (CHAR type column). Save the name of the OLE file.
+						
+						if (($(objControl).attr('data-filename').length > 0) && (objScreenControl.OLEType < 2)) {
+							asColumnsToAdd[1] = "'" + objControl.attr('data-filename') + "'";
+							asColumnsToAdd[3] = objScreenControl.OLEType + objControl.attr('data-filename');
+						}
+						else if (objScreenControl.OLEType < 2) {
+							asColumnsToAdd[1] = "''";
+							asColumnsToAdd[3] = objScreenControl.OLEType;
+						} else {
+							asColumnsToAdd[1] = asColumnsToAdd[0];
+							asColumnsToAdd[3] = objScreenControl.OLEType + asColumnsToAdd[0];
+							bCopyImageDataType = true;
+						}					
 					}
 
 					else if (objScreenControl.ControlType == 32) {
@@ -976,6 +978,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			if (tabIndex > 0) checkbox.tabindex = tabIndex;
 
 			checkbox.setAttribute("data-columnID", columnID);
+			checkbox.setAttribute('data-controlType', controlItemArray[3]);
 			checkbox.setAttribute("data-control-tag", key);
 
 			if (!fControlEnabled) span.disabled = true;
@@ -996,6 +999,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			selector.style.fontSize = controlItemArray[12] + 'pt';
 			selector.style.borderWidth = "1px";
 			selector.setAttribute("data-columnID", columnID);
+			selector.setAttribute('data-controlType', controlItemArray[3]);
 			selector.setAttribute("data-control-key", key);
 			if (controlItemArray[22] == 1) {
 				//column type = ---- LOOKUPS ----
@@ -1028,6 +1032,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			image.style.border = "1px solid gray";
 			image.style.padding = "0px";
 			image.setAttribute("data-columnID", columnID);
+			image.setAttribute('data-controlType', controlItemArray[3]);
 			image.setAttribute("data-control-key", key);
 
 			if (!fControlEnabled) image.disabled = true;
@@ -1043,13 +1048,15 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		case 8: //ctlOle
 			button = document.createElement('input');
 			button.type = "button";
-			button.id = controlID;
-			button.value = "OLE";
+			button.id = controlID;			
 			applyLocation(button, controlItemArray, true);
 			button.style.padding = "0px";
 			button.setAttribute("data-columnID", columnID);
+			button.setAttribute('data-controlType', controlItemArray[3]);
 			button.setAttribute("data-control-key", key);
-
+			button.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);
+			button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
+			
 			if (tabIndex > 0) button.tabindex = tabIndex;
 
 			//button.disabled = false;    //always enabled
@@ -1106,6 +1113,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.id = controlID;
 			fieldset.setAttribute("data-datatype", "Option Group");
 			fieldset.setAttribute("data-columnID", columnID);
+			fieldset.setAttribute('data-controlType', controlItemArray[3]);
 			fieldset.setAttribute("data-alignment", controlItemArray[20]);
 			fieldset.setAttribute("data-control-key", key);
 
@@ -1138,6 +1146,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
 			spinner.style.margin = "0px";
 			spinner.setAttribute("data-columnID", columnID);
+			spinner.setAttribute('data-controlType', controlItemArray[3]);
 			spinner.setAttribute("data-control-key", key);
 			spinner.setAttribute('data-minval', controlItemArray[29]);
 			spinner.setAttribute('data-maxval', controlItemArray[30]);
@@ -1233,6 +1242,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textbox.style.fontSize = controlItemArray[12] + 'pt';
 			textbox.style.padding = "0px";
 			textbox.setAttribute("data-columnID", columnID);
+			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
@@ -1292,6 +1302,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			applyLocation(button, controlItemArray, true);
 			button.style.padding = "0px";
 			button.setAttribute("data-columnID", columnID);
+			button.setAttribute('data-controlType', controlItemArray[3]);
 			button.setAttribute("data-control-key", key);
 			button.setAttribute("data-columnName", "ID_" + controlItemArray[42]);
 			button.setAttribute("data-linkTableID", controlItemArray[42]);
@@ -1327,6 +1338,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset = document.createElement("fieldset");
 			fieldset.id = controlID;
 			fieldset.setAttribute("data-columnID", columnID);
+			fieldset.setAttribute('data-controlType', controlItemArray[3]);
 			fieldset.setAttribute("data-datatype", "Working Pattern");
 			fieldset.setAttribute("data-control-key", key);
 
@@ -1490,6 +1502,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					hyperlink.id = controlID;
 					hyperlink.style.padding = "0px";
 					hyperlink.setAttribute("data-columnID", columnID);
+					hyperlink.setAttribute('data-controlType', controlItemArray[3]);
 					hyperlink.setAttribute("data-control-key", key);
 
 					if (tabIndex > 0) hyperlink.tabindex = tabIndex;
@@ -1514,6 +1527,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					button.id = controlID;
 					button.style.padding = "0px";
 					button.setAttribute("data-columnID", columnID);
+					button.setAttribute('data-controlType', controlItemArray[3]);
 					button.setAttribute("data-control-key", key);
 
 					if (tabIndex > 0) button.tabindex = tabIndex;
@@ -1526,6 +1540,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					applyLocation(el, controlItemArray, true);
 					el.id = controlID;
 					el.setAttribute("data-columnID", columnID);
+					el.setAttribute('data-controlType', controlItemArray[3]);
 					el.setAttribute("data-control-key", key);
 					if (tabIndex > 0) el.tabindex = tabIndex;
 
@@ -1670,6 +1685,11 @@ function recEdit_setData(columnID, value) {
 	}
 }
 
+function recEdit_setTimeStamp() {
+	//TODO:
+	
+}
+
 function recEdit_setRecordID(plngRecordID) {
 	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
 	frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
@@ -1717,21 +1737,6 @@ function updateControl(lngColumnID, value) {
 			$(this).val(value);
 		}
 
-		//TODO if coa_image.....
-		//If InStr(1, CStr(pvValue), "::LINKED_OLE_DOCUMENT::", vbTextCompare) Then
-		//.SetPicturePath Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", "")
-		//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", ""))
-		//.OLEType = 3
-		// ElseIf InStr(1, CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", vbTextCompare) Then
-		//.SetPicturePath Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", "")
-		//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", ""))
-		//.OLEType = 2
-		// Else
-		// 	.SetPicturePath msPhotoPath & "\" & CStr(pvValue)
-		// 	.ASRDataField = CStr(pvValue)
-		// 	.OLEType = mobjScreenControls.Item(sTag).OLEType
-		// End If
-
 		//TODO if mask
 		// .Text = RTrim(CStr(pvValue) & vbNullString)
 
@@ -1756,7 +1761,67 @@ function updateControl(lngColumnID, value) {
 				case "checkbox":
 					$(this).prop("checked", value == "True" ? true : false);
 					break;
-				case "button":					
+				case "button":
+					if (controlType == 8) {						
+						//OLE												
+						//TODO if coa_image.....		
+						//If InStr(1, CStr(pvValue), "::LINKED_OLE_DOCUMENT::", vbTextCompare) Then
+						//.SetPicturePath Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", "")
+						//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", ""))
+						//.OLEType = 3
+						// ElseIf InStr(1, CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", vbTextCompare) Then
+						//.SetPicturePath Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", "")
+						//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", ""))
+						//.OLEType = 2
+						// Else
+						// 	.SetPicturePath msPhotoPath & "\" & CStr(pvValue)
+						// 	.ASRDataField = CStr(pvValue)
+						// 	.OLEType = mobjScreenControls.Item(sTag).OLEType
+						// End If
+						//button.setAttribute("data-columnID", columnID);
+						//button.setAttribute('data-controlType', controlItemArray[3]);
+						//button.setAttribute("data-control-key", key);
+						//button.setAttribute('data-OleType', controlItemArray[55] == 2 ? 3 : controlItemArray[55]);
+						//button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
+						
+						var filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
+						var oleType = $(this).attr('data-OleType');						
+						var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
+						var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
+						var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
+
+						//OLE_LOCAL = 0
+						//OLE_SERVER = 1
+						//OLE_EMBEDDED = 2
+						//OLE_UNC = 3
+						var strOLEType = 'OLE';
+						switch (Number(oleType)) {
+							case 0:
+								strOLEType = '(Local)';
+								break;
+							case 1:
+								strOLEType = '(Server)';
+								break;
+							case 2:
+								strOLEType = '(Embedded)';
+								break;
+							case 3:
+								strOLEType = (filename.length > 0 ? '(Linked)' : '(Link)');								
+								break;
+							default:
+								strOLEType = 'failed to load caption';
+								break;
+						}
+						
+						var tooltipText = (filename.length > 0 ? filename + ' ' + strOLEType : 'empty');
+
+						$(this).val(strOLEType);
+						$(this).attr('title', tooltipText);
+						$(this).attr('data-fileName', filename);
+						
+
+
+					}
 					if (controlType == Math.pow(2, 14)) {
 						//Navigation Control						
 						if (value.length <= 0) {
@@ -2036,4 +2101,32 @@ function formatAddress(addressUrl) {
 
 	return 'http://' + addressUrl;
 
+}
+
+
+function recEdit_ChangedOLEPhoto(plngColumnID, psWhat) {
+	//get info about the uploaded item
+
+	switch (psWhat) {
+		case "ALL":
+			//TODO:
+			break;
+		case "NONE":
+			window.malngChangedOLEPhotos = [];
+			break;
+		default:
+			var fFound = false;
+			var ubound = Math.max(0, window.malngChangedOLEPhotos.length - 1);
+			for (var i = 0; i <= ubound; i++) {
+				if (window.malngChangedOLEPhotos[i] == plngColumnID) {
+					fFound = true;
+					break;
+				}
+			}
+			
+			if (!fFound) {
+				window.malngChangedOLEPhotos.push(plngColumnID);
+			}
+			break;
+	}
 }

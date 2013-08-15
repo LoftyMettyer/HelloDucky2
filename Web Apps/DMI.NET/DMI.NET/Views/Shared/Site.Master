@@ -336,9 +336,11 @@
 	<div class="modal">
 		<!-- AJAX please wait spinner -->
 	</div>
+
 	<div id="About" title="About OpenHR" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
 	
-	
+
+
 	<div id="errorDialog" title="AJAX call failed.">
 		<div id="errorDialogTitleContent">
 			<h1 id="errorDialogTitle"></h1>			

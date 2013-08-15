@@ -1014,6 +1014,7 @@
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.ascx" />
     <Content Include="Views\Home\lookupFind.ascx" />
+    <Content Include="Views\Home\oleFind.ascx" />
     <Content Include="Views\Home\orderselect.ascx" />
     <Content Include="Views\Home\promptedValues.aspx" />
     <Content Include="Views\Home\promptedValues_completed.aspx" />

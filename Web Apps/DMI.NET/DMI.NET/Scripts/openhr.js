@@ -1,6 +1,6 @@
 ﻿
 
-(function(window, $) {
+(function (window, $) {
 	"use strict";
 
 	function handleAjaxError(html) {
@@ -19,7 +19,7 @@
 	var version = "1.0.0",
 		mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4, vbYesNoCancel: 3 },
 		mbResult = { vbYes: 6, vbNo: 7, vbCancel: 2 },
-		messageBox = function(prompt, buttons, title) {
+		messageBox = function (prompt, buttons, title) {
 
 			switch (buttons) {
 			case mbStyle.vbExclamation:
@@ -46,7 +46,7 @@
 
 
 		},
-		showInReportFrame = function(form) {
+		showInReportFrame = function (form) {
 			var $form = $(form),
 				$frame = $("#reportframe"),
 				url = $form.attr("action"),
@@ -58,7 +58,7 @@
 				type: "POST",
 				data: data,
 				async: false,
-				success: function(html) {
+				success: function (html) {
 					try {
 						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
 							if (html.ErrorMessage.length > 0) {
@@ -68,7 +68,7 @@
 							}
 						}
 						
-					} catch(e) {
+					} catch (e) {
 					}
 
 					//clear the frame...
@@ -80,24 +80,24 @@
 					$frame.html(html);
 
 				},
-				error: function(req, status, errorObj) {
+				error: function (req, status, errorObj) {
 					alert("OpenHR.showInReportFrame ajax call to '" + url + "' failed with '" + errorObj + "'.");
 				}
 			});
 		},
-		showPopup = function(prompt) {
+		showPopup = function (prompt) {
 
 		},
-		getFrame = function(frameId) {
+		getFrame = function (frameId) {
 			return document.frames[frameId];
 		},
-		getForm = function(frameId, formId) {
+		getForm = function (frameId, formId) {
 			//return document.forms[formId];
 
 			return document.querySelector('#' + frameId + ' #' + formId);
 
 		},
-		submitForm = function(form, targetWin, asyncFlag) {
+		submitForm = function (form, targetWin, asyncFlag) {
 			var $form = $(form),
 				$frame = $form.closest("div[data-framesource]").first(),
 				url = $form.attr("action"),
@@ -116,7 +116,7 @@
 				dataType: 'html',
 				data: data,
 				async: asyncFlag,
-				success: function(html) {
+				success: function (html) {
 
 					//console.log(html);
 
@@ -128,7 +128,7 @@
 								return false;
 							}
 						}
-					} catch(e) {
+					} catch (e) {
 						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
 						$("#errorDialogTitle").text(e.toString);
 						$("#errorDialogContentText").text(e.responseText);
@@ -151,7 +151,7 @@
 					}
 
 					//jqwuery stylin	    			
-					$(function() {
+					$(function () {
 						$("input[type=submit], input[type=button], button")
 							.button();
 						$("input").addClass("ui-widget ui-widget-content ui-corner-all");
@@ -168,7 +168,7 @@
 					});
 
 				},
-				error: function(req, status, errorObj) {
+				error: function (req, status, errorObj) {
 					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
 					$("#errorDialogTitle").text(errorObj);
 					$("#errorDialogContentText").text(req.responseText);
@@ -177,55 +177,55 @@
 				}
 			});
 		},
-		addActiveXHandler = function(controlId, eventName, func) {
+		addActiveXHandler = function (controlId, eventName, func) {
 			var ctl = document.getElementById(controlId);
 
 			if (ctl != null) {
 				ctl.attachEvent(eventName, func);
 			}
 		},
-		refreshMenu = function() {
+		refreshMenu = function () {
 			//TODO
 		},
-		disableMenu = function() {
+		disableMenu = function () {
 			//TODO
 		},
-		localeDecimalSeparator = function() {
+		localeDecimalSeparator = function () {
 			//TODO
 			return ".";
 		},
-		localeThousandSeparator = function() {
+		localeThousandSeparator = function () {
 			//TODO
 			return ",";
 		},
-		localeDateSeparator = function() {
+		localeDateSeparator = function () {
 			//TODO
 			return "/";
 		},
-		printerCount = function() {
+		printerCount = function () {
 			//TODO
 		},
-		printerName = function(iLoop) {
+		printerName = function (iLoop) {
 			//TODO
 		},
-		getRegistrySetting = function(x, y, z) {
-			//TODO
+		getRegistrySetting = function (x, y, z) {
+			return getCookie(z);
 		},
-		saveRegistrySetting = function(w, x, y, z) {
-			//TODO
+		saveRegistrySetting = function (w, x, y, z) {
+			setCookie(y, z, 365);
 		},
-		validateDir = function(x, y) {
-			//TODO
-			return true;
-		},
-		validateFilePath = function(sPath) {
+		validateDir = function (x, y) {
 			//TODO
 			return true;
 		},
-		sendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
+		validateFilePath = function (sPath) {
+			//TODO
+			return true;
+		},
+		sendMail = function (sTo, sSubject, sBody, sCC, sBCC) {
 			//TODO
 		},
-		currentWorkPage = function() {
+		currentWorkPage = function () {
 			var sCurrentPage;
 			if (!($("#workframe").css('display') == 'none')) {
 				//Work frame is in view.
@@ -238,7 +238,7 @@
 			sCurrentPage = sCurrentPage.toUpperCase();
 			return sCurrentPage;
 		},
-		mmwordCreateTemplateFile = function(psTemplatePath) {
+		mmwordCreateTemplateFile = function (psTemplatePath) {
 			//TODO
 			return true;
 		},
@@ -252,18 +252,18 @@
 		},
 		localeDateFormat = function () {
 			//TODO - Get the proper regional settings
-		  return "dd/MM/yyyy";
+		    return "dd/MM/yyyy";
 		},
-    convertSqlDateToLocale = function (z) {
+        convertSqlDateToLocale = function (z) {
     	//TODO - Get the proper regional settings
     	var convertDate = Date.parseExact(z, "M/d/yyyy");
 	    if (convertDate != null) {
-		    return convertDate.format(OpenHR.LocaleDateFormat());
+            return convertDate.format(OpenHR.LocaleDateFormat());
 	    } else {
 		    return "";
 	    }
-    },
-		convertLocaleDateToSql = function(psDateString) {
+        },
+		convertLocaleDateToSQL = function (psDateString) {
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */
 			var sDateFormat;
@@ -406,6 +406,51 @@
 			} else {
 				return sTempValue;
 			}
+		},
+		getFileNameOnly = function (pstrFilePath) {
+			//Extracts just the filename from a path
+			var astrPath = pstrFilePath.split("\\");
+			return astrPath[astrPath.length - 1];
+		},
+		ConvertToUNC = function (pstrFileName) {
+			//TODO 
+			return pstrFileName;
+		},
+		GetPathOnly = function (pstrFilePath, pbStripDriveLetter) {
+			var L = pstrFilePath.length;
+
+			while (L > 0) {
+				var tempchar = pstrFilePath.substr(L, 1);
+				if (tempchar == "\\") {
+					var strPath = pstrFilePath.substr(0, L - 1);
+
+					//Strip off drive letter
+					if ((pbStripDriveLetter) && (strPath.substr(2, 1) == ":")) {
+						strPath = strPath.substring(3, strPath.length);
+					}
+
+					return strPath;
+				}
+				L -= 1;
+			}
+		},
+		CheckOLEFileNameLength = function (strFilename) {
+			var bOK = true;
+
+			//defined maximum filename length of 50
+			if (getFileNameOnly(strFilename).length > 50) {
+				return 'File name is too long.\nMaximum file length is 50 characters.';
+			}
+
+			if (GetPathOnly(strFilename, true).length > 100) {
+				return 'Directory structure is too long.\nMaximum length is 50 characters.';
+			}
+
+			if ($.trim(ConvertToUNC(strFilename)).length > 50) {
+				return 'Network path is too long.\nMaximum length is 50 characters.';
+			}
+
+			return '';
 		};
 
 	window.OpenHR = {
@@ -433,6 +478,11 @@
 		sendMail: sendMail,
 		currentWorkPage: currentWorkPage,
 		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
+		convertLocaleDateToSQL: convertLocaleDateToSQL,
+		getFileNameOnly: getFileNameOnly,
+		ConvertToUNC: ConvertToUNC,
+		GetPathOnly: GetPathOnly,
+		CheckOLEFileNameLength: CheckOLEFileNameLength
 		convertLocaleDateToSQL: convertLocaleDateToSql
 	};
 

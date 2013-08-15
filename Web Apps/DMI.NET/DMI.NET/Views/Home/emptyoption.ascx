@@ -133,10 +133,11 @@
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
 					fNoAction = false;
 						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-						recEditControl.setData(txtColumnID.value, txtFile.value);
-					recEditControl.ChangedOLEPhoto(txtColumnID.value, "");
-					recEditControl.changed = true;
-
+						recEdit_setData(txtColumnID.value, txtFile.value);
+						recEdit_ChangedOLEPhoto(txtColumnID.value, "");
+					
+						enableSaveButton(); //in scope.				
+					
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 					menu_refreshMenu();
@@ -145,13 +146,14 @@
 				if (txtAction.value == "LINKOLE") {
 					fNoAction = false;
 						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-						recEditControl.setData(txtColumnID.value, txtFile.value);
+						recEdit_setData(txtColumnID.value, txtFile.value);
 					//recEditControl.timestamp = <%=session("timestamp")%>;
 					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
 					//recEditControl.changed = true;
-
+					
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
+					menu_refreshMenu();
 
 				}
 				

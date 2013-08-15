@@ -2283,53 +2283,54 @@ function menu_loadTransferCoursePage(psCourseTitle) {
 }
 
 function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
-//	var frmRecEditArea;
-//	var frmOptionArea;
-//	
-//	if (plngOLEType == 1) {
-//		ShowWait("Loading OLE (server) list. Please wait...");
-//	}
-//	else if (plngOLEType == 0) {
-//		ShowWait("Loading OLE (local) list. Please wait...");
-//	}
-//	else if (plngOLEType > 1) {
-//		ShowWait("Loading document. Please wait...");
-//	}
+	var frmRecEditArea;
+	var frmOptionArea;
+	
+	if (plngOLEType == 1) {
+		//ShowWait("Loading OLE (server) list. Please wait...");
+	}
+	else if (plngOLEType == 0) {
+		//ShowWait("Loading OLE (local) list. Please wait...");
+	}
+	else if (plngOLEType > 1) {
+		//ShowWait("Loading document. Please wait...");
+	}
 
-//	disableMenu();
+	menu_disableMenu();
+	var frmWorkAreaInfo = document.getElementById('frmWorkAreaInfo');
+	frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmOptionArea.txtGotoOptionValue.value = "";
+	frmOptionArea.txtGotoOptionLinkTableID.value = 0;
+	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+	frmOptionArea.txtGotoOptionColumnID.value = plngColumnID;
+	frmOptionArea.txtGotoOptionLookupColumnID.value = 0;
+	frmOptionArea.txtGotoOptionFile.value = psFile;
+	//frmOptionArea.txtGotoOptionOLEOnServer.value = pfOLEOnServer;
+	frmOptionArea.txtGotoOptionOLEType.value = plngOLEType;
+	frmOptionArea.txtGotoOptionOLEMaxEmbedSize.value = plngMaxEmbedSize;
+	frmOptionArea.txtGotoOptionOLEReadOnly.value = pbIsReadOnly;
+	frmOptionArea.txtGotoOptionLookupMandatory.value = false;
+	frmOptionArea.txtGotoOptionPage.value = "oleFind";
+	frmOptionArea.txtGotoOptionAction.value = "";
+	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-//	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmOptionArea.txtGotoOptionValue.value = "";
-//	frmOptionArea.txtGotoOptionLinkTableID.value = 0;
-//	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-//	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-//	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-//	frmOptionArea.txtGotoOptionColumnID.value = plngColumnID;
-//	frmOptionArea.txtGotoOptionLookupColumnID.value = 0;
-//	frmOptionArea.txtGotoOptionFile.value = psFile;
-//	//frmOptionArea.txtGotoOptionOLEOnServer.value = pfOLEOnServer;
-//	frmOptionArea.txtGotoOptionOLEType.value = plngOLEType;
-//	frmOptionArea.txtGotoOptionOLEMaxEmbedSize.value = plngMaxEmbedSize;
-//	frmOptionArea.txtGotoOptionOLEReadOnly.value = pbIsReadOnly;
-//	frmOptionArea.txtGotoOptionLookupMandatory.value = false;
-//	frmOptionArea.txtGotoOptionPage.value = "oleFind.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
-//	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
-
-//	frmOptionArea.submit();
+	OpenHR.submitForm(frmOptionArea);
+	
 }
 
 function menu_loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize) {

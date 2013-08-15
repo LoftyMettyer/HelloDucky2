@@ -565,7 +565,7 @@
 
 <form id="frmData" name="frmData">
 <%
-'	on error resume next
+	'	on error resume next
 	
 	Dim lngRecordID As Object
 	
@@ -580,11 +580,11 @@
 
 	Dim sErrorDescription = ""
 
-		Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtParentTableID' name='txtParentTableID' value='" & Session("parentTableID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtParentRecordID' name='txtParentRecordID' value='" & Session("parentRecordID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtParentTableID' name='txtParentTableID' value='" & Session("parentTableID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtParentRecordID' name='txtParentRecordID' value='" & Session("parentRecordID") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value=""" & Replace(Session("errorMessage"), """", "'") & """>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtWarning' name='txtWarning' value='" & Session("warningFlag") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtWarning' name='txtWarning' value='" & Session("warningFlag") & "'>" & vbCrLf)
 	' Clear the error message session variable.
 	Session("errorMessage") = ""
 
@@ -643,634 +643,637 @@
 					If Not (rstRecord.bof And rstRecord.eof) Then
 						For iloop = 0 To (rstRecord.fields.count - 1)
 							If IsDBNull(rstRecord.fields(iloop).value) Then
-																Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
 							Else
-																Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
-														End If
-												Next
-										End If
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+							End If
+						Next
+					End If
 	
-										' Release the ADO recordset object.
-										rstRecord.close()
-								End If
-						End If
-						rstRecord = Nothing
+					' Release the ADO recordset object.
+					rstRecord.close()
+				End If
+			End If
+			rstRecord = Nothing
 
-						If Session("parentTableID") > 0 Then
-								Dim cmdGetParentValues = CreateObject("ADODB.Command")
-								cmdGetParentValues.CommandText = "spASRIntGetParentValues"
-								cmdGetParentValues.CommandType = 4 ' Stored procedure
-								cmdGetParentValues.ActiveConnection = Session("databaseConnection")
+			If Session("parentTableID") > 0 Then
+				Dim cmdGetParentValues = CreateObject("ADODB.Command")
+				cmdGetParentValues.CommandText = "spASRIntGetParentValues"
+				cmdGetParentValues.CommandType = 4 ' Stored procedure
+				cmdGetParentValues.ActiveConnection = Session("databaseConnection")
 
-								Dim prmScreenId = cmdGetParentValues.CreateParameter("screenID", 3, 1)
-								cmdGetParentValues.Parameters.Append(prmScreenId)
-								prmScreenId.value = CleanNumeric(Session("screenID"))
+				Dim prmScreenId = cmdGetParentValues.CreateParameter("screenID", 3, 1)
+				cmdGetParentValues.Parameters.Append(prmScreenId)
+				prmScreenId.value = CleanNumeric(Session("screenID"))
 
-								Dim prmParentTableId2 = cmdGetParentValues.CreateParameter("parentTableID", 3, 1)
-								cmdGetParentValues.Parameters.Append(prmParentTableId2)
-								prmParentTableId2.value = CleanNumeric(Session("parentTableID"))
+				Dim prmParentTableId2 = cmdGetParentValues.CreateParameter("parentTableID", 3, 1)
+				cmdGetParentValues.Parameters.Append(prmParentTableId2)
+				prmParentTableId2.value = CleanNumeric(Session("parentTableID"))
 
-								Dim prmParentRecordId2 = cmdGetParentValues.CreateParameter("parentRecordID", 3, 1)
-								cmdGetParentValues.Parameters.Append(prmParentRecordId2)
-								prmParentRecordId2.value = CleanNumeric(Session("parentRecordID"))
+				Dim prmParentRecordId2 = cmdGetParentValues.CreateParameter("parentRecordID", 3, 1)
+				cmdGetParentValues.Parameters.Append(prmParentRecordId2)
+				prmParentRecordId2.value = CleanNumeric(Session("parentRecordID"))
 					
-								Err.Clear()
-								Dim rstParentValues = cmdGetParentValues.Execute
+				Err.Clear()
+				Dim rstParentValues = cmdGetParentValues.Execute
 					
-								If (Err.Number <> 0) Then
-										sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(Err.Description)
-								End If
+				If (Err.Number <> 0) Then
+					sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(Err.Description)
+				End If
 
-								If Len(sErrorDescription) = 0 Then
+				If Len(sErrorDescription) = 0 Then
 					If rstParentValues.state = 1 Then	'adStateOpen
-												If Not (rstParentValues.bof And rstParentValues.eof) Then
-														For iloop = 0 To (rstParentValues.fields.count - 1)
-																If IsDBNull(rstParentValues.fields(iloop).value) Then
-																		Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value=''>" & vbCrLf)
-																Else
-																		Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value='" & Replace(rstParentValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
-																End If
-														Next
-												End If
-					
-												' Release the ADO recordset object.
-												rstParentValues.close()
-										End If
+						If Not (rstParentValues.bof And rstParentValues.eof) Then
+							For iloop = 0 To (rstParentValues.fields.count - 1)
+								If IsDBNull(rstParentValues.fields(iloop).value) Then
+									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value=''>" & vbCrLf)
+								Else
+									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value='" & Replace(rstParentValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
 								End If
-								rstParentValues = Nothing
+							Next
 						End If
+					
+						' Release the ADO recordset object.
+						rstParentValues.close()
+					End If
+				End If
+				rstParentValues = Nothing
+			End If
 
-						If Len(sErrorDescription) = 0 Then
-								Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordCount").Value + 1 & "'>" & vbCrLf)
-						Else
-								Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='0'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='0'>" & vbCrLf)
-						End If
+			If Len(sErrorDescription) = 0 Then
+				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordCount").Value + 1 & "'>" & vbCrLf)
+			Else
+				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='0'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='0'>" & vbCrLf)
+			End If
 			
-						lngRecordID = 0
-						Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
-						Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
-				Else
-						Dim cmdGetRecord = CreateObject("ADODB.Command")
-						cmdGetRecord.CommandText = "sp_ASRIntGetRecord"
-						cmdGetRecord.CommandType = 4 ' Stored procedure
-						cmdGetRecord.ActiveConnection = Session("databaseConnection")
-						cmdGetRecord.CommandTimeout = 180
+			lngRecordID = 0
+			Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
+		Else
+			Dim cmdGetRecord = CreateObject("ADODB.Command")
+			cmdGetRecord.CommandText = "sp_ASRIntGetRecord"
+			cmdGetRecord.CommandType = 4 ' Stored procedure
+			cmdGetRecord.ActiveConnection = Session("databaseConnection")
+			cmdGetRecord.CommandTimeout = 180
 
-						Dim prmRecordId = cmdGetRecord.CreateParameter("recordID", 3, 3) ' 3 = integer, 3 = input & output
-						cmdGetRecord.Parameters.Append(prmRecordId)
-						prmRecordId.value = CleanNumeric(Session("recordID"))
+			Dim prmRecordId = cmdGetRecord.CreateParameter("recordID", 3, 3) ' 3 = integer, 3 = input & output
+			cmdGetRecord.Parameters.Append(prmRecordId)
+			prmRecordId.value = CleanNumeric(Session("recordID"))
 
-						Dim prmRecordCount = cmdGetRecord.CreateParameter("recordCount", 3, 2) ' 3 = integer, 2 = output
-						cmdGetRecord.Parameters.Append(prmRecordCount)
+			Dim prmRecordCount = cmdGetRecord.CreateParameter("recordCount", 3, 2) ' 3 = integer, 2 = output
+			cmdGetRecord.Parameters.Append(prmRecordCount)
 
-						Dim prmRecordPosition = cmdGetRecord.CreateParameter("recordPosition", 3, 2) ' 3 = integer, 2 = output
-						cmdGetRecord.Parameters.Append(prmRecordPosition)
+			Dim prmRecordPosition = cmdGetRecord.CreateParameter("recordPosition", 3, 2) ' 3 = integer, 2 = output
+			cmdGetRecord.Parameters.Append(prmRecordPosition)
 
 			Dim prmFilterDef = cmdGetRecord.CreateParameter("filterDef", 201, 1, 2147483646)		' 200 = varchar, 1 = input, 8000 = size
-						cmdGetRecord.Parameters.Append(prmFilterDef)
-						prmFilterDef.value = Session("filterDef")
+			cmdGetRecord.Parameters.Append(prmFilterDef)
+			prmFilterDef.value = Session("filterDef")
 
 			Dim prmAction = cmdGetRecord.CreateParameter("action", 200, 1, 100)	' 200 = varchar, 1 = input, 100 = size
-						cmdGetRecord.Parameters.Append(prmAction)
-						prmAction.value = Session("action")
+			cmdGetRecord.Parameters.Append(prmAction)
+			prmAction.value = Session("action")
 
 			Dim prmParentTableId = cmdGetRecord.CreateParameter("parentTableID", 3, 1)	' 3 = integer, 1 = input
-						cmdGetRecord.Parameters.Append(prmParentTableId)
-						prmParentTableId.value = CleanNumeric(Session("parentTableID"))
+			cmdGetRecord.Parameters.Append(prmParentTableId)
+			prmParentTableId.value = CleanNumeric(Session("parentTableID"))
 
-						Dim prmParentRecordId = cmdGetRecord.CreateParameter("parentRecordID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecord.Parameters.Append(prmParentRecordId)
-						prmParentRecordId.value = CleanNumeric(Session("parentRecordID"))
+			Dim prmParentRecordId = cmdGetRecord.CreateParameter("parentRecordID", 3, 1) ' 3 = integer, 1 = input
+			cmdGetRecord.Parameters.Append(prmParentRecordId)
+			prmParentRecordId.value = CleanNumeric(Session("parentRecordID"))
 	
 			Dim prmDecSeparator = cmdGetRecord.CreateParameter("decSeparator", 200, 1, 100)	' 200=varchar, 1=input, 8000=size
-						cmdGetRecord.Parameters.Append(prmDecSeparator)
-						prmDecSeparator.value = Session("LocaleDecimalSeparator")
+			cmdGetRecord.Parameters.Append(prmDecSeparator)
+			prmDecSeparator.value = Session("LocaleDecimalSeparator")
 
 			Dim prmDateFormat = cmdGetRecord.CreateParameter("dateFormat", 200, 1, 100)	' 200=varchar, 1=input, 8000=size
-						cmdGetRecord.Parameters.Append(prmDateFormat)
-						prmDateFormat.value = Session("LocaleDateFormat")
+			cmdGetRecord.Parameters.Append(prmDateFormat)
+			prmDateFormat.value = Session("LocaleDateFormat")
 
-						Dim prmScreenId = cmdGetRecord.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
-						cmdGetRecord.Parameters.Append(prmScreenId)
-						prmScreenId.value = CleanNumeric(Session("screenID"))
+			Dim prmScreenId = cmdGetRecord.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
+			cmdGetRecord.Parameters.Append(prmScreenId)
+			prmScreenId.value = CleanNumeric(Session("screenID"))
 
-						Dim prmViewId = cmdGetRecord.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
-						cmdGetRecord.Parameters.Append(prmViewId)
-						prmViewId.value = CleanNumeric(Session("viewID"))
+			Dim prmViewId = cmdGetRecord.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
+			cmdGetRecord.Parameters.Append(prmViewId)
+			prmViewId.value = CleanNumeric(Session("viewID"))
 
 			Dim prmOrderId = cmdGetRecord.CreateParameter("orderID", 3, 1)	' 3=integer,  1=input
-						cmdGetRecord.Parameters.Append(prmOrderId)
-						prmOrderId.value = CleanNumeric(Session("orderID"))
+			cmdGetRecord.Parameters.Append(prmOrderId)
+			prmOrderId.value = CleanNumeric(Session("orderID"))
 
-						Dim fOk = True
-						Dim fDeadlock = True
-						Dim sErrMsg = ""
-						Dim oleColumnData As New List(Of Object)
+			Dim fOk = True
+			Dim fDeadlock = True
+			Dim sErrMsg = ""
+			Dim oleColumnData As New List(Of Object)
 
-						Do While fDeadlock
-								fDeadlock = False
+			Do While fDeadlock
+				fDeadlock = False
 
-								cmdGetRecord.ActiveConnection.Errors.Clear()
+				cmdGetRecord.ActiveConnection.Errors.Clear()
 
-								Dim rstRecord = cmdGetRecord.Execute
+				Dim rstRecord = cmdGetRecord.Execute
 		
-								If cmdGetRecord.ActiveConnection.Errors.Count > 0 Then
-										For iLoop = 1 To cmdGetRecord.ActiveConnection.Errors.Count
-												sErrMsg = FormatError(cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+				If cmdGetRecord.ActiveConnection.Errors.Count > 0 Then
+					For iLoop = 1 To cmdGetRecord.ActiveConnection.Errors.Count
+						sErrMsg = FormatError(cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
-												If (cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-												 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-													(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-												 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-																				 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
+						If (cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
+						 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
+							(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
+						 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
+														 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
 
-														' The error is for a deadlock.
-														' Sorry about having to use the err.description to trap the error but the err.number
-														' is not specific and MSDN suggests using the err.description.
-														If (iRetryCount < iRETRIES) And (cmdGetRecord.ActiveConnection.Errors.Count = 1) Then
-																iRetryCount = iRetryCount + 1
-																fDeadlock = True
-														Else
-																If Len(sErrorDescription) > 0 Then
-																		sErrorDescription = sErrorDescription & vbCrLf
-																End If
-																sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-																fOk = False
-														End If
-												Else
-														sErrorDescription = sErrorDescription & vbCrLf & _
-														 FormatError(cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-														fOk = False
-												End If
-										Next
-
-										cmdGetRecord.ActiveConnection.Errors.Clear()
-												
-										If Not fOk Then
-												sErrorDescription = "Unable to retrieve the required record." & vbCrLf & sErrorDescription
-										End If
-								Else
-				
-										If Not (rstRecord.bof And rstRecord.eof) Then
-												For iloop = 0 To (rstRecord.fields.count - 1)
-						
-														If IsDBNull(rstRecord.fields(iloop).value) Then
-																Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
-														Else
-																' Is column a embedded/linked OLE
-																If VarType(rstRecord.fields(iloop).value) = 8209 Then
-																		oleColumnData.Add(rstRecord.fields(iloop).name)
-																Else
-																		Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
-																End If
-														End If
-												Next
-										End If
-
-										'	Release the ADO recordset object.
-										rstRecord.close()
-										rstRecord = Nothing
+							' The error is for a deadlock.
+							' Sorry about having to use the err.description to trap the error but the err.number
+							' is not specific and MSDN suggests using the err.description.
+							If (iRetryCount < iRETRIES) And (cmdGetRecord.ActiveConnection.Errors.Count = 1) Then
+								iRetryCount = iRetryCount + 1
+								fDeadlock = True
+							Else
+								If Len(sErrorDescription) > 0 Then
+									sErrorDescription = sErrorDescription & vbCrLf
 								End If
-						Loop
-
-						' NB. IMPORTANT ADO NOTE.
-						' When calling a stored procedure which returns a recordset AND has output parameters
-						' you need to close the recordset and Dim it to nothing before using the output parameters. 
-
-						Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='" & Session("recordID") & "'>" & vbCrLf)
-						Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & cmdGetRecord.Parameters("recordID").Value & "'>" & vbCrLf)
-			
-						' Loop through the OLE columns that have data in them
-						Dim objOle = Session("OLEObject")
-						objOle.CleanupOLEFiles()
-			
-						For Each item As Object In oleColumnData
-								Dim strDisplayValue = objOle.GetPropertiesFromStream(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource"))
-								Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' value='" & strDisplayValue & "'>" & vbCrLf)
-						Next
-						
-						Session("OLEObject") = objOle
-						objOle = Nothing
-
-
-						If Len(sErrorDescription) = 0 Then
-								If Session("action") = "COPY" Then
-										Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
-										Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
-										Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordCount").Value + 1 & "'>" & vbCrLf)
-								
-										lngRecordID = 0
-								Else
-										Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & cmdGetRecord.Parameters("recordID").Value & "'>" & vbCrLf)
-										Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
-										Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordPosition").Value & "'>" & vbCrLf)
-				
-										lngRecordID = cmdGetRecord.Parameters("recordID").Value
-								End If
+								sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
+								fOk = False
+							End If
 						Else
-								Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='0'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='0'>" & vbCrLf)
-				
-								lngRecordID = 0
+							sErrorDescription = sErrorDescription & vbCrLf & _
+							 FormatError(cmdGetRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+							fOk = False
 						End If
+					Next
 
-						' Release the ADO command object.
-						cmdGetRecord = Nothing
+					cmdGetRecord.ActiveConnection.Errors.Clear()
+												
+					If Not fOk Then
+						sErrorDescription = "Unable to retrieve the required record." & vbCrLf & sErrorDescription
+					End If
+				Else
+				
+					If Not (rstRecord.bof And rstRecord.eof) Then
+						For iloop = 0 To (rstRecord.fields.count - 1)
+						
+							If IsDBNull(rstRecord.fields(iloop).value) Then
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
+							Else
+								' Is column a embedded/linked OLE								
+								If VarType(rstRecord.fields(iloop).value) = 8209 Then
+									oleColumnData.Add(rstRecord.fields(iloop).name)
+								Else
+									Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+								End If
+							End If
+						Next
+					End If
+
+					'	Release the ADO recordset object.
+					rstRecord.close()
+					rstRecord = Nothing
 				End If
-		
-				' Get the record description.
-				Dim sRecDesc = ""
-				If (Len(sErrorDescription) = 0) Then
-						Dim cmdGetRecordDesc = CreateObject("ADODB.Command")
-						cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-			cmdGetRecordDesc.CommandType = 4		' Stored procedure
-						cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+			Loop
 
-						Dim prmTableId = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmTableId)
-						prmTableId.value = CleanNumeric(Session("tableID"))
+			' NB. IMPORTANT ADO NOTE.
+			' When calling a stored procedure which returns a recordset AND has output parameters
+			' you need to close the recordset and Dim it to nothing before using the output parameters. 
+
+			Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='" & Session("recordID") & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & cmdGetRecord.Parameters("recordID").Value & "'>" & vbCrLf)
+			
+			' Loop through the OLE columns that have data in them
+			Dim objOle = Session("OLEObject")
+			objOle.CleanupOLEFiles()
+			
+			' TODO: reckon this means one ole per record???			
+			For Each item As Object In oleColumnData
+				Dim strDisplayValue = objOle.GetPropertiesFromStream(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource"))
+				' extract file size, and dates first...
+				Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
+				Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+			Next
+			
+			Session("OLEObject") = objOle
+			objOle = Nothing
+
+
+			If Len(sErrorDescription) = 0 Then
+				If Session("action") = "COPY" Then
+					Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordCount").Value + 1 & "'>" & vbCrLf)
+								
+					lngRecordID = 0
+				Else
+					Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & cmdGetRecord.Parameters("recordID").Value & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordPosition").Value & "'>" & vbCrLf)
+				
+					lngRecordID = cmdGetRecord.Parameters("recordID").Value
+				End If
+			Else
+				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='0'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='0'>" & vbCrLf)
+				
+				lngRecordID = 0
+			End If
+
+			' Release the ADO command object.
+			cmdGetRecord = Nothing
+		End If
+		
+		' Get the record description.
+		Dim sRecDesc = ""
+		If (Len(sErrorDescription) = 0) Then
+			Dim cmdGetRecordDesc = CreateObject("ADODB.Command")
+			cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
+			cmdGetRecordDesc.CommandType = 4		' Stored procedure
+			cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+
+			Dim prmTableId = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
+			cmdGetRecordDesc.Parameters.Append(prmTableId)
+			prmTableId.value = CleanNumeric(Session("tableID"))
 
 			Dim prmRecordId = cmdGetRecordDesc.CreateParameter("recordID", 3, 1)		' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmRecordId)
-						prmRecordId.value = CleanNumeric(lngRecordID)
+			cmdGetRecordDesc.Parameters.Append(prmRecordId)
+			prmRecordId.value = CleanNumeric(lngRecordID)
 
-						Dim prmParentTableId = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmParentTableId)
-						prmParentTableId.value = CleanNumeric(Session("parentTableID"))
+			Dim prmParentTableId = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
+			cmdGetRecordDesc.Parameters.Append(prmParentTableId)
+			prmParentTableId.value = CleanNumeric(Session("parentTableID"))
 
 			Dim prmParentRecordId = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1)		' 3=integer, 1=input
-						cmdGetRecordDesc.Parameters.Append(prmParentRecordId)
-						prmParentRecordId.value = CleanNumeric(Session("parentRecordID"))
+			cmdGetRecordDesc.Parameters.Append(prmParentRecordId)
+			prmParentRecordId.value = CleanNumeric(Session("parentRecordID"))
 
 			Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000)		' 200=varchar, 2=output, 8000=size
-						cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
+			cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
 
-						Dim fOk = True
-						Dim fDeadlock = True
-						Dim sErrMsg As String
-						Do While fDeadlock
-								fDeadlock = False
+			Dim fOk = True
+			Dim fDeadlock = True
+			Dim sErrMsg As String
+			Do While fDeadlock
+				fDeadlock = False
 
-								cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+				cmdGetRecordDesc.ActiveConnection.Errors.Clear()
 
-								cmdGetRecordDesc.Execute()
+				cmdGetRecordDesc.Execute()
 
-								If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
-										For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-												sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+				If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
+					For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
+						sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
-												If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-												 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-													(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-												 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-																		 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-														' The error is for a deadlock.
-														' Sorry about having to use the err.description to trap the error but the err.number
-														' is not specific and MSDN suggests using the err.description.
-														If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
-																iRetryCount = iRetryCount + 1
-																fDeadlock = True
-														Else
-																If Len(sErrorDescription) > 0 Then
-																		sErrorDescription = sErrorDescription & vbCrLf
-																End If
-																sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-																fOk = False
-														End If
-												Else
-														sErrorDescription = sErrorDescription & vbCrLf & _
-														 FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-														fOk = False
-												End If
-										Next
-
-										cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-												
-										If Not fOk Then
-												sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
-										End If
+						If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
+						 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
+							(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
+						 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
+												 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
+							' The error is for a deadlock.
+							' Sorry about having to use the err.description to trap the error but the err.number
+							' is not specific and MSDN suggests using the err.description.
+							If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
+								iRetryCount = iRetryCount + 1
+								fDeadlock = True
+							Else
+								If Len(sErrorDescription) > 0 Then
+									sErrorDescription = sErrorDescription & vbCrLf
 								End If
-						Loop
-				
-						If Len(sErrorDescription) = 0 Then
-								sRecDesc = cmdGetRecordDesc.Parameters("recordDesc").Value.ToString()
+								sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
+								fOk = False
+							End If
+						Else
+							sErrorDescription = sErrorDescription & vbCrLf & _
+							 FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+							fOk = False
 						End If
-					
-						cmdGetRecordDesc = Nothing
+					Next
+
+					cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+												
+					If Not fOk Then
+						sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
+					End If
 				End If
+			Loop
+				
+			If Len(sErrorDescription) = 0 Then
+				sRecDesc = cmdGetRecordDesc.Parameters("recordDesc").Value.ToString()
+			End If
+					
+			cmdGetRecordDesc = Nothing
+		End If
 		
-				Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Replace(sRecDesc, """", "&quot;") & "'>" & vbCrLf)
-		Else
-				Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Replace(sRecDesc, """", "&quot;") & "'>" & vbCrLf)
+	Else
+		Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
+	End If
+
+	If Session("action") = "LOADREPORTCOLUMNS" Then
+		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		cmdReportsCols.CommandText = "sp_ASRIntGetReportColumns"
+		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.ActiveConnection = Session("databaseConnection")
+								
+		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
+		cmdReportsCols.Parameters.Append(prmBaseTableId)
+		prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
+
+		Dim prmParent1TableId = cmdReportsCols.CreateParameter("parent1TableID", 3, 1) ' 3=integer, 1=input
+		cmdReportsCols.Parameters.Append(prmParent1TableId)
+		prmParent1TableId.value = CleanNumeric(Session("ReportParent1TableID"))
+
+		Dim prmParent2TableId = cmdReportsCols.CreateParameter("parent2TableID", 3, 1) ' 3=integer, 1=input
+		cmdReportsCols.Parameters.Append(prmParent2TableId)
+		prmParent2TableId.value = CleanNumeric(Session("ReportParent2TableID"))
+
+		Dim prmChildTableId = cmdReportsCols.CreateParameter("childTableID", 200, 1, 8000) ' 200=varchar 1=input
+		cmdReportsCols.Parameters.Append(prmChildTableId)
+		prmChildTableId.value = Session("ReportChildTableID")
+
+		Err.Clear()
+		Dim rstReportColumns = cmdReportsCols.Execute
+
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
 		End If
 
-		If Session("action") = "LOADREPORTCOLUMNS" Then
-				Dim cmdReportsCols = CreateObject("ADODB.Command")
-				cmdReportsCols.CommandText = "sp_ASRIntGetReportColumns"
-				cmdReportsCols.CommandType = 4 ' Stored procedure
-				cmdReportsCols.ActiveConnection = Session("databaseConnection")
-								
-				Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmBaseTableId)
-				prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
+		If Len(sErrorDescription) = 0 Then
+			Dim iLoop = 1
+			Do While Not rstReportColumns.EOF
+				Response.Write("<input type='hidden' id='txtRepCol_" & iLoop & "' name='txtRepCol_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
+				rstReportColumns.MoveNext()
+				iLoop = iLoop + 1
+			Loop
 
-				Dim prmParent1TableId = cmdReportsCols.CreateParameter("parent1TableID", 3, 1) ' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmParent1TableId)
-				prmParent1TableId.value = CleanNumeric(Session("ReportParent1TableID"))
-
-				Dim prmParent2TableId = cmdReportsCols.CreateParameter("parent2TableID", 3, 1) ' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmParent2TableId)
-				prmParent2TableId.value = CleanNumeric(Session("ReportParent2TableID"))
-
-				Dim prmChildTableId = cmdReportsCols.CreateParameter("childTableID", 200, 1, 8000) ' 200=varchar 1=input
-				cmdReportsCols.Parameters.Append(prmChildTableId)
-				prmChildTableId.value = Session("ReportChildTableID")
-
-				Err.Clear()
-				Dim rstReportColumns = cmdReportsCols.Execute
-
-				If (Err.Number <> 0) Then
-						sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-						Dim iLoop = 1
-						Do While Not rstReportColumns.EOF
-								Response.Write("<input type='hidden' id='txtRepCol_" & iLoop & "' name='txtRepCol_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
-								rstReportColumns.MoveNext()
-								iLoop = iLoop + 1
-						Loop
-
-						' Release the ADO recordset object.
-						rstReportColumns.close()
-				End If
+			' Release the ADO recordset object.
+			rstReportColumns.close()
+		End If
 				
-				rstReportColumns = Nothing
-				cmdReportsCols = Nothing
+		rstReportColumns = Nothing
+		cmdReportsCols = Nothing
 	
-		ElseIf Session("action") = "LOADCALENDARREPORTCOLUMNS" Then
-				Dim cmdReportsCols = CreateObject("ADODB.Command")
-				cmdReportsCols.CommandText = "spASRIntGetCalendarReportColumns"
-				cmdReportsCols.CommandType = 4 ' Stored procedure
-				cmdReportsCols.ActiveConnection = Session("databaseConnection")
+	ElseIf Session("action") = "LOADCALENDARREPORTCOLUMNS" Then
+		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		cmdReportsCols.CommandText = "spASRIntGetCalendarReportColumns"
+		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.ActiveConnection = Session("databaseConnection")
 								
-				Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmBaseTableId)
-				prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
+		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
+		cmdReportsCols.Parameters.Append(prmBaseTableId)
+		prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
 		
 		Dim prmEventTableId = cmdReportsCols.CreateParameter("eventTableID", 3, 1)	' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmEventTableId)
-				prmEventTableId.value = CleanNumeric(Session("ReportBaseTableID"))
+		cmdReportsCols.Parameters.Append(prmEventTableId)
+		prmEventTableId.value = CleanNumeric(Session("ReportBaseTableID"))
 		
-				Err.Clear()
-				Dim rstReportColumns = cmdReportsCols.Execute
+		Err.Clear()
+		Dim rstReportColumns = cmdReportsCols.Execute
 
-				If (Err.Number <> 0) Then
-						sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(Err.Description)
-				End If
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(Err.Description)
+		End If
 		
-				If Len(sErrorDescription) = 0 Then
-						Dim iLoop = 1
-						Do While Not rstReportColumns.EOF
-								Response.Write("<input type='hidden' id='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("columnName").Value, """", "&quot;") & "'>" & vbCrLf)
-								Response.Write("<input type='hidden' id='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("datatype").Value, """", "&quot;") & "'>" & vbCrLf)
-								rstReportColumns.MoveNext()
-								iLoop = iLoop + 1
-						Loop
+		If Len(sErrorDescription) = 0 Then
+			Dim iLoop = 1
+			Do While Not rstReportColumns.EOF
+				Response.Write("<input type='hidden' id='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("columnName").Value, """", "&quot;") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("datatype").Value, """", "&quot;") & "'>" & vbCrLf)
+				rstReportColumns.MoveNext()
+				iLoop = iLoop + 1
+			Loop
 
-						' Release the ADO recordset object.
-						rstReportColumns.close()
-				End If
+			' Release the ADO recordset object.
+			rstReportColumns.close()
+		End If
 				
-				rstReportColumns = Nothing
-				cmdReportsCols = Nothing
+		rstReportColumns = Nothing
+		cmdReportsCols = Nothing
 
-		ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
-				Dim cmdReportsCols = CreateObject("ADODB.Command")
-				cmdReportsCols.CommandText = "sp_ASRIntGetEmailAddresses"
-				cmdReportsCols.CommandType = 4 ' Stored procedure
-				cmdReportsCols.ActiveConnection = Session("databaseConnection")
+	ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
+		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		cmdReportsCols.CommandText = "sp_ASRIntGetEmailAddresses"
+		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.ActiveConnection = Session("databaseConnection")
 								
-				Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-				cmdReportsCols.Parameters.Append(prmBaseTableId)
-				prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
+		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
+		cmdReportsCols.Parameters.Append(prmBaseTableId)
+		prmBaseTableId.value = CleanNumeric(Session("ReportBaseTableID"))
 
-				Err.Clear()
-				Dim rstReportColumns = cmdReportsCols.Execute
+		Err.Clear()
+		Dim rstReportColumns = cmdReportsCols.Execute
 
-				If (Err.Number <> 0) Then
-						sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-						Dim iLoop = 1
-						Do While Not rstReportColumns.EOF
-								Response.Write("<input type='hidden' id='txtEmail_" & iLoop & "' name='txtEmail_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
-								rstReportColumns.MoveNext()
-								iLoop = iLoop + 1
-						Loop
-
-						' Release the ADO recordset object.
-						rstReportColumns.close()
-				End If
-				
-				rstReportColumns = Nothing
-				cmdReportsCols = Nothing
-
-		ElseIf Session("action") = "GETEXPRESSIONRETURNTYPES" Then
-				Dim sParam1 As String = CStr(Session("Param1"))
-				Dim iCharIndex As Integer
-		
-				' Get the server DLL to test the expression definition
-				Dim objExpression = New HR.Intranet.Server.Expression
-				
-
-				' Pass required info to the DLL
-				objExpression.Username = Session("username").ToString()
-				CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
-				
-				Do While Len(sParam1) > 0
-						iCharIndex = InStr(sParam1, ",")
-
-						If iCharIndex >= 0 Then
-								Dim sExprId As String = Left(sParam1, iCharIndex - 1)
-								sParam1 = Mid(sParam1, iCharIndex + 1)
-
-								Dim iReturnType As Short = objExpression.ExistingExpressionReturnType(CInt(sExprId))
-
-								Response.Write("<input type='hidden' id='txtExprType_" & sExprId & "' name='txtExprType_" & sExprId & "' value='" & iReturnType & "'>" & vbCrLf)
-						End If
-				Loop
-
-				objExpression = Nothing
-	
-				'**********************************************************************************************
-		ElseIf Session("action") = "LOADEVENTLOG" Then
-				
-				Dim objUtilities = Session("UtilitiesObject")
-		
-				Dim cmdEventLogRecords = CreateObject("ADODB.Command")
-				cmdEventLogRecords.CommandText = "spASRIntGetEventLogRecords"
-				cmdEventLogRecords.CommandType = 4 ' Stored procedure.
-				cmdEventLogRecords.ActiveConnection = Session("databaseConnection")
-
-		Dim prmError = cmdEventLogRecords.CreateParameter("error", 11, 2)		' 11=bit, 2=output
-				cmdEventLogRecords.Parameters.Append(prmError)
-
-				Dim prmUser = cmdEventLogRecords.CreateParameter("user", 200, 1, 8000)
-				cmdEventLogRecords.Parameters.Append(prmUser)
-				prmUser.value = Session("ELFilterUser")
-
-				Dim prmType = cmdEventLogRecords.CreateParameter("type", 3, 1)
-				cmdEventLogRecords.Parameters.Append(prmType)
-				prmType.value = Session("ELFilterType")
-
-				Dim prmStatus = cmdEventLogRecords.CreateParameter("status", 3, 1)
-				cmdEventLogRecords.Parameters.Append(prmStatus)
-				prmStatus.value = Session("ELFilterStatus")
-
-				Dim prmMode = cmdEventLogRecords.CreateParameter("mode", 3, 1)
-				cmdEventLogRecords.Parameters.Append(prmMode)
-				prmMode.value = Session("ELFilterMode")
-
-				Dim prmOrderColumn = cmdEventLogRecords.CreateParameter("orderColumn", 200, 1, 8000)
-				cmdEventLogRecords.Parameters.Append(prmOrderColumn)
-				prmOrderColumn.value = Session("ELOrderColumn")
-
-				Dim prmOrderOrder = cmdEventLogRecords.CreateParameter("orderOrder", 200, 1, 8000)
-				cmdEventLogRecords.Parameters.Append(prmOrderOrder)
-				prmOrderOrder.value = Session("ELOrderOrder")
-
-				Dim prmReqRecs = cmdEventLogRecords.CreateParameter("reqRecs", 3, 1)
-				cmdEventLogRecords.Parameters.Append(prmReqRecs)
-				prmReqRecs.value = CleanNumeric(Session("findRecords"))
-
-		Dim prmIsFirstPage = cmdEventLogRecords.CreateParameter("isFirstPage", 11, 2)		' 11=bit, 2=output
-				cmdEventLogRecords.Parameters.Append(prmIsFirstPage)
-
-		Dim prmIsLastPage = cmdEventLogRecords.CreateParameter("isLastPage", 11, 2)	' 11=bit, 2=output
-				cmdEventLogRecords.Parameters.Append(prmIsLastPage)
-
-				Dim prmAction = cmdEventLogRecords.CreateParameter("action", 200, 1, 8000)
-				cmdEventLogRecords.Parameters.Append(prmAction)
-				prmAction.value = Session("ELAction")
-
-		Dim prmTotalRecCount = cmdEventLogRecords.CreateParameter("totalRecCount", 3, 2)		' 3=integer, 2=output
-				cmdEventLogRecords.Parameters.Append(prmTotalRecCount)
-
-				Dim prmFirstRecPos = cmdEventLogRecords.CreateParameter("firstRecPos", 3, 3) ' 3=integer, 3=input/output
-				cmdEventLogRecords.Parameters.Append(prmFirstRecPos)
-				prmFirstRecPos.value = CleanNumeric(Session("ELFirstRecPos"))
-
-				Dim prmCurrentRecCount = cmdEventLogRecords.CreateParameter("currentRecCount", 3, 1) ' 3=integer, 1=input
-				cmdEventLogRecords.Parameters.Append(prmCurrentRecCount)
-				prmCurrentRecCount.value = CleanNumeric(Session("ELCurrentRecCount"))
-	
-				Err.Clear()
-				Dim rsEventLogRecords = cmdEventLogRecords.Execute
-
-				If (Err.Number <> 0) Then
-						sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(Err.Description)
-				End If
-
-				Dim lngRowCount = 0
-				If Len(sErrorDescription) = 0 Then
-			
-						Dim sAddString As String = vbNullString
-			
-						If Not (rsEventLogRecords.BOF And rsEventLogRecords.EOF) Then
-								Do Until rsEventLogRecords.EOF
-										sAddString = vbNullString
-					
-										sAddString = sAddString & rsEventLogRecords.Fields("ID").Value.ToString() & vbTab
-					
-										sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("DateTime").Value) & vbTab
-					
-										If IsDBNull(rsEventLogRecords.Fields("EndTime").Value) Then
-												sAddString = sAddString & "" & vbTab
-										Else
-												sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("EndTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("EndTime").Value) & vbTab
-										End If
-						
-										sAddString = sAddString & objUtilities.FormatEventDuration(CLng(rsEventLogRecords.Fields("Duration").Value)) & vbTab
-					
-										sAddString = sAddString & Replace(rsEventLogRecords.Fields("EventInfo").Value, """", "&quot;")
-					
-										Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString & "'>" & vbCrLf)
-
-										lngRowCount = lngRowCount + 1
-										rsEventLogRecords.MoveNext()
-								Loop
-						End If
-			
-				End If
-		
-				rsEventLogRecords.close()
-				rsEventLogRecords = Nothing
-		
-				Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & cmdEventLogRecords.Parameters("isFirstPage").Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & cmdEventLogRecords.Parameters("isLastPage").Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & cmdEventLogRecords.Parameters("totalRecCount").Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & cmdEventLogRecords.Parameters("firstRecPos").Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
-
-				cmdEventLogRecords = Nothing
-				objUtilities = Nothing
-		
-		ElseIf Session("action") = "LOADEVENTLOGUSERS" Then
-				'Purge the event log.
-				Dim cmdPurgeCommand = CreateObject("ADODB.Command")
-				cmdPurgeCommand.CommandText = "sp_AsrEventLogPurge"
-		cmdPurgeCommand.CommandType = 4	' Stored procedure
-				cmdPurgeCommand.ActiveConnection = Session("databaseConnection")
-				Err.Clear()
-				cmdPurgeCommand.Execute()
-				cmdPurgeCommand = Nothing
-		
-				'Get the list of users
-				Dim cmdEventLogUsers = CreateObject("ADODB.Command")
-				cmdEventLogUsers.CommandText = "spASRIntGetEventLogUsers"
-		cmdEventLogUsers.CommandType = 4		' Stored procedure
-				cmdEventLogUsers.ActiveConnection = Session("databaseConnection")
-		
-				Err.Clear()
-				Dim rstEventLogUsers = cmdEventLogUsers.Execute
-
-				If (Err.Number <> 0) Then
-						sErrorDescription = "Error getting the event log users." & vbCrLf & FormatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-						Dim iLoop = 1
-						Do While Not rstEventLogUsers.EOF
-								Response.Write("<input type='hidden' id='txtEventLogUser_" & iLoop & "' name='txtEventLogUser_" & iLoop & "' value='" & Replace(rstEventLogUsers.Fields("Username").Value, """", "&quot;") & "'>" & vbCrLf)
-								rstEventLogUsers.MoveNext()
-								iLoop = iLoop + 1
-						Loop
-
-						' Release the ADO recordset object.
-						rstEventLogUsers.close()
-				End If
-				
-				rstEventLogUsers = Nothing
-				cmdEventLogUsers = Nothing
-			
-				'**********************************************************************************************
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
 		End If
 
-		Response.Write("<input type='hidden' id='txtNumberOfBookings' name='txtNumberOfBookings' value='" & Session("numberOfBookings") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtTBErrorMessage' name='txtTBErrorMessage' value='" & Session("tbErrorMessage") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtTBCourseTitle' name='txtTBCourseTitle' value='" & Session("tbCourseTitle") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>" & vbCrLf)
+		If Len(sErrorDescription) = 0 Then
+			Dim iLoop = 1
+			Do While Not rstReportColumns.EOF
+				Response.Write("<input type='hidden' id='txtEmail_" & iLoop & "' name='txtEmail_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
+				rstReportColumns.MoveNext()
+				iLoop = iLoop + 1
+			Loop
+
+			' Release the ADO recordset object.
+			rstReportColumns.close()
+		End If
+				
+		rstReportColumns = Nothing
+		cmdReportsCols = Nothing
+
+	ElseIf Session("action") = "GETEXPRESSIONRETURNTYPES" Then
+		Dim sParam1 As String = CStr(Session("Param1"))
+		Dim iCharIndex As Integer
+		
+		' Get the server DLL to test the expression definition
+		Dim objExpression = New HR.Intranet.Server.Expression
+				
+
+		' Pass required info to the DLL
+		objExpression.Username = Session("username").ToString()
+		CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+				
+		Do While Len(sParam1) > 0
+			iCharIndex = InStr(sParam1, ",")
+
+			If iCharIndex >= 0 Then
+				Dim sExprId As String = Left(sParam1, iCharIndex - 1)
+				sParam1 = Mid(sParam1, iCharIndex + 1)
+
+				Dim iReturnType As Short = objExpression.ExistingExpressionReturnType(CInt(sExprId))
+
+				Response.Write("<input type='hidden' id='txtExprType_" & sExprId & "' name='txtExprType_" & sExprId & "' value='" & iReturnType & "'>" & vbCrLf)
+			End If
+		Loop
+
+		objExpression = Nothing
+	
+		'**********************************************************************************************
+	ElseIf Session("action") = "LOADEVENTLOG" Then
+				
+		Dim objUtilities = Session("UtilitiesObject")
+		
+		Dim cmdEventLogRecords = CreateObject("ADODB.Command")
+		cmdEventLogRecords.CommandText = "spASRIntGetEventLogRecords"
+		cmdEventLogRecords.CommandType = 4 ' Stored procedure.
+		cmdEventLogRecords.ActiveConnection = Session("databaseConnection")
+
+		Dim prmError = cmdEventLogRecords.CreateParameter("error", 11, 2)		' 11=bit, 2=output
+		cmdEventLogRecords.Parameters.Append(prmError)
+
+		Dim prmUser = cmdEventLogRecords.CreateParameter("user", 200, 1, 8000)
+		cmdEventLogRecords.Parameters.Append(prmUser)
+		prmUser.value = Session("ELFilterUser")
+
+		Dim prmType = cmdEventLogRecords.CreateParameter("type", 3, 1)
+		cmdEventLogRecords.Parameters.Append(prmType)
+		prmType.value = Session("ELFilterType")
+
+		Dim prmStatus = cmdEventLogRecords.CreateParameter("status", 3, 1)
+		cmdEventLogRecords.Parameters.Append(prmStatus)
+		prmStatus.value = Session("ELFilterStatus")
+
+		Dim prmMode = cmdEventLogRecords.CreateParameter("mode", 3, 1)
+		cmdEventLogRecords.Parameters.Append(prmMode)
+		prmMode.value = Session("ELFilterMode")
+
+		Dim prmOrderColumn = cmdEventLogRecords.CreateParameter("orderColumn", 200, 1, 8000)
+		cmdEventLogRecords.Parameters.Append(prmOrderColumn)
+		prmOrderColumn.value = Session("ELOrderColumn")
+
+		Dim prmOrderOrder = cmdEventLogRecords.CreateParameter("orderOrder", 200, 1, 8000)
+		cmdEventLogRecords.Parameters.Append(prmOrderOrder)
+		prmOrderOrder.value = Session("ELOrderOrder")
+
+		Dim prmReqRecs = cmdEventLogRecords.CreateParameter("reqRecs", 3, 1)
+		cmdEventLogRecords.Parameters.Append(prmReqRecs)
+		prmReqRecs.value = CleanNumeric(Session("findRecords"))
+
+		Dim prmIsFirstPage = cmdEventLogRecords.CreateParameter("isFirstPage", 11, 2)		' 11=bit, 2=output
+		cmdEventLogRecords.Parameters.Append(prmIsFirstPage)
+
+		Dim prmIsLastPage = cmdEventLogRecords.CreateParameter("isLastPage", 11, 2)	' 11=bit, 2=output
+		cmdEventLogRecords.Parameters.Append(prmIsLastPage)
+
+		Dim prmAction = cmdEventLogRecords.CreateParameter("action", 200, 1, 8000)
+		cmdEventLogRecords.Parameters.Append(prmAction)
+		prmAction.value = Session("ELAction")
+
+		Dim prmTotalRecCount = cmdEventLogRecords.CreateParameter("totalRecCount", 3, 2)		' 3=integer, 2=output
+		cmdEventLogRecords.Parameters.Append(prmTotalRecCount)
+
+		Dim prmFirstRecPos = cmdEventLogRecords.CreateParameter("firstRecPos", 3, 3) ' 3=integer, 3=input/output
+		cmdEventLogRecords.Parameters.Append(prmFirstRecPos)
+		prmFirstRecPos.value = CleanNumeric(Session("ELFirstRecPos"))
+
+		Dim prmCurrentRecCount = cmdEventLogRecords.CreateParameter("currentRecCount", 3, 1) ' 3=integer, 1=input
+		cmdEventLogRecords.Parameters.Append(prmCurrentRecCount)
+		prmCurrentRecCount.value = CleanNumeric(Session("ELCurrentRecCount"))
+	
+		Err.Clear()
+		Dim rsEventLogRecords = cmdEventLogRecords.Execute
+
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(Err.Description)
+		End If
+
+		Dim lngRowCount = 0
+		If Len(sErrorDescription) = 0 Then
+			
+			Dim sAddString As String = vbNullString
+			
+			If Not (rsEventLogRecords.BOF And rsEventLogRecords.EOF) Then
+				Do Until rsEventLogRecords.EOF
+					sAddString = vbNullString
+					
+					sAddString = sAddString & rsEventLogRecords.Fields("ID").Value.ToString() & vbTab
+					
+					sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("DateTime").Value) & vbTab
+					
+					If IsDBNull(rsEventLogRecords.Fields("EndTime").Value) Then
+						sAddString = sAddString & "" & vbTab
+					Else
+						sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("EndTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("EndTime").Value) & vbTab
+					End If
+						
+					sAddString = sAddString & objUtilities.FormatEventDuration(CLng(rsEventLogRecords.Fields("Duration").Value)) & vbTab
+					
+					sAddString = sAddString & Replace(rsEventLogRecords.Fields("EventInfo").Value, """", "&quot;")
+					
+					Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString & "'>" & vbCrLf)
+
+					lngRowCount = lngRowCount + 1
+					rsEventLogRecords.MoveNext()
+				Loop
+			End If
+			
+		End If
+		
+		rsEventLogRecords.close()
+		rsEventLogRecords = Nothing
+		
+		Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & cmdEventLogRecords.Parameters("isFirstPage").Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & cmdEventLogRecords.Parameters("isLastPage").Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & cmdEventLogRecords.Parameters("totalRecCount").Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & cmdEventLogRecords.Parameters("firstRecPos").Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
+
+		cmdEventLogRecords = Nothing
+		objUtilities = Nothing
+		
+	ElseIf Session("action") = "LOADEVENTLOGUSERS" Then
+		'Purge the event log.
+		Dim cmdPurgeCommand = CreateObject("ADODB.Command")
+		cmdPurgeCommand.CommandText = "sp_AsrEventLogPurge"
+		cmdPurgeCommand.CommandType = 4	' Stored procedure
+		cmdPurgeCommand.ActiveConnection = Session("databaseConnection")
+		Err.Clear()
+		cmdPurgeCommand.Execute()
+		cmdPurgeCommand = Nothing
+		
+		'Get the list of users
+		Dim cmdEventLogUsers = CreateObject("ADODB.Command")
+		cmdEventLogUsers.CommandText = "spASRIntGetEventLogUsers"
+		cmdEventLogUsers.CommandType = 4		' Stored procedure
+		cmdEventLogUsers.ActiveConnection = Session("databaseConnection")
+		
+		Err.Clear()
+		Dim rstEventLogUsers = cmdEventLogUsers.Execute
+
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the event log users." & vbCrLf & FormatError(Err.Description)
+		End If
+
+		If Len(sErrorDescription) = 0 Then
+			Dim iLoop = 1
+			Do While Not rstEventLogUsers.EOF
+				Response.Write("<input type='hidden' id='txtEventLogUser_" & iLoop & "' name='txtEventLogUser_" & iLoop & "' value='" & Replace(rstEventLogUsers.Fields("Username").Value, """", "&quot;") & "'>" & vbCrLf)
+				rstEventLogUsers.MoveNext()
+				iLoop = iLoop + 1
+			Loop
+
+			' Release the ADO recordset object.
+			rstEventLogUsers.close()
+		End If
+				
+		rstEventLogUsers = Nothing
+		cmdEventLogUsers = Nothing
+			
+		'**********************************************************************************************
+	End If
+
+	Response.Write("<input type='hidden' id='txtNumberOfBookings' name='txtNumberOfBookings' value='" & Session("numberOfBookings") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtTBErrorMessage' name='txtTBErrorMessage' value='" & Session("tbErrorMessage") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtTBCourseTitle' name='txtTBCourseTitle' value='" & Session("tbCourseTitle") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>" & vbCrLf)
 
 %>
 

@@ -399,7 +399,7 @@
 												<td align="left">
 														<input id="txtDocuments" name="txtDocuments" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnDocuments" name="btnDocuments"
 																onclick="selectPath('DOCUMENTS')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -430,7 +430,7 @@
 												<td align="left">
 														<input id="txtOLEServer" name="txtOLEServer" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLEServer" name="btnOLEServer"
 																onclick="selectPath('OLESERVER')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -461,7 +461,7 @@
 												<td align="left">
 														<input id="txtOLELocal" name="txtOLELocal" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLELocal" name="btnOLELocal"
 																onclick="selectPath('OLELOCAL')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -492,7 +492,7 @@
 												<td align="left">
 														<input id="txtPhoto" name="txtPhoto" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnPhoto" name="btnPhoto"
 																onclick="selectPath('PHOTO')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -523,7 +523,7 @@
 												<td align="left">
 														<input id="txtImage" name="txtImage" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnImage" name="btnImage"
 																onclick="selectPath('IMAGE')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -554,7 +554,7 @@
 												<td align="left">
 														<input id="txtTempMenuFile" name="txtTempMenuFile" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
 												</td>
-												<td width="20">
+												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnTempMenuFile" name="btnTempMenuFile"
 																onclick="selectPath('TEMPMENUFILE')"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
