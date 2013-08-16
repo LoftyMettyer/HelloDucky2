@@ -150,7 +150,7 @@
 						$frame.html(html);
 					}
 
-					//jqwuery stylin	    			
+					//jQuery styling
 					$(function () {
 						$("input[type=submit], input[type=button], button")
 							.button();
@@ -252,17 +252,17 @@
 		},
 		localeDateFormat = function () {
 			//TODO - Get the proper regional settings
-		    return "dd/MM/yyyy";
+				return "dd/MM/yyyy";
 		},
-        convertSqlDateToLocale = function (z) {
-    	//TODO - Get the proper regional settings
-    	var convertDate = Date.parseExact(z, "M/d/yyyy");
-	    if (convertDate != null) {
-            return convertDate.format(OpenHR.LocaleDateFormat());
-	    } else {
-		    return "";
-	    }
-        },
+				convertSqlDateToLocale = function (z) {
+			//TODO - Get the proper regional settings
+			var convertDate = Date.parseExact(z, "M/d/yyyy");
+			if (convertDate != null) {
+						return convertDate.format(OpenHR.LocaleDateFormat());
+			} else {
+				return "";
+			}
+				},
 		convertLocaleDateToSQL = function (psDateString) {
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */
@@ -483,7 +483,6 @@
 		ConvertToUNC: ConvertToUNC,
 		GetPathOnly: GetPathOnly,
 		CheckOLEFileNameLength: CheckOLEFileNameLength
-		convertLocaleDateToSQL: convertLocaleDateToSql
 	};
 
 })(window, jQuery);
