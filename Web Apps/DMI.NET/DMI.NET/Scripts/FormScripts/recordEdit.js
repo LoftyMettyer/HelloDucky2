@@ -1055,6 +1055,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			button.setAttribute("data-control-key", key);
 			button.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);
 			button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
+			button.style.overflow = 'hidden';
+			button.style.fontWeight = 'normal';
+			button.style.fontSize = '10px';
 			
 			if (tabIndex > 0) button.tabindex = tabIndex;
 
