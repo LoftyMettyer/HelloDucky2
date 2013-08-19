@@ -1782,18 +1782,29 @@ function updateControl(lngColumnID, value) {
 						//button.setAttribute("data-control-key", key);
 						//button.setAttribute('data-OleType', controlItemArray[55] == 2 ? 3 : controlItemArray[55]);
 						//button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
+
+						var oleType;
+
+						if (value.indexOf('::LINKED_OLE_DOCUMENT') > 0) {
+							oleType = 3;
+						}
+						else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT') > 0) {
+							oleType = 2;
+						} else {
+							oleType = $(this).attr('data-OleType');
+						}						
 						
-						var filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
-						var oleType = $(this).attr('data-OleType');						
+						var filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');						
 						var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
 						var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
 						var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
-
+						
 						//OLE_LOCAL = 0
 						//OLE_SERVER = 1
 						//OLE_EMBEDDED = 2
 						//OLE_UNC = 3
 						var strOLEType = 'OLE';
+						
 						switch (Number(oleType)) {
 							case 0:
 								strOLEType = '(Local)';

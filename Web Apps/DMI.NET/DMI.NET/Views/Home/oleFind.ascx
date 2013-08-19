@@ -142,7 +142,7 @@
 				break;
 			case 2:
 				if (newFilename == '') {
-					oleCaption = 'empty';
+					oleCaption = 'Empty';
 				} else {
 					oleCaption = 'Embedded file: ' + newFilename;
 				}
@@ -150,8 +150,10 @@
 				break;
 			case 3:
 				if (newFilename == '') {
-					$('#oleCaption h3').html('empty');
+					$('#tdDescription h6').text('');
+					$('#oleCaption h3').html('Empty');
 				} else {
+					$('#tdDescription h6').text('Right click or option-click the link below and choose \'Save As...\' to download this file.');
 					$('#oleCaption h3').html('<a title="(Right click or option-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
 				}
 				break;
@@ -607,7 +609,12 @@
 			$('#cmdSelect').button(frmFindForm.txtOLEReadOnly.value == 'true' ? 'disable' : 'enable');
 			button_disable(frmFindForm.cmdProperties, false);
 			button_disable(frmFindForm.cmdRemove, (frmFindForm.txtOLEReadOnly.value == 'true'));
-			button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEReadOnly.value == 'true'));
+
+			//Disable download button for Linked files.
+			//button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
+
+			//Disable download button for newly embedded files.
+			button_disable(frmFindForm.cmdEdit, true);
 
 			// Disable the embed/link buttons
 			button_disable(frmFindForm.cmdEmbed, true);
@@ -917,8 +924,9 @@
 
 				}
 			}
-			else {				
-				button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEReadOnly.value == 'true'));
+			else {
+				
+				button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEReadOnly.value == 'true') );
 				button_disable(frmFindForm.cmdSelect, (frmFindForm.txtOLEReadOnly.value == 'true'));				
 			}
 			
@@ -930,9 +938,9 @@
 				button_disable(frmFindForm.cmdSelect, true);
 			}
 		}
-		else {
+		else {			
 			button_disable(frmFindForm.cmdEdit, (frmGotoOption.txtOLEFile.value == ""));
-
+			button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
 			$('#oleCaption').show();
 			$('#fileUpload').hide();
 		}
@@ -964,8 +972,8 @@
 							<td height="10" colspan="3"></td>
 						</tr>
 						<tr>
-							<td height="10" colspan="3">
-								<h3 align="center">
+							<td height="10" colspan="3" id="tdDescription">
+								<h6 align="center" style="margin: 0">
 									<%
 										If Session("optionOLEReadOnly") = "true" Then
 											'Response.Write("Select Document (Read Only)")
@@ -973,7 +981,7 @@
 											'Response.Write("Select Document")
 										End If
 									%>
-								</h3>
+								</h6>
 							</td>
 						</tr>
 						<tr>
