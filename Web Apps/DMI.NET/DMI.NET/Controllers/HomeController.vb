@@ -5268,23 +5268,9 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 
-
-			If sAction = "" Then
-				' Go to the requested page.
-				Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "CANCEL" Then
+			If sAction = "CANCEL" Or sAction = "SELECTLINK" Then
 				' Go to the requested page.
 				Session("errorMessage") = sErrorMsg
-				Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "SELECTLINK" Then
-				Session("errorMessage") = sErrorMsg
-
-				' Go to the requested page.
-				Return RedirectToAction(sNextPage)
 			End If
 
 			Return RedirectToAction(sNextPage)
