@@ -30,15 +30,19 @@ namespace Fusion.Connector.OpenHR.Database
             {
                 c.Open();
 
-								var su = c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, CASE WHEN LEN(picture) < 400 THEN NULL ELSE SUBSTRING(picture,401,datalength(picture)-400) END FROM Fusion.staff where StaffID = @StaffID",
-                                     new
-                                         {
-                                             StaffID = localId
-                                         }
-                        ).FirstOrDefault();
+								var su = c.Query<Picture>(@"SELECT 
+													CASE WHEN LEN(picture) > convert(int,400) THEN 'JPEG' ELSE 'EMPTY' END AS ImageType,
+													CASE WHEN LEN(picture) < 400 THEN NULL ELSE SUBSTRING(picture,401,datalength(picture)-400) END AS Picture
+													FROM fusion.staff
+													WHERE StaffID = @StaffID",
+																		 new
+																				 {
+																					 StaffID = localId
+																				 }
+												).FirstOrDefault();
 
-                return su;
-            }
+								return su;
+						}
 
         }
 

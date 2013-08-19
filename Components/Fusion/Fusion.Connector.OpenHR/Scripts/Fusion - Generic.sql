@@ -392,3 +392,6 @@ GO
 -- ALTER QUEUE fusion.qFusion WITH STATUS = ON;
 --EXEC [fusion].[spClearFusionMessageQueue] 'staffChange'
 --select * from fusion.qfusion
+
+
+--ALTER DATABASE [databasename] SET ENABLE_BROKER with rollback immediate
