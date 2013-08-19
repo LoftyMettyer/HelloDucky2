@@ -478,7 +478,8 @@
 						// Local OLE
 					else if (plngOleType == 0) {
 						var messageText = "Please use your file browser to view local OLE documents.";
-						if (document.getElementById('frmRecordEditForm').txtOLELocalPath.value.length > 0) messageText += "\n\nYour local OLE documents can be found at: \n" + sPath;
+						var sPath = document.getElementById('frmRecordEditForm').txtOLELocalPath.value;
+						if (sPath.length > 0) messageText += "\n\nYour local OLE documents can be found at: \n" + sPath;
 
 						OpenHR.messageBox(messageText, 48);
 
