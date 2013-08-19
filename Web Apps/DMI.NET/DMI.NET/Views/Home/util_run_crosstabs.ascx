@@ -8,8 +8,8 @@
 
 	$(window).bind('resize', function () {
 		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
+		$("#ssOutputGrid").setGridHeight("300px", true);
 	}).trigger('resize');
-
 </script>
 
 
@@ -93,24 +93,28 @@
 	End If
 %>
 
-<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
+	<%--<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">--%>
 	<tr>
 		<td>
 			<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<tr>
-					<td colspan="50">
-						<table class='outline' style='width: 100%; height:auto' id="ssOutputGrid">
-							<tbody>
-								<tr class='header' style="text-align: left;" >
+				<tr style="height: 325px">
+					<td colspan="50" style="vertical-align: top">
+						<table class='outline' style='width: 100%; height:300px' id="ssOutputGrid">
+							<tbody style="height: 300px">
+								<%--<tr class='header' style="text-align: left;" >--%>
+									<tr style="text-align: left" >
+										
 									<th>_</th>
 								</tr>
 							</tbody>
 						</table>
 					</td>
 				</tr>
-				<tr height="5">
+				<tr height="5px">
 					<td colspan="50">
-						<table width="100%" class="outline" cellspacing="0" cellpadding="0">
+						<%--<table width="100%" class="outline" cellspacing="0" cellpadding="0">--%>
+							<table width="100%" cellspacing="0" cellpadding="0">
 							<tr height="5">
 								<td></td>
 							</tr>
@@ -238,19 +242,19 @@
 	</tr>
 </table>
 
-<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+<%--<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 	<tr height="5">
 		<td></td>
 	</tr>
 	<tr height="5">
 		<td colspan="3">
 			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<td align="RIGHT">
+				<td>
 					<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
 						onclick="ViewExportOptions();" />
 				</td>
 				<td width="15"></td>
-				<td width="5" align="RIGHT">
+				<td width="5">
 					<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn"
 						onclick="try { closeclick(); } catch (e) { }" />
 				</td>
@@ -260,7 +264,16 @@
 	<tr height="5">
 		<td></td>
 	</tr>
-</table>
+</table>--%>
+
+<div style="padding-top: 5px">
+	<div>
+		<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
+			onclick="ViewExportOptions();" />
+	<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn"
+			onclick="try { closeclick(); } catch (e) { }" />
+	</div>
+</div>
 
 
 </table>
