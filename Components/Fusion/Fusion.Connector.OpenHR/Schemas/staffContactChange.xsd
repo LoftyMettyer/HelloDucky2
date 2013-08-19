@@ -14,7 +14,7 @@
 							<xs:element name="staffContact">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="title" nillable="true">
+										<xs:element name="title">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -57,7 +57,7 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="description" nillable="true" minOccurs="0">
+										<xs:element name="contactType">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -71,7 +71,7 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="relationshipType">
+										<xs:element name="relationshipType" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -168,7 +168,7 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="homeAddress" minOccurs="0">
+										<xs:element name="homeAddress" nillable="true" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name="addressLine1">

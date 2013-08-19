@@ -65,7 +65,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 cmd.Parameters.Add(new SqlParameter("@title", contact.data.staffContact.title ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@forenames", contact.data.staffContact.forenames ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@surname", contact.data.staffContact.surname ?? (object)DBNull.Value));
-                cmd.Parameters.Add(new SqlParameter("@description", contact.data.staffContact.description ?? (object)DBNull.Value));
+                cmd.Parameters.Add(new SqlParameter("@description", contact.data.staffContact.contactType ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@relationshipType", contact.data.staffContact.relationshipType ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@workMobile", contact.data.staffContact.workMobile ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@personalMobile",  contact.data.staffContact.personalMobile ?? (object)DBNull.Value));

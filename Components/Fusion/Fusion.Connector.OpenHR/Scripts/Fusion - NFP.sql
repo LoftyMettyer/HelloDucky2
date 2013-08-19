@@ -98,7 +98,6 @@ AS
 		, Valid_From			AS [validFrom]
 		, Valid_To				AS [validTo]
 		, Document_Reference	AS [documentReference]
-		, Secondary_Reference	AS [secondaryReference]
 		, Requested_By			AS [requestedBy]
 		, Date_Requested		AS [requestedDate]
 		, Accepted_By			AS [acceptedBy]
@@ -114,7 +113,7 @@ AS
 		, Title				AS [title]
 		, Forenames			AS [forenames]
 		, Surname			AS [surname]
-		, Contact_Type		AS [description]
+		, Contact_Type		AS [contactType]
 		, Relationship		AS [relationshipType]
 		, Work_Mobile		AS [workMobile]
 		, Personal_Mobile	AS [personalMobile]
@@ -312,7 +311,7 @@ CREATE PROCEDURE fusion.pMessageUpdate_StaffContactChange(@ID int OUTPUT
 	, @title					nvarchar(MAX)
 	, @forenames				nvarchar(MAX)
 	, @surname					nvarchar(MAX)
-	, @description				nvarchar(MAX)
+	, @contactType				nvarchar(MAX)
 	, @relationshipType			nvarchar(MAX)
 	, @workMobile				nvarchar(MAX)
 	, @personalMobile			nvarchar(MAX)
@@ -344,10 +343,10 @@ BEGIN
 
 		SELECT * FROM fusion.staffContact
 
-		INSERT fusion.staffContact(ID_Staff, title, forenames, surname, [description], relationshipType,
+		INSERT fusion.staffContact(ID_Staff, title, forenames, surname, [contactType], relationshipType,
 					workMobile, personalMobile, workPhoneNumber, homePhoneNumber, email, notes,
 					addressLine1, addressLine2, addressLine3, addressLine4, addressLine5, postcode)
-			VALUES (@staffID, @title, @forenames, @surname, @description, @relationshipType,
+			VALUES (@staffID, @title, @forenames, @surname, @contactType, @relationshipType,
 					@workMobile, @personalMobile, @workPhoneNumber, @homePhoneNumber, @email, @notes,
 					@addressLine1, @addressLine2, @addressLine3, @addressLine4, @addressLine5, @postCode);
 
@@ -357,7 +356,7 @@ BEGIN
 	ELSE
 	BEGIN
 
-		UPDATE fusion.staffContact SET title = @title, forenames = @forenames, surname = @surname, [description] = @description, relationshipType = @relationshipType,
+		UPDATE fusion.staffContact SET title = @title, forenames = @forenames, surname = @surname, [contactType] = @contactType, relationshipType = @relationshipType,
 			workMobile = @workMobile, personalMobile = @personalMobile, workPhoneNumber = @workPhoneNumber, homePhoneNumber = @homePhoneNumber,
 			email = @email, notes = @notes,
 			addressLine1 = @addressLine1, addressLine2 = @addressLine2, addressLine3 = @addressLine3,
@@ -376,7 +375,6 @@ CREATE PROCEDURE fusion.pMessageUpdate_StaffLegalDocumentChange(@ID int OUTPUT
 	, @validFrom			datetime
 	, @validTo				datetime
 	, @documentReference	varchar(MAX)
-	, @secondaryReference	varchar(MAX)
 	, @requestedBy			varchar(MAX)
 	, @requestedDate		datetime
 	, @acceptedBy			varchar(MAX)
@@ -397,9 +395,9 @@ BEGIN
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
-		INSERT fusion.staffLegalDocument (ID_Staff, typeName, validFrom, validTo, documentReference, secondaryReference
+		INSERT fusion.staffLegalDocument (ID_Staff, typeName, validFrom, validTo, documentReference
 					, requestedBy, requestedDate, acceptedBy, acceptedDate)
-			VALUES (@staffID, @typeName, @validFrom, @validTo, @documentReference, @secondaryReference
+			VALUES (@staffID, @typeName, @validFrom, @validTo, @documentReference
 					, @requestedBy, @requestedDate, @acceptedBy, @acceptedDate);
 
 		SELECT @ID = MAX(ID_Document) FROM fusion.staffLegalDocument;
@@ -410,8 +408,7 @@ BEGIN
 	BEGIN
 
 		UPDATE fusion.staffLegalDocument SET typeName = @typeName, validFrom = @validFrom, validTo = @validTo
-					, documentReference = @documentReference, secondaryReference = @secondaryReference
-					, requestedBy = @requestedBy, requestedDate = @requestedDate
+					, documentReference = @documentReference, requestedBy = @requestedBy, requestedDate = @requestedDate
 					, acceptedBy = @acceptedBy, acceptedDate = @acceptedDate WHERE ID_Document = @ID;
 
 

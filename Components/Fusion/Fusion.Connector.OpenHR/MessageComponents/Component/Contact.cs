@@ -5,7 +5,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
     public class Contact
     {
 
-        [XmlElement(IsNullable = true)]
         public string title { get; set; }
 
         [XmlElement(IsNullable = true)]
@@ -15,8 +14,9 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         public string surname { get; set; }
 
         [XmlElement(IsNullable = true)]
-        public string description { get; set; }
+        public string contactType { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public string relationshipType { get; set; }
 
         [XmlElement(IsNullable = true)]

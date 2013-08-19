@@ -91,7 +91,7 @@ namespace Fusion.Connector.OpenHR.Database
                 contact.title = pRow["title"].ToString() == "" ? null : pRow["title"].ToString();
                 contact.forenames = pRow["Forenames"].ToString() == "" ? null : pRow["Forenames"].ToString();
                 contact.surname = pRow["Surname"].ToString() == "" ? null : pRow["Surname"].ToString();
-                contact.description = pRow["description"].ToString() == "" ? null : pRow["description"].ToString();
+								contact.contactType = pRow["contactType"].ToString() == "" ? null : pRow["contactType"].ToString();
                 contact.relationshipType = pRow["relationshipType"].ToString() == "" ? null : pRow["relationshipType"].ToString();
                 contact.workMobile = pRow["workMobile"].ToString() == "" ? null : pRow["workMobile"].ToString();
                 contact.personalMobile = pRow["personalMobile"].ToString() == "" ? null : pRow["personalMobile"].ToString();
@@ -144,7 +144,7 @@ namespace Fusion.Connector.OpenHR.Database
                     su.outcome = su.outcome == "" ? null : su.outcome;
                     su.trainingStartSpecified = true;
                     su.trainingEndSpecified = true;
-                    su.validFromSpecified = (su.validFrom.HasValue);
+                    su.validFromSpecified = true;
                     su.validToSpecified = true;
                     su.didNotAttendSpecified = true;
                     return su;
@@ -170,7 +170,6 @@ namespace Fusion.Connector.OpenHR.Database
                 if (su != null)
                 {
                     su.documentReference = su.documentReference == "" ? null : su.documentReference;
-                    su.secondaryReference = su.secondaryReference == "" ? null : su.secondaryReference;
                     su.requestedBy = su.requestedBy == "" ? null : su.requestedBy;
                     su.acceptedBy = su.acceptedBy == "" ? null : su.acceptedBy;
                     su.acceptedDateFieldSpecified = true;

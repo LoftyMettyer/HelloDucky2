@@ -64,7 +64,6 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 cmd.Parameters.Add(new SqlParameter("@validFrom", document.data.staffLegalDocument.validFrom ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@validTo", document.data.staffLegalDocument.validTo ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@documentReference", document.data.staffLegalDocument.documentReference ?? (object)DBNull.Value));
-                cmd.Parameters.Add(new SqlParameter("@secondaryReference", document.data.staffLegalDocument.secondaryReference ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@requestedBy", document.data.staffLegalDocument.requestedBy ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@requestedDate", document.data.staffLegalDocument.requestedDate ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@acceptedBy", document.data.staffLegalDocument.acceptedBy ?? (object)DBNull.Value));

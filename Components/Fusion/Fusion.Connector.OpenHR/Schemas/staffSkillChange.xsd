@@ -46,7 +46,7 @@
 												<xs:documentation>When the training finnished</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="validFrom" type="xs:date" minOccurs="0">
+										<xs:element name="validFrom" type="xs:date" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>

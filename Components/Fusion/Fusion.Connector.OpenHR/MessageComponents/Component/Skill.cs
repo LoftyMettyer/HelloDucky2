@@ -19,7 +19,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [XmlIgnoreAttribute]
         public bool trainingEndSpecified { get; set; }
 
-        [XmlElementAttribute(DataType = "date")]
+        [XmlElementAttribute(DataType = "date", IsNullable = true)]
         public DateTime? validFrom { get; set; }
 
         [XmlIgnoreAttribute]

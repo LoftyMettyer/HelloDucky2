@@ -16,8 +16,8 @@ namespace Fusion.Connector.OpenHR.MessageComponents
         [XmlAttributeAttribute]
         public int version { get; set; }
 
-        [XmlAttributeAttribute]
-        public string staffSkillRef { get; set; }
+				[XmlAttributeAttribute(AttributeName = "staffSkillRef")]
+        public string StaffSkillRef { get; set; }
 
         [XmlAttributeAttribute]
         public string staffRef { get; set; }

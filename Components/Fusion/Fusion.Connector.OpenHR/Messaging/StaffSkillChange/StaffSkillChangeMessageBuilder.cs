@@ -43,7 +43,7 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
             Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, skill.id_Staff.ToString());
 
-            subReq.staffSkillRef = skillRef.ToString();
+            subReq.StaffSkillRef = skillRef.ToString();
             subReq.staffRef = staffRef.ToString();
 
             var sww = new StringWriter();

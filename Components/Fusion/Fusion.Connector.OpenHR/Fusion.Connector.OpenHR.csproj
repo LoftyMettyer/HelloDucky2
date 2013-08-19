@@ -40,6 +40,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper">
@@ -147,8 +148,7 @@
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSender.cs" />
-    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionMessageBuilder.cs" />
-    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionMessageSender.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimeSheetPerContractSubmissionHandler.cs" />
     <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionSchemaValidator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -181,18 +181,6 @@
     <Content Include="Scripts\Fusion - Generic.sql" />
     <Content Include="Scripts\Fusion - NFP.sql" />
     <Content Include="Scripts\Fusion - Personnel.sql" />
-    <Content Include="Support\NServiceBus.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Support\NServiceBus.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Support\NServiceBus.Tools.Management.Errors.ReturnToSourceQueue.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Support\ReturnToSourceQueue.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -224,6 +212,9 @@
     <EmbeddedResource Include="Schemas\staffSkillChange.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Support\Install Doc.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MessageComponents\Data\" />
@@ -258,5 +249,6 @@
     <StartAction>Program</StartAction>
     <StartProgram>$(ProjectDir)$(OutputPath)NServiceBus.Host.exe</StartProgram>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
 </Project>
