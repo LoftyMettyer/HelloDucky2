@@ -1,7 +1,5 @@
 ﻿using NServiceBus;
-using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
-using StructureMap.Attributes;
 
 namespace Fusion.Connector.OpenHR.MessageSenders
 {

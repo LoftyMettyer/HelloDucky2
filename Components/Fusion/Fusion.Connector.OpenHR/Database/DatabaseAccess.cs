@@ -86,7 +86,7 @@ namespace Fusion.Connector.OpenHR.Database
                 var custDS = new DataSet();
                 custDA.Fill(custDS, "contact");
 
-                var contact = new Contact();
+								var contact = new Contact();
 
                 var pRow = custDS.Tables["contact"].Rows[0];
 
@@ -103,6 +103,7 @@ namespace Fusion.Connector.OpenHR.Database
                 contact.homePhoneNumber = pRow["homePhoneNumber"].ToString() == "" ? null: pRow["homePhoneNumber"].ToString();
                 contact.email = pRow["email"].ToString() == "" ? null : pRow["email"].ToString();
                 contact.notes = pRow["notes"].ToString() == "" ? null : pRow["notes"].ToString();
+								contact.homeAddressSpecified = true;
 
                 if (pRow["AddressLine1"].ToString() != ""
                     || pRow["AddressLine2"].ToString() != ""
@@ -111,7 +112,7 @@ namespace Fusion.Connector.OpenHR.Database
                     || pRow["AddressLine5"].ToString() != ""
                     || pRow["postcode"].ToString() != "")
                 {
-                    contact.homeAddressSpecified = true;
+
                     contact.homeAddress = new Address
                     {
                         addressLine1 = pRow["AddressLine1"].ToString() == "" ? null : pRow["AddressLine1"].ToString(),
@@ -121,6 +122,7 @@ namespace Fusion.Connector.OpenHR.Database
                         addressLine5 = pRow["AddressLine5"].ToString(),
                         postCode = pRow["postcode"].ToString() == "" ? null : pRow["postcode"].ToString()
                     };
+
                 }
 
                 return contact;
