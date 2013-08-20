@@ -8,7 +8,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffLegalDocument" minOccurs="0">
+							<xs:element name="staffLegalDocument">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="typeName" type="common:legalDocumentTypes">
@@ -16,7 +16,7 @@
 												<xs:documentation>Common data list across systems as specified by customer</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="validFrom" type="xs:date">
+										<xs:element name="validFrom" type="xs:date" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -25,7 +25,7 @@
 												</xs:appinfo>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="validTo" type="xs:date" nillable="true">
+										<xs:element name="validTo" type="xs:date" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -43,21 +43,6 @@
 												</xs:appinfo>
 												<xs:documentation>The main reference such as passport number</xs:documentation>
 											</xs:annotation>
-										</xs:element>
-										<xs:element name="secondaryReference" nillable="true" minOccurs="0">
-											<xs:annotation>
-												<xs:appinfo>
-													<altova:exampleValues>
-														<altova:example value="1234"/>
-													</altova:exampleValues>
-												</xs:appinfo>
-												<xs:documentation>Any additional information such as nursing Pin number</xs:documentation>
-											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="xs:string">
-													<xs:minLength value="1"/>
-												</xs:restriction>
-											</xs:simpleType>
 										</xs:element>
 										<xs:element name="requestedBy" nillable="true" minOccurs="0">
 											<xs:annotation>
@@ -118,7 +103,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

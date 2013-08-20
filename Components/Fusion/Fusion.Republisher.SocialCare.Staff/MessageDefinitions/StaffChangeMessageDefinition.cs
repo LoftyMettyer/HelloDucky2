@@ -91,8 +91,8 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         Tag = "title",
                                         MessageExtractor = new FusionMessageSimpleNode {
                                             XPath = "ahc:title",
-                                            InitialState = InitialState.Nill,
-                                            Flags = XmlFlags.Mandatory | XmlFlags.Nillable
+                                            InitialState = InitialState.Value,
+                                            Flags = XmlFlags.Mandatory
                                         }
                                     },
 
@@ -246,7 +246,7 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                             new FusionMessageSimpleNode {
                                                 XPath = "ahc:companyName",
                                                 InitialState = InitialState.NotPresent,
-                                                Flags = XmlFlags.Optional
+                                                Flags = XmlFlags.Optional | XmlFlags.Nillable
                                             }
                                     },
 
@@ -274,6 +274,7 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         Tag = "homeAddress",
                                         MessageExtractor = new FusionMessageDefinitionCollection {
                                             XPath = "ahc:homeAddress",
+                                            InitialState = InitialState.Nill,
                                             MessageData = new FusionMessageDefinition[] {
                                                 new FusionMessageDefinition {
                                                     Tag = "addressLine1",
@@ -342,7 +343,7 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                             new FusionMessageSimpleNode {
                                                 XPath = "ahc:nationalInsuranceNumber",
                                                 InitialState = InitialState.NotPresent,
-                                                Flags = XmlFlags.Optional
+                                                Flags = XmlFlags.Optional | XmlFlags.Nillable
                                             }
                                     },
 

@@ -132,7 +132,7 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         MessageExtractor = new FusionMessageSimpleNode {
                                             XPath = "ahc:validFrom",
                                             InitialState = InitialState.NotPresent,
-                                            Flags = XmlFlags.Optional
+                                            Flags = XmlFlags.Optional | XmlFlags.Nillable
                                         }
                                     },
 

@@ -8,11 +8,11 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="pictureChange" minOccurs="0">
+							<xs:element name="pictureChange">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="imageType" type="common:imageType"/>
-										<xs:element name="picture" type="xs:base64Binary">
+										<xs:element name="picture" type="xs:base64Binary" nillable="true">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -34,7 +34,7 @@
 								</xs:appinfo>
 							</xs:annotation>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

@@ -11,13 +11,13 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staff" minOccurs="0">
+							<xs:element name="staff">
 								<xs:annotation>
 									<xs:documentation>Can be many staff details, but they must then use the start/end date attributes, and they must not overlap</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="title" nillable="true">
+										<xs:element name="title">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -232,7 +232,7 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="companyName" minOccurs="0">
+										<xs:element name="companyName" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -272,7 +272,7 @@
 												<xs:documentation>This will be another staffRef</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="homeAddress">
+										<xs:element name="homeAddress" nillable="true">
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name="addressLine1">
@@ -365,7 +365,7 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="nationalInsuranceNumber" minOccurs="0">
+										<xs:element name="nationalInsuranceNumber" nillable="true" minOccurs="0">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
 													<xs:pattern value="^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$"/>
@@ -391,7 +391,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

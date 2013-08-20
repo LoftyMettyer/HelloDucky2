@@ -9,7 +9,6 @@ namespace Fusion.Publisher.SocialCare.Staff
             NServiceBus.Configure.With()
                 .StructureMapBuilder()
                 .JsonSerializer()
-                .InMemorySubscriptionStorage()
                 .UnicastBus()
                 .DoNotAutoSubscribe()
                 .DisableRavenInstall()

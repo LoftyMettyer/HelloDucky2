@@ -102,8 +102,8 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         Tag = "title",
                                         MessageExtractor = new FusionMessageSimpleNode {
                                             XPath = "ahc:title",
-                                            InitialState = InitialState.Nill,
-                                            Flags = XmlFlags.Mandatory | XmlFlags.Nillable
+                                            InitialState = InitialState.Value,
+                                            Flags = XmlFlags.Mandatory
                                         }
                                     },
 
@@ -126,11 +126,11 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                     },
 
                                     new FusionMessageDefinition {
-                                        Tag = "description",
+                                        Tag = "contactType",
                                         MessageExtractor = new FusionMessageSimpleNode {
-                                            XPath = "ahc:description",
-                                            InitialState = InitialState.NotPresent,
-                                            Flags = XmlFlags.Nillable | XmlFlags.Optional
+                                            XPath = "ahc:contactType",
+                                            InitialState = InitialState.Value,
+                                            Flags = XmlFlags.Mandatory
                                         }
                                     },
 
@@ -138,8 +138,8 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         Tag = "relationshipType",
                                         MessageExtractor = new FusionMessageSimpleNode {
                                             XPath = "ahc:relationshipType",
-                                            InitialState = InitialState.Value,
-                                            Flags = XmlFlags.Mandatory
+                                            InitialState = InitialState.NotPresent,
+                                            Flags = XmlFlags.Optional | XmlFlags.Nillable
                                         }
                                     },
 
@@ -202,6 +202,7 @@ namespace Fusion.Publisher.SocialCare.MessageDefinitions
                                         Tag = "homeAddress",
                                         MessageExtractor = new FusionMessageDefinitionCollection {
                                             XPath = "ahc:homeAddress",
+                                            InitialState = InitialState.Nill,
                                             MessageData = new FusionMessageDefinition[] {
                                                 new FusionMessageDefinition {
                                                     Tag = "addressLine1",

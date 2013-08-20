@@ -8,7 +8,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffSkill" minOccurs="0">
+							<xs:element name="staffSkill">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="name">
@@ -46,7 +46,7 @@
 												<xs:documentation>When the training finnished</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="validFrom" type="xs:date" minOccurs="0">
+										<xs:element name="validFrom" type="xs:date" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -114,7 +114,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

@@ -2,11 +2,7 @@
 {
     public interface IRescindableRecord
     {
-        recordStatusRescindable recordStatus
-        {
-            get;
-            set;
-        }
+      
 
         bool recordStatusSpecified
         {

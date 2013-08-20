@@ -78,7 +78,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public staffChangeData() {
             this.staffField = new staffChangeDataStaff();
@@ -105,7 +105,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -165,11 +165,13 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private staffChangeDataStaffHomeAddress homeAddressField;
         
+        private string nationalInsuranceNumberField;
+        
         public staffChangeDataStaff() {
             this.homeAddressField = new staffChangeDataStaffHomeAddress();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string title {
             get {
                 return this.titleField;
@@ -349,7 +351,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=17)]
         public string companyName {
             get {
                 return this.companyNameField;
@@ -379,13 +381,23 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=20)]
         public staffChangeDataStaffHomeAddress homeAddress {
             get {
                 return this.homeAddressField;
             }
             set {
                 this.homeAddressField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=21)]
+        public string nationalInsuranceNumber {
+            get {
+                return this.nationalInsuranceNumberField;
+            }
+            set {
+                this.nationalInsuranceNumberField = value;
             }
         }
     }
@@ -500,16 +512,13 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion")]
-    public enum recordStatusRescindable {
+    public enum recordStatusStandard {
         
         /// <remarks/>
         Active,
         
         /// <remarks/>
         Inactive,
-        
-        /// <remarks/>
-        RecordCreatedInError,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
@@ -582,7 +591,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public staffContactChangeData() {
             this.staffContactField = new staffContactChangeDataStaffContact();
@@ -609,7 +618,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -631,7 +640,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string surnameField;
         
-        private string descriptionField;
+        private string contactTypeField;
         
         private string relationshipTypeField;
         
@@ -653,7 +662,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             this.homeAddressField = new staffContactChangeDataStaffContactHomeAddress();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string title {
             get {
                 return this.titleField;
@@ -683,17 +692,17 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=3)]
-        public string description {
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string contactType {
             get {
-                return this.descriptionField;
+                return this.contactTypeField;
             }
             set {
-                this.descriptionField = value;
+                this.contactTypeField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=4)]
         public string relationshipType {
             get {
                 return this.relationshipTypeField;
@@ -763,7 +772,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=11)]
         public staffContactChangeDataStaffContactHomeAddress homeAddress {
             get {
                 return this.homeAddressField;
@@ -860,7 +869,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
     public partial class staffContractChange : EntityBase<staffContractChange> {
         
-        private List<staffContractChangeData> dataField;
+        private staffContractChangeData dataField;
         
         private int versionField;
         
@@ -869,11 +878,11 @@ namespace Fusion.Messages.SocialCare.Schemas {
         private string staffRefField;
         
         public staffContractChange() {
-            this.dataField = new List<staffContractChangeData>();
+            this.dataField = new staffContractChangeData();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute("data", Order=0)]
-        public List<staffContractChangeData> data {
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public staffContractChangeData data {
             get {
                 return this.dataField;
             }
@@ -923,13 +932,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
-        
-        private System.DateTime effectiveFromField;
-        
-        private System.DateTime effectiveToField;
-        
-        private bool effectiveToFieldSpecified;
+        private recordStatusStandard recordStatusField;
         
         public staffContractChangeData() {
             this.staffContractField = new staffContractChangeDataStaffContract();
@@ -956,42 +959,12 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
             set {
                 this.recordStatusField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType="date")]
-        public System.DateTime effectiveFrom {
-            get {
-                return this.effectiveFromField;
-            }
-            set {
-                this.effectiveFromField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType="date")]
-        public System.DateTime effectiveTo {
-            get {
-                return this.effectiveToField;
-            }
-            set {
-                this.effectiveToField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool effectiveToSpecified {
-            get {
-                return this.effectiveToFieldSpecified;
-            }
-            set {
-                this.effectiveToFieldSpecified = value;
             }
         }
     }
@@ -1012,6 +985,14 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private decimal maximumHoursPerWeekField;
         
+        private System.DateTime effectiveFromField;
+        
+        private System.Nullable<System.DateTime> effectiveToField;
+        
+        private bool effectiveToFieldSpecified;
+        
+        private string costCenterField;
+        
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string contractName {
             get {
@@ -1022,7 +1003,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public string department {
             get {
                 return this.departmentField;
@@ -1061,168 +1042,46 @@ namespace Fusion.Messages.SocialCare.Schemas {
                 this.maximumHoursPerWeekField = value;
             }
         }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
-    public partial class staffHolidayBalanceRemainingChange : EntityBase<staffHolidayBalanceRemainingChange> {
         
-        private staffHolidayBalanceRemainingChangeData dataField;
-        
-        private int versionField;
-        
-        private string staffRefField;
-        
-        public staffHolidayBalanceRemainingChange() {
-            this.dataField = new staffHolidayBalanceRemainingChangeData();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public staffHolidayBalanceRemainingChangeData data {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=5)]
+        public System.DateTime effectiveFrom {
             get {
-                return this.dataField;
+                return this.effectiveFromField;
             }
             set {
-                this.dataField = value;
+                this.effectiveFromField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int version {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=6)]
+        public System.Nullable<System.DateTime> effectiveTo {
             get {
-                return this.versionField;
+                return this.effectiveToField;
             }
             set {
-                this.versionField = value;
+                this.effectiveToField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string staffRef {
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool effectiveToSpecified {
             get {
-                return this.staffRefField;
+                return this.effectiveToFieldSpecified;
             }
             set {
-                this.staffRefField = value;
+                this.effectiveToFieldSpecified = value;
             }
         }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class staffHolidayBalanceRemainingChangeData : EntityBase<staffHolidayBalanceRemainingChangeData> {
         
-        private staffHolidayBalanceRemainingChangeDataStaffHolidayBalanceRemaining staffHolidayBalanceRemainingField;
-        
-        private string auditUserNameField;
-        
-        private recordStatusTransactional recordStatusField;
-        
-        public staffHolidayBalanceRemainingChangeData() {
-            this.staffHolidayBalanceRemainingField = new staffHolidayBalanceRemainingChangeDataStaffHolidayBalanceRemaining();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public staffHolidayBalanceRemainingChangeDataStaffHolidayBalanceRemaining staffHolidayBalanceRemaining {
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=7)]
+        public string costCenter {
             get {
-                return this.staffHolidayBalanceRemainingField;
+                return this.costCenterField;
             }
             set {
-                this.staffHolidayBalanceRemainingField = value;
+                this.costCenterField = value;
             }
         }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string auditUserName {
-            get {
-                return this.auditUserNameField;
-            }
-            set {
-                this.auditUserNameField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusTransactional recordStatus {
-            get {
-                return this.recordStatusField;
-            }
-            set {
-                this.recordStatusField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class staffHolidayBalanceRemainingChangeDataStaffHolidayBalanceRemaining : EntityBase<staffHolidayBalanceRemainingChangeDataStaffHolidayBalanceRemaining> {
-        
-        private System.DateTime effectiveDateField;
-        
-        private decimal holidayHoursRemainingField;
-        
-        private decimal holidayHoursTakenField;
-        
-        private decimal holidayHoursEntitlementField;
-        
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=0)]
-        public System.DateTime effectiveDate {
-            get {
-                return this.effectiveDateField;
-            }
-            set {
-                this.effectiveDateField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
-        public decimal holidayHoursRemaining {
-            get {
-                return this.holidayHoursRemainingField;
-            }
-            set {
-                this.holidayHoursRemainingField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public decimal holidayHoursTaken {
-            get {
-                return this.holidayHoursTakenField;
-            }
-            set {
-                this.holidayHoursTakenField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public decimal holidayHoursEntitlement {
-            get {
-                return this.holidayHoursEntitlementField;
-            }
-            set {
-                this.holidayHoursEntitlementField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion")]
-    public enum recordStatusTransactional {
-        
-        /// <remarks/>
-        Active,
-        
-        /// <remarks/>
-        Removed,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
@@ -1295,7 +1154,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public staffLegalDocumentChangeData() {
             this.staffLegalDocumentField = new staffLegalDocumentChangeDataStaffLegalDocument();
@@ -1322,7 +1181,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -1338,18 +1197,32 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
     public partial class staffLegalDocumentChangeDataStaffLegalDocument : EntityBase<staffLegalDocumentChangeDataStaffLegalDocument> {
         
-        private staffLegalDocumentChangeDataStaffLegalDocumentTypeName typeNameField;
+        private legalDocumentTypes typeNameField;
         
         private System.DateTime validFromField;
         
-        private System.DateTime validToField;
+        private bool validFromFieldSpecified;
+        
+        private System.Nullable<System.DateTime> validToField;
+        
+        private bool validToFieldSpecified;
         
         private string documentReferenceField;
         
-        private string secondaryReferenceField;
+        private string requestedByField;
+        
+        private System.Nullable<System.DateTime> requestedDateField;
+        
+        private bool requestedDateFieldSpecified;
+        
+        private string acceptedByField;
+        
+        private System.Nullable<System.DateTime> acceptedDateField;
+        
+        private bool acceptedDateFieldSpecified;
         
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public staffLegalDocumentChangeDataStaffLegalDocumentTypeName typeName {
+        public legalDocumentTypes typeName {
             get {
                 return this.typeNameField;
             }
@@ -1368,13 +1241,33 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=2)]
-        public System.DateTime validTo {
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool validFromSpecified {
+            get {
+                return this.validFromFieldSpecified;
+            }
+            set {
+                this.validFromFieldSpecified = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=2)]
+        public System.Nullable<System.DateTime> validTo {
             get {
                 return this.validToField;
             }
             set {
                 this.validToField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool validToSpecified {
+            get {
+                return this.validToFieldSpecified;
+            }
+            set {
+                this.validToFieldSpecified = value;
             }
         }
         
@@ -1389,23 +1282,73 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=4)]
-        public string secondaryReference {
+        public string requestedBy {
             get {
-                return this.secondaryReferenceField;
+                return this.requestedByField;
             }
             set {
-                this.secondaryReferenceField = value;
+                this.requestedByField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=5)]
+        public System.Nullable<System.DateTime> requestedDate {
+            get {
+                return this.requestedDateField;
+            }
+            set {
+                this.requestedDateField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool requestedDateSpecified {
+            get {
+                return this.requestedDateFieldSpecified;
+            }
+            set {
+                this.requestedDateFieldSpecified = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=6)]
+        public string acceptedBy {
+            get {
+                return this.acceptedByField;
+            }
+            set {
+                this.acceptedByField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=7)]
+        public System.Nullable<System.DateTime> acceptedDate {
+            get {
+                return this.acceptedDateField;
+            }
+            set {
+                this.acceptedDateField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool acceptedDateSpecified {
+            get {
+                return this.acceptedDateFieldSpecified;
+            }
+            set {
+                this.acceptedDateFieldSpecified = value;
             }
         }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public enum staffLegalDocumentChangeDataStaffLegalDocumentTypeName {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion")]
+    public enum legalDocumentTypes {
         
         /// <remarks/>
-        CRB,
+        DBS,
         
         /// <remarks/>
         NursingRegistration,
@@ -1505,7 +1448,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public staffPictureChangeData() {
             this.pictureChangeField = new staffPictureChangeDataPictureChange();
@@ -1532,7 +1475,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -1562,7 +1505,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary", IsNullable=true, Order=1)]
         public byte[] picture {
             get {
                 return this.pictureField;
@@ -1588,10 +1531,10 @@ namespace Fusion.Messages.SocialCare.Schemas {
         GIF,
         
         /// <remarks/>
-        PNG,
+        JPEG,
         
         /// <remarks/>
-        JPEG,
+        EMPTY,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
@@ -1664,7 +1607,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public staffSkillChangeData() {
             this.staffSkillField = new staffSkillChangeDataStaffSkill();
@@ -1691,7 +1634,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -1717,7 +1660,9 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private bool trainingEndFieldSpecified;
         
-        private System.DateTime validFromField;
+        private System.Nullable<System.DateTime> validFromField;
+        
+        private bool validFromFieldSpecified;
         
         private System.Nullable<System.DateTime> validToField;
         
@@ -1730,18 +1675,6 @@ namespace Fusion.Messages.SocialCare.Schemas {
         private System.Nullable<bool> didNotAttendField;
         
         private bool didNotAttendFieldSpecified;
-        
-        private string requestedByField;
-        
-        private System.Nullable<System.DateTime> requestedDateField;
-        
-        private bool requestedDateFieldSpecified;
-        
-        private string acceptedByField;
-        
-        private System.Nullable<System.DateTime> acceptedDateField;
-        
-        private bool acceptedDateFieldSpecified;
         
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string name {
@@ -1793,13 +1726,23 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=3)]
-        public System.DateTime validFrom {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=3)]
+        public System.Nullable<System.DateTime> validFrom {
             get {
                 return this.validFromField;
             }
             set {
                 this.validFromField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool validFromSpecified {
+            get {
+                return this.validFromFieldSpecified;
+            }
+            set {
+                this.validFromFieldSpecified = value;
             }
         }
         
@@ -1862,66 +1805,216 @@ namespace Fusion.Messages.SocialCare.Schemas {
                 this.didNotAttendFieldSpecified = value;
             }
         }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
+    public partial class staffTimesheetPerContractSubmission : EntityBase<staffTimesheetPerContractSubmission> {
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=8)]
-        public string requestedBy {
+        private staffTimesheetPerContractSubmissionData dataField;
+        
+        private int versionField;
+        
+        private string submissionRefField;
+        
+        private string staffRefField;
+        
+        public staffTimesheetPerContractSubmission() {
+            this.dataField = new staffTimesheetPerContractSubmissionData();
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public staffTimesheetPerContractSubmissionData data {
             get {
-                return this.requestedByField;
+                return this.dataField;
             }
             set {
-                this.requestedByField = value;
+                this.dataField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=9)]
-        public System.Nullable<System.DateTime> requestedDate {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int version {
             get {
-                return this.requestedDateField;
+                return this.versionField;
             }
             set {
-                this.requestedDateField = value;
+                this.versionField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool requestedDateSpecified {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string submissionRef {
             get {
-                return this.requestedDateFieldSpecified;
+                return this.submissionRefField;
             }
             set {
-                this.requestedDateFieldSpecified = value;
+                this.submissionRefField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=10)]
-        public string acceptedBy {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string staffRef {
             get {
-                return this.acceptedByField;
+                return this.staffRefField;
             }
             set {
-                this.acceptedByField = value;
+                this.staffRefField = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
+    public partial class staffTimesheetPerContractSubmissionData : EntityBase<staffTimesheetPerContractSubmissionData> {
+        
+        private staffTimesheetPerContractSubmissionDataStaffTimesheetPerContract staffTimesheetPerContractField;
+        
+        private string auditUserNameField;
+        
+        private recordStatusTransactional recordStatusField;
+        
+        public staffTimesheetPerContractSubmissionData() {
+            this.staffTimesheetPerContractField = new staffTimesheetPerContractSubmissionDataStaffTimesheetPerContract();
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public staffTimesheetPerContractSubmissionDataStaffTimesheetPerContract staffTimesheetPerContract {
+            get {
+                return this.staffTimesheetPerContractField;
+            }
+            set {
+                this.staffTimesheetPerContractField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=11)]
-        public System.Nullable<System.DateTime> acceptedDate {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string auditUserName {
             get {
-                return this.acceptedDateField;
+                return this.auditUserNameField;
             }
             set {
-                this.acceptedDateField = value;
+                this.auditUserNameField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool acceptedDateSpecified {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public recordStatusTransactional recordStatus {
             get {
-                return this.acceptedDateFieldSpecified;
+                return this.recordStatusField;
             }
             set {
-                this.acceptedDateFieldSpecified = value;
+                this.recordStatusField = value;
             }
         }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
+    public partial class staffTimesheetPerContractSubmissionDataStaffTimesheetPerContract : EntityBase<staffTimesheetPerContractSubmissionDataStaffTimesheetPerContract> {
+        
+        private string contractNameField;
+        
+        private System.DateTime timesheetDateField;
+        
+        private decimal plannedHoursField;
+        
+        private decimal workedHoursField;
+        
+        private decimal toilHoursAccruedField;
+        
+        private decimal holidayHoursTakenField;
+        
+        private decimal toilHoursTakenField;
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string contractName {
+            get {
+                return this.contractNameField;
+            }
+            set {
+                this.contractNameField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=1)]
+        public System.DateTime timesheetDate {
+            get {
+                return this.timesheetDateField;
+            }
+            set {
+                this.timesheetDateField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public decimal plannedHours {
+            get {
+                return this.plannedHoursField;
+            }
+            set {
+                this.plannedHoursField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public decimal workedHours {
+            get {
+                return this.workedHoursField;
+            }
+            set {
+                this.workedHoursField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public decimal toilHoursAccrued {
+            get {
+                return this.toilHoursAccruedField;
+            }
+            set {
+                this.toilHoursAccruedField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public decimal holidayHoursTaken {
+            get {
+                return this.holidayHoursTakenField;
+            }
+            set {
+                this.holidayHoursTakenField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public decimal toilHoursTaken {
+            get {
+                return this.toilHoursTakenField;
+            }
+            set {
+                this.toilHoursTakenField = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion")]
+    public enum recordStatusTransactional {
+        
+        /// <remarks/>
+        Active,
+        
+        /// <remarks/>
+        Removed,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
@@ -1982,7 +2075,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public serviceUserChangeData() {
             this.serviceUserField = new serviceUserChangeDataServiceUser();
@@ -2009,7 +2102,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -2037,9 +2130,25 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string serviceUserNumberField;
         
+        private string primarySiteField;
+        
+        private string roomField;
+        
+        private System.DateTime admissionDateField;
+        
+        private System.Nullable<System.DateTime> dischargeDateField;
+        
+        private bool dischargeDateFieldSpecified;
+        
+        private string serviceTypeField;
+        
+        private string fundingTypeField;
+        
+        private string locationWithinFacilityField;
+        
         private string companyNameField;
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string title {
             get {
                 return this.titleField;
@@ -2099,7 +2208,87 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=6)]
+        public string primarySite {
+            get {
+                return this.primarySiteField;
+            }
+            set {
+                this.primarySiteField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=7)]
+        public string room {
+            get {
+                return this.roomField;
+            }
+            set {
+                this.roomField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=8)]
+        public System.DateTime admissionDate {
+            get {
+                return this.admissionDateField;
+            }
+            set {
+                this.admissionDateField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=9)]
+        public System.Nullable<System.DateTime> dischargeDate {
+            get {
+                return this.dischargeDateField;
+            }
+            set {
+                this.dischargeDateField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool dischargeDateSpecified {
+            get {
+                return this.dischargeDateFieldSpecified;
+            }
+            set {
+                this.dischargeDateFieldSpecified = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string serviceType {
+            get {
+                return this.serviceTypeField;
+            }
+            set {
+                this.serviceTypeField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string fundingType {
+            get {
+                return this.fundingTypeField;
+            }
+            set {
+                this.fundingTypeField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=12)]
+        public string locationWithinFacility {
+            get {
+                return this.locationWithinFacilityField;
+            }
+            set {
+                this.locationWithinFacilityField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=13)]
         public string companyName {
             get {
                 return this.companyNameField;
@@ -2168,13 +2357,13 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public serviceUserHomeAddressChangeData() {
             this.homeAddressField = new serviceUserHomeAddressChangeDataHomeAddress();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
         public serviceUserHomeAddressChangeDataHomeAddress homeAddress {
             get {
                 return this.homeAddressField;
@@ -2195,7 +2384,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -2301,195 +2490,9 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
-    public partial class serviceUserCareDeliveryAddressChange : EntityBase<serviceUserCareDeliveryAddressChange> {
+    public partial class serviceUserFundingChange : EntityBase<serviceUserFundingChange> {
         
-        private serviceUserCareDeliveryAddressChangeData dataField;
-        
-        private int versionField;
-        
-        private string serviceUserRefField;
-        
-        public serviceUserCareDeliveryAddressChange() {
-            this.dataField = new serviceUserCareDeliveryAddressChangeData();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserCareDeliveryAddressChangeData data {
-            get {
-                return this.dataField;
-            }
-            set {
-                this.dataField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int version {
-            get {
-                return this.versionField;
-            }
-            set {
-                this.versionField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string serviceUserRef {
-            get {
-                return this.serviceUserRefField;
-            }
-            set {
-                this.serviceUserRefField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserCareDeliveryAddressChangeData : EntityBase<serviceUserCareDeliveryAddressChangeData> {
-        
-        private serviceUserCareDeliveryAddressChangeDataCareDeliveryAddress careDeliveryAddressField;
-        
-        private string auditUserNameField;
-        
-        private recordStatusRescindable recordStatusField;
-        
-        public serviceUserCareDeliveryAddressChangeData() {
-            this.careDeliveryAddressField = new serviceUserCareDeliveryAddressChangeDataCareDeliveryAddress();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserCareDeliveryAddressChangeDataCareDeliveryAddress careDeliveryAddress {
-            get {
-                return this.careDeliveryAddressField;
-            }
-            set {
-                this.careDeliveryAddressField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string auditUserName {
-            get {
-                return this.auditUserNameField;
-            }
-            set {
-                this.auditUserNameField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
-            get {
-                return this.recordStatusField;
-            }
-            set {
-                this.recordStatusField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserCareDeliveryAddressChangeDataCareDeliveryAddress : EntityBase<serviceUserCareDeliveryAddressChangeDataCareDeliveryAddress> {
-        
-        private string addressLine1Field;
-        
-        private string addressLine2Field;
-        
-        private string addressLine3Field;
-        
-        private string addressLine4Field;
-        
-        private string addressLine5Field;
-        
-        private string postCodeField;
-        
-        private string phoneNumberField;
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public string addressLine1 {
-            get {
-                return this.addressLine1Field;
-            }
-            set {
-                this.addressLine1Field = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
-        public string addressLine2 {
-            get {
-                return this.addressLine2Field;
-            }
-            set {
-                this.addressLine2Field = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public string addressLine3 {
-            get {
-                return this.addressLine3Field;
-            }
-            set {
-                this.addressLine3Field = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public string addressLine4 {
-            get {
-                return this.addressLine4Field;
-            }
-            set {
-                this.addressLine4Field = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public string addressLine5 {
-            get {
-                return this.addressLine5Field;
-            }
-            set {
-                this.addressLine5Field = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public string postCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=6)]
-        public string phoneNumber {
-            get {
-                return this.phoneNumberField;
-            }
-            set {
-                this.phoneNumberField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
-    public partial class serviceUserCareSysFundingChange : EntityBase<serviceUserCareSysFundingChange> {
-        
-        private serviceUserCareSysFundingChangeData dataField;
+        private List<serviceUserFundingChangeData> dataField;
         
         private int versionField;
         
@@ -2497,12 +2500,12 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string originalFundingRefField;
         
-        public serviceUserCareSysFundingChange() {
-            this.dataField = new serviceUserCareSysFundingChangeData();
+        public serviceUserFundingChange() {
+            this.dataField = new List<serviceUserFundingChangeData>();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserCareSysFundingChangeData data {
+        [System.Xml.Serialization.XmlElementAttribute("data", Order=0)]
+        public List<serviceUserFundingChangeData> data {
             get {
                 return this.dataField;
             }
@@ -2546,20 +2549,20 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserCareSysFundingChangeData : EntityBase<serviceUserCareSysFundingChangeData> {
+    public partial class serviceUserFundingChangeData : EntityBase<serviceUserFundingChangeData> {
         
-        private serviceUserCareSysFundingChangeDataFunding fundingField;
+        private serviceUserFundingChangeDataFunding fundingField;
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
-        public serviceUserCareSysFundingChangeData() {
-            this.fundingField = new serviceUserCareSysFundingChangeDataFunding();
+        public serviceUserFundingChangeData() {
+            this.fundingField = new serviceUserFundingChangeDataFunding();
         }
         
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserCareSysFundingChangeDataFunding funding {
+        public serviceUserFundingChangeDataFunding funding {
             get {
                 return this.fundingField;
             }
@@ -2579,7 +2582,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -2593,7 +2596,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserCareSysFundingChangeDataFunding : EntityBase<serviceUserCareSysFundingChangeDataFunding> {
+    public partial class serviceUserFundingChangeDataFunding : EntityBase<serviceUserFundingChangeDataFunding> {
         
         private string serviceUserRefField;
         
@@ -2786,7 +2789,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public serviceUserContactChangeData() {
             this.serviceUserContactField = new serviceUserContactChangeDataServiceUserContact();
@@ -2813,7 +2816,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -2835,7 +2838,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string surnameField;
         
-        private string descriptionField;
+        private string contactTypeField;
         
         private string relationshipTypeField;
         
@@ -2857,7 +2860,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             this.homeAddressField = new serviceUserContactChangeDataServiceUserContactHomeAddress();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string title {
             get {
                 return this.titleField;
@@ -2887,17 +2890,17 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=3)]
-        public string description {
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string contactType {
             get {
-                return this.descriptionField;
+                return this.contactTypeField;
             }
             set {
-                this.descriptionField = value;
+                this.contactTypeField = value;
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=4)]
         public string relationshipType {
             get {
                 return this.relationshipTypeField;
@@ -2967,7 +2970,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=11)]
         public serviceUserContactChangeDataServiceUserContactHomeAddress homeAddress {
             get {
                 return this.homeAddressField;
@@ -3115,7 +3118,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public serviceUserFunderChangeData() {
             this.serviceUserFunderField = new serviceUserFunderChangeDataServiceUserFunder();
@@ -3142,7 +3145,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -3481,7 +3484,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         
         private string auditUserNameField;
         
-        private recordStatusRescindable recordStatusField;
+        private recordStatusStandard recordStatusField;
         
         public serviceUserPictureChangeData() {
             this.pictureChangeField = new serviceUserPictureChangeDataPictureChange();
@@ -3508,7 +3511,7 @@ namespace Fusion.Messages.SocialCare.Schemas {
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
+        public recordStatusStandard recordStatus {
             get {
                 return this.recordStatusField;
             }
@@ -3538,235 +3541,13 @@ namespace Fusion.Messages.SocialCare.Schemas {
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary", IsNullable=true, Order=1)]
         public byte[] picture {
             get {
                 return this.pictureField;
             }
             set {
                 this.pictureField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare", IsNullable=false)]
-    public partial class serviceUserStayChange : EntityBase<serviceUserStayChange> {
-        
-        private serviceUserStayChangeData dataField;
-        
-        private int versionField;
-        
-        private string serviceUserStayRefField;
-        
-        private string serviceUserRefField;
-        
-        public serviceUserStayChange() {
-            this.dataField = new serviceUserStayChangeData();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserStayChangeData data {
-            get {
-                return this.dataField;
-            }
-            set {
-                this.dataField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int version {
-            get {
-                return this.versionField;
-            }
-            set {
-                this.versionField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string serviceUserStayRef {
-            get {
-                return this.serviceUserStayRefField;
-            }
-            set {
-                this.serviceUserStayRefField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string serviceUserRef {
-            get {
-                return this.serviceUserRefField;
-            }
-            set {
-                this.serviceUserRefField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserStayChangeData : EntityBase<serviceUserStayChangeData> {
-        
-        private serviceUserStayChangeDataServiceUserStay serviceUserStayField;
-        
-        private string auditUserNameField;
-        
-        private recordStatusRescindable recordStatusField;
-        
-        public serviceUserStayChangeData() {
-            this.serviceUserStayField = new serviceUserStayChangeDataServiceUserStay();
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public serviceUserStayChangeDataServiceUserStay serviceUserStay {
-            get {
-                return this.serviceUserStayField;
-            }
-            set {
-                this.serviceUserStayField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string auditUserName {
-            get {
-                return this.auditUserNameField;
-            }
-            set {
-                this.auditUserNameField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public recordStatusRescindable recordStatus {
-            get {
-                return this.recordStatusField;
-            }
-            set {
-                this.recordStatusField = value;
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.4.0.38968")]
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public partial class serviceUserStayChangeDataServiceUserStay : EntityBase<serviceUserStayChangeDataServiceUserStay> {
-        
-        private string primarySiteField;
-        
-        private string roomField;
-        
-        private System.DateTime admissionDateField;
-        
-        private System.Nullable<System.DateTime> dischargeDateField;
-        
-        private bool dischargeDateFieldSpecified;
-        
-        private string serviceTypeField;
-        
-        private string fundingTypeField;
-        
-        private string locationWithinFacilityField;
-        
-        private string companyNameField;
-        
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=0)]
-        public string primarySite {
-            get {
-                return this.primarySiteField;
-            }
-            set {
-                this.primarySiteField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=1)]
-        public string room {
-            get {
-                return this.roomField;
-            }
-            set {
-                this.roomField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=2)]
-        public System.DateTime admissionDate {
-            get {
-                return this.admissionDateField;
-            }
-            set {
-                this.admissionDateField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true, Order=3)]
-        public System.Nullable<System.DateTime> dischargeDate {
-            get {
-                return this.dischargeDateField;
-            }
-            set {
-                this.dischargeDateField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool dischargeDateSpecified {
-            get {
-                return this.dischargeDateFieldSpecified;
-            }
-            set {
-                this.dischargeDateFieldSpecified = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public string serviceType {
-            get {
-                return this.serviceTypeField;
-            }
-            set {
-                this.serviceTypeField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public string fundingType {
-            get {
-                return this.fundingTypeField;
-            }
-            set {
-                this.fundingTypeField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true, Order=6)]
-        public string locationWithinFacility {
-            get {
-                return this.locationWithinFacilityField;
-            }
-            set {
-                this.locationWithinFacilityField = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
-        public string companyName {
-            get {
-                return this.companyNameField;
-            }
-            set {
-                this.companyNameField = value;
             }
         }
     }

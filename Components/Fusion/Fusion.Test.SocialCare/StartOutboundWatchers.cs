@@ -97,29 +97,29 @@ namespace Fusion.Test.SocialCare
                         MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserHomeAddressChangeRequest),
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserHomeAddressChange", "serviceUserRef")
                     },
-
+/*
                     new OutboundWatcherDefinition { 
                         PathToWatch = "ServiceUserCareDeilveryAddressChangeRequest", 
                         MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserCareDeliveryAddressChangeRequest),
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserCareDeliveryAddressChange", "serviceUserRef")
                     },
-                
+*/                
                     new OutboundWatcherDefinition { 
                         PathToWatch = "ServiceUserFunderChangeRequest", 
                         MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserFunderChangeRequest) ,
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserFunderChange", "serviceUserFunderRef")
                     },
-
+/*
                     new OutboundWatcherDefinition { 
                         PathToWatch = "ServiceUserStayChangeRequest", 
                         MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserStayChangeRequest) ,
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserStayChange", "serviceUserStayRef", "serviceUserRef")
                     },
-
+*/
                     new OutboundWatcherDefinition { 
-                        PathToWatch = "ServiceUserCareSysFundingChange", 
-                        MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserCareSysFundingChangeMessage),
-                        MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserCareSysFundingChange", "fundingRef")
+                        PathToWatch = "ServiceUserFundingChange", 
+                        MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserFundingChangeMessage),
+                        MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserFundingChange", "fundingRef")
                     },
 
                     new OutboundWatcherDefinition { 

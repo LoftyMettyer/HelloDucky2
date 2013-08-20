@@ -27,16 +27,6 @@
 			<xs:minLength value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="recordStatusRescindable">
-		<xs:annotation>
-			<xs:documentation>A record that can be immediately withdrawn</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="Active"/>
-			<xs:enumeration value="Inactive"/>
-			<xs:enumeration value="RecordCreatedInError"/>
-		</xs:restriction>
-	</xs:simpleType>
 	<xs:simpleType name="recordStatusTransactional">
 		<xs:annotation>
 			<xs:documentation>A transactional record that can be marked as removed/voided</xs:documentation>
@@ -68,6 +58,7 @@
 			<xs:enumeration value="BMP"/>
 			<xs:enumeration value="GIF"/>
 			<xs:enumeration value="JPEG"/>
+			<xs:enumeration value="EMPTY"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="legalDocumentTypes">
