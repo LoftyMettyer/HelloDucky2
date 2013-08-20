@@ -1223,16 +1223,16 @@
 			If Session("optionOLEType") > 1 Then
 				Dim objOLE = Session("OLEObject")
 				' The following are now set using getpropertiesfromstream.
-				'	objOLE.FileName = ""
-				'	objOLE.TempLocationPhysical = strUploadPath
-				'	objOLE.TempLocationUNC = strUploadPath
-				'	objOLE.CurrentSessionKey = Session.SessionID
-				'	objOLE.CurrentUser = Request.ServerVariables("LOGON_USER")
-				'	objOLE.UseFileSecurity = True
-				'	objOLE.UseEncryption = bEncryption
-				'	objOLE.UseFileSecurity = False
-				'	objOLE.CreateOLEDocument(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
-				'	objOLE.CloseStream()
+				objOLE.FileName = ""
+				objOLE.TempLocationPhysical = strUploadPath
+				objOLE.TempLocationUNC = strUploadPath
+				objOLE.CurrentSessionKey = Session.SessionID
+				objOLE.CurrentUser = Request.ServerVariables("LOGON_USER")
+				objOLE.UseFileSecurity = True
+				objOLE.UseEncryption = bEncryption
+				objOLE.UseFileSecurity = False
+				objOLE.CreateOLEDocument(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
+				objOLE.CloseStream()
 				bEncryption = (objOLE.OLEType = 2)
 				Session("optionOLEType") = objOLE.OLEType
 				strFullFileName = objOLE.FileName
