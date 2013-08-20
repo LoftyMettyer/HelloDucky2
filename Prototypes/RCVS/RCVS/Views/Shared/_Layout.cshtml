@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>@ViewBag.Title - My ASP.NET MVC Application</title>
+	<link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	<meta name="viewport" content="width=device-width" />
+	@Styles.Render("~/Content/css")
+</head>
+<body>
+	<header>
+		<div class="pagehead wrap three-columns">
+			<div id="logocontainer">
+				<a href="/home/" title="RCVS home" class="logo">
+					<img src="/images/rcvs-logo.png" alt="RCVS logo">
+				</a>
+
+				<p class="tagline">Welcome to the Royal College of Veterinary Surgeons</p>
+
+
+
+			</div>
+			<div class="search">
+				<a href="/search-tips/" id="search_tips"><span class="icon"></span><span class="label">Search tips</span></a>
+				<form action="/search/">
+					<fieldset>
+						<legend>Site Search</legend>
+						<div>
+							<input id="sitesearch-keywords" type="text" name="keywords" value="What are you looking for?" class="input_text value_toggle" title="What are you looking for?">
+							<input id="sitesearch-button" name="search" type="image" src="/themes/rcvs-new/front-end/gfx/rcvs-btn_search.gif" alt="Search">
+						</div>
+					</fieldset>
+				</form>
+
+				<div class="login">
+					@Html.Partial("_LoginPartial")
+			  </div>
+
+
+			</div>
+		</div>
+		<div class="pagemenu wrap three-columns">
+			<ul id="nav">
+				<li id="nav_home">
+					<a href="/home/">Home</a>
+				</li>
+				<li id="nav_about-us">
+					<a href="/about-us/">About</a>
+				</li>
+				<li id="nav_news-and-events">
+					<a href="/news-and-events/">News & events</a>
+				</li>
+				<li id="nav_registration" class="active">
+					<a href="/registration/" class="active">Registration</a>
+				</li>
+				<li id="nav_advice-and-guidance">
+					<a href="/advice-and-guidance/">Advice & guidance</a>
+				</li>
+				<li id="nav_education">
+					<a href="/education/">Education</a>
+				</li>
+				<li id="nav_complaints">
+					<a href="/complaints/">Complaints</a>
+				</li>
+				<li id="nav_practice-standards-scheme">
+					<a href="/practice-standards-scheme/">Practice Standards</a>
+				</li>
+				<li id="nav_publications">
+					<a href="/publications/">Publications</a>
+				</li>
+
+
+			</ul>
+		</div>
+	</header>
+	<div id="body">
+		@RenderSection("featured", required: false)
+		<section class="content-wrapper main-content clear-fix">
+			<div class="page">
+			@RenderBody()
+				</div>
+		</section>
+	</div>
+	<footer>
+		<div class="content-wrapper">
+			<div class="float-left">
+				<p>&copy; @DateTime.Now.Year - My ASP.NET MVC Application</p>
+			</div>
+		</div>
+	</footer>
+
+	@Scripts.Render("~/bundles/jquery")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
