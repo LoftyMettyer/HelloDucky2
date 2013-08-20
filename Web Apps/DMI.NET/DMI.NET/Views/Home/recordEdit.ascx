@@ -321,10 +321,11 @@
 		        
 						//Limit the scale factor to 1.5x
 		        scaleFactor = Math.min(scaleFactor, 1.5);
+            
 		        
-						$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
+				$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
 		        $("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
-		        $("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
+		       // $("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
 		        $("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
 		        $("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
 		        $("#ctlRecordEdit").css("transform-origin", "50% top");
