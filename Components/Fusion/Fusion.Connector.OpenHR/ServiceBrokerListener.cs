@@ -117,6 +117,8 @@ namespace Fusion
                                 if (canSend)
                                 {
                                     MessageSenderInvoker.Invoke(fusionMessage);
+																		Logger.InfoFormat("Outbound message {0}/{1} Message sent successfully", message.MessageType, message.LocalId);
+																		FusionLogger.InfoMessageTransactional(fusionMessage, FusionLogLevel.Info, "Message sent successfully");
                                 }
                                 else
                                 {
