@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Linq;
+using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Core;
 using log4net;
 
@@ -14,6 +15,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using Dapper;
 using System.Data;
+using Address = Fusion.Connector.OpenHR.MessageComponents.Component.Address;
 
 namespace Fusion.Connector.OpenHR.MessageHandlers
 {
@@ -101,6 +103,11 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     cmd.Parameters.Add(new SqlParameter("@companyName", staff.data.staff.companyName ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@jobTitle", staff.data.staff.jobTitle ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@managerRef", staff.data.staff.managerRef ?? (object)DBNull.Value));
+
+										if (staff.data.staff.homeAddress == null) {
+											staff.data.staff.homeAddress = new Address();
+										}
+
                     cmd.Parameters.Add(new SqlParameter("@addressLine1", staff.data.staff.homeAddress.addressLine1 ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@addressLine2", staff.data.staff.homeAddress.addressLine2 ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@addressLine3", staff.data.staff.homeAddress.addressLine3 ?? (object)DBNull.Value));
