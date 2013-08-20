@@ -28,5 +28,10 @@ namespace RCVS.Controllers
 
 			return View();
 		}
+
+		public ActionResult Form1A2()
+		{
+			return View();
+		}
 	}
 }

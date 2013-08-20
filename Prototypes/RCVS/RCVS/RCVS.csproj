@@ -186,8 +186,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Degree.cs" />
+    <Compile Include="Classes\TimePeriod.cs" />
+    <Compile Include="Classes\TRFDetails.cs" />
     <Compile Include="Classes\University.cs" />
-    <Compile Include="Models\Form1A2.cs" />
+    <Compile Include="Models\Form1A2Model.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
     <Compile Include="WebServiceClasses\LoginParameters.cs" />
     <Compile Include="WebServiceClasses\LoginResult.cs" />
@@ -367,6 +370,7 @@
     <Content Include="Views\Registration\Form1A.cshtml" />
     <Content Include="Views\Registration\Index.cshtml" />
     <Content Include="Service References\IRISWebServices\ndataaccess.wsdl" />
+    <Content Include="Views\Home\Form1A2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
