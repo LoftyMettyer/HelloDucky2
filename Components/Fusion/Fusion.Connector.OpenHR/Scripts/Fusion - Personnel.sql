@@ -493,6 +493,51 @@ END
 
 GO
 
+
+CREATE PROCEDURE fusion.pMessageUpdate_StaffTimesheetSubmission(@ID int OUTPUT
+	,@staffID					integer
+	,@recordIsInactive			tinyint
+	,@timesheetDate				datetime
+	,@plannedHours				numeric(5,2)
+	,@workedHours				numeric(5,2)
+	,@toilHoursAccrued			numeric(5,2)
+	,@holidayHoursTaken			numeric(5,2)
+	,@toilHoursTaken			numeric(5,2))
+AS
+BEGIN
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staffTimesheet WHERE ID_Timesheet = @ID;
+		END
+		RETURN 0;
+	END
+
+	IF ISNULL(@ID,0) = 0
+	BEGIN
+		INSERT fusion.staffTimesheet(ID_Timesheet, ID_Staff, timesheetDate, plannedHours, workedHours, toilHoursAccrued, holidayHoursTaken, toilHoursTaken)
+			VALUES (@ID, @staffID, @timesheetDate, @plannedHours, @workedHours, @toilHoursAccrued, @holidayHoursTaken, @toilHoursTaken)
+		
+		SELECT @ID = MAX(ID_Timesheet) FROM fusion.staffTimesheet;
+
+	END
+	ELSE
+	BEGIN
+		UPDATE fusion.staffTimesheet SET timesheetDate = @timesheetDate, plannedHours = @plannedHours
+					, workedHours = @workedHours, toilHoursAccrued = @toilHoursAccrued
+					, holidayHoursTaken = @holidayHoursTaken, toilHoursTaken = @toilHoursTaken
+					WHERE ID_Timesheet = @ID;
+	END
+
+END
+
+GO
+
+
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'fusion.spSendFusionMessage') AND xtype = 'P')
 	DROP PROCEDURE [fusion].[spSendFusionMessage];
 
