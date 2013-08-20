@@ -1271,8 +1271,18 @@ Namespace Controllers
 								Else
 									' More than one personnel record.
 									sErrorDescription = "You have access to more than one record in the defined Single-record view."
+
+									Session("ErrorTitle") = "Login Page"
+									Session("ErrorText") =
+									 "You could not login to the OpenHR database because of the following error:" & sErrorDescription & "<p>" & vbCrLf
+									Return RedirectToAction("Loginerror")
 								End If
 							End If
+						Else
+							Session("ErrorTitle") = "Login Page"
+							Session("ErrorText") =
+							 "You could not login to the OpenHR database because of the following error:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+							Return RedirectToAction("Loginerror")
 						End If
 
 						cmdSSRecord = Nothing
@@ -1365,6 +1375,11 @@ Namespace Controllers
 
 						If Len(sErrorDescription) = 0 Then
 							Session("recdesc") = cmdGetRecordDesc.Parameters("recordDesc").Value
+						Else
+							Session("ErrorTitle") = "Login Page"
+							Session("ErrorText") =
+							 "You could not login to the OpenHR database because of the following error:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+							Return RedirectToAction("Loginerror")
 						End If
 
 						cmdGetRecordDesc = Nothing
