@@ -192,6 +192,7 @@
     <Compile Include="Classes\Degree.cs" />
     <Compile Include="Classes\ExamAttempts.cs" />
     <Compile Include="Classes\PracticeArrangement.cs" />
+    <Compile Include="Classes\RenewalReason.cs" />
     <Compile Include="Classes\TimePeriod.cs" />
     <Compile Include="Classes\TRFDetails.cs" />
     <Compile Include="Classes\University.cs" />

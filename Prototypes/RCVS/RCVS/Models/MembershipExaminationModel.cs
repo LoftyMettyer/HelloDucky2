@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using RCVS.Classes;
 
 namespace RCVS.Models
@@ -11,10 +13,14 @@ namespace RCVS.Models
 	public class MembershipExaminationModel
 	{
 
-		[DisplayName("Reason for renewal of intention to sit?")]
-		public string RenewalReason { get; set; }
+		public string RenewalReasonCode { get; set; }
 
-		public IEnumerable<SelectListItem> RenewalReasons { get; set; }
+		[Required]
+		[DisplayName("Reason for renewal of intention to sit?")]
+		public List<RenewalReason> RenewalReasons { get; set; }
+
+//		public ICollection<RenewalReason> RenewalReasons { get; set; }
+//		public IEnumerable<SelectListItem> RenewalReasons { get; set; }
 
 		public ExamAttempts Attempts { get; set; }
 
@@ -32,14 +38,36 @@ namespace RCVS.Models
 		[DisplayName("When do you plan to take the test?")]
 		public DateTime? PlannedTestDate { get; set; }
 
-		[ DisplayName("If you have taken a test, give details")]
+		[DisplayName("If you have taken a test, give details")]
 		public TRFDetails PreviousTest { get; set; }
 
 
 		public void Save()
 		{
 			int _Save = 1;
+		}
 
+		public void LoadLookups()
+		{
+			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
+			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtRenewalChangeReasons;
+
+			var client = new IRISWebServices.NDataAccessSoapClient();
+
+			var response = client.GetLookupData(lookupDataType, "");
+
+			var doc = XDocument.Parse(response);
+			var list = (from xElement in doc.Root.Elements("DataRow") 
+					select new RenewalReason
+						{
+							Automatic = xElement.Element("Automatic").Value,
+							Description = xElement.Element("RenewalChangeReasonDesc").Value,
+							Reason = xElement.Element("RenewalChangeReason").Value,
+							Text = xElement.Element("RenewalChangeReasonDesc").Value,
+							Value = xElement.Element("RenewalChangeReason").Value
+						}).ToList();
+
+			RenewalReasons = list;
 
 		}
 

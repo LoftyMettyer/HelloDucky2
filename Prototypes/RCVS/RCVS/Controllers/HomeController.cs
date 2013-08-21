@@ -100,12 +100,29 @@ namespace RCVS.Controllers
 			return View();
 		}
 
-		public ActionResult RenewalOfDeclaration1B(MembershipExaminationModel model)
+		public ActionResult RenewalOfDeclaration1B()
 		{
-		//model.Save();
-			return View();
+			var model = new MembershipExaminationModel();
+			model.LoadLookups();
+
+			return View(model);
 		}
 
+		[HttpPost]
+		public ActionResult RenewalOfDeclaration1B(MembershipExaminationModel model)
+		{
+			model.Save();
+
+			model.LoadLookups();
+
+			return View(model);
+		}
+
+		//[HttpPost]
+		//public ActionResult RenewalOfDeclaration1B()
+		//{
+		//	return View();
+		//}
 
 
 	}

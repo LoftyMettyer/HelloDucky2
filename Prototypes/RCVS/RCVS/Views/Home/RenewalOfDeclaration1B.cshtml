@@ -10,16 +10,15 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
+	@Html.HiddenFor(x => x.IELTS);
+
     <fieldset>
         <legend>MembershipExaminationModel</legend>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.RenewalReason)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.RenewalReason)
-            @Html.ValidationMessageFor(model => model.RenewalReason)
-        </div>
+	    <div class="editor-field">
+		    @Html.DropDownListFor(m => m.RenewalReasonCode, Model.RenewalReasons)
+		    @*@Html.ValidationMessageFor(model => model.RenewalReasonCode)*@
+	    </div>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.YearToSit)
