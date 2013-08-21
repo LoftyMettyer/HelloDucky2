@@ -22,6 +22,6 @@ namespace RCVS.WebServiceClasses
 		public string Country { get; set; }
 		public string Postcode { get; set; }
 		public string Source { get; set; }
-		public string Status { get; set; } //Always "WA" (Web applicant) // urn "WEB"; } } //Always "WEB"
+		public string Status { get; set; }
 	}
 }

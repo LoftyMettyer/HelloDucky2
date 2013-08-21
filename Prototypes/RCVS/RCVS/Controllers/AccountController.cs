@@ -60,7 +60,14 @@ namespace RCVS.Controllers
 				LoginResult loginResult = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
 				FormsAuthentication.SetAuthCookie(model.UserName, true);
 
-				return RedirectToAction("Registration", "Account");
+				if (String.IsNullOrEmpty(returnUrl))
+				{
+					return RedirectToAction("Registration", "Index");
+				}
+				else
+				{
+					return Redirect(returnUrl);
+				}
 			}
 		}
 
@@ -75,7 +82,7 @@ namespace RCVS.Controllers
 
 			//Set the lookup key..
 			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
-			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; // Countries
+			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
 
 			response = client.GetLookupData(lookupDataType, "");
 
@@ -124,7 +131,7 @@ namespace RCVS.Controllers
 				Password = values["Password"],
 				Salutation = values["Title"] + " " + values["Surnames"],
 				LabelName = values["Title"] + " " + values["Forenames"] + " " + values["Surnames"],
-				Status = "", // "WA",//Always "WA" (Web applicant)
+				Status = "WA", //Always "WA" (Web applicant)
 				Source = "WEB" //Always "WEB"
 			};
 
