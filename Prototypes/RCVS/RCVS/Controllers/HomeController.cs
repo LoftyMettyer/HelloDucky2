@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using RCVS.Models;
 
 namespace RCVS.Controllers
 {
@@ -31,6 +32,12 @@ namespace RCVS.Controllers
 
 		public ActionResult Form1A2()
 		{
+			return View();
+		}
+
+		public ActionResult SeeingPractice()
+		{
+			//SeeingPracticeModel = Models.SeeingPracticeModel();
 			return View();
 		}
 	}
