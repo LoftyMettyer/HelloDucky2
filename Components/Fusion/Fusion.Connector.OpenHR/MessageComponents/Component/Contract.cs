@@ -19,9 +19,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 				[XmlElementAttribute(DataType = "date")]
 				public DateTime? effectiveFrom { get; set; }
 
-				[XmlIgnoreAttribute()]
-				public bool effectiveFromSpecified { get; set; }
-
 				[XmlElementAttribute(DataType = "date")]
 				public DateTime? effectiveTo { get; set; }
 
@@ -36,6 +33,9 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 
 				[XmlElementAttribute(IsNullable = true)]
 				public string costCenter { get; set; }
+
+				[XmlIgnoreAttribute()]
+				public bool costCenterSpecified { get; set; }
 
 		}
 

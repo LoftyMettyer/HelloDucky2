@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
+using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using Fusion.Core;
@@ -43,13 +44,35 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
             var isNew = (localId == null && document.data.recordStatus == RecordStatusStandard.Active);
 
+						// Push to saga?
+						if (staffId == 0)
+						{
+							Logger.WarnFormat("Inbound message {0}/{1} pushed to saga. No parent found for {2}", message.GetMessageName(), message.EntityRef, message.PrimaryEntityRef);
+							return;							
+						}
+
 
             SqlParameter idParameter;
             using (var c = new SqlConnection(ConnectionString))
             {
                 c.Open();
 
-                var cmd = new SqlCommand("fusion.pMessageUpdate_StaffLegalDocumentChange", c)
+
+								var original = DatabaseAccess.readDocument(Convert.ToInt32(localId));
+								var update = document.data.staffLegalDocument;
+
+							// Merge with original if nodes omitted
+	            if (original != null)
+	            {
+		            update.acceptedBy = !update.acceptedBySpecified ? original.acceptedBy : update.acceptedBy;
+		            update.acceptedDate = !update.acceptedDateSpecified ? original.acceptedDate : update.acceptedDate;
+		            update.requestedBy = !update.requestedBySpecified ? original.requestedBy : update.requestedBy;
+		            update.requestedDate = !update.requestedDateSpecified ? original.requestedDate : update.requestedDate;
+		            update.validFrom = !update.validFromSpecified ? original.validFrom : update.validFrom;
+		            update.validTo = !update.validToSpecified ? original.validTo : update.validTo;
+	            }
+
+	            var cmd = new SqlCommand("fusion.pMessageUpdate_StaffLegalDocumentChange", c)
                     {
                         CommandType = CommandType.StoredProcedure
                     };

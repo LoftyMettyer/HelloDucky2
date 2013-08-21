@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
+using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
 using Fusion.Connector.OpenHR.MessageHandlers;
 using Fusion.Core;
@@ -39,15 +40,32 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             var contactRef = new Guid(message.EntityRef.ToString());
 
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Contract, contactRef);
-            var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
+            var staffId = Convert.ToInt32(BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString())));
 
             var isNew = (localId == null);
+
+						// Push to saga?
+						if (staffId == 0)
+						{
+							Logger.WarnFormat("Inbound message {0}/{1} pushed to saga. No parent found for {2}", message.GetMessageName(), message.EntityRef, message.PrimaryEntityRef);
+							return;
+						}
 
 
             SqlParameter idParameter;
             using (var c = new SqlConnection(ConnectionString))
             {
                 c.Open();
+
+								var original = DatabaseAccess.readContract(Convert.ToInt32(localId));
+								var update = contract.data.staffContract;
+
+								// Merge with original if nodes omitted
+								if (original != null)
+								{
+									update.costCenter = !update.costCenterSpecified ? original.costCenter : update.costCenter;
+									update.effectiveTo = !update.effectiveToSpecified ? original.effectiveTo : update.effectiveTo;
+								}
 
                 var cmd = new SqlCommand("fusion.pMessageUpdate_StaffContractChange", c)
                     {
@@ -58,7 +76,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 idParameter.SqlDbType = SqlDbType.Int;
                 idParameter.Direction = ParameterDirection.InputOutput;
 
-                cmd.Parameters.Add(new SqlParameter("@staffId", staffId ?? (object)DBNull.Value));
+                cmd.Parameters.Add(new SqlParameter("@staffId", staffId ));
                 cmd.Parameters.Add(new SqlParameter("@recordIsInactive", contract.data.recordStatus));
                 cmd.Parameters.Add(new SqlParameter("@contractName", contract.data.staffContract.contractName ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@department", contract.data.staffContract.department ?? (object)DBNull.Value));
