@@ -94,5 +94,14 @@ namespace RCVS.Controllers
 			//SeeingPracticeModel = Models.SeeingPracticeModel();
 			return View();
 		}
+
+		public ActionResult RenewalOfDeclaration1B(MembershipExaminationModel model)
+		{
+		//model.Save();
+			return View();
+		}
+
+
+
 	}
 }

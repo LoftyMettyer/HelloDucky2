@@ -190,6 +190,7 @@
   <ItemGroup>
     <Compile Include="Classes\Address.cs" />
     <Compile Include="Classes\Degree.cs" />
+    <Compile Include="Classes\ExamAttempts.cs" />
     <Compile Include="Classes\PracticeArrangement.cs" />
     <Compile Include="Classes\TimePeriod.cs" />
     <Compile Include="Classes\TRFDetails.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Enums\CurrentOrPlanned.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Models\Form1A2Model.cs" />
+    <Compile Include="Models\MembershipExaminationModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
@@ -392,6 +394,7 @@
     <Content Include="Service References\IRISWebServices\ndataaccess.wsdl" />
     <Content Include="Views\Home\Form1A2.cshtml" />
     <Content Include="Views\Home\SeeingPractice.cshtml" />
+    <Content Include="Views\Home\RenewalOfDeclaration1B.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
