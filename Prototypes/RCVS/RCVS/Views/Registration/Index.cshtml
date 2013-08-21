@@ -33,7 +33,14 @@
 						
 				<li><span class="arrow"></span><a href="/registration/register-of-veterinary-practice-premises/"><span>Register of Veterinary Practice Premises</span></a></li>
 						
-				<li><span class="arrow"></span><a href="/registration/statutory-membership-exam/"><span>Statutory Membership Exam</span></a></li>
+				<li><span class="arrow"></span><a href="/registration/statutory-membership-exam/"><span>Statutory Membership Exam</span></a>
+					<ul>
+						<li><a href="@Url.Action("Login", "Registration")">Login</a></li>
+						<li><a href="@Url.Action("Form1A", "Registration")">Register</a></li>
+						<li><a href="@Url.Action("Form1A2", "Home")">Initial declaration of intention to sit</a></li>
+						
+					</ul>
+				</li>
 						
 				<li><span class="arrow"></span><a href="/registration/veterinary-nurse-pre-registration-examination/"><span>VN pre-registration examinations</span></a></li>
 						
@@ -71,9 +78,9 @@
 <table style="width: 540px;" border="0" cellpadding="5"> 
 	<tbody> 
 	<tr class="even"> 
-		<td style="padding-left: 10px;"><a href="/registration/check-the-register-list/"><img src="/public/images/checkregister2.jpg" alt="Page from the RCVS Register of Members" width="220" height="120" /></a></td> 
+		<td style="padding-left: 10px;"><a href="/registration/check-the-register-list/"><img src="~/public/images/checkregister2.jpg" alt="Page from the RCVS Register of Members" width="220" height="120" /></a></td> 
 		<td style="width: 30px;">&nbsp;</td> 
-		<td><a href="/registration/how-to-register/"><img src="/public/images/howtoregister.jpg" alt="RCVS Register of Members" width="220" height="120" /></a></td> 
+		<td><a href="/registration/how-to-register/"><img src="~/public/images/howtoregister.jpg" alt="RCVS Register of Members" width="220" height="120" /></a></td> 
 	</tr> 
 	<tr class="even"> 
 		<td style="padding-left: 10px;"><strong><a href="/registration/check-the-register-list/">Check the Register/List</a></strong></td> 

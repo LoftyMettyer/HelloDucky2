@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -57,6 +58,10 @@ namespace RCVS.Controllers
 					                 Text = activity.Element("ActivityDesc").Value
 				                 };
 
+
+			//Contact Number is 571 for nick/nick
+
+
 			var model = new Form1A2Model
 				{
 					Activities = activities
@@ -65,7 +70,24 @@ namespace RCVS.Controllers
 			return View(model);
 		}
 
+			[HttpPost]	
+			[ValidateAntiForgeryToken]
+			public ActionResult Form1A2(Form1A2Model model, FormCollection values)
+			{
+				//save the Year to Sit
+				string response;
+				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
+				var yearToSit = model.YearToSit.ToString(CultureInfo.InvariantCulture);
+
+				var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+				var addActivityParameters = new AddActivityParameters { ContactNumber = 571, Activity = "0YPE", ActivityValue = yearToSit, Source = "WEB" };
+				var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters); //Serialize to XML to pass to the web services
+
+				response = client.AddActivity(serializedParameters);
+
+				return RedirectToAction("Index");
+			}
 
 		public ActionResult SeeingPractice()
 		{
