@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace RCVS.Models
 {
@@ -14,6 +16,10 @@ namespace RCVS.Models
 		{
 			get { return "If you do not sit this examination at the next available session or, if you must re-confirm your intention to sit within a reasonable period of time by completing a renewal of intention form"; }
 		}
+
+		public string Activity { get; set; }
+		public IEnumerable<SelectListItem> Activities { get; set; }
+
 
 		[DisplayName("Do you plan to 'see practice'?")]
 		public bool? PlanToSeePractice { get; set; }
