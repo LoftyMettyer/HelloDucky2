@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
+using RCVS.Helpers;
+using RCVS.WebServiceClasses;
 using WebMatrix.WebData;
 using RCVS.Filters;
 using RCVS.Models;
+using System.Xml.Linq;
 
 namespace RCVS.Controllers
 {
@@ -17,6 +19,141 @@ namespace RCVS.Controllers
 	[InitializeSimpleMembership]
 	public class AccountController : Controller
 	{
+		//
+		// GET: /Account/Login
+
+		[AllowAnonymous]
+		public ActionResult Login(string returnUrl)
+		{
+			ViewBag.ReturnUrl = returnUrl;
+
+			return View();
+		}
+
+		//
+		// POST: /Account/Login
+
+		[HttpPost]
+		[AllowAnonymous]
+		[ValidateAntiForgeryToken]
+		public ActionResult Login(LoginModel model, string returnUrl)
+		{
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			var loginParameters = new LoginParameters { UserName = model.UserName, Password = model.Password }; //Create an object with the login credentials
+			var serializedParameters = XmlHelper.SerializeToXml(loginParameters); //Serialize to XML to pass to the web services
+
+			response = client.Login(serializedParameters); //Call the login method
+
+			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
+			if (response.Contains("ErrorMessage"))
+			{
+				ErrorResult errorResult = XmlHelper.DeserializeFromXmlToObject<ErrorResult>(response);
+				// If we got this far, something failed, redisplay form
+				ModelState.AddModelError("", errorResult.ErrorMessage);
+				return View(model);
+			}
+			else //Deserialize into a LoginResult object
+			{
+				LoginResult loginResult = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
+				FormsAuthentication.SetAuthCookie(model.UserName, true);
+
+				return RedirectToAction("Registration", "Account");
+			}
+		}
+
+		public ActionResult Registration()
+		{
+			int i;
+
+			ViewData["Message"] = "Registration Form";
+
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+
+			//Set the lookup key..
+			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
+			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; // Countries
+
+			response = client.GetLookupData(lookupDataType, "");
+
+			var countries = new List<SelectListItem>();
+			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option
+
+			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")
+												 select new SelectListItem
+												 {
+													 Value = country.Element("Country").Value,
+													 Text = country.Element("CountryDesc").Value
+												 });
+
+			var model = new RegistrationModel
+			{
+				Days = Utils.DropdownList(Utils.DropdownListType.Days),
+				Months = Utils.DropdownList(Utils.DropdownListType.Months),
+				Years = Utils.DropdownList(Utils.DropdownListType.Years),
+				Countries = countries
+			};
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public ActionResult Registration(RegistrationModel model, FormCollection values)
+		{
+
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			var addContactParameters = new AddContactParameters //Create an object with the contact details
+			{
+				Title = values["Title"],
+				Forenames = values["Forenames"],
+				Surname = values["Surnames"],
+				DateOfBirth = Convert.ToDateTime((values["Days"] + "/" + values["Months"] + "/" + values["Years"])),
+				Address = values["AddressLine1"] + Environment.NewLine + values["AddressLine2"] + Environment.NewLine + values["AddressLine3"],
+				Town = values["City"],
+				County = values["County"],
+				Postcode = values["Postcode"],
+				Country = values["Countries"],
+				EmailAddress = values["EmailAddress"],
+				UserName = values["EmailAddress"], //This is not an error, UserName should be set to the email address
+				Password = values["Password"],
+				Salutation = values["Title"] + " " + values["Surnames"],
+				LabelName = values["Title"] + " " + values["Forenames"] + " " + values["Surnames"],
+				Status = "", // "WA",//Always "WA" (Web applicant)
+				Source = "WEB" //Always "WEB"
+			};
+
+			var serializedParameters = XmlHelper.SerializeToXml(addContactParameters); //Serialize to XML to pass to the web services
+
+			response = client.AddContact(serializedParameters);
+
+			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
+			if (response.Contains("ErrorMessage"))
+			{
+				ErrorResult errorResult = XmlHelper.DeserializeFromXmlToObject<ErrorResult>(response);
+				// If we got this far, something failed, redisplay form
+				ModelState.AddModelError("", errorResult.ErrorMessage);
+				return View(model);
+			}
+			else //Deserialize into a LoginResult object
+			{
+				AddContactResult addContactResult = XmlHelper.DeserializeFromXmlToObject<AddContactResult>(response);
+
+				//		return RedirectToAction("Registration", "Registration");
+			}
+
+
+
+			return View();
+		}
+
+		#region "NOT USED"
+
 		//
 		// POST: /Account/LogOff
 
@@ -374,6 +511,7 @@ namespace RCVS.Controllers
 					return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
 			}
 		}
+		#endregion
 		#endregion
 	}
 }

@@ -1,0 +1,180 @@
+﻿@model RCVS.Models.RegistrationModel
+
+@{
+	ViewBag.Title = "Registration Form";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@* Postcode Anywhere stuff 
+<link rel="stylesheet" type="text/css" href="http://services.postcodeanywhere.co.uk/css/captureplus-1.35.min.css?key=by73-mh44-ra59-cz26" />
+<script type="text/javascript" src="http://services.postcodeanywhere.co.uk/js/captureplus-1.35.min.js?key=by73-mh44-ra59-cz26&app=11960"></script>
+<div id="by73mh44ra59cz2611960"></div>
+*@
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+
+	<fieldset>
+		<legend>Registration Form</legend>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Title)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.Title)
+			@Html.ValidationMessageFor(model => model.Title)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Forenames)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.Forenames)
+			@Html.ValidationMessageFor(model => model.Forenames)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Surnames)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.Surnames)
+			@Html.ValidationMessageFor(model => model.Surnames)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.EmailAddress)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.EmailAddress)
+			@Html.ValidationMessageFor(model => model.EmailAddress)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.ConfirmEmailAddress)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.ConfirmEmailAddress)
+			@Html.ValidationMessageFor(model => model.ConfirmEmailAddress)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Password)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.Password)
+			@Html.ValidationMessageFor(model => model.Password)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.ConfirmPassword)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.ConfirmPassword)
+			@Html.ValidationMessageFor(model => model.ConfirmPassword)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Days)
+		</div>
+		<div class="editor-field">
+			@Html.DropDownListFor(m => m.Days, Model.Days)
+			@Html.ValidationMessageFor(model => model.Days)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Months)
+		</div>
+		<div class="editor-field">
+			@Html.DropDownListFor(m => m.Months, Model.Months)
+			@Html.ValidationMessageFor(model => model.Months)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Years)
+		</div>
+		<div class="editor-field">
+			@Html.DropDownListFor(m => m.Years, Model.Years)
+			@Html.ValidationMessageFor(model => model.Years)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.AddressLine1)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.AddressLine1)
+			@Html.ValidationMessageFor(model => model.AddressLine1)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.AddressLine2)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.AddressLine2)
+			@Html.ValidationMessageFor(model => model.AddressLine2)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.AddressLine3)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.AddressLine3)
+			@Html.ValidationMessageFor(model => model.AddressLine3)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.City)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.City)
+			@Html.ValidationMessageFor(model => model.City)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.County)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.County)
+			@Html.ValidationMessageFor(model => model.County)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Postcode)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.Postcode)
+			@Html.ValidationMessageFor(model => model.Postcode)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.Countries)
+		</div>
+		<div class="editor-field">
+			@Html.DropDownListFor(m => m.Countries, Model.Countries)
+			@Html.ValidationMessageFor(model => model.Countries)
+		</div>
+
+		<p>
+			<input type="submit" value="Create" />
+		</p>
+	</fieldset>
+	
+	<script src="/Scripts/paypal-button.min.js?merchant=roberto.caballero@advancedcomputersoftware.com"
+		data-button="buynow"
+		data-name="RCVS examination"
+		data-amount="1400"
+		data-currency="GBP"
+		data-env="sandbox"></script>
+	
+	
+}
+
+<div>
+	@*@Html.ActionLink("Back to List", "Index")*@
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}
