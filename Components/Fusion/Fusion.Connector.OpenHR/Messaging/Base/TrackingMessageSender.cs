@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Fusion.Core.Logging;
 using Fusion.Core.MessageSenders;
 using Fusion.Messages.General;
 using Fusion.Core.Sql;
@@ -35,6 +36,5 @@ namespace Fusion.Connector.OpenHR.MessageSenders
 
             return false;
         }
-
     }
 }

@@ -64,7 +64,7 @@ namespace Fusion.Connector.OpenHR.Messaging
 
             if (validation.HasErrors)
             {
-                Logger.InfoFormat("Outbound Message {0} validity failed - Error = {1}", schemaName, validation.ValidationErrorString);
+                Logger.InfoFormat("Outbound Message {0} validity failed. Details : {1}", schemaName, validation.ValidationErrorString);
             }
 
             return !validation.HasErrors;

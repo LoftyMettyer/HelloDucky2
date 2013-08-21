@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Linq;
+using Fusion.Connector.OpenHR.Configuration;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Core;
 using log4net;
@@ -22,8 +23,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
     public class StaffChangeMessageHandler : BaseMessageHandler, IHandleMessages<StaffChangeMessage>
     {
 
-        //[SetterProperty]
-        //public IBusRefTranslator BusRefTranslator {get;set;}
+			[SetterProperty]
+			public IFusionConfiguration config { get; set; }
 
         private readonly string _connectionString;
 
@@ -132,7 +133,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
                 if (isNew & isValid)
                 {
-                    BusRefTranslator.SetBusRef(EntityTranslationNames.Staff, idParameter.Value.ToString(), busRef);                    
+                    BusRefTranslator.SetBusRef(EntityTranslationNames.Staff, idParameter.Value.ToString(), busRef);
+										//FusionLogger.LogRefTranslationTransactional(config.Community, message.GetType().ToString(), busRef, localId);               
                 }
 
             }

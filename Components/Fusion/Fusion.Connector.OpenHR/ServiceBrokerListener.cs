@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Transactions;
+using Fusion.Connector.OpenHR.Configuration;
 using Fusion.Core.MessageSenders;
 using Fusion.Core.Sql;
 using Fusion.Core.Sql.OutboundBuilder;
@@ -17,54 +18,30 @@ namespace Fusion
 {
     public class ServiceBrokerListenerStartup : IWantToRunAtStartup
     {
-        [SetterProperty]
-        public IBus Bus
-        {
-            get;
-            set;
-        }
 
-        [SetterProperty]
-        public IMessageSenderInvoker MessageSenderInvoker
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IFusionConfiguration config { get; set; }
 
-        [SetterProperty]
-        public IFusionServiceBrokerListener ServiceBrokerListener
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IBus Bus { get; set;}
 
-        [SetterProperty]
-        public IOutboundBuilderFactory OutboundBuilderFactory
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IMessageSenderInvoker MessageSenderInvoker { get; set; }
 
-        [SetterProperty]
-        public IFusionLogService FusionLogger
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IFusionServiceBrokerListener ServiceBrokerListener { get; set; }
 
-        [SetterProperty]
-        public IMessageTracking MessageTracking
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IOutboundBuilderFactory OutboundBuilderFactory { get; set; }
 
-        [SetterProperty]
-        public IOutboundFilterInvoker OutboundFilterInvoker
-        {
-            get;
-            set;
-        }
+			[SetterProperty]
+			public IFusionLogService FusionLogger { get; set; }
+
+			[SetterProperty]
+			public IMessageTracking MessageTracking { get; set; }
+
+			[SetterProperty]
+			public IOutboundFilterInvoker OutboundFilterInvoker { get; set; }
 
 
         protected void TrackMessage(FusionMessage message)
@@ -109,7 +86,7 @@ namespace Fusion
 
                             if (fusionMessage != null)
                             {
-                                FusionLogger.LogMessageGenerated(fusionMessage);
+                                //FusionLogger.LogMessageGenerated(fusionMessage);
 
                                 // Execute outbound filters
                                 bool canSend = OutboundFilterInvoker.Execute(fusionMessage);
@@ -118,6 +95,7 @@ namespace Fusion
                                 {
                                     MessageSenderInvoker.Invoke(fusionMessage);
 																		Logger.InfoFormat("Outbound message {0}/{1} Message sent successfully", message.MessageType, message.LocalId);
+															//			FusionLogger.LogRefTranslationTransactional(config.Community, message.MessageType, new Guid(fusionMessage.EntityRef.ToString()), message.LocalId);
 																		FusionLogger.InfoMessageTransactional(fusionMessage, FusionLogLevel.Info, "Message sent successfully");
                                 }
                                 else
