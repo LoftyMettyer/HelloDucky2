@@ -402,7 +402,7 @@ fieldset {
 }
 
     fieldset legend {
-        display: none;
+        /*display: none;*/
     }
 
     fieldset ol {

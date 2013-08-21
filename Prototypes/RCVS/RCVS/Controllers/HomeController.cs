@@ -61,9 +61,14 @@ namespace RCVS.Controllers
 
 			//Contact Number is 571 for nick/nick
 
+			var years = new List<SelectListItem>();
+			years.Add(new SelectListItem { Value = "14", Text = "2014" });
+			years.Add(new SelectListItem { Value = "15", Text = "2015" });
+			years.Add(new SelectListItem { Value = "16", Text = "2016" });
 
 			var model = new Form1A2Model
 				{
+					YearsDropdown = years,
 					Activities = activities
 				};
 	
@@ -78,7 +83,7 @@ namespace RCVS.Controllers
 				string response;
 				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
-				var yearToSit = model.YearToSit.ToString(CultureInfo.InvariantCulture);
+				var yearToSit = model.YearsDropdown.ToString();
 
 				var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
 				var addActivityParameters = new AddActivityParameters { ContactNumber = 571, Activity = "0YPE", ActivityValue = yearToSit, Source = "WEB" };

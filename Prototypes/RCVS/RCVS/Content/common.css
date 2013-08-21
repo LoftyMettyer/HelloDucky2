@@ -983,6 +983,10 @@ form.forms {
 		padding: 2px 5px;
 	}
 
+	form.forms fieldset div {
+		/*float: left;*/
+	}
+
 	form.forms div.field {
 		overflow: hidden;
 		margin: 5px 0;

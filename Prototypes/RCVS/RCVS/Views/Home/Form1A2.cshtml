@@ -1,123 +1,158 @@
 ﻿@model RCVS.Models.Form1A2Model
 
-<div class="pagecontent">
+<script type="text/javascript">
 
-	@{
-		ViewBag.Title = "View1";
-	}
+</script>
+<div class="pagebody">
+	<div class="pagecontent" style="width: 95%">
 
-	<h1>Initial / first declaration of intention to sit</h1>
+		@{
+			ViewBag.Title = "View1";
+		}
 
-	<div class="layout">
-		<p>
-			<span>You can submit your initial declaration of intention to sit the RCVS statutory membership examination at any time. It is the <b>first</b> step in the examination process.
-		   On receipt RCVS will create an examination record for you and, if you etc, etc, etc, etc, etc, etc...
-			</span>
-		</p>
-		<br />
-	</div>
-	@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "forms default" }))
- {
-		@Html.AntiForgeryToken()
-		@Html.ValidationSummary(true)
+		<h1>Initial / first declaration of intention to sit</h1>
 
+		<div class="layout">
+			<p>
+				<span>You can submit your initial declaration of intention to sit the RCVS statutory membership examination at any time.  It is the first step in the examination process.  On receipt RCVS will create an examination record for you and, if you have stated that you plan to see practice as part of your examination preparation, we shall write to confirm that you are eligible to do so. 
+				</span>
+			</p>
+			<br />
+		</div>
+		@using (Html.BeginForm("Form1A2", "Home", FormMethod.Post, new { @class = "forms default" }))
+	{
+			@Html.AntiForgeryToken()
+			@Html.ValidationSummary(true)
 
 @*@Html.DropDownListFor(x => x.Activities, Model.Activities)			*@
 		
-		<fieldset>
-			<legend><div class="editor-label">
-				@Html.LabelFor(model => model.YearToSit)
-			</div></legend>
-			
-			<div class="editor-field">
-				@Html.EditorFor(model => model.YearToSit)
-				@Html.ValidationMessageFor(model => model.YearToSit)
-			</div>
-		</fieldset>
+			<fieldset>
+				<legend>Exam Year</legend>
+				<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.YearsDropdown)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(x => x.YearsDropdown, Model.YearsDropdown)
+					@Html.ValidationMessageFor(model => model.YearsDropdown)
+				</div>
+					</div>
+			</fieldset>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.PlanToSeePractice)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.PlanToSeePractice)
-			@Html.ValidationMessageFor(model => model.PlanToSeePractice)
-		</div>
+			<fieldset>
+				<legend>See Practice</legend>
+				<div class="field">
+					<div class="editor-label label">
+						@Html.LabelFor(model => model.PlanToSeePractice)
+					</div>
+					<div class="editor-field input">
+						@Html.EditorFor(model => model.PlanToSeePractice)
+						@Html.ValidationMessageFor(model => model.PlanToSeePractice)
+					</div>
+				</div>
+				<div class="field">
+					<div class="editor-label label">
+						@Html.LabelFor(model => model.CurrentlySeeingPractice)
+					</div>
+					<div class="editor-field input">
+						@Html.EditorFor(model => model.CurrentlySeeingPractice)
+						@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
+					</div>
+				</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.CurrentlySeeingPractice)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.CurrentlySeeingPractice)
-			@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
-		</div>
+			</fieldset>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.IELTS)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.IELTS)
-			@Html.ValidationMessageFor(model => model.IELTS)
-		</div>
+			<fieldset>
+				<legend>International English Language Testing System</legend>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.IELTS)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.IELTS)
+					@Html.ValidationMessageFor(model => model.IELTS)
+				</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.TakeTestPlanDate)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.TakeTestPlanDate)
-			@Html.ValidationMessageFor(model => model.TakeTestPlanDate)
-		</div>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.TakeTestPlanDate)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.TakeTestPlanDate)
+					@Html.ValidationMessageFor(model => model.TakeTestPlanDate)
+				</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.GraduationDate)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.GraduationDate)
-			@Html.ValidationMessageFor(model => model.GraduationDate)
-		</div>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.TrfDetails)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.TrfDetails)
+					@Html.ValidationMessageFor(model => model.TrfDetails)
+				</div>
+			</fieldset> 
+		 
+			<fieldset>
+				<legend>Veterinary Qualification</legend>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.PrimaryVetinaryDegree)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.PrimaryVetinaryDegree)
+					@Html.ValidationMessageFor(model => model.PrimaryVetinaryDegree)
+				</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.CourseStartDate)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.CourseStartDate)
-			@Html.ValidationMessageFor(model => model.CourseStartDate)
-		</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.CourseEndDate)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.CourseEndDate)
-			@Html.ValidationMessageFor(model => model.CourseEndDate)
-		</div>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.GraduationDate)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.GraduationDate)
+					@Html.ValidationMessageFor(model => model.GraduationDate)
+				</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.HasEnclosedTranscript)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.HasEnclosedTranscript)
-			@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
-		</div>
 
-		<div class="editor-label">
-			@Html.LabelFor(model => model.EnclosedTranscript)
-		</div>
-		<div class="editor-field">
-			@Html.EditorFor(model => model.EnclosedTranscript)
-			@Html.ValidationMessageFor(model => model.EnclosedTranscript)
-		</div>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.CourseStartDate)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.CourseStartDate)
+					@Html.ValidationMessageFor(model => model.CourseStartDate)
+				</div>
 
-		<p>
-			<input type="submit" value="Create" />
-		</p>
- }
+				<div class="editor-label">
+					@Html.LabelFor(model => model.CourseEndDate)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.CourseEndDate)
+					@Html.ValidationMessageFor(model => model.CourseEndDate)
+				</div>
 
-	<div>
-		@Html.ActionLink("Back to List", "Index")
-	</div>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.HasEnclosedTranscript)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.HasEnclosedTranscript)
+					@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
+				</div>
 
-	@section Scripts {
-		@Scripts.Render("~/bundles/jqueryval")
+				<div class="editor-label">
+					@Html.LabelFor(model => model.EnclosedTranscript)
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.EnclosedTranscript)
+					@Html.ValidationMessageFor(model => model.EnclosedTranscript)
+				</div>
+			</fieldset>
+			<p>
+				<input type="submit" value="Create" />
+			</p>
 	}
 
+		<div>
+			@Html.ActionLink("Back to List", "Index")
+		</div>
+
+		@section Scripts {
+			@Scripts.Render("~/bundles/jqueryval")
+		}
+
+	</div>
 </div>

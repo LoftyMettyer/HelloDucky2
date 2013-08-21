@@ -9,8 +9,9 @@ namespace RCVS.Models
 	public class Form1A2Model
 	{
 		[Required]
-		[DisplayName("YEAR in which you plan to sit the statutory membership examination")]
-		public int YearToSit { get; set; }
+		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
+		//public int YearToSit { get; set; }
+		public IEnumerable<SelectListItem> YearsDropdown { get; set; } 
 
 		public string Footnote1
 		{
@@ -34,7 +35,7 @@ namespace RCVS.Models
 		public DateTime? TakeTestPlanDate { get; set; }
 
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
-		public Classes.TRFDetails TrfDetails { get; set; }
+		public Classes.TRFDetails TrfDetails { get; set; }		
 
 		[DisplayName("Title of primary veterinary degree and recognised abbreviation if any")]
 		public Classes.Degree PrimaryVetinaryDegree { get; set; }
