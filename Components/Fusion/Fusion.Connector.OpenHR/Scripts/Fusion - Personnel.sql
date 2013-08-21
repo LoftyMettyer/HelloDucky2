@@ -45,9 +45,9 @@ SELECT ID as [StaffID]
 	, Manager_Ref		AS [managerRef]
 	, address_1			AS [addressLine1]
 	, address_2			AS [addressLine2]
-	, address_3			AS [addressLine3]
-	, town				AS [addressLine4]
-	, county			AS [addressLine5]
+	, town				AS [addressLine3]
+	, county			AS [addressLine4]
+	, country			AS [addressLine5]
 	, postcode			AS [postCode]
 	, ni_number			AS [nationalInsuranceNumber]
 	, photograph		AS [picture]
@@ -231,7 +231,7 @@ BEGIN
 
 		SELECT @ID = MAX(StaffID) FROM fusion.staff;
 
-		INSERT dbo.Address (ID_1, Date_From, Type, Address_1, Address_2, Address_3, Town, County, Postcode)
+		INSERT dbo.Address (ID_1, Date_From, Type, Address_1, Address_2, Town, County, Country, Postcode)
 			VALUES (@ID, GETDATE(), 'Home', @addressLine1, @addressLine2, @addressLine3, @addressLine4, @addressLine5, @postCode);
 
 	END
@@ -249,8 +249,8 @@ BEGIN
 			WHERE ID_1 = @ID AND Date_From <= DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE())) AND Type = 'Home'
 			ORDER BY Date_From DESC;
 
-		UPDATE dbo.Address SET Address_1 = @addressLine1, Address_2 = @addressLine2, Address_3 = @addressLine3
-				, Town = @addressLine4, County = @addressLine5, Postcode = @postCode
+		UPDATE dbo.Address SET Address_1 = @addressLine1, Address_2 = @addressLine2, Town = @addressLine3
+				, County = @addressLine4, Country = @addressLine5, Postcode = @postCode
 			WHERE ID = @childID;
 
 	END

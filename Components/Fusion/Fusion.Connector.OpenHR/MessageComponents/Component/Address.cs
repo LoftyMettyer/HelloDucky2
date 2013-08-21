@@ -9,7 +9,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://advancedcomputersoftware.com/xml/fusion/socialCare")]
     public partial class Address
     {
-
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = false)]
         public string addressLine1 { get; set; }
 
@@ -22,8 +21,8 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = false)]
         public string addressLine4 { get; set; }
 
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable = false)]
-        public string addressLine5  { get; set; }
+				[System.Xml.Serialization.XmlElementAttribute(IsNullable = false)]
+				public string addressLine5 { get; set; }
 
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = false)]
         public string postCode  { get; set; }
