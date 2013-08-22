@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.Mvc;
+using RCVS.Classes;
 
 namespace RCVS.Helpers
 {
@@ -14,30 +15,45 @@ namespace RCVS.Helpers
 			Months,
 			Years
 		}
-		public static List<SelectListItem> DropdownList(DropdownListType type)
-		{
-			int i;
-			var list = new List<SelectListItem>();
-			list.Add(new SelectListItem { Value = "", Text = "" });
 
-			if (type == DropdownListType.Days)
-				for (i = 1; i <= 31; i++)
-				{
-					list.Add(new SelectListItem { Value = i.ToString(), Text = i.ToString() });
-				}
-			else if (type == DropdownListType.Months)
+		public static List<Day> ListOfDays()
+		{
+			var list = new List<Day>();
+			list.Add(new Day { Value = "", Text = "" });
+
+
+			for (int i = 1; i <= 31; i++)
 			{
-				for (i = 0; i <= 11; i++)
-				{
-					list.Add(new SelectListItem { Value = (i + 1).ToString(), Text = CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i] });
-				}
+				list.Add(new Day { Value = i.ToString(), Text = i.ToString() });
 			}
-			else
+
+			return list;
+		}
+
+		public static List<Month> ListOfMonths()
+		{
+			var list = new List<Month>();
+			list.Add(new Month { Value = "", Text = "" });
+
+			for (int i = 0; i <= 11; i++)
 			{
-				for (i = DateTime.Now.Year; i >= 1900; i--)
-				{
-					list.Add(new SelectListItem { Value = i.ToString(), Text = i.ToString() });
-				}
+				list.Add(new Month
+					{
+						Value = (i + 1).ToString(),
+						Text = CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]
+					});
+			}
+
+			return list;
+		}
+
+		public static List<Year> ListOfYears()
+		{
+			var list = new List<Year>();
+			list.Add(new Year { Value = "", Text = "" });
+			for (int i = DateTime.Now.Year; i >= 1900; i--)
+			{
+				list.Add(new Year { Value = i.ToString(), Text = i.ToString() });
 			}
 
 			return list;

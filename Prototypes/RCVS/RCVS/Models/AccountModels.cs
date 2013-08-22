@@ -5,8 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Globalization;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Xml.Linq;
+using RCVS.Classes;
+using RCVS.Helpers;
 
 namespace RCVS.Models
 {
@@ -46,15 +50,21 @@ namespace RCVS.Models
 
 		[Required]
 		[DisplayName("Day")]
-		public IEnumerable<SelectListItem> Days { get; set; }
+		public List<Day> Days { get; set; }
+
+		public string Day { get; set; } //To hold the value of the selected day
 
 		[Required]
 		[DisplayName("Month")]
-		public IEnumerable<SelectListItem> Months { get; set; }
+		public List<Month> Months { get; set; }
+
+		public string Month { get; set; } //To hold the value of the selected month
 
 		[Required]
 		[DisplayName("Year")]
-		public IEnumerable<SelectListItem> Years { get; set; }
+		public List<Year> Years { get; set; }
+
+		public string Year { get; set; } //To hold the value of the selected yeaat
 
 		[Required]
 		[DisplayName("Address line 1")]
@@ -79,6 +89,35 @@ namespace RCVS.Models
 		[Required]
 		[DisplayName("Country")]
 		public IEnumerable<SelectListItem> Countries { get; set; }
+
+		public string Country { get; set; } //To hold the value of the selected country
+
+		public void LoadLookups()
+		{
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+
+			//Set the lookup key..
+			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
+			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
+
+			response = client.GetLookupData(lookupDataType, "");
+
+			var countries = new List<SelectListItem>();
+			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option
+
+			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")
+												 select new SelectListItem
+												 {
+													 Value = country.Element("Country").Value,
+													 Text = country.Element("CountryDesc").Value
+												 });
+
+			Days = Utils.ListOfDays();
+			Months = Utils.ListOfMonths();
+			Years = Utils.ListOfYears();
+			Countries = countries;
+		}
 	}
 
 	public class LoginModel

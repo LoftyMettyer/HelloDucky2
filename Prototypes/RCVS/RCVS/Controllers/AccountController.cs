@@ -75,32 +75,8 @@ namespace RCVS.Controllers
 
 			ViewData["Message"] = "Register";
 
-			string response;
-			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
-
-			//Set the lookup key..
-			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
-			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
-
-			response = client.GetLookupData(lookupDataType, "");
-
-			var countries = new List<SelectListItem>();
-			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option
-
-			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")
-												 select new SelectListItem
-												 {
-													 Value = country.Element("Country").Value,
-													 Text = country.Element("CountryDesc").Value
-												 });
-
-			var model = new RegisterModel
-			{
-				Days = Utils.DropdownList(Utils.DropdownListType.Days),
-				Months = Utils.DropdownList(Utils.DropdownListType.Months),
-				Years = Utils.DropdownList(Utils.DropdownListType.Years),
-				Countries = countries
-			};
+			var model = new RegisterModel();
+			model.LoadLookups();
 
 			return View(model);
 		}
@@ -110,6 +86,7 @@ namespace RCVS.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Register(RegisterModel model, FormCollection values)
 		{
+			model.LoadLookups();
 
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
@@ -120,7 +97,7 @@ namespace RCVS.Controllers
 				Title = values["Title"],
 				Forenames = values["Forenames"],
 				Surname = values["Surnames"],
-				DateOfBirth = Convert.ToDateTime((values["Days"] + "/" + values["Months"] + "/" + values["Years"])),
+				DateOfBirth = Convert.ToDateTime((values["Day"] + "/" + values["Month"] + "/" + values["Year"])),
 				Address = values["AddressLine1"] + Environment.NewLine + values["AddressLine2"] + Environment.NewLine + values["AddressLine3"],
 				Town = values["City"],
 				County = values["County"],
