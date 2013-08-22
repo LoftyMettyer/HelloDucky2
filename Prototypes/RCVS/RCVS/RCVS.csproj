@@ -198,6 +198,7 @@
     <Compile Include="Classes\University.cs" />
     <Compile Include="Enums\CurrentOrPlanned.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Form1A2Model.cs" />
     <Compile Include="Models\MembershipExaminationModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
     <Compile Include="Models\SeeingPracticeModel.cs" />
     <Compile Include="WebServiceClasses\AddActivityParameters.cs" />
+    <Compile Include="WebServiceClasses\GetActivityParameters.cs" />
     <Compile Include="WebServiceClasses\GetLookupDataParameters.cs" />
     <Compile Include="WebServiceClasses\LoginParameters.cs" />
     <Compile Include="WebServiceClasses\LoginResult.cs" />
@@ -396,6 +398,7 @@
     <Content Include="Views\Home\Form1A2.cshtml" />
     <Content Include="Views\Home\SeeingPractice.cshtml" />
     <Content Include="Views\Home\RenewalOfDeclaration1B.cshtml" />
+    <Content Include="Views\Home\StatutoryMembershipExamination.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

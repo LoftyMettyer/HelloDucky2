@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using RCVS.Classes;
+using RCVS.Helpers;
+using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class Form1A2Model
+	public class Form1A2Model : BaseModel
 	{
 		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
@@ -59,5 +62,57 @@ namespace RCVS.Models
 
 		[DisplayName("TODO - This need to be a file upload of some decription ")]
 		public string EnclosedTranscript { get; set; }
+
+		public void Load()
+		{
+			if (UserID != null)
+			{
+			NormalCourseLength = new TimePeriod{Months = 1, Years = 2};
+
+
+
+
+			}
+		}
+
+		public void Save()
+		{
+
+			UserID = 571;
+
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient();
+
+			var yearToSit = YearsDropdown.ToString();
+
+			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			var addActivityParameters = new AddActivityParameters { ContactNumber = UserID, Activity = "YYGRAD"
+								, ActivityValue = "MT"
+								, ActivityDate = GraduationDate
+								, Source = "WEB" };
+			var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
+
+
+
+			response = client.AddActivity(serializedParameters);
+			
+
+
+			if (UserID != null) {
+				// addactivities
+			}
+			else
+			{
+				// update activities
+
+
+			}
+
+		}
+
+
+
 	}
+
 }

@@ -71,7 +71,11 @@ namespace RCVS.Controllers
 					YearsDropdown = years,
 					Activities = activities
 				};
-	
+
+//if returning customer
+	model.Load();
+
+
 			return View(model);
 		}
 
@@ -90,6 +94,8 @@ namespace RCVS.Controllers
 				var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters); //Serialize to XML to pass to the web services
 
 				response = client.AddActivity(serializedParameters);
+
+				model.Save();
 
 				return RedirectToAction("Index");
 			}
