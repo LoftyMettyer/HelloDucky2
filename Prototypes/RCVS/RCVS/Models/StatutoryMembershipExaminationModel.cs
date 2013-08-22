@@ -19,7 +19,7 @@ namespace RCVS.Models
 	[DisplayName("Please select the subjects you have permission to sit")]
 	public List<Subject> SubjectsWithPermission { get; set; }
 
-	public List<Subject> Qualifications { get; set; }
+	public List<Qualification> Qualifications { get; set; }
 
 	public List<Employment> EmploymentHistory { get; set; }
 
@@ -51,5 +51,20 @@ namespace RCVS.Models
 	[DisplayName("Please confirm with your name and date")]
 	public Confirmation FeeConfirmation { get; set; }
 
+		public override void Load()
+		{
+			Qualifications = new List<Qualification>();
+			Qualifications.Add(new Qualification
+				{
+					AwardingBody = "Staffordshire University",
+					Name = "Software Science",
+					ObtainedDate = System.DateTime.Now
+				});
+		}
+
+		public override void Save()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

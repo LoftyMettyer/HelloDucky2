@@ -192,6 +192,7 @@
     <Compile Include="Classes\Degree.cs" />
     <Compile Include="Classes\Employment.cs" />
     <Compile Include="Classes\ExamAttempts.cs" />
+    <Compile Include="Helpers\Table.cs" />
     <Compile Include="Structures\Confirmation.cs" />
     <Compile Include="Structures\ExamPayment.cs" />
     <Compile Include="Classes\PracticeArrangement.cs" />

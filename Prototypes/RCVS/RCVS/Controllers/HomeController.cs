@@ -118,14 +118,21 @@ namespace RCVS.Controllers
 
 		public ActionResult SeeingPractice()
 		{
-			//SeeingPracticeModel = Models.SeeingPracticeModel();
-			return View();
+
+			var model = new SeeingPracticeModel();
+			model.Load();
+
+
+
+			return View(@model);
 		}
 
 		public ActionResult StatutoryMembershipExamination()
 		{
-			//SeeingPracticeModel = Models.SeeingPracticeModel();
-			return View();
+			var model = new StatutoryMembershipExaminationModel();
+			model.Load();
+
+			return View(model);
 		}
 
 		

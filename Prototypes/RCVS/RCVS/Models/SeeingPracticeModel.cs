@@ -2,7 +2,16 @@
 
 namespace RCVS.Models
 {
-	public class SeeingPracticeModel : Collection<Classes.PracticeArrangement>
+	public class SeeingPracticeModel : BaseModel
 	{
+		public override void Load()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void Save()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

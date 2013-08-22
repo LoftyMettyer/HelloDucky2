@@ -64,19 +64,17 @@ namespace RCVS.Models
 		[DisplayName("TODO - This need to be a file upload of some decription ")]
 		public string EnclosedTranscript { get; set; }
 
-		public void Load()
+		public override void Load()
 		{
 			if (UserID != null)
 			{
 			NormalCourseLength = new TimePeriod{Months = 1, Years = 2};
 
 
-
-
 			}
 		}
 
-		public void Save()
+		public override void Save()
 		{
 
 			UserID = 571;

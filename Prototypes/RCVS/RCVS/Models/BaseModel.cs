@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace RCVS.Models
+﻿namespace RCVS.Models
 {
-	public class BaseModel
+	public abstract class BaseModel
 	{
 		public long UserID { get; set; }
-
-	//	public void abstract Load { get; set; }
-
+		public abstract void Load();
+		public abstract void Save();
 	}
 }
