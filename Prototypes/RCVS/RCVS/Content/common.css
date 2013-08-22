@@ -318,7 +318,7 @@ body.msie7 #sitesearch-button {
 	}
 
 	#search_tips .icon {
-		background: url(../gfx/rcvs-sprite.gif) no-repeat -17px -37px;
+		background: url(../images/rcvs-sprite.gif) no-repeat -17px -37px;
 		display: inline-block;
 		height: 15px;
 		width: 15px;
@@ -327,7 +327,7 @@ body.msie7 #sitesearch-button {
 	}
 
 body.rcvs-knowledge #search_tips .icon {
-	background: url(../gfx/rcvs-knowledge-sprite.gif) no-repeat -17px -37px;
+	background: url(../images/rcvs-knowledge-sprite.gif) no-repeat -17px -37px;
 	display: inline-block;
 	height: 15px;
 	width: 15px;
@@ -335,7 +335,7 @@ body.rcvs-knowledge #search_tips .icon {
 }
 
 body.rcvs-vet-finder #search_tips .icon {
-	background: url(../gfx/rcvs-vet-finder-sprite.gif) no-repeat -17px -37px;
+	background: url(../images/rcvs-vet-finder-sprite.gif) no-repeat -17px -37px;
 	display: inline-block;
 	height: 15px;
 	width: 15px;
@@ -343,7 +343,7 @@ body.rcvs-vet-finder #search_tips .icon {
 }
 
 body.rcvs-award #search_tips .icon {
-	background: url(../gfx/rcvs-award-sprite.gif) no-repeat -17px -37px;
+	background: url(../images/rcvs-award-sprite.gif) no-repeat -17px -37px;
 	display: inline-block;
 	height: 15px;
 	width: 15px;
@@ -401,7 +401,7 @@ body.rcvs-award #search_tips .icon {
 		}
 
 			.pagesubmenu .nav li .arrow {
-				background: url(../gfx/rcvs-sprite.gif) no-repeat -17px -37px;
+				background: url(../images/rcvs-sprite.gif) no-repeat -17px -37px;
 				float: left;
 				display: block;
 				width: 15px;
@@ -477,7 +477,7 @@ body.rcvs-vet-finder .breadcrumbs {
 }
 
 	.breadcrumbs li.branch {
-		background: url(../gfx/crumbs_arrow.jpg) no-repeat center right;
+		background: url(../images/crumbs_arrow.jpg) no-repeat center right;
 	}
 
 	.breadcrumbs li.label {
@@ -563,7 +563,7 @@ p.warning {
 }
 
 .wysiwyg p.pullquote {
-	background: url(../gfx/rcvs-quote.gif) no-repeat 10px 10px;
+	background: url(../images/rcvs-quote.gif) no-repeat 10px 10px;
 	border: 2px solid #ececec;
 	font-family: Georgia, serif;
 	padding: 2em 1em 1em 1em;
@@ -588,7 +588,7 @@ p.warning {
 }
 
 .wysiwyg p.letterbox {
-	background: #017DB0 url(../gfx/rcvs-letter-corner.gif) no-repeat bottom right;
+	background: #017DB0 url(../images/rcvs-letter-corner.gif) no-repeat bottom right;
 	padding: 1em;
 	margin: 1em 0;
 	color: #fff;
@@ -874,7 +874,7 @@ body.msie7 .attached h2 {
 
 .sitemap .icon,
 .paging .icon {
-	background: url(../gfx/rcvs-sprite.gif) no-repeat -15px -38px;
+	background: url(../images/rcvs-sprite.gif) no-repeat -15px -38px;
 	margin: 4px 0 0 0;
 	display: block;
 	float: left;
@@ -1143,7 +1143,7 @@ form.forms .error {
 	}
 
 	.accessibility a {
-		background: #fff url(../gfx/accessibility.png) no-repeat 0px 0px;
+		background: #fff url(../images/accessibility.png) no-repeat 0px 0px;
 		margin-right: 3px;
 		text-indent: -1000000px;
 		display: block;
@@ -1272,7 +1272,7 @@ form.forms .error {
 }
 
 #pc_search .iconlist .icon {
-	background: url(../gfx/rcvs-sprite.gif) no-repeat -17px -37px;
+	background: url(../images/rcvs-sprite.gif) no-repeat -17px -37px;
 	width: 30px;
 	height: 30px;
 	display: block;
@@ -1386,7 +1386,7 @@ body.rcvs-knowledge #tool-contact .icon {
 
 
 .rcvs-knowledge #flyout .icon {
-	background: url(../gfx/rcvs-knowledge-sprite.gif) no-repeat -17px -37px !important;
+	background: url(../images/rcvs-knowledge-sprite.gif) no-repeat -17px -37px !important;
 }
 
 
@@ -1626,7 +1626,7 @@ div.filters strong {
 }
 
 #flyout .icon {
-	background: url(../gfx/rcvs-icons.png) no-repeat 0px 0px;
+	background: url(../images/rcvs-icons.png) no-repeat 0px 0px;
 	float: left;
 	display: block;
 	width: 15px;
@@ -1682,12 +1682,12 @@ form.forms fieldset {
 }
 
 .tl {
-	background-image: url("../gfx/topleft.png");
+	background-image: url("../images/topleft.png");
 	left: 0;
 }
 
 .tr {
-	background-image: url("../gfx/topright.png");
+	background-image: url("../images/topright.png");
 	right: 0;
 }
 
@@ -1696,29 +1696,29 @@ form.forms fieldset {
 }
 
 .bl {
-	background-image: url("../gfx/bottomleft.png");
+	background-image: url("../images/bottomleft.png");
 	left: 0;
 }
 
 .br {
-	background-image: url("../gfx/bottomright.png");
+	background-image: url("../images/bottomright.png");
 	right: 0;
 }
 
 div.filters .tl {
-	background-image: url("../gfx/filter-topleft.jpg");
+	background-image: url("../images/filter-topleft.jpg");
 }
 
 div.filters .tr {
-	background-image: url("../gfx/filter-topright.jpg");
+	background-image: url("../images/filter-topright.jpg");
 }
 
 div.filters .bl {
-	background-image: url("../gfx/filter-bottomleft.jpg");
+	background-image: url("../images/filter-bottomleft.jpg");
 }
 
 div.filters .br {
-	background-image: url("../gfx/filter-bottomright.jpg");
+	background-image: url("../images/filter-bottomright.jpg");
 }
 
 /* Colour Scheme */
@@ -2070,11 +2070,11 @@ body.rcvs-vet-finder .pagehead p.tagline {
 }
 
 body.rcvs-vet-finder .sitemap .icon, .paging .icon {
-	background: url(../gfx/rcvs-vet-finder-sprite.gif) no-repeat -15px -38px;
+	background: url(../images/rcvs-vet-finder-sprite.gif) no-repeat -15px -38px;
 }
 
 body.rcvs-vet-finder .pagesubmenu .nav li .arrow {
-	background: url(../gfx/rcvs-vet-finder-sprite.gif) no-repeat -17px -37px;
+	background: url(../images/rcvs-vet-finder-sprite.gif) no-repeat -17px -37px;
 }
 
 body.rcvs-vet-finder h1, body.rcvs-vet-finder h2, body.rcvs-vet-finder h3, body.rcvs-vet-finder h4, body.rcvs-vet-finder th {
@@ -2222,12 +2222,12 @@ body.rcvs-knowledge .bookmarks h2 {
 }
 
 body.rcvs-knowledge .pagesubmenu .nav li .arrow {
-	background-image: url(../gfx/rcvs-knowledge-sprite.gif);
+	background-image: url(../images/rcvs-knowledge-sprite.gif);
 }
 
 body.rcvs-knowledge .sitemap .icon,
 body.rcvs-knowledge .paging .icon {
-	background-image: url(../gfx/rcvs-knowledge-sprite.gif);
+	background-image: url(../images/rcvs-knowledge-sprite.gif);
 }
 
 body.rcvs-knowledge .pagemenu li#nav_my-account a,
@@ -2565,7 +2565,7 @@ body.gfx-low * {
 }
 
 .accessibility a {
-	background: #fff url(../gfx/accessibility.png) no-repeat 0px 0px;
+	background: #fff url(../images/accessibility.png) no-repeat 0px 0px;
 }
 
 
@@ -2738,19 +2738,19 @@ body.rcvs-award #side-link3 a {
 
 
 body.rcvs #site-tools .icon {
-	background-image: url(../gfx/rcvs-sprite.gif);
+	background-image: url(../images/rcvs-sprite.gif);
 }
 
 body.rcvs-knowledge #site-tools .icon {
-	background-image: url(../gfx/rcvs-knowledge-sprite.gif);
+	background-image: url(../images/rcvs-knowledge-sprite.gif);
 }
 
 body.rcvs-vet-finder #site-tools .icon {
-	background-image: url(../gfx/rcvs-vet-finder-sprite.gif);
+	background-image: url(../images/rcvs-vet-finder-sprite.gif);
 }
 
 body.rcvs-award #site-tools .icon {
-	background-image: url(../gfx/rcvs-award-sprite.gif);
+	background-image: url(../images/rcvs-award-sprite.gif);
 }
 
 body.rcvs #site-tools .icon,
@@ -2770,7 +2770,7 @@ p.charity {
 }
 
 body.rcvs-knowledge .wysiwyg p.pullquote {
-	background: url(../gfx/rcvs-quote-purple.gif) no-repeat 10px 10px;
+	background: url(../images/rcvs-quote-purple.gif) no-repeat 10px 10px;
 	border: 2px solid #ececec;
 	font-family: Georgia, serif;
 	padding: 2em 1em 1em 1em;
@@ -2795,7 +2795,7 @@ body.rcvs-knowledge .wysiwyg p.summarybox {
 }
 
 body.rcvs-knowledge .wysiwyg p.letterbox {
-	background: #AD27AA url(../gfx/rcvs-letter-corner-purple.gif) no-repeat bottom right;
+	background: #AD27AA url(../images/rcvs-letter-corner-purple.gif) no-repeat bottom right;
 	padding: 1em;
 	margin: 1em 0;
 	color: #fff;
@@ -2818,7 +2818,7 @@ body.rcvs-knowledge .wysiwyg a:visited {
 /* Awards WYSIWYG */
 
 body.rcvs-award .wysiwyg p.pullquote {
-	background: url(../gfx/rcvs-quote-seablue.gif) no-repeat 10px 10px;
+	background: url(../images/rcvs-quote-seablue.gif) no-repeat 10px 10px;
 	border: 2px solid #ececec;
 	font-family: Georgia, serif;
 	padding: 2em 1em 1em 1em;
@@ -2843,7 +2843,7 @@ body.rcvs-award .wysiwyg p.summarybox {
 }
 
 body.rcvs-award .wysiwyg p.letterbox {
-	background: #00B5CE url(../gfx/rcvs-letter-corner-seablue.gif) no-repeat bottom right;
+	background: #00B5CE url(../images/rcvs-letter-corner-seablue.gif) no-repeat bottom right;
 	padding: 1em;
 	margin: 1em 0;
 	color: #fff;
@@ -2866,7 +2866,7 @@ body.rcvs-award .wysiwyg a:visited {
 /* Findavet WYSIWYG */
 
 body.rcvs-vet-finder .wysiwyg p.pullquote {
-	background: url(../gfx/rcvs-quote-green.gif) no-repeat 10px 10px;
+	background: url(../images/rcvs-quote-green.gif) no-repeat 10px 10px;
 	border: 2px solid #ececec;
 	font-family: Georgia, serif;
 	padding: 2em 1em 1em 1em;
@@ -2891,7 +2891,7 @@ body.rcvs-vet-finder .wysiwyg p.summarybox {
 }
 
 body.rcvs-vet-finder .wysiwyg p.letterbox {
-	background: #669933 /*url(../gfx/rcvs-letter-corner-green.gif) no-repeat bottom right*/;
+	background: #669933 /*url(../images/rcvs-letter-corner-green.gif) no-repeat bottom right*/;
 	padding: 1em;
 	margin: 1em 0;
 	color: #fff;
