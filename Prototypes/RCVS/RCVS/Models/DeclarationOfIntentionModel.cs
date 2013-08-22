@@ -9,7 +9,7 @@ using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class Form1A2Model : BaseModel
+	public class DeclarationOfIntentionModel : BaseModel
 	{
 		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]

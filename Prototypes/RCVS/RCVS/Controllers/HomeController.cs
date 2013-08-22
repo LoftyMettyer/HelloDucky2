@@ -36,7 +36,7 @@ namespace RCVS.Controllers
 			return View();
 		}
 
-		public ActionResult Form1A2()
+		public ActionResult DeclarationOfIntention()
 		{
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
@@ -66,22 +66,20 @@ namespace RCVS.Controllers
 			years.Add(new SelectListItem { Value = "15", Text = "2015" });
 			years.Add(new SelectListItem { Value = "16", Text = "2016" });
 
-			var model = new Form1A2Model
+			var model = new DeclarationOfIntentionModel
 				{
 					YearsDropdown = years,
 					Activities = activities
 				};
 
-//if returning customer
-	model.Load();
-
+			model.Load();
 
 			return View(model);
 		}
 
 			[HttpPost]	
 			[ValidateAntiForgeryToken]
-			public ActionResult Form1A2(Form1A2Model model, FormCollection values)
+		public ActionResult DeclarationOfIntention(DeclarationOfIntentionModel model, FormCollection values)
 			{
 				//save the Year to Sit
 				string response;
@@ -100,22 +98,16 @@ namespace RCVS.Controllers
 				return RedirectToAction("Index");
 			}
 
-		public ActionResult SeeingPractice()
+		public ActionResult RenewalOfDeclaration()
 		{
-			//SeeingPracticeModel = Models.SeeingPracticeModel();
-			return View();
-		}
-
-		public ActionResult RenewalOfDeclaration1B()
-		{
-			var model = new MembershipExaminationModel();
+			var model = new RenewalOfDeclarationModel();
 			model.LoadLookups();
 
 			return View(model);
 		}
 
 		[HttpPost]
-		public ActionResult RenewalOfDeclaration1B(MembershipExaminationModel model)
+		public ActionResult RenewalOfDeclaration(RenewalOfDeclarationModel model)
 		{
 			model.Save();
 
@@ -124,6 +116,19 @@ namespace RCVS.Controllers
 			return View(model);
 		}
 
+		public ActionResult SeeingPractice()
+		{
+			//SeeingPracticeModel = Models.SeeingPracticeModel();
+			return View();
+		}
+
+		public ActionResult StatutoryMembershipExamination()
+		{
+			//SeeingPracticeModel = Models.SeeingPracticeModel();
+			return View();
+		}
+
+		
 		//[HttpPost]
 		//public ActionResult RenewalOfDeclaration1B()
 		//{

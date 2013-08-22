@@ -1,4 +1,4 @@
-﻿@model RCVS.Models.Form1A2Model
+﻿@model RCVS.Models.DeclarationOfIntentionModel
 
 <script type="text/javascript">
 
@@ -19,7 +19,7 @@
 			</p>
 			<br />
 		</div>
-		@using (Html.BeginForm("Form1A2", "Home", FormMethod.Post, new { @class = "forms default" }))
+		@using (Html.BeginForm("DeclarationOfIntention", "Home", FormMethod.Post, new { @class = "forms default" }))
 	{
 			@Html.AntiForgeryToken()
 			@Html.ValidationSummary(true)

@@ -199,8 +199,8 @@
     <Compile Include="Enums\CurrentOrPlanned.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\Form1A2Model.cs" />
-    <Compile Include="Models\MembershipExaminationModel.cs" />
+    <Compile Include="Models\DeclarationOfIntentionModel.cs" />
+    <Compile Include="Models\RenewalOfDeclarationModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
@@ -353,6 +353,9 @@
     </Content>
     <Content Include="Themes\rcvs-new\front-end\gfx\rcvs-btn_search.gif" />
     <Content Include="Themes\rcvs-new\front-end\gfx\rcvs-sprite.gif" />
+    <Content Include="Views\Home\RenewalOfDeclaration.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -395,9 +398,8 @@
     <Content Include="Views\Account\Registration.cshtml" />
     <Content Include="Views\Registration\Index.cshtml" />
     <Content Include="Service References\IRISWebServices\ndataaccess.wsdl" />
-    <Content Include="Views\Home\Form1A2.cshtml" />
+    <Content Include="Views\Home\DeclarationOfIntention.cshtml" />
     <Content Include="Views\Home\SeeingPractice.cshtml" />
-    <Content Include="Views\Home\RenewalOfDeclaration1B.cshtml" />
     <Content Include="Views\Home\StatutoryMembershipExamination.cshtml" />
   </ItemGroup>
   <ItemGroup>

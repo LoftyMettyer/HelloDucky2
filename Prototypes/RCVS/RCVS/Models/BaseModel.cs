@@ -8,5 +8,8 @@ namespace RCVS.Models
 	public class BaseModel
 	{
 		public long UserID { get; set; }
+
+	//	public void abstract Load { get; set; }
+
 	}
 }

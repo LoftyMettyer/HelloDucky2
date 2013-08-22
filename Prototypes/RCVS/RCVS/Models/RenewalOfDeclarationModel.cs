@@ -10,7 +10,7 @@ using RCVS.Classes;
 
 namespace RCVS.Models
 {
-	public class MembershipExaminationModel
+	public class RenewalOfDeclarationModel
 	{
 
 		public string RenewalReasonCode { get; set; }
