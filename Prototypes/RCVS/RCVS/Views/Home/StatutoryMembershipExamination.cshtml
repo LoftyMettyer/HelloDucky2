@@ -1,9 +1,191 @@
-﻿@{
+﻿@model RCVS.Models.StatutoryMembershipExaminationModel
+
+<div class="pagebody">
+	<div class="pagecontent" style="width: 95%">
+
+
+@{
     ViewBag.Title = "StatutoryMembershipExamination";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>StatutoryMembershipExamination</h2>
+		<h1>Statutory Membership Examination</h1>
+		<h1>2013 examination application and examination payment form</h1>
+		<h2>The examination entry closing date is TBC</h2>
 
-TODO
+		<p>
+			After completing this application please post the associated required documentation to
+			Statutory Membership Examination Administrator
+			Royal College of Veterinary Surgeons
+			Belgravia House
+			62-64 Horseferry Road
+			London
+			SW1 2AF
+		</p>	
 
+		@using (Html.BeginForm("StatutoryMembershipExamination", "Home", FormMethod.Post, new { @class = "forms default" })) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Are you an existing applicant?</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsNewApplicant)
+					
+					@Html.DropDownListFor(model => model.IsNewApplicant,new List<SelectListItem>()
+							{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})			
+
+	        @Html.ValidationMessageFor(model => model.IsNewApplicant)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.YearOfLastApplication)
+            @Html.EditorFor(model => model.YearOfLastApplication)
+            @Html.ValidationMessageFor(model => model.YearOfLastApplication)
+        </div>
+				
+			</fieldset>
+
+
+	<fieldset>
+		<legend>Postgraduate training and qualifications</legend>	
+	</fieldset>
+
+
+	<fieldset>
+		<legend>Employment since graduation</legend>	
+	</fieldset>
+				
+				
+				
+	<fieldset>
+		<legend>Registration/license to practise as a veterinary surgeon</legend>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.PreviouslyRegistered)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.PreviouslyRegistered)
+			@Html.ValidationMessageFor(model => model.PreviouslyRegistered)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.RegistrationAuthority)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.RegistrationAuthority)
+			@Html.ValidationMessageFor(model => model.RegistrationAuthority)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.RegistrationDate)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.RegistrationDate)
+			@Html.ValidationMessageFor(model => model.RegistrationDate)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.RegistrationExpiryDate)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.RegistrationExpiryDate)
+			@Html.ValidationMessageFor(model => model.RegistrationExpiryDate)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.PreviouslyBanned)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.PreviouslyBanned)
+			@Html.ValidationMessageFor(model => model.PreviouslyBanned)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.BanReasons)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.BanReasons)
+			@Html.ValidationMessageFor(model => model.BanReasons)
+		</div>
+
+		<div class="editor-label">
+			@Html.LabelFor(model => model.NotRegisteredReasons)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(model => model.NotRegisteredReasons)
+			@Html.ValidationMessageFor(model => model.NotRegisteredReasons)
+		</div>
+
+	</fieldset>
+
+
+	<fieldset>
+		<legend>
+			<p>
+				<b>£1430</b> is the fee for sitting the whole examination, made up of £1200 + £230 non refundable administration charge
+			</p>			
+			<p>
+				<b>£715</b> is the part fee for sitting one or two subjects of the examination and is made up of £600 + £115 non refundable administration charge
+			</p>
+		</legend>
+		
+		
+		
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Confirmation</legend>
+		
+		UPLOAD option here?...
+		<p>
+			IF RCVS has not already verified your IELTS test score and confirmed that you are eligable to apply to sit our examination you should upload your IELTS TRF now. Please do <u>not</u> send any other original documents, such as certificates of qualifications to RCVS.
+		</p>
+		
+		<p>
+			If using a cheque or postal order please post it to the following address
+			Software Developer
+			My House
+			My Town
+			My Postcode
+		</p>
+
+		<p>
+			New applicants must enclose 2 passport photographs and write their name of the back of both photos.
+		</p>
+
+		<p>
+			Please send seeing practice forms by email ro rcvsexam@rcvs.org.uk (not with this application)
+		</p>
+
+
+		<p><b>Processing your application and acceptance as a candidate for the 2013 examination</b></p>
+		<p>
+		Please allow adequate time for your application to be processed after you have submitted it and do not immediately email or ring RCVS to chase receipt or progress.
+		Receipt of documents will normally be acknowledged by email within 5 working days. If you chase for information about the progress of your application it causes unnecessary delays in the progress of applications.
+		</p>
+
+		<p>
+			RCVS will write to confirm that you have met our examination entry requirements and give you your examination number <b>after</b> we have received <b>all</b> the items that make up a complete application (including evidence of your good professional standing which is sent to us on your behalf) and your examination fee payment has cleared - allow at least 14 days for clearance of a cheque.
+
+		</p>
+
+		<p>
+			<input type="submit" value="Create" />
+		</p>
+	</fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+	</div>
+</div>

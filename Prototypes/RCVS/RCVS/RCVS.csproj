@@ -190,17 +190,24 @@
   <ItemGroup>
     <Compile Include="Classes\Address.cs" />
     <Compile Include="Classes\Degree.cs" />
+    <Compile Include="Classes\Employment.cs" />
     <Compile Include="Classes\ExamAttempts.cs" />
+    <Compile Include="Structures\Confirmation.cs" />
+    <Compile Include="Structures\ExamPayment.cs" />
     <Compile Include="Classes\PracticeArrangement.cs" />
+    <Compile Include="Classes\Qualification.cs" />
     <Compile Include="Classes\RenewalReason.cs" />
+    <Compile Include="Classes\Subject.cs" />
     <Compile Include="Classes\TimePeriod.cs" />
-    <Compile Include="Classes\TRFDetails.cs" />
+    <Compile Include="Structures\TRFDetails.cs" />
     <Compile Include="Classes\University.cs" />
     <Compile Include="Enums\CurrentOrPlanned.cs" />
+    <Compile Include="Enums\PaymentMethod.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\DeclarationOfIntentionModel.cs" />
     <Compile Include="Models\RenewalOfDeclarationModel.cs" />
+    <Compile Include="Models\StatutoryMembershipExaminationModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />

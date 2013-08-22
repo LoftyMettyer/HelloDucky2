@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using RCVS.Classes;
+using RCVS.Structures;
 
 namespace RCVS.Models
 {

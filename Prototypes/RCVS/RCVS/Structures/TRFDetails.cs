@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace RCVS.Classes
+namespace RCVS.Structures
 {
 	public struct TRFDetails
 	{

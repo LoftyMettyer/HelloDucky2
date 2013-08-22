@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using RCVS.Classes;
 using RCVS.Helpers;
+using RCVS.Structures;
 using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
@@ -38,12 +39,12 @@ namespace RCVS.Models
 		public DateTime? TakeTestPlanDate { get; set; }
 
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
-		public Classes.TRFDetails TrfDetails { get; set; }		
+		public TRFDetails TrfDetails { get; set; }		
 
 		[DisplayName("Title of primary veterinary degree and recognised abbreviation if any")]
-		public Classes.Degree PrimaryVetinaryDegree { get; set; }
+		public Degree PrimaryVetinaryDegree { get; set; }
 
-		public Classes.University UniversityAwarded { get; set; }
+		public University UniversityAwarded { get; set; }
 
 		[DisplayName("Date of graduation")]
 		public DateTime? GraduationDate { get; set; }
