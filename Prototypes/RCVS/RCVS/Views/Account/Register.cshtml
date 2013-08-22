@@ -1,7 +1,7 @@
-﻿@model RCVS.Models.RegistrationModel
+﻿@model RCVS.Models.RegisterModel
 
 @{
-	ViewBag.Title = "Registration Form";
+	ViewBag.Title = "Register";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -18,7 +18,7 @@
 	@Html.ValidationSummary(true)
 
 	<fieldset>
-		<legend>Registration Form</legend>
+		<legend>Register</legend>
 
 		<div class="editor-label">
 			@Html.LabelFor(model => model.Title)
