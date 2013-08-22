@@ -626,23 +626,20 @@ p.warning {
 	list-style: disc;
 }
 
-.wysiwyg ol {
-	list-style: decimal;
+
+.wysiwyg ol.multi {
+	list-style: none;
+	padding: 0;
 }
 
-	.wysiwyg ol.multi {
-		list-style: none;
-		padding: 0;
+	.wysiwyg ol.multi > li:before {
+		content: counter(chapter) ". ";
+		counter-increment: chapter;
 	}
 
-		.wysiwyg ol.multi > li:before {
-			content: counter(chapter) ". ";
-			counter-increment: chapter;
-		}
-
-	.wysiwyg ol.start {
-		counter-reset: chapter;
-	}
+.wysiwyg ol.start {
+	counter-reset: chapter;
+}
 
 .wysiwyg ul li {
 	padding: 0 0 0 14px;

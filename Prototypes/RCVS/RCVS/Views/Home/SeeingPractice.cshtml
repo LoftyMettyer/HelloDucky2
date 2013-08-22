@@ -1,22 +1,25 @@
 ﻿@model RCVS.Models.SeeingPracticeModel
 
 @{
-    ViewBag.Title = "SeeingPractice";
+	ViewBag.Title = "SeeingPractice";
 }
 
-<h2>SeeingPractice</h2>
+<div class="wysiwyg">
+	<h2>SeeingPractice</h2>
 
-<fieldset>
-    <legend>SeeingPracticeModel</legend>
+	<fieldset>
+		<legend>SeeingPracticeModel</legend>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Count)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Count)
-    </div>
-</fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+		<div class="display-label">
+			@Html.DisplayNameFor(model => model.Count)
+		</div>
+		<div class="display-field">
+			@Html.DisplayFor(model => model.Count)
+		</div>
+	</fieldset>
+	<p>
+		@Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+		@Html.ActionLink("Back to List", "Index")
+	</p>
+
+</div>
