@@ -228,13 +228,11 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -385,7 +383,6 @@
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
-    <Content Include="Views\Registration\Register.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
@@ -396,11 +393,11 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Account\Registration.cshtml" />
-    <Content Include="Views\Registration\Index.cshtml" />
     <Content Include="Service References\IRISWebServices\ndataaccess.wsdl" />
     <Content Include="Views\Home\DeclarationOfIntention.cshtml" />
     <Content Include="Views\Home\SeeingPractice.cshtml" />
     <Content Include="Views\Home\StatutoryMembershipExamination.cshtml" />
+    <Content Include="Views\Account\RegistrationSuccessful.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

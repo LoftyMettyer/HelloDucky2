@@ -7,13 +7,12 @@
 	<meta name="viewport" content="width=device-width" />
 	@Styles.Render("~/Content/css")
 </head>
-	<body>
+<body>
+	<header>
 		<div class="pagehead wrap three-columns">
-			<header>		
-				<div>
 			<div id="logocontainer">
 				<a href="/home/" title="RCVS home" class="logo">
-					<img src="@Url.Content("~/Images/rcvs-logo.png")" alt="RCVS logo">
+					<img src="../../Images/rcvs-logo.png" alt="RCVS logo">
 				</a>
 
 				<p class="tagline">Welcome to the Royal College of Veterinary Surgeons</p>
@@ -91,6 +90,5 @@
 
 	@Scripts.Render("~/bundles/jquery")
 	@RenderSection("scripts", required: false)
-			</div>
 </body>
 </html>

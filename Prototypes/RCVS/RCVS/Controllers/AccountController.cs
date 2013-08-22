@@ -61,7 +61,7 @@ namespace RCVS.Controllers
 
 				if (String.IsNullOrEmpty(returnUrl))
 				{
-					return RedirectToAction("Registration", "Index");
+					return RedirectToAction("Index", "Home");
 				}
 				else
 				{
@@ -148,12 +148,16 @@ namespace RCVS.Controllers
 			}
 			else //Deserialize into a LoginResult object
 			{
-				AddContactResult addContactResult = XmlHelper.DeserializeFromXmlToObject<AddContactResult>(response);
-
-				//		return RedirectToAction("Registration", "Registration");
+				// AddContactResult addContactResult = XmlHelper.DeserializeFromXmlToObject<AddContactResult>(response);
+				return RedirectToAction("RegistrationSuccessful", "Account");
 			}
 
+			return View();
+		}
 
+		public ActionResult RegistrationSuccessful()
+		{
+			ViewData["Message"] = "Registration Successful";
 
 			return View();
 		}
