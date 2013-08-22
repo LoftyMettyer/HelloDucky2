@@ -1,13 +1,10 @@
 ﻿@model RCVS.Models.DeclarationOfIntentionModel
 
-<script type="text/javascript">
-
-</script>
 <div class="pagebody">
-	<div class="pagecontent" style="width: 95%">
+	<div class="pagecontent">
 
 		@{
-			ViewBag.Title = "View1";
+			ViewBag.Title = "Initial / first declaration of intention to sit";
 		}
 
 		<h1>Initial / first declaration of intention to sit</h1>
@@ -29,14 +26,14 @@
 			<fieldset>
 				<legend>Exam Year</legend>
 				<div class="field">
-				<div class="editor-label label">
-					@Html.LabelFor(model => model.YearsDropdown)
-				</div>
-				<div class="editor-field input">
-					@Html.DropDownListFor(x => x.YearsDropdown, Model.YearsDropdown)
-					@Html.ValidationMessageFor(model => model.YearsDropdown)
-				</div>
+					<div class="editor-label label">
+						@Html.LabelFor(model => model.YearsDropdown)
 					</div>
+					<div class="editor-field input">
+						@Html.DropDownListFor(x => x.YearsDropdown, Model.YearsDropdown)
+						@Html.ValidationMessageFor(model => model.YearsDropdown)
+					</div>
+				</div>
 			</fieldset>
 
 			<fieldset>
