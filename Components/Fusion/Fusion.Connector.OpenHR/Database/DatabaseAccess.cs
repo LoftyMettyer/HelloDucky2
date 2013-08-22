@@ -65,7 +65,7 @@ namespace Fusion.Connector.OpenHR.Database
                 {
 										su.costCenter = su.costCenter == "" ? null : su.costCenter;
                     su.effectiveToSpecified = true;
-
+	                su.costCenterSpecified = true;
                     return su;
                 }
             }
@@ -177,6 +177,10 @@ namespace Fusion.Connector.OpenHR.Database
                     su.documentReference = su.documentReference == "" ? null : su.documentReference;
                     su.requestedBy = su.requestedBy == "" ? null : su.requestedBy;
                     su.acceptedBy = su.acceptedBy == "" ? null : su.acceptedBy;
+	                su.validFromSpecified = true;
+	                su.validToSpecified = true;
+	                su.requestedBySpecified = true;
+	                su.requestedDateSpecified = true;
                     su.acceptedDateSpecified = true;
                     su.requestedDateSpecified = true;
                     return su;
