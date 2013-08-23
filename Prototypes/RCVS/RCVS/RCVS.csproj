@@ -225,6 +225,8 @@
     <Compile Include="WebServiceClasses\AddOrganisationResult.cs" />
     <Compile Include="WebServiceClasses\AddPositionParameters.cs" />
     <Compile Include="WebServiceClasses\AddPositionResult.cs" />
+    <Compile Include="WebServiceClasses\AddRegisteredUserParameters.cs" />
+    <Compile Include="WebServiceClasses\AddRegisteredUserResult.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
     <Compile Include="Models\SeeingPracticeModel.cs" />
     <Compile Include="WebServiceClasses\AddActivityParameters.cs" />

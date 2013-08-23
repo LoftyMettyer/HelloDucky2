@@ -56,9 +56,6 @@ namespace RCVS.Controllers
 					                 Text = activity.Element("ActivityDesc").Value
 				                 };
 
-
-			//Contact Number is 571 for nick/nick
-
 			var years = new List<SelectListItem>();
 			years.Add(new SelectListItem { Value = "14", Text = "2014" });
 			years.Add(new SelectListItem { Value = "15", Text = "2015" });

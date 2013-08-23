@@ -89,7 +89,6 @@ namespace RCVS.Controllers
 		{
 			model.LoadLookups();
 
-			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
 
@@ -105,8 +104,8 @@ namespace RCVS.Controllers
 				Postcode = values["Postcode"],
 				Country = values["Countries"],
 				EmailAddress = values["EmailAddress"],
-				UserName = values["EmailAddress"], //This is not an error, UserName should be set to the email address
-				Password = values["Password"],
+				//UserName = values["EmailAddress"], //This is not an error, UserName should be set to the email address
+				//Password = values["Password"],
 				Salutation = values["Title"] + " " + values["Surnames"],
 				LabelName = values["Title"] + " " + values["Forenames"] + " " + values["Surnames"],
 				Status = "WA", //Always "WA" (Web applicant)
@@ -115,7 +114,7 @@ namespace RCVS.Controllers
 
 			var serializedParameters = XmlHelper.SerializeToXml(addContactParameters); //Serialize to XML to pass to the web services
 
-			response = client.AddContact(serializedParameters);
+			string response = client.AddContact(serializedParameters);
 
 			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
 			if (response.Contains("ErrorMessage"))
@@ -125,13 +124,23 @@ namespace RCVS.Controllers
 				ModelState.AddModelError("", errorResult.ErrorMessage);
 				return View(model);
 			}
-			else //Deserialize into a LoginResult object
-			{
-				// AddContactResult addContactResult = XmlHelper.DeserializeFromXmlToObject<AddContactResult>(response);
-				return RedirectToAction("RegistrationSuccessful", "Account");
-			}
 
-			return View();
+			//Deserialize into a AddContactResult object
+			AddContactResult addContactResult = XmlHelper.DeserializeFromXmlToObject<AddContactResult>(response);
+			//Once the contact is added, we need to call another web service to actually add the contact to the list of registered users
+			var addRegisteredUserParameters = new AddRegisteredUserParameters
+				{
+					ContactNumber = addContactResult.ContactNumber,
+					UserName = values["EmailAddress"],
+					Password = values["Password"],
+					EMailAddress = values["EmailAddress"]
+				};
+
+			serializedParameters = XmlHelper.SerializeToXml(addRegisteredUserParameters);
+			response = client.AddRegisteredUser(serializedParameters);
+			// AddRegisteredUserResult addRegisteredUserResult = XmlHelper.DeserializeFromXmlToObject<AddRegisteredUserResult>(response);
+
+			return RedirectToAction("RegistrationSuccessful", "Account");
 		}
 
 		[AllowAnonymous]
