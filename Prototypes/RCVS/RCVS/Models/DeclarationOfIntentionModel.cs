@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
+using System.Web.Security;
+using System.Xml.Linq;
 using RCVS.Classes;
 using RCVS.Helpers;
+using RCVS.IRISWebServices;
 using RCVS.Structures;
 using RCVS.WebServiceClasses;
 
@@ -56,7 +60,7 @@ namespace RCVS.Models
 		public DateTime? CourseEndDate { get; set; }
 
 		[DisplayName("What is the normal length of your course?")]
-		public Classes.TimePeriod NormalCourseLength { get; set; }
+		public TimePeriod NormalCourseLength { get; set; }
 
 		[DisplayName("Have you enclosed a transcript?")]
 		public bool? HasEnclosedTranscript { get; set; }
@@ -66,44 +70,103 @@ namespace RCVS.Models
 
 		public override void Load()
 		{
-			long ContactNumber = 571;
+			long contactNumber = System.Convert.ToInt32(System.Web.HttpContext.Current.Session["ContactNumber"]);	// 571;
 
-			if (ContactNumber != null)
+			if (contactNumber != null)
 			{
 				//get data
 				//NormalCourseLength = new TimePeriod { Months = 1, Years = 2 };
+				string response;
+				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+
+				//set the lookup key..
+				var contactDataSelectionTypes = new IRISWebServices.XMLContactDataSelectionTypes();
+				contactDataSelectionTypes = XMLContactDataSelectionTypes.xcdtContactCategories; // Activities
+
+				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+				var selectContactData = new SelectContactDataParameters() { ContactNumber = contactNumber };
+				var serializedParameters = xmlHelper.SerializeToXml(selectContactData); //Serialize to XML to pass to the web services
+
+				response = client.SelectContactData(contactDataSelectionTypes, serializedParameters);
+
+				//Deserialize into a LoginResult object
+				//var x = xmlHelper.DeserializeFromXmlToObject<SelectContactDataResult>(response);
+
+
+				////var foo = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
+				//Session["ContactNumber"] = loginResult.ContactNumber; //Save the ContactNumber to Session; it is used throughout
+				//FormsAuthentication.SetAuthCookie(model.UserName, true);
+
+
+
+				//var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
+				//								 select new SelectListItem
+				//								 {
+				//									 Value = activity.Element("Activity").Value,
+				//									 Text = activity.Element("ActivityDesc").Value
+				//								 };
+
 
 
 			}
 		}
 
+
+		////set the lookup key..
+		//	var lookupDataType = new IRISWebServices.XMLLookupDataTypes();						
+		//	lookupDataType = XMLLookupDataTypes.xldtActivities; // Activities
+
+		//	var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+		//	var GetLookupDataParameters = new GetLookupDataParameters { };
+		//	var serializedParameters = XmlHelper.SerializeToXml(GetLookupDataParameters); //Serialize to XML to pass to the web services
+
+		//	response = client.GetLookupData(lookupDataType, serializedParameters);
+
+		//	var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
+		//									 select new SelectListItem
+		//										 {
+		//											 Value = activity.Element("Activity").Value,
+		//											 Text = activity.Element("ActivityDesc").Value
+		//										 };
+
+
 		public override void Save()
 		{
 
-			int ContactNumber = 571;
+			//UserID = 571;
 
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient();
+			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+			UserID = Convert.ToInt16(System.Web.HttpContext.Current.Session["ContactNumber"]);
 
-			var yearToSit = YearsDropdown.ToString();
+			//var yearToSit = YearsDropdown.ToString();
+			//var addActivityParameters = new AddActivityParameters
+			//{
+			//	ContactNumber = UserID,
+			//	Activity = "YYGRAD",
+			//	ActivityValue = "MT",
+			//	ActivityDate = GraduationDate,
+			//	Source = "WEB"
+			//};
 
-			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+			//var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
+			//response = client.AddActivity(serializedParameters);
 
-			var addActivityParameters = new AddActivityParameters
+			if (UserID != null)
 			{
-				ContactNumber = UserID,
-				Activity = "YYGRAD",
-				ActivityValue = "MT",
-				ActivityDate = GraduationDate,
-				Source = "WEB"
-			};
+				// IELTS Activity commit
+				var addActivityParameters = new AddActivityParameters
+				{
+					ContactNumber = UserID,
+					Activity = "0PTD",
+					ActivityValue = "Y",
+					ActivityDate = TakeTestPlanDate,
+					Source = "WEB"
+				};
+				var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
+				response = client.AddActivity(serializedParameters);
 
-			var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
-			response = client.AddActivity(serializedParameters);
-
-			if (ContactNumber != null)
-			{
-				// addactivities
 			}
 			else
 			{
