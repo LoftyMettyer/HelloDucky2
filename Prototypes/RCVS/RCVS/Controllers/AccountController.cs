@@ -57,6 +57,7 @@ namespace RCVS.Controllers
 
 			//Deserialize into a LoginResult object
 			LoginResult loginResult = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
+			Session("ContactNumber") = loginResult.ContactNumber; //Save the ContactNumber to Session; it is used throughout
 			FormsAuthentication.SetAuthCookie(model.UserName, true);
 
 			if (String.IsNullOrEmpty(returnUrl))
