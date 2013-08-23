@@ -15,7 +15,7 @@ namespace RCVS.Models
 		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
 		//public int YearToSit { get; set; }
-		public IEnumerable<SelectListItem> YearsDropdown { get; set; } 
+		public IEnumerable<SelectListItem> YearsDropdown { get; set; }
 
 		public string Footnote1
 		{
@@ -39,7 +39,7 @@ namespace RCVS.Models
 		public DateTime? TakeTestPlanDate { get; set; }
 
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
-		public TRFDetails TrfDetails { get; set; }		
+		public TRFDetails TrfDetails { get; set; }
 
 		[DisplayName("Title of primary veterinary degree and recognised abbreviation if any")]
 		public Degree PrimaryVetinaryDegree { get; set; }
@@ -66,9 +66,12 @@ namespace RCVS.Models
 
 		public override void Load()
 		{
-			if (UserID != null)
+			long ContactNumber = 571;
+
+			if (ContactNumber != null)
 			{
-			NormalCourseLength = new TimePeriod{Months = 1, Years = 2};
+				//get data
+				//NormalCourseLength = new TimePeriod { Months = 1, Years = 2 };
 
 
 			}
@@ -77,7 +80,7 @@ namespace RCVS.Models
 		public override void Save()
 		{
 
-			UserID = 571;
+			int ContactNumber = 571;
 
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient();
@@ -86,32 +89,26 @@ namespace RCVS.Models
 
 			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
 
-			var addActivityParameters = new AddActivityParameters { ContactNumber = UserID, Activity = "YYGRAD"
-								, ActivityValue = "MT"
-								, ActivityDate = GraduationDate
-								, Source = "WEB" };
+			var addActivityParameters = new AddActivityParameters
+			{
+				ContactNumber = UserID,
+				Activity = "YYGRAD",
+				ActivityValue = "MT",
+				ActivityDate = GraduationDate,
+				Source = "WEB"
+			};
+
 			var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
-
-
-
 			response = client.AddActivity(serializedParameters);
-			
 
-
-			if (UserID != null) {
+			if (ContactNumber != null)
+			{
 				// addactivities
 			}
 			else
 			{
 				// update activities
-
-
 			}
-
 		}
-
-
-
 	}
-
 }

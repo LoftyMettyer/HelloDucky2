@@ -17,8 +17,6 @@ namespace RCVS.Controllers
 	{
 		public ActionResult Index()
 		{
-			ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
-
 			return View();
 		}
 
@@ -42,21 +40,21 @@ namespace RCVS.Controllers
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
 			//set the lookup key..
-			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();						
+			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
 			lookupDataType = XMLLookupDataTypes.xldtActivities; // Activities
-			
+
 			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-			var GetLookupDataParameters = new GetLookupDataParameters {};
+			var GetLookupDataParameters = new GetLookupDataParameters { };
 			var serializedParameters = XmlHelper.SerializeToXml(GetLookupDataParameters); //Serialize to XML to pass to the web services
 
 			response = client.GetLookupData(lookupDataType, serializedParameters);
-			
+
 			var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
-			                 select new SelectListItem
-				                 {
-					                 Value = activity.Element("Activity").Value,
-					                 Text = activity.Element("ActivityDesc").Value
-				                 };
+											 select new SelectListItem
+												 {
+													 Value = activity.Element("Activity").Value,
+													 Text = activity.Element("ActivityDesc").Value
+												 };
 
 
 			//Contact Number is 571 for nick/nick
@@ -77,26 +75,26 @@ namespace RCVS.Controllers
 			return View(model);
 		}
 
-			[HttpPost]	
-			[ValidateAntiForgeryToken]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public ActionResult DeclarationOfIntention(DeclarationOfIntentionModel model, FormCollection values)
-			{
-				//save the Year to Sit
-				string response;
-				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+		{
+			//save the Year to Sit
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
-				var yearToSit = model.YearsDropdown.ToString();
+			var yearToSit = model.YearsDropdown.ToString();
 
-				var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-				var addActivityParameters = new AddActivityParameters { ContactNumber = 571, Activity = "0YPE", ActivityValue = yearToSit, Source = "WEB" };
-				var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters); //Serialize to XML to pass to the web services
+			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+			var addActivityParameters = new AddActivityParameters { ContactNumber = 571, Activity = "0YPE", ActivityValue = yearToSit, Source = "WEB" };
+			var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters); //Serialize to XML to pass to the web services
 
-				response = client.AddActivity(serializedParameters);
+			response = client.AddActivity(serializedParameters);
 
-				model.Save();
+			model.Save();
 
-				return RedirectToAction("Index");
-			}
+			return RedirectToAction("Index");
+		}
 
 		public ActionResult RenewalOfDeclaration()
 		{
@@ -134,14 +132,5 @@ namespace RCVS.Controllers
 
 			return View(model);
 		}
-
-		
-		//[HttpPost]
-		//public ActionResult RenewalOfDeclaration1B()
-		//{
-		//	return View();
-		//}
-
-
 	}
 }

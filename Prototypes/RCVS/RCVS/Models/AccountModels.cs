@@ -64,7 +64,7 @@ namespace RCVS.Models
 		[DisplayName("Year")]
 		public List<Year> Years { get; set; }
 
-		public string Year { get; set; } //To hold the value of the selected yeaat
+		public string Year { get; set; } //To hold the value of the selected year
 
 		[Required]
 		[DisplayName("Address line 1")]
