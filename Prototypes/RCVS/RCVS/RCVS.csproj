@@ -188,14 +188,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\BindingConfig.cs" />
     <Compile Include="Classes\Address.cs" />
     <Compile Include="Classes\Month.cs" />
     <Compile Include="Classes\Year.cs" />
+    <Compile Include="Classes\BaseClass.cs" />
     <Compile Include="Classes\Degree.cs" />
     <Compile Include="Classes\Employment.cs" />
     <Compile Include="Classes\ExamAttempts.cs" />
+    <Compile Include="Helpers\EditTableHelper.cs" />
+    <Compile Include="Helpers\SelectListModelBinder.cs" />
     <Compile Include="Helpers\Table.cs" />
     <Compile Include="Classes\Day.cs" />
+    <Compile Include="Interfaces\iModel.cs" />
+    <Compile Include="Models\QualificationModel.cs" />
+    <Compile Include="Models\SeeingPracticeDetailModel.cs" />
     <Compile Include="Structures\Confirmation.cs" />
     <Compile Include="Structures\ExamPayment.cs" />
     <Compile Include="Classes\PracticeArrangement.cs" />
@@ -214,9 +221,16 @@
     <Compile Include="Models\StatutoryMembershipExaminationModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
+    <Compile Include="WebServiceClasses\AddOrganisationParameters.cs" />
+    <Compile Include="WebServiceClasses\AddOrganisationResult.cs" />
+    <Compile Include="WebServiceClasses\AddPositionParameters.cs" />
+    <Compile Include="WebServiceClasses\AddPositionResult.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
     <Compile Include="Models\SeeingPracticeModel.cs" />
     <Compile Include="WebServiceClasses\AddActivityParameters.cs" />
+    <Compile Include="WebServiceClasses\FindActions.cs" />
+    <Compile Include="WebServiceClasses\FindOrganisationResults.cs" />
+    <Compile Include="WebServiceClasses\FindOrganisationsParameters.cs" />
     <Compile Include="WebServiceClasses\GetActivityParameters.cs" />
     <Compile Include="WebServiceClasses\GetLookupDataParameters.cs" />
     <Compile Include="WebServiceClasses\LoginParameters.cs" />
@@ -403,6 +417,8 @@
     <Content Include="Views\Home\StatutoryMembershipExamination.cshtml" />
     <Content Include="Views\Account\RegistrationSuccessful.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\Activity_Qualification.cshtml" />
+    <Content Include="Views\Home\SeeingPracticeDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

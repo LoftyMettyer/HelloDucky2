@@ -9,6 +9,6 @@ namespace RCVS.WebServiceClasses
 		public string ActivityValue { get; set; }
 		public string Source { get; set; }
 		public DateTime? ActivityDate { get; set; }		
-
+		public string Notes { get; set; }
 	}
 }

@@ -1,25 +1,104 @@
-﻿@model RCVS.Models.SeeingPracticeModel
+﻿@using RCVS.Helpers
+@model RCVS.Models.SeeingPracticeModel
+
+<script type="text/javascript">
+	
+
+	function addActivity(Activity, RowNo) {
+		var i;
+
+		document.location = "SeeingPracticeDetail";
+
+@*		debugger;
+
+		$('#dialog').dialog({
+			autoOpen: false,
+			width: 400,
+			resizable: false,
+			title: 'hi there',
+			modal: true,
+			open: function (event, ui) {
+				$(this).load("@Url.Action("SeeingPracticeDetail")");
+			},
+			buttons: {
+				"Close": function () {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+			$('#dialog').dialog('open');
+*@
+
+
+		}
+
+</script>
+
+
+<div class="pagebody">
+	
+	<div id="dialog"></div>
+
+	<div class="pagecontent" style="width: 95%">
+
 
 @{
-	ViewBag.Title = "SeeingPractice";
+    ViewBag.Title = "SeeingPractice";
 }
 
+		<h1>Statutory Membership Examination</h1>
+		<h2>Form 2 Seeing Practice</h2>
+
+		@using (Html.BeginForm("SeeingPractice", "Home", FormMethod.Post, new {@class = "forms default"}))
+		{
+			@Html.AntiForgeryToken()
+			@Html.ValidationSummary(true)
 <div class="wysiwyg">
 	<h2>SeeingPractice</h2>
 
-	<fieldset>
-		<legend>SeeingPracticeModel</legend>
+<fieldset>
+				<legend>Detail</legend>
 
-		<div class="display-label">
-			@Html.DisplayNameFor(model => model.Count)
-		</div>
-		<div class="display-field">
-			@Html.DisplayFor(model => model.Count)
-		</div>
-	</fieldset>
-	<p>
-		@Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
-		@Html.ActionLink("Back to List", "Index")
-	</p>
+    <div class="display-label">
+							
+					<div class="editor-label">
+						@Html.LabelFor(model => model.PlannedYearToSit)
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.PlannedYearToSit)
+						@Html.ValidationMessageFor(model => model.PlannedYearToSit)
+    </div>
+							
+    </div>
+</fieldset>
 
+			<fieldset>
+				<legend>Seeing Practice Arrangements</legend>
+						
+				@Html.Raw(Html.EditTable("tblPractices", Model.Practices, null))
+
+				<input id="addQualification" value="Add Practice" type="button" onclick='addActivity("tblPractices")' />
+
+			</fieldset>
+
+
+		}
+
+<p>
+
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+	</div>
 </div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+}
+
+
+
