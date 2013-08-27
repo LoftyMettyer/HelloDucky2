@@ -23,7 +23,7 @@
 @*@Html.DropDownListFor(x => x.Activities, Model.Activities)			*@
 		
 		<fieldset>
-			<legend>Exam Year</legend>
+			<legend>Choose examination year</legend>
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.YearsDropdown)
@@ -36,7 +36,7 @@
 		</fieldset>
 
 		<fieldset>
-			<legend>See Practice</legend>
+			<legend>Will you see practice?</legend>
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.PlanToSeePractice)
@@ -55,90 +55,102 @@
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>
-
 		</fieldset>
 
 		<fieldset>
-			<legend>International English Language Testing System</legend>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.IELTS)
+			<legend>International English Language Testing System (IELTS)</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.IELTS)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.IELTS)
+					@Html.ValidationMessageFor(model => model.IELTS)
+				</div>
 			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.IELTS)
-				@Html.ValidationMessageFor(model => model.IELTS)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.TakeTestPlanDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.TakeTestPlanDate)
+					@Html.ValidationMessageFor(model => model.TakeTestPlanDate)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.TrfDetails)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.TrfDetails)
+					@Html.ValidationMessageFor(model => model.TrfDetails)
+				</div>
 			</div>
 
-			<div class="editor-label">
-				@Html.LabelFor(model => model.TakeTestPlanDate)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.TakeTestPlanDate)
-				@Html.ValidationMessageFor(model => model.TakeTestPlanDate)
-			</div>
-
-			<div class="editor-label">
-				@Html.LabelFor(model => model.TrfDetails)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.TrfDetails)
-				@Html.ValidationMessageFor(model => model.TrfDetails)
-			</div>
 		</fieldset> 
 		 
 		<fieldset>
 			<legend>Veterinary Qualification</legend>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.PrimaryVetinaryDegree)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.PrimaryVetinaryDegree)
-				@Html.ValidationMessageFor(model => model.PrimaryVetinaryDegree)
-			</div>
-
-
-			<div class="editor-label">
-				@Html.LabelFor(model => model.GraduationDate)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.GraduationDate)
-				@Html.ValidationMessageFor(model => model.GraduationDate)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.PrimaryVetinaryDegree)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.PrimaryVetinaryDegree)
+					@Html.ValidationMessageFor(model => model.PrimaryVetinaryDegree)
+				</div>
 			</div>
 
-
-			<div class="editor-label">
-				@Html.LabelFor(model => model.CourseStartDate)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.CourseStartDate)
-				@Html.ValidationMessageFor(model => model.CourseStartDate)
-			</div>
-
-			<div class="editor-label">
-				@Html.LabelFor(model => model.CourseEndDate)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.CourseEndDate)
-				@Html.ValidationMessageFor(model => model.CourseEndDate)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.GraduationDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.GraduationDate)
+					@Html.ValidationMessageFor(model => model.GraduationDate)
+				</div>
 			</div>
 
-			<div class="editor-label">
-				@Html.LabelFor(model => model.HasEnclosedTranscript)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.CourseStartDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.CourseStartDate)
+					@Html.ValidationMessageFor(model => model.CourseStartDate)
+				</div>
 			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.HasEnclosedTranscript)
-				@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.CourseEndDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.CourseEndDate)
+					@Html.ValidationMessageFor(model => model.CourseEndDate)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.HasEnclosedTranscript)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.HasEnclosedTranscript)
+					@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.EnclosedTranscript)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.EnclosedTranscript)
+					@Html.ValidationMessageFor(model => model.EnclosedTranscript)
+				</div>
 			</div>
 
-			<div class="editor-label">
-				@Html.LabelFor(model => model.EnclosedTranscript)
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.EnclosedTranscript)
-				@Html.ValidationMessageFor(model => model.EnclosedTranscript)
-			</div>
 		</fieldset>
 		<p>
-			<input type="submit" value="Create" />
+			<input type="submit" value="Create" class="input_submit"/>
 		</p>
  }
 

@@ -127,7 +127,7 @@ namespace RCVS.Controllers
 				Title = values["Title"],
 				Forenames = values["Forenames"],
 				Surname = values["Surnames"],
-				DateOfBirth = Convert.ToDateTime((values["Day"] + "/" + values["Month"] + "/" + values["Year"])),
+				DateOfBirth = Convert.ToDateTime(values["DOB"] ),
 				Address = values["AddressLine1"] + Environment.NewLine + values["AddressLine2"] + Environment.NewLine + values["AddressLine3"],
 				Town = values["City"],
 				County = values["County"],

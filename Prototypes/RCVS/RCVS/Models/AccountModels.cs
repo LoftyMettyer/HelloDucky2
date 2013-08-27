@@ -48,23 +48,28 @@ namespace RCVS.Models
 		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; }
 
+		//[Required]
+		//[DisplayName("Day")]
+		//public List<Day> Days { get; set; }
+
+		//public string Day { get; set; } //To hold the value of the selected day
+
+		//[Required]
+		//[DisplayName("Month")]
+		//public List<Month> Months { get; set; }
+
+		//public string Month { get; set; } //To hold the value of the selected month
+
+		//[Required]
+		//[DisplayName("Year")]
+		//public List<Year> Years { get; set; }
+
+		//public string Year { get; set; } //To hold the value of the selected year
+
 		[Required]
-		[DisplayName("Day")]
-		public List<Day> Days { get; set; }
-
-		public string Day { get; set; } //To hold the value of the selected day
-
-		[Required]
-		[DisplayName("Month")]
-		public List<Month> Months { get; set; }
-
-		public string Month { get; set; } //To hold the value of the selected month
-
-		[Required]
-		[DisplayName("Year")]
-		public List<Year> Years { get; set; }
-
-		public string Year { get; set; } //To hold the value of the selected year
+		[DisplayName("DOB")]
+		[DataType(DataType.DateTime)]
+		public string DOB { get; set; }
 
 		[Required]
 		[DisplayName("Address line 1")]
@@ -113,9 +118,9 @@ namespace RCVS.Models
 													 Text = country.Element("CountryDesc").Value
 												 });
 
-			Days = Utils.ListOfDays();
-			Months = Utils.ListOfMonths();
-			Years = Utils.ListOfYears();
+			//Days = Utils.ListOfDays();
+			//Months = Utils.ListOfMonths();
+			//Years = Utils.ListOfYears();
 			Countries = countries;
 		}
 	}
