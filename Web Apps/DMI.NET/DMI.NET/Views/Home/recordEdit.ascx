@@ -299,7 +299,7 @@
             var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);
             var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
 
-            $("#ctlRecordEdit").height(newHeight + "px");
+            $("#ctlRecordEdit").height(newHeight + document.getElementById("tabHeaders").offsetHeight + "px");
             $("#ctlRecordEdit").width(newWidth + "px");
 	        
           if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
@@ -323,12 +323,12 @@
 		        scaleFactor = Math.min(scaleFactor, 1.5);
             
 		        
-				$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
-		        $("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
+				//$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
+		       //$("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
 		       // $("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
-		        $("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
-		        $("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
-		        $("#ctlRecordEdit").css("transform-origin", "50% top");
+		      // $("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
+		        //$("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
+		        //$("#ctlRecordEdit").css("transform-origin", "50% top");
 	        }
 	        
 	        //use zoom for IE9?
@@ -537,8 +537,8 @@
 
 </script>
 
-<div <%=session("BodyTag")%>>
-<form action="" method=post id=frmRecordEditForm name=frmRecordEditForm>
+<div <%=session("BodyTag")%> >
+<form action="" method=post id=frmRecordEditForm name=frmRecordEditForm >
 
 
 <%
@@ -588,7 +588,7 @@
     cmdRecEditWindowTitle = Nothing%></h3>
 </div>
     
-<div id="ctlRecordEdit" style="margin:0 auto;">
+<div id="ctlRecordEdit" style="margin:0 auto; " >
     <ul id="tabHeaders">        
     </ul>
 		<input type="hidden" id="changed" value="false"/>
