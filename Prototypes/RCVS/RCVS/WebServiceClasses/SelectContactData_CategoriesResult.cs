@@ -7,8 +7,8 @@ using System.Web;
 
 namespace RCVS.WebServiceClasses
 {
-	[System.Xml.Serialization.XmlRoot("Result")]
-	public class SelectContactDataResult
+	[System.Xml.Serialization.XmlRoot("DataRow")]
+	public class SelectContactData_CategoriesResult
 	{
 		//public TYPE Type { get; set; }
 		public long ContactNumber { get; set; }

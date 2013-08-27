@@ -70,42 +70,15 @@ namespace RCVS.Models
 
 		public override void Load()
 		{
-			long contactNumber = System.Convert.ToInt32(System.Web.HttpContext.Current.Session["ContactNumber"]);	// 571;
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)
 			{
-				//get data
-				//NormalCourseLength = new TimePeriod { Months = 1, Years = 2 };
-				string response;
-				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+				//Get data for this form
 
-				//set the lookup key..
-				var contactDataSelectionTypes = new IRISWebServices.XMLContactDataSelectionTypes();
-				contactDataSelectionTypes = XMLContactDataSelectionTypes.xcdtContactCategories; // Activities
-
-				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-				var selectContactData = new SelectContactDataParameters() { ContactNumber = contactNumber };
-				var serializedParameters = xmlHelper.SerializeToXml(selectContactData); //Serialize to XML to pass to the web services
-
-				response = client.SelectContactData(contactDataSelectionTypes, serializedParameters);
-
-				//Deserialize into a LoginResult object
-				//var x = xmlHelper.DeserializeFromXmlToObject<SelectContactDataResult>(response);
-
-
-				////var foo = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
-				//Session["ContactNumber"] = loginResult.ContactNumber; //Save the ContactNumber to Session; it is used throughout
-				//FormsAuthentication.SetAuthCookie(model.UserName, true);
-
-
-
-				//var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
-				//								 select new SelectListItem
-				//								 {
-				//									 Value = activity.Element("Activity").Value,
-				//									 Text = activity.Element("ActivityDesc").Value
-				//								 };
-
+				FormData f = new FormData(FormData.Forms.DeclarationOfIntention);
+				List<SelectContactData_CategoriesResult> l = f.GetFormActivities(contactNumber);
 
 
 			}
@@ -138,7 +111,9 @@ namespace RCVS.Models
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient();
 			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-			UserID = Convert.ToInt16(System.Web.HttpContext.Current.Session["ContactNumber"]);
+
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			UserID = Convert.ToInt64(user.ContactNumber);
 
 			//var yearToSit = YearsDropdown.ToString();
 			//var addActivityParameters = new AddActivityParameters
@@ -165,6 +140,18 @@ namespace RCVS.Models
 					Source = "WEB"
 				};
 				var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
+				response = client.AddActivity(serializedParameters);
+
+				//TRF details
+				addActivityParameters = new AddActivityParameters
+			 {
+				 ContactNumber = UserID,
+				 Activity = "0TDS",
+				 ActivityValue = "A", //TrfDetails.BandScore.ToString(),
+				 ActivityDate = TrfDetails.DateOfTest,
+				 Source = "WEB"
+			 };
+				serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
 				response = client.AddActivity(serializedParameters);
 
 			}

@@ -6,12 +6,9 @@ using System.Web;
 namespace RCVS.WebServiceClasses
 {
 	[System.Xml.Serialization.XmlRoot("Result")]
-	public class LoginResult
+	public class SelectContactData_InformationResult
 	{
 		public long ContactNumber { get; set; }
-		public string UserLogname { get; set; }
-		public string UserDepartment { get; set; }
-		public string DatabaseDescription { get; set; }
-		public long AddressNumber { get; set; }
+		public string Postcode { get; set; }
 	}
 }

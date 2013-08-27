@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
+using RCVS.Classes;
 using RCVS.Helpers;
 using RCVS.WebServiceClasses;
 using WebMatrix.WebData;
@@ -41,10 +42,10 @@ namespace RCVS.Controllers
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
 
-			var loginParameters = new LoginParameters { UserName = model.UserName, Password = model.Password }; //Create an object with the login credentials
-			var serializedParameters = XmlHelper.SerializeToXml(loginParameters); //Serialize to XML to pass to the web services
+			var loginRegisteredUserParameters = new LoginRegisteredUserParameters { UserName = model.UserName, Password = model.Password }; //Create an object with the login credentials
+			var serializedParameters = XmlHelper.SerializeToXml(loginRegisteredUserParameters); //Serialize to XML to pass to the web services
 
-			response = client.Login(serializedParameters); //Call the login method
+			response = client.LoginRegisteredUser(serializedParameters); //Call the login method
 
 			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
 			if (response.Contains("ErrorMessage"))
@@ -55,11 +56,40 @@ namespace RCVS.Controllers
 				return View(model);
 			}
 
-			//Deserialize into a LoginResult object
-			LoginResult loginResult = XmlHelper.DeserializeFromXmlToObject<LoginResult>(response);
-			Session["ContactNumber"] = loginResult.ContactNumber; //Save the ContactNumber to Session; it is used throughout
+			//Deserialize into a LoginRegisteredUserResult object
+			LoginRegisteredUserResult loginRegisteredUserResult = XmlHelper.DeserializeFromXmlToObject<LoginRegisteredUserResult>(response);
+
+			//Get tue User details
+			var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = loginRegisteredUserResult.ContactNumber };
+			serializedParameters = XmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
+
+			response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactInformation, serializedParameters);
+
+			//We don't need all the fields returned by the web services, so instead of casting the result into an object that would need to have every field),
+			//we use LINQ to get only what we need
+
+			var temp  = from u in XDocument.Parse(response).Descendants("DataRow")
+									select  new User
+									{
+										ContactNumber = Convert.ToInt64(u.Element("ContactNumber").Value),
+										AddressNumber = Convert.ToInt64(u.Element("AddressNumber").Value),
+										ContactName = u.Element("ContactName").Value,
+										Title = u.Element("Title").Value,
+										Initials = u.Element("Initials").Value,
+										Forenames = u.Element("Forenames").Value,
+										Surname = u.Element("Surname").Value,
+										Honorifics = u.Element("Honorifics").Value,
+										Salutation = u.Element("Salutation").Value,
+										LabelName = u.Element("LabelName").Value,
+									};
+
+
+			User user = (User) temp.FirstOrDefault();
+			//SelectContactData_InformationResult selectContactData_InformationResult = XmlHelper.DeserializeFromXmlToObject<SelectContactData_InformationResult>(response);
+
+			Session["User"] = user; //Save the User details in Session
 			FormsAuthentication.SetAuthCookie(model.UserName, true);
-			
+
 			if (String.IsNullOrEmpty(returnUrl))
 			{
 				return RedirectToAction("Index", "Home");

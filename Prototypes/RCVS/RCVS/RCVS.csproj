@@ -190,7 +190,9 @@
   <ItemGroup>
     <Compile Include="App_Start\BindingConfig.cs" />
     <Compile Include="Classes\Address.cs" />
+    <Compile Include="Classes\FormData.cs" />
     <Compile Include="Classes\Month.cs" />
+    <Compile Include="Classes\User.cs" />
     <Compile Include="Classes\Year.cs" />
     <Compile Include="Classes\BaseClass.cs" />
     <Compile Include="Classes\Degree.cs" />
@@ -227,7 +229,7 @@
     <Compile Include="WebServiceClasses\AddPositionResult.cs" />
     <Compile Include="WebServiceClasses\AddRegisteredUserParameters.cs" />
     <Compile Include="WebServiceClasses\AddRegisteredUserResult.cs" />
-    <Compile Include="WebServiceClasses\SelectContactDataResult.cs" />
+    <Compile Include="WebServiceClasses\SelectContactData_CategoriesResult.cs" />
     <Compile Include="WebServiceClasses\SelectContactDataParameters.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
     <Compile Include="Models\SeeingPracticeModel.cs" />
@@ -237,8 +239,8 @@
     <Compile Include="WebServiceClasses\FindOrganisationsParameters.cs" />
     <Compile Include="WebServiceClasses\GetActivityParameters.cs" />
     <Compile Include="WebServiceClasses\GetLookupDataParameters.cs" />
-    <Compile Include="WebServiceClasses\LoginParameters.cs" />
-    <Compile Include="WebServiceClasses\LoginResult.cs" />
+    <Compile Include="WebServiceClasses\LoginRegisteredUserParameters.cs" />
+    <Compile Include="WebServiceClasses\LoginRegisteredUserResult.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -263,6 +265,7 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebServiceClasses\SelectContactData_InformationResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CodeFile1.xml" />
