@@ -135,7 +135,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
-		<table class="outline">
+		<table >
 			<tr>
 				<td>
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -189,7 +189,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="80%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="80%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -201,15 +201,17 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5"></td>
 														<td width="10">Name :</td>
 														<td width="5">&nbsp;</td>
-														<td>
-															<input id="txtName" name="txtName" maxlength="50" style="WIDTH: 100%" class="text"
+														<td style="padding-right:10px">
+															<input id="txtName" name="txtName" maxlength="50" style="width: 100%" class="text"
 																onkeyup="changeTab1Control()">
 														</td>
 														<td width="20"></td>
 														<td width="10">Owner :</td>
 														<td width="5">&nbsp;</td>
 														<td>
-															<input id="txtOwner" name="txtOwner" style="WIDTH: 100%" class="text textdisabled"
+															<input id="txtOwner" name="txtOwner" style="width:100%" 
+																placeholder="Enter Owner"
+																class="text textdisabled"
 																disabled="disabled">
 														</td>
 														<td width="5"></td>
@@ -219,11 +221,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td colspan="9" height="5"></td>
 													</tr>
 
-													<tr height="60">
+													<tr style="height:150px">
 														<td width="5"></td>
 														<td width="10" nowrap valign="top">Description :</td>
 														<td width="5"></td>
-														<td width="40%" rowspan="1" colspan="1">
+														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
 															<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
 																onkeyup="changeTab1Control()"
 																onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
@@ -233,25 +235,18 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="20" nowrap></td>
 														<td width="10" valign="top" nowrap>Access :</td>
 														<td width="5"></td>
-														<td width="40%" rowspan="1" valign="top" height="78">
+														<td width="40%" rowspan="1" style="vertical-align: top; height:140px">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%> 
+															
 														</td>
 														<td width="5"></td>
-													</tr>
-
-													<tr height="20">
-														<td width="5">&nbsp;</td>
-														<td colspan="7">
-															<hr>
-														</td>
-														<td width="5">&nbsp;</td>
 													</tr>
 
 													<tr height="10">
 														<td width="5">&nbsp;</td>
 														<td width="85" nowrap valign="top">Base Table :</td>
 														<td width="5"></td>
-														<td width="40%" valign="top" colspan="1">
+														<td style="width: 40%; vertical-align: top; padding-right: 10px" colspan="1">
 															<select id="cboBaseTable" name="cboBaseTable" style="WIDTH: 100%" class="combo combodisabled"
 																onchange="changeBaseTable()" disabled="disabled">
 															</select>
@@ -350,27 +345,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			onblur="try{button_onBlur(this);}catch(e){}" />
 																	</td>
 																</tr>
-																<tr>
-																	<td colspan="6">
-																		<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="-1"
-																			onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
-																			onclick="changeTab1Control();">
-																		<label
-																			id="lblPrintFilterHeader"
-																			name="lblPrintFilterHeader"
-																			for="chkPrintFilterHeader"
-																			class="checkbox checkboxdisabled"
-																			tabindex="0"
-																			onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																			onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																			onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																			onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																			Display filter or picklist title in the report header 
-																		</label>
-																	</td>
-																</tr>
 															</table>
 														</td>
 														<td width="5">&nbsp;</td>
@@ -378,135 +352,147 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													<tr>
 														<td colspan="9" height="5"></td>
 													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
 
-													<tr height="5">
-														<td width="5"></td>
-														<td nowrap valign="top">Description 1 :</td>
-														<td width="5"></td>
-														<td valign="top" colspan="1">
+									<table id="DataSection">
+										<tr>
+											<td>
+												<table>
+													<tr>
+														<td style="width: 5px"></td>
+														<td>Description 1 :</td>
+														<td></td>
+														<td style="vertical-align: top; padding-right: 10px">
 															<select id="cboDescription1" name="cboDescription1" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="changeTab1Control();">
 															</select>
 														</td>
-														<td width="20" nowrap></td>
+														<td></td>
+														<td></td>
+														<td style="white-space: nowrap">
+															<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="-1"
+																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
+																onclick="changeTab1Control();">
+															<label
+																id="lblPrintFilterHeader"
+																name="lblPrintFilterHeader"
+																for="chkPrintFilterHeader"
+																class="checkbox checkboxdisabled"
+																tabindex="0"
+																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																onblur="try{checkboxLabel_onBlur(this);}catch(e){}"
+																style="white-space: nowrap">
+																Display filter or picklist title in the report header 
+															</label>
+														</td>
+														<td></td>
+													</tr>
+
+													<tr style="height: 3px"></tr>
+
+													<tr>
+														<td></td>
+														<td style="white-space: nowrap" valign="top">Description 2 :</td>
+														<td></td>
+														<td valign="top" colspan="1">
+															<select id="cboDescription2" name="cboDescription2" style="width: 97%" disabled="disabled" class="combo combodisabled"
+																onchange="changeTab1Control();">
+															</select>
+														</td>
+														<td></td>
 														<td width="10" valign="top">Region :</td>
-														<td width="5"></td>
+
 														<td>
 															<select id="cboRegion" name="cboRegion" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="changeTab1Control();refreshTab3Controls();">
 															</select>
 														</td>
-														<td width="5"></td>
-													</tr>
-													<tr>
-														<td colspan="9" height="3"></td>
+														<td></td>
 													</tr>
 
-													<tr height="10">
-														<td width="5"></td>
-														<td style="white-space: nowrap" valign="top">Description 2 :</td>
-														<td width="5">&nbsp;</td>
-														<td valign="top" colspan="1">
-															<select id="cboDescription2" name="cboDescription2" width="100%" disabled="disabled" class="combo combodisabled"
+													<tr>
+														<td></td>
+														<td>Description 3 :</td>
+														<td></td>
+														<td>
+															<input id="txtDescExpr" name="txtDescExpr" disabled="disabled" class="text textdisabled" style="width: 80%">
+															<input id="cmdDescExpr" name="cmdDescExpr" type="button" disabled="disabled" class="btn btndisabled" value="..."
+																onclick="selectCalc('baseDesc', false)"
+																onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																onfocus="try{button_onFocus(this);}catch(e){}"
+																onblur="try{button_onBlur(this);}catch(e){}" />
+														</td>
+														<td>
+															
+														</td>
+														<td></td>
+														<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
+															<input valign="center" name="chkGroupByDesc" id="Checkbox1" type="checkbox" disabled="disabled" tabindex="-1"
+																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
+																onclick="changeTab1Control(); refreshTab3Controls();" />
+																<label
+																for="chkGroupByDesc"
+																class="checkbox checkboxdisabled"
+																tabindex="0"
+																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																Group By Description</label>
+														</td>
+														<td>
+															
+														</td>
+														
+													</tr>
+
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td>Separator :</td>
+														<td> 
+															<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
 																onchange="changeTab1Control();">
+																<option value="">
+																&lt;None&gt;
+																	<option value=" ">
+																&lt;Space&gt;
+																	<option value=", ">
+																, 
+																	<option value=".  ">
+																.  
+																	<option value=" - ">
+																- 
+																	<option value=" : ">
+																: 
+																	<option value=" ; ">
+																; 
+																	<option value=" / ">
+																/ 
+																	<option value=" \ ">
+																\ 
+																	<option value=" # ">
+																# 
+																	<option value=" ~ ">
+																~ 
+																	<option value=" ^ ">
+																^       
 															</select>
 														</td>
-														<td width="20" nowrap></td>
-														<td width="10" valign="top" colspan="3"></td>
-														<td width="5"></td>
-													</tr>
-													<tr>
-														<td colspan="9" height="3"></td>
-													</tr>
-													<tr height="10">
-														<td width="5"></td>
-														<td nowrap valign="top">Description 3 :</td>
-														<td width="5" nowrap>&nbsp;</td>
-														<td>
-															<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-																<tr>
-																	<td width="100%">
-																		<input id="txtDescExpr" name="txtDescExpr" disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
-																	</td>
-																	<td width="30" nowrap>
-																		<input id="cmdDescExpr" name="cmdDescExpr" style="WIDTH: 30px" type="button" disabled="disabled" class="btn btndisabled" value="..."
-																			onclick="selectCalc('baseDesc', false)"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
-																	</td>
-																</tr>
-															</table>
-														</td>
-														<td width="5"></td>
-														<td width="10" valign="top" colspan="3"></td>
-														<td width="5"></td>
-													</tr>
-													<tr>
-														<td colspan="9" height="3"></td>
-													</tr>
-
-													<tr height="10">
-														<td colspan="9">
-															<table style="width: 100%" class="invisible">
-																<td width="5">&nbsp;</td>
-																<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
-																	<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="-1"
-																		onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
-																		onclick="changeTab1Control(); refreshTab3Controls();" />
-																</td>
-																<td style="text-align: left; width: 150px; vertical-align: central">
-																	<label
-																		for="chkGroupByDesc"
-																		class="checkbox checkboxdisabled"
-																		tabindex="0"
-																		onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																		onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																		Group By Description</label>
-																</td>
-																<td>&nbsp;</td>
-																<td>Separator : </td>
-																<td width="5">&nbsp;</td>
-																<td style="vertical-align: central; width: 25%">
-																	<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
-																		onchange="changeTab1Control();">
-																		<option value="">
-																		&lt;None&gt;
-																	<option value=" ">
-																		&lt;Space&gt;
-																	<option value=", ">
-																		, 
-																	<option value=".  ">
-																		.  
-																	<option value=" - ">
-																		- 
-																	<option value=" : ">
-																		: 
-																	<option value=" ; ">
-																		; 
-																	<option value=" / ">
-																		/ 
-																	<option value=" \ ">
-																		\ 
-																	<option value=" # ">
-																		# 
-																	<option value=" ~ ">
-																		~ 
-																	<option value=" ^ ">
-																		^       
-																	</select>
-																</td>
-																</>
-															</table>
-														</td>
-													</tr>
-													<tr>
-														<td colspan="9" height="5"></td>
+														<td></td>
 													</tr>
 												</table>
 											</td>
@@ -516,7 +502,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Second tab -->
 								<div id="div2" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -537,7 +523,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td colspan="3" height="5"></td>
 																</tr>
 																<tr height="5">
-																	<td rowspan="8">
+																	<td rowspan="8" style="width: 700px">
 																		<%Dim avColumnDef(26, 4)
 																			
 																			avColumnDef(0, 0) = "Name"			 'name
@@ -680,8 +666,8 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			Response.Write("													height=""300px""" & vbCrLf)
 																			Response.Write("													id=grdEvents" & vbCrLf)
 																			Response.Write("													name=grdEvents" & vbCrLf)
-																			Response.Write("													style=""HEIGHT: 300px; VISIBILITY: visible; WIDTH: 300px""" & vbCrLf)
-																			Response.Write("													width=""300px"">" & vbCrLf)
+																			Response.Write("													style=""HEIGHT: 300px; VISIBILITY: visible; WIDTH: 100%"">" & vbCrLf)
+																			'Response.Write("													width=""300px"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
@@ -889,15 +875,15 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Third tab -->
 								<div id="div3" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
 														<td valign="top" rowspan="1" width="50%" height="100%">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Start Date :
+																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>Start Date :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1071,10 +1057,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																</tr>
 															</table>
 														</td>
-														<td valign="top" width="50%">
-															<table class="outline" cellspacing="0" cellpadding="2" width="100%" height="100%">
+														<td style="vertical-align: top; width:50%">
+															<table  style="padding: 2px; width:100%; height:100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">End Date :
+																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>End Date :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1252,9 +1238,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													</tr>
 													<tr>
 														<td valign="top" width="100%" colspan="2">
-															<table class="outline" cellspacing="0" cellpadding="2" width="100%" height="100%">
+															<table  cellspacing="0" cellpadding="2" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top" width="100%">Default Display Options :
+																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>Default Display Options :</strong>
 																		<br>
 																		<br>
 																		<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1267,7 +1253,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkIncludeBHols"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="0"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
@@ -1416,7 +1402,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Fourth tab -->
 								<div id="div4" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1553,15 +1539,15 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 								<!-- Fifth tab -->
 								<!-- OUTPUT OPTIONS -->
 								<div id="div5" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
 														<td valign="top" rowspan="2" width="25%" height="100%">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Output Format :
+																	<td height="10" align="left" valign="top"><strong>Output Format :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1575,7 +1561,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onfocus="try{radio_onFocus(this);}catch(e){}"
 																						onblur="try{radio_onBlur(this);}catch(e){}" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space:  nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat0"
@@ -1600,7 +1586,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onfocus="try{radio_onFocus(this);}catch(e){}"
 																						onblur="try{radio_onBlur(this);}catch(e){}" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space:  nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat2"
@@ -1625,7 +1611,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onfocus="try{radio_onFocus(this);}catch(e){}"
 																						onblur="try{radio_onBlur(this);}catch(e){}" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space:  nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat3"
@@ -1650,7 +1636,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onfocus="try{radio_onFocus(this);}catch(e){}"
 																						onblur="try{radio_onBlur(this);}catch(e){}" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space:  nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat4"
@@ -1754,9 +1740,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 															</table>
 														</td>
 														<td valign="top" width="75%">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Output Destination(s) :
+																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1874,7 +1860,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
 																						<tr>
 																							<td>
-																								<input id="txtFilename" width="100%" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 375px">
+																								<input id="txtFilename" width="100%" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 350px">
 																							</td>
 																							<td width="25">
 																								<input id="cmdFilename" width="100%" name="cmdFilename" class="btn btndisabled" style="WIDTH: 100%" type="button" value='...' disabled="disabled"
@@ -1958,39 +1944,46 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td colspan="8"></td>
 																</tr>
 
-																<tr height="20">
-																	<td colspan="3"></td>
-																	<td align="left" nowrap>Email subject :</td>
-																	<td></td>
-																	<td colspan="2" width="100%" nowrap>
-																		<input id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 400px"
-																			onchange="frmUseful.txtChanged.value = 1;"
-																			onkeydown="frmUseful.txtChanged.value = 1;">
-																	</td>
-																	<td></td>
-																</tr>
-
 																<tr height="10">
-																	<td colspan="8"></td>
-																</tr>
-
-																<tr height="20">
-																	<td colspan="3"></td>
-																	<td align="left" nowrap>Attach as : 
+																	<td>
+																		<table>
+																			<tr>
+																				<td style="width: 130px" colspan="1"></td>
+																				<td style="white-space: nowrap;width: 100px" colspan="1">
+																					<label for="txtEmailSubject"
+																						tabindex="0"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Email subject :
+																					</label>
+																				</td>
+																				<td colspan="1">
+																					<input id="Text2" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 400px"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
+																				<td colspan="5"></td>
+																			</tr>
+																			<tr>
+																				<td style="width: 130px" colspan="1"></td>
+																				<td style="white-space: nowrap;width: 100px" colspan="1">
+																					<label for="txtEmailAttachAs"
+																						tabindex="0"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Attach as : 
+																					</label>
+																				</td>
+																				<td colspan="1">
+																					<input id="Text1" maxlength="255" class="text textdisabled" disabled="disabled" name="txtEmailAttachAs" style="WIDTH: 400px"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
+																				<td colspan="5"></td>
+																			</tr>
+																		</table>
 																	</td>
-																	<td></td>
-																	<td colspan="2" width="100%" nowrap>
-																		<input id="txtEmailAttachAs" maxlength="255" class="text textdisabled" disabled="disabled" name="txtEmailAttachAs" style="WIDTH: 400px"
-																			onchange="frmUseful.txtChanged.value = 1;"
-																			onkeydown="frmUseful.txtChanged.value = 1;">
-																	</td>
-																	<td></td>
 																</tr>
-
 																<tr height="10">
-																	<td colspan="8"></td>
-																</tr>
-															</table>
+														<td></td>
+													</tr>
+												</table>
 														</td>
 													</tr>
 												</table>
@@ -2104,8 +2097,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 	%>
 </form>
 
-<%--<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-</form>--%>
 	<form action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 	</form>
