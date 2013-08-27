@@ -9,7 +9,7 @@
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
 
-		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+		<table align="center"  cellpadding="5" cellspacing="0" width="100%" height="100%">
 			<tr>
 				<td>
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -43,10 +43,10 @@
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="0" cellpadding="0" style="border: 1px">
 													<tr>
 														<td colspan="10" height="5"></td>
 													</tr>
@@ -71,11 +71,11 @@
 														<td colspan="10" height="5"></td>
 													</tr>
 
-													<tr height="60">
+													<tr height="140px">
 														<td width="5">&nbsp;</td>
 														<td width="10" nowrap valign="top">Description :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" rowspan="3" colspan="2">
+														<td style="width: 40%;vertical-align: top" rowspan="2" colspan="2">
 															<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
 																onkeyup="changeTab1Control()"
 																onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
@@ -85,24 +85,24 @@
 														<td width="20" nowrap>&nbsp;</td>
 														<td width="10" valign="top">Access :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" rowspan="3" valign="top">
+														<td style="height: 140px; width: 40%; vertical-align: top">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>         
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
 
-													<tr height="10">
+												<%--	<tr height="10">
 														<td colspan="8">&nbsp;</td>
 													</tr>
 
 													<tr height="10">
 														<td colspan="8">&nbsp;</td>
-													</tr>
+													</tr>--%>
 
-													<tr height="40">
+													<tr style="height: 10px">
 														<td width="5">&nbsp;</td>
 														<td colspan="8">
-															<hr>
+															
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -124,7 +124,7 @@
 																<tr>
 																	<td width="5">
 																		<input checked id="optRecordSelection1" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()" align="" />
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
@@ -253,7 +253,7 @@
 
 								<!-- Second tab -->
 								<div id="div2" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -305,7 +305,7 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtParent1Picklist" name="txtParent1Picklist" disabled="disabled" style="WIDTH: 100%" class="text textdisabled">
+																		<input id="txtParent1Picklist" name="txtParent1Picklist" disabled="disabled" style="WIDTH: 98%" class="text textdisabled">
 																	</td>
 																	<td width="30">
 																		<input id="cmdParent1Picklist" name="cmdParent1Picklist" style="WIDTH: 100%" type="button" class="btn btndisabled" value="..." disabled="disabled"
@@ -330,7 +330,7 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtParent1Filter" name="txtParent1Filter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
+																		<input id="txtParent1Filter" name="txtParent1Filter" class="text textdisabled" disabled="disabled" style="WIDTH: 98%">
 																	</td>
 																	<td width="30">
 																		<input id="cmdParent1Filter" name="cmdParent1Filter" style="WIDTH: 100%" type="button" value="..." disabled="disabled" class="btn btndisabled"
@@ -344,7 +344,7 @@
 
 													<tr height="15">
 														<td colspan="9">
-															<hr>
+															
 														</td>
 													</tr>
 
@@ -393,7 +393,7 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtParent2Picklist" name="txtParent2Picklist" disabled="disabled" style="WIDTH: 100%" class="text textdisabled">
+																		<input id="txtParent2Picklist" name="txtParent2Picklist" disabled="disabled" style="WIDTH: 98%" class="text textdisabled">
 																	</td>
 																	<td width="30">
 																		<input id="cmdParent2Picklist" name="cmdParent2Picklist" style="WIDTH: 100%" type="button" class="btn btndisabled" value="..." disabled="disabled"
@@ -418,7 +418,7 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtParent2Filter" name="txtParent2Filter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
+																		<input id="txtParent2Filter" name="txtParent2Filter" class="text textdisabled" disabled="disabled" style="WIDTH: 98%">
 																	</td>
 																	<td width="30">
 																		<input id="cmdParent2Filter" name="cmdParent2Filter" style="WIDTH: 100%" type="button" value="..." disabled="disabled" class="btn btndisabled"
@@ -433,13 +433,13 @@
 
 													<tr height="15">
 														<td colspan="9">
-															<hr>
+															
 														</td>
 													</tr>
 
 													<tr height="5">
 														<td width="5"></td>
-														<td width="90" nowrap colspan="7">Child Tables :</td>
+														<td width="90" nowrap colspan="7"><strong>Child Tables :</strong></td>
 														<td width="5"></td>
 													</tr>
 													<tr>
@@ -520,7 +520,7 @@
 
 								<!-- Third tab -->
 								<div id="div3" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -567,9 +567,9 @@
 																			Calculations</label>
 																	</td>
 																	<td height="5"></td>
-																	<tr height="10">
+																	<%--<tr height="10">
 																		<td height="10" colspan="7" width="100%"></td>
-																	</tr>
+																	</tr>--%>
 																</tr>
 															</table>
 														</td>
@@ -798,7 +798,7 @@
 
 								<!-- Fourth tab -->
 								<div id="div4" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -812,10 +812,15 @@
 														<td width="5">&nbsp;</td>
 													</tr>
 
+													<tr>
+														<td colspan="5" height="5"></td>
+													</tr>
+
 													<tr height="5">
 														<td width="5">&nbsp;</td>
-														<td rowspan="11">
+														<td rowspan="11" style="vertical-align: top">
 															<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSortOrder")%>
+
 														</td>
 
 														<td width="10">&nbsp;</td>
@@ -905,7 +910,7 @@
 
 													<tr height="20">
 														<td colspan="5">
-															<hr>
+															
 														</td>
 													</tr>
 
@@ -917,14 +922,14 @@
 
 													<tr height="5">
 														<td width="5">&nbsp;</td>
-														<td colspan="3" rowspan="9">
+														<td colspan="1" rowspan="9">
 															<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridRepetition")%>
 														</td>
 
 														<td width="5">&nbsp;</td>
 													</tr>
 
-													<tr height="5">
+<%--													<tr height="5">
 														<td colspan="5">&nbsp;</td>
 													</tr>
 
@@ -954,7 +959,7 @@
 
 													<tr height="5">
 														<td colspan="5">&nbsp;</td>
-													</tr>
+													</tr>--%>
 
 												</table>
 											</td>
@@ -965,15 +970,15 @@
 
 								<!-- Fifth tab -->
 								<div id="div5" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
 														<td valign="top" colspan="2" width="100%" height="65">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Report Options :
+																	<td height="10" align="left" valign="top"><strong>Report Options :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1017,9 +1022,9 @@
 													</tr>
 													<tr>
 														<td valign="top" rowspan="2" width="25%" height="100%">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Output Format :
+																	<td height="10" align="left" valign="top"><strong>Output Format :</strong>
 																		<br>
 																		<br>
 																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1029,7 +1034,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat0" value="0"
 																						onclick="formatClick(0);" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat0"
@@ -1047,7 +1052,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
 																						onclick="formatClick(1);" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat1"
@@ -1065,7 +1070,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
 																						onclick="formatClick(2);" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat2"
@@ -1083,7 +1088,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
 																						onclick="formatClick(3);" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat3"
@@ -1101,7 +1106,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
 																						onclick="formatClick(4);" />
 																				</td>
-																				<td align="left" nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat4"
@@ -1119,7 +1124,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
 																						onclick="formatClick(5);" />
 																				</td>
-																				<td>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat5"
@@ -1137,7 +1142,7 @@
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
 																						onclick="formatClick(6);" />
 																				</td>
-																				<td nowrap>
+																				<td style="text-align: left; white-space: nowrap;padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat6"
@@ -1155,9 +1160,9 @@
 															</table>
 														</td>
 														<td valign="top" width="75%">
-															<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
-																	<td height="10" align="left" valign="top">Output Destination(s) :
+																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
 																		<br>
 																		<br>
 
@@ -1245,7 +1250,7 @@
 																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
 																						<tr>
 																							<td>
-																								<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 375px">
+																								<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 100%">
 																							</td>
 																							<td width="25">
 																								<input id="cmdFilename" name="cmdFilename" class="btn" style="WIDTH: 100%" type="button" value="..."
@@ -1361,16 +1366,15 @@
 							<td width="10"></td>
 						</tr>
 
-						<tr height="10">
+					<%--	<tr height="10">
 							<td colspan="3"></td>
-						</tr>
+						</tr>--%>
 
 						<tr height="10">
 							<td width="10"></td>
 							<td>
 								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 									<tr>
-										<td>&nbsp;</td>
 										<td width="80">
 											<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
 												onclick="okClick()" />
@@ -1380,12 +1384,12 @@
 											<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
 												onclick="cancelClick()" />
 										</td>
+										<td>&nbsp;</td>
 									</tr>
 								</table>
 							</td>
 							<td width="10"></td>
 						</tr>
-
 						<tr height="5">
 							<td colspan="3"></td>
 						</tr>
@@ -1417,6 +1421,7 @@
 		<input type='hidden' id="txtChangeCancelled" name="txtChangeCancelled" value="0">
 		<input type='hidden' id="txtCheckingSuppressOptions" name="txtCheckingSuppressOptions" value="0">
 	</form>
+</div>
 
 	<form id="frmTables" style="visibility: hidden; display: none">
 		<%
@@ -1969,7 +1974,7 @@
 		<input type="hidden" id="txtSend_access" name="txtSend_access">
 		<input type="hidden" id="txtSend_userName" name="txtSend_userName">
 		<input type="hidden" id="txtSend_OutputPreview" name="txtSend_OutputPreview">admin
-				<input type="hidden" id="txtSend_OutputFormat" name="txtSend_OutputFormat">
+		<input type="hidden" id="txtSend_OutputFormat" name="txtSend_OutputFormat">
 		<input type="hidden" id="txtSend_OutputScreen" name="txtSend_OutputScreen">
 		<input type="hidden" id="txtSend_OutputPrinter" name="txtSend_OutputPrinter">
 		<input type="hidden" id="txtSend_OutputPrinterName" name="txtSend_OutputPrinterName">
@@ -2041,7 +2046,7 @@
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
 	<%Html.RenderPartial("Util_Def_CustomReports/grdColProps")%>
-</div>
+<%--</div>--%>
 
 <script type="text/javascript">
 
