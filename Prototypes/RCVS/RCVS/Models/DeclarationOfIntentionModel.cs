@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Xml.Linq;
 using RCVS.Classes;
 using RCVS.Helpers;
-using RCVS.IRISWebServices;
 using RCVS.Structures;
 using RCVS.WebServiceClasses;
 
@@ -36,8 +33,8 @@ namespace RCVS.Models
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
 		public bool? CurrentlySeeingPractice { get; set; }
 
-		[DisplayName("TODO - This need to be a file upload of some decription ")]
-		public string IELTS { get; set; }
+		[DisplayName("Upload your IELTS test report form here")]
+		public HttpPostedFileBase IELTS { get; set; }
 
 		[DisplayName("When do you plan to take the test?")]
 		public DateTime TakeTestPlanDate { get; set; }
@@ -127,7 +124,7 @@ namespace RCVS.Models
 									DateTime.Now,
 									"WEB"
 								);
-			// IELTS Activity commit
+				// IELTS Activity commit
 			Utils.AddActivity(
 								 UserID,
 								 "0PTD",
@@ -136,7 +133,29 @@ namespace RCVS.Models
 								 "WEB"
 							 );
 
-			//TRF details
+				//TRF file upload				
+				var bytes = new byte[IELTS.InputStream.Length];
+				Int64 data = IELTS.InputStream.Read(bytes, 0, Convert.ToInt32(IELTS.InputStream.Length));
+				var varBinaryData = Convert.ToBase64String(bytes, 0, Convert.ToInt32(bytes.Length));
+				var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+					{
+						AddresseeContactNumber = user.ContactNumber,
+						AddresseeAddressNumber = user.AddressNumber,
+						SenderContactNumber = user.ContactNumber,
+						SenderAddressNumber = user.AddressNumber,
+						Dated = Convert.ToDateTime(DateTime.Now),
+						Direction = "U",
+						DocumentType = "",
+						Topic = "",
+						SubTopic = "",
+						DocumentClass = "",
+						DocumentSubject = "",
+						Precis = ""
+					};
+				serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
+				//response = client.AddCommunicationsLog(serializedParameters);
+
+				//TRF details
 			Utils.AddActivity(
 								UserID,
 								"0TDS",
@@ -154,6 +173,6 @@ namespace RCVS.Models
 								"WEB"
 							);
 
-		}
+			}
 	}
 }

@@ -16,7 +16,7 @@
 		</p>
 		<br />
 	</div>
-	@using (Html.BeginForm("DeclarationOfIntention", "Home", FormMethod.Post, new { @class = "forms default" }))
+	@using (Html.BeginForm("DeclarationOfIntention", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms default" }))
  {
 		@Html.AntiForgeryToken()
 		@Html.ValidationSummary(true)
@@ -60,12 +60,19 @@
 
 		<fieldset>
 			<legend>International English Language Testing System (IELTS)</legend>
+			<div class="layout">
+				<p>
+					<span>
+						Before you can apply for examination, you must send your original IELTS test report form (TRF) to RCVS so that we can verify your score and confirm that you have met the RCVS English language competence requirement.
+					</span>
+				</p>
+			</div>
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.IELTS)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.IELTS)
+					@Html.TextBoxFor(model => model.IELTS, new {type = "file"})
 					@Html.ValidationMessageFor(model => model.IELTS)
 				</div>
 			</div>

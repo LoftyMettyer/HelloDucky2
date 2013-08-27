@@ -229,6 +229,7 @@
     <Compile Include="WebServiceClasses\AddPositionResult.cs" />
     <Compile Include="WebServiceClasses\AddRegisteredUserParameters.cs" />
     <Compile Include="WebServiceClasses\AddRegisteredUserResult.cs" />
+    <Compile Include="WebServiceClasses\AddCommunicationsLogParameters.cs" />
     <Compile Include="WebServiceClasses\SelectContactData_CategoriesResult.cs" />
     <Compile Include="WebServiceClasses\SelectContactDataParameters.cs" />
     <Compile Include="WebServiceClasses\ErrorResult.cs" />
