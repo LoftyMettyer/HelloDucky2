@@ -852,15 +852,16 @@
 			For Each item As Object In oleColumnData
 				Dim strDisplayValue = objOle.GetPropertiesFromStream(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource"))
 				' extract file size, and dates first...
-				Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
-				If aDisplayValues.Length > 1 Then					
-					Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
-				Else
-					' Photo.
-					Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
-				End If
+                Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
+                'Added to handle exception
+                If (aDisplayValues.Length > 1) Then
+                    Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+                Else
+                    ' Photo.
+                    Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+                End If
 				
-			Next
+            Next
 			
 			Session("OLEObject") = objOle
 			objOle = Nothing
