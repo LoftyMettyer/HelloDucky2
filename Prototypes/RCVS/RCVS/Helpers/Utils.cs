@@ -64,6 +64,7 @@ namespace RCVS.Helpers
 						long ContactNumber,
 						string Activity,
 						string ActivityValue,
+						string Notes,
 						DateTime ActivityDate,
 						string Source
 					)
@@ -76,6 +77,7 @@ namespace RCVS.Helpers
 				ContactNumber = ContactNumber,
 				Activity = Activity,
 				ActivityValue = ActivityValue,
+				Notes = Notes,
 				ActivityDate = ActivityDate,
 				Source = Source
 			};

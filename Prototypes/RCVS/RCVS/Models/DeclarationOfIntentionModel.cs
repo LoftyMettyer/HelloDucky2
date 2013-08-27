@@ -105,8 +105,6 @@ namespace RCVS.Models
 
 		public override void Save()
 		{
-
-
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
 			UserID = Convert.ToInt64(user.ContactNumber);
 
@@ -122,14 +120,16 @@ namespace RCVS.Models
 									UserID,
 									"0YPE",
 									YearToSit.ToString(),
+									"",
 									DateTime.Now,
 									"WEB"
 								);
-				// IELTS Activity commit
+			// IELTS Activity commit
 			Utils.AddActivity(
 								 UserID,
 								 "0PTD",
 									"Y",
+									"",
 									TakeTestPlanDate,
 								 "WEB"
 							 );
@@ -157,11 +157,12 @@ namespace RCVS.Models
 				var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
 				//response = client.AddCommunicationsLog(serializedParameters);
 
-				//TRF details
+			//TRF details
 			Utils.AddActivity(
 								UserID,
 								"0TDS",
 								"A", //TrfDetails.BandScore.ToString(),
+								"",
 								TrfDetails.DateOfTest,
 								"WEB"
 							);
@@ -170,11 +171,30 @@ namespace RCVS.Models
 			Utils.AddActivity(
 								UserID,
 								"0TPD",
+								"Y",
 								PrimaryVetinaryDegree.Name + " (" + PrimaryVetinaryDegree.Abbreviation + ") " + PrimaryVetinaryDegree.Document,
 								GraduationDate,
 								"WEB"
 							);
 
-			}
+			//Vet degree details: Normal course length
+			Utils.AddActivity(
+								UserID,
+								"0NLC",
+								University.
+								DateTime.Now,
+								"WEB"
+							);
+
+			//Vet degree details: University name
+			Utils.AddActivity(
+								UserID,
+								"0UN",
+								University.
+								DateTime.Now,
+								"WEB"
+							);
+
+		}
 	}
 }
