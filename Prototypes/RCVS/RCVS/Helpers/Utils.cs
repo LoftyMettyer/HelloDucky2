@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Web.Mvc;
 using RCVS.Classes;
+using RCVS.WebServiceClasses;
 
 namespace RCVS.Helpers
 {
@@ -57,6 +58,31 @@ namespace RCVS.Helpers
 			}
 
 			return list;
+		}
+
+		public static void AddActivity(
+						long ContactNumber,
+						string Activity,
+						string ActivityValue,
+						DateTime ActivityDate,
+						string Source
+					)
+		{
+			var client = new IRISWebServices.NDataAccessSoapClient();
+			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			var addActivityParameters = new AddActivityParameters
+			{
+				ContactNumber = ContactNumber,
+				Activity = Activity,
+				ActivityValue = ActivityValue,
+				ActivityDate = ActivityDate,
+				Source = Source
+			};
+
+			var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
+			var response = client.AddActivity(serializedParameters);
+			client.Close();
 		}
 	}
 }

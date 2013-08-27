@@ -20,10 +20,28 @@ namespace RCVS.Classes
 			StatutoryMemberShipexamination
 		}
 
-		public readonly List<string> DeclarationOfIntentionActivityIDs = new List<string>
+		private readonly List<string> DeclarationOfIntentionActivityIDs = new List<string>
 			{
 				"0PTD",
-				"0TDS"
+				"0TDS",
+				"0TPD",
+				"0NLC",
+				"0UN",
+				"0UCC",
+				"0UC",
+				"0YPE"
+			};
+
+		private readonly List<string> RenewalOfDeclarationActivityIDs = new List<string>
+			{
+			};
+
+		private readonly List<string> SeeingPracticeActivityIDs = new List<string>
+			{
+			};
+
+		private readonly List<string> StatutoryMemberShipexaminationActivityIDs = new List<string>
+			{
 			};
 
 		private Forms form;
@@ -46,8 +64,11 @@ namespace RCVS.Classes
 
 			string response = client.SelectContactData(contactDataSelectionTypes, serializedParameters);
 
-			//Save all the activities for this user; further down, 
+			//Save all the activities for this user (the web services return the whole lot plus its history);
+			//further down we need to filter by form and also get only the first (that is, last) instance of each activity
 			List<SelectContactData_CategoriesResult> allActivities = new List<SelectContactData_CategoriesResult>();
+
+			SelectContactData_CategoriesResult activity;
 
 			foreach (XElement x in XDocument.Parse(response).Descendants("DataRow"))
 			{
@@ -68,36 +89,65 @@ namespace RCVS.Classes
 				int quantity;
 				Int32.TryParse(x.Element("Quantity").Value, out quantity);
 
-				SelectContactData_CategoriesResult result = new SelectContactData_CategoriesResult
-					{
-						ContactNumber = Convert.ToInt64(x.Element("ContactNumber").Value),
-						ActivityCode = x.Element("ActivityCode").Value,
-						ActivityValueCode = x.Element("ActivityValueCode").Value,
-						Quantity = quantity,
-						ActivityDate = activityDate,
-						SourceCode = x.Element("SourceCode").Value,
-						ValidFrom = validFrom,
-						ValidTo = validTo,
-						AmendedBy = x.Element("AmendedBy").Value,
-						AmendedOn = amendedOn,
-						Notes = x.Element("Notes").Value,
-						ActivityDesc = x.Element("ActivityDesc").Value,
-						ActivityValueDesc = x.Element("ActivityValueDesc").Value,
-						SourceDesc = x.Element("SourceDesc").Value,
-						RgbActivityValue = x.Element("RgbActivityValue").Value,
-						NoteFlag = x.Element("NoteFlag").Value,
-						Status = x.Element("Status").Value,
-						Access = x.Element("Access").Value,
-						StatusOrder = x.Element("StatusOrder").Value
-					};
-				allActivities.Add(result);
+				activity = new SelectContactData_CategoriesResult
+				 {
+					 ContactNumber = Convert.ToInt64(x.Element("ContactNumber").Value),
+					 ActivityCode = x.Element("ActivityCode").Value,
+					 ActivityValueCode = x.Element("ActivityValueCode").Value,
+					 Quantity = quantity,
+					 ActivityDate = activityDate,
+					 SourceCode = x.Element("SourceCode").Value,
+					 ValidFrom = validFrom,
+					 ValidTo = validTo,
+					 AmendedBy = x.Element("AmendedBy").Value,
+					 AmendedOn = amendedOn,
+					 Notes = x.Element("Notes").Value,
+					 ActivityDesc = x.Element("ActivityDesc").Value,
+					 ActivityValueDesc = x.Element("ActivityValueDesc").Value,
+					 SourceDesc = x.Element("SourceDesc").Value,
+					 RgbActivityValue = x.Element("RgbActivityValue").Value,
+					 NoteFlag = x.Element("NoteFlag").Value,
+					 Status = x.Element("Status").Value,
+					 Access = x.Element("Access").Value,
+					 StatusOrder = x.Element("StatusOrder").Value
+				 };
+				allActivities.Add(activity);
 			}
 
+			//We need to initialize this variable even though we will assign a value to it in the switch below;
+			//this needs to be done so Visual Studio won't refuse to compile with the message "Use of unassigned local variable 'ActivityIDsToIterateOver'"
+			List<string> ActivityIDsToIterateOver = new List<string>();
 
-			int asdfasdf = 0;
+			switch (form)
+			{
+				case Forms.DeclarationOfIntention:
+					ActivityIDsToIterateOver = DeclarationOfIntentionActivityIDs;
+					break;
+				case Forms.RenewalOfDeclaration:
+					ActivityIDsToIterateOver = RenewalOfDeclarationActivityIDs;
+					break;
+				case Forms.SeeingPractice:
+					ActivityIDsToIterateOver = SeeingPracticeActivityIDs;
+					break;
+				case Forms.StatutoryMemberShipexamination:
+					ActivityIDsToIterateOver = StatutoryMemberShipexaminationActivityIDs;
+					break;
+			}
 
+			//Populate a new filtered list with the activities belonging to the requested form
+			List<SelectContactData_CategoriesResult> filteredActivities = new List<SelectContactData_CategoriesResult>();
 
-			return allActivities;
+			foreach (string activityCode in ActivityIDsToIterateOver)
+			{
+				//If the activity exists, add it to the list
+				if (allActivities.FindIndex(a => a.ActivityCode == activityCode) >= 0)
+				{
+					activity = allActivities.First(a => a.ActivityCode == activityCode);
+					filteredActivities.Add(activity);
+				}
+			}
+
+			return filteredActivities;
 		}
 	}
 }

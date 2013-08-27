@@ -16,9 +16,10 @@ namespace RCVS.Models
 {
 	public class DeclarationOfIntentionModel : BaseModel
 	{
+		public int YearToSit { get; set; } //To holde the value of the selected year to sit
+
 		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
-		//public int YearToSit { get; set; }
 		public IEnumerable<SelectListItem> YearsDropdown { get; set; }
 
 		public string Footnote1
@@ -28,7 +29,6 @@ namespace RCVS.Models
 
 		public string Activity { get; set; }
 		public IEnumerable<SelectListItem> Activities { get; set; }
-
 
 		[DisplayName("Do you plan to 'see practice'?")]
 		public bool? PlanToSeePractice { get; set; }
@@ -40,7 +40,7 @@ namespace RCVS.Models
 		public string IELTS { get; set; }
 
 		[DisplayName("When do you plan to take the test?")]
-		public DateTime? TakeTestPlanDate { get; set; }
+		public DateTime TakeTestPlanDate { get; set; }
 
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
 		public TRFDetails TrfDetails { get; set; }
@@ -51,7 +51,7 @@ namespace RCVS.Models
 		public University UniversityAwarded { get; set; }
 
 		[DisplayName("Date of graduation")]
-		public DateTime? GraduationDate { get; set; }
+		public DateTime GraduationDate { get; set; }
 
 		[DisplayName("When did you start your course?")]
 		public DateTime? CourseStartDate { get; set; }
@@ -70,95 +70,90 @@ namespace RCVS.Models
 
 		public override void Load()
 		{
+		}
+
+		public DeclarationOfIntentionModel LoadModel()
+		{
+			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
+
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)
 			{
 				//Get data for this form
+				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention);
+				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities(contactNumber);
 
-				FormData f = new FormData(FormData.Forms.DeclarationOfIntention);
-				List<SelectContactData_CategoriesResult> l = f.GetFormActivities(contactNumber);
+				int bandScore;
+				Int32.TryParse(activityList.First(activity => activity.ActivityCode == "0TDS").ActivityValueDesc, out bandScore);
 
+				TRFDetails tRFDetails = new TRFDetails
+					{
+						DateOfTest = activityList.First(activity => activity.ActivityCode == "0TDS").ActivityDate,
+						BandScore = bandScore
+					};
 
+				m = new DeclarationOfIntentionModel
+							 {
+								 TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate,
+								 TrfDetails = tRFDetails,
+								 YearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueCode)
+							 };
 			}
+
+			return m;
 		}
-
-
-		////set the lookup key..
-		//	var lookupDataType = new IRISWebServices.XMLLookupDataTypes();						
-		//	lookupDataType = XMLLookupDataTypes.xldtActivities; // Activities
-
-		//	var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-		//	var GetLookupDataParameters = new GetLookupDataParameters { };
-		//	var serializedParameters = XmlHelper.SerializeToXml(GetLookupDataParameters); //Serialize to XML to pass to the web services
-
-		//	response = client.GetLookupData(lookupDataType, serializedParameters);
-
-		//	var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
-		//									 select new SelectListItem
-		//										 {
-		//											 Value = activity.Element("Activity").Value,
-		//											 Text = activity.Element("ActivityDesc").Value
-		//										 };
-
 
 		public override void Save()
 		{
 
-			//UserID = 571;
-
-			string response;
-			var client = new IRISWebServices.NDataAccessSoapClient();
-			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
 
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
 			UserID = Convert.ToInt64(user.ContactNumber);
 
-			//var yearToSit = YearsDropdown.ToString();
-			//var addActivityParameters = new AddActivityParameters
-			//{
-			//	ContactNumber = UserID,
-			//	Activity = "YYGRAD",
-			//	ActivityValue = "MT",
-			//	ActivityDate = GraduationDate,
-			//	Source = "WEB"
-			//};
-
-			//var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
-			//response = client.AddActivity(serializedParameters);
-
-			if (UserID != null)
+			if (UserID == null)
 			{
-				// IELTS Activity commit
-				var addActivityParameters = new AddActivityParameters
-				{
-					ContactNumber = UserID,
-					Activity = "0PTD",
-					ActivityValue = "Y",
-					ActivityDate = TakeTestPlanDate,
-					Source = "WEB"
-				};
-				var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
-				response = client.AddActivity(serializedParameters);
-
-				//TRF details
-				addActivityParameters = new AddActivityParameters
-			 {
-				 ContactNumber = UserID,
-				 Activity = "0TDS",
-				 ActivityValue = "A", //TrfDetails.BandScore.ToString(),
-				 ActivityDate = TrfDetails.DateOfTest,
-				 Source = "WEB"
-			 };
-				serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
-				response = client.AddActivity(serializedParameters);
-
+				return;
 			}
-			else
-			{
-				// update activities
-			}
+
+			//Save activities
+
+			//Year to sit
+			Utils.AddActivity(
+									UserID,
+									"0YPE",
+									YearToSit.ToString(),
+									DateTime.Now,
+									"WEB"
+								);
+			// IELTS Activity commit
+			Utils.AddActivity(
+								 UserID,
+								 "0PTD",
+									"Y",
+									TakeTestPlanDate,
+								 "WEB"
+							 );
+
+			//TRF details
+			Utils.AddActivity(
+								UserID,
+								"0TDS",
+								"A", //TrfDetails.BandScore.ToString(),
+								TrfDetails.DateOfTest,
+								"WEB"
+							);
+
+			//Vet degree details: Title
+			Utils.AddActivity(
+								UserID,
+								"0TPD",
+								PrimaryVetinaryDegree.Name + " (" + PrimaryVetinaryDegree.Abbreviation + ") " + PrimaryVetinaryDegree.Document,
+								GraduationDate,
+								"WEB"
+							);
+
 		}
 	}
 }

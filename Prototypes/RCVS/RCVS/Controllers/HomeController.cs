@@ -61,13 +61,11 @@ namespace RCVS.Controllers
 			years.Add(new SelectListItem { Value = "15", Text = "2015" });
 			years.Add(new SelectListItem { Value = "16", Text = "2016" });
 
-			var model = new DeclarationOfIntentionModel
-				{
-					YearsDropdown = years,
-					Activities = activities
-				};
+			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
 
-			model.Load();
+			var model = m.LoadModel();
+			model.YearsDropdown = years;
+			model.Activities = activities;
 
 			return View(model);
 		}
@@ -76,18 +74,6 @@ namespace RCVS.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult DeclarationOfIntention(DeclarationOfIntentionModel model, FormCollection values)
 		{
-				////save the Year to Sit
-				//string response;
-				//var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
-
-				//var yearToSit = model.YearsDropdown.ToString();
-
-				//var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-				//var addActivityParameters = new AddActivityParameters { ContactNumber = 571, Activity = "0YPE", ActivityValue = yearToSit, Source = "WEB" };
-				//var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters); //Serialize to XML to pass to the web services
-
-				//response = client.AddActivity(serializedParameters);
-
 			model.Save();
 
 			return RedirectToAction("Index");

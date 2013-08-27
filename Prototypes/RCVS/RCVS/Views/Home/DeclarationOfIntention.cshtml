@@ -4,6 +4,7 @@
 
 	@{
 		ViewBag.Title = "Initial / first declaration of intention to sit";
+		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
 	<h1>Initial / first declaration of intention to sit</h1>
@@ -29,7 +30,7 @@
 					@Html.LabelFor(model => model.YearsDropdown)
 				</div>
 				<div class="editor-field input">
-					@Html.DropDownListFor(x => x.YearsDropdown, Model.YearsDropdown)
+					@Html.DropDownListFor(x => x.YearToSit, Model.YearsDropdown)
 					@Html.ValidationMessageFor(model => model.YearsDropdown)
 				</div>
 			</div>
@@ -150,7 +151,7 @@
 
 		</fieldset>
 		<p>
-			<input type="submit" value="Create" class="input_submit"/>
+			<input type="submit" value="Create" class="input_submit" />
 		</p>
  }
 
@@ -160,6 +161,40 @@
 
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
+		@Scripts.Render("~/bundles/jqueryui")
 	}
 
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function ()
+	{
+		$('#TakeTestPlanDate').val($('#TakeTestPlanDate').val().substring(0, 10));  //Remove the hour from the date
+		//Attach datepicker
+		$('#TakeTestPlanDate').datepicker({
+			dateFormat: "dd/mm/yy",
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "-80:+0"
+		});
+
+		$('#TrfDetails_DateOfTest').val($('#TrfDetails_DateOfTest').val().substring(0, 10)); //Remove the hour from the date
+		//Attach datepicker
+		$('#TrfDetails_DateOfTest').datepicker({
+			dateFormat: "dd/mm/yy",
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "-80:+0"
+		});
+
+		$('#GraduationDate').val($('#GraduationDate').val().substring(0, 10));  //Remove the hour from the date
+		//Attach datepicker
+		$('#GraduationDate').datepicker({
+			dateFormat: "dd/mm/yy",
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "-80:+0"
+		});
+
+	});
+</script>

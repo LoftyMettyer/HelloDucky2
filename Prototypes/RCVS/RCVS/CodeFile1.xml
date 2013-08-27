@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0"?>
 <ResultSet>
 	<DataRow>
-		<ContactNumber>571</ContactNumber>
+		<ContactNumber>2707</ContactNumber>
 		<ActivityCode>0PTD</ActivityCode>
 		<ActivityValueCode>Y</ActivityValueCode>
 		<Quantity />
-		<ActivityDate>01/01/2001</ActivityDate>
+		<ActivityDate>04/10/2014</ActivityDate>
 		<SourceCode>WEB</SourceCode>
-		<ValidFrom>23/08/2013</ValidFrom>
-		<ValidTo>23/08/2013</ValidTo>
+		<ValidFrom>27/08/2013</ValidFrom>
+		<ValidTo>27/08/2013</ValidTo>
 		<AmendedBy>guest</AmendedBy>
-		<AmendedOn>23/08/2013</AmendedOn>
+		<AmendedOn>27/08/2013</AmendedOn>
 		<Notes />
 		<ActivityDesc>Planned Test Date</ActivityDesc>
 		<ActivityValueDesc>Yes</ActivityValueDesc>
@@ -24,49 +24,26 @@
 		<StatusOrder>2</StatusOrder>
 	</DataRow>
 	<DataRow>
-		<ContactNumber>571</ContactNumber>
-		<ActivityCode>0TPD</ActivityCode>
-		<ActivityValueCode>Y</ActivityValueCode>
-		<Quantity />
-		<ActivityDate>20/08/2013</ActivityDate>
-		<SourceCode>WEB</SourceCode>
-		<ValidFrom>20/08/2013</ValidFrom>
-		<ValidTo>20/08/2113</ValidTo>
-		<AmendedBy>nick</AmendedBy>
-		<AmendedOn>20/08/2013</AmendedOn>
-		<Notes>Something degree</Notes>
-		<ActivityDesc>Title and Dates of Primary Vet Degree</ActivityDesc>
-		<ActivityValueDesc>Title</ActivityValueDesc>
-		<SourceDesc>Web site</SourceDesc>
-		<RgbActivityValue />
-		<ResponseChannel />
-		<ResponseChannelDesc />
-		<NoteFlag>Y</NoteFlag>
-		<Status>Current</Status>
-		<Access>Y</Access>
-		<StatusOrder>2</StatusOrder>
-	</DataRow>
-	<DataRow>
-		<ContactNumber>571</ContactNumber>
-		<ActivityCode>0PSP</ActivityCode>
-		<ActivityValueCode>Y</ActivityValueCode>
+		<ContactNumber>2707</ContactNumber>
+		<ActivityCode>0TDS</ActivityCode>
+		<ActivityValueCode>A</ActivityValueCode>
 		<Quantity />
 		<ActivityDate />
 		<SourceCode>WEB</SourceCode>
-		<ValidFrom>22/08/2013</ValidFrom>
-		<ValidTo>22/08/2013</ValidTo>
+		<ValidFrom>27/08/2013</ValidFrom>
+		<ValidTo>27/08/2013</ValidTo>
 		<AmendedBy>guest</AmendedBy>
-		<AmendedOn>22/08/2013</AmendedOn>
+		<AmendedOn>27/08/2013</AmendedOn>
 		<Notes />
-		<ActivityDesc>Plan to See Practice</ActivityDesc>
-		<ActivityValueDesc>Yes</ActivityValueDesc>
+		<ActivityDesc>Test Date and Score</ActivityDesc>
+		<ActivityValueDesc>A</ActivityValueDesc>
 		<SourceDesc>Web site</SourceDesc>
 		<RgbActivityValue />
 		<ResponseChannel />
 		<ResponseChannelDesc />
 		<NoteFlag />
-		<Status>Historic</Status>
+		<Status>Current</Status>
 		<Access>Y</Access>
-		<StatusOrder>3</StatusOrder>
+		<StatusOrder>2</StatusOrder>
 	</DataRow>
 </ResultSet>

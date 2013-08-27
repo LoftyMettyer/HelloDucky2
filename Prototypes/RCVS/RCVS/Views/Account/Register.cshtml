@@ -5,7 +5,6 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-	<script src="~/Scripts/jquery-1.8.2.min.js"></script>
 
 @* Postcode Anywhere stuff 
 <link rel="stylesheet" type="text/css" href="http://services.postcodeanywhere.co.uk/css/captureplus-1.35.min.css?key=by73-mh44-ra59-cz26" />
@@ -19,7 +18,7 @@
 		@Html.AntiForgeryToken()
 		@Html.ValidationSummary(true)
 
-			<h1>Registration</h1>
+		<h1>Registration</h1>
 					
 
 		<fieldset>
@@ -33,7 +32,7 @@
 					@Html.ValidationMessageFor(model => model.Title)
 				</div>
 			</div>
-			
+
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.Forenames)
@@ -43,7 +42,7 @@
 					@Html.ValidationMessageFor(model => model.Forenames)
 				</div>
 			</div>
-			
+
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.Surnames)
@@ -55,64 +54,64 @@
 			</div>
 		</fieldset>
 
-	 <fieldset>
-		 <legend>New login details</legend>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.EmailAddress)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.EmailAddress)
-				 @Html.ValidationMessageFor(model => model.EmailAddress)
-			 </div>
-		 </div>
-		 
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.ConfirmEmailAddress)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.ConfirmEmailAddress)
-				 @Html.ValidationMessageFor(model => model.ConfirmEmailAddress)
-			 </div>
-		 </div>
-		 
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.Password)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.Password)
-				 @Html.ValidationMessageFor(model => model.Password)
-			 </div>
-		 </div>
-		 
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.ConfirmPassword)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.ConfirmPassword)
-				 @Html.ValidationMessageFor(model => model.ConfirmPassword)
-			 </div>
-		 </div>
+		<fieldset>
+			<legend>New login details</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.EmailAddress)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.EmailAddress)
+					@Html.ValidationMessageFor(model => model.EmailAddress)
+				</div>
+			</div>
 
-	 </fieldset>
-	 
-	 <fieldset>
-		 <legend>Personal details</legend>
-	 
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.DOB)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.DOB, new { @class = "date"} )				
-				 @Html.ValidationMessageFor(model => model.DOB)
-			 </div>
-		 </div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.ConfirmEmailAddress)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.ConfirmEmailAddress)
+					@Html.ValidationMessageFor(model => model.ConfirmEmailAddress)
+				</div>
+			</div>
 
-		 @*	<div class="editor-label">
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.Password)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.Password)
+					@Html.ValidationMessageFor(model => model.Password)
+				</div>
+			</div>
+
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.ConfirmPassword)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.ConfirmPassword)
+					@Html.ValidationMessageFor(model => model.ConfirmPassword)
+				</div>
+			</div>
+
+		</fieldset>
+	 
+		<fieldset>
+			<legend>Personal details</legend>
+
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.DOB)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.DOB, new { @class = "date" })
+					@Html.ValidationMessageFor(model => model.DOB)
+				</div>
+			</div>
+
+			@*	<div class="editor-label">
 				@Html.LabelFor(model => model.Days)
 			</div>
 			<div class="editor-field">
@@ -135,84 +134,75 @@
 				@Html.DropDownListFor(m => m.Year, Model.Years)
 				@Html.ValidationMessageFor(model => model.Years)
 			</div>*@
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.AddressLine1)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.AddressLine1)
-				 @Html.ValidationMessageFor(model => model.AddressLine1)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.AddressLine2)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.AddressLine2)
-				 @Html.ValidationMessageFor(model => model.AddressLine2)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.AddressLine3)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.AddressLine3)
-				 @Html.ValidationMessageFor(model => model.AddressLine3)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.City)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.City)
-				 @Html.ValidationMessageFor(model => model.City)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.County)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.County)
-				 @Html.ValidationMessageFor(model => model.County)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.Postcode)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.Postcode)
-				 @Html.ValidationMessageFor(model => model.Postcode)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.Countries)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.DropDownListFor(m => m.Countries, Model.Countries)
-				 @Html.ValidationMessageFor(model => model.Countries)
-			 </div>
-		 </div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.AddressLine1)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.AddressLine1)
+					@Html.ValidationMessageFor(model => model.AddressLine1)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.AddressLine2)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.AddressLine2)
+					@Html.ValidationMessageFor(model => model.AddressLine2)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.AddressLine3)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.AddressLine3)
+					@Html.ValidationMessageFor(model => model.AddressLine3)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.City)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.City)
+					@Html.ValidationMessageFor(model => model.City)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.County)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.County)
+					@Html.ValidationMessageFor(model => model.County)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.Postcode)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.Postcode)
+					@Html.ValidationMessageFor(model => model.Postcode)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.Countries)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(m => m.Countries, Model.Countries)
+					@Html.ValidationMessageFor(model => model.Countries)
+				</div>
+			</div>
 
-	 </fieldset>
+		</fieldset>
 
-			<p>
-				<input type="submit" value="Create" class="input_submit"/>
-			</p>
-	
-@*
-	//Paypal button, not used
-	<script src="/Scripts/paypal-button.min.js?merchant=roberto.caballero@advancedcomputersoftware.com"
-		data-button="buynow"
-		data-name="RCVS examination"
-		data-amount="1400"
-		data-currency="GBP"
-		data-env="sandbox"></script>*@
+		<p>
+			<input type="submit" value="Create" class="input_submit" />
+		</p>
  }
 
 	<div>
@@ -224,8 +214,6 @@
 		@Scripts.Render("~/bundles/jqueryui")
 	}
 </div>
-	
-
 
 <script type="text/javascript">
 	$(document).ready(function() {
