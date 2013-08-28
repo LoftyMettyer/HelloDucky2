@@ -429,6 +429,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Activity_Qualification.cshtml" />
     <Content Include="Views\Home\SeeingPracticeDetail.cshtml" />
+    <Content Include="Views\Home\SeePracticeDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

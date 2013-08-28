@@ -162,18 +162,25 @@ namespace RCVS.Controllers
 		public ActionResult SeeingPracticeDetail()
 		{
 			var model = new SeeingPracticeDetailModel();
-			return View(model);
+			return PartialView(model);
 		}
 
+		[HttpGet]
+		public ActionResult SeePracticeDetail()
+		{
+			var model = new SeeingPracticeDetailModel();
+			return PartialView(model);
+		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult SeeingPracticeDetail(SeeingPracticeDetailModel model, FormCollection values)
 		{
 			model.Save();
-			SeeingPractice();
+			//SeeingPractice();
 
-			return Redirect("SeeingPractice");
+			//return Redirect("SeeingPractice");
+			return RedirectToAction("DeclarationOfIntention");
 
 			//var model = new SeeingPracticeModel();
 			//model.Load();

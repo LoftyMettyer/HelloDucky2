@@ -1,0 +1,104 @@
+﻿@model RCVS.Models.SeeingPracticeDetailModel
+
+
+
+@using (Html.BeginForm("SeeingPracticeDetail", "Home", FormMethod.Post, new { @class = "forms default" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+
+	<h1>Seeing Practice Details</h1>
+	<p><span>
+		   
+	   </span></p>
+	<fieldset>
+		<legend>Practice Details</legend>
+		
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.PracticeName)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.PracticeName)
+				@Html.ValidationMessageFor(model => model.PracticeName)
+			</div>
+		</div>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.VetName)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.VetName)
+				@Html.ValidationMessageFor(model => model.VetName)
+			</div>
+		</div>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.StartDate)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.StartDate)
+				@Html.ValidationMessageFor(model => model.StartDate)
+			</div>
+		</div>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.EndDate)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.EndDate)
+				@Html.ValidationMessageFor(model => model.EndDate)
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+
+		<legend>Address Details</legend>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.Address.AddressLine1)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.Address.AddressLine1)
+				@Html.ValidationMessageFor(model => model.Address.AddressLine1)
+			</div>
+		</div>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.Address.AddressLine2)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.Address.AddressLine2)
+				@Html.ValidationMessageFor(model => model.Address.AddressLine2)
+			</div>
+		</div>
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.Address.Town)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.Address.Town)
+				@Html.ValidationMessageFor(model => model.Address.Town)
+			</div>
+		</div>
+
+		<div class="field">
+			<div class="editor-label label">
+				@Html.LabelFor(model => model.Address.Country)
+			</div>
+			<div class="editor-field input">
+				@Html.EditorFor(model => model.Address.Country)
+				@Html.ValidationMessageFor(model => model.Address.Country)
+			</div>
+		</div>
+
+		<p>
+			<input type="submit" value="Save" class="input_submit"/>
+		</p>
+	</fieldset>
+		
+		
+		
+}

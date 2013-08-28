@@ -26,7 +26,7 @@ namespace RCVS.Models
 		public void Save()
 		{
 
-			UserID = 571;
+			//UserID = 571;
 
 			//save the Year to Sit
 			string response;

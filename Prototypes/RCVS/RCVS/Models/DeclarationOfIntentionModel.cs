@@ -37,6 +37,8 @@ namespace RCVS.Models
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
 		public bool? CurrentlySeeingPractice { get; set; }
 
+		public List<PracticeArrangement> PracticeArrangements { get; set; }
+
 		[DisplayName("Upload your IELTS test report form here")]
 		public HttpPostedFileBase IELTS { get; set; }
 

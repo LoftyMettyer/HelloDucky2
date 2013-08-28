@@ -1,4 +1,5 @@
-﻿@model RCVS.Models.DeclarationOfIntentionModel
+﻿@using RCVS.Helpers
+@model RCVS.Models.DeclarationOfIntentionModel
 
 <div class="wysiwyg">
 
@@ -43,7 +44,8 @@
 					@Html.LabelFor(model => model.PlanToSeePractice)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.PlanToSeePractice)
+					@Html.RadioButtonFor(model => model.PlanToSeePractice, true)Yes
+					@Html.RadioButtonFor(model => model.PlanToSeePractice, false)No
 					@Html.ValidationMessageFor(model => model.PlanToSeePractice)
 				</div>
 			</div>
@@ -52,10 +54,28 @@
 					@Html.LabelFor(model => model.CurrentlySeeingPractice)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.CurrentlySeeingPractice)
+					@Html.RadioButtonFor(model => model.CurrentlySeeingPractice, true)Yes
+					@Html.RadioButtonFor(model => model.CurrentlySeeingPractice, false)No
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>
+				
+			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
+		@Html.Raw(Html.EditTable("tblQualifications", Model.PracticeArrangements, null))
+
+			<input id="addQualification" class="input_button" type="button" value="Add practice..." onclick='addActivity("tblPractice")' />
+
+		@*	@{ int i = 0; }
+			@foreach (var obj in Model.PracticeArrangements)
+	 {	
+				@Html.HiddenFor(m => m.PlanToSeePractice[i].Name)
+				@Html.HiddenFor(m => m.Qualifications[i].AwardingBody)
+				@Html.HiddenFor(m => m.Qualifications[i].ObtainedDate)
+		 ++i;
+	 }*@
+
+
+
 		</fieldset>
 
 		<fieldset>
@@ -203,6 +223,8 @@
 	<div>
 		@Html.ActionLink("Back to List", "Index")
 	</div>
+	
+	<div id="SeeDialog"></div>
 
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
@@ -266,6 +288,21 @@
 				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");				
 			}
 		});
-
+		
+		$('#SeeDialog').dialog({
+				autoOpen: false,
+				width: 670,
+				height: 736,
+				resizable: false,
+				title: 'Seeing Practice',
+				modal: true
+			});
 	});
+	
+	function addActivity(Activity) {
+		
+		$('#SeeDialog').dialog('open');	
+		$('#SeeDialog').load("@Url.Action("SeeingPracticeDetail")");
+	}
+
 </script>
