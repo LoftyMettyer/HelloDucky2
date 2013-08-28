@@ -203,5 +203,13 @@
 			yearRange: "-80:+0"
 		});
 
+		//only allow certain types of file to be uploaded.
+		$('[type="file"]').change(function () {			
+			var ext = $(this).val().split('.').pop().toUpperCase();
+			if ($.inArray(ext, ['PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI']) == -1) {
+				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");				
+			}
+		});
+
 	});
 </script>

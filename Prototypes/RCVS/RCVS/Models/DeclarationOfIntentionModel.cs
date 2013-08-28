@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using System.Web;
 using System.Web.Mvc;
 using RCVS.Classes;
 using RCVS.Helpers;
+using RCVS.IRISWebServices;
 using RCVS.Structures;
 using RCVS.WebServiceClasses;
 
@@ -134,28 +137,81 @@ namespace RCVS.Models
 								 "WEB"
 							 );
 
-				//TRF file upload				
-				var bytes = new byte[IELTS.InputStream.Length];
-				Int64 data = IELTS.InputStream.Read(bytes, 0, Convert.ToInt32(IELTS.InputStream.Length));
-				var varBinaryData = Convert.ToBase64String(bytes, 0, Convert.ToInt32(bytes.Length));
-				var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+
+			//TRF file upload			
+			//Done in three parts:
+			//1. get a document number
+			//2. get the document application type
+			//3. upload via the document number.
+			if (IELTS != null)
+			{
+				var extension = Path.GetExtension(IELTS.FileName);
+
+				if (extension != null)
+				{
+					extension = extension.ToUpper();
+					//get package type for this file type - no package type, no upload!
+					const XMLLookupDataTypes lookupDataType = XMLLookupDataTypes.xldtPackages;
+					var client = new NDataAccessSoapClient();
+					var response = client.GetLookupData(lookupDataType, "");
+					var package = "";
+
+					var doc = XDocument.Parse(response);
+
+					foreach (XElement xe in doc.Descendants("DataRow"))
 					{
-						AddresseeContactNumber = user.ContactNumber,
-						AddresseeAddressNumber = user.AddressNumber,
-						SenderContactNumber = user.ContactNumber,
-						SenderAddressNumber = user.AddressNumber,
-						Dated = Convert.ToDateTime(DateTime.Now),
-						Direction = "U",
-						DocumentType = "",
-						Topic = "",
-						SubTopic = "",
-						DocumentClass = "",
-						DocumentSubject = "",
-						Precis = ""
-					};
-				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-				var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
-				//response = client.AddCommunicationsLog(serializedParameters);
+						var element = xe.Element("DocfileExtension");
+						if (element != null)
+						{
+							var docFileExtension = element.Value.ToUpper();
+							if (docFileExtension == extension)
+							{
+								package = xe.Element("Package").Value;
+								break;
+							}
+						}
+					}
+
+					var bytes = new byte[IELTS.InputStream.Length];
+					IELTS.InputStream.Read(bytes, 0, Convert.ToInt32(IELTS.InputStream.Length));
+					var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+						{
+							AddresseeContactNumber = user.ContactNumber,
+							AddresseeAddressNumber = user.AddressNumber,
+							SenderContactNumber = user.ContactNumber,
+							SenderAddressNumber = user.AddressNumber,
+							Dated = Convert.ToDateTime(DateTime.Now),
+							Direction = "I",
+							DocumentType = "OTHE",
+							Topic = "GEN",
+							SubTopic = "CORR",
+							DocumentClass = "U",
+							DocumentSubject = "TRF Upload",
+							Precis = "TRF Upload",
+							Package = package
+						};
+					var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+					var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
+					client = new NDataAccessSoapClient();
+					response = client.AddCommunicationsLog(serializedParameters);
+
+					var xElement = XDocument.Parse(response).Element("Result");
+					if (xElement != null)
+					{
+						var documentNumber = Convert.ToInt32(xElement.Value);
+						var updateDocumentFileParameters = new UpdateDocumentFileParameters
+							{
+								DocumentNumber = documentNumber
+							};
+						xmlHelper = new XMLHelper();
+						serializedParameters = xmlHelper.SerializeToXml(updateDocumentFileParameters);
+						response = client.UpdateDocumentFile(serializedParameters, bytes);
+					}
+
+					client.Close();
+				}
+			}
+
 
 			//TRF details
 			Utils.AddActivity(

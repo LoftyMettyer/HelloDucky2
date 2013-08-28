@@ -1000,8 +1000,8 @@ form.forms {
 	}
 
 	form.forms div.label {
-		border: 1px solid #f4f4f4;
-		background: #f4f4f4;
+		border: 1px solid #eee;
+		background: #eee;
 		margin: 1px 2px 1px 17px;
 		padding: 3px 5px 4px 5px;
 		text-align: right;
@@ -1777,7 +1777,7 @@ a:hover, a:focus, .bookmarks li a, .bookmarks li a:focus, .bookmarks li a:hover,
 
 /* very light grey text */
 .input_button, .input_submit, form.forms .input_submit, form.forms div.button input {
-	color: #f4f4f4;
+	color: #eee;
 }
 
 	/* blue background */
@@ -2003,8 +2003,8 @@ form.forms fieldset {
 
 
 form.forms div.required, div.label {
-	border-color: #F4F4F4;
-	background: #F4F4F4;
+	border-color: #eee;
+	background: #eee;
 	color: #666666;
 	/*border-color:#811D7F;
 	background:#811D7F;
@@ -2426,7 +2426,7 @@ body.rcvs-award .paging li.active a {
 		}
 
 	.nximis .PanelHead {
-		background: #f4f4f4 no-repeat center center;
+		background: #eee no-repeat center center;
 		font-weight: bold;
 		margin: 0;
 		padding: 5px 10px;

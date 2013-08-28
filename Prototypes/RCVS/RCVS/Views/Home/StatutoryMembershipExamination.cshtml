@@ -12,7 +12,7 @@
 		<h1>2013 examination application and examination payment form</h1>
 		<h2>The examination entry closing date is TBC</h2>
 
-		<p>
+	@*	<p>
 			After completing this application please post the associated required documentation to
 			Statutory Membership Examination Administrator
 			Royal College of Veterinary Surgeons
@@ -20,33 +20,38 @@
 			62-64 Horseferry Road
 			London
 			SW1 2AF
-		</p>	
+		</p>	*@
 
 	@using (Html.BeginForm("StatutoryMembershipExamination", "Home", FormMethod.Post, new { @class = "forms default" }))
  {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    <fieldset>
-        <legend>Are you an existing applicant?</legend>
+		<fieldset>
+			<legend>Applicant type</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.IsNewApplicant)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(model => model.IsNewApplicant, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.IsNewApplicant)
-					
-				@Html.DropDownListFor(model => model.IsNewApplicant, new List<SelectListItem>()
-							{ new SelectListItem(){ Text = "Yes", Value="True"}, 
-							new SelectListItem(){ Text = "No", Value="False"}})			
+					@Html.ValidationMessageFor(model => model.IsNewApplicant)
+				</div>				
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.YearOfLastApplication)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.YearOfLastApplication)
+					@Html.ValidationMessageFor(model => model.YearOfLastApplication)
+				</div>
+			</div>
 
-	        @Html.ValidationMessageFor(model => model.IsNewApplicant)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.YearOfLastApplication)
-            @Html.EditorFor(model => model.YearOfLastApplication)
-            @Html.ValidationMessageFor(model => model.YearOfLastApplication)
-        </div>
-				
-			</fieldset>
+		</fieldset>
 
 	<fieldset>
 		<legend>Postgraduate training and qualifications</legend>	
@@ -220,9 +225,8 @@
 <script type="text/javascript">	
 
 
-	function addActivity(Activity) {
-
-		$('#dialog').dialog({
+	function addActivity(Activity) {		
+		$('#dialog').dialog({			
 			autoOpen: false,
 			width: 400,
 			resizable: false,
@@ -237,7 +241,7 @@
 				}
 }
 		});
-
+		alert(1);
 			$('#dialog').dialog('open');
 
 

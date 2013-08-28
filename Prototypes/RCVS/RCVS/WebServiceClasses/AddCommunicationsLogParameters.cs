@@ -16,5 +16,6 @@ namespace RCVS.WebServiceClasses
 		public string DocumentClass { get; set; }
 		public string DocumentSubject { get; set; }
 		public string Precis { get; set; }
+		public string Package { get; set; }
 	}
 }
