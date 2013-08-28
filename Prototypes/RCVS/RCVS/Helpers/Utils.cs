@@ -65,7 +65,7 @@ namespace RCVS.Helpers
 						string Activity,
 						string ActivityValue,
 						string Notes,
-						DateTime ActivityDate,
+						DateTime? ActivityDate,
 						string Source
 					)
 		{
@@ -78,13 +78,23 @@ namespace RCVS.Helpers
 				Activity = Activity,
 				ActivityValue = ActivityValue,
 				Notes = Notes,
-				ActivityDate = ActivityDate,
 				Source = Source
 			};
+
+			//Dates: I hate them
+			if (!ActivityDate.Equals(DateTime.MinValue))
+			{
+				addActivityParameters.ActivityDate = ActivityDate;
+			}
 
 			var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
 			var response = client.AddActivity(serializedParameters);
 			client.Close();
+		}
+
+		public static int ActivityIndex(List<SelectContactData_CategoriesResult> ActivityList, string ActivityCode)
+		{
+			return ActivityList.FindIndex(activity => activity.ActivityCode == ActivityCode);
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace RCVS.Models
 		public HttpPostedFileBase IELTS { get; set; }
 
 		[DisplayName("When do you plan to take the test?")]
-		public DateTime TakeTestPlanDate { get; set; }
+		public DateTime? TakeTestPlanDate { get; set; }
 
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
 		public TRFDetails TrfDetails { get; set; }
@@ -87,41 +87,80 @@ namespace RCVS.Models
 
 			if (contactNumber != null)
 			{
-				//Get data for this form
-				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention);
-				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities(contactNumber);
+				//Get data for this form and user
+				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention, contactNumber);
+				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
 
-				int bandScore;
-				Int32.TryParse(activityList.First(activity => activity.ActivityCode == "0TDS").ActivityValueCode, out bandScore);
+				TRFDetails tRFDetails = new TRFDetails();
+				Degree primaryVeterinaryDegree = new Degree();
+				University universityThatAwardedDegree = new University();
 
-				TRFDetails tRFDetails = new TRFDetails
+				if (Utils.ActivityIndex(activityList, "0TDS") >= 0)
+				{
+					int bandScore;
+					Int32.TryParse(activityList.First(activity => activity.ActivityCode == "0TDS").ActivityValueCode, out bandScore);
+
+					tRFDetails = new TRFDetails
+						{
+							BandScore = bandScore
+						};
+					if (!activityList.First(activity => activity.ActivityCode == "0TDS").ActivityDate.Equals(DateTime.MinValue))
 					{
-						DateOfTest = activityList.First(activity => activity.ActivityCode == "0TDS").ActivityDate,
-						BandScore = bandScore
-					};
+						tRFDetails.DateOfTest = activityList.First(activity => activity.ActivityCode == "0TDS").ActivityDate;
+					}
+				}
 
-				Degree primaryVeterinaryDegree = new Degree
-					{
-						Name = activityList.First(activity => activity.ActivityCode == "0TPD").Notes
-					};
+				if (Utils.ActivityIndex(activityList, "0TPD") >= 0)
+				{
+					primaryVeterinaryDegree = new Degree
+						{
+							Name = activityList.First(activity => activity.ActivityCode == "0TPD").Notes
+						};
+				}
 
-				University universityThatAwardedDegree = new University
+				universityThatAwardedDegree = new University
 					{
-						Name = activityList.First(activity => activity.ActivityCode == "0UN").Notes,
-						City = activityList.First(activity => activity.ActivityCode == "0UCC").Notes,
-						Country = activityList.First(activity => activity.ActivityCode == "0UC").ActivityValueCode
+						Name =
+							(Utils.ActivityIndex(activityList, "0UN") >= 0)
+								? activityList.First(activity => activity.ActivityCode == "0UN").Notes
+								: "",
+						City =
+							(Utils.ActivityIndex(activityList, "0UCC") >= 0)
+								? activityList.First(activity => activity.ActivityCode == "0UCC").Notes
+								: "",
+						Country =
+							(Utils.ActivityIndex(activityList, "0UC") >= 0)
+								? activityList.First(activity => activity.ActivityCode == "0UC").ActivityValueCode
+								: ""
 					};
 
 				m = new DeclarationOfIntentionModel
-							 {
-								 TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate,
-								 TrfDetails = tRFDetails,
-								 YearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueCode),
-								 PrimaryVeterinaryDegree = primaryVeterinaryDegree,
-								 GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate,
-								 NormalCourseLength = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode),
-								 UniversityThatAwardedDegree = universityThatAwardedDegree
-							 };
+					{
+						TrfDetails = tRFDetails,
+						PrimaryVeterinaryDegree = primaryVeterinaryDegree,
+						UniversityThatAwardedDegree = universityThatAwardedDegree
+					};
+
+
+				if (Utils.ActivityIndex(activityList, "0PTD") >= 0)
+				{
+					TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate;
+				}
+
+				if (Utils.ActivityIndex(activityList, "0YPE") >= 0)
+				{
+					m.YearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueCode);
+				}
+
+				if (Utils.ActivityIndex(activityList, "0TPD") >= 0)
+				{
+					GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate;
+				}
+				if (Utils.ActivityIndex(activityList, "0UC") >= 0)
+				{
+					NormalCourseLength =
+						Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode);
+				}
 			}
 
 			return m;
@@ -149,12 +188,12 @@ namespace RCVS.Models
 								 "0PTD",
 									"Y",
 									"",
-									TakeTestPlanDate,
+									(TakeTestPlanDate.HasValue) ? (DateTime)TakeTestPlanDate : DateTime.MinValue,
 								 "WEB"
 							 );
 
 
-				//TRF file upload				
+			//TRF file upload				
 			//Done in three parts:
 			//1. get a document number
 			//2. get the document application type
@@ -188,15 +227,15 @@ namespace RCVS.Models
 						}
 					}
 
-				var bytes = new byte[IELTS.InputStream.Length];
+					var bytes = new byte[IELTS.InputStream.Length];
 					IELTS.InputStream.Read(bytes, 0, Convert.ToInt32(IELTS.InputStream.Length));
-				var addCommunicationsLogParameters = new AddCommunicationsLogParameters
-					{
-						AddresseeContactNumber = user.ContactNumber,
-						AddresseeAddressNumber = user.AddressNumber,
-						SenderContactNumber = user.ContactNumber,
-						SenderAddressNumber = user.AddressNumber,
-						Dated = Convert.ToDateTime(DateTime.Now),
+					var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+						{
+							AddresseeContactNumber = user.ContactNumber,
+							AddresseeAddressNumber = user.AddressNumber,
+							SenderContactNumber = user.ContactNumber,
+							SenderAddressNumber = user.AddressNumber,
+							Dated = Convert.ToDateTime(DateTime.Now),
 							Direction = "I",
 							DocumentType = "OTHE",
 							Topic = "GEN",
@@ -205,9 +244,9 @@ namespace RCVS.Models
 							DocumentSubject = "TRF Upload",
 							Precis = "TRF Upload",
 							Package = package
-					};
-				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-				var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
+						};
+					var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+					var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
 					client = new NDataAccessSoapClient();
 					response = client.AddCommunicationsLog(serializedParameters);
 
@@ -235,17 +274,17 @@ namespace RCVS.Models
 								"0TDS",
 								"A", //TrfDetails.BandScore.ToString(),
 								"",
-								TrfDetails.DateOfTest,
+								(TrfDetails.DateOfTest.HasValue) ? (DateTime)TrfDetails.DateOfTest : DateTime.MinValue,
 								"WEB"
 							);
 
-			//Vet degree details: Title
+			//Vet degree details: Title and graduation date
 			Utils.AddActivity(
 								UserID,
 								"0TPD",
 								"Y",
 								PrimaryVeterinaryDegree.Name,
-								(DateTime)GraduationDate,
+								(GraduationDate.HasValue) ? (DateTime)GraduationDate : DateTime.MinValue,
 								"WEB"
 							);
 

@@ -8,6 +8,12 @@
 		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
+@*	@if (ViewBag.SuccessfulSubmit)
+ {
+		<div class="submitSuccessful">
+			Your information has been successfully saved
+		</div>
+ }*@
 	<h1>Initial / first declaration of intention to sit</h1>
 
 	<div class="layout">
@@ -282,10 +288,12 @@
 		});
 
 		//only allow certain types of file to be uploaded.
-		$('[type="file"]').change(function () {			
+		$('[type="file"]').change(function ()
+		{
 			var ext = $(this).val().split('.').pop().toUpperCase();
-			if ($.inArray(ext, ['PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI']) == -1) {
-				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");				
+			if ($.inArray(ext, ['PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI']) == -1)
+			{
+				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");
 			}
 		});
 		

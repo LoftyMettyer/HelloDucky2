@@ -44,19 +44,21 @@ namespace RCVS.Classes
 			{
 			};
 
-		private Forms form;
+		private Forms _Form;
+		private long _ContactNumber;
 
-		public FormData(Forms FormName)
+		public FormData(Forms FormName, long ContactNumber)
 		{
-			this.form = FormName;
+			this._Form = FormName;
+			this._ContactNumber = ContactNumber;
 		}
 
-		public List<SelectContactData_CategoriesResult> GetFormActivities(long ContactNumber)
+		public List<SelectContactData_CategoriesResult> GetFormActivities()
 		{
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
 			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-			var selectContactData = new SelectContactDataParameters() { ContactNumber = ContactNumber };
+			var selectContactData = new SelectContactDataParameters() { ContactNumber = _ContactNumber };
 			var serializedParameters = xmlHelper.SerializeToXml(selectContactData); //Serialize to XML to pass to the web services
 
 			var contactDataSelectionTypes = new IRISWebServices.XMLContactDataSelectionTypes();
@@ -118,7 +120,7 @@ namespace RCVS.Classes
 			//this needs to be done so Visual Studio won't refuse to compile with the message "Use of unassigned local variable 'ActivityIDsToIterateOver'"
 			List<string> ActivityIDsToIterateOver = new List<string>();
 
-			switch (form)
+			switch (_Form)
 			{
 				case Forms.DeclarationOfIntention:
 					ActivityIDsToIterateOver = DeclarationOfIntentionActivityIDs;
@@ -142,7 +144,7 @@ namespace RCVS.Classes
 				//If the activity exists, add it to the list
 				if (allActivities.FindIndex(a => a.ActivityCode == activityCode) >= 0)
 				{
-					activity = allActivities.First(a => a.ActivityCode == activityCode);
+					activity = allActivities.Last(a => a.ActivityCode == activityCode);
 					filteredActivities.Add(activity);
 				}
 			}

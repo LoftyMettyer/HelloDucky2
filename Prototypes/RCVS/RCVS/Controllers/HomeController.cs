@@ -37,6 +37,9 @@ namespace RCVS.Controllers
 
 		public ActionResult DeclarationOfIntention()
 		{
+			ViewBag.SuccessfulSubmit = false;
+
+			int index;
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
@@ -50,39 +53,59 @@ namespace RCVS.Controllers
 
 			response = client.GetLookupData(lookupDataType, serializedParameters);
 
+			//Load the model first; then we need to see if we have a saved value for any of the fields and pre-select it
+			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
+			var model = m.LoadModel();
+
 			var activities = from activity in XDocument.Parse(response).Descendants("DataRow")
 											 select new SelectListItem
 												 {
 													 Value = activity.Element("Activity").Value,
 													 Text = activity.Element("ActivityDesc").Value
 												 };
+			model.Activities = activities;
 
+			//This doesn't need to be pre-selected manually, the framework does it
 			var years = new List<SelectListItem>();
 			years.Add(new SelectListItem { Value = "14", Text = "2014" });
 			years.Add(new SelectListItem { Value = "15", Text = "2015" });
 			years.Add(new SelectListItem { Value = "16", Text = "2016" });
+			model.YearsDropdown = years;
 
+			//This one DOES need to be pre-selected manually
 			var normalCourseLengthDropdown = new List<SelectListItem>();
 			normalCourseLengthDropdown.Add(new SelectListItem { Value = "3", Text = "3 years" });
 			normalCourseLengthDropdown.Add(new SelectListItem { Value = "4", Text = "4 years" });
 			normalCourseLengthDropdown.Add(new SelectListItem { Value = "5", Text = "5 years" });
 			normalCourseLengthDropdown.Add(new SelectListItem { Value = "7", Text = "7 years" });
+			index = normalCourseLengthDropdown.FindIndex(x => Convert.ToInt32(x.Value) == model.NormalCourseLength); // ... Get the index of the saved value (if any)...
+			if (index >= 0)
+			{
+				normalCourseLengthDropdown[index].Selected = true; // ... and select it
+			};
 
+			model.NormalCourseLengthDropdown = normalCourseLengthDropdown;
+
+			//This one DOES need to be pre-selected manually
 			var universityThatAwardedDegreeCountriesDropdown = new List<SelectListItem>();
 			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "F", Text = "France" });
 			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "I", Text = "Ireland" });
 			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "IT", Text = "Italy" });
 			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "NL", Text = "Netherlands" });
 			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "SP", Text = "Spain" });
+			index = universityThatAwardedDegreeCountriesDropdown.FindIndex(x => x.Value == model.UniversityThatAwardedDegree.Country); // ... Get the index of the saved value (if any)...
+			if (index >= 0)
+			{
+				universityThatAwardedDegreeCountriesDropdown[index].Selected = true; // ... and select it
+			}
+			;
 
-			var universityThatAwardedDegree = new University {CountriesDropdown = universityThatAwardedDegreeCountriesDropdown};
-
-			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
-
-			var model = m.LoadModel();
-			model.YearsDropdown = years;
-			model.Activities = activities;
-			model.NormalCourseLengthDropdown = normalCourseLengthDropdown;
+			var universityThatAwardedDegree = new University
+				{
+					CountriesDropdown = universityThatAwardedDegreeCountriesDropdown,
+					Name = model.UniversityThatAwardedDegree.Name,
+					City = model.UniversityThatAwardedDegree.City
+				};
 			model.UniversityThatAwardedDegree = universityThatAwardedDegree;
 
 			return View(model);
@@ -94,7 +117,8 @@ namespace RCVS.Controllers
 		{
 			model.Save();
 
-			return RedirectToAction("Index");
+			ViewBag.SuccessfulSubmit = true;
+			return RedirectToAction("DeclarationOfIntention");
 		}
 
 		public ActionResult RenewalOfDeclaration()
