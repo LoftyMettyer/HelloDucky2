@@ -17,7 +17,7 @@ namespace RCVS.Models
 {
 	public class DeclarationOfIntentionModel : BaseModel
 	{
-		public int YearToSit { get; set; } //To holde the value of the selected year to sit
+		public int YearToSit { get; set; } //To hold the value of the selected year to sit
 
 		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
@@ -47,12 +47,12 @@ namespace RCVS.Models
 		public TRFDetails TrfDetails { get; set; }
 
 		[DisplayName("Title of primary veterinary degree and recognised abbreviation if any")]
-		public Degree PrimaryVetinaryDegree { get; set; }
+		public Degree PrimaryVeterinaryDegree { get; set; }
 
-		public University UniversityAwarded { get; set; }
+		public University UniversityThatAwardedDegree { get; set; }
 
 		[DisplayName("Date of graduation")]
-		public DateTime GraduationDate { get; set; }
+		public DateTime? GraduationDate { get; set; }
 
 		[DisplayName("When did you start your course?")]
 		public DateTime? CourseStartDate { get; set; }
@@ -60,8 +60,11 @@ namespace RCVS.Models
 		[DisplayName("When did you complete your course?")]
 		public DateTime? CourseEndDate { get; set; }
 
+		public int NormalCourseLength { get; set; } //To hold the value of the selected normal course length
+
+		[Required]
 		[DisplayName("What is the normal length of your course?")]
-		public TimePeriod NormalCourseLength { get; set; }
+		public IEnumerable<SelectListItem> NormalCourseLengthDropdown { get; set; }
 
 		[DisplayName("Have you enclosed a transcript?")]
 		public bool? HasEnclosedTranscript { get; set; }
@@ -87,7 +90,7 @@ namespace RCVS.Models
 				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities(contactNumber);
 
 				int bandScore;
-				Int32.TryParse(activityList.First(activity => activity.ActivityCode == "0TDS").ActivityValueDesc, out bandScore);
+				Int32.TryParse(activityList.First(activity => activity.ActivityCode == "0TDS").ActivityValueCode, out bandScore);
 
 				TRFDetails tRFDetails = new TRFDetails
 					{
@@ -95,11 +98,27 @@ namespace RCVS.Models
 						BandScore = bandScore
 					};
 
+				Degree primaryVeterinaryDegree = new Degree
+					{
+						Name = activityList.First(activity => activity.ActivityCode == "0TPD").Notes
+					};
+
+				University universityThatAwardedDegree = new University
+					{
+						Name = activityList.First(activity => activity.ActivityCode == "0UN").Notes,
+						City = activityList.First(activity => activity.ActivityCode == "0UCC").Notes,
+						Country = activityList.First(activity => activity.ActivityCode == "0UC").ActivityValueCode
+					};
+
 				m = new DeclarationOfIntentionModel
 							 {
 								 TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate,
 								 TrfDetails = tRFDetails,
-								 YearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueCode)
+								 YearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueCode),
+								 PrimaryVeterinaryDegree = primaryVeterinaryDegree,
+								 GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate,
+								 NormalCourseLength = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode),
+								 UniversityThatAwardedDegree = universityThatAwardedDegree
 							 };
 			}
 
@@ -109,12 +128,7 @@ namespace RCVS.Models
 		public override void Save()
 		{
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
-			UserID = Convert.ToInt64(user.ContactNumber);
-
-			if (UserID == null)
-			{
-				return;
-			}
+			long UserID = Convert.ToInt64(user.ContactNumber);
 
 			//Save activities
 
@@ -138,7 +152,7 @@ namespace RCVS.Models
 							 );
 
 
-			//TRF file upload			
+				//TRF file upload				
 			//Done in three parts:
 			//1. get a document number
 			//2. get the document application type
@@ -172,15 +186,15 @@ namespace RCVS.Models
 						}
 					}
 
-					var bytes = new byte[IELTS.InputStream.Length];
+				var bytes = new byte[IELTS.InputStream.Length];
 					IELTS.InputStream.Read(bytes, 0, Convert.ToInt32(IELTS.InputStream.Length));
-					var addCommunicationsLogParameters = new AddCommunicationsLogParameters
-						{
-							AddresseeContactNumber = user.ContactNumber,
-							AddresseeAddressNumber = user.AddressNumber,
-							SenderContactNumber = user.ContactNumber,
-							SenderAddressNumber = user.AddressNumber,
-							Dated = Convert.ToDateTime(DateTime.Now),
+				var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+					{
+						AddresseeContactNumber = user.ContactNumber,
+						AddresseeAddressNumber = user.AddressNumber,
+						SenderContactNumber = user.ContactNumber,
+						SenderAddressNumber = user.AddressNumber,
+						Dated = Convert.ToDateTime(DateTime.Now),
 							Direction = "I",
 							DocumentType = "OTHE",
 							Topic = "GEN",
@@ -189,9 +203,9 @@ namespace RCVS.Models
 							DocumentSubject = "TRF Upload",
 							Precis = "TRF Upload",
 							Package = package
-						};
-					var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-					var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
+					};
+				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+				var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
 					client = new NDataAccessSoapClient();
 					response = client.AddCommunicationsLog(serializedParameters);
 
@@ -228,8 +242,8 @@ namespace RCVS.Models
 								UserID,
 								"0TPD",
 								"Y",
-								PrimaryVetinaryDegree.Name + " (" + PrimaryVetinaryDegree.Abbreviation + ") " + PrimaryVetinaryDegree.Document,
-								GraduationDate,
+								PrimaryVeterinaryDegree.Name,
+								(DateTime)GraduationDate,
 								"WEB"
 							);
 
@@ -237,7 +251,8 @@ namespace RCVS.Models
 			Utils.AddActivity(
 								UserID,
 								"0NLC",
-								University.
+								NormalCourseLength.ToString(),
+								"",
 								DateTime.Now,
 								"WEB"
 							);
@@ -246,11 +261,31 @@ namespace RCVS.Models
 			Utils.AddActivity(
 								UserID,
 								"0UN",
-								University.
+								"Y",
+								UniversityThatAwardedDegree.Name,
 								DateTime.Now,
 								"WEB"
 							);
 
+			//Vet degree details: University city
+			Utils.AddActivity(
+								UserID,
+								"0UCC",
+								"Y",
+								UniversityThatAwardedDegree.City,
+								DateTime.Now,
+								"WEB"
+							);
+
+			//Vet degree details: University country
+			Utils.AddActivity(
+								UserID,
+								"0UC",
+								UniversityThatAwardedDegree.Country,
+								"",
+								DateTime.Now,
+								"WEB"
+							);
 		}
 	}
 }

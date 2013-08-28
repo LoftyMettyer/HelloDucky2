@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml.Linq;
+using RCVS.Classes;
 using RCVS.Helpers;
 using RCVS.IRISWebServices;
 using RCVS.Models;
@@ -61,11 +62,28 @@ namespace RCVS.Controllers
 			years.Add(new SelectListItem { Value = "15", Text = "2015" });
 			years.Add(new SelectListItem { Value = "16", Text = "2016" });
 
+			var normalCourseLengthDropdown = new List<SelectListItem>();
+			normalCourseLengthDropdown.Add(new SelectListItem { Value = "3", Text = "3 years" });
+			normalCourseLengthDropdown.Add(new SelectListItem { Value = "4", Text = "4 years" });
+			normalCourseLengthDropdown.Add(new SelectListItem { Value = "5", Text = "5 years" });
+			normalCourseLengthDropdown.Add(new SelectListItem { Value = "7", Text = "7 years" });
+
+			var universityThatAwardedDegreeCountriesDropdown = new List<SelectListItem>();
+			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "F", Text = "France" });
+			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "I", Text = "Ireland" });
+			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "IT", Text = "Italy" });
+			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "NL", Text = "Netherlands" });
+			universityThatAwardedDegreeCountriesDropdown.Add(new SelectListItem { Value = "SP", Text = "Spain" });
+
+			var universityThatAwardedDegree = new University {CountriesDropdown = universityThatAwardedDegreeCountriesDropdown};
+
 			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
 
 			var model = m.LoadModel();
 			model.YearsDropdown = years;
 			model.Activities = activities;
+			model.NormalCourseLengthDropdown = normalCourseLengthDropdown;
+			model.UniversityThatAwardedDegree = universityThatAwardedDegree;
 
 			return View(model);
 		}

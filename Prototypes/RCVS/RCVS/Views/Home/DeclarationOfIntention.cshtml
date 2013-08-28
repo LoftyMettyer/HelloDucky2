@@ -62,8 +62,7 @@
 			<legend>International English Language Testing System (IELTS)</legend>
 			<div class="layout">
 				<p>
-					<span>
-						Before you can apply for examination, you must send your original IELTS test report form (TRF) to RCVS so that we can verify your score and confirm that you have met the RCVS English language competence requirement.
+					<span>Before you can apply for examination, you must send your original IELTS test report form (TRF) to RCVS so that we can verify your score and confirm that you have met the RCVS English language competence requirement.
 					</span>
 				</p>
 			</div>
@@ -72,7 +71,7 @@
 					@Html.LabelFor(model => model.IELTS)
 				</div>
 				<div class="editor-field input">
-					@Html.TextBoxFor(model => model.IELTS, new {type = "file"})
+					@Html.TextBoxFor(model => model.IELTS, new { type = "file" })
 					@Html.ValidationMessageFor(model => model.IELTS)
 				</div>
 			</div>
@@ -101,11 +100,41 @@
 			<legend>Veterinary Qualification</legend>
 			<div class="field">
 				<div class="editor-label label">
-					@Html.LabelFor(model => model.PrimaryVetinaryDegree)
+					@Html.LabelFor(model => model.PrimaryVeterinaryDegree)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.PrimaryVetinaryDegree)
-					@Html.ValidationMessageFor(model => model.PrimaryVetinaryDegree)
+					@Html.EditorFor(model => model.PrimaryVeterinaryDegree)
+					@Html.ValidationMessageFor(model => model.PrimaryVeterinaryDegree)
+				</div>
+			</div>
+
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.UniversityThatAwardedDegree.Name, "University which awarded your veterinary degree. Name")
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.UniversityThatAwardedDegree.Name)
+					@Html.ValidationMessageFor(model => model.UniversityThatAwardedDegree.Name)
+				</div>
+			</div>
+
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.UniversityThatAwardedDegree.City)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.UniversityThatAwardedDegree.City)
+					@Html.ValidationMessageFor(model => model.UniversityThatAwardedDegree.City)
+				</div>
+			</div>
+
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.UniversityThatAwardedDegree.CountriesDropdown)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(x => x.UniversityThatAwardedDegree.Country, Model.UniversityThatAwardedDegree.CountriesDropdown)
+					@Html.ValidationMessageFor(model => model.UniversityThatAwardedDegree.CountriesDropdown)
 				</div>
 			</div>
 
@@ -135,6 +164,15 @@
 				<div class="editor-field input">
 					@Html.EditorFor(model => model.CourseEndDate)
 					@Html.ValidationMessageFor(model => model.CourseEndDate)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.NormalCourseLengthDropdown)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(x => x.NormalCourseLength, Model.NormalCourseLengthDropdown)
+					@Html.ValidationMessageFor(model => model.NormalCourseLengthDropdown)
 				</div>
 			</div>
 			<div class="field">
@@ -197,6 +235,24 @@
 		$('#GraduationDate').val($('#GraduationDate').val().substring(0, 10));  //Remove the hour from the date
 		//Attach datepicker
 		$('#GraduationDate').datepicker({
+			dateFormat: "dd/mm/yy",
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "-80:+0"
+		});
+
+		$('#CourseStartDate').val($('#CourseStartDate').val().substring(0, 10));  //Remove the hour from the date
+		//Attach datepicker
+		$('#CourseStartDate').datepicker({
+			dateFormat: "dd/mm/yy",
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "-80:+0"
+		});
+
+		$('#CourseEndDate').val($('#CourseEndDate').val().substring(0, 10));  //Remove the hour from the date
+		//Attach datepicker
+		$('#CourseEndDate').datepicker({
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,

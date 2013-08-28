@@ -1,12 +1,10 @@
 ﻿@using RCVS.Classes
-@if (Request.IsAuthenticated)
-{
-	User user = (User)System.Web.HttpContext.Current.Session["User"];
+@{
 	string Salutation = "Hello";
-	if (user != null)
+	User user = (User)System.Web.HttpContext.Current.Session["User"];
+	if (Request.IsAuthenticated && user != null)
 	{
 		Salutation = String.Concat(Salutation, ", ", System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(user.Forenames));
-	}
 	<ul>
 		<li>@Salutation </li>
 		<li>
@@ -21,11 +19,12 @@
 		<li><a href="@Url.Action("SeeingPractice", "Home")">Seeing Practice</a></li>
 		<li><a href="@Url.Action("StatutoryMembershipExamination", "Home")">Statutory Membership Examination</a></li>
 	</ul>
-}
-else
-{
+	}
+	else
+	{
 	<ul>
 		<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
 		<li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
 	</ul>
+	}
 }
