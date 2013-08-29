@@ -210,7 +210,6 @@
     <Compile Include="Classes\PracticeArrangement.cs" />
     <Compile Include="Classes\Qualification.cs" />
     <Compile Include="Classes\RenewalReason.cs" />
-    <Compile Include="Classes\Subject.cs" />
     <Compile Include="Classes\TimePeriod.cs" />
     <Compile Include="Structures\TRFDetails.cs" />
     <Compile Include="Classes\University.cs" />

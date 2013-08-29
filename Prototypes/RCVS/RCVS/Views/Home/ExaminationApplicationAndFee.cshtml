@@ -1,5 +1,5 @@
 ﻿@using RCVS.Helpers
-@model RCVS.Models.ExaminationApplicationAndFeeModel 
+@model RCVS.Models.ExaminationApplicationAndFeeModel
 
 <div class="wysiwyg">
 
@@ -40,16 +40,28 @@
 					@Html.ValidationMessageFor(model => model.IsNewApplicant)
 				</div>
 			</div>
+
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.YearOfLastApplication)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.YearOfLastApplication)
+					@Html.DropDownListFor(model => model.YearOfLastApplication, Model.YearOfLastApplicationDropDown)
+
 					@Html.ValidationMessageFor(model => model.YearOfLastApplication)
 				</div>
 			</div>
 
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.SubjectWithPermission)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(model => model.SubjectWithPermission, Model.SubjectsWithPermissionDropDown)
+
+					@Html.ValidationMessageFor(model => model.SubjectWithPermission)
+				</div>
+			</div>
 		</fieldset>
 
 		<fieldset>
@@ -83,16 +95,9 @@
 				@Html.HiddenFor(m => m.EmploymentHistory[i].Position)
 				@Html.HiddenFor(m => m.EmploymentHistory[i].PracticeName)
 				@Html.HiddenFor(m => m.EmploymentHistory[i].ToDate)
-
-
-
 		 ++i;
 	 }
-
 		</fieldset>
-				
-				
-				
 		<fieldset>
 			<legend>Registration/license to practise as a veterinary surgeon</legend>
 
@@ -100,7 +105,9 @@
 				@Html.LabelFor(model => model.PreviouslyRegistered)
 			</div>
 			<div class="editor-field">
-				@Html.EditorFor(model => model.PreviouslyRegistered)
+				@Html.DropDownListFor(model => model.PreviouslyRegistered, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 				@Html.ValidationMessageFor(model => model.PreviouslyRegistered)
 			</div>
 
@@ -132,7 +139,9 @@
 				@Html.LabelFor(model => model.PreviouslyBanned)
 			</div>
 			<div class="editor-field">
-				@Html.EditorFor(model => model.PreviouslyBanned)
+				@Html.DropDownListFor(model => model.PreviouslyBanned, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 				@Html.ValidationMessageFor(model => model.PreviouslyBanned)
 			</div>
 
@@ -153,42 +162,48 @@
 			</div>
 
 		</fieldset>
-
+		
+		<legend>
+			<p>
+				<b>£1430</b> is the fee for sitting the whole examination, made up of £1200 + £230 non refundable administration charge
+			</p>
+			<p>
+				<b>£715</b> is the part fee for sitting one or two subjects of the examination and is made up of £600 + £115 non refundable administration charge
+			</p>
+		</legend>
+		
 
 		<fieldset>
-			<legend>
-				<p>
-					<b>£1430</b> is the fee for sitting the whole examination, made up of £1200 + £230 non refundable administration charge
-				</p>
-				<p>
-					<b>£715</b> is the part fee for sitting one or two subjects of the examination and is made up of £600 + £115 non refundable administration charge
-				</p>
-			</legend>
+			<legend>Examination fees</legend>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.AmountYouArePaying)
+			</div>
+			<div class="editor-field">
+				@Html.DropDownListFor(model => model.AmountYouArePaying, Model.AmountYouArePayingDropDown)
+			</div>
 		</fieldset>
-
-	 <fieldset>
-		 <legend>Payment options</legend>
-		 <div>
-			 <div>
-				 <p>Pay with credit card</p>
-				 <img src="~/Images/CreditCardMockup.jpg" />
-			 </div>
-			 <div style="margin-top: 15px;">
-				<p>or pay with Paypal</p>
-				 <script src="/Scripts/paypal-button.min.js?merchant=payments_demo@rcvs.org.uk"
-				         data-button="buynow"
-				         data-name="RCVS examination fee"
-				         data-amount="1430"
-				         data-currency="GBP"
-				         data-env="sandbox">
- 				</script>
-			 </div>
-		 </div>
-	 </fieldset>
+		<fieldset>
+			<legend>Payment options</legend>
+			<div>
+				<div>
+					<p>Pay with credit card</p>
+					<img src="~/Images/CreditCardMockup.jpg" />
+				</div>
+				<div style="margin-top: 15px;">
+					<p>or pay with Paypal</p>
+					<script src="/Scripts/paypal-button.min.js?merchant=payments_demo@rcvs.org.uk"
+						data-button="buynow"
+						data-name="RCVS examination fee"
+						data-amount="1430"
+						data-currency="GBP"
+						data-env="sandbox">
+					</script>
+				</div>
+			</div>
+		</fieldset>
 	 
 		<fieldset>
 			<legend>Confirmation</legend>
-			<p>UPLOAD option here?...................................</p>
 			<p>
 				IF RCVS has not already verified your IELTS test score and confirmed that you are eligable to apply to sit our examination you should upload your IELTS TRF now. Please do <u>not</u> send any other original documents, such as certificates of qualifications to RCVS.
 			</p>
@@ -223,16 +238,10 @@
 
 			<p>
 
-				<input type="submit" action="Activity_Qualification" value="Create" />
-
-				<input type="submit" value="Create" />
+				<input type="submit" value="Submit" />
 			</p>
 		</fieldset>
  }
-
-	<div>
-		@Html.ActionLink("Back to List", "Index")
-	</div>
 
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
@@ -242,11 +251,27 @@
 
 	<script type="text/javascript">
 
-		$(document).ready(function () {
-			var btn = $(".paypal-button large");
-			$(btn).html("Pay now"); //Change Paypal button text
+		$(document).ready(function ()
+		{
+			$('#RegistrationDate').val($('#RegistrationDate').val().substring(0, 10));  //Remove the hour from the date
+			//Attach datepicker
+			$('#RegistrationDate').datepicker({
+				dateFormat: "dd/mm/yy",
+				changeMonth: true,
+				changeYear: true,
+				yearRange: "-80:+0"
+			});
+
+			$('#RegistrationExpiryDate').val($('#RegistrationExpiryDate').val().substring(0, 10)); //Remove the hour from the date
+			//Attach datepicker
+			$('#RegistrationExpiryDate').datepicker({
+				dateFormat: "dd/mm/yy",
+				changeMonth: true,
+				changeYear: true,
+				yearRange: "-0:+20"
+			});
 		});
-		
+
 
 
 		function addActivity(Activity)
@@ -296,26 +321,16 @@
 					open: function (event, ui)
 					{
 						$(this).load("@Url.Action("Activity_Qualification")");
-				},
-				buttons: {
-					"Close": function ()
-					{
-						$(this).dialog("close");
+					},
+					buttons: {
+						"Close": function ()
+						{
+							$(this).dialog("close");
+						}
 					}
+				});
+
+					$('#dialog').dialog('open');
 				}
-			});
-
-				$('#dialog').dialog('open');
-
-
-
-			}
-
-
-
 	</script>
-
-
-
-
 </div>

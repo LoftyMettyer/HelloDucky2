@@ -14,6 +14,7 @@ using RCVS.WebServiceClasses;
 
 namespace RCVS.Controllers
 {
+	[Authorize]
 	public class HomeController : Controller
 	{
 		public ActionResult Index()
@@ -35,6 +36,7 @@ namespace RCVS.Controllers
 			return View();
 		}
 
+		[Authorize]
 		public ActionResult DeclarationOfIntention()
 		{
 			ViewBag.SuccessfulSubmit = false;
@@ -154,6 +156,26 @@ namespace RCVS.Controllers
 		{
 			var model = new ExaminationApplicationAndFeeModel();
 			model.Load();
+
+			var yearOfLastApplication = new List<SelectListItem>();
+			yearOfLastApplication.Add(new SelectListItem { Value = "N09", Text = "2009" });
+			yearOfLastApplication.Add(new SelectListItem { Value = "N10", Text = "2010" });
+			yearOfLastApplication.Add(new SelectListItem { Value = "N11", Text = "2011" });
+			yearOfLastApplication.Add(new SelectListItem { Value = "N12", Text = "2012" });
+			model.YearOfLastApplicationDropDown = yearOfLastApplication;
+
+			var subjects = new List<SelectListItem>();
+			subjects.Add(new SelectListItem { Value = "1",Text = "The Horse" });
+			subjects.Add(new SelectListItem { Value = "2", Text = "Small Companion Animals" });
+			subjects.Add(new SelectListItem { Value = "3", Text = "Production Animals" });
+			subjects.Add(new SelectListItem { Value = "4", Text = "Veterinary Public Health" });
+			model.SubjectsWithPermissionDropDown = subjects;
+
+			var amountYouArePaying = new List<SelectListItem>();
+			amountYouArePaying.Add(new SelectListItem {Value = "1430", Text = "£1430"});
+			amountYouArePaying.Add(new SelectListItem { Value = "715", Text = "£715" });
+			model.AmountYouArePayingDropDown = amountYouArePaying;
+
 			return View(model);
 		}
 
