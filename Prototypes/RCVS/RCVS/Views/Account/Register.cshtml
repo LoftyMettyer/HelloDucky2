@@ -1,5 +1,7 @@
 ﻿@model RCVS.Models.RegisterModel
-
+@{
+		Layout = null;
+}
 @{
 	ViewBag.Title = "Register";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -111,29 +113,8 @@
 				</div>
 			</div>
 
-			@*	<div class="editor-label">
-				@Html.LabelFor(model => model.Days)
-			</div>
-			<div class="editor-field">
-				@Html.DropDownListFor(m => m.Day, Model.Days)
-				@Html.ValidationMessageFor(model => model.Days)
-			</div>
+			<button id="btnAddressLookup">Address lookup (UK only)</button>
 
-			<div class="editor-label">
-				@Html.LabelFor(model => model.Months)
-			</div>
-			<div class="editor-field">
-				@Html.DropDownListFor(m => m.Month, Model.Months)
-				@Html.ValidationMessageFor(model => model.Months)
-			</div>
-
-			<div class="editor-label">
-				@Html.LabelFor(model => model.Years)
-			</div>
-			<div class="editor-field">
-				@Html.DropDownListFor(m => m.Year, Model.Years)
-				@Html.ValidationMessageFor(model => model.Years)
-			</div>*@
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.AddressLine1)
@@ -200,8 +181,10 @@
 
 		</fieldset>
 
+		<div id="AddressLookupDialog"></div>
+	 
 		<p>
-			<input type="submit" value="Create" class="input_submit" />
+			<input type="submit" value="Register" class="input_submit" />
 		</p>
  }
 
@@ -216,13 +199,38 @@
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function ()
+	{
 		$('#DOB').datepicker({
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "-80:+0"
+			yearRange: "-80:-18"
 		});
+
+		//Address lookup
+		$(function ()
+		{
+			$('#AddressLookupDialog').dialog({
+				autoOpen: false,
+				width: 497,
+				height: 590,
+				title: "Address lookup",
+				resizable: true,
+				modal: true
+			});
+
+			$('#btnAddressLookup').click(function () {
+				$('#AddressLookupDialog').load("@Url.Action("AddressLookup")", function (){
+					$(this).dialog('open');
+					$(this).removeClass('ui-dialog-content ui-widget-content');
+				});
+				return false;
+			});
+
+		});
+
 	});
+
 </script>
 

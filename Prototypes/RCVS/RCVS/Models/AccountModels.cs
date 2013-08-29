@@ -67,7 +67,7 @@ namespace RCVS.Models
 		//public string Year { get; set; } //To hold the value of the selected year
 
 		[Required]
-		[DisplayName("DOB")]
+		[DisplayName("Date of birth")]
 		[DataType(DataType.DateTime)]
 		public string DOB { get; set; }
 
