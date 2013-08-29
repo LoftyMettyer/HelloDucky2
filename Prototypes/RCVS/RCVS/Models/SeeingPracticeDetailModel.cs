@@ -1,6 +1,7 @@
 ﻿
 using System;
 using RCVS.Classes;
+using RCVS.Enums;
 using RCVS.Helpers;
 using RCVS.Interfaces;
 using RCVS.WebServiceClasses;
@@ -26,42 +27,42 @@ namespace RCVS.Models
 		public void Save()
 		{
 
-			//UserID = 571;
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			long UserID = Convert.ToInt64(user.ContactNumber);
 
 			//save the Year to Sit
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient();
 
-			var XmlHelper = new XMLHelper();
+			var xmlHelper = new XMLHelper();
 			var addParameters = new AddOrganisationParameters()
 				{
-					Source = "Web",
-					Name = "vetname", // PracticeName,
-					Address = "adr1", // Address.AddressLine1,
-					Town = "tyown", //Address.Town,
-					County = "county", // Address.County,
-					Country = "UK", //Address.Country,
-					Postcode = Address.Postcode
-					//Status = "0PSP"
+					Source = "WEB",
+					Name = PracticeName,
+					Address = Address.AddressLine1,
+					Town = Address.Town,
+					County = Address.County,
+					Country = Address.Country,
+					Postcode = Address.Postcode					
 				};
-			var serializedParameters = XmlHelper.SerializeToXml(addParameters);
+			var serializedParameters = xmlHelper.SerializeToXml(addParameters);
 			response = client.AddOrganisation(serializedParameters);
-			var Result = XmlHelper.DeserializeFromXmlToObject<AddOrganisationResult>(response);
+			var result = xmlHelper.DeserializeFromXmlToObject<AddOrganisationResult>(response);
 
 			var addParameters2 = new AddPositionParameters()
 				{
 					AddressNumber = 1,
-					ContactNumber = Result.ContactNumber,
-					OrganisationNumber = Result.AddressNumber,
+					ContactNumber = result.ContactNumber,
+					OrganisationNumber = result.AddressNumber,
 					Position = VetName,
-					PositionSeniority = "C",
+					PositionSeniority = (CurrentOrPlanned == CurrentOrPlanned.Current? "C": "P"),
 					ValidFrom = DateTime.Now, // (DateTime) StartDate, validation errors!
 					ValidTo = System.DateTime.Now // (DateTime) EndDate, validation errors!
 				};
-			serializedParameters = XmlHelper.SerializeToXml(addParameters2);
+			serializedParameters = xmlHelper.SerializeToXml(addParameters2);
 			response = client.AddPosition(serializedParameters);
 
-			var Result2 = XmlHelper.DeserializeFromXmlToObject<AddPositionResult>(response);
+			var Result2 = xmlHelper.DeserializeFromXmlToObject<AddPositionResult>(response);
 
 
 

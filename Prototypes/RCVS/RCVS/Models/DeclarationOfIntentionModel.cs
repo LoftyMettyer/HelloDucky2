@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Web;
 using System.Web.Mvc;
 using RCVS.Classes;
+using RCVS.Enums;
 using RCVS.Helpers;
 using RCVS.IRISWebServices;
 using RCVS.Structures;
@@ -31,10 +32,12 @@ namespace RCVS.Models
 
 		public string Activity { get; set; }
 		public IEnumerable<SelectListItem> Activities { get; set; }
-
+		
+		[Required]
 		[DisplayName("Do you plan to 'see practice'?")]
 		public bool? PlanToSeePractice { get; set; }
 
+		[Required]
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
 		public bool? CurrentlySeeingPractice { get; set; }
 
@@ -86,9 +89,10 @@ namespace RCVS.Models
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
 			if (user == null) //Redirect to login if user is null
 			{
-//				RedirectToRouteResult r=new RedirectToRouteResult()
-//return  				HttpContext.Current.Response.Redirect(Url.ro(.Redirect ("/Account/Login",true);
+				//				RedirectToRouteResult r=new RedirectToRouteResult()
+				//return  				HttpContext.Current.Response.Redirect(Url.ro(.Redirect ("/Account/Login",true);
 			}
+
 
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
@@ -99,8 +103,51 @@ namespace RCVS.Models
 				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
 
 				TRFDetails tRFDetails = new TRFDetails();
-				Degree primaryVeterinaryDegree = new Degree();
-				University universityThatAwardedDegree = new University();
+				var primaryVeterinaryDegree = new Degree();
+				var universityThatAwardedDegree = new University();
+				var practiceArrangements  = new List<PracticeArrangement>();
+
+				//See Practice list...
+				practiceArrangements = new List<PracticeArrangement>
+					{
+						new PracticeArrangement
+							{
+								PracticeName = "Dogs R Us",
+								CurrentOrPlanned = CurrentOrPlanned.Planned
+								,
+								StartDate = System.DateTime.Now,
+								EndDate = System.DateTime.Now,
+								VetName = "Harry Sullivan"
+								,
+								Address =
+									new Address()
+										{
+											AddressLine1 = "12 Windermere Road",
+											AddressLine2 = "Tonypandy",
+											Town = "Rhondda",
+											Postcode = "CF11 ABC"
+										}
+							},
+						new PracticeArrangement
+							{
+								PracticeName = "Cats 4 You",
+								CurrentOrPlanned = CurrentOrPlanned.Current
+								,
+								StartDate = System.DateTime.Now,
+								EndDate = System.DateTime.Now,
+								VetName = "Ian Chesterton"
+								,
+								Address =
+									new Address()
+										{
+											AddressLine1 = "132 Kendal Drive",
+											AddressLine2 = "",
+											Town = "Hemel Hempstead",
+											Postcode = "HS33 1VC"
+										}
+							}
+					};
+
 
 				if (Utils.ActivityIndex(activityList, "0TDS") >= 0)
 				{
@@ -145,7 +192,8 @@ namespace RCVS.Models
 					{
 						TrfDetails = tRFDetails,
 						PrimaryVeterinaryDegree = primaryVeterinaryDegree,
-						UniversityThatAwardedDegree = universityThatAwardedDegree
+						UniversityThatAwardedDegree = universityThatAwardedDegree,
+						PracticeArrangements = practiceArrangements
 					};
 
 

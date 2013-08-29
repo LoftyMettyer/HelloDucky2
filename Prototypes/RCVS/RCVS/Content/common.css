@@ -998,6 +998,10 @@ form.forms {
 		width: 50%;
 	}
 
+	.nowrap {
+		white-space: nowrap;
+	}
+
 	form.forms div.label {
 		border: 1px solid #eee;
 		background: #eee;
@@ -3287,4 +3291,13 @@ body.msie7 .bookmarks span.st_sharethis span.stButton {
 
 .ui-icon-help {
 	background: url(../Themes/rcvs-new/front-end/gfx/helpIcon.png) no-repeat
+}
+
+.field-validation-error {
+	white-space: nowrap;
+	color: red;
+}
+
+.popup fieldset {
+	margin: 0 20px 0 20px!important;
 }

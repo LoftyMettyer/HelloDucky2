@@ -8,10 +8,22 @@
 	<p><span>
 		   
 	   </span></p>
-	<div class="wysiwyg">
+	<div class="wysiwyg popup">
 		<fieldset>
 			<legend>Practice Details</legend>
 		
+			<div class="field">
+				<div class="editor-label label">
+					@Html.Label("Indicate Current or Planned")
+					<br />
+					<sup>(choose Current if within 4 last months or ongoing)</sup>
+				</div>
+				<div class="">
+					@Html.DropDownListFor(m => m.CurrentOrPlanned, new SelectList(Enum.GetValues(typeof(RCVS.Enums.CurrentOrPlanned))))
+					@Html.ValidationMessageFor(model => model.CurrentOrPlanned)	
+				</div>
+			</div>
+
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.PracticeName)
@@ -24,9 +36,8 @@
 			<div class="field">
 				<div class="editor-label label">
 					@Html.LabelFor(model => model.VetName)
-									<br/>
-				<sup>(as it appears in the RCVS Register)</sup>
-
+					<br />
+					<sup>(as it appears in the RCVS Register)</sup>
 				</div>
 				<div class="editor-field input">
 					@Html.EditorFor(model => model.VetName)
@@ -51,11 +62,10 @@
 					@Html.ValidationMessageFor(model => model.EndDate)
 				</div>
 			</div>
-
+				
 		</fieldset>
 
 		<fieldset>
-
 			<legend>Address Details</legend>
 			<div class="field">
 				<div class="editor-label label">
@@ -102,6 +112,22 @@
 		</fieldset>
 	</div>
 
+	
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+			
+			//Attach datepicker
+			$('#StartDate').datepicker({
+				dateFormat: "dd/mm/yy",
+				changeMonth: true,
+				changeYear: true				
+			});
+
+
+		});
+
+	</script>
 		
 		
 }

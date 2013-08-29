@@ -69,10 +69,19 @@
 				</div>
 			</div>
 				
+			@if (Model.PracticeArrangements.Count > 0)
+			{
 			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
-		@Html.Raw(Html.EditTable("tblQualifications", Model.PracticeArrangements, null))
+			}
+			else
+			{
+				<p>Please add 'seeing practice' details using the 'add practice' button below</p>
+			}
 
-			<input id="addQualification" class="input_button" type="button" value="Add practice..." />
+
+			@Html.Raw(Html.EditTable("tblPractices", Model.PracticeArrangements, null))
+
+			<input id="addPractice" class="input_button" type="button" value="Add practice..." />
 
 		@*	@{ int i = 0; }
 			@foreach (var obj in Model.PracticeArrangements)
@@ -82,8 +91,6 @@
 				@Html.HiddenFor(m => m.Qualifications[i].ObtainedDate)
 		 ++i;
 	 }*@
-
-
 
 		</fieldset>
 
@@ -299,14 +306,14 @@
 		$(function () {			
 			$('#my-dialog').dialog({
 				autoOpen: false,
-				width: 497,
-				height: 590,
+				width: 660,
+				height: 531,
 				title: "Add practice details",
 				resizable: true,
 				modal: true
 			});
 			
-			$('#addQualification').click(function () {				
+			$('#addPractice').click(function () {				
 				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
