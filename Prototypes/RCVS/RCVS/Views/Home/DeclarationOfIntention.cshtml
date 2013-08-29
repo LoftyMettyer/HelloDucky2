@@ -1,6 +1,8 @@
 ﻿@using RCVS.Helpers
 @model RCVS.Models.DeclarationOfIntentionModel
-
+@{
+		Layout = null;
+}
 <div class="wysiwyg">
 
 	@{
@@ -40,6 +42,7 @@
 					@Html.DropDownListFor(x => x.YearToSit, Model.YearsDropdown)
 					@Html.ValidationMessageFor(model => model.YearsDropdown)
 				</div>
+				<div class="ui-icon-help" title="help"></div>
 			</div>
 		</fieldset>
 
@@ -289,24 +292,35 @@
 			var ext = $(this).val().split('.').pop().toUpperCase();
 			if ($.inArray(ext, ['PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI']) == -1)
 			{
-				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");
+				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");				
 			}
 		});
 		
-		$('#SeeDialog').dialog({
+		$(function () {
+			$('#my-dialog').dialog({
 				autoOpen: false,
-				width: 670,
-				height: 736,
-				resizable: false,
-				title: 'Seeing Practice',
+				width: 497,
+				height: 590,
+				title: "Add practice details",
+				resizable: true,
 				modal: true
 			});
+
+			$('#addQualification').click(function () {
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {
+					$(this).dialog('open');
+					$(this).removeClass('ui-dialog-content ui-widget-content');
+				});
+				return false;
+			});
+
+		});
 	});
 	
 	function addActivity(Activity) {
 		
-		$('#SeeDialog').dialog('open');	
-		$('#SeeDialog').load("@Url.Action("SeeingPracticeDetail")");
-	}
 
+
+
+	}
 </script>

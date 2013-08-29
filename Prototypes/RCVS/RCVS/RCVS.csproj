@@ -385,6 +385,7 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </Content>
+    <Content Include="Themes\rcvs-new\front-end\gfx\helpIcon.png" />
     <Content Include="Themes\rcvs-new\front-end\gfx\rcvs-btn_search.gif" />
     <Content Include="Themes\rcvs-new\front-end\gfx\rcvs-sprite.gif" />
     <Content Include="Views\Home\RenewalOfDeclaration.cshtml">

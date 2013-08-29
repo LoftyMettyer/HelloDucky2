@@ -12,7 +12,7 @@ namespace RCVS.Classes
 
 		public Address Address { get; set; }
 
-		[DisplayName("Full name (as it appears in the RCVS Register) of the vet who is supervising you")]
+		[DisplayName("Full name of supervising vet")]
 		public string VetName { get; set; }
 
 		public DateTime? StartDate { get; set; }

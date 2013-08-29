@@ -991,12 +991,12 @@ form.forms {
 
 	form.forms div.label,
 	form.forms div.input {
-		width: 25%;
+		width: 40%;
 		float: left;
 	}
 
 	form.forms div.input {
-		width: 60%;
+		width: 50%;
 	}
 
 	form.forms div.label {
@@ -3284,4 +3284,8 @@ body.msie7 .bookmarks span.st_sharethis span.stButton {
 /* Our additions*/
 .ui-datepicker-calendar th {
 	color: #57A0C9;
+}
+
+.ui-icon-help {
+	background: url(../Themes/rcvs-new/front-end/gfx/helpIcon.png) no-repeat
 }
