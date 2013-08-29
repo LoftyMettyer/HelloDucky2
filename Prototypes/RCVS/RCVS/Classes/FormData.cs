@@ -17,7 +17,7 @@ namespace RCVS.Classes
 			DeclarationOfIntention,
 			RenewalOfDeclaration,
 			SeeingPractice,
-			StatutoryMemberShipexamination
+			ExaminationApplicationAndFee
 		}
 
 		private readonly List<string> DeclarationOfIntentionActivityIDs = new List<string>
@@ -40,7 +40,7 @@ namespace RCVS.Classes
 			{
 			};
 
-		private readonly List<string> StatutoryMemberShipexaminationActivityIDs = new List<string>
+		private readonly List<string> ExaminationApplicationAndFeeActivityIDs = new List<string>
 			{
 			};
 
@@ -131,8 +131,8 @@ namespace RCVS.Classes
 				case Forms.SeeingPractice:
 					ActivityIDsToIterateOver = SeeingPracticeActivityIDs;
 					break;
-				case Forms.StatutoryMemberShipexamination:
-					ActivityIDsToIterateOver = StatutoryMemberShipexaminationActivityIDs;
+				case Forms.ExaminationApplicationAndFee:
+					ActivityIDsToIterateOver = ExaminationApplicationAndFeeActivityIDs;
 					break;
 			}
 

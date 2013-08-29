@@ -1,15 +1,14 @@
 ﻿@using RCVS.Helpers
-@model RCVS.Models.StatutoryMembershipExaminationModel
+@model RCVS.Models.ExaminationApplicationAndFeeModel 
 
 <div class="wysiwyg">
 
 	@{
-		ViewBag.Title = "StatutoryMembershipExamination";
+		ViewBag.Title = "2013 examination application and examination fee payment form";
 		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
-	<h1>Statutory Membership Examination</h1>
-	<h1>2013 examination application and examination payment form</h1>
+	<h1>Examination application and examination fee payment form</h1>
 	<h2>The examination entry closing date is TBC</h2>
 
 	@*	<p>
@@ -22,7 +21,7 @@
 			SW1 2AF
 		</p>	*@
 
-	@using (Html.BeginForm("StatutoryMembershipExamination", "Home", FormMethod.Post, new { @class = "forms default" }))
+	@using (Html.BeginForm("ExaminationApplicationAndFee", "Home", FormMethod.Post, new { @class = "forms default" }))
  {
 		@Html.AntiForgeryToken()
 		@Html.ValidationSummary(true)

@@ -220,7 +220,7 @@
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\DeclarationOfIntentionModel.cs" />
     <Compile Include="Models\RenewalOfDeclarationModel.cs" />
-    <Compile Include="Models\StatutoryMembershipExaminationModel.cs" />
+    <Compile Include="Models\ExaminationApplicationAndFeeModel.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\AddOrganisationParameters.cs" />
@@ -426,7 +426,7 @@
     <Content Include="Service References\IRISWebServices\ndataaccess.wsdl" />
     <Content Include="Views\Home\DeclarationOfIntention.cshtml" />
     <Content Include="Views\Home\SeeingPractice.cshtml" />
-    <Content Include="Views\Home\StatutoryMembershipExamination.cshtml" />
+    <Content Include="Views\Home\ExaminationApplicationAndFee.cshtml" />
     <Content Include="Views\Account\RegistrationSuccessful.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Activity_Qualification.cshtml" />

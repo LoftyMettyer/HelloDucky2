@@ -150,16 +150,16 @@ namespace RCVS.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult StatutoryMembershipExamination()
+		public ActionResult ExaminationApplicationAndFee()
 		{
-			var model = new StatutoryMembershipExaminationModel();
+			var model = new ExaminationApplicationAndFeeModel();
 			model.Load();
 			return View(model);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult StatutoryMembershipExamination(StatutoryMembershipExaminationModel model)
+		public ActionResult ExaminationApplicationAndFee(ExaminationApplicationAndFeeModel model)
 		{
 			model.Save();
 			return View(model);
@@ -178,7 +178,7 @@ namespace RCVS.Controllers
 		public ActionResult Activity_Qualification(QualificationModel model, FormCollection values)
 		{
 			model.Save();
-			return View("StatutoryMembershipExamination");
+			return View("ExaminationApplicationAndFee");
 		}
 
 

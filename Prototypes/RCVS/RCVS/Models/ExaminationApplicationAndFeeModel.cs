@@ -9,7 +9,7 @@ using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class StatutoryMembershipExaminationModel : BaseModel
+	public class ExaminationApplicationAndFeeModel : BaseModel
 	{
 		[Required]
 		[DisplayName("Are you a new applicant?")]
