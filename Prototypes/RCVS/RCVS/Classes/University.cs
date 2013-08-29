@@ -8,7 +8,6 @@ namespace RCVS.Classes
 	public class University
 	{
 		[Required]
-		[DisplayName("")]
 		public string Name { get; set; }
 		[Required]
 		public string City { get; set; }

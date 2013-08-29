@@ -1,7 +1,7 @@
 ﻿@using RCVS.Helpers
 @model RCVS.Models.DeclarationOfIntentionModel
 @{
-		Layout = null;
+	Layout = null;
 }
 <div class="wysiwyg">
 
@@ -10,13 +10,20 @@
 		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
-@*	@if (ViewBag.SuccessfulSubmit)
+	@*	@if (ViewBag.SuccessfulSubmit)
  {
 		<div class="submitSuccessful">
 			Your information has been successfully saved
 		</div>
  }*@
 	<h1>Initial / first declaration of intention to sit</h1>
+
+@{
+	if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
+	{
+		@Html.Raw("<h2 style='color: fuchsia;'>Your information was saved successfully</h2>");
+	}
+}
 
 	<div class="layout">
 		<p>
@@ -53,8 +60,9 @@
 					@Html.LabelFor(model => model.PlanToSeePractice)
 				</div>
 				<div class="editor-field input">
-					@Html.RadioButtonFor(model => model.PlanToSeePractice, true)Yes
-					@Html.RadioButtonFor(model => model.PlanToSeePractice, false)No
+					@Html.DropDownListFor(model => model.PlanToSeePractice, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 					@Html.ValidationMessageFor(model => model.PlanToSeePractice)
 				</div>
 			</div>
@@ -63,27 +71,28 @@
 					@Html.LabelFor(model => model.CurrentlySeeingPractice)
 				</div>
 				<div class="editor-field input">
-					@Html.RadioButtonFor(model => model.CurrentlySeeingPractice, true)Yes
-					@Html.RadioButtonFor(model => model.CurrentlySeeingPractice, false)No
+					@Html.DropDownListFor(model => model.CurrentlySeeingPractice, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>
-				
+
 			@if (Model.PracticeArrangements.Count > 0)
-			{
-			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
-			}
-			else
-			{
+	 {
+				<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
+	 }
+	 else
+	 {
 				<p>Please add 'seeing practice' details using the 'add practice' button below</p>
-			}
+	 }
 
 
 			@Html.Raw(Html.EditTable("tblPractices", Model.PracticeArrangements, null))
 
 			<input id="addPractice" class="input_button" type="button" value="Add practice..." />
 
-		@*	@{ int i = 0; }
+			@*	@{ int i = 0; }
 			@foreach (var obj in Model.PracticeArrangements)
 	 {	
 				@Html.HiddenFor(m => m.PlanToSeePractice[i].Name)
@@ -232,6 +241,9 @@
 
 		</fieldset>
 		<p>
+			If you do not sit this examination at the next available session or, if you must re-confirm your intention to sit within a reasonable period of time by completing a renewal of intention form
+		</p>
+		<p>
 			<input type="submit" value="Submit" class="input_submit" />
 		</p>
  }
@@ -299,11 +311,12 @@
 			var ext = $(this).val().split('.').pop().toUpperCase();
 			if ($.inArray(ext, ['PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI']) == -1)
 			{
-				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");				
+				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");
 			}
 		});
-		
-		$(function () {			
+
+		$(function ()
+		{
 			$('#my-dialog').dialog({
 				autoOpen: false,
 				width: 660,
@@ -312,9 +325,11 @@
 				resizable: true,
 				modal: true
 			});
-			
-			$('#addPractice').click(function () {				
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
+
+			$('#addPractice').click(function ()
+			{
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function ()
+				{
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
@@ -323,5 +338,5 @@
 
 		});
 	});
-	
+
 </script>

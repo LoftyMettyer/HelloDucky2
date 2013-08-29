@@ -25,21 +25,14 @@ namespace RCVS.Models
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
 		public IEnumerable<SelectListItem> YearsDropdown { get; set; }
 
-		public string Footnote1
-		{
-			get { return "If you do not sit this examination at the next available session or, if you must re-confirm your intention to sit within a reasonable period of time by completing a renewal of intention form"; }
-		}
-
 		public string Activity { get; set; }
 		public IEnumerable<SelectListItem> Activities { get; set; }
-		
-		[Required]
-		[DisplayName("Do you plan to 'see practice'?")]
-		public bool? PlanToSeePractice { get; set; }
 
-		[Required]
+		[DisplayName("Do you plan to 'see practice'?")]
+		public string PlanToSeePractice { get; set; }
+
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
-		public bool? CurrentlySeeingPractice { get; set; }
+		public string CurrentlySeeingPractice { get; set; }
 
 		public List<PracticeArrangement> PracticeArrangements { get; set; }
 
@@ -105,7 +98,7 @@ namespace RCVS.Models
 				TRFDetails tRFDetails = new TRFDetails();
 				var primaryVeterinaryDegree = new Degree();
 				var universityThatAwardedDegree = new University();
-				var practiceArrangements  = new List<PracticeArrangement>();
+				var practiceArrangements = new List<PracticeArrangement>();
 
 				//See Practice list...
 				practiceArrangements = new List<PracticeArrangement>
@@ -199,7 +192,7 @@ namespace RCVS.Models
 
 				if (Utils.ActivityIndex(activityList, "0PTD") >= 0)
 				{
-					TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate;
+					m.TakeTestPlanDate = activityList.First(activity => activity.ActivityCode == "0PTD").ActivityDate;
 				}
 
 				if (Utils.ActivityIndex(activityList, "0YPE") >= 0)
@@ -209,12 +202,19 @@ namespace RCVS.Models
 
 				if (Utils.ActivityIndex(activityList, "0TPD") >= 0)
 				{
-					GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate;
+					m.GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate;
 				}
 				if (Utils.ActivityIndex(activityList, "0NLC") >= 0)
 				{
-					NormalCourseLength =
-						Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode);
+					m.NormalCourseLength = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode);
+				}
+				if (Utils.ActivityIndex(activityList, "0PSP") >= 0)
+				{
+					m.PlanToSeePractice = activityList.First(activity => activity.ActivityCode == "0PSP").ActivityValueCode;
+				}
+				if (Utils.ActivityIndex(activityList, "0CSP") >= 0)
+				{
+					m.CurrentlySeeingPractice = activityList.First(activity => activity.ActivityCode == "0CSP").ActivityValueCode;
 				}
 			}
 
@@ -378,6 +378,26 @@ namespace RCVS.Models
 								UserID,
 								"0UC",
 								UniversityThatAwardedDegree.Country,
+								"",
+								DateTime.Now,
+								"WEB"
+							);
+
+			//Do you plan to see practice?
+			Utils.AddActivity(
+								UserID,
+								"0PSP",
+								PlanToSeePractice,
+								"",
+								DateTime.Now,
+								"WEB"
+							);
+
+			//Are you currentl seeing practice?
+			Utils.AddActivity(
+								UserID,
+								"0CSP",
+								CurrentlySeeingPractice,
 								"",
 								DateTime.Now,
 								"WEB"

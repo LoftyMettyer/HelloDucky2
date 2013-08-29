@@ -119,8 +119,7 @@ namespace RCVS.Controllers
 		{
 			model.Save();
 
-			ViewBag.SuccessfulSubmit = true;
-			return RedirectToAction("DeclarationOfIntention");
+			return RedirectToAction("DeclarationOfIntention", new { submittedok = true });
 		}
 
 		public ActionResult RenewalOfDeclaration()
@@ -165,14 +164,14 @@ namespace RCVS.Controllers
 			model.YearOfLastApplicationDropDown = yearOfLastApplication;
 
 			var subjects = new List<SelectListItem>();
-			subjects.Add(new SelectListItem { Value = "1",Text = "The Horse" });
+			subjects.Add(new SelectListItem { Value = "1", Text = "The Horse" });
 			subjects.Add(new SelectListItem { Value = "2", Text = "Small Companion Animals" });
 			subjects.Add(new SelectListItem { Value = "3", Text = "Production Animals" });
 			subjects.Add(new SelectListItem { Value = "4", Text = "Veterinary Public Health" });
 			model.SubjectsWithPermissionDropDown = subjects;
 
 			var amountYouArePaying = new List<SelectListItem>();
-			amountYouArePaying.Add(new SelectListItem {Value = "1430", Text = "£1430"});
+			amountYouArePaying.Add(new SelectListItem { Value = "1430", Text = "£1430" });
 			amountYouArePaying.Add(new SelectListItem { Value = "715", Text = "£715" });
 			model.AmountYouArePayingDropDown = amountYouArePaying;
 

@@ -29,7 +29,9 @@ namespace RCVS.Classes
 				"0UN",
 				"0UCC",
 				"0UC",
-				"0YPE"
+				"0YPE",
+				"0PSP",
+				"0CSP"
 			};
 
 		private readonly List<string> RenewalOfDeclarationActivityIDs = new List<string>

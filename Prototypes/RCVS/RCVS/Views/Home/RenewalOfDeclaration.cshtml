@@ -5,89 +5,89 @@
 }
 
 <div class="wysiwyg">
-		@using (Html.BeginForm("RenewalOfDeclaration", "Home", FormMethod.Post, new { @class = "forms default" }))
+	@using (Html.BeginForm("RenewalOfDeclaration", "Home", FormMethod.Post, new { @class = "forms default" }))
  {
 
-	<h1>Renewal of declaration of intention to sit</h1>
+		<h1>Renewal of declaration of intention to sit</h1>
 
-	@Html.AntiForgeryToken()
-	@Html.ValidationSummary(true)
+		@Html.AntiForgeryToken()
+		@Html.ValidationSummary(true)
 
-	@Html.HiddenFor(x => x.IELTS);
+		@Html.HiddenFor(x => x.IELTS);
 
-	 <fieldset>
-		 <legend>Renewal of Declaration</legend>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.RenewalReasons)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.DropDownListFor(m => m.RenewalReasonCode, Model.RenewalReasons)
-				 @*@Html.ValidationMessageFor(model => model.RenewalReasonCode)*@
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.YearToSit)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.YearToSit)
-				 @Html.ValidationMessageFor(model => model.YearToSit)
-			 </div>
-		 </div>
-	 </fieldset>
+		<fieldset>
+			<legend>Renewal of Declaration</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.RenewalReasons)
+				</div>
+				<div class="editor-field input">
+					@Html.DropDownListFor(m => m.RenewalReasonCode, Model.RenewalReasons)
+					@*@Html.ValidationMessageFor(model => model.RenewalReasonCode)*@
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.YearToSit)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.YearToSit)
+					@Html.ValidationMessageFor(model => model.YearToSit)
+				</div>
+			</div>
+		</fieldset>
 		
-	 <fieldset>
-		 <legend>'See' Practice</legend>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.PlanToSeePractice)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.PlanToSeePractice)
-				 @Html.ValidationMessageFor(model => model.PlanToSeePractice)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.CurrentlySeeingPractice)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.CurrentlySeeingPractice)
-				 @Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
-			 </div>
-		 </div>
+		<fieldset>
+			<legend>'See' Practice</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.PlanToSeePractice)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.PlanToSeePractice)
+					@Html.ValidationMessageFor(model => model.PlanToSeePractice)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.CurrentlySeeingPractice)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.CurrentlySeeingPractice)
+					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
+				</div>
+			</div>
 
-	 </fieldset>
+		</fieldset>
 		
-	 <fieldset>
-		 <legend>IELTS</legend>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.IELTS)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.IELTS)
-				 @Html.ValidationMessageFor(model => model.IELTS)
-			 </div>
-		 </div>
-		 <div class="field">
-			 <div class="editor-label label">
-				 @Html.LabelFor(model => model.PlannedTestDate)
-			 </div>
-			 <div class="editor-field input">
-				 @Html.EditorFor(model => model.PlannedTestDate)
-				 @Html.ValidationMessageFor(model => model.PlannedTestDate)
-			 </div>
-		 </div>
+		<fieldset>
+			<legend>IELTS</legend>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.IELTS)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.IELTS)
+					@Html.ValidationMessageFor(model => model.IELTS)
+				</div>
+			</div>
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.PlannedTestDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.PlannedTestDate)
+					@Html.ValidationMessageFor(model => model.PlannedTestDate)
+				</div>
+			</div>
 
-	 </fieldset>
+		</fieldset>
 		
 		<p>
-			<input type="submit" value="Create" class="input_submit"/>
+			<input type="submit" value="Submit" class="input_submit" />
 		</p>
 
-	}
+ }
 
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
