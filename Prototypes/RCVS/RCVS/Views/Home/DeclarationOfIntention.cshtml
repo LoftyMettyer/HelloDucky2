@@ -136,7 +136,7 @@
 
 			<div class="field">
 				<div class="editor-label label">
-					@Html.LabelFor(model => model.UniversityThatAwardedDegree.Name, "University which awarded your veterinary degree. Name")
+					@Html.LabelFor(model => model.UniversityThatAwardedDegree.Name, "Name of university which awarded your veterinary degree")
 				</div>
 				<div class="editor-field input">
 					@Html.EditorFor(model => model.UniversityThatAwardedDegree.Name)
@@ -222,14 +222,10 @@
 
 		</fieldset>
 		<p>
-			<input type="submit" value="Create" class="input_submit" />
+			<input type="submit" value="Submit" class="input_submit" />
 		</p>
  }
 
-	<div>
-		@Html.ActionLink("Back to List", "Index")
-	</div>
-	
 	<div id="SeeDialog"></div>
 
 	@section Scripts {

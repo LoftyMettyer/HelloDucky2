@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Xml.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -48,7 +49,7 @@ namespace RCVS.Models
 		[DisplayName("If you have taken a test, give details and send your TRF for verification")]
 		public TRFDetails TrfDetails { get; set; }
 
-		[DisplayName("Title of primary veterinary degree and recognised abbreviation if any")]
+		[DisplayName("Title of primary veterinary degree")]
 		public Degree PrimaryVeterinaryDegree { get; set; }
 
 		public University UniversityThatAwardedDegree { get; set; }
@@ -71,7 +72,7 @@ namespace RCVS.Models
 		[DisplayName("Have you enclosed a transcript?")]
 		public bool? HasEnclosedTranscript { get; set; }
 
-		[DisplayName("TODO - This need to be a file upload of some decription ")]
+		[DisplayName("TODO - This need to be a file upload of some description ")]
 		public string EnclosedTranscript { get; set; }
 
 		public override void Load()
@@ -83,6 +84,12 @@ namespace RCVS.Models
 			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
 
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			if (user == null) //Redirect to login if user is null
+			{
+//				RedirectToRouteResult r=new RedirectToRouteResult()
+//return  				HttpContext.Current.Response.Redirect(Url.ro(.Redirect ("/Account/Login",true);
+			}
+
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)
@@ -156,7 +163,7 @@ namespace RCVS.Models
 				{
 					GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate;
 				}
-				if (Utils.ActivityIndex(activityList, "0UC") >= 0)
+				if (Utils.ActivityIndex(activityList, "0NLC") >= 0)
 				{
 					NormalCourseLength =
 						Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0NLC").ActivityValueCode);
@@ -272,7 +279,7 @@ namespace RCVS.Models
 			Utils.AddActivity(
 								UserID,
 								"0TDS",
-								"A", //TrfDetails.BandScore.ToString(),
+								TrfDetails.BandScore.ToString(),
 								"",
 								(TrfDetails.DateOfTest.HasValue) ? (DateTime)TrfDetails.DateOfTest : DateTime.MinValue,
 								"WEB"
