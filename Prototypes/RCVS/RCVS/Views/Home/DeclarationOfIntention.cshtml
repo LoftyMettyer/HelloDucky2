@@ -72,7 +72,7 @@
 			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
 		@Html.Raw(Html.EditTable("tblQualifications", Model.PracticeArrangements, null))
 
-			<input id="addQualification" class="input_button" type="button" value="Add practice..." onclick='addActivity("tblPractice")' />
+			<input id="addQualification" class="input_button" type="button" value="Add practice..." />
 
 		@*	@{ int i = 0; }
 			@foreach (var obj in Model.PracticeArrangements)
@@ -229,7 +229,7 @@
 		</p>
  }
 
-	<div id="SeeDialog"></div>
+	<div id="my-dialog"></div>
 
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
@@ -296,7 +296,7 @@
 			}
 		});
 		
-		$(function () {
+		$(function () {			
 			$('#my-dialog').dialog({
 				autoOpen: false,
 				width: 497,
@@ -305,9 +305,9 @@
 				resizable: true,
 				modal: true
 			});
-
-			$('#addQualification').click(function () {
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {
+			
+			$('#addQualification').click(function () {				
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
@@ -317,10 +317,4 @@
 		});
 	});
 	
-	function addActivity(Activity) {
-		
-
-
-
-	}
 </script>
