@@ -162,14 +162,14 @@
 
 		</fieldset>
 		
-		<legend>
+		<div class="">
 			<p>
-				<b>£1430</b> is the fee for sitting the whole examination, made up of £1200 + £230 non refundable administration charge
+				<span><b>£1430</b> is the fee for sitting the whole examination, made up of £1200 + £230 non refundable administration charge</span>
 			</p>
 			<p>
-				<b>£715</b> is the part fee for sitting one or two subjects of the examination and is made up of £600 + £115 non refundable administration charge
+				<span><b>£715</b> is the part fee for sitting one or two subjects of the examination and is made up of £600 + £115 non refundable administration charge</span>
 			</p>
-		</legend>
+		</div>
 		
 
 		<fieldset>
@@ -237,7 +237,7 @@
 
 			<p>
 
-				<input type="submit" value="Submit" />
+				<input type="submit" value="Submit" class="input_submit" />
 			</p>
 		</fieldset>
  }
@@ -269,25 +269,45 @@
 				changeYear: true,
 				yearRange: "-0:+20"
 			});
+			
+
+			//tblQualifications Table formatting
+			//Hide id column (including header)
+			$('table#tblQualifications tbody th:nth-child(4)').addClass('hidden');
+			$('table#tblQualifications tbody td:nth-child(4)').addClass('hidden');
+			//hide hours on date columns
+			$('table#tblQualifications tbody td:nth-child(2)').html($('table#tblQualifications tbody td:nth-child(2)').html().substring(0, 10));  //Remove the hour from the date			
+			//Change headers
+			$('table#tblQualifications tbody th:nth-child(2)').html('Date Obtained');
+			$('table#tblQualifications tbody th:nth-child(3)').html('Awarding Body');
+
+			//tblEmployment Table formatting
+			//hide hours on date columns
+			$('table#tblEmployment tbody td:nth-child(5)').html($('table#tblEmployment tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date			
+			$('table#tblEmployment tbody td:nth-child(6)').html($('table#tblEmployment tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date			
+			//Change headers
+			$('table#tblEmployment tbody th:nth-child(1)').html('Practice Name');
+			$('table#tblEmployment tbody th:nth-child(5)').html('Date From');
+			$('table#tblEmployment tbody th:nth-child(6)').html('Date To');
+			
 		});
 
 
 
-		function addActivity(Activity)
-		{
+		function addActivity(Activity) {
+			return false;
+
 			$('#dialog').dialog({
 				autoOpen: false,
 				width: 400,
 				resizable: false,
 				title: 'hi there',
 				modal: true,
-				open: function (event, ui)
-				{
+				open: function (event, ui) {
 					$(this).load("@Url.Action("Activity_Qualification")");
 				},
 				buttons: {
-					"Close": function ()
-					{
+					"Close": function () {
 						$(this).dialog("close");
 					}
 				}
@@ -300,13 +320,14 @@
 
 
 
-			function deleteActivity(Activity, RowNo)
-			{
-
+			function deleteActivity(Activity, RowNo) {
+				return false;
 			}
 
-			function editActivity(Activity, RowNo)
-			{
+			function editActivity(Activity, RowNo) {
+
+				return false;
+
 				var i;
 
 				debugger;
