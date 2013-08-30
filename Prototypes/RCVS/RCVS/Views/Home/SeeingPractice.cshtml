@@ -36,7 +36,7 @@
 
 
 @{
-	ViewBag.Title = "Initial / first declaration of intention to sit";
+	ViewBag.Title = "Seeing practice";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -54,8 +54,6 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 	<div class="wysiwyg">
-		<h2>SeeingPractice</h2>
-
 		<fieldset>
 			<legend>Detail</legend>
 
@@ -65,7 +63,7 @@
 					@Html.LabelFor(model => model.PlannedYearToSit)
 				</div>
 				<div class="editor-field">
-					@Html.EditorFor(model => model.PlannedYearToSit)
+					@Html.DisplayFor(model => model.PlannedYearToSit)
 					@Html.ValidationMessageFor(model => model.PlannedYearToSit)
 				</div>
 
@@ -80,7 +78,7 @@
 			<input id="addQualification" value="Add Practice" type="button" onclick=' addActivity("tblPractices") ' />
 
 		</fieldset>
-		}
+
 	</div>
 }
 

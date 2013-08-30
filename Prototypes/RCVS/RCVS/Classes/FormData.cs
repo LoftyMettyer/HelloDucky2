@@ -36,6 +36,8 @@ namespace RCVS.Classes
 
 		private readonly List<string> RenewalOfDeclarationActivityIDs = new List<string>
 			{
+				"0RR",
+				"0PEA"
 			};
 
 		private readonly List<string> SeeingPracticeActivityIDs = new List<string>

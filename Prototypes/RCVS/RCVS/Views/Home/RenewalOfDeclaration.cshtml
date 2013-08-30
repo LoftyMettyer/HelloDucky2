@@ -34,11 +34,11 @@
 			</div>
 			<div class="field">
 				<div class="editor-label label">
-					@Html.LabelFor(model => model.YearToSit)
+					@Html.LabelFor(model => model.PlannedYearToSit)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.YearToSit)
-					@Html.ValidationMessageFor(model => model.YearToSit)
+					@Html.DisplayFor(model => model.PlannedYearToSit)
+					@Html.ValidationMessageFor(model => model.PlannedYearToSit)
 				</div>
 			</div>
 		</fieldset>
@@ -50,7 +50,9 @@
 					@Html.LabelFor(model => model.PlanToSeePractice)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.PlanToSeePractice)
+					@Html.DropDownListFor(model => model.PlanToSeePractice, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 					@Html.ValidationMessageFor(model => model.PlanToSeePractice)
 				</div>
 			</div>
@@ -59,7 +61,9 @@
 					@Html.LabelFor(model => model.CurrentlySeeingPractice)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.CurrentlySeeingPractice)
+					@Html.DropDownListFor(model => model.CurrentlySeeingPractice, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False"}})
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>

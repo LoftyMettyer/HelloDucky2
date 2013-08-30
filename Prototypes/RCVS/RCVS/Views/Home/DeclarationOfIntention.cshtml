@@ -10,12 +10,6 @@
 		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
-@*	@if (ViewBag.SuccessfulSubmit)
- {
-		<div class="submitSuccessful">
-			Your information has been successfully saved
-		</div>
- }*@
 	<h1>Initial / first declaration of intention to sit</h1>
 
 @{
@@ -341,15 +335,15 @@
 				modal: true
 			});
 			
-			$('#addPractice').click(function () {
+			$('#addPractice').click(function () {				
 				$('#my-dialog').dialog('option', 'title', 'Add practice details');
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-			});
-
+	});
+	
 		});
 	});
 

@@ -105,18 +105,19 @@ namespace RCVS.Models
 				var serializedParameters = xmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
 
 				response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactPositions, serializedParameters);
+				client.Close();
 
 				var doc = XDocument.Parse(response);
 
 				var query = from data in doc.Descendants("DataRow")
 										select new PracticeArrangement
-										{
+					{
 											PracticeName = (string)data.Element("ContactName"),
 											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"?  CurrentOrPlanned.Planned: CurrentOrPlanned.Current),
 											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
 											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
 											VetName = (string)data.Element("Position")											
-										};
+					};
 
 				practiceArrangements = query.ToList();				
 

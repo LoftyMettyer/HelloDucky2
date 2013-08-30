@@ -64,39 +64,51 @@ namespace RCVS.Models
 
 		public override void Load()
 		{
-			Qualifications = new List<Qualification>();
-			Qualifications.Add(new Qualification
-				{
-					AwardingBody = "Staffordshire University",
-					Name = "Software Science",
-					ObtainedDate = System.DateTime.Now
-				});
+		}
 
-			// Retrieve from web service
-			string response;
-			var client = new IRISWebServices.NDataAccessSoapClient();
+		public ExaminationApplicationAndFeeModel LoadModel()
+		{
+ExaminationApplicationAndFeeModel  m = new ExaminationApplicationAndFeeModel ();
 
-			var XmlHelper = new XMLHelper();
-			//var addActivityParameters = new FindActions() { UserID = "571", myActions = "0PSP" };
-			//var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+		
+			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
-			//response = client.FindActions(serializedParameters);
-			//Utils.LogWebServiceCall("FindActions", serializedParameters, response); //Log the call and response
-			//AddActivity(serializedParameters);
+			if (contactNumber != null)
+			{
+				//Get data for this form and user
+				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention, contactNumber);
+				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
 
-			var addParameters = new GetLookupDataParameters() { UserID = "571", Activity = "0PSP", ContactGroup = "", OrganisationGroup = "", Product = "", Topic = "" };
-			var serializedParameters2 = XmlHelper.SerializeToXml(addParameters);
+				Qualifications = new List<Qualification>();
+				Qualifications.Add(new Qualification
+					{
+						AwardingBody = "Staffordshire University",
+						Name = "Software Science",
+						ObtainedDate = System.DateTime.Now
+					});
 
-			var lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtActivitiesAndValues;
-			response = client.GetLookupData(lookupDataType, serializedParameters2);
-			Utils.LogWebServiceCall("GetLookupData", serializedParameters2, response); //Log the call and response
-			//AddActivity(serializedParameters);
-
-			EmploymentHistory = new List<Employment>();
-			EmploymentHistory.Add(new Employment { City = "Aberdare", Country = "Wales", FromDate = System.DateTime.Now.AddYears(-3), ToDate = System.DateTime.Now.AddYears(-2), Position = "Junior Vet", PracticeName = "Cows & Sons" });
-			EmploymentHistory.Add(new Employment { City = "Guildford", Country = "England", FromDate = System.DateTime.Now.AddYears(-2), ToDate = System.DateTime.Now.AddYears(-1), Position = "Chief Vet", PracticeName = "Horse Bros" });
-
-			client.Close();
+				EmploymentHistory = new List<Employment>();
+				EmploymentHistory.Add(new Employment
+					{
+						City = "Aberdare",
+						Country = "Wales",
+						FromDate = System.DateTime.Now.AddYears(-3),
+						ToDate = System.DateTime.Now.AddYears(-2),
+						Position = "Junior Vet",
+						PracticeName = "Cows & Sons"
+					});
+				EmploymentHistory.Add(new Employment
+					{
+						City = "Guildford",
+						Country = "England",
+						FromDate = System.DateTime.Now.AddYears(-2),
+						ToDate = System.DateTime.Now.AddYears(-1),
+						Position = "Chief Vet",
+						PracticeName = "Horse Bros"
+					});
+			}
+			return m;
 		}
 
 		public override void Save()

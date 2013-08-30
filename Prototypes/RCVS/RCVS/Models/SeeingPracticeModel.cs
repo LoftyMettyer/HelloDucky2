@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Xml.Linq;
 using RCVS.Classes;
 using RCVS.Enums;
 using RCVS.Helpers;
@@ -13,10 +14,10 @@ namespace RCVS.Models
 {
 	public class SeeingPracticeModel : BaseModel
 	{
+		[DisplayName("Year in which you plan to sit your examination")]
+		public int PlannedYearToSit { get; set; }
 
-	public int PlannedYearToSit { get; set; }
-
-	public List<PracticeArrangement> Practices { get; set; }
+		public List<PracticeArrangement> Practices { get; set; }
 
 
 		public override void Load()
@@ -41,7 +42,7 @@ namespace RCVS.Models
 
 			var query = from data in doc.Descendants("DataRow")
 									select new PracticeArrangement
-				{
+			{
 										PracticeName = (string)data.Element("ContactName"),
 										CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
 										StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
@@ -52,32 +53,45 @@ namespace RCVS.Models
 			Practices = query.ToList();				
 
 
-				//TODO retreuve this data from the webservices. The exacty structure of how to do this is a mystery!!!!
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
 
+			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
-				// Retrieve from web service
+			if (contactNumber != null)
+			{
+				//Getting the data for the DeclarationOfIntention form in the SeeingPractice form; THIS IS NOT AN ERROR, we need a piece of data from that form
+				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention, contactNumber);
+				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
+
+				if (Utils.ActivityIndex(activityList, "0YPE") >= 0)
+				{
+					PlannedYearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueDesc);
+				}
+
+			// Retrieve from web service
 			client = new IRISWebServices.NDataAccessSoapClient();
 
-				var XmlHelper = new XMLHelper();
-				//var addActivityParameters = new FindActions() { UserID = "571", myActions = "0PSP" };
-				//var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
+			var XmlHelper = new XMLHelper();
+			//var addActivityParameters = new FindActions() { UserID = "571", myActions = "0PSP" };
+			//var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
 
-				//response = client.FindActions(serializedParameters);
+			//response = client.FindActions(serializedParameters);
 			//Utils.LogWebServiceCall("FindActions", serializedParameters, response); //Log the call and response
-				//AddActivity(serializedParameters);
+			//AddActivity(serializedParameters);
 
-			var addParameters = new FindOrganisationsParameters() { UserID = "571", Source = "Web" }; //, Status = "0PSP"};
+				var addParameters = new FindOrganisationsParameters() { UserID = contactNumber.ToString(), Source = "Web" }; //, Status = "0PSP"};
 			var serializedParameters = XmlHelper.SerializeToXml(addParameters);
 
 			//	var lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtActivitiesAndValues;
-				response = client.FindOrganisations(serializedParameters);
+			response = client.FindOrganisations(serializedParameters);
 			Utils.LogWebServiceCall("FindOrganisations", serializedParameters, response); //Log the call and response
 
 			client.Close();
 
-				//var Result = XmlHelper.DeserializeFromXmlToObject<AddOrganisationResult>(response);
+			//var Result = XmlHelper.DeserializeFromXmlToObject<AddOrganisationResult>(response);
 
 			//AddActivity(serializedParameters);
+		}
 		}
 
 		public override void Save()

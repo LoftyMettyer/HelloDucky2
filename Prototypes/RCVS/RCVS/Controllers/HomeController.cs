@@ -39,8 +39,6 @@ namespace RCVS.Controllers
 		[Authorize]
 		public ActionResult DeclarationOfIntention()
 		{
-			ViewBag.SuccessfulSubmit = false;
-
 			int index;
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
@@ -100,8 +98,7 @@ namespace RCVS.Controllers
 			if (index >= 0)
 			{
 				universityThatAwardedDegreeCountriesDropdown[index].Selected = true; // ... and select it
-			}
-			;
+			};
 
 			var universityThatAwardedDegree = new University
 				{
@@ -129,6 +126,7 @@ namespace RCVS.Controllers
 		{
 			var model = new RenewalOfDeclarationModel();
 			model.LoadLookups();
+			model.Load();
 
 			return View(model);
 		}
@@ -150,7 +148,7 @@ namespace RCVS.Controllers
 			var model = new SeeingPracticeModel();
 			model.Load();
 
-			return View(@model);
+			return View(model);
 		}
 
 		[HttpPost]
@@ -163,8 +161,8 @@ namespace RCVS.Controllers
 		[HttpGet]
 		public ActionResult ExaminationApplicationAndFee()
 		{
-			var model = new ExaminationApplicationAndFeeModel();
-			model.Load();
+			ExaminationApplicationAndFeeModel m = new ExaminationApplicationAndFeeModel();
+			var model = m.LoadModel();
 
 			var yearOfLastApplication = new List<SelectListItem>();
 			yearOfLastApplication.Add(new SelectListItem { Value = "N09", Text = "2009" });

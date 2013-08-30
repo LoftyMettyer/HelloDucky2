@@ -9,10 +9,11 @@ using System.Xml.Linq;
 using RCVS.Classes;
 using RCVS.Helpers;
 using RCVS.Structures;
+using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class RenewalOfDeclarationModel
+	public class RenewalOfDeclarationModel : BaseModel
 	{
 
 		public string RenewalReasonCode { get; set; }
@@ -26,14 +27,14 @@ namespace RCVS.Models
 
 		public ExamAttempts Attempts { get; set; }
 
-		[DisplayName("Year in which you plan to sit the examination")]
-		public int YearToSit { get; set; }
+		[DisplayName("Year in which you plan to sit your examination")]
+		public int PlannedYearToSit { get; set; }
 
 		[DisplayName("Do you plan to 'see practice'?")]
-		public bool PlanToSeePractice { get; set; }
+		public string PlanToSeePractice { get; set; }
 
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
-		public bool CurrentlySeeingPractice { get; set; }
+		public string CurrentlySeeingPractice { get; set; }
 
 		public string IELTS { get; set; }
 
@@ -42,12 +43,6 @@ namespace RCVS.Models
 
 		[DisplayName("If you have taken a test, give details")]
 		public TRFDetails PreviousTest { get; set; }
-
-
-		public void Save()
-		{
-			int _Save = 1;
-		}
 
 		public void LoadLookups()
 		{
@@ -76,7 +71,28 @@ namespace RCVS.Models
 
 		}
 
+		public override void Load()
+		{
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
 
+			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
+			if (contactNumber != null)
+			{
+				//Getting the data for the DeclarationOfIntention form in the RenewalOfDeclaration form; THIS IS NOT AN ERROR, we need a piece of data from that form
+				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention, contactNumber);
+				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
+
+				if (Utils.ActivityIndex(activityList, "0YPE") >= 0)
+				{
+					PlannedYearToSit = Convert.ToInt32(activityList.First(activity => activity.ActivityCode == "0YPE").ActivityValueDesc);
+				}
+			}
+		}
+
+		public override void Save()
+		{
+
+		}
 	}
 }
