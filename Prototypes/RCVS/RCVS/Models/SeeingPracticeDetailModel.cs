@@ -12,7 +12,7 @@ using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class SeeingPracticeDetailModel : PracticeArrangement, iModel
+	public class SeeingPracticeDetailModel : PracticeArrangement
 	{
 		public long UserID { get; set; }
 
@@ -22,14 +22,17 @@ namespace RCVS.Models
 		}
 
 
-		public void Load()
+		public void Load(string rowNumber)
 		{
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			long UserID = Convert.ToInt64(user.ContactNumber);
+
 			Address = new Address();
 
 			string response;
 			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
 
-			//Set the lookup key..
+			//Grab a list of countries from the lookup table
 			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
 			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
 
@@ -45,11 +48,34 @@ namespace RCVS.Models
 													 Text = country.Element("CountryDesc").Value
 												 });
 
-			//Days = Utils.ListOfDays();
-			//Months = Utils.ListOfMonths();
-			//Years = Utils.ListOfYears();
 			Address.Countries = countries;
 
+			////Are we editing a value?
+			//if (rowNumber != "")
+			//{
+			//	//client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+			//	var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			//	//Get Position
+			//	var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = UserID };
+			//	var serializedParameters = xmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
+
+			//	response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactPositions, serializedParameters);
+
+			//	var doc = XDocument.Parse(response);
+
+			//	//var query = from data in doc.Descendants("DataRow")
+			//	//						select new PracticeArrangement
+			//	//						{
+			//	//							PracticeName = (string)data.Element("ContactName"),
+			//	//							CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
+			//	//							StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
+			//	//							EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
+			//	//							VetName = (string)data.Element("Position")
+			//	//						};
+
+			//	//practiceArrangements = query.ToList();		
+			//}
 
 		}
 
@@ -72,7 +98,7 @@ namespace RCVS.Models
 					Town = Address.Town,
 					County = Address.County,
 					Country = Address.Country,
-					Postcode = Address.Postcode					
+					Postcode = Address.Postcode
 				};
 			var serializedParameters = xmlHelper.SerializeToXml(addParameters);
 			response = client.AddOrganisation(serializedParameters);

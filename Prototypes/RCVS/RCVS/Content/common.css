@@ -3308,3 +3308,5 @@ textarea {
 }
 
 .submittedOK { color: red; }
+
+.hidden { display: none;}

@@ -5,15 +5,12 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 
-	<p><span>
-		   
-	   </span></p>
 	<div class="wysiwyg popup">
-	<fieldset>
-		<legend>Practice Details</legend>
+		<fieldset>
+			<legend>Practice Details</legend>
 		
-		<div class="field">
-			<div class="editor-label label">
+			<div class="field">
+				<div class="editor-label label">
 					@Html.Label("Indicate Current or Planned")
 					<br />
 					<sup>(choose Current if within 4 last months or ongoing)</sup>
@@ -29,81 +26,81 @@
 					@Html.Label("Veterinary practice")
 					<br />
 					<sup>(or other establishment name)</sup>
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.PracticeName)
+					@Html.ValidationMessageFor(model => model.PracticeName)
+				</div>
 			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.PracticeName)
-				@Html.ValidationMessageFor(model => model.PracticeName)
-			</div>
-		</div>
-		<div class="field">
-			<div class="editor-label label">
-				@Html.LabelFor(model => model.VetName)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.VetName)
 					<br />
 					<sup>(as it appears in the RCVS Register)</sup>
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.VetName)
+					@Html.ValidationMessageFor(model => model.VetName)
+				</div>
 			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.VetName)
-				@Html.ValidationMessageFor(model => model.VetName)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.StartDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.StartDate)
+					@Html.ValidationMessageFor(model => model.StartDate)
+				</div>
 			</div>
-		</div>
-		<div class="field">
-			<div class="editor-label label">
-				@Html.LabelFor(model => model.StartDate)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.EndDate)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.EndDate)
+					@Html.ValidationMessageFor(model => model.EndDate)
+				</div>
 			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.StartDate)
-				@Html.ValidationMessageFor(model => model.StartDate)
-			</div>
-		</div>
-		<div class="field">
-			<div class="editor-label label">
-				@Html.LabelFor(model => model.EndDate)
-			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.EndDate)
-				@Html.ValidationMessageFor(model => model.EndDate)
-			</div>
-		</div>
 
-	</fieldset>
+		</fieldset>
 
-	<fieldset>
-		<legend>Address Details</legend>
-		<div class="field">
-			<div class="editor-label label">
+		<fieldset>
+			<legend>Address Details</legend>
+			<div class="field">
+				<div class="editor-label label">
 					@Html.Label("Address")
 					<br/>
 					<sup>(including town and postcode)</sup>
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.Address.AddressLine1)
+					@Html.ValidationMessageFor(model => model.Address.AddressLine1)
+				</div>
 			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.Address.AddressLine1)
-				@Html.ValidationMessageFor(model => model.Address.AddressLine1)
-			</div>
-		</div>
-		<div class="field">
-			<div class="editor-label label">
+			<div class="field">
+				<div class="editor-label label">
 					
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.Address.AddressLine2)
+					@Html.ValidationMessageFor(model => model.Address.AddressLine2)
+				</div>
 			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.Address.AddressLine2)
-				@Html.ValidationMessageFor(model => model.Address.AddressLine2)
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.Address.Town)
+				</div>
+				<div class="editor-field input">
+					@Html.EditorFor(model => model.Address.Town)
+					@Html.ValidationMessageFor(model => model.Address.Town)
+				</div>
 			</div>
-		</div>
-		<div class="field">
-			<div class="editor-label label">
-				@Html.LabelFor(model => model.Address.Town)
-			</div>
-			<div class="editor-field input">
-				@Html.EditorFor(model => model.Address.Town)
-				@Html.ValidationMessageFor(model => model.Address.Town)
-			</div>
-		</div>
 
-		<div class="field">
-			<div class="editor-label label">
-				@Html.LabelFor(model => model.Address.Country)
-			</div>
-			<div class="editor-field input">
+			<div class="field">
+				<div class="editor-label label">
+					@Html.LabelFor(model => model.Address.Country)
+				</div>
+				<div class="editor-field input">
 					@Html.DropDownListFor(m => m.Address.Country, Model.Address.Countries)
 					@Html.ValidationMessageFor(model => model.Address.Countries)
 				</div>
@@ -116,15 +113,16 @@
 				<div class="editor-field input">
 					@Html.EditorFor(model => model.Address.Postcode)
 					@Html.ValidationMessageFor(model => model.Address.Postcode)
+				</div>
 			</div>
-		</div>
 
-		<p>
+			<p>
 				<input type="submit" value="Add" class="input_submit"/>
 				<input type="button" value="Cancel" class="input_button" onclick="$('#my-dialog').dialog('close');"/>
-		</p>
-	</fieldset>
-		
+			</p>
+		</fieldset>
+	</div>
+
 	<script type="text/javascript">
 
 		$(document).ready(function () {

@@ -68,7 +68,7 @@ namespace RCVS.Models
 		public bool? HasEnclosedTranscript { get; set; }
 
 		[DisplayName("Upload English transcript here")]
-		public string EnclosedTranscript { get; set; }
+		public HttpPostedFileBase EnclosedTranscript { get; set; }
 
 		public override void Load()
 		{
@@ -110,13 +110,13 @@ namespace RCVS.Models
 
 				var query = from data in doc.Descendants("DataRow")
 										select new PracticeArrangement
-					{
+										{
 											PracticeName = (string)data.Element("ContactName"),
 											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"?  CurrentOrPlanned.Planned: CurrentOrPlanned.Current),
 											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
 											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
 											VetName = (string)data.Element("Position")											
-					};
+										};
 
 				practiceArrangements = query.ToList();				
 

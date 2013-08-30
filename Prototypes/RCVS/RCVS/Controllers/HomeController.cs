@@ -222,18 +222,22 @@ namespace RCVS.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult SeePracticeDetail()
+		public ActionResult SeePracticeDetail(string rowNumber)
 		{
 			var model = new SeeingPracticeDetailModel();
+			if (rowNumber == null)
+			{
+				rowNumber = "";
+			}
 
-			model.Load();
+			model.Load(rowNumber);
 
 			return PartialView(model);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult SeeingPracticeDetail(SeeingPracticeDetailModel model, FormCollection values)
+		public ActionResult SeePracticeDetail(SeeingPracticeDetailModel model, FormCollection values)
 		{
 			model.Save();
 			//SeeingPractice();

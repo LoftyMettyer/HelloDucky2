@@ -34,6 +34,7 @@ namespace RCVS.Helpers
 			TagBuilder builder = new TagBuilder("table");
 			builder.MergeAttributes(attributes);
 			builder.MergeAttribute("name", name);
+			builder.MergeAttribute("id", name);
 
 			foreach (var item in items)
 			{

@@ -234,7 +234,7 @@
 					@Html.LabelFor(model => model.EnclosedTranscript)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.EnclosedTranscript)
+					@Html.TextBoxFor(model => model.EnclosedTranscript, new { type = "file" })
 					@Html.ValidationMessageFor(model => model.EnclosedTranscript)
 				</div>
 			</div>
@@ -305,6 +305,21 @@
 			yearRange: "-80:-18"
 		});
 
+
+		//Seeing Practice Table formatting
+		//Hide address column (including header)
+		$('table#tblPractices tbody th:nth-child(3)').addClass('hidden');
+		$('table#tblPractices tbody td:nth-child(3)').addClass('hidden');
+		//hide hours on date columns
+		$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date
+		$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date
+		//Change headers
+		$('table#tblPractices tbody th:nth-child(1)').html('Current/Planned');
+		$('table#tblPractices tbody th:nth-child(2)').html('Practice Name');
+		$('table#tblPractices tbody th:nth-child(4)').html('Supervisor');
+		$('table#tblPractices tbody th:nth-child(5)').html('Start Date');
+		$('table#tblPractices tbody th:nth-child(6)').html('End Date');
+
 		//only allow certain types of file to be uploaded.
 		$('[type="file"]').change(function ()
 		{
@@ -326,15 +341,29 @@
 				modal: true
 			});
 			
-			$('#addPractice').click(function () {				
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
+			$('#addPractice').click(function () {
+				$('#my-dialog').dialog('option', 'title', 'Add practice details');
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-	});
-	
+			});
+
 		});
 	});
+
+	function editActivity(tablename, rownumber) {
+		$('#my-dialog').dialog('option', 'title', 'Edit practice details');
+		$('#my-dialog').load("@Url.Action("SeePracticeDetail", "Home", new { rowNumber = "1"})", function () {
+			$(this).dialog('open');
+			$(this).removeClass('ui-dialog-content ui-widget-content');
+		});
+		return false;
+	}
+	
+	function deleteActivity() {
+		return false;
+	}
 
 </script>
