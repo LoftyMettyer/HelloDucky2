@@ -1,5 +1,9 @@
 ﻿
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml.Linq;
 using RCVS.Classes;
 using RCVS.Enums;
 using RCVS.Helpers;
@@ -22,6 +26,31 @@ namespace RCVS.Models
 		{
 			Address = new Address();
 
+			string response;
+			var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+
+			//Set the lookup key..
+			var lookupDataType = new IRISWebServices.XMLLookupDataTypes();
+			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
+
+			response = client.GetLookupData(lookupDataType, "");
+
+			var countries = new List<SelectListItem>();
+			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option
+
+			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")
+												 select new SelectListItem
+												 {
+													 Value = country.Element("Country").Value,
+													 Text = country.Element("CountryDesc").Value
+												 });
+
+			//Days = Utils.ListOfDays();
+			//Months = Utils.ListOfMonths();
+			//Years = Utils.ListOfYears();
+			Address.Countries = countries;
+
+
 		}
 
 		public void Save()
@@ -43,7 +72,7 @@ namespace RCVS.Models
 					Town = Address.Town,
 					County = Address.County,
 					Country = Address.Country,
-					Postcode = Address.Postcode					
+					Postcode = Address.Postcode
 				};
 			var serializedParameters = xmlHelper.SerializeToXml(addParameters);
 			response = client.AddOrganisation(serializedParameters);
@@ -51,13 +80,13 @@ namespace RCVS.Models
 
 			var addParameters2 = new AddPositionParameters()
 				{
-					AddressNumber = 1,
-					ContactNumber = result.ContactNumber,
-					OrganisationNumber = result.AddressNumber,
+					AddressNumber = result.AddressNumber,
+					ContactNumber = user.ContactNumber,
+					OrganisationNumber = result.ContactNumber,
 					Position = VetName,
 					PositionSeniority = (CurrentOrPlanned == CurrentOrPlanned.Current? "C": "P"),
-					ValidFrom = DateTime.Now, // (DateTime) StartDate, validation errors!
-					ValidTo = System.DateTime.Now // (DateTime) EndDate, validation errors!
+					ValidFrom = (DateTime)StartDate,
+					ValidTo = (DateTime) EndDate					
 				};
 			serializedParameters = xmlHelper.SerializeToXml(addParameters2);
 			response = client.AddPosition(serializedParameters);

@@ -222,6 +222,9 @@ namespace RCVS.Controllers
 		public ActionResult SeePracticeDetail()
 		{
 			var model = new SeeingPracticeDetailModel();
+
+			model.Load();
+
 			return PartialView(model);
 		}
 

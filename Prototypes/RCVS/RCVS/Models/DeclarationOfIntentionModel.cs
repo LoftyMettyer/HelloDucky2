@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Policy;
@@ -21,7 +22,6 @@ namespace RCVS.Models
 	{
 		public int YearToSit { get; set; } //To hold the value of the selected year to sit
 
-		[Required]
 		[DisplayName("Select the year in which you plan to sit the statutory membership examination")]
 		public IEnumerable<SelectListItem> YearsDropdown { get; set; }
 
@@ -61,14 +61,13 @@ namespace RCVS.Models
 
 		public int NormalCourseLength { get; set; } //To hold the value of the selected normal course length
 
-		[Required]
 		[DisplayName("What is the normal length of your course?")]
 		public IEnumerable<SelectListItem> NormalCourseLengthDropdown { get; set; }
 
 		[DisplayName("Have you enclosed a transcript?")]
 		public bool? HasEnclosedTranscript { get; set; }
 
-		[DisplayName("TODO - This need to be a file upload of some description ")]
+		[DisplayName("Upload English transcript here")]
 		public string EnclosedTranscript { get; set; }
 
 		public override void Load()
@@ -92,49 +91,34 @@ namespace RCVS.Models
 				TRFDetails tRFDetails = new TRFDetails();
 				var primaryVeterinaryDegree = new Degree();
 				var universityThatAwardedDegree = new University();
-				var practiceArrangements = new List<PracticeArrangement>();
+				var practiceArrangements  = new List<PracticeArrangement>();
 
 				//See Practice list...
-				practiceArrangements = new List<PracticeArrangement>
-					{
-						new PracticeArrangement
-							{
-								PracticeName = "Dogs R Us",
-								CurrentOrPlanned = CurrentOrPlanned.Planned
-								,
-								StartDate = System.DateTime.Now,
-								EndDate = System.DateTime.Now,
-								VetName = "Harry Sullivan"
-								,
-								Address =
-									new Address()
-										{
-											AddressLine1 = "12 Windermere Road",
-											AddressLine2 = "Tonypandy",
-											Town = "Rhondda",
-											Postcode = "CF11 ABC"
-										}
-							},
-						new PracticeArrangement
-							{
-								PracticeName = "Cats 4 You",
-								CurrentOrPlanned = CurrentOrPlanned.Current
-								,
-								StartDate = System.DateTime.Now,
-								EndDate = System.DateTime.Now,
-								VetName = "Ian Chesterton"
-								,
-								Address =
-									new Address()
-										{
-											AddressLine1 = "132 Kendal Drive",
-											AddressLine2 = "",
-											Town = "Hemel Hempstead",
-											Postcode = "HS33 1VC"
-										}
-							}
-					};
 
+				string response;
+
+				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+				//Get Position
+				var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = contactNumber };
+				var serializedParameters = xmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
+
+				response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactPositions, serializedParameters);
+
+				var doc = XDocument.Parse(response);
+
+				var query = from data in doc.Descendants("DataRow")
+										select new PracticeArrangement
+										{
+											PracticeName = (string)data.Element("ContactName"),
+											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"?  CurrentOrPlanned.Planned: CurrentOrPlanned.Current),
+											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
+											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
+											VetName = (string)data.Element("Position")											
+										};
+
+				practiceArrangements = query.ToList();				
 
 				if (Utils.ActivityIndex(activityList, "0TDS") >= 0)
 				{

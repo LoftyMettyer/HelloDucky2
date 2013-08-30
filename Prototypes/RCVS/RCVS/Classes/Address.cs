@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace RCVS.Classes
 {
@@ -10,6 +12,7 @@ namespace RCVS.Classes
 		public string Town { get; set; }
 		public string County { get; set; }
 		public string Country { get; set; }
+		public IEnumerable<SelectListItem> Countries { get; set; }
 
 		[Required]
 		public string Postcode { get; set; }

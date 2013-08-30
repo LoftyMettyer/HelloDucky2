@@ -10,7 +10,7 @@
 		Layout = "~/Views/Shared/_Layout.cshtml";
 	}
 
-	@*	@if (ViewBag.SuccessfulSubmit)
+@*	@if (ViewBag.SuccessfulSubmit)
  {
 		<div class="submitSuccessful">
 			Your information has been successfully saved
@@ -77,10 +77,10 @@
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>
-
+				
 			@if (Model.PracticeArrangements.Count > 0)
 	 {
-				<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
+			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
 	 }
 	 else
 	 {
@@ -92,7 +92,7 @@
 
 			<input id="addPractice" class="input_button" type="button" value="Add practice..." />
 
-			@*	@{ int i = 0; }
+		@*	@{ int i = 0; }
 			@foreach (var obj in Model.PracticeArrangements)
 	 {	
 				@Html.HiddenFor(m => m.PlanToSeePractice[i].Name)
@@ -213,7 +213,7 @@
 			</div>
 			<div class="field">
 				<div class="editor-label label">
-					@Html.LabelFor(model => model.NormalCourseLengthDropdown)
+					@Html.LabelFor(model => model.NormalCourseLength)
 				</div>
 				<div class="editor-field input">
 					@Html.DropDownListFor(x => x.NormalCourseLength, Model.NormalCourseLengthDropdown)
@@ -249,7 +249,7 @@
  }
 
 	<div id="my-dialog"></div>
-
+	
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
 		@Scripts.Render("~/bundles/jqueryui")
@@ -314,28 +314,26 @@
 				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");
 			}
 		});
-
+		
 		$(function ()
 		{
 			$('#my-dialog').dialog({
 				autoOpen: false,
 				width: 660,
-				height: 531,
+				height: 590,
 				title: "Add practice details",
 				resizable: true,
 				modal: true
 			});
-
-			$('#addPractice').click(function ()
-			{
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function ()
-				{
+			
+			$('#addPractice').click(function () {				
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-			});
-
+	});
+	
 		});
 	});
 
