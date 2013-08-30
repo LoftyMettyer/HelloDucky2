@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using RCVS.Classes;
 using RCVS.Helpers;
@@ -68,28 +69,30 @@ namespace RCVS.Models
 
 		public ExaminationApplicationAndFeeModel LoadModel()
 		{
-ExaminationApplicationAndFeeModel  m = new ExaminationApplicationAndFeeModel ();
+			ExaminationApplicationAndFeeModel m = new ExaminationApplicationAndFeeModel();
 
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
-		
+
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)
 			{
 				//Get data for this form and user
-				FormData formData = new FormData(FormData.Forms.DeclarationOfIntention, contactNumber);
+				FormData formData = new FormData(FormData.Forms.ExaminationApplicationAndFee, contactNumber);
 				List<SelectContactData_CategoriesResult> activityList = formData.GetFormActivities();
 
-				Qualifications = new List<Qualification>();
-				Qualifications.Add(new Qualification
+				List<Qualification> qualifications = new List<Qualification>();
+				qualifications.Add(new Qualification
 					{
 						AwardingBody = "Staffordshire University",
 						Name = "Software Science",
 						ObtainedDate = System.DateTime.Now
 					});
 
-				EmploymentHistory = new List<Employment>();
-				EmploymentHistory.Add(new Employment
+				m.Qualifications = qualifications;
+
+				List<Employment> employmentHistory = new List<Employment>();
+				employmentHistory.Add(new Employment
 					{
 						City = "Aberdare",
 						Country = "Wales",
@@ -98,7 +101,7 @@ ExaminationApplicationAndFeeModel  m = new ExaminationApplicationAndFeeModel ();
 						Position = "Junior Vet",
 						PracticeName = "Cows & Sons"
 					});
-				EmploymentHistory.Add(new Employment
+				employmentHistory.Add(new Employment
 					{
 						City = "Guildford",
 						Country = "England",
@@ -107,6 +110,35 @@ ExaminationApplicationAndFeeModel  m = new ExaminationApplicationAndFeeModel ();
 						Position = "Chief Vet",
 						PracticeName = "Horse Bros"
 					});
+
+				m.EmploymentHistory = employmentHistory;
+
+				if (Utils.ActivityIndex(activityList, "0SUB") >= 0)
+				{
+					m.SubjectWithPermission = activityList.First(activity => activity.ActivityCode == "0SUB").ActivityValueCode;
+				}
+
+				if (Utils.ActivityIndex(activityList, "0NA") >= 0)
+				{
+					YearOfLastApplication = activityList.First(activity => activity.ActivityCode == "0NA").ActivityValueCode;
+				}
+
+				if (Utils.ActivityIndex(activityList, "0PTQ") >= 0)
+				{
+					//		activityList.First(activity => activity.ActivityCode == "0PTQ").ActivityValueCode;
+				}
+
+				if (Utils.ActivityIndex(activityList, "0RTP") >= 0)
+				{
+					RegistrationAuthority = activityList.First(activity => activity.ActivityCode == "0RTP").Notes;
+					RegistrationDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidFrom;
+					RegistrationExpiryDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidTo;
+				}
+
+				if (Utils.ActivityIndex(activityList, "0BS") >= 0)
+				{
+					BanReasons = activityList.First(activity => activity.ActivityCode == "0BS").Notes;
+				}
 			}
 			return m;
 		}

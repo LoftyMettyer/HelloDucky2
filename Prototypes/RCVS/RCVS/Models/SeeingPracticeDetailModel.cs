@@ -98,7 +98,7 @@ namespace RCVS.Models
 					Town = Address.Town,
 					County = Address.County,
 					Country = Address.Country,
-					Postcode = Address.Postcode
+					Postcode = Address.Postcode					
 				};
 			var serializedParameters = xmlHelper.SerializeToXml(addParameters);
 			response = client.AddOrganisation(serializedParameters);
