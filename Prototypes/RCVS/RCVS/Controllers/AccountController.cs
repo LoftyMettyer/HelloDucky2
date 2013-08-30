@@ -203,6 +203,7 @@ namespace RCVS.Controllers
 		public ActionResult LogOff()
 		{
 			FormsAuthentication.SignOut();
+			System.Web.HttpContext.Current.Session["User"] = null;
 
 			return RedirectToAction("Index", "Home");
 		}

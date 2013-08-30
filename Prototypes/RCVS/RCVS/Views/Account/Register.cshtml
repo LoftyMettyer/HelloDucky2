@@ -1,8 +1,5 @@
 ﻿@model RCVS.Models.RegisterModel
 @{
-		Layout = null;
-}
-@{
 	ViewBag.Title = "Register";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -113,7 +110,7 @@
 				</div>
 			</div>
 
-			<button id="btnAddressLookup">Address lookup (UK only)</button>
+			
 
 			<div class="field">
 				<div class="editor-label label">
@@ -216,13 +213,13 @@
 				modal: true
 			});
 
-			$('#btnAddressLookup').click(function () {
+		@*	$('#btnAddressLookup').click(function () {
 				$('#AddressLookupDialog').load("@Url.Action("AddressLookup")", function (){
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-			});
+			});*@
 
 		});
 
