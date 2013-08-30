@@ -7,7 +7,7 @@ namespace RCVS.Classes
 	{
 		public static string LogFileFullPath
 		{
-			get { return HostingEnvironment.MapPath("/Logs/WebServiceCalls_" + DateTime.Now.Date.ToString().Substring(0,10).Replace("/", "-") + ".txt"); }
+			get { return HostingEnvironment.MapPath("~/Logs/WebServiceCalls_" + DateTime.Now.Date.ToString().Substring(0,10).Replace("/", "-") + ".txt"); }
 		}
 	}
 }
