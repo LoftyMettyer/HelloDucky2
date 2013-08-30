@@ -29,8 +29,8 @@
 			}
 		});
 
-			$('#dialog').dialog('open');
-		}
+		$('#dialog').dialog('open');
+	}
 
 </script>
 
@@ -49,7 +49,7 @@
 	}
 }
 
-@using (Html.BeginForm("SeeingPractice", "Home", FormMethod.Post, new { @class = "forms default" }))
+@using (Html.BeginForm("SeeingPractice", "Home", FormMethod.Post, new {@class = "forms default"}))
 {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
@@ -72,14 +72,89 @@
 
 		<fieldset>
 			<legend>Seeing Practice Arrangements</legend>
+			@if (Model.Practices.Count > 0)
+	 {
+				<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
+	 }
+	 else
+	 {
+				<p>Please add 'seeing practice' details using the 'add practice' button below</p>
+	 }
 
 			@Html.Raw(Html.EditTable("tblPractices", Model.Practices, null))
 
-			<input id="addQualification" value="Add Practice" type="button" onclick=' addActivity("tblPractices") ' />
+			<input id="addPractice" value="Add Practice" type="button" class="input_button" />
 
 		</fieldset>
 
 	</div>
 }
+
+	<div id="my-dialog"></div>
+	
+	@section Scripts {
+		@Scripts.Render("~/bundles/jqueryval")
+		@Scripts.Render("~/bundles/jqueryui")
+	}
+
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+			//Seeing Practice Table formatting
+			//Hide address column (including header)
+			$('table#tblPractices tbody th:nth-child(3)').addClass('hidden');
+			$('table#tblPractices tbody td:nth-child(3)').addClass('hidden');
+			//hide hours on date columns
+			$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date
+			$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date
+			//Change headers
+			$('table#tblPractices tbody th:nth-child(1)').html('Current/Planned');
+			$('table#tblPractices tbody th:nth-child(2)').html('Practice Name');
+			$('table#tblPractices tbody th:nth-child(4)').html('Supervisor');
+			$('table#tblPractices tbody th:nth-child(5)').html('Start Date');
+			$('table#tblPractices tbody th:nth-child(6)').html('End Date');
+
+			$(function () {
+				$('#my-dialog').dialog({
+					autoOpen: false,
+					width: 660,
+					height: 590,
+					title: "Add practice details",
+					resizable: true,
+					modal: true
+				});
+
+				$('#addPractice').click(function () {
+					$('#my-dialog').dialog('option', 'title', 'Add practice details');
+					$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {
+						$(this).dialog('open');
+						$(this).removeClass('ui-dialog-content ui-widget-content');
+					});
+					return false;
+				});
+
+			});
+
+
+		});
+
+		function editActivity(tablename, rownumber) {
+			$('#my-dialog').dialog('option', 'title', 'Edit practice details');
+			$('#my-dialog').load("@Url.Action("SeePracticeDetail", "Home", new { rowNumber = "1" })", function () {
+				$(this).dialog('open');
+				$(this).removeClass('ui-dialog-content ui-widget-content');
+			});
+			return false;
+		}
+
+		function deleteActivity() {
+			return false;
+		}
+
+	</script>
+	
+
+
+
 
 
