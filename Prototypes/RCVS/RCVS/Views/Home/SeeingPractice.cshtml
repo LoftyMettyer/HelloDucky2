@@ -5,10 +5,11 @@
 }
 <script type="text/javascript">
 
-	function addActivity(Activity, RowNo) {
+	function addActivity(Activity, RowNo)
+	{
 		var i;
 
-		document.location = "SeeingPracticeDetail";		
+		document.location = "SeeingPracticeDetail";
 
 		$('#dialog').dialog({
 			autoOpen: false,
@@ -16,11 +17,13 @@
 			resizable: false,
 			title: 'hi there',
 			modal: true,
-			open: function (event, ui) {
+			open: function (event, ui)
+			{
 				$(this).load("@Url.Action("SeeingPracticeDetail")");
 			},
 			buttons: {
-				"Close": function () {
+				"Close": function ()
+				{
 					$(this).dialog("close");
 				}
 			}
@@ -37,7 +40,14 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Statutory Membership Examination</h1>
+<h1>Seeing Practice</h1>
+
+@{
+	if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
+	{
+	@Html.Raw("<h2 class='submittedOK'>Your information was saved successfully</h2>");
+	}
+}
 
 @using (Html.BeginForm("SeeingPractice", "Home", FormMethod.Post, new { @class = "forms default" }))
 {

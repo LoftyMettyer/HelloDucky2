@@ -44,6 +44,11 @@ namespace RCVS.Classes
 
 		private readonly List<string> ExaminationApplicationAndFeeActivityIDs = new List<string>
 			{
+				"0SUB",
+				"0NA",
+				"0PTQ",
+				"0RTP",
+				"0BS"
 			};
 
 		private Forms _Form;

@@ -5,11 +5,17 @@
 }
 
 <div class="wysiwyg">
+	<h1>Renewal of declaration of intention to sit</h1>
+
+	@{
+		if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
+		{
+		@Html.Raw("<h2 class='submittedOK'>Your information was saved successfully</h2>");
+		}
+	}
+
 	@using (Html.BeginForm("RenewalOfDeclaration", "Home", FormMethod.Post, new { @class = "forms default" }))
- {
-
-		<h1>Renewal of declaration of intention to sit</h1>
-
+ { 
 		@Html.AntiForgeryToken()
 		@Html.ValidationSummary(true)
 

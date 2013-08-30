@@ -80,13 +80,7 @@ namespace RCVS.Models
 			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
 
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
-			if (user == null) //Redirect to login if user is null
-			{
-				//				RedirectToRouteResult r=new RedirectToRouteResult()
-				//return  				HttpContext.Current.Response.Redirect(Url.ro(.Redirect ("/Account/Login",true);
-			}
-
-
+		
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)

@@ -137,7 +137,7 @@ namespace RCVS.Controllers
 
 			model.LoadLookups();
 
-			return View(model);
+			return RedirectToAction("RenewalOfDeclaration", new { submittedok = true });
 		}
 
 
@@ -148,6 +148,13 @@ namespace RCVS.Controllers
 			model.Load();
 
 			return View(@model);
+		}
+
+		[HttpPost]
+		public ActionResult SeeingPractice(SeeingPracticeModel model)
+		{
+			model.Save();
+			return RedirectToAction("SeeingPractice", new { submittedok = true });
 		}
 
 		[HttpGet]
@@ -183,7 +190,8 @@ namespace RCVS.Controllers
 		public ActionResult ExaminationApplicationAndFee(ExaminationApplicationAndFeeModel model)
 		{
 			model.Save();
-			return View(model);
+
+			return RedirectToAction("ExaminationApplicationAndFee", new { submittedok = true });
 		}
 
 

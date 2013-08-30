@@ -11,15 +11,12 @@
 	<h1>Examination application and examination fee payment form</h1>
 	<h2>The examination entry closing date is TBC</h2>
 
-	@*	<p>
-			After completing this application please post the associated required documentation to
-			Statutory Membership Examination Administrator
-			Royal College of Veterinary Surgeons
-			Belgravia House
-			62-64 Horseferry Road
-			London
-			SW1 2AF
-		</p>	*@
+	@{
+		if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
+		{
+		@Html.Raw("<h2 class='submittedOK'>Your information was saved successfully</h2>");
+		}
+	}
 
 	@using (Html.BeginForm("ExaminationApplicationAndFee", "Home", FormMethod.Post, new { @class = "forms default" }))
  {

@@ -89,6 +89,7 @@ namespace RCVS.Controllers
 
 			Session["User"] = user; //Save the User details in Session
 			FormsAuthentication.SetAuthCookie(model.UserName, true);
+			  
 
 			if (String.IsNullOrEmpty(returnUrl))
 			{
