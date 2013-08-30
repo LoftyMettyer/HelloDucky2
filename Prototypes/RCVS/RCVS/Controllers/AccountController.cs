@@ -46,6 +46,7 @@ namespace RCVS.Controllers
 			var serializedParameters = XmlHelper.SerializeToXml(loginRegisteredUserParameters); //Serialize to XML to pass to the web services
 
 			response = client.LoginRegisteredUser(serializedParameters); //Call the login method
+			Utils.LogWebServiceCall("LoginRegisteredUser", serializedParameters, response); //Log the call and response
 
 			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
 			if (response.Contains("ErrorMessage"))
@@ -59,37 +60,37 @@ namespace RCVS.Controllers
 			//Deserialize into a LoginRegisteredUserResult object
 			LoginRegisteredUserResult loginRegisteredUserResult = XmlHelper.DeserializeFromXmlToObject<LoginRegisteredUserResult>(response);
 
-			//Get tue User details
+			//Get the User details
 			var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = loginRegisteredUserResult.ContactNumber };
 			serializedParameters = XmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
 
 			response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactInformation, serializedParameters);
+			Utils.LogWebServiceCall("SelectContactData", serializedParameters, response); //Log the call and response
 
 			//We don't need all the fields returned by the web services, so instead of casting the result into an object that would need to have every field),
 			//we use LINQ to get only what we need
 
-			var temp  = from u in XDocument.Parse(response).Descendants("DataRow")
-									select  new User
-									{
-										ContactNumber = Convert.ToInt64(u.Element("ContactNumber").Value),
-										AddressNumber = Convert.ToInt64(u.Element("AddressNumber").Value),
-										ContactName = u.Element("ContactName").Value,
-										Title = u.Element("Title").Value,
-										Initials = u.Element("Initials").Value,
-										Forenames = u.Element("Forenames").Value,
-										Surname = u.Element("Surname").Value,
-										Honorifics = u.Element("Honorifics").Value,
-										Salutation = u.Element("Salutation").Value,
-										LabelName = u.Element("LabelName").Value,
-									};
+			var temp = from u in XDocument.Parse(response).Descendants("DataRow")
+								 select new User
+								 {
+									 ContactNumber = Convert.ToInt64(u.Element("ContactNumber").Value),
+									 AddressNumber = Convert.ToInt64(u.Element("AddressNumber").Value),
+									 ContactName = u.Element("ContactName").Value,
+									 Title = u.Element("Title").Value,
+									 Initials = u.Element("Initials").Value,
+									 Forenames = u.Element("Forenames").Value,
+									 Surname = u.Element("Surname").Value,
+									 Honorifics = u.Element("Honorifics").Value,
+									 Salutation = u.Element("Salutation").Value,
+									 LabelName = u.Element("LabelName").Value,
+								 };
 
 
-			User user = (User) temp.FirstOrDefault();
+			User user = (User)temp.FirstOrDefault();
 			//SelectContactData_InformationResult selectContactData_InformationResult = XmlHelper.DeserializeFromXmlToObject<SelectContactData_InformationResult>(response);
 
 			Session["User"] = user; //Save the User details in Session
 			FormsAuthentication.SetAuthCookie(model.UserName, true);
-			  
 
 			if (String.IsNullOrEmpty(returnUrl))
 			{
@@ -128,15 +129,13 @@ namespace RCVS.Controllers
 				Title = values["Title"],
 				Forenames = values["Forenames"],
 				Surname = values["Surnames"],
-				DateOfBirth = Convert.ToDateTime(values["DOB"] ),
+				DateOfBirth = Convert.ToDateTime(values["DOB"]),
 				Address = values["AddressLine1"] + Environment.NewLine + values["AddressLine2"] + Environment.NewLine + values["AddressLine3"],
 				Town = values["City"],
 				County = values["County"],
 				Postcode = values["Postcode"],
 				Country = values["Countries"],
 				EmailAddress = values["EmailAddress"],
-				//UserName = values["EmailAddress"], //This is not an error, UserName should be set to the email address
-				//Password = values["Password"],
 				Salutation = values["Title"] + " " + values["Surnames"],
 				LabelName = values["Title"] + " " + values["Forenames"] + " " + values["Surnames"],
 				Status = "WA", //Always "WA" (Web applicant)
@@ -146,6 +145,7 @@ namespace RCVS.Controllers
 			var serializedParameters = XmlHelper.SerializeToXml(addContactParameters); //Serialize to XML to pass to the web services
 
 			string response = client.AddContact(serializedParameters);
+			Utils.LogWebServiceCall("AddContact", serializedParameters, response); //Log the call and response
 
 			//If the response message contains "ErrorMessage", deserialize into an ErrorResult object
 			if (response.Contains("ErrorMessage"))
@@ -153,6 +153,7 @@ namespace RCVS.Controllers
 				ErrorResult errorResult = XmlHelper.DeserializeFromXmlToObject<ErrorResult>(response);
 				// If we got this far, something failed, redisplay form
 				ModelState.AddModelError("", errorResult.ErrorMessage);
+				client.Close();
 				return View(model);
 			}
 
@@ -169,7 +170,20 @@ namespace RCVS.Controllers
 
 			serializedParameters = XmlHelper.SerializeToXml(addRegisteredUserParameters);
 			response = client.AddRegisteredUser(serializedParameters);
+			Utils.LogWebServiceCall("AddRegisteredUser", serializedParameters, response); //Log the call and response
 			// AddRegisteredUserResult addRegisteredUserResult = XmlHelper.DeserializeFromXmlToObject<AddRegisteredUserResult>(response);
+
+			//Trigger an action for this user
+			var addActionFromTemplateParameters = new AddActionFromTemplateParameters
+				{
+					ActionNumber = 638,
+					ContactNumber = addContactResult.ContactNumber
+				};
+			serializedParameters = XmlHelper.SerializeToXml(addActionFromTemplateParameters); //Serialize to XML to pass to the web services
+			response = client.AddActionFromTemplate(serializedParameters);
+			Utils.LogWebServiceCall("AddActionFromTemplate", serializedParameters, response); //Log the call and response
+
+			client.Close();
 
 			return RedirectToAction("RegistrationSuccessful", "Account");
 		}

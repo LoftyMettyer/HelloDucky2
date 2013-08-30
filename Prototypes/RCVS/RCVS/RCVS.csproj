@@ -47,10 +47,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="RoleBasedFormAuthentication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\RoleBasedFormAuthentication.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -195,6 +191,7 @@
     <Compile Include="App_Start\BindingConfig.cs" />
     <Compile Include="Classes\Address.cs" />
     <Compile Include="Classes\FormData.cs" />
+    <Compile Include="Classes\GlobalVariables.cs" />
     <Compile Include="Classes\Month.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Classes\Year.cs" />
@@ -224,6 +221,8 @@
     <Compile Include="Models\DeclarationOfIntentionModel.cs" />
     <Compile Include="Models\RenewalOfDeclarationModel.cs" />
     <Compile Include="Models\ExaminationApplicationAndFeeModel.cs" />
+    <Compile Include="WebServiceClasses\AddActionFromTemplateParameters.cs" />
+    <Compile Include="WebServiceClasses\AddActionFromTemplateResult.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\AddOrganisationParameters.cs" />
@@ -439,6 +438,7 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

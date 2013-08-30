@@ -72,6 +72,7 @@ namespace RCVS.Classes
 			contactDataSelectionTypes = XMLContactDataSelectionTypes.xcdtContactCategories; // Activities
 
 			string response = client.SelectContactData(contactDataSelectionTypes, serializedParameters);
+			Utils.LogWebServiceCall("SelectContactData", serializedParameters, response); //Log the call and response
 
 			//Save all the activities for this user (the web services return the whole lot plus its history);
 			//further down we need to filter by form and also get only the first (that is, last) instance of each activity

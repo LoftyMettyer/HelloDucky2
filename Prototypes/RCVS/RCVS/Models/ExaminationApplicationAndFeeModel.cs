@@ -81,6 +81,7 @@ namespace RCVS.Models
 			//var serializedParameters = XmlHelper.SerializeToXml(addActivityParameters);
 
 			//response = client.FindActions(serializedParameters);
+			//Utils.LogWebServiceCall("FindActions", serializedParameters, response); //Log the call and response
 			//AddActivity(serializedParameters);
 
 			var addParameters = new GetLookupDataParameters() { UserID = "571", Activity = "0PSP", ContactGroup = "", OrganisationGroup = "", Product = "", Topic = "" };
@@ -88,18 +89,14 @@ namespace RCVS.Models
 
 			var lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtActivitiesAndValues;
 			response = client.GetLookupData(lookupDataType, serializedParameters2);
+			Utils.LogWebServiceCall("GetLookupData", serializedParameters2, response); //Log the call and response
 			//AddActivity(serializedParameters);
-
-
-
-
-
-
 
 			EmploymentHistory = new List<Employment>();
 			EmploymentHistory.Add(new Employment { City = "Aberdare", Country = "Wales", FromDate = System.DateTime.Now.AddYears(-3), ToDate = System.DateTime.Now.AddYears(-2), Position = "Junior Vet", PracticeName = "Cows & Sons" });
 			EmploymentHistory.Add(new Employment { City = "Guildford", Country = "England", FromDate = System.DateTime.Now.AddYears(-2), ToDate = System.DateTime.Now.AddYears(-1), Position = "Chief Vet", PracticeName = "Horse Bros" });
 
+			client.Close();
 		}
 
 		public override void Save()

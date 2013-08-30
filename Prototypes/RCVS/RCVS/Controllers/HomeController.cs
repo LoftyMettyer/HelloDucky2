@@ -54,6 +54,7 @@ namespace RCVS.Controllers
 			var serializedParameters = XmlHelper.SerializeToXml(GetLookupDataParameters); //Serialize to XML to pass to the web services
 
 			response = client.GetLookupData(lookupDataType, serializedParameters);
+			Utils.LogWebServiceCall("GetLookupData", serializedParameters, response); //Log the call and response
 
 			//Load the model first; then we need to see if we have a saved value for any of the fields and pre-select it
 			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
@@ -109,6 +110,8 @@ namespace RCVS.Controllers
 					City = model.UniversityThatAwardedDegree.City
 				};
 			model.UniversityThatAwardedDegree = universityThatAwardedDegree;
+
+			client.Close();
 
 			return View(model);
 		}

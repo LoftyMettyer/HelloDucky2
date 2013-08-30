@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using RCVS.Classes;
+using RCVS.Helpers;
 using RCVS.Structures;
 
 namespace RCVS.Models
@@ -20,8 +21,8 @@ namespace RCVS.Models
 		[DisplayName("Reason for renewal of intention to sit?")]
 		public List<RenewalReason> RenewalReasons { get; set; }
 
-//		public ICollection<RenewalReason> RenewalReasons { get; set; }
-//		public IEnumerable<SelectListItem> RenewalReasons { get; set; }
+		//		public ICollection<RenewalReason> RenewalReasons { get; set; }
+		//		public IEnumerable<SelectListItem> RenewalReasons { get; set; }
 
 		public ExamAttempts Attempts { get; set; }
 
@@ -32,7 +33,7 @@ namespace RCVS.Models
 		public bool PlanToSeePractice { get; set; }
 
 		[DisplayName("Are you currently seeing practice or have you made arrangements?")]
-		public bool CurrentlySeeingPractice  { get; set; }
+		public bool CurrentlySeeingPractice { get; set; }
 
 		public string IELTS { get; set; }
 
@@ -56,17 +57,20 @@ namespace RCVS.Models
 			var client = new IRISWebServices.NDataAccessSoapClient();
 
 			var response = client.GetLookupData(lookupDataType, "");
+			Utils.LogWebServiceCall("GetLookupData", "NONE", response); //Log the call and response
+
+			client.Close();
 
 			var doc = XDocument.Parse(response);
-			var list = (from xElement in doc.Root.Elements("DataRow") 
-					select new RenewalReason
-						{
-							Automatic = xElement.Element("Automatic").Value,
-							Description = xElement.Element("RenewalChangeReasonDesc").Value,
-							Reason = xElement.Element("RenewalChangeReason").Value,
-							Text = xElement.Element("RenewalChangeReasonDesc").Value,
-							Value = xElement.Element("RenewalChangeReason").Value
-						}).ToList();
+			var list = (from xElement in doc.Root.Elements("DataRow")
+									select new RenewalReason
+										{
+											Automatic = xElement.Element("Automatic").Value,
+											Description = xElement.Element("RenewalChangeReasonDesc").Value,
+											Reason = xElement.Element("RenewalChangeReason").Value,
+											Text = xElement.Element("RenewalChangeReasonDesc").Value,
+											Value = xElement.Element("RenewalChangeReason").Value
+										}).ToList();
 
 			RenewalReasons = list;
 

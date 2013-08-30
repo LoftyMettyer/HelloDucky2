@@ -89,6 +89,9 @@ namespace RCVS.Models
 			lookupDataType = IRISWebServices.XMLLookupDataTypes.xldtCountries; //Countries
 
 			response = client.GetLookupData(lookupDataType, "");
+			Utils.LogWebServiceCall("GetLookupData", "NONE", response); //Log the call and response
+
+			client.Close();
 
 			var countries = new List<SelectListItem>();
 			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option

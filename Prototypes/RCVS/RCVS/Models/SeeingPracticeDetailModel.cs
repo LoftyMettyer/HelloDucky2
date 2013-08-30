@@ -72,10 +72,11 @@ namespace RCVS.Models
 					Town = Address.Town,
 					County = Address.County,
 					Country = Address.Country,
-					Postcode = Address.Postcode
+					Postcode = Address.Postcode					
 				};
 			var serializedParameters = xmlHelper.SerializeToXml(addParameters);
 			response = client.AddOrganisation(serializedParameters);
+			Utils.LogWebServiceCall("AddOrganisation", serializedParameters, response); //Log the call and response
 			var result = xmlHelper.DeserializeFromXmlToObject<AddOrganisationResult>(response);
 
 			var addParameters2 = new AddPositionParameters()
@@ -90,14 +91,11 @@ namespace RCVS.Models
 				};
 			serializedParameters = xmlHelper.SerializeToXml(addParameters2);
 			response = client.AddPosition(serializedParameters);
+			Utils.LogWebServiceCall("AddPosition", serializedParameters, response); //Log the call and response
 
 			var Result2 = xmlHelper.DeserializeFromXmlToObject<AddPositionResult>(response);
 
-
-
-
-
-
+			client.Close();
 		}
 	}
 }

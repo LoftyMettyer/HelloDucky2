@@ -110,13 +110,13 @@ namespace RCVS.Models
 
 				var query = from data in doc.Descendants("DataRow")
 										select new PracticeArrangement
-										{
+					{
 											PracticeName = (string)data.Element("ContactName"),
 											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"?  CurrentOrPlanned.Planned: CurrentOrPlanned.Current),
 											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
 											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
 											VetName = (string)data.Element("Position")											
-										};
+					};
 
 				practiceArrangements = query.ToList();				
 
@@ -242,6 +242,7 @@ namespace RCVS.Models
 					const XMLLookupDataTypes lookupDataType = XMLLookupDataTypes.xldtPackages;
 					var client = new NDataAccessSoapClient();
 					var response = client.GetLookupData(lookupDataType, "");
+					Utils.LogWebServiceCall("GetLookupData", "NONE", response); //Log the call and response
 					var package = "";
 
 					var doc = XDocument.Parse(response);
@@ -282,6 +283,7 @@ namespace RCVS.Models
 					var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
 					client = new NDataAccessSoapClient();
 					response = client.AddCommunicationsLog(serializedParameters);
+					Utils.LogWebServiceCall("AddCommunicationsLog", serializedParameters, response); //Log the call and response
 
 					var xElement = XDocument.Parse(response).Element("Result");
 					if (xElement != null)
@@ -294,6 +296,7 @@ namespace RCVS.Models
 						xmlHelper = new XMLHelper();
 						serializedParameters = xmlHelper.SerializeToXml(updateDocumentFileParameters);
 						response = client.UpdateDocumentFile(serializedParameters, bytes);
+						Utils.LogWebServiceCall("UpdateDocumentFile", serializedParameters, response); //Log the call and response
 					}
 
 					client.Close();

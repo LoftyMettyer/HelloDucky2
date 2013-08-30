@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Web.Mvc;
 using RCVS.Classes;
 using RCVS.WebServiceClasses;
@@ -89,12 +90,25 @@ namespace RCVS.Helpers
 
 			var serializedParameters = xmlHelper.SerializeToXml(addActivityParameters);
 			var response = client.AddActivity(serializedParameters);
+			LogWebServiceCall("AddActivity", serializedParameters, response); //Log the call and response
 			client.Close();
 		}
 
 		public static int ActivityIndex(List<SelectContactData_CategoriesResult> ActivityList, string ActivityCode)
 		{
 			return ActivityList.FindIndex(activity => activity.ActivityCode == ActivityCode);
+		}
+
+		public static void LogWebServiceCall(string WebServiceName, string SerializedParameters, string Response)
+		{
+			using (var sw = new StreamWriter(GlobalVariables.LogFileFullPath, true))
+			{
+				sw.WriteLine(DateTime.Now.ToString() + " - " + WebServiceName);
+				sw.WriteLine("SerializedParameters: " + SerializedParameters);
+				sw.WriteLine("Response: " + Response);
+				sw.WriteLine("----------------------------------------------------------------------------------------------");
+			};
+			;
 		}
 	}
 }
