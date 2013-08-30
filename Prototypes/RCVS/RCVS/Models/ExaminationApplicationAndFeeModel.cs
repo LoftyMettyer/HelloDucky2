@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using RCVS.Classes;
 using RCVS.Helpers;
+using RCVS.IRISWebServices;
 using RCVS.Structures;
 using RCVS.WebServiceClasses;
 
@@ -120,7 +121,7 @@ namespace RCVS.Models
 
 				if (Utils.ActivityIndex(activityList, "0NA") >= 0)
 				{
-					YearOfLastApplication = activityList.First(activity => activity.ActivityCode == "0NA").ActivityValueCode;
+					m.YearOfLastApplication = activityList.First(activity => activity.ActivityCode == "0NA").ActivityValueCode;
 				}
 
 				if (Utils.ActivityIndex(activityList, "0PTQ") >= 0)
@@ -130,14 +131,14 @@ namespace RCVS.Models
 
 				if (Utils.ActivityIndex(activityList, "0RTP") >= 0)
 				{
-					RegistrationAuthority = activityList.First(activity => activity.ActivityCode == "0RTP").Notes;
-					RegistrationDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidFrom;
-					RegistrationExpiryDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidTo;
+					m.RegistrationAuthority = activityList.First(activity => activity.ActivityCode == "0RTP").Notes;
+					m.RegistrationDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidFrom;
+					m.RegistrationExpiryDate = activityList.First(activity => activity.ActivityCode == "0RTP").ValidTo;
 				}
 
 				if (Utils.ActivityIndex(activityList, "0BS") >= 0)
 				{
-					BanReasons = activityList.First(activity => activity.ActivityCode == "0BS").Notes;
+					m.BanReasons = activityList.First(activity => activity.ActivityCode == "0BS").Notes;
 				}
 			}
 			return m;
@@ -145,6 +146,74 @@ namespace RCVS.Models
 
 		public override void Save()
 		{
+			User user = (User)System.Web.HttpContext.Current.Session["User"];
+			long UserID = Convert.ToInt64(user.ContactNumber);
+
+			//Save activities
+
+			//Subject to sit
+			Utils.AddActivity(
+				UserID,
+				"0SUB",
+				SubjectWithPermission,
+				"",
+				DateTime.Now,
+				"WEB"
+				);
+
+			//Year of last application
+			Utils.AddActivity(
+				UserID,
+				"0NA",
+				YearOfLastApplication,
+				"",
+				DateTime.Now,
+				"WEB"
+				);
+
+			////Year of last application
+			//Utils.AddActivity(
+			//					UserID,
+			//					"0PTQ",
+			//					YearOfLastApplication,
+			//					"",
+			//					DateTime.Now,
+			//					"WEB"
+			//			);
+
+			//Registration authority
+			Utils.AddActivity(
+				UserID,
+				"0RTP",
+				"Y",
+				RegistrationAuthority,
+				DateTime.Now,
+				"WEB"
+				);
+
+			//
+			if (PreviouslyBanned == "Yes")
+			{
+				Utils.AddActivity(
+					UserID,
+					"0BS",
+					"Y",
+					"",
+					DateTime.Now,
+					"WEB"
+					);
+			}
+			else
+			{
+				Utils.AddActivity(
+						UserID,
+						"0BS",
+						"N",
+						BanReasons,
+						DateTime.Now,
+						"WEB"
+					);
+			}
 		}
 	}
 }

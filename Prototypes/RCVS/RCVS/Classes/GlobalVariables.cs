@@ -1,4 +1,5 @@
-﻿using System.Web.Hosting;
+﻿using System;
+using System.Web.Hosting;
 
 namespace RCVS.Classes
 {
@@ -6,7 +7,7 @@ namespace RCVS.Classes
 	{
 		public static string LogFileFullPath
 		{
-			get { return HostingEnvironment.MapPath("/Logs/WebServiceCalls.txt"); }
+			get { return HostingEnvironment.MapPath("/Logs/WebServiceCalls_" + DateTime.Now.Date.ToString().Substring(0,10).Replace("/", "-") + ".txt"); }
 		}
 	}
 }
