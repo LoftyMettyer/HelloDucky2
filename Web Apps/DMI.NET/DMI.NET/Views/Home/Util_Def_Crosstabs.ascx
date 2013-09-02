@@ -351,7 +351,7 @@
 	</form>
 
 	<form id="frmDefinition" name="frmDefinition">
-		<table valign="top" align="center" class="outline" cellpadding="5" width="100%" height="100%" cellspacing="0">
+		<table valign="top" align="center"  cellpadding="5" width="100%" height="100%" cellspacing="0">
 			<tr>
 				<td colspan="2">
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -377,7 +377,7 @@
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -432,7 +432,7 @@
 
 													<tr>
 														<td colspan="9">
-															<hr>
+															
 														</td>
 													</tr>
 
@@ -551,7 +551,7 @@
 									</table>
 								</div>
 								<div id="div2" style="visibility: hidden; display: none">
-									<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 
 										<tr valign="top">
 											<td>
@@ -755,7 +755,7 @@
 
 													<tr height="40">
 														<td colspan="11">
-															<hr>
+															
 														</td>
 													</tr>
 
@@ -869,15 +869,15 @@
 
 <!-- OUTPUT OPTIONS -->
 <div id="div3" style="visibility: hidden; display: none">
-	<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+	<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 		<tr valign="top">
 			<td>
 				<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 					<tr>
 						<td valign="top" rowspan="2" width="25%" height="100%">
-							<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+							<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 								<tr height="10">
-									<td height="10" align="left" valign="top">Output Format :
+									<td height="10" align="left" valign="top"><strong>Output Format :</strong>
 										<br>
 										<br>
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1006,9 +1006,9 @@
 							</table>
 						</td>
 						<td valign="top" width="75%">
-							<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+							<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 								<tr height="10">
-									<td height="10" align="left" valign="top">Output Destination(s) :
+									<td height="10" align="left" valign="top"><strong> Output Destination(s) :</strong>
 										<br>
 										<br>
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1201,7 +1201,6 @@
 				<td>
 					<table style="width: 100%" class="invisible" cellspacing="0" cellpadding="0">
 						<tr>
-							<td>&nbsp;</td>
 							<td width="80">
 								<input type="button" id="cmdOK" name="cmdOK" value="OK" style="width: 100%" class="btn"
 									onclick="okClick()" />
@@ -1211,6 +1210,7 @@
 								<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="width: 100%" class="btn"
 									onclick="cancelClick()" />
 							</td>
+							<td>&nbsp;</td>
 						</tr>
 					</table>
 				</td>
