@@ -702,7 +702,7 @@
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
 
 <form id="frmOutputDef" name="frmOutputDef">
-		<table align=center class="outline" cellPadding=5 width=100% height=100% cellSpacing=0>
+		<table align=center  cellPadding=5 width=100% height=100% cellSpacing=0>
 	<TR>
 		<TD>
 
@@ -713,16 +713,16 @@
 				<tr> 
 					<TD width=10></td>
 					<td>
-							<TABLE WIDTH="100%" height="100%" class="outline" cellspacing=0 cellpadding=5>
+							<TABLE WIDTH="100%" height="100%"  cellspacing=0 cellpadding=5>
 								<tr valign=top> 
 									<td>
 										<TABLE WIDTH="100%" class="invisible" CELLSPACING=10 CELLPADDING=0>
 											<tr>						
 												<td valign=top rowspan=2 width=25% height="100%">
-													<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+													<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 														<tr height=10> 
 															<td height=10 align=left valign=top>
-																Output Format : <BR><BR>
+																<strong>Output Format : </strong><BR><BR>
 																<TABLE class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
@@ -999,10 +999,10 @@
 													</table>
 												</td>
 												<td valign=top width="75%">
-													<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+													<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 														<tr height=10> 
 															<td height=10 align=left valign=top>
-																Output Destination(s) : <BR><BR>
+																<strong>Output Destination(s) : </strong><BR><BR>
 																<TABLE class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
@@ -1237,7 +1237,7 @@
 								<TD>
 									<TABLE WIDTH="100%" class="invisible">
 							<TR>
-								<TD>&nbsp;</TD>
+								
 								<TD width=80>
 									<input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%"  class="btn" 
 											onclick="outputOptionsOKClick()" />
@@ -1247,6 +1247,7 @@
 									<input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn" 
 											onclick="ShowDataFrame();" />
 								</TD>
+								<TD>&nbsp;</TD>
 							</TR>
 						</TABLE>
 					</td>

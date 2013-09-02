@@ -5,10 +5,11 @@
 <script type="text/javascript">
 	$("#top").hide();
 	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-
+	//$(".popup").height("470px");
+	
 	$(window).bind('resize', function () {
 		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
-		$("#ssOutputGrid").setGridHeight("300px", true);
+		$("#ssOutputGrid").setGridHeight("230px", true);
 	}).trigger('resize');
 </script>
 
@@ -93,192 +94,103 @@
 	End If
 %>
 
-<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
-	<%--<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">--%>
-	<tr>
-		<td>
-			<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<tr style="height: 325px">
-					<td colspan="50" style="vertical-align: top">
-						<table class='outline' style='width: 100%; height:300px' id="ssOutputGrid">
-							<tbody style="height: 300px">
-								<%--<tr class='header' style="text-align: left;" >--%>
-									<tr style="text-align: left" >
-										
-									<th>_</th>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr height="5px">
-					<td colspan="50">
-						<%--<table width="100%" class="outline" cellspacing="0" cellpadding="0">--%>
-							<table width="100%" cellspacing="0" cellpadding="0">
-							<tr height="5">
-								<td></td>
-							</tr>
+<div>
+	<table id="ssOutputGrid">
+		<tbody>
+			<tr>
+				<th>_</th>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
-							<tr>
-								<td>&nbsp;&nbsp;<u>Intersection</u>
-									<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<td>
-										<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-											<%	If CLng(Session("utiltype")) = 15 Then%>
-											<input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; WIDTH: 100%"
-												readonly>
-										</table>
-									</td>
-								<% Else%>
-								<td width="20"></td>
-								<td width="100">Column :</td>
-								<td width="5"></td>
-								<td width="300">
-									<input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 100%"
-										disabled="disabled"></td>
-								<tr height="5">
-									<td></td>
-								</tr>
-								<% End If%>
-								<td width="20"></td>
-								<td width="100" valign="top">Type :</td>
-								<td width="5"></td>
-								<td width="300" valign="top">
-									<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 100%" onchange="UpdateGrid()"></select>
-								</td>
-								<td width="20"></td>
+<div>
+	<%	If CLng(Session("utiltype")) <> 15 Then%>
+		<div style="float: left; font-weight: bold; padding-top: 10px; padding-bottom: 5px; width: 59%">
+			<Label>Intersection</label>
+		</div>
+		<div id="txtWordVer" style=" font-weight: bold; padding-top: 10px; padding-bottom: 5px">Page</div>
+	<%Else%>
+		<div style="float: left; font-weight: bold; padding-top: 10px;padding-bottom: 5px; width: 100%">Intersection</div>
+	<%End If%>
+</div>
 
-						</table>
-
-						<tr height="5">
-							<td></td>
-						</tr>
-
-			</table>
-		</td>
-		<td width="20%" valign="top" nowrap>
-
-			<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
-				onclick="chkPercentType_Click()" />
-			<label
-				for="chkPercentType"
-				class="checkbox"
-				tabindex="0">
-				<%
-					If objCrossTab.CrossTabType <> 3 Then
-						Response.Write(" Percentage of Type")
-					End If
-				%>
-			</label>
-			<br>
-
-			<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
-				onclick="UpdateGrid();"/>
-			<label
-				for="chkPercentPage"
-				class="checkbox"
-				tabindex="0">
-				<%
-					If objCrossTab.CrossTabType <> 3 Then
-						Response.Write(" Percentage of Page")
-					End If
-				%>
-			</label>
-
-			<br>
-
-			<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
-				onclick="UpdateGrid()" />
-			<label
-				for="chkSuppressZeros"
-				class="checkbox"
-				tabindex="0">
-				Suppress Zeros<br>
-			</label>
-
-			<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
-				onclick="UpdateGrid()" />
-			<label
-				for="chkUse1000"
-				class="checkbox"
-				tabindex="0">
-				<%
-					If objCrossTab.CrossTabType <> 3 Then
-						Response.Write(" Use 1000 Separators (,)")
-					End If
-				%>
-			</label>
-
-			<br>
-		</td>
-		<td id="CrossTabPage" name="CrossTabPage">&nbsp;&nbsp;<u>Page</u>
-			<table width="100%" outline="invisible" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="20"></td>
-					<td width="100">Column :</td>
-					<td width="5"></td>
-					<td width="300">
-						<input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 100%" class="text textdisabled" disabled="disabled"></td>
-					<tr height="5">
-						<td></td>
-					</tr>
-					<td width="20"></td>
-					<td width="100">Value :</td>
-					<td width="5"></td>
-					<td width="300">
-						<select id="cboPage" name="cboPage" style="WIDTH: 100%" class="combo" onchange="UpdateGrid()">
-						</select>
-					</td>
-					<td width="20"></td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-
-	<tr height="1">
-		<td width="40%"></td>
-		<td width="150"></td>
-		<td></td>
-	</tr>
-</table>
-
-<%--<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-	<tr height="5">
-		<td></td>
-	</tr>
-	<tr height="5">
-		<td colspan="3">
-			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<td>
-					<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
-						onclick="ViewExportOptions();" />
-				</td>
-				<td width="15"></td>
-				<td width="5">
-					<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn"
-						onclick="try { closeclick(); } catch (e) { }" />
-				</td>
-			</table>
-		</td>
-	</tr>
-	<tr height="5">
-		<td></td>
-	</tr>
-</table>--%>
-
-<div style="padding-top: 5px">
+<div style="width: 35%;position: static; float: left; white-space: nowrap; text-align: right">
+	<%	If CLng(Session("utiltype")) = 15 Then%>
+	<input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; width: 200px">
+	<%	Else%>
+	<label>Column :</label>
+	<input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 200px;" disabled="disabled">
+	<%	End If%>
 	<div>
-		<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
-			onclick="ViewExportOptions();" />
-	<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn"
-			onclick="try { closeclick(); } catch (e) { }" />
+		<label>Type :</label>
+		<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
 	</div>
 </div>
 
+<div style="width: 20%; padding-left: 5px;position :static; white-space: nowrap; float: left">
+		<input type="checkbox" id="Checkbox3" name="chkSuppressZeros" value="checkbox"
+		onclick="UpdateGrid()" />
+	<label
+		for="chkSuppressZeros"
+		class="checkbox"
+		tabindex="0">
+		Suppress Zeros<br>
+	</label>
 
-</table>
-</table>
-</table>
+	<input type="checkbox" id="Checkbox1" name="chkPercentType" value="checkbox"
+		onclick="chkPercentType_Click()" />
+	<label
+		for="chkPercentType"
+		class="checkbox"
+		tabindex="0">
+		<%
+			If objCrossTab.CrossTabType <> 3 Then
+				Response.Write(" Percentage of Type")
+			End If
+		%>
+	</label>
+	<br>
+	<input type="checkbox" id="Checkbox2" name="chkPercentPage" value="checkbox"
+		onclick="UpdateGrid();" />
+	<label
+		for="chkPercentPage"
+		class="checkbox"
+		tabindex="0">
+		<%
+			If objCrossTab.CrossTabType <> 3 Then
+				Response.Write(" Percentage of Page")
+			End If
+		%>
+	</label>
+	<br>
+
+	<input type="checkbox" id="Checkbox4" name="chkUse1000" value="checkbox"
+		onclick="UpdateGrid()" />
+	<label
+		for="chkUse1000"
+		class="checkbox"
+		tabindex="0">
+		<%
+			If objCrossTab.CrossTabType <> 3 Then
+				Response.Write(" Use 1000 Separators (,)")
+			End If
+		%>
+	</label>
+</div>
+
+<div style="width: 35%;float: left;white-space: nowrap;padding-left: 30px;text-align: right;" id="CrossTabPage" name="CrossTabPage">
+	<label style="padding-left: 5px;text-align: left">Column :</label>
+	<input id="txtPageColumn" name="txtPageColumn" style="width: 200px" class="text textdisabled" disabled="disabled">
+	<br/>
+	<label style="padding-left: 5px;text-align: left">Value :</label>
+	<select id="cboPage" name="cboPage" style="WIDTH: 205px" class="combo" onchange="UpdateGrid()"></select>
+</div>
+
+<div style="clear: left">
+	<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px" onclick="ViewExportOptions();" />
+	<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn" onclick="try { closeclick(); } catch (e) { }" />
+</div>
 
 
 <form id="frmOriginalDefinition">
@@ -316,5 +228,5 @@
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 </form>
 
-<select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
-</select>
+<%--<select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
+</select>--%>

@@ -125,7 +125,6 @@
 
 <div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block">
 	<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
-	<script type="text/javascript"> $("#ssOutputGrid").setGridHeight("300px", true);</script>
 </div>
 
 <div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">
@@ -151,7 +150,6 @@
 	util_run_crosstabs_window_onload();
 
 	$("#reportframe").show();
-
 	$("#top").hide();
 	$("#reportworkframe").show();
 </script>
