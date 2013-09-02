@@ -355,15 +355,14 @@
 	objOLE = Nothing
 	
 	If Len(sErrorDescription) = 0 Then
-		Dim cmdMisc
-		Dim prm1
-		Dim prm2
-		Dim prm3
-		Dim prm4
+		Dim prm1 As ADODB.Parameter
+		Dim prm2 As ADODB.Parameter
+		Dim prm3 As ADODB.Parameter
+		Dim prm4 As ADODB.Parameter
 		
-		cmdMisc = CreateObject("ADODB.Command")
+		Dim cmdMisc = New ADODB.Command
 		cmdMisc.CommandText = "spASRIntGetMiscParameters"
-		cmdMisc.CommandType = 4	' Stored Procedure
+		cmdMisc.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdMisc.ActiveConnection = Session("databaseConnection")
 
 		prm1 = cmdMisc.CreateParameter("param1", 200, 2, 8000) '200=varchar, 2=output, 8000=size
@@ -401,9 +400,9 @@
 	Dim fNewUserGranted = False
 
 	If Len(sErrorDescription) = 0 Then
-		Dim cmdSystemPermissions = CreateObject("ADODB.Command")
+		Dim cmdSystemPermissions = New ADODB.Command
 		cmdSystemPermissions.CommandText = "sp_ASRIntGetSystemPermissions"
-		cmdSystemPermissions.CommandType = 4 ' Stored Procedure
+		cmdSystemPermissions.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdSystemPermissions.ActiveConnection = Session("databaseConnection")
 		cmdSystemPermissions.CommandTimeout = 300
 
@@ -470,9 +469,9 @@
 
 	Dim iAbsenceEnabled = 0
 	If Len(sErrorDescription) = 0 Then
-		Dim cmdAbsenceModule = CreateObject("ADODB.Command")
+		Dim cmdAbsenceModule = New ADODB.Command
 		cmdAbsenceModule.CommandText = "spASRIntActivateModule"
-		cmdAbsenceModule.CommandType = 4	' Stored Procedure
+		cmdAbsenceModule.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdAbsenceModule.ActiveConnection = Session("databaseConnection")
 		cmdAbsenceModule.CommandTimeout = 300
 

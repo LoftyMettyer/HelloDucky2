@@ -1,7 +1,9 @@
 Option Strict Off
 Option Explicit On
 Module modIntranet
-	
+
+Private mobjGeneral As New clsGeneral
+
 	Public Sub CreateASRDev_SysProtects(ByRef pConn As ADODB.Connection)
 		
 		Dim cmdCreateCache As ADODB.Command
@@ -17,7 +19,7 @@ Module modIntranet
 	End Sub
 
 	Public Function UDFFunctions(ByRef pastrUDFFunctions() As String, ByRef pbCreate As Boolean) As Boolean
-		Return clsGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
+		Return mobjGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
 	End Function
 	
 	'UPGRADE_WARNING: Sub Main in a DLL won't get called. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A90BF69E-29C2-4F6F-9E44-92CFC7FAA399"'

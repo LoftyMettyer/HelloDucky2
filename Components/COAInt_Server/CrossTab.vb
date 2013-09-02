@@ -106,7 +106,8 @@ Public Class CrossTab
 
   ' Classes
   Private mclsData As clsDataAccess
-  Private mobjEventLog As clsEventLog
+	Private mobjEventLog As clsEventLog
+	Private mobjGeneral As New clsGeneral
 
   Private mlngType As Integer
 
@@ -2384,7 +2385,7 @@ LocalErr:
   End Function
 
   Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
   Public Sub GetPivotRecordset()

@@ -5,7 +5,7 @@ Imports System.Globalization
 
 Friend Class clsGeneral
 
-  Private datData As clsDataAccess
+	Private datData As New clsDataAccess
 
 	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
 
@@ -878,7 +878,7 @@ ErrorTrap:
 	End Function
 
 
-	Friend Shared Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
+	Friend Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
 
 		Dim iCount As Integer
 		Dim strDropCode As String
@@ -901,12 +901,12 @@ ErrorTrap:
 
 						'Drop existing function (could exist if the expression is used more than once in a report)
 						strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-						clsDataAccess.ExecuteSql(strDropCode)
+						datData.ExecuteSql(strDropCode)
 
 						' Create the new function
 						If pbCreate Then
 							sCode = paFunctions(iCount)
-							clsDataAccess.ExecuteSql(sCode)
+							datData.ExecuteSql(sCode)
 						End If
 					End If
 

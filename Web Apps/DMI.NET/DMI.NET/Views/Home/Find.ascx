@@ -24,9 +24,9 @@
 	
 	' Get the screen's default order if none is already specified.
 	If Session("orderID") <= 0 Then
-		Dim cmdScreenOrder = CreateObject("ADODB.Command")
+		Dim cmdScreenOrder = New ADODB.Command
 		cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
-		cmdScreenOrder.CommandType = 4 ' Stored Procedure
+		cmdScreenOrder.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdScreenOrder.ActiveConnection = Session("databaseConnection")
 
 		Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
@@ -63,9 +63,9 @@
 								Dim sErrorDescription As String = ""
 	
 								' Display the appropriate page title.
-								Dim cmdFindWindowTitle = CreateObject("ADODB.Command")
+								Dim cmdFindWindowTitle = New ADODB.Command
 								cmdFindWindowTitle.CommandText = "sp_ASRIntGetFindWindowInfo"
-								cmdFindWindowTitle.CommandType = 4 ' Stored Procedure
+								cmdFindWindowTitle.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 								cmdFindWindowTitle.ActiveConnection = Session("databaseConnection")
 
 								Dim prmTitle = cmdFindWindowTitle.CreateParameter("title", 200, 2, 100)
@@ -107,9 +107,9 @@
 								
 								If Len(sErrorDescription) = 0 Then									
 									' Get the find records.
-									Dim cmdThousandFindColumns = CreateObject("ADODB.Command")
+									Dim cmdThousandFindColumns = New ADODB.Command
 									cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-									cmdThousandFindColumns.CommandType = 4	' Stored Procedure
+									cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 									cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 									cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -149,9 +149,9 @@
 								' NPG20090210 Fault 13249
 								If Len(sErrorDescription) = 0 Then
 									' Get the BlankIfZero find records.
-									Dim cmdBlankIfZeroFindColumns = CreateObject("ADODB.Command")
+									Dim cmdBlankIfZeroFindColumns = New ADODB.Command
 									cmdBlankIfZeroFindColumns.CommandText = "spASRIntGetBlankIfZeroFindColumns"
-									cmdBlankIfZeroFindColumns.CommandType = 4	' Stored Procedure
+									cmdBlankIfZeroFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 									cmdBlankIfZeroFindColumns.ActiveConnection = Session("databaseConnection")
 									cmdBlankIfZeroFindColumns.CommandTimeout = 180
 		
@@ -203,9 +203,9 @@
 											Dim lngRecordID = Left(sSubString, iIndex - 1)
 
 											' Get the Course Date
-											Dim cmdGetCancelDateColumn = CreateObject("ADODB.Command")
+									Dim cmdGetCancelDateColumn = New ADODB.Command
 											cmdGetCancelDateColumn.CommandText = "spASRIntGetCancelCourseDate"
-											cmdGetCancelDateColumn.CommandType = 4  ' Stored Procedure
+									cmdGetCancelDateColumn.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 											cmdGetCancelDateColumn.ActiveConnection = Session("databaseConnection")
 											cmdGetCancelDateColumn.CommandTimeout = 180
 				
@@ -236,7 +236,7 @@
 
 								If Len(sErrorDescription) = 0 Then
 									' Get the find records.
-									Dim cmdFindRecords = CreateObject("ADODB.Command")
+									Dim cmdFindRecords = New ADODB.Command
 									cmdFindRecords.CommandText = "sp_ASRIntGetFindRecords3"
 									cmdFindRecords.CommandType = 4 ' Stored Procedure
 									cmdFindRecords.ActiveConnection = Session("databaseConnection")
@@ -649,9 +649,9 @@
 							' Get the summary fields (if required).
 							'
 							If Session("parentTableID") > 0 Then
-								Dim cmdSummaryFields = CreateObject("ADODB.Command")
+								Dim cmdSummaryFields = New ADODB.Command
 								cmdSummaryFields.CommandText = "sp_ASRIntGetSummaryFields"
-								cmdSummaryFields.CommandType = 4	' Stored Procedure
+								cmdSummaryFields.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 								cmdSummaryFields.ActiveConnection = Session("databaseConnection")
 
 								Dim prmHistoryTableID = cmdSummaryFields.CreateParameter("historyTableID", 3, 1)	'Type 3 = integer, Direction 1 = Input
@@ -834,9 +834,9 @@
 		cmdSummaryFields = Nothing
 
 		If fCanSelect Then
-			Dim cmdSummaryValues = CreateObject("ADODB.Command")
+			Dim cmdSummaryValues = New ADODB.Command
 			cmdSummaryValues.CommandText = "spASRIntGetSummaryValues"
-			cmdSummaryValues.CommandType = 4	' Stored Procedure
+			cmdSummaryValues.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 			cmdSummaryValues.ActiveConnection = Session("databaseConnection")
 
 			Dim prmHistoryTableID2 = cmdSummaryValues.CreateParameter("historyTableID", 3, 1)	'Type 3 = integer, Direction 1 = Input

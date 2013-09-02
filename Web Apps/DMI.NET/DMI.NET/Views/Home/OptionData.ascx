@@ -49,59 +49,59 @@
 				' NPG20080904 Fault 13018
 				Session("flagOverrideFilter") = False
 
-				Dim objUtilities
+			Dim objUtilities As HR.Intranet.Server.Utilities
 
 				Dim sErrorDescription As String = ""
 				Dim sNonFatalErrorDescription As String = ""
 
-				Dim cmdThousandFindColumns
-				Dim prmError
-				Dim prmTableID
-				Dim prmViewID
-				Dim prmOrderID
-				Dim prmThousandColumns
-				Dim cmdGetFindRecords
+			Dim cmdThousandFindColumns As ADODB.Command
+			Dim prmError As ADODB.Parameter
+			Dim prmTableID As ADODB.Parameter
+			Dim prmViewID As ADODB.Parameter
+			Dim prmOrderID As ADODB.Parameter
+			Dim prmThousandColumns As ADODB.Parameter
+			Dim cmdGetFindRecords As ADODB.Command
 				Dim sThousandColumns As String
-				Dim prmReqRecs
+			Dim prmReqRecs As ADODB.Parameter
 
-				Dim prmIsFirstPage
-				Dim prmIsLastPage
-				Dim prmLocateValue
-				Dim prmColumnType
-				Dim prmAction
-				Dim prmTotalRecCount
-				Dim prmFirstRecPos
-				Dim prmCurrentRecCount
-				Dim prmExcludedIDs
-				Dim prmColumnSize
-				Dim prmColumnDecimals
-				Dim rstFindRecords
+			Dim prmIsFirstPage As ADODB.Parameter
+			Dim prmIsLastPage As ADODB.Parameter
+			Dim prmLocateValue As ADODB.Parameter
+			Dim prmColumnType As ADODB.Parameter
+			Dim prmAction As ADODB.Parameter
+			Dim prmTotalRecCount As ADODB.Parameter
+			Dim prmFirstRecPos As ADODB.Parameter
+			Dim prmCurrentRecCount As ADODB.Parameter
+			Dim prmExcludedIDs As ADODB.Parameter
+			Dim prmColumnSize As ADODB.Parameter
+			Dim prmColumnDecimals As ADODB.Parameter
+			Dim rstFindRecords As ADODB.Recordset
 		
-				Dim cmdGetFilterValue
-				Dim prmScreenID
-				Dim prmColumnID
-				Dim prmRecordID
-				Dim prmFilterValue
-				Dim prmParentTableID
-				Dim prmParentRecordID
+			Dim cmdGetFilterValue As ADODB.Command
+			Dim prmScreenID As ADODB.Parameter
+			Dim prmColumnID As ADODB.Parameter
+			Dim prmRecordID As ADODB.Parameter
+			Dim prmFilterValue As ADODB.Parameter
+			Dim prmParentTableID As ADODB.Parameter
+			Dim prmParentRecordID As ADODB.Parameter
 
-				Dim prmLookupColumnID
-				Dim prmLookupColumnGridPosition
-				Dim prmOverrideFilter
+			Dim prmLookupColumnID As ADODB.Parameter
+			Dim prmLookupColumnGridPosition As ADODB.Parameter
+			Dim prmOverrideFilter As ADODB.Parameter
 		
-				Dim prmCourseTitle
-				Dim prmCourseRecordID
-				Dim prmWLRecordID
-				Dim prmEmpRecordID
+			Dim prmCourseTitle As ADODB.Parameter
+			Dim prmCourseRecordID As ADODB.Parameter
+			Dim prmWLRecordID As ADODB.Parameter
+			Dim prmEmpRecordID As ADODB.Parameter
 
-				Dim cmdTransferCourse
-				Dim cmdBookCourse
-				Dim prmStatus
+			Dim cmdTransferCourse As ADODB.Command
+			Dim cmdBookCourse As ADODB.Command
+			Dim prmStatus As ADODB.Parameter
 				Dim fDeadlock As Boolean
 				Dim sErrMsg As String
 		
-				Dim prmTBRecordID
-				Dim prmErrorMessage
+			Dim prmTBRecordID As ADODB.Parameter
+			Dim prmErrorMessage As ADODB.Parameter
 
 				Dim iCount As Integer
 				Dim sAddString As String
@@ -113,26 +113,26 @@
 				Dim iIndex1 As Integer
 				Dim iIndex2 As Integer
 		
-				Dim cmdBulkBooking
-				Dim prmSelectionType
-				Dim prmSelectionID
-				Dim prmSelectedIDs
-				Dim prmPromptSQL
+			Dim cmdBulkBooking As ADODB.Command
+			Dim prmSelectionType As ADODB.Parameter
+			Dim prmSelectionID As ADODB.Parameter
+			Dim prmSelectedIDs As ADODB.Parameter
+			Dim prmPromptSQL As ADODB.Parameter
 		
 				Dim fOK As Boolean
 
 			Dim prmErrMsg As ADODB.Parameter
 			Dim cmdPicklist As Command
-			Dim prmExpectedCount
-				Dim cmdBulkBook
-				Dim prmEmployeeRecordIDs
-				Dim prmOnlyNumerics
-				Dim cmdExprColumns
-				Dim prmComponentType
-				Dim rstExprColumns
-				Dim cmdExprValues
-				Dim rstExprValues
-				Dim prmDataType
+			Dim prmExpectedCount As ADODB.Parameter
+			Dim cmdBulkBook As ADODB.Command
+			Dim prmEmployeeRecordIDs As ADODB.Parameter
+			Dim prmOnlyNumerics As ADODB.Parameter
+			Dim cmdExprColumns As ADODB.Command
+			Dim prmComponentType As ADODB.Parameter
+			Dim rstExprColumns As ADODB.Recordset
+			Dim cmdExprValues As ADODB.Command
+			Dim rstExprValues As ADODB.Recordset
+			Dim prmDataType As ADODB.Parameter
 		
 				Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
@@ -141,9 +141,9 @@
 				If Session("optionAction") = "LOADFIND" Then
 						sThousandColumns = ""
 			
-						cmdThousandFindColumns = CreateObject("ADODB.Command")
+				cmdThousandFindColumns = New ADODB.Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+				cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 						cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -179,9 +179,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-						cmdGetFindRecords = CreateObject("ADODB.Command")
+				cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
-						cmdGetFindRecords.CommandType = 4 ' Stored procedure
+				cmdGetFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -328,7 +328,7 @@
 						' Check if the filter value column is in the current screen.
 						' If not, try and get the filter value from the database.
 						If Len(Session("optionFilterValue")) = 0 Then
-								cmdGetFilterValue = CreateObject("ADODB.Command")
+					cmdGetFilterValue = New ADODB.Command
 								cmdGetFilterValue.CommandText = "spASRIntGetLookupFilterValue"
 								cmdGetFilterValue.CommandType = 4 ' Stored procedure
 								cmdGetFilterValue.ActiveConnection = Session("databaseConnection")
@@ -387,7 +387,7 @@
 								sThousandColumns = ""
 
 								If Session("IsLookupTable") = "False" Then
-										cmdThousandFindColumns = CreateObject("ADODB.Command")
+						cmdThousandFindColumns = New ADODB.Command
 										cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
 										cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
 										cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
@@ -425,7 +425,7 @@
 										' Release the ADO command object.
 										cmdThousandFindColumns = Nothing
 
-										cmdGetFindRecords = CreateObject("ADODB.Command")
+						cmdGetFindRecords = New ADODB.Command
 										cmdGetFindRecords.CommandText = "spASRIntGetLookupFindRecords2"
 										cmdGetFindRecords.CommandType = 4 ' Stored procedure
 										cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
@@ -500,7 +500,7 @@
 										cmdGetFindRecords.Parameters.Append(prmOverrideFilter)
 										prmOverrideFilter.value = Session("flagOverrideFilter")
 								Else
-										cmdThousandFindColumns = CreateObject("ADODB.Command")
+						cmdThousandFindColumns = New ADODB.Command
 										cmdThousandFindColumns.CommandText = "spASRIntGetLookupFindColumnInfo"
 										cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
 										cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
@@ -527,7 +527,7 @@
 										' Release the ADO command object.
 										cmdThousandFindColumns = Nothing
 
-										cmdGetFindRecords = CreateObject("ADODB.Command")
+						cmdGetFindRecords = New ADODB.Command
 										cmdGetFindRecords.CommandText = "spASRIntGetLookupFindRecords"
 										cmdGetFindRecords.CommandType = 4 ' Stored procedure
 										cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
@@ -672,9 +672,9 @@
 				ElseIf Session("optionAction") = "LOADTRANSFERCOURSE" Then
 						sThousandColumns = ""
 			
-						cmdThousandFindColumns = CreateObject("ADODB.Command")
+				cmdThousandFindColumns = New ADODB.Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 						cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -710,9 +710,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-						cmdGetFindRecords = CreateObject("ADODB.Command")
+				cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetTransferCourseRecords"
-						cmdGetFindRecords.CommandType = 4 ' Stored procedure
+				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -861,9 +861,9 @@
 				ElseIf Session("optionAction") = "LOADBOOKCOURSE" Then
 						sThousandColumns = ""
 			
-						cmdThousandFindColumns = CreateObject("ADODB.Command")
+				cmdThousandFindColumns = New ADODB.Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 						cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -899,9 +899,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-						cmdGetFindRecords = CreateObject("ADODB.Command")
+				cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetBookCourseRecords"
-						cmdGetFindRecords.CommandType = 4 ' Stored procedure
+				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -1045,9 +1045,9 @@
 
 				ElseIf Session("optionAction") = "SELECTBOOKCOURSE_3" Then
 						
-						cmdBookCourse = CreateObject("ADODB.Command")
+				cmdBookCourse = New ADODB.Command
 						cmdBookCourse.CommandText = "sp_ASRIntBookCourse"
-						cmdBookCourse.CommandType = 4 ' Stored procedure
+				cmdBookCourse.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdBookCourse.CommandTimeout = 180
 						cmdBookCourse.ActiveConnection = Session("databaseConnection")
 					
@@ -1122,9 +1122,9 @@
 						cmdBookCourse = Nothing
 
 				ElseIf Session("optionAction") = "SELECTADDFROMWAITINGLIST_3" Then
-						cmdBookCourse = CreateObject("ADODB.Command")
+				cmdBookCourse = New ADODB.Command
 						cmdBookCourse.CommandText = "sp_ASRIntAddFromWaitingList"
-						cmdBookCourse.CommandType = 4 ' Stored procedure
+				cmdBookCourse.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdBookCourse.CommandTimeout = 180
 						cmdBookCourse.ActiveConnection = Session("databaseConnection")
 					
@@ -1201,9 +1201,9 @@
 				ElseIf Session("optionAction") = "LOADTRANSFERBOOKING" Then
 						sThousandColumns = ""
 			
-						cmdThousandFindColumns = CreateObject("ADODB.Command")
+				cmdThousandFindColumns = New ADODB.Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 						cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -1239,9 +1239,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-						cmdGetFindRecords = CreateObject("ADODB.Command")
+				cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetTransferBookingRecords"
-						cmdGetFindRecords.CommandType = 4 ' Stored procedure
+				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -1396,9 +1396,9 @@
 				ElseIf Session("optionAction") = "LOADADDFROMWAITINGLIST" Then
 						sThousandColumns = ""
 			
-						cmdThousandFindColumns = CreateObject("ADODB.Command")
+				cmdThousandFindColumns = New ADODB.Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
+				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 						cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -1434,9 +1434,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-						cmdGetFindRecords = CreateObject("ADODB.Command")
+				cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetAddFromWaitingListRecords"
-						cmdGetFindRecords.CommandType = 4 ' Stored procedure
+				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -1587,9 +1587,9 @@
 		
 				
 				
-						cmdTransferCourse = CreateObject("ADODB.Command")
+				cmdTransferCourse = New ADODB.Command
 						cmdTransferCourse.CommandText = "sp_ASRIntTransferCourse"
-						cmdTransferCourse.CommandType = 4 ' Stored procedure
+				cmdTransferCourse.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdTransferCourse.CommandTimeout = 180
 						cmdTransferCourse.ActiveConnection = Session("databaseConnection")
 					
@@ -1693,9 +1693,9 @@
 								objUtilities = Nothing
 						End If
 
-						cmdBulkBooking = CreateObject("ADODB.Command")
+				cmdBulkBooking = New ADODB.Command
 						cmdBulkBooking.CommandText = "sp_ASRIntGetBulkBookingRecords"
-						cmdBulkBooking.CommandType = 4 ' Stored procedure
+				cmdBulkBooking.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdBulkBooking.CommandTimeout = 180
 						cmdBulkBooking.ActiveConnection = Session("databaseConnection")
 
@@ -1944,9 +1944,9 @@
 						cmdPicklist = Nothing
 
 				ElseIf Session("optionAction") = "SELECTBULKBOOKINGS_2" Then
-						cmdBulkBook = CreateObject("ADODB.Command")
+				cmdBulkBook = New ADODB.Command
 						cmdBulkBook.CommandText = "sp_ASRIntMakeBulkBookings"
-						cmdBulkBook.CommandType = 4 ' Stored procedure
+				cmdBulkBook.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdBulkBook.CommandTimeout = 180
 						cmdBulkBook.ActiveConnection = Session("databaseConnection")
 					
@@ -2023,9 +2023,9 @@
 				ElseIf (Session("optionAction") = "LOADEXPRFIELDCOLUMNS") Or _
 						(Session("optionAction") = "LOADEXPRLOOKUPCOLUMNS") Then
 		
-						cmdExprColumns = CreateObject("ADODB.Command")
+				cmdExprColumns = New ADODB.Command
 						cmdExprColumns.CommandText = "sp_ASRIntGetExprColumns"
-						cmdExprColumns.CommandType = 4 ' Stored procedure
+				cmdExprColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdExprColumns.CommandTimeout = 180
 						cmdExprColumns.ActiveConnection = Session("databaseConnection")
 					
@@ -2068,9 +2068,9 @@
 
 				ElseIf Session("optionAction") = "LOADEXPRLOOKUPVALUES" Then
 		
-						cmdExprValues = CreateObject("ADODB.Command")
+				cmdExprValues = New ADODB.Command
 						cmdExprValues.CommandText = "sp_ASRIntGetExprLookupValues"
-						cmdExprValues.CommandType = 4 ' Stored procedure
+				cmdExprValues.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdExprValues.CommandTimeout = 180
 						cmdExprValues.ActiveConnection = Session("databaseConnection")
 					

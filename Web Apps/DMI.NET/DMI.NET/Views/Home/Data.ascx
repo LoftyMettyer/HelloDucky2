@@ -591,9 +591,9 @@
 	' Get the required record count if we have a query.
 	If Len(Session("selectSQL")) > 0 Then
 		If Session("action") = "NEW" Then
-			Dim cmdGetRecord = CreateObject("ADODB.Command")
+			Dim cmdGetRecord = New ADODB.Command
 			cmdGetRecord.CommandText = "sp_ASRIntCalcDefaults"
-			cmdGetRecord.CommandType = 4 ' Stored procedure
+			cmdGetRecord.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 			cmdGetRecord.ActiveConnection = Session("databaseConnection")
 
 			Dim prmRecordCount = cmdGetRecord.CreateParameter("recordCount", 3, 2)
@@ -657,9 +657,9 @@
 			rstRecord = Nothing
 
 			If Session("parentTableID") > 0 Then
-				Dim cmdGetParentValues = CreateObject("ADODB.Command")
+				Dim cmdGetParentValues = New ADODB.Command
 				cmdGetParentValues.CommandText = "spASRIntGetParentValues"
-				cmdGetParentValues.CommandType = 4 ' Stored procedure
+				cmdGetParentValues.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 				cmdGetParentValues.ActiveConnection = Session("databaseConnection")
 
 				Dim prmScreenId = cmdGetParentValues.CreateParameter("screenID", 3, 1)
@@ -714,9 +714,9 @@
 			Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
 			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
 		Else
-			Dim cmdGetRecord = CreateObject("ADODB.Command")
+			Dim cmdGetRecord = New ADODB.Command
 			cmdGetRecord.CommandText = "sp_ASRIntGetRecord"
-			cmdGetRecord.CommandType = 4 ' Stored procedure
+			cmdGetRecord.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 			cmdGetRecord.ActiveConnection = Session("databaseConnection")
 			cmdGetRecord.CommandTimeout = 180
 
@@ -896,9 +896,9 @@
 		' Get the record description.
 		Dim sRecDesc = ""
 		If (Len(sErrorDescription) = 0) Then
-			Dim cmdGetRecordDesc = CreateObject("ADODB.Command")
+			Dim cmdGetRecordDesc = New ADODB.Command
 			cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-			cmdGetRecordDesc.CommandType = 4		' Stored procedure
+			cmdGetRecordDesc.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 			cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
 
 			Dim prmTableId = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
@@ -982,9 +982,9 @@
 	End If
 
 	If Session("action") = "LOADREPORTCOLUMNS" Then
-		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		Dim cmdReportsCols = New ADODB.Command
 		cmdReportsCols.CommandText = "sp_ASRIntGetReportColumns"
-		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdReportsCols.ActiveConnection = Session("databaseConnection")
 								
 		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
@@ -1026,9 +1026,9 @@
 		cmdReportsCols = Nothing
 	
 	ElseIf Session("action") = "LOADCALENDARREPORTCOLUMNS" Then
-		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		Dim cmdReportsCols = New ADODB.Command
 		cmdReportsCols.CommandText = "spASRIntGetCalendarReportColumns"
-		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdReportsCols.ActiveConnection = Session("databaseConnection")
 								
 		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
@@ -1063,9 +1063,9 @@
 		cmdReportsCols = Nothing
 
 	ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
-		Dim cmdReportsCols = CreateObject("ADODB.Command")
+		Dim cmdReportsCols = New ADODB.Command
 		cmdReportsCols.CommandText = "sp_ASRIntGetEmailAddresses"
-		cmdReportsCols.CommandType = 4 ' Stored procedure
+		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdReportsCols.ActiveConnection = Session("databaseConnection")
 								
 		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
@@ -1124,11 +1124,11 @@
 		'**********************************************************************************************
 	ElseIf Session("action") = "LOADEVENTLOG" Then
 				
-		Dim objUtilities = Session("UtilitiesObject")
+		Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
 		
-		Dim cmdEventLogRecords = CreateObject("ADODB.Command")
+		Dim cmdEventLogRecords = New ADODB.Command
 		cmdEventLogRecords.CommandText = "spASRIntGetEventLogRecords"
-		cmdEventLogRecords.CommandType = 4 ' Stored procedure.
+		cmdEventLogRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdEventLogRecords.ActiveConnection = Session("databaseConnection")
 
 		Dim prmError = cmdEventLogRecords.CreateParameter("error", 11, 2)		' 11=bit, 2=output
@@ -1238,18 +1238,18 @@
 		
 	ElseIf Session("action") = "LOADEVENTLOGUSERS" Then
 		'Purge the event log.
-		Dim cmdPurgeCommand = CreateObject("ADODB.Command")
+		Dim cmdPurgeCommand = New ADODB.Command
 		cmdPurgeCommand.CommandText = "sp_AsrEventLogPurge"
-		cmdPurgeCommand.CommandType = 4	' Stored procedure
+		cmdPurgeCommand.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdPurgeCommand.ActiveConnection = Session("databaseConnection")
 		Err.Clear()
 		cmdPurgeCommand.Execute()
 		cmdPurgeCommand = Nothing
 		
 		'Get the list of users
-		Dim cmdEventLogUsers = CreateObject("ADODB.Command")
+		Dim cmdEventLogUsers = New ADODB.Command
 		cmdEventLogUsers.CommandText = "spASRIntGetEventLogUsers"
-		cmdEventLogUsers.CommandType = 4		' Stored procedure
+		cmdEventLogUsers.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
 		cmdEventLogUsers.ActiveConnection = Session("databaseConnection")
 		
 		Err.Clear()

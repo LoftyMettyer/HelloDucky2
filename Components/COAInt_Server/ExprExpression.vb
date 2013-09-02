@@ -24,7 +24,8 @@ Friend Class clsExprExpression
 	Private mcolComponents As Collection
 	Private mobjBadComponent As clsExprComponent
 	Private mobjBaseComponent As clsExprComponent
-	
+	Private mobjGeneral As New clsGeneral
+
 	Private msErrorMessage As String
 	
 	' Array holding the User Defined functions that are needed for this expression
@@ -2966,7 +2967,7 @@ ErrorTrap:
 	End Function
 	
 	Public Sub UDFFunctions(ByRef pbCreate As Boolean)
-		clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Sub
 
 End Class

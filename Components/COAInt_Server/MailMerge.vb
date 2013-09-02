@@ -2019,7 +2019,7 @@ ErrorTrap:
   End Function
 
   Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return mclsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 End Class

@@ -1506,7 +1506,7 @@ Namespace Controllers
 						End Select
 						objSettings = Nothing
 
-						sConnectString = sConnectString & "DataTypeCompatibility=80;MARS Connection=True;" & Session("SQL2005Force") & _
+						sConnectString = sConnectString & "DataTypeCompatibility=80;MARS Connection=False;" & Session("SQL2005Force") & _
 							 ";Old Password='" & Replace(sCurrentPassword, "'", "''") & "';Password='" & Replace(sNewPassword, "'", "''") & "'"
 
 						conX.open(sConnectString)

@@ -4,6 +4,7 @@ Option Explicit On
 Public Class Utilities
 
   Private mclsData As clsDataAccess
+	Private mobjGeneral As New clsGeneral
 
   Private mstrCommonDialogFormatsWord As String
   Private mstrCommonDialogFormatsExcel As String
@@ -81,7 +82,7 @@ ErrorTrap:
   End Function
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return clsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 	Public Function FormatEventDuration(ByRef lngSeconds As Integer) As String

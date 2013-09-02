@@ -548,9 +548,9 @@
 	sErrorDescription = ""
 
 	' Get the page title.
-    Dim cmdRecEditWindowTitle = CreateObject("ADODB.Command")
+	Dim cmdRecEditWindowTitle = New ADODB.Command
 	cmdRecEditWindowTitle.CommandText = "sp_ASRIntGetRecordEditInfo"
-	cmdRecEditWindowTitle.CommandType = 4	' Stored Procedure
+	cmdRecEditWindowTitle.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
     cmdRecEditWindowTitle.ActiveConnection = Session("databaseConnection")
 
     Dim prmTitle = cmdRecEditWindowTitle.CreateParameter("title", 200, 2, 100)
@@ -611,9 +611,9 @@
 	
 	If Len(sErrorDescription) = 0 Then
 		' Read the screen definition from the database into 'hidden' controls.
-        Dim cmdRecEditDefinition = CreateObject("ADODB.Command")
+		Dim cmdRecEditDefinition = New ADODB.Command
 		cmdRecEditDefinition.CommandText = "sp_ASRIntGetScreenDefinition"
-		cmdRecEditDefinition.CommandType = 4 ' Stored Procedure
+		cmdRecEditDefinition.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
         cmdRecEditDefinition.ActiveConnection = Session("databaseConnection")
 
         prmScreenID = cmdRecEditDefinition.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
@@ -665,9 +665,9 @@
 
 	If Len(sErrorDescription) = 0 Then
 		' Get the screen controls
-        Dim cmdRecEditControls = CreateObject("ADODB.Command")
+		Dim cmdRecEditControls = New ADODB.Command
 		cmdRecEditControls.CommandText = "sp_ASRIntGetScreenControlsString2"
-		cmdRecEditControls.CommandType = 4 ' Stored Procedure
+		cmdRecEditControls.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
         cmdRecEditControls.ActiveConnection = Session("databaseConnection")
 
         prmScreenID = cmdRecEditControls.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
@@ -721,9 +721,9 @@
 	
 	If Len(sErrorDescription) = 0 Then
 		' Get the screen column control values
-        Dim cmdRecEditControlValues = CreateObject("ADODB.Command")
+		Dim cmdRecEditControlValues = New ADODB.Command
 		cmdRecEditControlValues.CommandText = "sp_ASRIntGetScreenControlValuesString"
-		cmdRecEditControlValues.CommandType = 4	' Stored Procedure
+		cmdRecEditControlValues.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
         cmdRecEditControlValues.ActiveConnection = Session("databaseConnection")
 
         prmScreenID = cmdRecEditControlValues.CreateParameter("screenID", 3, 1)
@@ -763,8 +763,9 @@
 
 	' JPD 20021021 - Added pictures functionlity.
 	' JPD 20021127 - Moved Utilities object into session variable.
-    'objUtilities.Connection = session("databaseConnection")
-    Dim objUtilities = Session("UtilitiesObject")
+	'objUtilities.Connection = session("databaseConnection")
+	Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
+	
     Dim sTempPath = Server.MapPath("~/pictures")
     Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))
 
