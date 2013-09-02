@@ -59,6 +59,7 @@ namespace RCVS.Models
 		[DisplayName("When did you complete your course?")]
 		public DateTime? CourseEndDate { get; set; }
 
+		[DisplayName("Normal course length")]
 		public int NormalCourseLength { get; set; } //To hold the value of the selected normal course length
 
 		[DisplayName("What is the normal length of your course?")]
@@ -79,7 +80,7 @@ namespace RCVS.Models
 			DeclarationOfIntentionModel m = new DeclarationOfIntentionModel();
 
 			User user = (User)System.Web.HttpContext.Current.Session["User"];
-		
+
 			long contactNumber = Convert.ToInt64(user.ContactNumber);
 
 			if (contactNumber != null)
@@ -91,7 +92,7 @@ namespace RCVS.Models
 				TRFDetails tRFDetails = new TRFDetails();
 				var primaryVeterinaryDegree = new Degree();
 				var universityThatAwardedDegree = new University();
-				var practiceArrangements  = new List<PracticeArrangement>();
+				var practiceArrangements = new List<PracticeArrangement>();
 
 				//See Practice list...
 
@@ -112,14 +113,14 @@ namespace RCVS.Models
 				var query = from data in doc.Descendants("DataRow")
 										select new PracticeArrangement
 					{
-											PracticeName = (string)data.Element("ContactName"),
-											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"?  CurrentOrPlanned.Planned: CurrentOrPlanned.Current),
-											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
-											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
-											VetName = (string)data.Element("Position")											
+						PracticeName = (string)data.Element("ContactName"),
+						CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
+						StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
+						EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
+						VetName = (string)data.Element("Position")
 					};
 
-				practiceArrangements = query.ToList();				
+				practiceArrangements = query.ToList();
 
 				if (Utils.ActivityIndex(activityList, "0TDS") >= 0)
 				{
@@ -315,13 +316,15 @@ namespace RCVS.Models
 								"WEB"
 							);
 
-			//Vet degree details: Title and graduation date
-			Utils.AddActivity(
+			//Vet degree details: Title, graduation date, start and end date
+			Utils.AddActivityWithExtraParameters(
 								UserID,
 								"0TPD",
 								"Y",
 								PrimaryVeterinaryDegree.Name,
 								(GraduationDate.HasValue) ? (DateTime)GraduationDate : DateTime.MinValue,
+								(CourseStartDate.HasValue) ? (DateTime)CourseStartDate : DateTime.MinValue,
+								(CourseEndDate.HasValue) ? (DateTime)CourseEndDate : DateTime.MinValue,
 								"WEB"
 							);
 

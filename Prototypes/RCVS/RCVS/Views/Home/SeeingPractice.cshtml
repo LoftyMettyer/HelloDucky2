@@ -105,14 +105,19 @@
 			$('table#tblPractices tbody th:nth-child(3)').addClass('hidden');
 			$('table#tblPractices tbody td:nth-child(3)').addClass('hidden');
 			//hide hours on date columns
-			$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date
-			$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date
-			//Change headers
-			$('table#tblPractices tbody th:nth-child(1)').html('Current/Planned');
-			$('table#tblPractices tbody th:nth-child(2)').html('Practice Name');
-			$('table#tblPractices tbody th:nth-child(4)').html('Supervisor');
-			$('table#tblPractices tbody th:nth-child(5)').html('Start Date');
-			$('table#tblPractices tbody th:nth-child(6)').html('End Date');
+			try {
+				$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date
+				$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date	
+				
+				//Change headers
+				$('table#tblPractices tbody th:nth-child(1)').html('Current/Planned');
+				$('table#tblPractices tbody th:nth-child(2)').html('Practice Name');
+				$('table#tblPractices tbody th:nth-child(4)').html('Supervisor');
+				$('table#tblPractices tbody th:nth-child(5)').html('Start Date');
+				$('table#tblPractices tbody th:nth-child(6)').html('End Date');
+			} catch(e) {
+
+			} 
 
 			$(function () {
 				$('#my-dialog').dialog({

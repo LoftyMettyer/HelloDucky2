@@ -12,12 +12,12 @@
 
 	<h1>Initial / first declaration of intention to sit</h1>
 
-@{
-	if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
-	{
+	@{
+		if (!string.IsNullOrEmpty(Request.QueryString["submittedok"]))
+		{
 		@Html.Raw("<h2 class='submittedOK'>Your information was saved successfully</h2>");
+		}
 	}
-}
 
 	<div class="layout">
 		<p>
@@ -71,10 +71,10 @@
 					@Html.ValidationMessageFor(model => model.CurrentlySeeingPractice)
 				</div>
 			</div>
-				
+
 			@if (Model.PracticeArrangements.Count > 0)
 	 {
-			<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
+				<p><span>Seeing practice arrangements and/or plans - regular updates up to a maximum of 3 times a year, in late December/early January, in April and in August/September</span></p>
 	 }
 	 else
 	 {
@@ -86,7 +86,7 @@
 
 			<input id="addPractice" class="input_button" type="button" value="Add practice..." />
 
-		@*	@{ int i = 0; }
+			@*	@{ int i = 0; }
 			@foreach (var obj in Model.PracticeArrangements)
 	 {	
 				@Html.HiddenFor(m => m.PlanToSeePractice[i].Name)
@@ -219,7 +219,9 @@
 					@Html.LabelFor(model => model.HasEnclosedTranscript)
 				</div>
 				<div class="editor-field input">
-					@Html.EditorFor(model => model.HasEnclosedTranscript)
+					@Html.DropDownListFor(model => model.HasEnclosedTranscript, new List<SelectListItem>()
+						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
+							new SelectListItem(){ Text = "No", Value="False", Selected=true}})
 					@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
 				</div>
 			</div>
@@ -243,7 +245,7 @@
  }
 
 	<div id="my-dialog"></div>
-	
+
 	@section Scripts {
 		@Scripts.Render("~/bundles/jqueryval")
 		@Scripts.Render("~/bundles/jqueryui")
@@ -254,7 +256,14 @@
 <script type="text/javascript">
 	$(document).ready(function ()
 	{
-		$('#TakeTestPlanDate').val($('#TakeTestPlanDate').val().substring(0, 10));  //Remove the hour from the date
+		try
+		{
+			$('#TakeTestPlanDate').val($('#TakeTestPlanDate').val().substring(0, 10));  //Remove the hour from the date	
+		} catch (e)
+		{
+
+		}
+
 		//Attach datepicker
 		$('#TakeTestPlanDate').datepicker({
 			dateFormat: "dd/mm/yy",
@@ -263,25 +272,46 @@
 			yearRange: "-0:+20"
 		});
 
-		$('#TrfDetails_DateOfTest').val($('#TrfDetails_DateOfTest').val().substring(0, 10)); //Remove the hour from the date
+		try
+		{
+			$('#TrfDetails_DateOfTest').val($('#TrfDetails_DateOfTest').val().substring(0, 10)); //Remove the hour from the date	
+		} catch (e)
+		{
+
+		}
+
 		//Attach datepicker
 		$('#TrfDetails_DateOfTest').datepicker({
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "-80:-18"
+			yearRange: "-60:+0"
 		});
 
-		$('#GraduationDate').val($('#GraduationDate').val().substring(0, 10));  //Remove the hour from the date
+		try
+		{
+			$('#GraduationDate').val($('#GraduationDate').val().substring(0, 10));  //Remove the hour from the date	
+		} catch (e)
+		{
+
+		}
+
 		//Attach datepicker
 		$('#GraduationDate').datepicker({
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "-80:-18"
+			yearRange: "-80:+0"
 		});
 
-		$('#CourseStartDate').val($('#CourseStartDate').val().substring(0, 10));  //Remove the hour from the date
+		try
+		{
+			$('#CourseStartDate').val($('#CourseStartDate').val().substring(0, 10));  //Remove the hour from the date	
+		} catch (e)
+		{
+
+		}
+
 		//Attach datepicker
 		$('#CourseStartDate').datepicker({
 			dateFormat: "dd/mm/yy",
@@ -290,7 +320,14 @@
 			yearRange: "-80:-18"
 		});
 
-		$('#CourseEndDate').val($('#CourseEndDate').val().substring(0, 10));  //Remove the hour from the date
+		try
+		{
+			$('#CourseEndDate').val($('#CourseEndDate').val().substring(0, 10));  //Remove the hour from the date	
+		} catch (e)
+		{
+
+		}
+
 		//Attach datepicker
 		$('#CourseEndDate').datepicker({
 			dateFormat: "dd/mm/yy",
@@ -305,8 +342,15 @@
 		$('table#tblPractices tbody th:nth-child(3)').addClass('hidden');
 		$('table#tblPractices tbody td:nth-child(3)').addClass('hidden');
 		//hide hours on date columns
-		$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date
-		$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date
+		try
+		{
+			$('table#tblPractices tbody td:nth-child(5)').html($('table#tblPractices tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date	
+			$('table#tblPractices tbody td:nth-child(6)').html($('table#tblPractices tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date
+		} catch (e)
+		{
+
+		}
+
 		//Change headers
 		$('table#tblPractices tbody th:nth-child(1)').html('Current/Planned');
 		$('table#tblPractices tbody th:nth-child(2)').html('Practice Name');
@@ -323,7 +367,7 @@
 				alert("Only the following file types are supported:\n'PDF', 'TIF', 'XLS', 'HTML', 'DBF', 'JPG', 'XLSX', 'TXT', 'BMP', 'DOCX', 'DOC', 'CVW', 'WRI'\n\nPlease choose another.");
 			}
 		});
-		
+
 		$(function ()
 		{
 			$('#my-dialog').dialog({
@@ -334,29 +378,34 @@
 				resizable: true,
 				modal: true
 			});
-			
-			$('#addPractice').click(function () {				
+
+			$('#addPractice').click(function ()
+			{
 				$('#my-dialog').dialog('option', 'title', 'Add practice details');
-				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function () {					
+				$('#my-dialog').load("@Url.Action("SeePracticeDetail")", function ()
+				{
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-	});
-	
+			});
+
 		});
 	});
 
-	function editActivity(tablename, rownumber) {
+	function editActivity(tablename, rownumber)
+	{
 		$('#my-dialog').dialog('option', 'title', 'Edit practice details');
-		$('#my-dialog').load("@Url.Action("SeePracticeDetail", "Home", new { rowNumber = "1"})", function () {
+		$('#my-dialog').load("@Url.Action("SeePracticeDetail", "Home", new { rowNumber = "1" })", function ()
+		{
 			$(this).dialog('open');
 			$(this).removeClass('ui-dialog-content ui-widget-content');
 		});
 		return false;
 	}
-	
-	function deleteActivity() {
+
+	function deleteActivity()
+	{
 		return false;
 	}
 

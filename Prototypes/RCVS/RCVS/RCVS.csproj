@@ -223,6 +223,7 @@
     <Compile Include="Models\ExaminationApplicationAndFeeModel.cs" />
     <Compile Include="WebServiceClasses\AddActionFromTemplateParameters.cs" />
     <Compile Include="WebServiceClasses\AddActionFromTemplateResult.cs" />
+    <Compile Include="WebServiceClasses\AddActivityWithExtraParametersParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactParameters.cs" />
     <Compile Include="WebServiceClasses\AddContactResult.cs" />
     <Compile Include="WebServiceClasses\AddOrganisationParameters.cs" />
@@ -332,6 +333,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\CreditCardMockup.jpg" />
     <Content Include="Images\rcvs-sprite.gif" />
+    <Content Include="Logs\WebServiceCalls_30-08-2013.txt" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -438,7 +440,6 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

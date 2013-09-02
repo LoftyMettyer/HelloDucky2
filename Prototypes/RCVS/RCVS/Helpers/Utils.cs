@@ -94,6 +94,43 @@ namespace RCVS.Helpers
 			client.Close();
 		}
 
+		public static void AddActivityWithExtraParameters(
+						long ContactNumber,
+						string Activity,
+						string ActivityValue,
+						string Notes,
+						DateTime? ActivityDate,
+						DateTime? ValidFrom,
+					 DateTime? ValidTo,
+						string Source
+					)
+		{
+			var client = new IRISWebServices.NDataAccessSoapClient();
+			var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+			var addActivityWithExtraParametersParameters = new AddActivityWithExtraParametersParameters
+			{
+				ContactNumber = ContactNumber,
+				Activity = Activity,
+				ActivityValue = ActivityValue,
+				ValidFrom = ValidFrom,
+				ValidTo = ValidTo,
+				Notes = Notes,
+				Source = Source
+			};
+
+			//Dates: I hate them
+			if (!ActivityDate.Equals(DateTime.MinValue))
+			{
+				addActivityWithExtraParametersParameters.ActivityDate = ActivityDate;
+			}
+
+			var serializedParameters = xmlHelper.SerializeToXml(addActivityWithExtraParametersParameters);
+			var response = client.AddActivity(serializedParameters);
+			LogWebServiceCall("AddActivity", serializedParameters, response); //Log the call and response
+			client.Close();
+		}
+
 		public static int ActivityIndex(List<SelectContactData_CategoriesResult> ActivityList, string ActivityCode)
 		{
 			return ActivityList.FindIndex(activity => activity.ActivityCode == ActivityCode);

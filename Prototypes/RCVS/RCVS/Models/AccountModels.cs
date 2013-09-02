@@ -57,14 +57,12 @@ namespace RCVS.Models
 		[DisplayName("Address line 1")]
 		public string AddressLine1 { get; set; }
 
-		[Required]
 		[DisplayName("Address line 2")]
 		public string AddressLine2 { get; set; }
 
 		[DisplayName("Address line 3")]
 		public string AddressLine3 { get; set; }
 
-		[Required]
 		[DisplayName("Postcode (UK)")]
 		public string Postcode { get; set; }
 
