@@ -145,7 +145,6 @@ namespace RCVS.Helpers
 				sw.WriteLine("Response: " + Response);
 				sw.WriteLine("----------------------------------------------------------------------------------------------");
 			};
-			;
 		}
 	}
 }

@@ -220,7 +220,6 @@ namespace RCVS.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public ActionResult SeePracticeDetail(SeeingPracticeDetailModel model, FormCollection values)
 		{
 			model.Save();

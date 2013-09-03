@@ -341,6 +341,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\CreditCardMockup.jpg" />
     <Content Include="Images\rcvs-sprite.gif" />
+    <Content Include="Logs\WebServiceCalls_03-09-2013.txt" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -449,7 +450,6 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
