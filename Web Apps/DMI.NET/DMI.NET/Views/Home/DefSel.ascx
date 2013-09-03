@@ -49,7 +49,7 @@
 					
 			Dim cmdDefSelOnlyMine As New Command
 			cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
-			cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
+			cmdDefSelOnlyMine.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
 
 			Dim prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
@@ -256,29 +256,23 @@
 				return (iRecordId);
 		}
 
-		function defsel_window_onload() {			
-				var fOk = true;
-			
+		function defsel_window_onload() {
+		
 				var frmDefSel = document.getElementById('frmDefSel');
-				var sControlName;
-				var sControlPrefix;
 			
 				if (frmDefSel.txtSingleRecordID.value > 0) {
 					// Expand the option frame and hide the work frame.
 					menu_disableMenu();
 				} else {
-					//menu_refreshMenu();
 					refreshControls();
 				}
 
+			// Expand the option frame and hide the work frame.
 				if (frmDefSel.txtSingleRecordID.value > 0) {
-					// Expand the option frame and hide the work frame.
-					//window.parent.document.all.item("workframeset").cols = "1, *";
 					$("#optionframe").attr("data-framesource", "DEFSEL");
 					$("#workframe").hide();
 					$("#optionframe").show();
 				} else {
-					//window.parent.document.all.item("workframeset").cols = "*, 0";
 					$("#workframe").attr("data-framesource", "DEFSEL");
 					$("#optionframe").hide();
 					$("#workframe").show();
@@ -300,32 +294,24 @@
 						}
 				});
 
-				////resize the grid to the height of its container.
-				//$("#DefSelRecords").jqGrid('setGridHeight', $("#findGridRow").height());
-				//$("#DefSelRecords").jqGrid('setGridWidth', $("#findGridRow").width());
+				$(window).bind('resize', function () {
+					$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
+					$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
+				}).trigger('resize');
 
-			//resize the grid to the height of its container.
-				$("#DefselRecords").jqGrid('setGridHeight', $("#findGridRow").height());
-				var y = $("#gbox_findGridTable").height();
-				var z = $('#gbox_findGridTable .ui-jqgrid-bdiv').height();
-
-				//$(window).bind('resize', function () {
-				//    $("#DefSelRecords").setGridHeight($("#findGridRow").height()),
-				//    $("#DefSelRecords").setGridWidth($("#findGridRow").width());
-				//}).trigger('resize');
-
+				$('#DefSelRecords').hideCol("description");
 				$('#DefSelRecords').hideCol("Username");
 				$('#DefSelRecords').hideCol("Access");
 				$('#DefSelRecords').hideCol("ID");
 
 				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
 				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
+
+				$("#DefSelRecords").closest('.ui-jqgrid-bdiv').width($("#DefSelRecords").closest('.ui-jqgrid-bdiv').width()+1);
 		
 				frmDefSel.cmdCancel.focus();
 
 				refreshControls();
-			
-
 			
 				if (rowCount() > 0) {
 					moveFirst();
@@ -363,8 +349,6 @@
 				menu_toolbarEnableItem('mnuutilCancelUtil', true);
 			}
 			$("#toolbarUtilities").click();
-			//$("#toolbarHome").click();
-			//menu_refreshMenu();
 
 				var fNoneSelected;
 				var frmpermissions = document.getElementById('frmpermissions');
@@ -569,13 +553,10 @@
 					refreshData(); //workframe
 				}
 
-
-				//window.location.href = "emptyoption";
 				loadEmptyOption();
 				
 				menu_disableMenu();
 
-				//window.parent.document.all.item("workframeset").cols = "*, 0";
 				$("#optionframe").hide();
 				$("#workframe").show();
 				$("#toolbarRecord").show();
@@ -614,11 +595,13 @@
 
 </script>
 
+<div id="defsel" data-framesource="defsel" style="display: block; height:100%">
+
 <form id=frmpermissions name=frmpermissions style="visibility:hidden;display:none">
 <%
 	Dim cmdDefSelAccess As New Command
 	cmdDefSelAccess.CommandText = "sp_ASRIntGetSystemPermissions"
-	cmdDefSelAccess.CommandType = 4
+	cmdDefSelAccess.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdDefSelAccess.ActiveConnection = Session("databaseConnection")
 
 	Err.Clear()
@@ -751,7 +734,6 @@
 %>
 </form>
 
-
 		<form name="frmDefSel" class="absolutefull" action="defsel_submit" method="post" id="frmDefSel">
 <div id="findGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
 
@@ -819,7 +801,7 @@
 																												' Get the view records.
 																										Dim cmdTableRecords As New Command
 																												cmdTableRecords.CommandText = "sp_ASRIntGetTables"
-																												cmdTableRecords.CommandType = 4 ' Stored Procedure
+																										cmdTableRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																												cmdTableRecords.ActiveConnection = Session("databaseConnection")
 
 																												Err.Clear()
@@ -918,10 +900,8 @@
 
 																														headerCaption = Replace(rstDefSelRecords.fields(iLoop).name.ToString(), "_", " ")
 																														headerStyle.Append("text-align: left; ")
-								
-																														'                                                            If rstDefSelRecords.fields(iLoop).name <> "ID" Then 
+						
 																														Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
-																														'End If
 								
 																												Next
 
@@ -950,7 +930,7 @@
 																														Next
 
 																														Response.Write("</tr>")
-																														Response.Write("<INPUT type='hidden' id=txtAddString_" & lngRowCount & " name=txtAddString_" & lngRowCount & " value=""" & sAddString & """>" & vbCrLf)
+																										Response.Write("<input type='hidden' id=txtAddString_" & lngRowCount & " name=txtAddString_" & lngRowCount & " value=""" & sAddString & """>" & vbCrLf)
 
 																														lngRowCount = lngRowCount + 1
 																														rstDefSelRecords.MoveNext()
@@ -1166,12 +1146,14 @@
 				<input type="hidden" id="utiltype" name="utiltype">
 		</form>
 
-		<input type='hidden' id="txtTicker" name="txtTicker" value="0">
-		<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
+	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-		<form action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</form>
+	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	</form>
+
+</div>
 
 <script type="text/javascript">
 		defsel_window_onload();
