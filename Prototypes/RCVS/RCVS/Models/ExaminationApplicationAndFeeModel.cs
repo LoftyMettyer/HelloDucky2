@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using RCVS.Classes;
+using RCVS.Enums;
 using RCVS.Helpers;
 using RCVS.IRISWebServices;
 using RCVS.Structures;
@@ -29,7 +31,7 @@ namespace RCVS.Models
 
 		public List<Qualification> Qualifications { get; set; }
 
-		public List<Employment> EmploymentHistory { get; set; }
+		public List<EmploymentArrangement> EmploymentHistory { get; set; }
 
 		[Required]
 		[DisplayName("Are you, or have you been at any time, in the Register of persons qualified to practise veterinary surgery in any country or state?")]
@@ -92,27 +94,60 @@ namespace RCVS.Models
 
 				m.Qualifications = qualifications;
 
-				List<Employment> employmentHistory = new List<Employment>();
-				employmentHistory.Add(new Employment
-					{
-						City = "Aberdare",
-						Country = "Wales",
-						FromDate = System.DateTime.Now.AddYears(-3),
-						ToDate = System.DateTime.Now.AddYears(-2),
-						Position = "Junior Vet",
-						PracticeName = "Cows & Sons"
-					});
-				employmentHistory.Add(new Employment
-					{
-						City = "Guildford",
-						Country = "England",
-						FromDate = System.DateTime.Now.AddYears(-2),
-						ToDate = System.DateTime.Now.AddYears(-1),
-						Position = "Chief Vet",
-						PracticeName = "Horse Bros"
-					});
 
-				m.EmploymentHistory = employmentHistory;
+				//See Practice list...
+
+				string response;
+
+				var client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
+				var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+
+				//Get Position
+				var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = contactNumber };
+				var serializedParameters = xmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
+
+				response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactPositions, serializedParameters);
+				client.Close();
+
+				var doc = XDocument.Parse(response);
+
+				var query = from data in doc.Descendants("DataRow")		
+										select new EmploymentArrangement()
+										{
+											PracticeName = (string)data.Element("ContactName"),
+											//CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
+											Position = (string)data.Element("Position"),
+											StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
+											EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
+											CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"? CurrentOrPlanned.Planned : ((string)data.Element("PositionSeniority")=="C"? CurrentOrPlanned.Current : CurrentOrPlanned.Employment))											
+											//VetName = (string)data.Element("Position")
+										};
+
+				//m.EmploymentHistory = query.ToList();
+				
+				m.EmploymentHistory = query.ToList().FindAll(x=>x.CurrentOrPlanned == CurrentOrPlanned.Employment);
+
+				//List<Employment> employmentHistory = new List<Employment>();
+				//employmentHistory.Add(new Employment
+				//	{
+				//		City = "Aberdare",
+				//		Country = "Wales",
+				//		FromDate = System.DateTime.Now.AddYears(-3),
+				//		ToDate = System.DateTime.Now.AddYears(-2),
+				//		Position = "Junior Vet",
+				//		PracticeName = "Cows & Sons"
+				//	});
+				//employmentHistory.Add(new Employment
+				//	{
+				//		City = "Guildford",
+				//		Country = "England",
+				//		FromDate = System.DateTime.Now.AddYears(-2),
+				//		ToDate = System.DateTime.Now.AddYears(-1),
+				//		Position = "Chief Vet",
+				//		PracticeName = "Horse Bros"
+				//	});
+
+				//m.EmploymentHistory = employmentHistory;
 
 				if (Utils.ActivityIndex(activityList, "0SUB") >= 0)
 				{

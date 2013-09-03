@@ -190,6 +190,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BindingConfig.cs" />
     <Compile Include="Classes\Address.cs" />
+    <Compile Include="Classes\EmploymentArrangement.cs" />
     <Compile Include="Classes\FormData.cs" />
     <Compile Include="Classes\GlobalVariables.cs" />
     <Compile Include="Classes\Month.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Helpers\Table.cs" />
     <Compile Include="Classes\Day.cs" />
     <Compile Include="Interfaces\iModel.cs" />
+    <Compile Include="Models\PostGradEmploymentDetailModel.cs" />
     <Compile Include="Models\QualificationModel.cs" />
     <Compile Include="Models\SeeingPracticeDetailModel.cs" />
     <Compile Include="Structures\Confirmation.cs" />
@@ -233,6 +235,7 @@
     <Compile Include="WebServiceClasses\AddRegisteredUserParameters.cs" />
     <Compile Include="WebServiceClasses\AddRegisteredUserResult.cs" />
     <Compile Include="WebServiceClasses\AddCommunicationsLogParameters.cs" />
+    <Compile Include="WebServiceClasses\AddContactParametersForVet.cs" />
     <Compile Include="WebServiceClasses\UpdateDocumentFileParameters.cs" />
     <Compile Include="WebServiceClasses\SelectContactData_CategoriesResult.cs" />
     <Compile Include="WebServiceClasses\SelectContactDataParameters.cs" />
@@ -436,6 +439,7 @@
     <Content Include="Views\Home\Activity_Qualification.cshtml" />
     <Content Include="Views\Home\SeeingPracticeDetail.cshtml" />
     <Content Include="Views\Home\SeePracticeDetail.cshtml" />
+    <Content Include="Views\Home\PostGradEmploymentDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

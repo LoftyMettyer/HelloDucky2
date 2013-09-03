@@ -12,11 +12,11 @@ using RCVS.WebServiceClasses;
 
 namespace RCVS.Models
 {
-	public class SeeingPracticeDetailModel : PracticeArrangement
+	public class PostGradEmploymentDetailModel : EmploymentArrangement
 	{
 		public long UserID { get; set; }
 
-		public SeeingPracticeDetailModel()
+		public PostGradEmploymentDetailModel()
 		{
 			Address = new Address();
 		}
@@ -41,7 +41,7 @@ namespace RCVS.Models
 			var countries = new List<SelectListItem>();
 			countries.Add(new SelectListItem { Value = "", Text = "" }); //Empty option
 
-			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")
+			countries.AddRange(from country in XDocument.Parse(response).Descendants("DataRow")												 
 												 select new SelectListItem
 												 {
 													 Value = country.Element("Country").Value,
@@ -49,33 +49,6 @@ namespace RCVS.Models
 												 });
 
 			Address.Countries = countries;
-
-			////Are we editing a value?
-			//if (rowNumber != "")
-			//{
-			//	//client = new IRISWebServices.NDataAccessSoapClient(); //Client to call the web services
-			//	var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-
-			//	//Get Position
-			//	var selectContactDataParameters = new SelectContactDataParameters() { ContactNumber = UserID };
-			//	var serializedParameters = xmlHelper.SerializeToXml(selectContactDataParameters); //Serialize to XML to pass to the web services
-
-			//	response = client.SelectContactData(IRISWebServices.XMLContactDataSelectionTypes.xcdtContactPositions, serializedParameters);
-
-			//	var doc = XDocument.Parse(response);
-
-			//	//var query = from data in doc.Descendants("DataRow")
-			//	//						select new PracticeArrangement
-			//	//						{
-			//	//							PracticeName = (string)data.Element("ContactName"),
-			//	//							CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
-			//	//							StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
-			//	//							EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
-			//	//							VetName = (string)data.Element("Position")
-			//	//						};
-
-			//	//practiceArrangements = query.ToList();		
-			//}
 
 		}
 
@@ -110,48 +83,16 @@ namespace RCVS.Models
 					AddressNumber = result.AddressNumber,
 					ContactNumber = user.ContactNumber,
 					OrganisationNumber = result.ContactNumber,
-					Position = "Vet", //VetName,
-					PositionSeniority = (CurrentOrPlanned == CurrentOrPlanned.Current? "C": "P"),
+					Position = Position,					
 					ValidFrom = (DateTime)StartDate,
-					ValidTo = (DateTime) EndDate					
+					ValidTo = (DateTime) EndDate,
+					PositionSeniority = "E"
 				};
 			serializedParameters = xmlHelper.SerializeToXml(addParameters2);
 			response = client.AddPosition(serializedParameters);
 			Utils.LogWebServiceCall("AddPosition", serializedParameters, response); //Log the call and response
 
 			var Result2 = xmlHelper.DeserializeFromXmlToObject<AddPositionResult>(response);
-
-			string fName;
-			string lName;
-
-			try
-			{
-				var words = VetName.Split(' ');
-				fName = words[0];
-				lName = words[1];
-			}
-			catch (Exception)
-			{
-				fName = "Example";
-				lName = "Vet";
-				throw;
-			}
-
-			//Add supervising vet contact info
-			var XmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
-			var addContactParameters = new AddContactParametersforVet() //Create an object with the contact details
-			{
-				Forenames = fName,
-				Surname = lName,
-				AddressNumber = result.AddressNumber,
-				OrganisationNumber = result.ContactNumber,
-				Source = "WEB", //Always "WEB"
-				Position = "Supervising Vet"
-			};
-			serializedParameters = XmlHelper.SerializeToXml(addContactParameters); //Serialize to XML to pass to the web services
-
-			response = client.AddContact(serializedParameters);
-			Utils.LogWebServiceCall("AddContact", serializedParameters, response); //Log the call and response
 
 			client.Close();
 		}

@@ -45,13 +45,15 @@ namespace RCVS.Models
 									select new PracticeArrangement
 			{
 										PracticeName = (string)data.Element("ContactName"),
-										CurrentOrPlanned = ((string)data.Element("PositionSeniority") == "P" ? CurrentOrPlanned.Planned : CurrentOrPlanned.Current),
+										CurrentOrPlanned = ((string)data.Element("PositionSeniority")=="P"? CurrentOrPlanned.Planned : ((string)data.Element("PositionSeniority")=="C"? CurrentOrPlanned.Current : CurrentOrPlanned.Employment)),
 										StartDate = DateTime.ParseExact((string)data.Element("ValidFrom"), "dd/MM/yyyy", null),
 										EndDate = DateTime.ParseExact((string)data.Element("ValidTo"), "dd/MM/yyyy", null),
 										VetName = (string)data.Element("Position")
 									};
 
-			Practices = query.ToList();				
+			//Practices = query.ToList();
+			Practices = query.ToList().FindAll(x => x.CurrentOrPlanned != CurrentOrPlanned.Employment);
+
 
 			if (contactNumber != null)
 			{

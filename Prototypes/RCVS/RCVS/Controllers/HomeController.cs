@@ -235,5 +235,32 @@ namespace RCVS.Controllers
 			//return View("SeeingPractice");
 		}
 
+
+		[HttpGet]
+		public ActionResult PostGradEmploymentDetail(string rowNumber)
+		{
+			var model = new PostGradEmploymentDetailModel();
+			if (rowNumber == null)
+			{
+				rowNumber = "";
+			}
+
+			model.Load(rowNumber);
+
+			return PartialView(model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult PostGradEmploymentDetail(PostGradEmploymentDetailModel model, FormCollection values)
+		{
+			model.Save();
+			//SeeingPractice();
+
+			//return Redirect("SeeingPractice");
+			return RedirectToAction("ExaminationApplicationAndFee");
+		}
+
+
 	}
 }

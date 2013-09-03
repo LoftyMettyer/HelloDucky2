@@ -82,20 +82,18 @@
 		<fieldset>
 			<legend>Employment since graduation</legend>
 			@Html.Raw(Html.EditTable("tblEmployment", Model.EmploymentHistory, null))
-			
+
 			<input id="addEmployment" type="button" value="Add..." class="input_button" />
 
-			@{ i = 0; }
+@*			@{ i = 0; }
 			@foreach (var obj in Model.EmploymentHistory)
 	 {
-				@Html.HiddenFor(m => m.EmploymentHistory[i].City)
-				@Html.HiddenFor(m => m.EmploymentHistory[i].Country)
-				@Html.HiddenFor(m => m.EmploymentHistory[i].FromDate)
+				@Html.HiddenFor(m => m.EmploymentHistory[i].StartDate)
 				@Html.HiddenFor(m => m.EmploymentHistory[i].Position)
 				@Html.HiddenFor(m => m.EmploymentHistory[i].PracticeName)
-				@Html.HiddenFor(m => m.EmploymentHistory[i].ToDate)
+				@Html.HiddenFor(m => m.EmploymentHistory[i].EndDate)
 		 ++i;
-	 }
+	 }*@
 		</fieldset>
 		<fieldset>
 			<legend>Registration/license to practise as a veterinary surgeon</legend>
@@ -201,45 +199,48 @@
 			</div>
 		</fieldset>
 	 
-		<fieldset>
-			<legend>Confirmation</legend>
-			<p>
-				IF RCVS has not already verified your IELTS test score and confirmed that you are eligable to apply to sit our examination you should upload your IELTS TRF now. Please do <u>not</u> send any other original documents, such as certificates of qualifications to RCVS.
-			</p>
+	 <fieldset>
+		 <legend>Confirmation</legend>
+		 <p>
+			 IF RCVS has not already verified your IELTS test score and confirmed that you are eligable to apply to sit our examination you should upload your IELTS TRF now. Please do <u>not</u> send any other original documents, such as certificates of qualifications to RCVS.
+		 </p>
 
-			<p>
-				If using a cheque or postal order please post it to the following address
-			Software Developer
-			My House
-			My Town
-			My Postcode
-			</p>
+		 <p>
+			 If using a cheque or postal order please post it to the following address
+			 Software Developer
+			 My House
+			 My Town
+			 My Postcode
+		 </p>
 
-			<p>
-				New applicants must enclose 2 passport photographs and write their name of the back of both photos.
-			</p>
+		 <p>
+			 New applicants must enclose 2 passport photographs and write their name of the back of both photos.
+		 </p>
 
-			<p>
-				Please send seeing practice forms by email ro rcvsexam@rcvs.org.uk (not with this application)
-			</p>
+		 <p>
+			 Please send seeing practice forms by email ro rcvsexam@rcvs.org.uk (not with this application)
+		 </p>
 
 
-			<p><b>Processing your application and acceptance as a candidate for the 2013 examination</b></p>
-			<p>
-				Please allow adequate time for your application to be processed after you have submitted it and do not immediately email or ring RCVS to chase receipt or progress.
-		Receipt of documents will normally be acknowledged by email within 5 working days. If you chase for information about the progress of your application it causes unnecessary delays in the progress of applications.
-			</p>
+		 <p><b>Processing your application and acceptance as a candidate for the 2013 examination</b></p>
+		 <p>
+			 Please allow adequate time for your application to be processed after you have submitted it and do not immediately email or ring RCVS to chase receipt or progress.
+			 Receipt of documents will normally be acknowledged by email within 5 working days. If you chase for information about the progress of your application it causes unnecessary delays in the progress of applications.
+		 </p>
 
-			<p>
-				RCVS will write to confirm that you have met our examination entry requirements and give you your examination number <b>after</b> we have received <b>all</b> the items that make up a complete application (including evidence of your good professional standing which is sent to us on your behalf) and your examination fee payment has cleared - allow at least 14 days for clearance of a cheque.
+		 <p>
+			 RCVS will write to confirm that you have met our examination entry requirements and give you your examination number <b>after</b> we have received <b>all</b> the items that make up a complete application (including evidence of your good professional standing which is sent to us on your behalf) and your examination fee payment has cleared - allow at least 14 days for clearance of a cheque.
 
-			</p>
+		 </p>
 
-			<p>
+		 <p>
 
-				<input type="submit" value="Submit" class="input_submit" />
-			</p>
-		</fieldset>
+			 <input type="submit" value="Submit" class="input_submit" />
+		 </p>
+	 </fieldset>
+	 
+	 <div id="my-dialog"></div>
+	 
  }
 
 	@section Scripts {
@@ -250,9 +251,13 @@
 
 	<script type="text/javascript">
 
-		$(document).ready(function ()
-		{
-			$('#RegistrationDate').val($('#RegistrationDate').val().substring(0, 10));  //Remove the hour from the date
+		$(document).ready(function () {
+			try {
+				$('#RegistrationDate').val($('#RegistrationDate').val().substring(0, 10));  //Remove the hour from the date	
+			} catch(e) {
+
+			} 
+			
 			//Attach datepicker
 			$('#RegistrationDate').datepicker({
 				dateFormat: "dd/mm/yy",
@@ -261,7 +266,12 @@
 				yearRange: "-80:+0"
 			});
 
-			$('#RegistrationExpiryDate').val($('#RegistrationExpiryDate').val().substring(0, 10)); //Remove the hour from the date
+			try {
+				$('#RegistrationExpiryDate').val($('#RegistrationExpiryDate').val().substring(0, 10)); //Remove the hour from the date	
+			} catch(e) {
+
+			} 
+			
 			//Attach datepicker
 			$('#RegistrationExpiryDate').datepicker({
 				dateFormat: "dd/mm/yy",
@@ -269,56 +279,67 @@
 				changeYear: true,
 				yearRange: "-0:+20"
 			});
-			
+
 
 			//tblQualifications Table formatting
 			//Hide id column (including header)
 			$('table#tblQualifications tbody th:nth-child(4)').addClass('hidden');
 			$('table#tblQualifications tbody td:nth-child(4)').addClass('hidden');
 			//hide hours on date columns
-			$('table#tblQualifications tbody td:nth-child(2)').html($('table#tblQualifications tbody td:nth-child(2)').html().substring(0, 10));  //Remove the hour from the date			
+			try {
+				$('table#tblQualifications tbody td:nth-child(2)').html($('table#tblQualifications tbody td:nth-child(2)').html().substring(0, 10));  //Remove the hour from the date				
+			} catch(e) {
+
+			} 
+			
 			//Change headers
 			$('table#tblQualifications tbody th:nth-child(2)').html('Date Obtained');
 			$('table#tblQualifications tbody th:nth-child(3)').html('Awarding Body');
 
 			//tblEmployment Table formatting
+			//Hide Current/Planned and Address columns (including header)
+			$('table#tblEmployment tbody th:nth-child(1)').addClass('hidden');
+			$('table#tblEmployment tbody td:nth-child(1)').addClass('hidden');
+			$('table#tblEmployment tbody th:nth-child(3)').addClass('hidden');
+			$('table#tblEmployment tbody td:nth-child(3)').addClass('hidden');
 			//hide hours on date columns
-			$('table#tblEmployment tbody td:nth-child(5)').html($('table#tblEmployment tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date			
-			$('table#tblEmployment tbody td:nth-child(6)').html($('table#tblEmployment tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date			
+			try {
+				$('table#tblEmployment tbody td:nth-child(5)').html($('table#tblEmployment tbody td:nth-child(5)').html().substring(0, 10));  //Remove the hour from the date			
+				$('table#tblEmployment tbody td:nth-child(6)').html($('table#tblEmployment tbody td:nth-child(6)').html().substring(0, 10));  //Remove the hour from the date			
+			} catch(e) {
+
+			} 
 			//Change headers
-			$('table#tblEmployment tbody th:nth-child(1)').html('Practice Name');
+			$('table#tblEmployment tbody th:nth-child(2)').html('Practice Name');
 			$('table#tblEmployment tbody th:nth-child(5)').html('Date From');
 			$('table#tblEmployment tbody th:nth-child(6)').html('Date To');
-			
-		});
 
+			$(function () {
+				$('#my-dialog').dialog({
+					autoOpen: false,
+					width: 660,
+					height: 590,
+					title: "Add Post Graduate employment details",
+					resizable: true,
+					modal: true
+				});
 
+				$('#addEmployment').click(function () {					
+					$('#my-dialog').dialog('option', 'title', 'Add Employment details');
+					$('#my-dialog').load("@Url.Action("PostGradEmploymentDetail")", function () {
+							$(this).dialog('open');
+							$(this).removeClass('ui-dialog-content ui-widget-content');
+						});
+						return false;
+				});
 
-		function addActivity(Activity) {
-			return false;
-
-			$('#dialog').dialog({
-				autoOpen: false,
-				width: 400,
-				resizable: false,
-				title: 'hi there',
-				modal: true,
-				open: function (event, ui) {
-					$(this).load("@Url.Action("Activity_Qualification")");
-				},
-				buttons: {
-					"Close": function () {
-						$(this).dialog("close");
-					}
-				}
 			});
-				alert(1);
-				$('#dialog').dialog('open');
 
+
+		});
+			function addActivity(Activity) {
 
 			}
-
-
 
 			function deleteActivity(Activity, RowNo) {
 				return false;
@@ -338,13 +359,11 @@
 					resizable: false,
 					title: 'hi there',
 					modal: true,
-					open: function (event, ui)
-					{
+					open: function (event, ui) {
 						$(this).load("@Url.Action("Activity_Qualification")");
 					},
 					buttons: {
-						"Close": function ()
-						{
+						"Close": function () {
 							$(this).dialog("close");
 						}
 					}
