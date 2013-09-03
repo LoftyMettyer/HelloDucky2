@@ -138,7 +138,7 @@
 			<div class="editor-field">
 				@Html.DropDownListFor(model => model.PreviouslyBanned, new List<SelectListItem>()
 						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
-							new SelectListItem(){ Text = "No", Value="False"}})
+							new SelectListItem(){ Text = "No", Value="False", Selected = true}})
 				@Html.ValidationMessageFor(model => model.PreviouslyBanned)
 			</div>
 

@@ -221,7 +221,7 @@
 				<div class="editor-field input">
 					@Html.DropDownListFor(model => model.HasEnclosedTranscript, new List<SelectListItem>()
 						{ new SelectListItem(){ Text = "Yes", Value="True"}, 
-							new SelectListItem(){ Text = "No", Value="False", Selected=true}})
+							new SelectListItem(){ Text = "No", Value="False", Selected = true}})
 					@Html.ValidationMessageFor(model => model.HasEnclosedTranscript)
 				</div>
 			</div>
@@ -317,7 +317,7 @@
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "-80:-18"
+			yearRange: "-80:+0"
 		});
 
 		try
@@ -333,7 +333,7 @@
 			dateFormat: "dd/mm/yy",
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "-80:-18"
+			yearRange: "-80:+0"
 		});
 
 
