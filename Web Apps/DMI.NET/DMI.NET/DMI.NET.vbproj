@@ -575,6 +575,7 @@
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
+    <Content Include="Content\images\ajax-loader-progress.gif" />
     <Content Include="Scripts\ClientDLL.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />

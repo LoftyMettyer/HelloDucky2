@@ -53,11 +53,13 @@
 				OpenHR.submitForm(frmPromptedValues);
 			}
 			else {
-				OpenHR.showInReportFrame(frmPromptedValues);
+				OpenHR.showInReportFrame(frmPromptedValues, true);
 			}
 
-
 		} else {
+			
+			$(".popup").dialog("open");
+
 			// Set focus on the first prompt control.
 			var controlCollection = frmPromptedValues.elements;
 			if (controlCollection != null) {
@@ -482,7 +484,9 @@
 		}
 
 		// Everything OK. Submit the form.
-		OpenHR.submitForm(frmPromptedValues, null, false);
+		$(".popup").dialog("close");
+		//OpenHR.submitForm(frmPromptedValues, null, true);
+		OpenHR.showInReportFrame(frmPromptedValues, true);
 
 	}
 

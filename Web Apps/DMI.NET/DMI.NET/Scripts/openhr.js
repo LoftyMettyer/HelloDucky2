@@ -46,20 +46,29 @@
 
 
 		},
-		showInReportFrame = function (form) {
+		showInReportFrame = function (form, asyncFlag) {
+
 			var $form = $(form),
 				$frame = $("#reportframe"),
 				url = $form.attr("action"),
 				data = $form.serialize();
+
+			if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
+				asyncFlag = true;
+			} else {
+				asyncFlag = false;
+			}
 
 			$.ajax({
 				url: url,
 				dataType: 'html',
 				type: "POST",
 				data: data,
-				async: false,
+				async: asyncFlag,
+				
 				success: function (html) {
 					try {
+
 						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
 							if (html.ErrorMessage.length > 0) {
 								//A handled error was returned. Display error message, then redirect accordingly...
@@ -74,7 +83,9 @@
 					//clear the frame...
 					$frame.html('');
 
-					$(".popup").dialog("open");
+					if (asyncFlag == true) {
+						$(".popup").dialog("open");
+					}
 
 					//OK
 					$frame.html(html);

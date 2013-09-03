@@ -59,63 +59,64 @@
 	Session(sKey) = aPrompts
 %>
 
-<script type="text/javascript">	
-		function raiseError(sErrorDesc, fok, fcancelled) {
-				var frmError = document.getElementById("frmError");
-				frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
-				frmError.txtErrorDesc.value = sErrorDesc;
-				frmError.txtOK.value = fok;
-				frmError.txtUserCancelled.value = fcancelled;
-				var sTarget = new String("errorMessage");
-				frmError.target = sTarget;
-				NewWindow('', sTarget, '500', '200', 'no');
-				frmError.submit();
-				self.close();
-				return;
-		}
+<script type="text/javascript">
+
+	function raiseError(sErrorDesc, fok, fcancelled) {
+		var frmError = document.getElementById("frmError");
+		frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
+		frmError.txtErrorDesc.value = sErrorDesc;
+		frmError.txtOK.value = fok;
+		frmError.txtUserCancelled.value = fcancelled;
+		var sTarget = new String("errorMessage");
+		frmError.target = sTarget;
+		NewWindow('', sTarget, '500', '200', 'no');
+		frmError.submit();
+		self.close();
+		return;
+	}
 	
-		function pausecomp(millis) {
-				var date = new Date();
-				var curDate;
+	function pausecomp(millis) {
+		var date = new Date();
+		var curDate;
 
-				do {
-						curDate = new Date();
-				} while (curDate - date < millis);
+		do {
+			curDate = new Date();
+		} while (curDate - date < millis);
+	}
+
+	function NewWindow(mypage, myname, w, h, scroll) {
+		var winl = (screen.width - w) / 2;
+		var wint = (screen.height - h) / 2;
+		var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+		var win = window.open(mypage, myname, winprops);
+
+		if (parseInt(navigator.appVersion) >= 4) {
+			pausecomp(300);
+			win.window.focus();
+		}
+	}
+
+	function ShowWaitFrame() {
+
+		var fs = window.parent.document.all.item("reportframe");
+
+		if (fs) {
+			fs.rows = "*,0,0";
 		}
 
-		function NewWindow(mypage, myname, w, h, scroll) {
-				var winl = (screen.width - w) / 2;
-				var wint = (screen.height - h) / 2;
-				var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-				var win = window.open(mypage, myname, winprops);
+	}
 
-				if (parseInt(navigator.appVersion) >= 4) {
-						pausecomp(300);
-						win.window.focus();
-				}
-		}
+	function ShowDataFrame() {
 
-		function ShowWaitFrame() {
+		$("#reportbreakdownframe").hide();
+		$("#top").hide();
+		$("#outputoptions").hide();
+		$("#calendarframeset").show();
+		$("#optionsframeset").show();
+		$("#reportframe").show();
+		$("#reportworkframe").show();
 
-				var fs = window.parent.document.all.item("reportframe");
-
-				if (fs) {
-						fs.rows = "*,0,0";
-				}
-
-		}
-
-		function ShowDataFrame() {
-
-				$("#reportbreakdownframe").hide();
-				$("#top").hide();
-				$("#outputoptions").hide();
-				$("#calendarframeset").show();
-				$("#optionsframeset").show();
-				$("#reportframe").show();
-				$("#reportworkframe").show();
-
-		}
+	}
 
 </script>
 
@@ -126,10 +127,6 @@
 	<input type="hidden" id="txtUserCancelled" name="txtUserCancelled">
 	<input type="hidden" id="txtErrorDesc" name="txtErrorDesc">
 </form>
-
-<div id="top">
-	<%Html.RenderPartial("~/Views/Home/progress.ascx")%>
-</div>
 
 <div id="main" data-framesource="util_run" style="display: block; height:100%">
 	<%   
@@ -165,6 +162,6 @@
 </div>
 
 <script type="text/javascript">
-		$("#outputoptions").hide();
-		$("#reportworkframe").show();
+	$("#outputoptions").hide();
+	$("#reportworkframe").show();
 </script>

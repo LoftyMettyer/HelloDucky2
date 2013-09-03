@@ -505,7 +505,7 @@
 					frmPrompt.utilname.value = frmDefSel.utilname.value;
 					frmPrompt.action.value = frmDefSel.action.value;
 
-					OpenHR.showInReportFrame(frmPrompt);
+					OpenHR.showInReportFrame(frmPrompt, false);
 
 				}
 			}
