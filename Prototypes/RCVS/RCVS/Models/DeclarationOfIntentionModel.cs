@@ -389,6 +389,83 @@ namespace RCVS.Models
 								DateTime.Now,
 								"WEB"
 							);
+
+			//TRF file upload				
+			//Done in three parts:
+			//1. get a document number
+			//2. get the document application type
+			//3. upload via the document number.
+			if (EnclosedTranscript != null)
+			{
+				var extension = Path.GetExtension(EnclosedTranscript.FileName);
+
+				if (extension != null)
+				{
+					extension = extension.ToUpper();
+					//get package type for this file type - no package type, no upload!
+					const XMLLookupDataTypes lookupDataType = XMLLookupDataTypes.xldtPackages;
+					var client = new NDataAccessSoapClient();
+					var response = client.GetLookupData(lookupDataType, "");
+					Utils.LogWebServiceCall("GetLookupData", "NONE", response); //Log the call and response
+					var package = "";
+
+					var doc = XDocument.Parse(response);
+
+					foreach (XElement xe in doc.Descendants("DataRow"))
+					{
+						var element = xe.Element("DocfileExtension");
+						if (element != null)
+						{
+							var docFileExtension = element.Value.ToUpper();
+							if (docFileExtension == extension)
+							{
+								package = xe.Element("Package").Value;
+								break;
+							}
+						}
+					}
+
+					var bytes = new byte[EnclosedTranscript.InputStream.Length];
+					EnclosedTranscript.InputStream.Read(bytes, 0, Convert.ToInt32(EnclosedTranscript.InputStream.Length));
+					var addCommunicationsLogParameters = new AddCommunicationsLogParameters
+					{
+						AddresseeContactNumber = user.ContactNumber,
+						AddresseeAddressNumber = user.AddressNumber,
+						SenderContactNumber = user.ContactNumber,
+						SenderAddressNumber = user.AddressNumber,
+						Dated = Convert.ToDateTime(DateTime.Now),
+						Direction = "I",
+						DocumentType = "OTHE",
+						Topic = "GEN",
+						SubTopic = "CORR",
+						DocumentClass = "U",
+						DocumentSubject = "Veterinary Degree Transcript",
+						Precis = "Transcript Upload",
+						Package = package
+					};
+					var xmlHelper = new XMLHelper(); //XML helper to serialize and deserialize objects
+					var serializedParameters = xmlHelper.SerializeToXml(addCommunicationsLogParameters);
+					client = new NDataAccessSoapClient();
+					response = client.AddCommunicationsLog(serializedParameters);
+					Utils.LogWebServiceCall("AddCommunicationsLog", serializedParameters, response); //Log the call and response
+
+					var xElement = XDocument.Parse(response).Element("Result");
+					if (xElement != null)
+					{
+						var documentNumber = Convert.ToInt32(xElement.Value);
+						var updateDocumentFileParameters = new UpdateDocumentFileParameters
+						{
+							DocumentNumber = documentNumber
+						};
+						xmlHelper = new XMLHelper();
+						serializedParameters = xmlHelper.SerializeToXml(updateDocumentFileParameters);
+						response = client.UpdateDocumentFile(serializedParameters, bytes);
+						Utils.LogWebServiceCall("UpdateDocumentFile", serializedParameters, response); //Log the call and response
+					}
+
+					client.Close();
+				}
+			}
 		}
 	}
 }
