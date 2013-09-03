@@ -47,6 +47,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="QASClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\QASClient.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -206,6 +210,7 @@
     <Compile Include="Classes\Day.cs" />
     <Compile Include="Interfaces\iModel.cs" />
     <Compile Include="Models\PostGradEmploymentDetailModel.cs" />
+    <Compile Include="Models\AddressLookupModel.cs" />
     <Compile Include="Models\QualificationModel.cs" />
     <Compile Include="Models\SeeingPracticeDetailModel.cs" />
     <Compile Include="Structures\Confirmation.cs" />
@@ -336,7 +341,6 @@
     <Content Include="Global.asax" />
     <Content Include="Images\CreditCardMockup.jpg" />
     <Content Include="Images\rcvs-sprite.gif" />
-    <Content Include="Logs\WebServiceCalls_30-08-2013.txt" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -440,10 +444,12 @@
     <Content Include="Views\Home\SeeingPracticeDetail.cshtml" />
     <Content Include="Views\Home\SeePracticeDetail.cshtml" />
     <Content Include="Views\Home\PostGradEmploymentDetail.cshtml" />
+    <Content Include="Views\Account\AddressLookup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

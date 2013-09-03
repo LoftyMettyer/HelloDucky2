@@ -109,8 +109,17 @@
 					@Html.ValidationMessageFor(model => model.DOB)
 				</div>
 			</div>
-
 			
+			@*
+			<div class="field">
+				<div class="editor-label label">
+					&nbsp;
+				</div>
+				<div class="editor-field">
+					<input type="button" id="btnAddressLookup" value="Address lookup (UK only)" />
+				</div>
+			</div>
+			*@
 
 			<div class="field">
 				<div class="editor-label label">
@@ -206,24 +215,21 @@
 		{
 			$('#AddressLookupDialog').dialog({
 				autoOpen: false,
-				width: 497,
-				height: 590,
-				title: "Address lookup",
-				resizable: true,
+				width: 550,
+				height: 270,
+				resizable: false,
 				modal: true
 			});
 
-		@*	$('#btnAddressLookup').click(function () {
-				$('#AddressLookupDialog').load("@Url.Action("AddressLookup")", function (){
+			$('#btnAddressLookup').click(function () {
+				$('#AddressLookupDialog').load("@Url.Action("AddressLookup")", function ()
+				{
 					$(this).dialog('open');
 					$(this).removeClass('ui-dialog-content ui-widget-content');
 				});
 				return false;
-			});*@
-
+			});
 		});
-
 	});
-
 </script>
 

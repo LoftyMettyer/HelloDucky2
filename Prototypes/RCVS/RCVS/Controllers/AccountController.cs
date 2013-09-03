@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
-using DotNetOpenAuth.AspNet;
-using Microsoft.Web.WebPages.OAuth;
 using RCVS.Classes;
 using RCVS.Helpers;
 using RCVS.WebServiceClasses;
-using WebMatrix.WebData;
-using RCVS.Filters;
 using RCVS.Models;
 using System.Xml.Linq;
 
@@ -72,19 +68,18 @@ namespace RCVS.Controllers
 
 			var temp = from u in XDocument.Parse(response).Descendants("DataRow")
 								 select new User
-								 {
-									 ContactNumber = Convert.ToInt64(u.Element("ContactNumber").Value),
-									 AddressNumber = Convert.ToInt64(u.Element("AddressNumber").Value),
-									 ContactName = u.Element("ContactName").Value,
-									 Title = u.Element("Title").Value,
-									 Initials = u.Element("Initials").Value,
-									 Forenames = u.Element("Forenames").Value,
-									 Surname = u.Element("Surname").Value,
-									 Honorifics = u.Element("Honorifics").Value,
-									 Salutation = u.Element("Salutation").Value,
-									 LabelName = u.Element("LabelName").Value,
-								 };
-
+									{
+										ContactNumber = Convert.ToInt64(u.Element("ContactNumber").Value),
+										AddressNumber = Convert.ToInt64(u.Element("AddressNumber").Value),
+										ContactName = u.Element("ContactName").Value,
+										Title = u.Element("Title").Value,
+										Initials = u.Element("Initials").Value,
+										Forenames = u.Element("Forenames").Value,
+										Surname = u.Element("Surname").Value,
+										Honorifics = u.Element("Honorifics").Value,
+										Salutation = u.Element("Salutation").Value,
+										LabelName = u.Element("LabelName").Value,
+									};
 
 			User user = (User)temp.FirstOrDefault();
 			//SelectContactData_InformationResult selectContactData_InformationResult = XmlHelper.DeserializeFromXmlToObject<SelectContactData_InformationResult>(response);
@@ -208,6 +203,116 @@ namespace RCVS.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		[AllowAnonymous]
+		public ActionResult AddressLookup()
+		{
+			return View();
+		}
+
+		[AllowAnonymous]
+		public string QASAddressLookup(string postcode)
+		{
+			//QASClient.QASClient client = new QASClient.QASClient(System.Configuration.ConfigurationManager.AppSettings["com.qas.proweb.serverURL"]);
+			//List<string> list = client.SearchByPostcode(postcode);
+
+			var list = new List<string>();
+
+			switch (postcode.ToUpper())
+			{
+				case "W3 6PF":
+					list.Add("57a Grafton Road,London,W3 6PF");
+					list.Add("64 Grafton Road,London,W3 6PF");
+					list.Add("65 Grafton Road,London,W3 6PF");
+					list.Add("66 Grafton Road,London,W3 6PF");
+					list.Add("Flat A-b 67 Grafton Road,London,W3 6PF");
+					list.Add("Flat C 67 Grafton Road,London,W3 6PF");
+					list.Add("68 Grafton Road,London,W3 6PF");
+					list.Add("68e Grafton Road,London,W3 6PF");
+					list.Add("69 Grafton Road,London,W3 6PF");
+					list.Add("70 Grafton Road,London,W3 6PF");
+					list.Add("71 Grafton Road,London,W3 6PF");
+					list.Add("72 Grafton Road,London,W3 6PF");
+					list.Add("73 Grafton Road,London,W3 6PF");
+					list.Add("74 Grafton Road,London,W3 6PF");
+					list.Add("75 Grafton Road,London,W3 6PF");
+					list.Add("75a Grafton Road,London,W3 6PF");
+					list.Add("76 Grafton Road,London,W3 6PF");
+					list.Add("77 Grafton Road,London,W3 6PF");
+					list.Add("78 Grafton Road,London,W3 6PF");
+					list.Add("79 Grafton Road,London,W3 6PF");
+					list.Add("80 Grafton Road,London,W3 6PF");
+					list.Add("80a Grafton Road,London,W3 6PF");
+					list.Add("81 Grafton Road,London,W3 6PF");
+					break;
+				case "EH6 8PF":
+					list.Add("3/1 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/2 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/3 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/4 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/5 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/6 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/7 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/8 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("3/9 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("7 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("9 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/1 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/2 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/3 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/4 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/5 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/6 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/7 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/8 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/9 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("11/10 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/1 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/2 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/3 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/4 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/5 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/6 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/7 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/8 Dalmeny Street,Edinburgh,EH6 8PF");
+					list.Add("13/9 Dalmeny Street,Edinburgh,EH6 8PF");
+					break;
+				case "OL8 3DF":
+					list.Add("137 Hollins Road,Oldham,OL8 3DF");
+					list.Add("139 Hollins Road,Oldham,OL8 3DF");
+					list.Add("141 Hollins Road,Oldham,OL8 3DF");
+					list.Add("143 Hollins Road,Oldham,OL8 3DF");
+					list.Add("145 Hollins Road,Oldham,OL8 3DF");
+					list.Add("147 Hollins Road,Oldham,OL8 3DF");
+					list.Add("149 Hollins Road,Oldham,OL8 3DF");
+					list.Add("151 Hollins Road,Oldham,OL8 3DF");
+					list.Add("153 Hollins Road,Oldham,OL8 3DF");
+					list.Add("155 Hollins Road,Oldham,OL8 3DF");
+					list.Add("157 Hollins Road,Oldham,OL8 3DF");
+					list.Add("157a Hollins Road,Oldham,OL8 3DF");
+					list.Add("159 Hollins Road,Oldham,OL8 3DF");
+					list.Add("161 Hollins Road,Oldham,OL8 3DF");
+					break;
+				case "SE11 4PT":
+					list.Add("365 Kennington Road,London,SE11 4PT");
+					list.Add("377 Kennington Road,London,SE11 4PT");
+					list.Add("379 Kennington Road,London,SE11 4PT");
+					list.Add("381 Kennington Road,London,SE11 4PT");
+					list.Add("405 Kennington Road,London,SE11 4PT");
+					list.Add("412 Kennington Road,London,SE11 4PT");
+					list.Add("Flat 414 Kennington Road,London,SE11 4PT");
+					break;
+			}
+
+			//list.Add("A1,A2,A3,P1");
+			//list.Add("B1,B2,B3,P2");
+			//list.Add("C1,C2,C3,P3");
+
+			var JSONSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+
+			string retVal = JSONSerializer.Serialize(list);
+			return retVal;
+		}
+
 		#region Helpers
 		private ActionResult RedirectToLocal(string returnUrl)
 		{
@@ -221,67 +326,6 @@ namespace RCVS.Controllers
 			}
 		}
 
-		public enum ManageMessageId
-		{
-			ChangePasswordSuccess,
-			SetPasswordSuccess,
-			RemoveLoginSuccess,
-		}
-
-		internal class ExternalLoginResult : ActionResult
-		{
-			public ExternalLoginResult(string provider, string returnUrl)
-			{
-				Provider = provider;
-				ReturnUrl = returnUrl;
-			}
-
-			public string Provider { get; private set; }
-			public string ReturnUrl { get; private set; }
-
-			public override void ExecuteResult(ControllerContext context)
-			{
-				OAuthWebSecurity.RequestAuthentication(Provider, ReturnUrl);
-			}
-		}
-
-		private static string ErrorCodeToString(MembershipCreateStatus createStatus)
-		{
-			// See http://go.microsoft.com/fwlink/?LinkID=177550 for
-			// a full list of status codes.
-			switch (createStatus)
-			{
-				case MembershipCreateStatus.DuplicateUserName:
-					return "User name already exists. Please enter a different user name.";
-
-				case MembershipCreateStatus.DuplicateEmail:
-					return "A user name for that e-mail address already exists. Please enter a different e-mail address.";
-
-				case MembershipCreateStatus.InvalidPassword:
-					return "The password provided is invalid. Please enter a valid password value.";
-
-				case MembershipCreateStatus.InvalidEmail:
-					return "The e-mail address provided is invalid. Please check the value and try again.";
-
-				case MembershipCreateStatus.InvalidAnswer:
-					return "The password retrieval answer provided is invalid. Please check the value and try again.";
-
-				case MembershipCreateStatus.InvalidQuestion:
-					return "The password retrieval question provided is invalid. Please check the value and try again.";
-
-				case MembershipCreateStatus.InvalidUserName:
-					return "The user name provided is invalid. Please check the value and try again.";
-
-				case MembershipCreateStatus.ProviderError:
-					return "The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-				case MembershipCreateStatus.UserRejected:
-					return "The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-				default:
-					return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-			}
-		}
 		#endregion
 
 	}

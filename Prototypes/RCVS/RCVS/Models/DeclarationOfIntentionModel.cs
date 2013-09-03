@@ -183,8 +183,8 @@ namespace RCVS.Models
 				if (Utils.ActivityIndex(activityList, "0TPD") >= 0)
 				{
 					m.GraduationDate = activityList.First(activity => activity.ActivityCode == "0TPD").ActivityDate;
-					m.CourseStartDate = activityList.First(activity => activity.ActivityCode == "0TPD").ValidFrom;
-					m.CourseEndDate = activityList.First(activity => activity.ActivityCode == "0TPD").ValidTo;
+					//			m.CourseStartDate = activityList.First(activity => activity.ActivityCode == "0TPD").ValidFrom;
+					//		m.CourseEndDate = activityList.First(activity => activity.ActivityCode == "0TPD").ValidTo;
 				}
 				if (Utils.ActivityIndex(activityList, "0NLC") >= 0)
 				{
