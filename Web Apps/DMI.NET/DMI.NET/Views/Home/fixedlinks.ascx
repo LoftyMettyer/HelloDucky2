@@ -64,13 +64,8 @@
 	//why was this here?...
 	//$("#officebar").tabs();
 
-</script><div class="RecDescPhoto"><%If DMI.NET.NullSafeString(Session("recdesc")).ToUpper.Contains("AVERY") Then%><img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="davery.jpg"}) %>"
-		alt="" />
-<%--	<i class="icon-user"></i>--%>
-<%Else%>
-<img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="mworthing.jpg"}) %>"
-		alt="" />
-<%End If%></div><div id="fixedlinks">
+</script>
+<div id="fixedlinks">
 	<div class="RecordDescription">
 		<p><a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" title="Home"><%=Session("recdesc")%></a></p>
 	</div>
@@ -392,4 +387,11 @@
 					</ul>
 				</li>
 			</ul>
-		</div></div><div class="FixedLinksRight"><ul><li></li></ul></div></div>
+		</div>
+	</div>
+	<div class="FixedLinksRight">
+		<ul>
+			<li></li>
+		</ul>
+	</div>
+</div>
