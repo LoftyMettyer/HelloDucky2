@@ -129,7 +129,7 @@
 				</li>
 				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="home">Record</a>
 					<ul>
-						<li><span>Edit</span>											
+						<li id="mnuEdit"><span>Edit</span>
 
 							<div id="mnutoolNewRecord" class="button">
 								<a href="#" rel="table" title="New Record">
@@ -187,7 +187,7 @@
 								<a href="#" rel="table" title="Previous Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Back</h6></a>
+									<h6>Previous</h6></a>
 							</div>
 							<div id="mnutoolNextRecord" class="button">
 								<a href="#" rel="table" title="Next Record">
@@ -203,13 +203,13 @@
 							</div>
 						</li>
 
-						<li><span>Locate Record</span>
+						<li id="mnuLocateRecord"><span>Locate Record</span>
 							<div id="mnutoolLocateRecords" class="textboxlist">
 								<ul><li>Go To<input type="text" /></li></ul>
 							</div>
 						</li>
 
-						<li><span>Find</span>
+						<li id="mnuFind"><span>Find</span>
 							<div id="mnutoolFind" class="button">
 								<a href="#" rel="table" title="Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
@@ -224,7 +224,7 @@
 									<h6>Quick Find</h6></a>
 							</div>
 						</li>
-						<li><span>Order</span>
+						<li id="mnuOrder"><span>Order</span>
 							<div id="mnutoolOrder" class="button" title="Change Order">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" />
@@ -251,7 +251,7 @@
 									<h6>Printer</h6></a>
 							</div>
 						</li>
-						<li><span>Reports</span>
+						<li id="mnuReports"><span>Reports</span>
 							<div id="mnutoolCalendarReportsRec" class="button">
 								<a href="#" rel="table" title="Calendar Reports">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"

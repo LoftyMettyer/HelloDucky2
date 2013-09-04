@@ -609,7 +609,7 @@
 									<td>
 										<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
 											<tr height="10">
-												<td colspan="8" style="visibility: hidden" >Filters : 
+												<td colspan="8">Filters : 
 												</td>
 											</tr>
 											<tr height="10">

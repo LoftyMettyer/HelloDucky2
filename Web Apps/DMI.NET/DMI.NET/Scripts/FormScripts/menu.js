@@ -1488,12 +1488,17 @@ function menu_refreshMenu() {
 		// enable/disable the tools required for the event log
 	if ((sCurrentWorkPage == "EVENTLOG")) {
 
-			//New functionality: switch ribbon tab to required item.
-			$("#toolbarRecord").show();
-			$("#toolbarRecord").click();
+		// New functionality: switch ribbon tab to required item.
+		$("#toolbarRecord").show();
+		$("#toolbarRecord").click();
 
-
-			var frmLog = document.getElementById("frmLog");
+		$("#mnuEdit").hide();
+		$("#mnuLocateRecord").hide();
+		$("#mnuFind").hide();
+		$("#mnuOrder").hide();
+		$("#mnuReports").hide();
+		
+		var frmLog = document.getElementById("frmLog");
 
 		menu_setVisibleMenuItem("mnubandMainToolBar", true);
 		menu_setVisibleMenuItem("mnutoolRecord", false);
