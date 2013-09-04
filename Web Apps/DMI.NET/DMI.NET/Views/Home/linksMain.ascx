@@ -1,4 +1,7 @@
-﻿<%@ Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
+﻿<% Response.CacheControl = "no-cache" %>
+<% Response.AddHeader("Pragma", "no-cache")%>
+<% Response.Expires = -1 %>
+<%@ Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
 
 <link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
