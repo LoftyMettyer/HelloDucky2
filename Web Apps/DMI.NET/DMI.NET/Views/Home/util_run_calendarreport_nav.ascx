@@ -177,7 +177,7 @@ End If
 											onclick="prevMonth();">
 									</td>
 									<td width="5"></td>
-									<td height="5" align="left" valign="top" width="100">
+									<td style="height: 5px;text-align: left;vertical-align: central;width: 100px">
 										<%
 											Response.Write(objCalendar.HTML_MonthCombo(0))
 										%>	

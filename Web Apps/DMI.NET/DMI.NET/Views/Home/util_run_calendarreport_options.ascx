@@ -2,13 +2,13 @@
 
 
 <form name="frmOptions" id="frmOptions">
-		<table align="center" class="outline" cellpadding="0" cellspacing="0" width="100%" height="100%">
+		<table align="center" cellpadding="0" cellspacing="0" width="100%" height="100%">
 				<tr>
 						<td>
 								<table class="invisible" cellspacing="0" cellpadding="2" width="100%" height="100%">
 										<tr height="5" valign="top">
 												<td width="5"></td>
-												<td height="100%" width="100%" align="left">Options :
+												<td height="100%" width="100%" align="left"><strong>Options :</strong>
 														<br>
 														<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																<tr>

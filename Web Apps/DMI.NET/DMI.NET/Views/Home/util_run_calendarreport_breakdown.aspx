@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-
 <%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
@@ -7,11 +6,15 @@
 <html>
 <head runat="server">
 	<title>Calendar Report Breakdown</title>
+
+
+	
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+
 
 	<script type="text/javascript">
 
@@ -333,24 +336,20 @@
 
 	<object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"
 		codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-		height="26" id="abEventDetails" name="abEventDetails" style="margin-top: -20px; LEFT: 0px; TOP: 0px" width="100%">
+		height="26" id="abEventDetails" name="abEventDetails" style="margin-top: -20px; LEFT: 0px; TOP: 0px; width: 100%">
 		<param name="_ExtentX" value="847">
 		<param name="_ExtentY" value="847">
 	</object>
 
 	<div>
-
-
 		<form id="frmDetails" name="frmDetails">
 
 			<table align="center" width="100%" height="95%" class="invisible" cellpadding="2" cellspacing="0">
 				<tr>
 					<td valign="top" width="100%" height="100%">
-						<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+						<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 							<tr height="10">
-								<td height="10" colspan="5" align="left" valign="top">Details :
-									<br>
-									<br>
+								<td height="10" colspan="5" align="left" valign="top">
 									<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 										<tr height="5">
 											<td width="5"></td>
@@ -371,7 +370,6 @@
 										</tr>
 										<tr height="5">
 											<td colspan="5">
-												<hr width="90%">
 											</td>
 										</tr>
 										<tr height="5">
@@ -403,7 +401,7 @@
 										</tr>
 										<tr height="5">
 											<td colspan="5">
-												<hr width="90%">
+												
 											</td>
 										</tr>
 										<tr height="5">
@@ -423,11 +421,11 @@
 											<td id="tdEventDesc2Value" name="tdEventDesc2Value" valign="top"></td>
 											<td width="5"></td>
 										</tr>
-										<tr height="5">
+										<%--<tr height="5">
 											<td colspan="5">
-												<hr width="90%">
+												
 											</td>
-										</tr>
+										</tr>--%>
 										<tr height="5">
 											<td width="5"></td>
 											<td nowrap valign="top">Calendar Code :</td>
@@ -439,9 +437,8 @@
 
 											If (Request("txtShowRegion") = 1) Or (Request("txtShowWorkingPattern") = 1) Then
 												Response.Write("			<tr height=5> " & vbCrLf)
-												Response.Write("						<td colspan=5><HR width=90")
-												Response.Write("%")
-												Response.Write("						></td>" & vbCrLf)
+												Response.Write("						<td colspan=5>")
+												Response.Write("						</td>" & vbCrLf)
 												Response.Write("					</tr>" & vbCrLf)
 											End If
 	
@@ -552,7 +549,7 @@
 						</table>
 					</td>
 					<tr height="5">
-						<td colspan="5" align="right">
+						<td colspan="5" align="center">
 							<input type="button" id="cmdOK" width="80" name="cmdOK" value="OK" style="WIDTH: 80px" class="btn"
 								onclick="okClick();" />
 						</td>
@@ -772,8 +769,6 @@
 		<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 			<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 		</form>
-
-
 	</div>
 </body>
 </html>

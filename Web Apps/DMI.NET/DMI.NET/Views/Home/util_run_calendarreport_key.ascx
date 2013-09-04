@@ -3,30 +3,30 @@
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
 <form id="frmKey" name="frmKey">
-    <table align="center" class="outline" cellpadding="0" cellspacing="0" width="100%" height="100%">
-        <tr>
-            <td>
-                <table class="invisible" cellspacing="0" cellpadding="2" width="100%" height="100%">
-                    <tr height="5" valign="top">
-                        <td width="5"></td>
-                        <td height="100%" width="100%" align="left">Key :
-                            <br>
-                            <object
-                                classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
-                                codebase="cabs/COAInt_CalRepKey.cab#version=1,0,0,2"
-                                id="ctlKey"
-                                name="ctlKey"
-                                width="100%"
-                                height="95"
-                                style="width: 100%; height: 95px">
-                            </object>
-                        </td>
-                        <td width="5"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+	<table align="center" cellpadding="0" cellspacing="0" width="100%" height="100%">
+		<tr>
+			<td>
+				<table class="invisible" cellspacing="0" cellpadding="2" width="100%" height="100%">
+					<tr height="5" valign="top">
+						<td width="5"></td>
+						<td height="100%" width="100%" align="left"><strong>Key :</strong>
+              <br>
+							<object
+								classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
+								codebase="cabs/COAInt_CalRepKey.cab#version=1,0,0,2"
+								id="ctlKey"
+								name="ctlKey"
+								width="100%"
+								height="95"
+								style="width: 100%; height: 95px;">
+							</object>
+						</td>
+						<td width="5"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </form>
 
 	<form id=frmKeyInfo name=frmKeyInfo style="visibility:hidden;display:none">

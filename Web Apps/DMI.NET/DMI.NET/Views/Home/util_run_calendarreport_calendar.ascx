@@ -147,7 +147,7 @@
 						"""&txtBaseIndex="" + escape(frmEventDetails.txtBaseIndex.value) +" & vbCrLf & _
 						"""&CalRepUtilID="" + escape(frmCalendar.txtCalRep_UtilID.value) +" & vbCrLf & _
 						"""&txtLabelIndex="" + escape(frmEventDetails.txtLabelIndex.value);" & vbCrLf & _
-						"openDialog(sURL, 370,475, ""yes"", ""no"");" & vbCrLf)
+						"openDialog(sURL, 370,350, ""yes"", ""no"");" & vbCrLf)
 
 				Response.Write("			}" & vbCrLf)
 				Response.Write("		}	" & vbCrLf)
