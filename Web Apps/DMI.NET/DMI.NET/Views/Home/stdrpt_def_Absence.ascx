@@ -163,7 +163,7 @@
 	Response.Write("frmAbsenceDefinition.txtDateTo.value = " & """" & CleanStringForJavaScript(strDate) & """" & ";" & vbCrLf)
 
 	' Record Selection
-	If Session("optionRecordID") = 0 Then
+	If Session("optionRecordID") = "0" Then
 
 		strType = objSettings.GetSystemSetting(strReportType, "Type", "A")
 		
@@ -329,7 +329,7 @@
 %>
 
 <form id="frmAbsenceDefinition" name="frmAbsenceDefinition">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="700" height="60%">
+	<table cellpadding="5" cellspacing="0" width="700" height="60%">
 		<tr>
 			<td>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -391,17 +391,16 @@
 						<td>
 							<!-- First tab -->
 							<div id="div1">
-								<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+								<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 									<tr valign="top">
 										<td valign="top" rowspan="2" width="25%" height="100%">
 											<table class="invisible" cellspacing="0" cellpadding="4" width="100%" height="100%">
-												<tr height="10">
-													<td height="10" align="left" valign="top">Absence Types :
-														<br>
-														<br>
-														<span id="AbsenceTypes" style="width: 300px; height: 200px; overflow: auto;" class="outline">
-															<table class="invisible" cellspacing="0" cellpadding="0" width="100%" bgcolor="white">
-																<tr>
+												<tr style="height:40px">
+													<td style="width: 400px; height:40px; text-align: left; vertical-align: top"><strong>Absence Types :</strong>
+														<br><br>
+														<span id="AbsenceTypes" style="width: 500px; height: 200px; overflow: auto;" >
+															<table class="invisible" cellspacing="0" style="width: 200px;padding: 0">
+																<tr style="padding-top: 20px">
 																	<td>
 																		<%
 																			For iCount = 0 To UBound(aAbsenceTypes) - 1
@@ -436,14 +435,14 @@
 													</td>
 
 													<td height="10" align="left" valign="top">
-														<table cellspacing="1" cellpadding="1" width="100%" class="outline">
+														<table cellspacing="1" cellpadding="1" width="100%" >
+															<tr>
+																<td colspan="2" style="font-weight: bold">Date Range :</td>
+															</tr>
+															<tr style="height: 10px"> </tr>
 															<tr>
 																<td>
 																	<table border="0">
-																		<tr>
-																			<td colspan="2">Date Range :
-																			</td>
-																		</tr>
 																		<tr>
 																			<td width="100">Start Date :
 																			</td>
@@ -463,19 +462,21 @@
 															</tr>
 														</table>
 
-														&nbsp
+														&nbsp;
 
 													<span id="RecordSelection">
-														<table cellspacing="1" cellpadding="1" width="300" class="outline">
+														<table cellspacing="1" cellpadding="1" width="300" >
 															<tr height="10">
-																<td height="10" align="left" valign="top">Record Selection :
+																<td style="height:10px; text-align: left; vertical-align : top; font-weight: bold">Record Selection :</td>
+
 																	<table class="invisible" cellspacing="0" cellpadding="3">
+																	<tr style="height: 10px" </tr>
 																		<tr>
 																			<table width="325" height="80%" border="0" cellspacing="0" cellpadding="5">
 																			<td>
 																				<table width="360" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
-																						<td width="95" colspan="3">
+																						<td style="width:95PX; padding-bottom: 6px" colspan="3">
 																							<input checked id="optAllRecords" name="optAllRecords" type="radio"
 																								onclick="changeRecordOptions('all')"
 																								onmouseover="try{radio_onMouseOver(this);}catch(e){}"
@@ -557,7 +558,7 @@
 															</tr>
 															<tr>
 																<td>
-																	<table width="100%" class="invisible" cellspacing="0" cellpadding="5">
+																	<table width="100%" class="invisible" cellspacing="0">
 																		<tr>
 																			<td>
 																				<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1"
@@ -593,12 +594,14 @@
 				</div>
 						<!-- Second Tab (Options) -->
 				<div id="div2" style="display: none">
-					<table width="100%" class="outline" cellspacing="0" cellpadding="5">
+					<table width="100%"  cellspacing="0" cellpadding="5">
 						<tr>
 							<td>
 								<table width="100%" class="invisible" cellspacing="0" cellpadding="5">
 									<td>
 										<table class="invisible" cellspacing="0" cellpadding="0">
+											<tr><td style="font-weight:bold">Display :</td></tr>
+											<tr style="height: 10px"></tr>
 											<tr>
 												<td>
 													<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="-1"
@@ -694,10 +697,11 @@
 										</table>
 									</td>
 								</table>
-								<hr />
 								<table width="100%" class="invisible" cellspacing="0" cellpadding="5">
 									<td>
 										<table class="invisible" cellspacing="0" cellpadding="0">
+											<tr><td style="font-weight:bold">Record Selection :</td></tr>
+											<tr style="height: 10px"></tr>
 											<tr>
 												<td>
 													<input type="checkbox" id="chkOmitBeforeStart" name="chkOmitBeforeStart" tabindex="-1"
@@ -755,8 +759,8 @@
 																	onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
 																	Minimum Bradford Factor
 																</label>
-																&nbsp
-																		&nbsp
+																&nbsp;
+																&nbsp;
 																		<input id="txtMinimumBradfordFactor" name="txtMinimumBradfordFactor" class="text"
 																			onblur="validateNumeric(this);">
 															</td>
@@ -767,15 +771,15 @@
 										</table>
 									</td>
 								</table>
-								<hr />
 								<table width="100%" class="invisible" cellspacing="0" cellpadding="5">
 									<td>
 										<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+											<tr><td style="font-weight:bold">Order :</td></tr>
+											<tr style="height: 10px"></tr>
 											<tr>
-												<td>Order By : 
-												</td>
-												<td width="50%">
-													<select id="cboOrderBy1" name="cboOrderBy1" style="WIDTH: 50%" class="combo"
+												<td style="white-space: nowrap;width:15%" >Order By :</td>
+												<td style="width:60%">
+													<select id="cboOrderBy1" name="cboOrderBy1" style="width: 60%" class="combo"
 														onchange="refreshTab2Controls();">
 														<option value="0">&lt;None&gt;</option>
 														<%
@@ -784,8 +788,8 @@
 															Next
 														%>
 													</select>
-												</td>
-												<td>
+												<%--</td>
+												<td>--%>
 													<input type="checkbox" id="chkOrderBy1Asc" name="chkOrderBy1Asc" tabindex="-1"
 														onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 														onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -801,12 +805,12 @@
 														Ascending
 													</label>
 												</td>
+												<td></td>
 											</tr>
 											<tr>
-												<td>Then : 
-												</td>
-												<td width="50%">
-													<select id="cboOrderBy2" name="cboOrderBy2" style="WIDTH: 50%" class="combo"
+												<td style="white-space: nowrap;width:15%">Then : </td>
+												<td width="60%">
+													<select id="cboOrderBy2" name="cboOrderBy2" style="width: 60%" class="combo"
 														onchange="refreshTab2Controls();">
 														<option value="0">&lt;None&gt;</option>
 														<%
@@ -815,8 +819,8 @@
 															Next
 														%>
 													</select>
-												</td>
-												<td>
+												<%--</td>
+												<td>--%>
 													<input type="checkbox" id="chkOrderBy2Asc" name="chkOrderBy2Asc" tabindex="-1"
 														onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 														onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -832,6 +836,7 @@
 														Ascending
 													</label>
 												</td>
+												<td style="width:100%"> </td>
 											</tr>
 										</table>
 									</td>
@@ -843,15 +848,15 @@
 
 				<!-- Third tab -->
 				<div id="div3" style="visibility: hidden; display: none">
-					<table width="100%" height="100%" class="outline" cellspacing="0" cellpadding="5">
+					<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 						<tr valign="top">
 							<td>
 								<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 									<tr>
 										<td valign="top" rowspan="2" width="25%" height="100%">
-											<table class="outline" cellspacing="0" cellpadding="4" width="160" height="100%">
+											<table  cellspacing="0"  style="width:200px; height:100%; padding:4px">
 												<tr height="10">
-													<td height="10" align="left" valign="top">Output Format :
+													<td height="10" align="left" valign="top"><strong>Output Format :</strong>
 														<br>
 														<br>
 														<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -988,8 +993,7 @@
 																		for="optOutputFormat4"
 																		class="radio"
 																		onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
-																	Excel Worksheet
+																		onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Excel Worksheet
 																				</label>
 																</td>
 																<td width="5">&nbsp</td>
@@ -1071,9 +1075,9 @@
 											</table>
 										</td>
 										<td valign="top" width="75%">
-											<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
+											<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
 												<tr height="10">
-													<td height="10" align="left" valign="top">Output Destination(s) :
+													<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
 														<br>
 														<br>
 														<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -1149,7 +1153,7 @@
 																</td>
 																<td width="15">&nbsp</td>
 																<td colspan="2">
-																	<select id="cboPrinterName" name="cboPrinterName" class="combo" width="100%" style="WIDTH: 220">
+																	<select id="cboPrinterName" name="cboPrinterName" class="combo" width="100%" style="WIDTH: 100%">
 																	</select>
 																</td>
 																<td width="5">&nbsp</td>
@@ -1173,7 +1177,7 @@
 																		onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
 																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
 																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																		Save to file
+																		Save to file - 
 																	</label>
 																</td>
 																<td width="30" nowrap>&nbsp</td>
@@ -1236,7 +1240,7 @@
 															onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
 															onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
 															onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-															Send as email 
+															Send as email - 
 														</label>
 													</td>
 													<td width="30" nowrap>&nbsp</td>
@@ -1274,7 +1278,7 @@
 										</td>
 										<td width="15">&nbsp</td>
 										<td colspan="2" width="100%" nowrap>
-											<input id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 220">
+											<input id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 100%">
 										</td>
 										<td width="5">&nbsp</td>
 									</tr>
@@ -1289,7 +1293,7 @@
 										</td>
 										<td width="15">&nbsp</td>
 										<td colspan="2" width="100%" nowrap>
-											<input id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs" style="WIDTH: 220">
+											<input id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs" style="WIDTH: 100%">
 										</td>
 										<td width="5">&nbsp</td>
 									</tr>
@@ -1316,24 +1320,24 @@
 					<td colspan="3"></td>
 				</tr>
 
-	<tr height="10">
-		<td width="10"></td>
+	<tr style="height:10px">
 		<td>
 			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 				<tr>
-					<td>&nbsp;</td>
-					<td width="80">
-						<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
-							onclick="absence_returnToRecEdit()" />
-					</td>
-					<td>
+					<td style="width:80px; text-align: left;padding-left: 20px">
 						<input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
 							onclick="absence_okClick()" />
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
+							onclick="absence_returnToRecEdit()" />
 					</td>
 					<td width="10"></td>
 				</tr>
 			</table>
 		</td>
+		<td width="10"></td>
 		<td width="10"></td>
 	</tr>
 
