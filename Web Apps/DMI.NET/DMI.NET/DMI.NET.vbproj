@@ -585,6 +585,14 @@
     <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\FormScripts\util_run_calendarreports.js" />
     <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
+    <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
+    <Content Include="Scripts\jquery\jOrgChart\css\custom.css" />
+    <Content Include="Scripts\jquery\jOrgChart\css\jquery.jOrgChart.css" />
+    <Content Include="Scripts\jquery\jOrgChart\css\prettify.css" />
+    <Content Include="Scripts\jquery\jOrgChart\images\bkgd.png" />
+    <Content Include="Scripts\jquery\jOrgChart\images\raspberry.jpg" />
+    <Content Include="Scripts\jquery\jOrgChart\jquery.jOrgChart.js" />
+    <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
@@ -1017,6 +1025,7 @@
     <Content Include="Views\Home\lookupFind.ascx" />
     <Content Include="Views\Home\oleFind.ascx" />
     <Content Include="Views\Home\orderselect.ascx" />
+    <Content Include="Views\Home\OrgChart.ascx" />
     <Content Include="Views\Home\promptedValues.aspx" />
     <Content Include="Views\Home\promptedValues_completed.aspx" />
     <Content Include="Views\Home\stdrpt_AbsenceCalendar.ascx" />

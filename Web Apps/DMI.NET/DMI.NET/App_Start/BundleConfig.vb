@@ -37,6 +37,8 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.mousewheel.js",
 				"~/Scripts/jquery/jquery.rightClick.js",
 				"~/Scripts/jquery/jquery.ui.touch-punch.min.js",
+				"~/Scripts/jquery/jOrgChart/prettify.js",
+				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
 				"~/Scripts/officebar/jquery.officebar.js"))
 
 			' OpenHR core

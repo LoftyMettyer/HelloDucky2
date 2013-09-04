@@ -363,8 +363,7 @@ function menu_abMainMenu_Click(pTool) {
 }
 
 
-function menu_MenuClick(sTool) {
-	
+function menu_MenuClick(sTool) {	
 		//ignore clicks from 'fixed links' which have no 'id'.
 		if (!sTool) return false;
 		//new ribbon buttons for utils - ignore click.
@@ -403,7 +402,18 @@ function menu_MenuClick(sTool) {
 	frmRefresh = OpenHR.getForm("refresh", "frmRefresh");
 	OpenHR.submitForm(frmRefresh);
 
-
+	if (sToolName == "mnutoolOrgChart") {
+		//window.location.href = "OrgChart";		
+		$.ajax({
+			url: "Home/OrgChart",
+			type: "GET",
+			dataType: 'html',
+			success: function(html) {
+				$('#workframe').html(html);
+			}
+		});
+	}
+	
 	if (sToolName == "mnutoolLogoff") {
 		menu_logoffIntranet();
 		return;

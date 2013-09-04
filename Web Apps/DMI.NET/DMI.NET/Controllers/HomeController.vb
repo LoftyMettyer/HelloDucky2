@@ -5638,6 +5638,9 @@ Namespace Controllers
 
 #End Region
 
+		Public Function OrgChart() As PartialViewResult
+			Return PartialView()
+		End Function
 
 	End Class
 

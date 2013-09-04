@@ -516,6 +516,7 @@
 				<li id="mnutoolTableScreens"><a href="#">Table Screens</a>
 					<ul id="mnubandTableScreens"></ul>
 				</li>
+				<li id="mnutoolOrgChart"><a href="#">Org Chart...</a></li>
 				<li id="mnutoolLogoff"><a href="#">Log Off...</a></li>
 			</ul>
 		</div>
