@@ -750,8 +750,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenHR Database.publish.xml" />
-    <None Include="OpenHR Database_1.publish.xml" />
-    <None Include="51 database.xml" />
-    <None Include="52_master.publish.xml" />
   </ItemGroup>
 </Project>
