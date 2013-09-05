@@ -111,7 +111,7 @@ function CalculatedDefaultColumns() {
 		var objScreenControl = getScreenControl_Collection($(this).val());
 
 		if ((objScreenControl.ColumnID > 0) &&
-			(objScreenControl.TableID = $("#txtRecEditTableID").val()) &&
+			(objScreenControl.TableID == $("#txtRecEditTableID").val()) &&
 			(objScreenControl.SelectGranted) &&
 			(objScreenControl.DfltValueExprID > 0)) {
 
