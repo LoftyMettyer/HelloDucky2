@@ -9,17 +9,13 @@ Public Class Report
 
 	' Variables to store definition
 	Private mstrCustomReportsName As String
-	Private mstrCustomReportsDescription As String
 	Private mlngCustomReportsBaseTable As Integer
 	Private mstrCustomReportsBaseTableName As String
-	Private mlngCustomReportsAllRecords As Integer
 	Private mlngCustomReportsPickListID As Integer
 	Private mlngCustomReportsFilterID As Integer
 	Private mlngCustomReportsParent1Table As Integer
-	Private mstrCustomReportsParent1TableName As String
 	Private mlngCustomReportsParent1FilterID As Integer
 	Private mlngCustomReportsParent2Table As Integer
-	Private mstrCustomReportsParent2TableName As String
 	Private mlngCustomReportsParent2FilterID As Integer
 	Private mblnCustomReportsSummaryReport As Boolean
 	Private mblnIgnoreZerosInAggregates As Boolean
@@ -44,9 +40,7 @@ Public Class Report
 	Private miChildTablesCount As Short
 	Private miUsedChildCount As Short
 
-	Private mlngCustomReportsParent1AllRecords As Integer
 	Private mlngCustomReportsParent1PickListID As Integer
-	Private mlngCustomReportsParent2AllRecords As Integer
 	Private mlngCustomReportsParent2PickListID As Integer
 
 	' Recordsets to store the definition and column information
@@ -56,7 +50,6 @@ Public Class Report
 	Private mclsData As clsDataAccess
 	Private mclsGeneral As clsGeneral
 	Private mobjEventLog As clsEventLog
-
 
 	' TableViewsGuff
 	Private mstrRealSource As String
@@ -115,13 +108,9 @@ Public Class Report
 	Private mstrLocalDecimalSeparator As String
 	Private mlngColumnLimit As Integer
 
-	Private mintVisibleColumnCount As Short
-
 	Private Const lng_SEQUENCECOLUMNNAME As String = "?ID_SEQUENCE_COLUMN"
 
 	Private mbUseSequence As Boolean
-
-	Private mbDefinitionOwner As Boolean
 
 	Private mstrBradfordStartDate As String
 	Private mstrBradfordEndDate As String
@@ -416,13 +405,6 @@ End Enum
 			' Error information passed back to the asp page
 			ErrorString = mstrErrorString
 
-		End Get
-	End Property
-
-
-	Public ReadOnly Property VisibleColumnCount() As Short
-		Get
-			VisibleColumnCount = mintVisibleColumnCount
 		End Get
 	End Property
 
@@ -774,17 +756,13 @@ ExecuteSQL_ERROR:
 			End If
 
 			mstrCustomReportsName = .Fields("Name").Value
-			mstrCustomReportsDescription = .Fields("Description").Value
 			mlngCustomReportsBaseTable = .Fields("BaseTable").Value
 			mstrCustomReportsBaseTableName = mclsGeneral.GetTableName(mlngCustomReportsBaseTable)
-			mlngCustomReportsAllRecords = .Fields("AllRecords").Value
 			mlngCustomReportsPickListID = .Fields("picklist").Value
 			mlngCustomReportsFilterID = .Fields("Filter").Value
 			mlngCustomReportsParent1Table = .Fields("parent1table").Value
-			mstrCustomReportsParent1TableName = mclsGeneral.GetTableName(mlngCustomReportsParent1Table)
 			mlngCustomReportsParent1FilterID = .Fields("parent1filter").Value
 			mlngCustomReportsParent2Table = .Fields("parent2table").Value
-			mstrCustomReportsParent2TableName = mclsGeneral.GetTableName(mlngCustomReportsParent2Table)
 			mlngCustomReportsParent2FilterID = .Fields("parent2filter").Value
 
 			mblnCustomReportsSummaryReport = .Fields("Summary").Value
@@ -792,11 +770,7 @@ ExecuteSQL_ERROR:
 			mblnCustomReportsPrintFilterHeader = .Fields("PrintFilterHeader").Value
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngCustomReportsParent1AllRecords = IIf(IsDBNull(.Fields("parent1AllRecords").Value), 0, .Fields("parent1AllRecords").Value)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mlngCustomReportsParent1PickListID = IIf(IsDBNull(.Fields("parent1Picklist").Value), 0, .Fields("parent1Picklist").Value)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngCustomReportsParent2AllRecords = IIf(IsDBNull(.Fields("parent2AllRecords").Value), 0, .Fields("parent2AllRecords").Value)
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mlngCustomReportsParent2PickListID = IIf(IsDBNull(.Fields("parent2Picklist").Value), 0, .Fields("parent2Picklist").Value)
 
@@ -4616,26 +4590,16 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 		mlngCustomReportID = 0
 		mstrCustomReportsName = vbNullString
-		mstrCustomReportsDescription = vbNullString
 		mlngCustomReportsBaseTable = 0
 		mstrCustomReportsBaseTableName = vbNullString
-		mlngCustomReportsAllRecords = 1
 		mlngCustomReportsPickListID = 0
 		mlngCustomReportsFilterID = 0
 		mlngCustomReportsParent1Table = 0
-		mstrCustomReportsParent1TableName = vbNullString
-		mlngCustomReportsParent1AllRecords = 1
 		mlngCustomReportsParent1PickListID = 0
 		mlngCustomReportsParent1FilterID = 0
 		mlngCustomReportsParent2Table = 0
-		mstrCustomReportsParent2TableName = vbNullString
-		mlngCustomReportsParent2AllRecords = 1
 		mlngCustomReportsParent2PickListID = 0
 		mlngCustomReportsParent2FilterID = 0
-		'  mlngCustomReportsChildTable = 0
-		'  mstrCustomReportsChildTableName = vbNullString
-		'  mlngCustomReportsChildFilterID = 0
-		'  mlngCustomReportsChildMaxRecords = 0
 		mblnCustomReportsSummaryReport = False
 		mblnCustomReportsPrintFilterHeader = False
 		mlngSingleRecordID = 0
@@ -5267,14 +5231,11 @@ CalculateBradfordFactors_ERROR:
 		'Set the grid header with no picklist/filter information
 		mstrCustomReportsName = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
 
-		mstrCustomReportsDescription = mstrCustomReportsName
 		mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
 		mstrCustomReportsBaseTableName = datGeneral.GetTableName(mlngCustomReportsBaseTable)
 		mlngCustomReportsParent1Table = 0
-		mstrCustomReportsParent1TableName = ""
 		mlngCustomReportsParent1FilterID = 0
 		mlngCustomReportsParent2Table = 0
-		mstrCustomReportsParent2TableName = ""
 		mlngCustomReportsParent2FilterID = 0
 
 		ReDim Preserve mvarChildTables(5, 0)
@@ -5297,19 +5258,8 @@ CalculateBradfordFactors_ERROR:
 		'****************************************
 
 		mblnCustomReportsSummaryReport = False
-		'mintCustomReportsDefaultOutput = 0
-		'mintCustomReportsDefaultExportTo = 0
-		'mblnCustomReportsDefaultSave = False
-		'mstrCustomReportsDefaultSaveAs = ""
-		'mblnCustomReportsDefaultCloseApp = False
-
-		mlngCustomReportsParent1AllRecords = True
 		mlngCustomReportsParent1PickListID = 0
-		mlngCustomReportsParent2AllRecords = True
 		mlngCustomReportsParent2PickListID = 0
-
-		'TM20020503 Fault 3837 - Automatically the definition owner as this is a bradford adhoc report.
-		mbDefinitionOwner = True
 
 		If Not IsRecordSelectionValid() Then
 			GetBradfordReportDefinition = False
