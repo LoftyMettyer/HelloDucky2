@@ -1,0 +1,786 @@
+[Root]
+Most Recent Package=COA_IntClient
+
+
+[Package|Dep File 1|Root]
+SubWizProgID=PDWizard.DepPkgSubWiz
+BuildFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+
+[Package|Dep File 1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Dep File 1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Dep File 1|Files Found]
+
+[Package|Dep File 1|Files Released]
+
+[Package|Dep File 1|Missing Dependency Information]
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=
+
+[Package|Dep File 1|Out-of-Date Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=
+
+[Package|Dep File 1|Files Added]
+
+[Package|Dep File 1|Files Removed]
+c:\program files\microsoft office\office\excel9.olb=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\mfc42.dll=
+c:\windows\system32\msvcrt.dll=
+c:\program files\microsoft office\office\msword9.olb=
+
+[Package|Dep File 1|Files In Project]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=No
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=Yes
+C:\WINDOWS\system32\msvcrt.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=Yes
+C:\WINDOWS\system32\comctl32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msmapi32.Ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComDlg32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mfc42.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=Yes
+
+[Package|Dep File 1|Configure Registry Files]
+Applicable=
+
+[Package|Dep File 1|Configure Remote Servers]
+Applicable=
+
+[Package|Dep File 1|Install Locations]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=$(AppPath)
+C:\WINDOWS\system32\comctl32.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msmapi32.Ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=$(AppPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=$(AppPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComDlg32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=$(WinSysPath)
+
+[Package|Dep File 1|Configure Shared Files]
+Applicable=
+
+[Package|Dep File 1|DepFile]
+DepCabFile=COAInt_Client.CAB
+DepCabRun=COAInt_Client.INF
+
+[Package|Dep File 1|Package]
+PackageFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ProjectFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ServerSideCab=
+File1=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.DEP
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|Internet Package 1|Root]
+SubWizProgID=PDWizard.InetCABPkgSubWiz
+BuildFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package
+
+[Package|Internet Package 1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Internet Package 1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Internet Package 1|Files Found]
+
+[Package|Internet Package 1|Files Released]
+MSWORD.OLB=
+EXCEL.EXE=
+
+[Package|Internet Package 1|Missing Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=
+C:\WINDOWS\system32\ieframe.dll=
+
+[Package|Internet Package 1|Out-of-Date Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=
+
+[Package|Internet Package 1|Files Added]
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\mschrt20.ocx=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\sspng2.dll=
+c:\dev\intranet\hr pro activex\coaint_chart\coaint_chart.ocx=
+
+[Package|Internet Package 1|Files Removed]
+c:\windows\system32\msvcrt.dll=
+c:\program files\microsoft office\office\excel9.olb=
+c:\program files\microsoft office\office\msword9.olb=
+
+[Package|Internet Package 1|Files In Project]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSVBVM60.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comcat.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSMAPI32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCT232.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMDLG32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSCHRT20.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=Yes
+C:\WINDOWS\system32\msvcrt.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mfc42.dll=Yes
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=No
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=No
+C:\WINDOWS\system32\comctl32.dll=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Chart\COAInt_Chart.ocx=Yes
+C:\WINDOWS\system32\ieframe.dll=Yes
+
+[Package|Internet Package 1|Configure Registry Files]
+Applicable=No
+
+[Package|Internet Package 1|Configure Remote Servers]
+Applicable=No
+
+[Package|Internet Package 1|Install Locations]
+
+[Package|Internet Package 1|Configure Shared Files]
+Applicable=
+
+[Package|Internet Package 1|ComponentInfo]
+COAInt_Client.dll=thiscab
+msvbvm60.dll=thiscab
+OLEAUT32.DLL=thiscab
+OLEPRO32.DLL=thiscab
+ASYCFILT.DLL=thiscab
+STDOLE2.TLB=thiscab
+COMCAT.DLL=thiscab
+scrrun.dll=thiscab
+MSVCRT.DLL=thiscab
+objsafe.tlb=thiscab
+msmapi32.Ocx=thiscab
+ComDlg32.OCX=thiscab
+COA_Spinner.ocx=thiscab
+ComCt232.ocx=thiscab
+ActBar.ocx=thiscab
+COAInt_OptionGroup.ocx=thiscab
+COA_Line.ocx=thiscab
+COAInt_Grid.ocx=thiscab
+ssdw3bo.ocx=thiscab
+COAInt_CalRepRecord.ocx=thiscab
+COAInt_RecordDMI.ocx=thiscab
+titext6.ocx=thiscab
+timask6.ocx=thiscab
+tinumb6.ocx=thiscab
+tidate6.ocx=thiscab
+mscomctl.OCX=thiscab
+COA_Image.ocx=thiscab
+COA_WorkingPattern.ocx=thiscab
+COA_Label.ocx=thiscab
+COAInt_Lookup.ocx=thiscab
+COAInt_OLE.ocx=thiscab
+COA_Navigation.ocx=thiscab
+COAInt_CalRepDates.ocx=thiscab
+COAInt_Embed.ocx=thiscab
+COAInt_CalRepKey.ocx=thiscab
+mscomct2.ocx=thiscab
+msado25.tlb=thiscab
+comctl32.Ocx=thiscab
+COAInt_RecordSSI.ocx=thiscab
+Codejock.Controls.v13.1.0.ocx=thiscab
+ssmedt32.dll=thiscab
+ssprn32.dll=thiscab
+ssr2c.dll=thiscab
+tishare6.dll=thiscab
+tibase6.dll=thiscab
+MSCHRT20.OCX=thiscab
+comdlg32.dll=thiscab
+SSTree.ocx=thiscab
+mfc42.dll=thiscab
+SSPng2.dll=thiscab
+SSPng.dll=thiscab
+comctl32.dll=thiscab
+COA_ColourSelector.ocx=thiscab
+COA_ColourPicker.ocx=thiscab
+COAInt_Chart.ocx=thiscab
+ieframe.dll=thiscab
+
+[Package|Internet Package 1|ObjectInfo]
+clsEncryption=true;true
+clsPrinter=true;true
+clsGeneral=true;true
+clsOutputRun=true;true
+
+[Package|Internet Package 1|Package]
+PackageFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package
+ProjectFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ServerSideCab=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.CAB
+File1=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.CAB
+File2=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.HTM
+Handler1=PDWizard.WebPostDplySubWiz
+Handler2=PDWizard.FolderDplySubWiz
+
+
+[Package|Dep File 2|Root]
+SubWizProgID=PDWizard.DepPkgSubWiz
+BuildFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+
+[Package|Dep File 2|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Dep File 2|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Dep File 2|Files Found]
+
+[Package|Dep File 2|Files Released]
+MSWORD.OLB=
+EXCEL.EXE=
+
+[Package|Dep File 2|Missing Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=
+C:\WINDOWS\system32\ieframe.dll=
+
+[Package|Dep File 2|Out-of-Date Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=
+
+[Package|Dep File 2|Files Added]
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\mschrt20.ocx=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\sspng2.dll=
+c:\dev\intranet\hr pro activex\coaint_chart\coaint_chart.ocx=
+
+[Package|Dep File 2|Files Removed]
+c:\windows\system32\msvcrt.dll=
+c:\program files\microsoft office\office\excel9.olb=
+c:\program files\microsoft office\office\msword9.olb=
+c:\windows\system32\ieframe.dll=
+
+[Package|Dep File 2|Files In Project]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSVBVM60.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comcat.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSMAPI32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCT232.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMDLG32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSCHRT20.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=Yes
+C:\WINDOWS\system32\msvcrt.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mfc42.dll=Yes
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=No
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=No
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Chart\COAInt_Chart.ocx=Yes
+C:\WINDOWS\system32\ieframe.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.dll=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_ActiveBar\COAInt_ActiveBar.ocx=Yes
+
+[Package|Dep File 2|Configure Registry Files]
+Applicable=No
+
+[Package|Dep File 2|Configure Remote Servers]
+Applicable=No
+
+[Package|Dep File 2|Install Locations]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msmapi32.Ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=$(WinSysPath)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=$(CommonFilesSys)\ADO
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComDlg32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mfc42.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_ActiveBar\COAInt_ActiveBar.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSCHRT20.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=$(WinSysPath)
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Chart\COAInt_Chart.ocx=$(WinSysPath)
+
+[Package|Dep File 2|Configure Shared Files]
+Applicable=
+
+[Package|Dep File 2|ComponentInfo]
+COAInt_Client.dll=thiscab
+msvbvm60.dll=thiscab
+OLEAUT32.DLL=thiscab
+OLEPRO32.DLL=thiscab
+ASYCFILT.DLL=thiscab
+STDOLE2.TLB=thiscab
+COMCAT.DLL=thiscab
+scrrun.dll=thiscab
+MSVCRT.DLL=thiscab
+objsafe.tlb=thiscab
+msmapi32.Ocx=thiscab
+ComDlg32.OCX=thiscab
+COA_Spinner.ocx=thiscab
+ComCt232.ocx=thiscab
+ActBar.ocx=thiscab
+COAInt_OptionGroup.ocx=thiscab
+COA_Line.ocx=thiscab
+COAInt_Grid.ocx=thiscab
+ssdw3bo.ocx=thiscab
+COAInt_CalRepRecord.ocx=thiscab
+COAInt_RecordDMI.ocx=thiscab
+titext6.ocx=thiscab
+timask6.ocx=thiscab
+tinumb6.ocx=thiscab
+tidate6.ocx=thiscab
+mscomctl.OCX=thiscab
+COA_Image.ocx=thiscab
+COA_WorkingPattern.ocx=thiscab
+COA_Label.ocx=thiscab
+COAInt_Lookup.ocx=thiscab
+COAInt_OLE.ocx=thiscab
+COA_Navigation.ocx=thiscab
+COAInt_CalRepDates.ocx=thiscab
+COAInt_Embed.ocx=thiscab
+COAInt_CalRepKey.ocx=thiscab
+mscomct2.ocx=thiscab
+msado25.tlb=thiscab
+comctl32.Ocx=thiscab
+COAInt_RecordSSI.ocx=thiscab
+Codejock.Controls.v13.1.0.ocx=thiscab
+ssmedt32.dll=thiscab
+ssprn32.dll=thiscab
+ssr2c.dll=thiscab
+tishare6.dll=thiscab
+tibase6.dll=thiscab
+MSCHRT20.OCX=thiscab
+comdlg32.dll=thiscab
+SSTree.ocx=thiscab
+mfc42.dll=thiscab
+SSPng2.dll=thiscab
+SSPng.dll=thiscab
+comctl32.dll=thiscab
+COA_ColourSelector.ocx=thiscab
+COA_ColourPicker.ocx=thiscab
+COAInt_Chart.ocx=thiscab
+ieframe.dll=thiscab
+
+[Package|Dep File 2|ObjectInfo]
+clsEncryption=true;true
+clsPrinter=true;true
+clsGeneral=true;true
+clsOutputRun=true;true
+
+[Package|Dep File 2|DepFile]
+DepCabFile=COAInt_Client.CAB
+DepCabRun=COAInt_Client.INF
+
+[Package|Dep File 2|Package]
+PackageFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ProjectFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ServerSideCab=
+File1=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.DEP
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|COA_IntClient|Root]
+SubWizProgID=PDWizard.InetCABPkgSubWiz
+BuildFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package
+
+[Package|COA_IntClient|Configure DAO ISAMs]
+Applicable=No
+
+[Package|COA_IntClient|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|COA_IntClient|Files Found]
+COAWF_TabPage.ocx=C:\DEV\HR Pro\HR Pro ActiveX\COAWF_TabPage\COAWF_TabPage.ocx
+
+[Package|COA_IntClient|Files Released]
+MSWORD.OLB=
+EXCEL.EXE=
+
+[Package|COA_IntClient|Missing Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=
+C:\WINDOWS\system32\ieframe.dll=
+
+[Package|COA_IntClient|Out-of-Date Dependency Information]
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=
+
+[Package|COA_IntClient|Files Added]
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\mschrt20.ocx=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\sspng2.dll=
+c:\dev\intranet\hr pro activex\coaint_chart\coaint_chart.ocx=
+
+[Package|COA_IntClient|Files Removed]
+c:\windows\system32\msvcrt.dll=
+c:\program files\microsoft office\office\excel9.olb=
+c:\program files\microsoft office\office\msword9.olb=
+c:\windows\system32\ieframe.dll=
+c:\dev\hr pro\hr pro activex\coawf_tabpage\coawf_tabpage.ocx=
+
+[Package|COA_IntClient|Files In Project]
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\COAInt_Client.dll=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OptionGroup\COAInt_OptionGroup.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Line\COA_Line.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepRecord\COAInt_CalRepRecord.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Label\COA_Label.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Lookup\COAInt_Lookup.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_OLE\COAInt_OLE.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepDates\COAInt_CalRepDates.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Embed\COAInt_Embed.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_CalRepKey\COAInt_CalRepKey.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Grid\COAInt_Grid.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSVBVM60.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comcat.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\scrrun.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSMAPI32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCT232.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMDLG32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ActBar.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msado25.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.Ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSTree.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssdw3bo.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSCHRT20.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng2.dll=Yes
+C:\WINDOWS\system32\msvcrt.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssmedt32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssprn32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ssr2c.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\SSPng.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mfc42.dll=Yes
+C:\Program Files\Microsoft Office\Office\EXCEL9.OLB=No
+C:\Program Files\Microsoft Office\Office\MSWORD9.OLB=No
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourSelector\COA_ColourSelector.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_Chart\COAInt_Chart.ocx=Yes
+C:\WINDOWS\system32\ieframe.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\comctl32.dll=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_ActiveBar\COAInt_ActiveBar.ocx=Yes
+C:\WINDOWS\system32\msstkprp.dll=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordDMI\COAInt_RecordDMI.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\titext6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tishare6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tibase6.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\timask6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tinumb6.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\tidate6.ocx=Yes
+C:\DEV\Intranet\HR Pro ActiveX\COAInt_RecordSSI\COAInt_RecordSSI.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COAWF_TabPage\COAWF_TabPage.ocx=No
+
+[Package|COA_IntClient|Configure Registry Files]
+Applicable=No
+
+[Package|COA_IntClient|Configure Remote Servers]
+Applicable=No
+
+[Package|COA_IntClient|Install Locations]
+
+[Package|COA_IntClient|Configure Shared Files]
+Applicable=
+
+[Package|COA_IntClient|ComponentInfo]
+COAInt_Client.dll=thiscab
+msvbvm60.dll=thiscab
+OLEAUT32.DLL=thiscab
+OLEPRO32.DLL=thiscab
+ASYCFILT.DLL=thiscab
+STDOLE2.TLB=thiscab
+COMCAT.DLL=thiscab
+scrrun.dll=thiscab
+MSVCRT.DLL=thiscab
+objsafe.tlb=thiscab
+msmapi32.Ocx=thiscab
+ComDlg32.OCX=thiscab
+COA_Spinner.ocx=thiscab
+ComCt232.ocx=thiscab
+ActBar.ocx=thiscab
+COAInt_OptionGroup.ocx=thiscab
+COA_Line.ocx=thiscab
+COAInt_Grid.ocx=thiscab
+ssdw3bo.ocx=thiscab
+COAInt_CalRepRecord.ocx=thiscab
+COAInt_RecordDMI.ocx=thiscab
+titext6.ocx=thiscab
+timask6.ocx=thiscab
+tinumb6.ocx=thiscab
+tidate6.ocx=thiscab
+mscomctl.OCX=thiscab
+COA_Image.ocx=thiscab
+COA_WorkingPattern.ocx=thiscab
+COA_Label.ocx=thiscab
+COAInt_Lookup.ocx=thiscab
+COAInt_OLE.ocx=thiscab
+COA_Navigation.ocx=thiscab
+COAInt_CalRepDates.ocx=thiscab
+COAInt_Embed.ocx=thiscab
+COAInt_CalRepKey.ocx=thiscab
+mscomct2.ocx=thiscab
+msado25.tlb=thiscab
+comctl32.Ocx=thiscab
+COAInt_RecordSSI.ocx=thiscab
+Codejock.Controls.v13.1.0.ocx=thiscab
+ssmedt32.dll=thiscab
+ssprn32.dll=thiscab
+ssr2c.dll=thiscab
+tishare6.dll=thiscab
+tibase6.dll=thiscab
+MSCHRT20.OCX=thiscab
+comdlg32.dll=thiscab
+SSTree.ocx=thiscab
+mfc42.dll=thiscab
+SSPng2.dll=thiscab
+SSPng.dll=thiscab
+comctl32.dll=thiscab
+COA_ColourSelector.ocx=thiscab
+COA_ColourPicker.ocx=thiscab
+COAInt_Chart.ocx=thiscab
+ieframe.dll=thiscab
+COAInt_ActiveBar.ocx=thiscab
+msstkprp.dll=thiscab
+COAWF_TabPage.ocx=COAWF_TabPage.CAB
+
+[Package|COA_IntClient|ObjectInfo]
+clsEncryption=true;true
+clsPrinter=true;true
+clsGeneral=true;true
+clsOutputRun=true;true
+
+[Package|COA_IntClient|Package]
+PackageFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package
+ProjectFolder=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client
+ServerSideCab=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.CAB
+File1=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.CAB
+File2=C:\DEV\Intranet\HR Pro ActiveX\COAInt_Client\Package\COAInt_Client.HTM
+Handler1=PDWizard.WebPostDplySubWiz
+Handler2=PDWizard.FolderDplySubWiz
