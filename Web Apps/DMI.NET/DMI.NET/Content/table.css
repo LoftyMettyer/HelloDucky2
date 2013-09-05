@@ -3,9 +3,34 @@
 	display:none;
 }
 
+.header {
+	background-color:#FFFFFF;
+	padding: 5px;
+}
+
+.visibletablecolumn {
+	border-bottom: 1px;
+	border-bottom-color: #cce2f9;
+	border-bottom-style: solid;
+	margin: 0px;
+}
+
+.outline {
+	border-spacing: 0px;
+	border: 0px;
+	border-bottom: 1px;
+	background-position: left;
+	background-repeat: repeat-y;
+	outline-offset: 20px;
+}
+
 .tablecolumn {
 	text-align:left;
 	cursor: default;
+	border-bottom: 2px;
+	border-bottom-color: #cce2f9;
+	background: white;
+	border-bottom-style: solid;
 }
 
 .summarytablecolumn {
@@ -13,17 +38,60 @@
 	display:none;
 	text-align:left;
 	cursor: default;
+	border-bottom: 1px;
+	border-bottom-color: #cce2f9;
+	border-bottom-style: solid;
+	margin: 0px;
+	background: white;
 }
 
-.rowdata {
-	background-color:#ffffff;
+.rowdata:nth-child(odd) {
 	vertical-align: text-top;
 	text-align:left;
 	cursor: default;
+	background: white;
 }
 
-.rowsummary {
-	background-color:#d8d8ff;	
+.rowdata:nth-child(even) {
+	vertical-align: text-top;
 	text-align:left;
 	cursor: default;
+	background: white;
+}
+
+.rowsummary {	
+	text-align:left;
+	cursor: default;
+	border-top: 1px;
+	border-top-color: #cce2f9;
+	border-top-style: double;
+}
+
+.reportgraphic {
+	background-repeat: repeat-y;
+	background-image: url("../content/images/PunchHoleWhite2.png");
+	width: 76px;
+	border-right-style: dashed;
+	border-right-color: #FF7777;
+	border-right: 1px;
+	padding-left: 2px;
+	min-width: 76px;
+}
+
+.reportdata {
+	display: inline-block;
+	position: relative;
+	height: 95%;
+	overflow: auto;
+	width: 95%;
+}
+
+.reportfooter {
+	display: inline-block;
+	position: absolute;
+	bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 0;
+	text-align: right;
+	width: 98%;
 }

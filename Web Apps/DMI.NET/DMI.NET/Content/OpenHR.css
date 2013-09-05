@@ -341,13 +341,6 @@ span.outline
 	border: 1px solid #9894a3;
 }
 
-table.outline
-{
-	/*background-color:#f9f7fb;*/
-	/*background-color: white;*/
-	border: 1px solid #9894a3;
-}
-
 table.invisible
 {
 	border-bottom-style: none;

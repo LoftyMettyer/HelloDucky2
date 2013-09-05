@@ -187,12 +187,6 @@
 	<select id="cboPage" name="cboPage" style="WIDTH: 205px" class="combo" onchange="UpdateGrid()"></select>
 </div>
 
-<div style="clear: left">
-	<input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px" onclick="ViewExportOptions();" />
-	<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn" onclick="try { closeclick(); } catch (e) { }" />
-</div>
-
-
 <form id="frmOriginalDefinition">
 	<input type="hidden" id="txtDefn_Name" name="txtDefn_Name" value="<%=session("utilname")%>">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">

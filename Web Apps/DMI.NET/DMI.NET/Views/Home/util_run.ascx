@@ -108,6 +108,10 @@
 
 	function ShowDataFrame() {
 
+		$("#cmdOK").hide();
+		$("#cmdCancel").hide();
+		$("#cmdOutput").show();
+
 		$("#reportbreakdownframe").hide();
 		$("#top").hide();
 		$("#outputoptions").hide();
@@ -117,6 +121,37 @@
 		$("#reportworkframe").show();
 
 	}
+
+	function ExportDataPrompt() {
+
+		var frmExportData;
+		
+		<% If Session("utiltype") = 17 Then	 ' Calendar reports %>
+
+			frmExportData = OpenHR.getForm("calendarworkframe", "frmExportData");
+			OpenHR.submitForm(frmExportData, "outputoptions");
+
+			$("#calendarframeset").hide();
+			$("#optionsframeset").hide();
+			$("#outputoptions").show();
+
+		<% else %>
+
+			frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
+			OpenHR.submitForm(frmExportData, "outputoptions");
+
+			$("#reportworkframe").hide();
+			$("#reportbreakdownframe").hide();
+			$("#outputoptions").show();
+		
+		<% end if %>
+		
+		$("#cmdOK").show();
+		$("#cmdCancel").show();
+		$("#cmdOutput").hide();
+
+	}
+
 
 </script>
 
@@ -128,7 +163,13 @@
 	<input type="hidden" id="txtErrorDesc" name="txtErrorDesc">
 </form>
 
-<div id="main" data-framesource="util_run" style="display: block; height:100%">
+<div class="pageTitleDiv" style="display: block; position: relative; top:0">
+	<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
+	<h3 class="pageTitle"><% =Session("utilname")%></h3>
+</div>
+
+<div id="main" data-framesource="util_run" style="display: block; height:90%; overflow:auto">
+
 	<%   
 		If Session("utiltype") = "1" Then
 			Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
@@ -159,9 +200,27 @@
 		End If
 	%>
 
+	</div>
+
+<div class="reportfooter">
+	<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
+	<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
+	<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
+	<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 </div>
 
 <script type="text/javascript">
+
+	if (menu_isSSIMode() == false) {
+		$(".pageTitleDiv").hide();
+	}
+
 	$("#outputoptions").hide();
 	$("#reportworkframe").show();
+
+	menu_refreshMenu();
+
+	$("#cmdCancel").hide();
+	$("#cmdOK").hide();
+
 </script>

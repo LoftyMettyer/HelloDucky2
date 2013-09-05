@@ -52,7 +52,6 @@
 
 		frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
 		outputOptionsRefreshControls();
-		frmOutputDef.cmdOK.focus();
 
 	}
 
@@ -728,20 +727,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat0 value=0
-																					onClick="outputOptionsFormatClick(0);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(0);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat0"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio" />
 																			Data Only
 																					
 																		<td width=5>&nbsp</td>
@@ -754,20 +746,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat1 value=1
-																					onClick="outputOptionsFormatClick(1);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(1);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat1"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio"/>
 																			CSV File
 																					
 																		<td width=5>&nbsp</td>
@@ -780,20 +765,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>																		
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat2 value=2
-																					onClick="outputOptionsFormatClick(2);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(2);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat2"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio" />
 																			HTML Document
 																					
 																		<td width=5>&nbsp</td>
@@ -805,20 +783,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat3 value=3
-																					onClick="outputOptionsFormatClick(3);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(3);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat3"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio" />
 																			Word Document
 																					</label>
 																		<td width=5>&nbsp</td>
@@ -830,20 +801,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat4 value=4
-																					onClick="outputOptionsFormatClick(4);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(4);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat4"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio"/>
 																			Excel Worksheet
 																					
 																		<td width=5>&nbsp</td>
@@ -896,20 +860,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat5 value=5
-																					onClick="outputOptionsFormatClick(5);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(5);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat5"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio"/>
 																			Excel Chart
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -947,20 +904,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat5 value=5
-																					onClick="outputOptionsFormatClick(5);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(5);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat5"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio" />
 																			Excel Chart
 																		<td width=5>&nbsp</td>
 																	</tr>
@@ -971,20 +921,13 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left width=15>																		
 																		<INPUT type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat6 value=6
-																					onClick="outputOptionsFormatClick(6);" 
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}"/>
+																					onClick="outputOptionsFormatClick(6);" />
 																		</td>
 																		<td align=left nowrap>
 																					<label 
 																							tabindex=-1
 																							for="optOutputFormat6"
-																							class="radio"
-																							onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																							onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																					/>
+																							class="radio" />
 																			Excel Pivot Table
 															
 																		<td width=5>&nbsp</td>
@@ -1008,18 +951,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left colspan=6 nowrap>
 																		<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1" 
-																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
 																									onClick="refreshControls();"/>
 																		<label 
 																					for="chkDestination0"
 																					class="checkbox"
-																					tabindex=0 
-																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																					tabindex=0>
 																			
 																		Display output on screen 
 																		</label>
@@ -1033,19 +969,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>																	
 																		<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1" 
-																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
 																									onClick="refreshControls();"/>
 																		<label 
 																					for="chkDestination1"
 																					class="checkbox"
-																					tabindex=0 
-																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																			
+																					tabindex=0>																		
 																		Send to printer 
 																		</label>																		
 																		</td>
@@ -1068,19 +996,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
 																		<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1" 
-																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
 																									onClick="refreshControls();"/>
 																		<label 
 																					for="chkDestination2"
 																					class="checkbox"
-																					tabindex=0 
-																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																			
+																					tabindex=0 >																			
 																		Save to file 
 																		</label>																		
 																		</td>
@@ -1097,11 +1017,7 @@
 																					</TD>
 																					<TD width=25>
 																						<input type=button id=cmdFilename name=cmdFilename value=... style="WIDTH: 100%"  class="btn" 
-																								onclick="saveFile()"
-																																	onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																	onfocus="try{button_onFocus(this);}catch(e){}"
-																																	onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="saveFile()"/>
 																					</TD>
 																				</TD>
 																			</TABLE>
@@ -1137,18 +1053,11 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
 																		<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1" 
-																									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" 
 																									onClick="refreshControls();"/>
 																		<label 
 																					for="chkDestination3"
 																					class="checkbox"
-																					tabindex=0 
-																					onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																					onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																					onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																					onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																					tabindex=0>
 																			
 																		Send as email
 																		</label>																		
@@ -1167,11 +1076,7 @@
 																					</TD>
 																					<TD width=25>
 																						<input type=button id=cmdEmailGroup name=cmdEmailGroup value=... style="WIDTH: 100%"  class="btn" 
-																								onclick="selectEmailGroup()"
-																																	onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																																	onfocus="try{button_onFocus(this);}catch(e){}"
-																																	onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="selectEmailGroup()" />
 																					</TD>
 																				</TD>
 																			</TABLE>
@@ -1189,9 +1094,9 @@
 																			Email subject :   
 																		</td>
 																		<td width=15>&nbsp</td>
-																		<TD colspan=2 width=100% nowrap>
-																			<INPUT id=txtEmailSubject class="text textdisabled" disabled="disabled" maxlength=255 name=txtEmailSubject style=" WIDTH: 100%">
-																		</TD>
+																		<td colspan="2" width="100%" nowrap>
+																			<input id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 100%">
+																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -1205,9 +1110,9 @@
 																			Attach as :   
 																		</td>
 																		<td width=15>&nbsp</td>
-																		<TD colspan=2 width=100% nowrap>
-																			<INPUT id=txtEmailAttachAs class="text textdisabled" disabled="disabled" maxlength=255 name=txtEmailAttachAs style=" WIDTH: 100%">
-																		</TD>
+																		<td colspan="2" width="100%" nowrap>
+																			<input id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs" style="WIDTH: 100%">
+																		</td>
 																		<td width=5>&nbsp</td>
 																	</tr>
 																	<tr height=10> 
@@ -1235,21 +1140,7 @@
 							<TR height=10>
 								<TD width=10></td>
 								<TD>
-									<TABLE WIDTH="100%" class="invisible">
-							<TR>
-								
-								<TD width=80>
-									<input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%"  class="btn" 
-											onclick="outputOptionsOKClick()" />
-								</TD>
-								<TD width=10></TD>
-								<TD width=80>
-									<input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn" 
-											onclick="ShowDataFrame();" />
-								</TD>
-								<TD>&nbsp;</TD>
-							</TR>
-						</TABLE>
+
 					</td>
 					<TD width=10></td>
 				</tr> 

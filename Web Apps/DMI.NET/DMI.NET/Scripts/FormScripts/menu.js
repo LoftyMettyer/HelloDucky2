@@ -363,7 +363,7 @@ function menu_abMainMenu_Click(pTool) {
 }
 
 
-function menu_MenuClick(sTool) {	
+function menu_MenuClick(sTool) {
 		//ignore clicks from 'fixed links' which have no 'id'.
 		if (!sTool) return false;
 		//new ribbon buttons for utils - ignore click.
@@ -413,7 +413,7 @@ function menu_MenuClick(sTool) {
 			}
 		});
 	}
-	
+
 	if (sToolName == "mnutoolLogoff") {
 		menu_logoffIntranet();
 		return;
@@ -1489,16 +1489,16 @@ function menu_refreshMenu() {
 	if ((sCurrentWorkPage == "EVENTLOG")) {
 
 		// New functionality: switch ribbon tab to required item.
-		$("#toolbarRecord").show();
-		$("#toolbarRecord").click();
+			$("#toolbarRecord").show();
+			$("#toolbarRecord").click();
 
 		$("#mnuEdit").hide();
 		$("#mnuLocateRecord").hide();
 		$("#mnuFind").hide();
 		$("#mnuOrder").hide();
 		$("#mnuReports").hide();
-		
-		var frmLog = document.getElementById("frmLog");
+
+			var frmLog = document.getElementById("frmLog");
 
 		menu_setVisibleMenuItem("mnubandMainToolBar", true);
 		menu_setVisibleMenuItem("mnutoolRecord", false);

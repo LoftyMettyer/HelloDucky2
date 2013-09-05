@@ -51,16 +51,22 @@
 
 			if (frmPromptedValues.StandardReportPrompt.value == "True") {
 				OpenHR.submitForm(frmPromptedValues);
-			}
-			else {
-				OpenHR.showInReportFrame(frmPromptedValues, true);
+			} else {
+				if (menu_isSSIMode() == true) {
+					OpenHR.submitForm(frmPromptedValues, "workframe", true);
+				} else {
+					OpenHR.showInReportFrame(frmPromptedValues, true);
+				}
+
 			}
 
 		} else {
-			
-			$(".popup").dialog("open");
 
-			// Set focus on the first prompt control.
+			if (menu_isSSIMode() == false) {
+				$(".popup").dialog("open");
+			}
+
+		// Set focus on the first prompt control.
 			var controlCollection = frmPromptedValues.elements;
 			if (controlCollection != null) {
 				for (var i = 0; i < controlCollection.length; i++) {
@@ -78,7 +84,10 @@
 	}
 </script>
 
-
+<div class="pageTitleDiv">
+	<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
+	<h3 class="pageTitle"><% =Session("utilname")%></h3>
+</div>
 
 <form name="frmPromptedValues" id="frmPromptedValues" method="POST" action='<%
 	If bStandardReportPrompt Then
@@ -484,9 +493,13 @@
 		}
 
 		// Everything OK. Submit the form.
-		$(".popup").dialog("close");
-		//OpenHR.submitForm(frmPromptedValues, null, true);
-		OpenHR.showInReportFrame(frmPromptedValues, true);
+		if (menu_isSSIMode() == true) {
+			OpenHR.submitForm(frmPromptedValues, "workframe", true);
+		} else {
+			$(".popup").dialog("close");
+			OpenHR.showInReportFrame(frmPromptedValues, true);
+		}
+
 
 	}
 

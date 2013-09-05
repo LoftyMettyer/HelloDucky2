@@ -97,6 +97,7 @@
 				window.setInterval("refreshPollFrame()", 30000);
 
 				$(".popup").dialog({
+						overflow: false,
 						autoOpen: false,
 						modal: true,
 						height: 550,
@@ -187,10 +188,10 @@
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
-		
-		<div id="reportframeset" class="popup" data-framesource="util_run" style="">
-				<div id="reportframe" style="height:100%"></div>
-		</div>
+
+	<div id="reportframeset" class="popup" data-framesource="util_run" style="">
+		<div id="reportframe" style="height: 100%"></div>
+	</div>
 
 		<div id="messageframe" style="display: none">Message Page</div>
 

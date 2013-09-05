@@ -24,7 +24,7 @@
 
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 
-<div id="reportworkframe" data-framesource="util_run_customreports" style="display: block;">
+<div id="reportworkframe" data-framesource="util_run_customreports" style="display: inline-block; width:100%">
 		<%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%>
 </div>
 

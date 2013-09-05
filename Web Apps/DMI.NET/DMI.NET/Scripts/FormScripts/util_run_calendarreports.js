@@ -8,16 +8,6 @@ function util_run_calendarreport_window_onload() {
 		loadAddRecords('nav');      
 }
 
-function ExportCalendarDataPrompt() {
-	
-	var frmExportData = OpenHR.getForm("calendarworkframe", "frmExportData");
-		OpenHR.submitForm(frmExportData, "outputoptions");
-
-		$("#calendarframeset").hide();
-		$("#optionsframeset").hide();
-		$("#outputoptions").show();
-
-}
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
 {

@@ -831,30 +831,27 @@
 
 			If fok Then
 		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
-				Response.Write("<table height=100% width=100% align=center class=""outline"" cellPadding=5 cellSpacing=0 >" & vbCrLf)
-		Response.Write("	<tr>" & vbCrLf)
-		Response.Write("		<td>" & vbCrLf)
-				Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-				Response.Write("				<tr>" & vbCrLf)
-				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-				Response.Write("				<tr>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
+		Response.Write("<div>")
+		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+		Response.Write("				<tr>" & vbCrLf)
+		Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
 				Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 
 %>
 
-<table class='outline' style='width: 100%; height: auto' id="ssOleDBGridDefSelRecords">
-	<tbody>
-		<tr class='header' style="text-align: left;">
-			<%			
-				For icount = 1 To UBound(arrayColumnsDefinition)
-					Response.Write(arrayColumnsDefinition(icount))
-				Next				
-			%>
-		</tr>
-	</tbody>
-</table>
+<div>
+	<table class='outline' style='width: 100%; height: auto' id="ssOleDBGridDefSelRecords">
+		<tbody>
+			<tr class='header' style="text-align: left;">
+				<%			
+					For icount = 1 To UBound(arrayColumnsDefinition)
+						Response.Write(arrayColumnsDefinition(icount))
+					Next
+				%>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 <%
 
@@ -869,33 +866,29 @@
 				Response.Write("				<tr height=25>" & vbCrLf)
 				Response.Write("					<td width=20></td>" & vbCrLf)
 				Response.Write("					<td colspan=8>" & vbCrLf)
+	Response.Write("            <div>")
 	Response.Write("						<table WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
 	Response.Write("							<tr>" & vbCrLf)
 	Response.Write("								<td>" & vbCrLf)
 	Response.Write("								</td>" & vbCrLf)
 	Response.Write("								<td>&nbsp;</td>" & vbCrLf)
 				Response.Write("								<td width=20>" & vbCrLf)
-				Response.Write("      						<input type=button id=output name=output value=Output style=""WIDTH: 80px"" class=""btn""" & vbCrLf)
-		Response.Write("                            onclick=""ExportDataPrompt();"" />" & vbCrLf)
-		Response.Write("								</td>" & vbCrLf)
+	Response.Write("								</td>" & vbCrLf)
 				Response.Write("							</tr>" & vbCrLf)
-				Response.Write("						</table>" & vbCrLf)
+	Response.Write("						</table>" & vbCrLf)
+	Response.Write("</div>")
 				Response.Write("					</td>" & vbCrLf)
 				Response.Write("					<td width=10></td>" & vbCrLf)
 				Response.Write("					<td width=80> " & vbCrLf)
-				Response.Write("      						<input type=button id=close name=close value=Close style=""WIDTH: 80px"" class=""btn""" & vbCrLf)	'2
-		Response.Write("                            onclick=""closeclick();"" />" & vbCrLf)
-		Response.Write("					</td>" & vbCrLf)
+	Response.Write("					</td>" & vbCrLf)
 				Response.Write("					<td width=20></td>" & vbCrLf)
 				Response.Write("				</tr>" & vbCrLf)
 				Response.Write("				<tr>" & vbCrLf)
 				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
 				Response.Write("				</tr>" & vbCrLf)
-				Response.Write("			</table>" & vbCrLf)
-				Response.Write("		</td>" & vbCrLf)
-				Response.Write("	</tr>" & vbCrLf)
-				Response.Write("</table>" & vbCrLf)
-		Response.Write("</form>" & vbCrLf)
+	Response.Write("			</table>" & vbCrLf)
+	Response.Write("      </div>")
+	Response.Write("</form>" & vbCrLf)
 		
 		Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
 				Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
@@ -982,3 +975,4 @@
 		<%
 			Response.Write("<input type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
 		%>
+

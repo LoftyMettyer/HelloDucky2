@@ -22,7 +22,7 @@ function ShowCustomReport() {
 
 		if ($("#txtHasSummaryColumns")[0].value == "True") {
 			$(".summarytablecolumn").css("visibility", "visible");
-			$(".summarytablecolumn").css("display", "block");
+			$(".summarytablecolumn").css("display", "table-cell");
 
 		} else {
 			$(".summarytablecolumn").css("visibility", "hidden");
@@ -34,17 +34,6 @@ function ShowCustomReport() {
 	$("#top").hide();
 	$("#reportworkframe").show();
 
-}
-
-function ExportDataPrompt() {
-
-	var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
-	OpenHR.submitForm(frmExportData, "outputoptions");
-
-	$("#reportworkframe").hide();
-	$("#reportbreakdownframe").hide();
-	$("#outputoptions").show();
-	
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {

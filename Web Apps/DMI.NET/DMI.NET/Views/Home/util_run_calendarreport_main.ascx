@@ -192,8 +192,6 @@
 			</td>
 			<td width="10"></td>
 			<td width="80">
-				<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 100%" class="btn"
-					onclick="closeclick();"/>
 			</td>
 			<td width="5">&nbsp;</td>
 		</tr>

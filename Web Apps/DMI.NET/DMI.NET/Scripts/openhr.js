@@ -90,6 +90,23 @@
 					//OK
 					$frame.html(html);
 
+					//jQuery styling
+					$(function () {
+						$("input[type=submit], input[type=button], button")
+							.button();
+						$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("input").removeClass("text");
+
+						$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("textarea").removeClass("text");
+
+						$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("select").removeClass("text");
+						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+					});
+
 				},
 				error: function (req, status, errorObj) {
 					alert("OpenHR.showInReportFrame ajax call to '" + url + "' failed with '" + errorObj + "'.");

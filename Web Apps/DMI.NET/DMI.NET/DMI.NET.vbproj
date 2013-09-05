@@ -177,6 +177,9 @@
     <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
+    <Content Include="Content\images\PunchHole.png" />
+    <Content Include="Content\images\PunchHoleWhite.png" />
+    <Content Include="Content\images\PunchHoleWhite2.png" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>

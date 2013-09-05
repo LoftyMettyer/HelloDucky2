@@ -140,7 +140,6 @@
 			});
 		}
 
-
 		function goScreen(psScreenInfo) {
 
 			var sDestination;
@@ -154,6 +153,23 @@
 			//sDestination = sDestination.concat(psScreenInfo);
 			//window.frames("linksworkframe").location.replace(sDestination);
 		}
+
+		function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
+
+			menu_disableMenu();
+
+			var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
+			frmPrompt.utiltype.value = sUtilityType;
+			frmPrompt.utilid.value = sUtilityID;
+			frmPrompt.utilname.value = sUtilityName;
+			//OpenHR.showInReportFrame(frmPrompt, false);
+			OpenHR.submitForm(frmPrompt, "workframe", false);
+
+			//var breadcrumb = $(".pageTitle").text();
+			//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+
+		}
+
 
 	</script>
 
@@ -236,9 +252,8 @@
 												Dim sUtilityType = CStr(navlink.UtilityType)
 												Dim sUtilityID = CStr(navlink.UtilityID)
 												Dim sUtilityBaseTable = CStr(navlink.BaseTable)
-												Dim sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
 												
-												sOnclick = "goUtility('" & sUtilityDef & "')"
+										sOnclick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
 										Else
 										sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
 												
@@ -294,11 +309,30 @@
 										<p class="linkspagebuttontileIcon"><i class="icon-magic"></i></p>
 									</li>								
 
-								<%ElseIf navlink.UtilityType = 2 Then	 ' report/utility%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
+								<%ElseIf navlink.UtilityType = 2 Then	 ' Custom report%>
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
+										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
+									</li>
+
+								<%ElseIf navlink.UtilityType = 1 Then	 ' Cross Tab%>
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
+										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
+									</li>
+
+								<%ElseIf navlink.UtilityType = 9 Then	 ' Mail Merge%>
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
 									</li>								
+
+
+							<%ElseIf navlink.UtilityType = 17 Then	 ' Calendar report%>
+							<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+								<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt="" /></a>
+								<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
+							</li>
 
 								<%End If%>
 
@@ -487,4 +521,11 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>	
 	
-
+<div id="utilities">
+	<form name="frmUtilityPrompt" method="post" action="util_run_promptedValues" id="frmUtilityPrompt" style="visibility: hidden; display: none">
+		<input type="hidden" id="utiltype" name="utiltype" value="">
+		<input type="hidden" id="utilid" name="utilid" value="">
+		<input type="hidden" id="utilname" name="utilname" value="">
+		<input type="hidden" id="action" name="action" value="run">
+	</form>
+</div>
