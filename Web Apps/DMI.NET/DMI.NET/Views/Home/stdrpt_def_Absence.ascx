@@ -341,7 +341,7 @@
 						<td width="10"></td>
 						<td>
 							<input type="button" class="btn btndisabled" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
-								onclick="displayPage(1)"
+								onclick="absenceDisplayPage(1);"
 								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 								onmouseout="try{button_onMouseOut(this);}catch(e){}"
 								onfocus="try{button_onFocus(this);}catch(e){}"
@@ -350,7 +350,7 @@
 								If Session("StandardReport_Type") = 16 Then
 							%>
 							<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-								onclick="displayPage(2)"
+								onclick="absenceDisplayPage(2);"
 								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 								onmouseout="try{button_onMouseOut(this);}catch(e){}"
 								onfocus="try{button_onFocus(this);}catch(e){}"
@@ -359,7 +359,7 @@
 							End If
 							%>
 							<input type="button" class="btn" value="Output" id="btnTab3" name="btnTab3"
-								onclick="displayPage(3)"
+								onclick="absenceDisplayPage(3);"
 								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 								onmouseout="try{button_onMouseOut(this);}catch(e){}"
 								onfocus="try{button_onFocus(this);}catch(e){}"
@@ -369,7 +369,7 @@
 								If Session("StandardReport_Type") <> 16 Then
 							%>
 							<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-								onclick="displayPage(2)"
+								onclick="absenceDisplayPage(2);"
 								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 								onmouseout="try{button_onMouseOut(this);}catch(e){}"
 								onfocus="try{button_onFocus(this);}catch(e){}"
@@ -391,7 +391,7 @@
 						<td>
 							<!-- First tab -->
 							<div id="div1">
-								<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
+							<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 									<tr valign="top">
 										<td valign="top" rowspan="2" width="25%" height="100%">
 											<table class="invisible" cellspacing="0" cellpadding="4" width="100%" height="100%">
@@ -1309,12 +1309,12 @@
 	</table>
 	</td>
 								</tr>
-							</TABLE>
-						</DIV>
+							</table>
+						</div>
 													
-					</TD>
+					</td>
 					<td width="10"></td>
-	</TR> 
+	</tr> 
 
 				<tr height="10">
 					<td colspan="3"></td>
@@ -1344,10 +1344,10 @@
 	<tr height="5">
 		<td colspan="3"></td>
 	</tr>
-	</TABLE>
-		</TD>
-	</TR>
-</TABLE>
+	</table>
+		</td>
+	</tr>
+</table>
 
 		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 	<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
