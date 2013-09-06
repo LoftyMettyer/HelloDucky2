@@ -5,8 +5,15 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT d.*, ISNULL(c.Use1000separator,0) AS Use1000separator
+			, c.columnname
+			, t.tableid
+			, t.tablename
+			, c.datatype AS [ColumnDataType]
+			, CASE c.datatype WHEN 11 THEN 1 ELSE 0 END AS [IsDateColumn]
+			, CASE c.datatype WHEN -7 THEN 1 ELSE 0 END AS [IsBooleanColumn]
 		FROM ASRSysCustomReportsDetails d
 		LEFT JOIN ASRSysColumns c ON c.columnid = d.ColExprID And d.Type = 'C'
+		LEFT JOIN ASRSysTables t ON c.tableid = t.tableid
 	WHERE CustomReportID = @piCustomReportID ORDER BY [Sequence];
 
 END

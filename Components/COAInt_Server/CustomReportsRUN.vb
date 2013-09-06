@@ -926,6 +926,9 @@ GetCustomReportDefinition_ERROR:
 
 				If .Fields("Type").Value = "C" Then
 					mvarColDetails(16, intTemp) = .Fields("ColumnName").Value
+					mvarColDetails(17, intTemp) = .Fields("IsDateColumn").Value
+					mvarColDetails(18, intTemp) = .Fields("IsBooleanColumn").Value
+
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mvarColDetails(16, intTemp) = ""
@@ -948,12 +951,11 @@ GetCustomReportDefinition_ERROR:
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objExpr = Nothing
 
-				End If
+					mvarColDetails(17, intTemp) = mclsGeneral.DateColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarColDetails(18, intTemp) = mclsGeneral.BitColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(17, intTemp) = mclsGeneral.DateColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(18, intTemp) = mclsGeneral.BitColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
+				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
