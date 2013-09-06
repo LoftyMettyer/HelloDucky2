@@ -1,6 +1,8 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
+
 Public Class Report
 
 	' To hold Properties
@@ -44,7 +46,7 @@ Public Class Report
 	Private mlngCustomReportsParent2PickListID As Integer
 
 	' Recordsets to store the definition and column information
-	Private mrstCustomReportsDetails As New ADODB.Recordset
+	Private mrstCustomReportsDetails As New Recordset
 
 	' Classes
 	Private mclsData As clsDataAccess
@@ -87,7 +89,7 @@ Public Class Report
 	Private mstrTempTableName As String
 
 	' Recordset to store the final data from the temp table
-	Private mrstCustomReportsOutput As New ADODB.Recordset
+	Private mrstCustomReportsOutput As New Recordset
 
 	'Does the report generate no records ?
 	Private mblnNoRecords As Boolean
@@ -263,15 +265,6 @@ End Enum
 		End Get
 	End Property
 
-	Public ReadOnly Property SQL() As Boolean
-		Get
-
-			' THIS IS REDUNDANT LEFT TO KEEP COMPATIBILITY
-
-
-		End Get
-	End Property
-
 	Public ReadOnly Property SQLSTRING() As String
 		Get
 
@@ -358,7 +351,7 @@ End Enum
 		Get
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArray_DataType = IIf(mvarColDetails(3, lngIndex), Declarations.SQLDataType.sqlNumeric, Declarations.SQLDataType.sqlVarChar)
+			OutputArray_DataType = IIf(mvarColDetails(3, lngIndex), SQLDataType.sqlNumeric, SQLDataType.sqlVarChar)
 		End Get
 	End Property
 
@@ -370,8 +363,8 @@ End Enum
 		End Get
 	End Property
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
 			gADOCon = Value
 		End Set
 	End Property
@@ -533,12 +526,6 @@ End Enum
 		Output_GridForm = sTemp
 
 	End Function
-
-
-	Public Function Poll() As Boolean
-		mclsData.ExecuteSql("sp_ASRIntPoll")
-	End Function
-
 
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
 
@@ -727,7 +714,7 @@ ExecuteSQL_ERROR:
 
 		On Error GoTo GetCustomReportDefinition_ERROR
 
-		Dim rsTemp_Definition As ADODB.Recordset
+		Dim rsTemp_Definition As Recordset
 		Dim strSQL As String
 		Dim i As Short
 
@@ -737,7 +724,7 @@ ExecuteSQL_ERROR:
 
 		strSQL = "SELECT * FROM ASRSYSCustomReportsName " & "WHERE ID = " & mlngCustomReportID & " "
 
-		rsTemp_Definition = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp_Definition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		With rsTemp_Definition
 
@@ -749,7 +736,7 @@ ExecuteSQL_ERROR:
 			End If
 
 			' RH 29/05/01 - Dont run if its been made hidden by another user.
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
 				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function
@@ -790,13 +777,13 @@ ExecuteSQL_ERROR:
 			mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
 			mstrOutputFilename = .Fields("OutputFilename").Value
 
-			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 		End With
 
 		strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & "FROM ASRSYSCustomReportsChildDetails C " & "      INNER JOIN ASRSysTables T " & "      ON T.TableID = C.ChildTable " & "WHERE C.CustomReportID = " & mlngCustomReportID & " "
 
-		rsTemp_Definition = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp_Definition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 		i = 0
 		With rsTemp_Definition
@@ -861,14 +848,12 @@ GetCustomReportDefinition_ERROR:
 
 		Dim strTempSQL As String
 		Dim intTemp As Short
-		Dim prstCustomReportsSortOrder As ADODB.Recordset
+		Dim prstCustomReportsSortOrder As Recordset
 		Dim lngTableID As Integer
 
 		' Get the column information from the Details table, in order
-
-		strTempSQL = "SELECT * FROM AsrSysCustomReportsDetails WHERE " & "CustomReportID = " & mlngCustomReportID & " " & "ORDER BY [Sequence]"
-
-		mrstCustomReportsDetails = mclsData.OpenRecordset(strTempSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+		strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
+		mrstCustomReportsDetails = mclsData.OpenRecordset(strTempSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		Dim objExpr As clsExprExpression
 		With mrstCustomReportsDetails
@@ -935,23 +920,12 @@ GetCustomReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mvarColDetails(13, intTemp) = .Fields("Type").Value
 
-				lngTableID = GetTableIDFromColumn(CInt(.Fields("ColExprID").Value))
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				lngTableID = .Fields("TableID").Value
 				mvarColDetails(14, intTemp) = lngTableID
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(15, intTemp) = mclsGeneral.GetTableName(CInt(mvarColDetails(14, intTemp)))
+				mvarColDetails(15, intTemp) = .Fields("TableName").Value
 
 				If .Fields("Type").Value = "C" Then
-					lngTableID = GetTableIDFromColumn(CInt(.Fields("ColExprID").Value))
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(14, intTemp) = lngTableID
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(15, intTemp) = datGeneral.GetTableName(CInt(mvarColDetails(14, intTemp)))
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = mclsGeneral.GetColumnName(CInt(.Fields("ColExprID").Value))
-
+					mvarColDetails(16, intTemp) = .Fields("ColumnName").Value
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mvarColDetails(16, intTemp) = ""
@@ -991,8 +965,7 @@ GetCustomReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mvarColDetails(21, intTemp) = IIf(.Fields("repetition").Value = 1, True, False)
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(22, intTemp) = datGeneral.DoesColumnUseSeparators(.Fields("ColExprID").Value) 'Does this column use 1000 separators?
+				mvarColDetails(22, intTemp) = .Fields("Use1000separator").Value
 
 				'Adjust the size of the field if digit separator is used
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1428,17 +1401,6 @@ GetDetailsRecordsets_ERROR:
 					If pblnColumnOK Then
 
 						' this column can be read direct from the tbl/view or from a parent table
-
-						'        pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & _
-						''        mstrRealSource & "." & Trim(pstrTempColumnName) & _
-						''        " AS [" & mvarColDetails(0, pintLoop) & "]"
-						'
-						' lose cr and lf
-						'        pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & _
-						'"REPLACE(REPLACE(" & mstrRealSource & "." & Trim(pstrTempColumnName) & _
-						'", char(10),''),char(13),'')" & _
-						'" AS [" & mvarColDetails(0, pintLoop) & "]"
-
 						' JDM - 16/05/2005 - Fault 10018 - Pad out the duration field because it may not be long enough
 						If mbIsBradfordIndexReport And (pintLoop = 12 Or pintLoop = 13) Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1577,7 +1539,7 @@ GetDetailsRecordsets_ERROR:
 				ReDim alngSourceTables(2, 0)
 				objCalcExpr = New clsExprExpression
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(mvarColDetails(12, pintLoop)), modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(mvarColDetails(12, pintLoop)), ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				If blnOK Then
 					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
 
@@ -1824,7 +1786,6 @@ Error_Trap:
 		Dim i As Short
 		Dim iChildUsed As Short
 		Dim iMostChilds As Short
-		Dim sTempFieldName As String
 		Dim lngCurrentTableID As Integer
 		Dim lngSequenceCount As Integer
 
@@ -2197,18 +2158,8 @@ Error_Trap:
 
 	Private Function GenerateSQLFrom() As Boolean
 
-		Dim iLoop As Short
-		Dim pobjTableView As CTablePrivilege
-
-		pobjTableView = New CTablePrivilege
-
 		mstrSQLFrom = gcoTablePrivileges.Item(mstrCustomReportsBaseTableName).RealSource
-
-		'UPGRADE_NOTE: Object pobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		pobjTableView = Nothing
-
-		GenerateSQLFrom = True
-		Exit Function
+		Return True
 
 	End Function
 
@@ -2223,7 +2174,6 @@ Error_Trap:
 		Dim objChildTable As CTablePrivilege
 		Dim pintLoop As Short
 		Dim sChildJoinCode As String
-		Dim sReuseJoinCode As String
 		Dim sChildOrderString As String
 		Dim rsTemp As ADODB.Recordset
 		Dim strFilterIDs As String
@@ -2394,7 +2344,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function DoChildOrderString(ByRef rsTemp As ADODB.Recordset, ByRef psJoinCode As String, ByRef plngChildID As Integer) As String
+	Private Function DoChildOrderString(ByRef rsTemp As Recordset, ByRef psJoinCode As String, ByRef plngChildID As Integer) As String
 
 		' This function loops through the child tables default order
 		' checking if the user has privileges. If they do, add to the order string
@@ -2580,7 +2530,6 @@ DoChildOrderString_ERROR:
 		Dim pstrPickListIDs As String
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
-		Dim objExpr As clsExprExpression
 		Dim pstrParent1PickListIDs As String
 		Dim pstrParent2PickListIDs As String
 
@@ -3757,7 +3706,7 @@ LoadRecords_ERROR:
 		Dim iLoop2 As Short
 		Dim iColumnIndex As Short
 		Dim sSQL As String
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 		Dim fHasAverage As Boolean
 		Dim fHasCount As Boolean
 		Dim fHasTotal As Boolean
@@ -3775,7 +3724,7 @@ LoadRecords_ERROR:
 
 		Dim intColCounter As Short
 
-		Dim strAggrValue As String
+		Dim strAggrValue As String 
 
 		intColCounter = 1
 		strAggrValue = vbNullString
