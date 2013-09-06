@@ -25,6 +25,10 @@
 	Dim lngCurrentRecordID As Long
 	Dim strCurrentBaseRegion As String
 	
+	Dim sDescription1 As String
+	Dim sDescription2 As String
+	Dim sDescription3 As String
+	
 	objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 	' Create the reference to the DLL (Report Class)
 	
@@ -36,7 +40,13 @@
 	If Not (rsCalendarBaseInfo.bof And rsCalendarBaseInfo.eof) Then
 		rsCalendarBaseInfo.movefirst()
 		Do Until rsCalendarBaseInfo.eof
-			strTempRecordDesc = objCalendar.ConvertDescription(CStr(rsCalendarBaseInfo.Fields("Description1").Value), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("Description2").Value), "", rsCalendarBaseInfo.Fields("Description2").Value), String), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value), String))
+			
+			sDescription1 = rsCalendarBaseInfo.Fields("Description1").Value.ToString()
+			sDescription2 = rsCalendarBaseInfo.Fields("Description2").Value.ToString()
+			sDescription3 = rsCalendarBaseInfo.Fields("DescriptionExpr").Value.ToString()
+
+			'						strTempRecordDesc = objCalendar.ConvertDescription(sDescription1, CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("Description2").Value), "", rsCalendarBaseInfo.Fields("Description2").Value), String), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value), String))
+			strTempRecordDesc = objCalendar.ConvertDescription(sDescription1, sDescription2, sDescription3)
 			'If Not IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr ").Value) Then
 			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
 			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
@@ -72,7 +82,7 @@
 					 
 					lngCurrentRecordID = rsCalendarBaseInfo.Fields(objCalendar.BaseIDColumn).Value
 					If Len(Trim(objCalendar.StaticRegionColumn)) > 0 Then
-						strCurrentBaseRegion = rsCalendarBaseInfo.Fields("Region").Value
+						strCurrentBaseRegion = rsCalendarBaseInfo.Fields("Region").Value.ToString()
 					End If
 					intBaseRecordCount = intBaseRecordCount + 1
 				End If

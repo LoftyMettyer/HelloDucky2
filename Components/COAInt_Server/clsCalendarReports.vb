@@ -5619,48 +5619,48 @@ TidyUpAndExit:
         GoTo TidyUpAndExit
       End If
     Else
-      strBaseColList = strBaseColList & "NULL AS 'Description1', " & vbNewLine
-      strColList = strColList & "NULL AS 'Description1', " & vbNewLine
-    End If
-    mstrSQLCreateTable = mstrSQLCreateTable & "[Description1] [varchar] (MAX) NULL, "
+			strBaseColList = strBaseColList & "NULL AS 'Description1', " & vbNewLine
+			strColList = strColList & "NULL AS 'Description1', " & vbNewLine
+		End If
+		mstrSQLCreateTable = mstrSQLCreateTable & "[Description1] [varchar] (MAX) NULL, "
 
-    If mlngDescription2 > 0 Then
-      If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrDescription2, strTableColumn) Then
-        strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Description2', " & vbNewLine
-        strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Description2', " & vbNewLine
-        strTableColumn = vbNullString
-      Else
-        GenerateSQLSelect = False
-        GoTo TidyUpAndExit
-      End If
-    Else
-      strBaseColList = strBaseColList & "NULL AS 'Description2', " & vbNewLine
-      strColList = strColList & "NULL AS 'Description2', " & vbNewLine
-    End If
-    mstrSQLCreateTable = mstrSQLCreateTable & "[Description2] [varchar] (MAX) NULL, "
+		If mlngDescription2 > 0 Then
+			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrDescription2, strTableColumn) Then
+				strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Description2', " & vbNewLine
+				strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Description2', " & vbNewLine
+				strTableColumn = vbNullString
+			Else
+				GenerateSQLSelect = False
+				GoTo TidyUpAndExit
+			End If
+		Else
+			strBaseColList = strBaseColList & "NULL AS 'Description2', " & vbNewLine
+			strColList = strColList & "NULL AS 'Description2', " & vbNewLine
+		End If
+		mstrSQLCreateTable = mstrSQLCreateTable & "[Description2] [varchar] (MAX) NULL, "
 
-    If mlngDescriptionExpr > 0 Then
-      If mblnDescCalcCode Then
-        strColList = strColList & " " & mstrDescCalcCode & " AS 'DescriptionExpr', " & vbNewLine
-        strBaseColList = strBaseColList & " " & mstrDescCalcCode & " AS 'DescriptionExpr', " & vbNewLine
+		If mlngDescriptionExpr > 0 Then
+			If mblnDescCalcCode Then
+				strColList = strColList & " " & mstrDescCalcCode & " AS 'DescriptionExpr', " & vbNewLine
+				strBaseColList = strBaseColList & " " & mstrDescCalcCode & " AS 'DescriptionExpr', " & vbNewLine
 
-      Else
-        If CheckCalculationPermissions(mlngCalendarReportsBaseTable, mlngDescriptionExpr, strTableColumn) Then
-          mstrDescCalcCode = strTableColumn
-          mblnDescCalcCode = True
-          strColList = strColList & " " & strTableColumn & " AS 'DescriptionExpr', " & vbNewLine
-          strBaseColList = strBaseColList & " " & strTableColumn & " AS 'DescriptionExpr', " & vbNewLine
-          strTableColumn = vbNullString
-        Else
-          GenerateSQLSelect = False
-          GoTo TidyUpAndExit
-        End If
+			Else
+				If CheckCalculationPermissions(mlngCalendarReportsBaseTable, mlngDescriptionExpr, strTableColumn) Then
+					mstrDescCalcCode = strTableColumn
+					mblnDescCalcCode = True
+					strColList = strColList & " " & strTableColumn & " AS 'DescriptionExpr', " & vbNewLine
+					strBaseColList = strBaseColList & " " & strTableColumn & " AS 'DescriptionExpr', " & vbNewLine
+					strTableColumn = vbNullString
+				Else
+					GenerateSQLSelect = False
+					GoTo TidyUpAndExit
+				End If
 
-      End If
-    Else
-      strBaseColList = strBaseColList & "NULL AS 'DescriptionExpr', " & vbNewLine
-      strColList = strColList & "NULL AS 'DescriptionExpr', " & vbNewLine
-    End If
+			End If
+		Else
+			strBaseColList = strBaseColList & "NULL AS 'DescriptionExpr', " & vbNewLine
+			strColList = strColList & "NULL AS 'DescriptionExpr', " & vbNewLine
+		End If
 
     'need to set the type of the expression column for the CREAT TABLE...statement.
     Select Case mlngBaseDescriptionType
