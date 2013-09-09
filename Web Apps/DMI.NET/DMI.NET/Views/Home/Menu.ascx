@@ -13,14 +13,14 @@
 	Dim avHistoryMenuInfo As Collection(Of HR.Intranet.Server.Structures.HistoryScreen)
 	Dim iLoop As Integer
 	Dim iLoop2 As Integer
-		Dim iCount As Integer
+	Dim iCount As Integer
 	Dim objMenu As HR.Intranet.Server.Menu
 	Dim sToolCaption As String
 	Dim sToolID As String
 	
 	sErrorDescription = ""
 	
-		objMenu = New HR.Intranet.Server.Menu()
+	objMenu = New HR.Intranet.Server.Menu()
 		
 	objMenu.Username = Session("username")
 	
@@ -60,41 +60,18 @@
 			' There is only one screen defined for the table.
 				
 			' Add a menu option to call up the primary table screen.
-			Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avPrimaryMenuInfo(4, iLoop)) & """);" & vbCrLf)
-			Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "..."";" & vbCrLf)
-			Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-			Response.Write("  //abMainMenu.Bands(""mnubandDatabase"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
-			
 			' new method to insert a new menu item.
 			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "..." & "', 'PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avPrimaryMenuInfo(4, iLoop)) & "');" & vbCrLf & vbCrLf)
-			
 		ElseIf avPrimaryMenuInfo(7, iLoop) > 0 Then
 			' The user does NOT have 'read' permission on the table, but does have
 			' 'read' permission on one view of the table.
 			' There is only one screen defined for the view.
-			Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(7, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(10, iLoop)) & """);" & vbCrLf)
-			Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & " (" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(8, iLoop), "_", " ")) & " view)..."";" & vbCrLf)
-			Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-			Response.Write("  //abMainMenu.Bands(""mnubandDatabase"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
-
 			' new method to insert a new menu item.
 			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & " (" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(8, iLoop), "_", " ")) & " view)..." & "', 'PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(7, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(10, iLoop)) & "');" & vbCrLf & vbCrLf)
-
-
-		ElseIf (avPrimaryMenuInfo(9, iLoop) > 0) Or _
-	((avPrimaryMenuInfo(5, iLoop) = True) And (avPrimaryMenuInfo(3, iLoop) > 0)) Then
+		ElseIf (avPrimaryMenuInfo(9, iLoop) > 0) Or ((avPrimaryMenuInfo(5, iLoop) = True) And (avPrimaryMenuInfo(3, iLoop) > 0)) Then
 			' The user has 'read' permission on the table, and the table has more than one screen defined for it.
 			' Or there are views on the table.
-	
-			Response.Write("  //abMainMenu.Bands.add(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """);" & vbCrLf)
-			Response.Write("  //abMainMenu.Bands(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """).type = 2;" & vbCrLf & vbCrLf)
-				
 			'Instantiate the submenu heading tool and set properties
-			Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PS_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & """);" & vbCrLf)
-			Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & """;" & vbCrLf)
-			Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-			Response.Write("  //objFileTool.SubBand = ""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """;" & vbCrLf)
-			Response.Write("  //abMainMenu.Bands(""mnubandDatabase"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
 
 			' new method to insert a new submenu item.
 			Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "', 'PS_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "', 'mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "');" & vbCrLf & vbCrLf)
@@ -110,47 +87,27 @@
 			Response.Write("  lngLastScreenID = 0;" & vbCrLf)
 			Response.Write("  sLastToolName = """";" & vbCrLf)
 			
-			
 			For iLoop2 = 1 To UBound(avSubMenuInfo, 2)
-				
 				sToolCaption = ""
 				sToolID = ""
 				
 				If avSubMenuInfo(3, iLoop2) > 0 Then
-					Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avSubMenuInfo(3, iLoop2)) & "_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2)) & """);" & vbCrLf)
 					sToolID = "PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avSubMenuInfo(3, iLoop2)) & "_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2))
-					Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avSubMenuInfo(2, iLoop2), "_", " ")) & " (" & CleanStringForJavaScript(Replace(avSubMenuInfo(4, iLoop2), "_", " ")) & " view)..."";" & vbCrLf)
-					sToolCaption = CleanStringForJavaScript(Replace(avSubMenuInfo(2, iLoop2), "_", " ")) & " (" & CleanStringForJavaScript(Replace(avSubMenuInfo(4, iLoop2), "_", " ")) & " view)..."
+					sToolCaption = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" & CleanStringForJavaScript(Replace(avSubMenuInfo(4, iLoop2), "_", " ")) & " view..."
 				Else
-					Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2)) & """);" & vbCrLf)
 					sToolID = "PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2))
-					Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avSubMenuInfo(2, iLoop2), "_", " ")) & "..."";" & vbCrLf)
 					sToolCaption = CleanStringForJavaScript(Replace(avSubMenuInfo(2, iLoop2), "_", " ")) & "..."
 				End If
 
-				Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-
-				Response.Write("  //if ((lngLastScreenID > 0) &&" & vbCrLf)
-				Response.Write("  //  (lngLastScreenID != " & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2)) & ")) {" & vbCrLf)
-				Response.Write("  // abMainMenu.Bands(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """).Tools(sLastToolName).beginGroup = true;" & vbCrLf)
-				Response.Write("  //}" & vbCrLf)
 				Response.Write("  lngLastScreenID = " & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2)) & ";" & vbCrLf & vbCrLf)
-				Response.Write("  //sLastToolName = objFileTool.name;" & vbCrLf & vbCrLf)
 				Response.Write("	sLastToolName = '" & sToolID & "'" & vbCrLf)
 
-				Response.Write("  //abMainMenu.Bands(""mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & """).Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
-				
 				' new method to insert a new menu item.
-				Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "', '" & sToolCaption & "', '" & sToolID & "');" & vbCrLf & vbCrLf)
-				
-				
+				Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "', '" & sToolCaption & "', '" & sToolID & "','someClass');" & vbCrLf & vbCrLf)
 			Next
 		End If
 	Next
 	
-	Response.Write("  //abMainMenu.RecalcLayout();" & vbCrLf)
-	Response.Write("  //abMainMenu.ResetHooks();" & vbCrLf)
-	Response.Write("  //abMainMenu.Refresh();" & vbCrLf)
 	Response.Write("}" & vbCrLf & vbCrLf)
 	
 	

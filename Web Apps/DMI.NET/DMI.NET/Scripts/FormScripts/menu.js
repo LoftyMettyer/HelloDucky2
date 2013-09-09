@@ -30,7 +30,7 @@
 			icons: false
 	});
 
-		//apply tree control
+		//apply tree control to divs within accordion
 		applyJSTree();
 
 	if ($("#txtErrorDescription").val().length > 0) {
