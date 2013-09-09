@@ -205,7 +205,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OLE2.vb" />
+    <Compile Include="Structures\HistoryScreen.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
+    <Compile Include="Structures\TableScreen.vb" />
     <Compile Include="TablePrivilege.vb">
       <SubType>Code</SubType>
     </Compile>

@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Collections.ObjectModel" %>
 
 <%
 	On Error Resume Next
@@ -8,12 +9,12 @@
 	Dim avPrimaryMenuInfo
 	Dim avSubMenuInfo
 	Dim avQuickEntryMenuInfo
-	Dim avTableMenuInfo
-	Dim avHistoryMenuInfo
+	Dim avTableMenuInfo As Collection(Of HR.Intranet.Server.Structures.TableScreen)
+	Dim avHistoryMenuInfo As Collection(Of HR.Intranet.Server.Structures.HistoryScreen)
 	Dim iLoop As Integer
 	Dim iLoop2 As Integer
 		Dim iCount As Integer
-	Dim objMenu
+	Dim objMenu As HR.Intranet.Server.Menu
 	Dim sToolCaption As String
 	Dim sToolID As String
 	
@@ -228,16 +229,13 @@
 		avTableMenuInfo = Session("avTableMenuInfo")
 	End If
 
-	For iCount = 1 To UBound(avTableMenuInfo, 2)
+	For Each objTableScreen In avTableMenuInfo
 		Response.Write("  lngTableScreensCount = lngTableScreensCount + 1;" & vbCrLf)
-		Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""TS_" & CleanStringForJavaScript(avTableMenuInfo(1, iCount)) & "_0_" & CleanStringForJavaScript(avTableMenuInfo(3, iCount)) & """);" & vbCrLf)
-		Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avTableMenuInfo(2, iCount), "_", " ")) & "..."";" & vbCrLf)
+		Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""TS_" & CleanStringForJavaScript(objTableScreen.TableID) & "_0_" & CleanStringForJavaScript(objTableScreen.ScreenID) & """);" & vbCrLf)
+		Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(objTableScreen.TableName, "_", " ")) & "..."";" & vbCrLf)
 		Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
 		Response.Write("  //abMainMenu.Bands(""mnubandTableScreens"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
-
-		' new method to insert a new menu item.
-		Response.Write("  menu_insertMenuItem('mnubandTableScreens', '" & CleanStringForJavaScript(Replace(avTableMenuInfo(2, iCount), "_", " ")) & "..." & "', 'TS_" & CleanStringForJavaScript(avTableMenuInfo(1, iCount)) & "_0_" & CleanStringForJavaScript(avTableMenuInfo(3, iCount)) & "');" & vbCrLf & vbCrLf)
-		
+		Response.Write("  menu_insertMenuItem('mnubandTableScreens', '" & CleanStringForJavaScript(Replace(objTableScreen.TableName, "_", " ")) & "..." & "', 'TS_" & CleanStringForJavaScript(objTableScreen.TableID) & "_0_" & CleanStringForJavaScript(objTableScreen.ScreenID) & "');" & vbCrLf & vbCrLf)
 	Next
 	
 	Response.Write("  if (lngTableScreensCount == 0) {" & vbCrLf)
@@ -253,24 +251,20 @@
 
 	' Clear out any existing history sub-menus.
 	Response.Write("  var objFileTool;" & vbCrLf)
-	Response.Write("  var sTemp;" & vbCrLf)
-	Response.Write("  var fFound;" & vbCrLf)
-	Response.Write("  var iLoop;" & vbCrLf)
 	Response.Write("  var fDone = false;" & vbCrLf)
-	Response.Write("  var iNextIndex = 0;" & vbCrLf)
-	Response.Write("  var asSubMenus = new Array();" & vbCrLf & vbCrLf)
+	Response.Write("  $(""#mnubandHistory"").empty();")
 	
 	Dim iLastParentScreenID = 0
 	Dim iDoneCount = 0
 	Dim iLastChildTableID = 0
-	Dim iNextChildTableID
+	Dim iNextChildTableID As Integer = 0
 	Dim sBand As String = ""
 		
 	avHistoryMenuInfo = objMenu.GetHistoryScreens
+	iLoop = 0
+	For Each objHistoryScreen In avHistoryMenuInfo
 
-	For iLoop = 1 To UBound(avHistoryMenuInfo, 2)
-	
-		If iLastParentScreenID <> avHistoryMenuInfo(1, iLoop) Then
+		If iLastParentScreenID <> objHistoryScreen.parentScreenID Then
 			If iDoneCount > 0 Then
 				Response.Write("    fDone = true;" & vbCrLf)
 				Response.Write("	}" & vbCrLf & vbCrLf)
@@ -278,16 +272,17 @@
 			
 			iLastChildTableID = 0
 			iDoneCount = iDoneCount + 1
-			Response.Write("  if (pParentScreenID == " & avHistoryMenuInfo(1, iLoop) & ") {" & vbCrLf)
+			Response.Write("  if (pParentScreenID == " & objHistoryScreen.parentScreenID & ") {" & vbCrLf)
 		End If
 
 		' Create the history screen menu item (without placing it in the menu).
-		Response.Write("    objFileToolID = ""HT_" & CleanStringForJavaScript(avHistoryMenuInfo(2, iLoop)) & "_0_" & CleanStringForJavaScript(avHistoryMenuInfo(4, iLoop)) & """;" & vbCrLf)
-		Response.Write("    objFileToolCaption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(5, iLoop), "_", " ")) & "..."";" & vbCrLf)
+		Response.Write("    objFileToolID = ""HT_" & CleanStringForJavaScript(objHistoryScreen.childTableID) & "_0_" & CleanStringForJavaScript(objHistoryScreen.childScreenID) & """;" & vbCrLf)
+		Response.Write("    objFileToolCaption = """ & CleanStringForJavaScript(Replace(objHistoryScreen.childScreenName, "_", " ")) & "..."";" & vbCrLf)
 		Response.Write("    objFileToolStyle = 0;" & vbCrLf)
-		If iLoop < UBound(avHistoryMenuInfo, 2) Then
-			If avHistoryMenuInfo(1, iLoop) = avHistoryMenuInfo(1, iLoop + 1) Then
-				iNextChildTableID = avHistoryMenuInfo(2, iLoop + 1)
+
+		If iLoop < avHistoryMenuInfo.Count() - 1 Then
+			If objHistoryScreen.parentScreenID = avHistoryMenuInfo(iLoop + 1).parentScreenID Then
+				iNextChildTableID = avHistoryMenuInfo(iLoop + 1).childTableID
 			Else
 				iNextChildTableID = 0
 			End If
@@ -295,19 +290,19 @@
 			iNextChildTableID = 0
 		End If
 		
-		If (iLastChildTableID = avHistoryMenuInfo(2, iLoop)) Then
+		If (iLastChildTableID = objHistoryScreen.childTableID) Then
 			' The current screen is for the same table as the last screen added to the menu
 			' which will have created the sub-menu, so just add it to the sub-menu.
-			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
+			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
 						
 		Else
-			If (iNextChildTableID = avHistoryMenuInfo(2, iLoop)) Then
+			If (iNextChildTableID = objHistoryScreen.childTableID) Then
 				' The current screen is for the same table as the next screen to be added
 				' but is for a different table to the last screen added to the menu
 				' so create a sub-menu, and add this screen to the sub-menu.
-				sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
-				Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(3, iLoop), "_", " ")) & """;" & vbCrLf)
+				sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
+				Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(objHistoryScreen.childTableName, "_", " ")) & """;" & vbCrLf)
 				Response.Write("    objBandToolSubBand = """ & sBand & """;" & vbCrLf)
 					
 				Response.Write("    menu_insertSubMenuItem(""mnubandHistory"", objBandToolCaption.replace(""&&"", ""&""), ""0"", objBandToolSubBand);" & vbCrLf)
@@ -319,8 +314,9 @@
 			End If
 		End If
 
-		iLastParentScreenID = avHistoryMenuInfo(1, iLoop)
-		iLastChildTableID = avHistoryMenuInfo(2, iLoop)
+		iLastParentScreenID = objHistoryScreen.parentScreenID
+		iLastChildTableID = objHistoryScreen.childTableID
+		iLoop += 1
 	Next
 
 	If iDoneCount > 0 Then
@@ -380,10 +376,10 @@
 		Err.Clear()
 		cmdMisc.Execute()
 		
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_BA ID=txtCFG_BA VALUE='" & cmdMisc.Parameters("param2").value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_LD ID=txtCFG_LD VALUE='" & cmdMisc.Parameters("param3").value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_RT ID=txtCFG_RT VALUE='" & cmdMisc.Parameters("param4").value & "'>" & vbCrLf)
+		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").Value & "'>" & vbCrLf)
+		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_BA ID=txtCFG_BA VALUE='" & cmdMisc.Parameters("param2").Value & "'>" & vbCrLf)
+		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_LD ID=txtCFG_LD VALUE='" & cmdMisc.Parameters("param3").Value & "'>" & vbCrLf)
+		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_RT ID=txtCFG_RT VALUE='" & cmdMisc.Parameters("param4").Value & "'>" & vbCrLf)
 	End If
 		
 	' ------------------------------------------------------------------------------
@@ -416,43 +412,43 @@
 		
 		If Len(sErrorDescription) = 0 Then
 			Do While Not rstSystemPermissions.EOF
-				Response.Write("<INPUT type='hidden' id=txtSysPerm_" & Replace(rstSystemPermissions.fields("KEY").value, " ", "_") & " name=txtSysPerm_" & Replace(rstSystemPermissions.fields("KEY").value, " ", "_") & " value=""" & rstSystemPermissions.fields("PERMITTED").value & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtSysPerm_" & Replace(rstSystemPermissions.Fields("KEY").Value, " ", "_") & " name=txtSysPerm_" & Replace(rstSystemPermissions.Fields("KEY").Value, " ", "_") & " value=""" & rstSystemPermissions.Fields("PERMITTED").Value & """>" & vbCrLf)
 
-				If (Left(rstSystemPermissions.fields("KEY").value, 13) = "CUSTOMREPORTS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 13) = "CUSTOMREPORTS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fCustomReportsGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 9) = "CROSSTABS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "CROSSTABS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fCrossTabsGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 15) = "CALENDARREPORTS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 15) = "CALENDARREPORTS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fCalendarReportsGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 9) = "MAILMERGE") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "MAILMERGE") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fMailMergeGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 12) = "WORKFLOW_RUN") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 12) = "WORKFLOW_RUN") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fWorkflowGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 12) = "CALCULATIONS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 12) = "CALCULATIONS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fCalculationsGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 7) = "FILTERS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 7) = "FILTERS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fFiltersGranted = True
 				End If
-				If (Left(rstSystemPermissions.fields("KEY").value, 9) = "PICKLISTS") And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "PICKLISTS") And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fPicklistsGranted = True
 				End If
-				If ((rstSystemPermissions.fields("KEY").value = "MODULEACCESS_SYSTEMMANAGER") Or _
-					(rstSystemPermissions.fields("KEY").value = "MODULEACCESS_SECURITYMANAGER")) And _
-				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
+				If ((rstSystemPermissions.Fields("KEY").Value = "MODULEACCESS_SYSTEMMANAGER") Or _
+					(rstSystemPermissions.Fields("KEY").Value = "MODULEACCESS_SECURITYMANAGER")) And _
+				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
 					fNewUserGranted = True
 				End If
 
@@ -460,7 +456,7 @@
 			Loop
 
 			' Release the ADO recordset and command objects.
-			rstSystemPermissions.close()
+			rstSystemPermissions.Close()
 		End If
 	
 		rstSystemPermissions = Nothing
@@ -477,7 +473,7 @@
 
 		Dim prmModuleKey = cmdAbsenceModule.CreateParameter("moduleKey", 200, 1, 50) '200=varchar, 1=input, 50=size
 		cmdAbsenceModule.Parameters.Append(prmModuleKey)
-		prmModuleKey.value = "ABSENCE"
+		prmModuleKey.Value = "ABSENCE"
 
 		Dim prmEnabled = cmdAbsenceModule.CreateParameter("enabled", 11, 2)	' 11=bit, 2=output
 		cmdAbsenceModule.Parameters.Append(prmEnabled)
@@ -616,13 +612,13 @@
 		//$(".accordion h3").css("font-size", "16pt");
 		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "large");
 	});
-	
+
 	$("#FontSizeDefault").click(function (){
 		$(".accordion").css("font-size", "1em");
 		//$(".accordion h3").css("font-size", "14pt");
 		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "1em");
 	});
-	
+
 	$("#FontSizeSmall").click(function (){
 		$(".accordion").css("font-size", "small");
 		//$(".accordion h3").css("font-size", "12pt");
