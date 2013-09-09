@@ -1,6 +1,8 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
+
 Public Class Utilities
 
   Private mclsData As clsDataAccess
@@ -176,9 +178,7 @@ ErrorTrap:
 
     Dim blnOK As Boolean
 
-    blnOK = True
-
-    ReDim mastrUDFsRequired(0)
+		ReDim mastrUDFsRequired(0)
 
     blnOK = datGeneral.FilteredIDs(plngExprID, sIDSQL, avPrompts)
 
@@ -191,13 +191,11 @@ ErrorTrap:
 
   End Function
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
 			gADOCon = Value
 		End Set
 	End Property
-
-
 
   Public ReadOnly Property OfficeGetDefaultIndexWord() As Short
     Get
@@ -232,14 +230,13 @@ ErrorTrap:
   Public Function GetPictures(ByRef plngScreenID As Integer, ByRef psTempPath As String) As Object
     Dim avPictures(,) As Object
     Dim sSQL As String
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim sFileName As String
 
     ReDim avPictures(2, 0)
 
     sSQL = "SELECT DISTINCT ASRSysControls.pictureID, ASRSysPictures.name" & " FROM ASRSysControls" & " INNER JOIN ASRSysPictures ON ASRSysControls.pictureID = ASRSysPictures.pictureID" & " WHERE screenID = " & Trim(Str(plngScreenID)) & " AND controlType = " & Trim(Str(Declarations.ControlTypes.ctlImage))
-
-    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     With rsTemp
       Do While Not .EOF
@@ -274,8 +271,9 @@ ErrorTrap:
     Dim sFileName As String = ""
     Dim lngPictureID As Short
 
-    sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue " & "FROM ASRSysSystemSettings " & "WHERE ASRSysSystemSettings.section = 'desktopsetting' " & "     AND  ASRSysSystemSettings.settingKey = 'bitmapid'"
-    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue FROM ASRSysSystemSettings WHERE ASRSysSystemSettings.section = 'desktopsetting' " _
+				 & " AND  ASRSysSystemSettings.settingKey = 'bitmapid'"
+		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsTemp
       If Not (.BOF And .EOF) Then
         lngPictureID = .Fields("settingValue").Value
@@ -285,9 +283,8 @@ ErrorTrap:
     'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsTemp = Nothing
 
-    sSQL = vbNullString
-    sSQL = "SELECT DISTINCT ASRSysPictures.pictureID, ASRSysPictures.name" & " FROM ASRSysPictures " & " WHERE ASRSysPictures.pictureID = " & CStr(lngPictureID)
-    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT DISTINCT ASRSysPictures.pictureID, ASRSysPictures.name" & " FROM ASRSysPictures " & " WHERE ASRSysPictures.pictureID = " & CStr(lngPictureID)
+		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsTemp
       If Not (.BOF And .EOF) Then
         sFileName = LoadScreenControlPicture(.Fields("PictureID").Value, psTempPath, .Fields("Name").Value)
@@ -308,7 +305,7 @@ ErrorTrap:
     Dim intBGPos As Short
 
     sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue " & "FROM ASRSysSystemSettings " & "WHERE ASRSysSystemSettings.section = 'desktopsetting' " & "     AND  ASRSysSystemSettings.settingKey = 'bitmaplocation'"
-    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsTemp
       If Not (.BOF And .EOF) Then
         intBGPos = .Fields("settingValue").Value
@@ -333,7 +330,7 @@ ErrorTrap:
     Dim sTempName As String
     Dim sPictureFile As String
     Dim bytChunks() As Byte
-    Dim rsPictures As ADODB.Recordset
+		Dim rsPictures As Recordset
     Dim sSQL As String
 
     Const conChunkSize As Short = 2 ^ 14
@@ -341,7 +338,7 @@ ErrorTrap:
     sPictureFile = ""
 
     sSQL = "SELECT picture" & " FROM ASRSysPictures" & " WHERE pictureID = " & Trim(Str(plngPictureID))
-    rsPictures = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsPictures = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     With rsPictures
       If Not (.BOF And .EOF) Then
@@ -451,7 +448,7 @@ ErrorTrap:
 
   Private Function OfficeGetSaveAsValuesForDestin(ByRef strDestin As String, ByRef intOfficeVersion As Short) As String
 
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim strSQL As String
     Dim strFormatField As String
     Dim strOutput As String
@@ -460,9 +457,9 @@ ErrorTrap:
 
     strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
 
-
-    strSQL = "SELECT * " & "FROM   ASRSysFileFormats " & "WHERE  Destination = '" & Replace(strDestin, "'", "''") & "' " & "  AND  NOT " & strFormatField & " IS NULL " & "ORDER BY ID"
-    rsTemp = datGeneral.GetRecords(strSQL)
+		strSQL = "SELECT * FROM ASRSysFileFormats WHERE  Destination = '" _
+				& Replace(strDestin, "'", "''") & "' AND  NOT " & strFormatField & " IS NULL " & "ORDER BY ID"
+		rsTemp = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     Do While Not rsTemp.EOF
       If strOutput <> vbNullString Then
@@ -479,9 +476,9 @@ ErrorTrap:
 
 LocalErr:
     If Not rsTemp Is Nothing Then
-      If rsTemp.State <> ADODB.ObjectStateEnum.adStateClosed Then
-        rsTemp.Close()
-      End If
+			If rsTemp.State <> ObjectStateEnum.adStateClosed Then
+				rsTemp.Close()
+			End If
       'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
       rsTemp = Nothing
     End If
@@ -492,7 +489,7 @@ LocalErr:
   Private Function OfficeGetCommonDialogFormats(ByRef strDestin As String, ByRef intOfficeVersion As Short) As String
 
     Dim objSettings As clsSettings
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim strSQL As String
     Dim strOutput As String
     Dim strFormatField As String
@@ -508,11 +505,11 @@ LocalErr:
     'UPGRADE_NOTE: Object objSettings may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     objSettings = Nothing
 
-
     strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
 
-    strSQL = "SELECT * " & "FROM   ASRSysFileFormats " & "WHERE  Destination = '" & Replace(strDestin, "'", "''") & "' " & "  AND  NOT " & strFormatField & " IS NULL " & "ORDER BY ID"
-    rsTemp = datGeneral.GetRecords(strSQL)
+		strSQL = "SELECT * FROM ASRSysFileFormats WHERE  Destination = '" & Replace(strDestin, "'", "''") _
+					 & "' AND  NOT " & strFormatField & " IS NULL ORDER BY ID"
+		rsTemp = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     intCount = 1
     intDefaultFormatIndex = -1
@@ -533,7 +530,6 @@ LocalErr:
       End If
 
       strOutput = strOutput & rsTemp.Fields("Description").Value & "|*." & rsTemp.Fields("Extension").Value
-      'mlngFileFormats.Add rsTemp.Fields("ID").Value & "|" & rsTemp.Fields("Extension").Value
 
       intCount = intCount + 1
       rsTemp.MoveNext()
@@ -551,9 +547,9 @@ LocalErr:
 
 LocalErr:
     If Not rsTemp Is Nothing Then
-      If rsTemp.State <> ADODB.ObjectStateEnum.adStateClosed Then
-        rsTemp.Close()
-      End If
+			If rsTemp.State <> ObjectStateEnum.adStateClosed Then
+				rsTemp.Close()
+			End If
       'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
       rsTemp = Nothing
     End If
