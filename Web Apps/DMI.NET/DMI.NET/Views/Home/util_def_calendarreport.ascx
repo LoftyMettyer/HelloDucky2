@@ -1972,7 +1972,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																					</label>
 																				</td>
 																				<td colspan="1">
-																					<input id="Text1" maxlength="255" class="text textdisabled" disabled="disabled" name="txtEmailAttachAs" style="WIDTH: 400px"
+																					<input id="txtEmailAttachAs" maxlength="255" class="text textdisabled" disabled="disabled" name="txtEmailAttachAs" style="WIDTH: 400px"
 																						onchange="frmUseful.txtChanged.value = 1;"
 																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
 																				<td colspan="5"></td>
