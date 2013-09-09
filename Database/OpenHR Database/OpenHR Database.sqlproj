@@ -204,7 +204,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetAvailableFiltersInfo.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetAvailableOrdersInfo.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetAvailablePicklists.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetBlankIfZeroFindColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarColours.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportDefinition.sql" />

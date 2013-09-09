@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
 
@@ -101,93 +102,11 @@
 						</div>
 					<div id="findGridRow" style="height: <%If Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
 							<%
+
+								Dim sTemp As String
 								Dim sThousandColumns As String
 								Dim sBlankIfZeroColumns As String
-								Dim sTemp As String
 								
-								If Len(sErrorDescription) = 0 Then									
-									' Get the find records.
-									Dim cmdThousandFindColumns = New ADODB.Command
-									cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-									cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-									cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-									cmdThousandFindColumns.CommandTimeout = 180
-		
-									Dim prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2) ' 11=bit, 2=output
-									cmdThousandFindColumns.Parameters.Append(prmError)
-
-									Dim prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-									cmdThousandFindColumns.Parameters.Append(prmTableID)
-									prmTableID.value = CleanNumeric(Session("tableID"))
-
-									prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-									cmdThousandFindColumns.Parameters.Append(prmViewID)
-									prmViewID.value = CleanNumeric(Session("viewID"))
-
-									Dim prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-									cmdThousandFindColumns.Parameters.Append(prmOrderID)
-									prmOrderID.value = CleanNumeric(Session("orderID"))
-
-									Dim prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-									cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-									Err.Clear()
-									cmdThousandFindColumns.Execute()
-
-									If (Err.Number <> 0) Then
-										sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-									End If
-
-									If Len(sErrorDescription) = 0 Then
-										sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-									End If
-	
-									' Release the ADO command object.
-									cmdThousandFindColumns = Nothing
-								End If
-
-								' NPG20090210 Fault 13249
-								If Len(sErrorDescription) = 0 Then
-									' Get the BlankIfZero find records.
-									Dim cmdBlankIfZeroFindColumns = New ADODB.Command
-									cmdBlankIfZeroFindColumns.CommandText = "spASRIntGetBlankIfZeroFindColumns"
-									cmdBlankIfZeroFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-									cmdBlankIfZeroFindColumns.ActiveConnection = Session("databaseConnection")
-									cmdBlankIfZeroFindColumns.CommandTimeout = 180
-		
-									Dim prmError = cmdBlankIfZeroFindColumns.CreateParameter("error", 11, 2) ' 11=bit, 2=output
-									cmdBlankIfZeroFindColumns.Parameters.Append(prmError)
-
-									Dim prmTableID = cmdBlankIfZeroFindColumns.CreateParameter("tableID", 3, 1)
-									cmdBlankIfZeroFindColumns.Parameters.Append(prmTableID)
-									prmTableID.value = CleanNumeric(CLng(Session("tableID")))
-
-									prmViewID = cmdBlankIfZeroFindColumns.CreateParameter("viewID", 3, 1)
-									cmdBlankIfZeroFindColumns.Parameters.Append(prmViewID)
-									prmViewID.value = CleanNumeric(CLng(Session("viewID")))
-
-									Dim prmOrderID = cmdBlankIfZeroFindColumns.CreateParameter("orderID", 3, 1)
-									cmdBlankIfZeroFindColumns.Parameters.Append(prmOrderID)
-									prmOrderID.value = CleanNumeric(CLng(Session("orderID")))
-
-									Dim prmBlankIfZeroColumns = cmdBlankIfZeroFindColumns.CreateParameter("blankifzeroColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-									cmdBlankIfZeroFindColumns.Parameters.Append(prmBlankIfZeroColumns)
-	
-									Err.Clear()
-									cmdBlankIfZeroFindColumns.Execute()
-
-									If (Err.Number <> 0) Then
-										sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-									End If
-
-									If Len(sErrorDescription) = 0 Then
-										sBlankIfZeroColumns = cmdBlankIfZeroFindColumns.Parameters("blankifzeroColumns").Value
-									End If
-	
-									' Release the ADO command object.
-									cmdBlankIfZeroFindColumns = Nothing
-								End If
-
 								Dim fCancelDateColumn = True
 									If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) And Len(Session("lineage").ToString()) > 0 Then
 											Dim sSubString As String = Session("lineage").ToString()
@@ -203,9 +122,9 @@
 											Dim lngRecordID = Left(sSubString, iIndex - 1)
 
 											' Get the Course Date
-									Dim cmdGetCancelDateColumn = New ADODB.Command
+									Dim cmdGetCancelDateColumn = New Command
 											cmdGetCancelDateColumn.CommandText = "spASRIntGetCancelCourseDate"
-									cmdGetCancelDateColumn.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+									cmdGetCancelDateColumn.CommandType = CommandTypeEnum.adCmdStoredProc
 											cmdGetCancelDateColumn.ActiveConnection = Session("databaseConnection")
 											cmdGetCancelDateColumn.CommandTimeout = 180
 				
@@ -236,9 +155,9 @@
 
 								If Len(sErrorDescription) = 0 Then
 									' Get the find records.
-									Dim cmdFindRecords = New ADODB.Command
+									Dim cmdFindRecords = New Command
 									cmdFindRecords.CommandText = "sp_ASRIntGetFindRecords3"
-									cmdFindRecords.CommandType = 4 ' Stored Procedure
+									cmdFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 									cmdFindRecords.ActiveConnection = Session("databaseConnection")
 									cmdFindRecords.CommandTimeout = 180
 
@@ -322,185 +241,50 @@
 									cmdFindRecords.Parameters.Append(prmCurrentRecCount)
 									prmCurrentRecCount.value = CleanNumeric(Session("currentRecCount"))
 
-									Dim prmColumnThousand = cmdFindRecords.CreateParameter("Use1000Separator", 11, 2) ' 3=integer, 2=output
-									cmdFindRecords.Parameters.Append(prmColumnThousand)
-
-									Dim prmDecSeparator = cmdFindRecords.CreateParameter("decSeparator", 200, 1, 255) ' 200=varchar, 1=input, 255=size
+									Dim prmDecSeparator = cmdFindRecords.CreateParameter("decSeparator", 200, 1, 255)	' 200=varchar, 1=input, 255=size
 									cmdFindRecords.Parameters.Append(prmDecSeparator)
 									prmDecSeparator.value = Session("LocaleDecimalSeparator")
 
 									Dim prmDateFormat = cmdFindRecords.CreateParameter("dateFormat", 200, 1, 255) ' 200=varchar, 1=input, 255=size
 									cmdFindRecords.Parameters.Append(prmDateFormat)
 									prmDateFormat.value = Session("LocaleDateFormat")
-
-									Dim prmColumnBlankIfZero = cmdFindRecords.CreateParameter("BlankIfZero", 11, 2) ' 3=integer, 2=output
-									cmdFindRecords.Parameters.Append(prmColumnBlankIfZero)
-
+							
 									Err.Clear()
-									Dim rstFindRecords = cmdFindRecords.Execute
+
+									' Get the recordset parameters
+									Dim rstParameters = cmdFindRecords.Execute
+								
+									sThousandColumns = rstParameters.Fields("ThousandColumns").Value.ToString()
+									sBlankIfZeroColumns = rstParameters.Fields("BlankIfZeroColumns").Value.ToString()								
+									
+									' Get the actual data
+									Dim rstFindRecords = rstParameters.NextRecordset()
 
 									If (Err.Number <> 0) Then
 										sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
 									End If
 
 									If Len(sErrorDescription) = 0 Then
-													'' Instantiate and initialise the grid. 
-													'Response.Write("<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridFindRecords name=ssOleDBGridFindRecords codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Rows"" VALUE=""10"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""GroupHeaders"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Col.Count"" VALUE=""" & rstFindRecords.fields.count & """>" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BevelColorFrame"" VALUE=""-2147483642"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BevelColorHighlight"" VALUE=""-2147483628"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BevelColorShadow"" VALUE=""-2147483632"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BevelColorFace"" VALUE=""-2147483633"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""MultiLine"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""SelectTypeRow"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""RowNavigation"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""MaxSelectedRows"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BackColorEven"" VALUE=""16777215"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BackColorOdd"" VALUE=""16777215"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Columns.Count"" VALUE=""" & rstFindRecords.fields.count & """>" & vbCrLf)
-													Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
+										' Instantiate and initialise the grid. 
+										Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
+										Response.Write("<tr class='header'>" & vbCrLf)									
 													
-
-													
-													Response.Write("<tr class='header'>" & vbCrLf)
-											
-													
-													For iLoop = 0 To (rstFindRecords.fields.count - 1)
+										For iLoop = 0 To (rstFindRecords.Fields.Count - 1)
 															
-															Dim headerStyle As New StringBuilder
-															Dim headerCaption As String
+											Dim headerStyle As New StringBuilder
+											Dim headerCaption As String
 															
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""5600"">" & vbCrLf)
-															headerStyle.Append("width: 373px; ")
+											headerStyle.Append("width: 373px; ")
 	
-															If rstFindRecords.fields(iLoop).name = "ID" Then
-																	'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""0"">" & vbCrLf)
-																	headerStyle.Append("display: none; ")
-															Else
-																	'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""-1"">" & vbCrLf)
-															End If
+											If rstFindRecords.Fields(iLoop).Name = "ID" Then
+												headerStyle.Append("display: none; ")
+											End If
 	
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-															' Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(rstFindRecords.fields(iLoop).name, "_", " ") & """>" & vbCrLf)
-															headerCaption = Replace(rstFindRecords.fields(iLoop).name.ToString(), "_", " ")
-															
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstFindRecords.fields(iLoop).name & """>" & vbCrLf)
-				
-															'If (rstFindRecords.fields(iLoop).type = 131) Or (rstFindRecords.fields(iLoop).type = 3) Then
-															'    'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""1"">" & vbCrLf)
-															'Else
-															'    'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""0"">" & vbCrLf)
-															'End If
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
-															headerStyle.Append("text-align: left; ")
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Bound"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").DataField"" VALUE=""Column " & iLoop & """>" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").DataType"" VALUE=""8"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Level"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").NumberFormat"" VALUE="""">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Case"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").FieldLen"" VALUE=""4096"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Locked"" VALUE=""0"">" & vbCrLf)
-				
-															'If rstFindRecords.fields(iLoop).type = 11 Then
-															'    ' Find column is a logic column.
-															'    Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Style"" VALUE=""2"">" & vbCrLf)
-															'Else
-															'    Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Style"" VALUE=""0"">" & vbCrLf)
-															'End If
-
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").RowCount"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").ColCount"" VALUE=""1"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HasForeColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HasBackColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HeadForeColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HeadBackColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").ForeColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").BackColor"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").HeadStyleSet"" VALUE="""">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").StyleSet"" VALUE="""">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Nullable"" VALUE=""1"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").Mask"" VALUE="""">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").ClipMode"" VALUE=""0"">" & vbCrLf)
-															'Response.Write("	<PARAM NAME=""Columns(" & iLoop & ").PromptChar"" VALUE=""95"">" & vbCrLf)
-															If rstFindRecords.fields(iLoop).name <> "ID" Then Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
-													Next
+											headerCaption = Replace(rstFindRecords.Fields(iLoop).Name.ToString(), "_", " ")
+											headerStyle.Append("text-align: left; ")
+											If rstFindRecords.Fields(iLoop).Name <> "ID" Then Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
+										Next
 													
-													
-													'Response.Write("	<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""_ExtentX"" VALUE=""17330"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""_ExtentY"" VALUE=""1323"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
-													'Response.Write("	<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-
-													' JPD20020903 Fault 2316
-													'Response.Write("	<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
-													'Response.Write("</OBJECT>" & vbCrLf)
 													
 													Dim lngRowCount = 0
 													Response.Write("</tr>")
@@ -526,33 +310,27 @@
 					
 																			If rstFindRecords.fields(iLoop).type = 135 Then
 																					' Field is a date so format as such.
-																					' JPD20020903 Fault 2316
-																					'Response.Write "	<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & convertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value) & """>" & vbcrlf
 														sAddString = sAddString & ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value) & "	"
 																					sAddTRString = ConvertSQLDateToLocale(rstFindRecords.Fields(iLoop).Value)
 																			ElseIf rstFindRecords.fields(iLoop).type = 131 Then
 																					' Field is a numeric so format as such.
 																					If IsDBNull(rstFindRecords.Fields(iLoop).Value) Then
-																							' JPD20020903 Fault 2316
-																							'Response.Write "	<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE="""">" & vbcrlf
-																							sAddString = sAddString & "	"
+															sAddString = sAddString & "	"
 																							sAddTRString = ""
 																					Else
-																							If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
-																									sTemp = ""
-																									sTemp = FormatNumber(rstFindRecords.Fields(iLoop).Value, rstFindRecords.Fields(iLoop).numericScale, True, False, True)
-																									sTemp = Replace(sTemp, ".", "x")
-																									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-																									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-																									' sAddString = sAddString & sTemp & "	"
-																							Else
-																									sTemp = ""
-																									sTemp = FormatNumber(rstFindRecords.Fields(iLoop).Value, rstFindRecords.Fields(iLoop).numericScale, True, False, False)
-																									sTemp = Replace(sTemp, ".", "x")
-																									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-																									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-																									' sAddString = sAddString & sTemp & "	"
-																							End If
+															If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
+																sTemp = FormatNumber(rstFindRecords.Fields(iLoop).Value, rstFindRecords.Fields(iLoop).NumericScale, True, False, True)
+																sTemp = Replace(sTemp, ".", "x")
+																sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+																sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+																' sAddString = sAddString & sTemp & "	"
+															Else
+																sTemp = FormatNumber(rstFindRecords.Fields(iLoop).Value, rstFindRecords.Fields(iLoop).NumericScale, True, False, False)
+																sTemp = Replace(sTemp, ".", "x")
+																sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+																sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+																' sAddString = sAddString & sTemp & "	"
+															End If
 								
 																							' NPG20090210 Fault 13249
 																							If Mid(sBlankIfZeroColumns, iLoop + 1, 1) = "1" And rstFindRecords.Fields(iLoop).Value = "0" Then
@@ -599,9 +377,6 @@
 															Loop
 													End If
 													Response.Write("</table>")
-													' JPD20020903 Fault 2316
-													'Response.Write "	<PARAM NAME=""Row.Count"" VALUE=""" & lngRowCount & """>" & vbcrlf
-													'Response.Write "</OBJECT>" & vbcrlf
 
 													' Release the ADO recorddim object.
 													rstFindRecords.close()

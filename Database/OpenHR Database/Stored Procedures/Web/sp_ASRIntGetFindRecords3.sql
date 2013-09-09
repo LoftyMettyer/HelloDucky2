@@ -22,10 +22,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetFindRecords3] (
 	@piTotalRecCount		integer			OUTPUT,
 	@piFirstRecPos			integer			OUTPUT,
 	@piCurrentRecCount		integer,
-	@pbUse1000Separator		bit				OUTPUT,
 	@psDecimalSeparator		varchar(255),
-	@psLocaleDateFormat		varchar(255),
-	@pbBlankIfZero			bit				OUTPUT
+	@psLocaleDateFormat		varchar(255)
 )
 AS
 BEGIN
@@ -94,9 +92,11 @@ BEGIN
 		@sTempLocateValue	varchar(MAX),
 		@sSubFilterSQL		nvarchar(MAX),
 		@bBlankIfZero		bit,
-		@sTempFilterString varchar(MAX),
-		@sJoinSQL nvarchar(max),
-		@psOriginalAction varchar(255);
+		@sTempFilterString	varchar(MAX),
+		@sJoinSQL			nvarchar(max),
+		@psOriginalAction		varchar(255),
+		@sThousandColumns		varchar(255),
+		@sBlankIfZeroColumns	varchar(255);
 	
 	/* Clean the input string parameters. */
 	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
@@ -111,7 +111,9 @@ BEGIN
 	SET @piColumnDecimals = 0;
 	SET @bUse1000Separator = 0;
 	SET @bBlankIfZero = 0;
-	
+	SET @sThousandColumns = '';
+	SET @sBlankIfZeroColumns = '';
+
 	SET @sRealSource = '';
 	SET @sSelectSQL = '';
 	SET @sOrderSQL = '';
@@ -488,7 +490,7 @@ BEGIN
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
 		SELECT DISTINCT ASRSysColumns.tableID
 		FROM [dbo].[ASRSysOrderItems]
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
+		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
 		WHERE ASRSysOrderItems.orderID = @piOrderID;
 
 	OPEN tablesCursor;
@@ -565,7 +567,7 @@ BEGIN
 		ASRSysColumns.Use1000Separator,
 		ASRSysColumns.BlankIfZero
 	FROM [dbo].[ASRSysOrderItems]
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
+	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID
 	ORDER BY ASRSysOrderItems.sequence;
@@ -581,6 +583,7 @@ BEGIN
 	END
 	WHILE (@@fetch_status = 0)
 	BEGIN
+
 		SET @fSelectGranted = 0;
 		IF @iColumnTableId = @piTableID
 		BEGIN
@@ -605,6 +608,8 @@ BEGIN
 						@sRealSource + '.' + @sColumnName;
 
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
+					SET @sThousandColumns = @sThousandColumns + convert(varchar(1),@bUse1000Separator);
+					SET @sBlankIfZeroColumns = @sBlankIfZeroColumns + convert(varchar(1),@bBlankIfZero);
 					
 				END
 				ELSE
@@ -615,7 +620,6 @@ BEGIN
 						SET @piColumnType = @iDataType;
 						SET @piColumnSize = @iSize;
 						SET @piColumnDecimals = @iDecimals;
-						SET @pbUse1000Separator = @bUse1000Separator;
 						SET @fFirstColumnAsc = @fAscending;
 						SET @sFirstColCode = @sRealSource + '.' + @sColumnName;
 						IF (@psAction = 'LOCATEID')
@@ -696,7 +700,6 @@ BEGIN
 						SET @piColumnType = @iDataType;
 						SET @piColumnSize = @iSize;
 						SET @piColumnDecimals = @iDecimals;
-						SET @pbUse1000Separator	= @bUse1000Separator;
 						SET @fFirstColumnAsc = @fAscending;
 						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName;
 						IF (@psAction = 'LOCATEID')
@@ -788,7 +791,6 @@ BEGIN
 							SET @piColumnType = @iDataType;
 							SET @piColumnSize = @iSize;
 							SET @piColumnDecimals = @iDecimals;
-							SET @pbUse1000Separator = @bUse1000Separator;
 							SET @fFirstColumnAsc = @fAscending;
 							SET @sFirstColCode = @sSubString;
 							IF (@psAction = 'LOCATEID')
@@ -1437,6 +1439,12 @@ BEGIN
 	-- Return a recordset of the required columns in the required order from the given table/view.
 	IF (@pfSomeSelectable = 1)
 	BEGIN
+
+		SELECT @sBlankIfZeroColumns AS BlankIfZeroColumns
+			, @sThousandColumns AS ThousandColumns
+
 		EXECUTE sp_executeSQL @sExecString;
 	END
+
+
 END
