@@ -545,9 +545,9 @@
 
 <div class="accessibility ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
 	<ul>
-		<li><a class="size-big" href="#" id="FontSizeBig"><span>A</span></a></li>
-    <li><a class="size-default" href="#" id="FontSizeDefault"><span>A</span></a></li>
-		<li><a class="size-small" href="#" id="FontSizeSmall"><span>A</span></a></li>
+		<li><a class="size-big" href="#" id="FontSizeBig" title="Large font"><span>A</span></a></li>
+		<li><a class="size-default" href="#" id="FontSizeDefault" title="Default font"><span>A</span></a></li>
+		<li><a class="size-small" href="#" id="FontSizeSmall" title="Small font"><span>A</span></a></li>
 	</ul>
 </div>
 
