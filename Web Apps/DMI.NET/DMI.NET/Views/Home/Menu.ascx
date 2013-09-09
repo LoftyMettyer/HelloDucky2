@@ -590,8 +590,45 @@
 		</div>
 </div>
 
+<div class="accessibility ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
+	<ul>
+		<li><a class="size-big" href="#" id="FontSizeBig"><span>A</span></a></li>
+    <li><a class="size-default" href="#" id="FontSizeDefault"><span>A</span></a></li>
+		<li><a class="size-small" href="#" id="FontSizeSmall"><span>A</span></a></li>
+	</ul>
+</div>
 
+<script type="text/javascript">
+	//Accessibility
+	
+	//Get current settings (if any)
+	$(document).ready(function() {
+		var accordionFontSize = OpenHR.GetRegistrySetting("HR Pro", "AccordionAccessibilityFontSizeSize", "accordion-font-size");
 
+		if (accordionFontSize != "") {
+			$(".accordion").css("font-size", accordionFontSize);
+		}
+	});
+
+	//Change fonts on clicking the appropriate link
+	$("#FontSizeBig").click(function () {
+		$(".accordion").css("font-size", "large");
+		//$(".accordion h3").css("font-size", "16pt");
+		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "large");
+	});
+	
+	$("#FontSizeDefault").click(function (){
+		$(".accordion").css("font-size", "1em");
+		//$(".accordion h3").css("font-size", "14pt");
+		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "1em");
+	});
+	
+	$("#FontSizeSmall").click(function (){
+		$(".accordion").css("font-size", "small");
+		//$(".accordion h3").css("font-size", "12pt");
+		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "small");
+	});
+</script>
 
 <FORM action="" method=POST id=frmMenuInfo name=frmMenuInfo>
 <%

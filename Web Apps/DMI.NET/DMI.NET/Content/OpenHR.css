@@ -658,4 +658,51 @@ header {
 	margin-top: 20px;
 }
 
+/* Accessibility */
+.accessibility {
+	width: 100%;
+	height: 30px;
+	float: right;
+	font-size: 0.9em;
+	overflow: hidden;
+}
+.accessibility li, .accessibility ul {
+	list-style-type: none;
+}
 
+.accessibility ul {
+	list-style: none;
+}
+
+.accessibility li {
+	float: right;
+  height: 25px;
+  margin-right: 4px;
+  width: 11px;
+}
+
+.accessibility a, .accessibility a:visited {
+	display: block;
+	color: green !important;
+	font-weight: bold;
+	}
+
+.accessibility ul:first-child {
+	margin-right: 6px;
+}
+
+.accessibility .size-big {
+	font-size: large;
+	margin-top: -6px;
+	margin-right: 6px;
+}
+
+.accessibility .size-default {
+	font-size: medium;
+	margin-top: -4px;
+}
+
+.accessibility .size-small {
+	font-size: small;
+	margin-top: -1px;
+}
