@@ -850,6 +850,7 @@ GetCustomReportDefinition_ERROR:
 		Dim intTemp As Short
 		Dim prstCustomReportsSortOrder As Recordset
 		Dim lngTableID As Integer
+		Dim sMask As String
 
 		' Get the column information from the Details table, in order
 		strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
@@ -969,14 +970,14 @@ GetCustomReportDefinition_ERROR:
 
 				mvarColDetails(22, intTemp) = .Fields("Use1000separator").Value
 
-				'Adjust the size of the field if digit separator is used
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(22, intTemp) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(1, intTemp) = .Fields("Size").Value + Int((.Fields("Size").Value - .Fields("dp").Value) / 3)
+				' Format for this numeric column
+				If mvarColDetails(3, intTemp) Then
+					sMask = ""
+					If mvarColDetails(22, intTemp) Then sMask = ",0"
+					If mvarColDetails(2, intTemp) > 0 Then sMask = sMask & "." & New String("0", mvarColDetails(2, intTemp))
+					mvarColDetails(23, intTemp) = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", mvarColDetails(2, intTemp)) & "}"
 				End If
 
-				'UNUSED - mvarColDetails(23, intTemp)
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3562,30 +3563,6 @@ LoadRecords_ERROR:
 		For pintLoop = 1 To UBound(mvarColDetails, 2)
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If mvarColDetails(0, pintLoop) = sfieldname Then
-				' Do the DP thing
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(3, pintLoop) Then	' is numeric
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) <> 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = Format(vData, "0." & New String("0", mvarColDetails(2, pintLoop)))
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = Replace(vData, ".", mstrLocalDecimalSeparator)
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(1, pintLoop) > 0 Then	'Size restriction
-							'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If vData = "0" Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = Format(vData, "0")
-							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = Format(vData, "#")
-							End If
-						End If
-					End If
-				End If
 
 				' Is it a boolean calculation ? If so, change to Y or N
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3603,44 +3580,21 @@ LoadRecords_ERROR:
 					vData = VB6.Format(vData, mstrClientDateFormat)
 				End If
 
-				' Numeric digit separators
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(22, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) <> 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = Format(vData, "#,0." & New String("0", mvarColDetails(2, pintLoop)))
+
+				' Is Numeric
+				If mvarColDetails(3, pintLoop) Then
+
+					vData = CDbl(vData)
+
+					' Overflow check
+					If CLng(vData) > CLng(New String("9", mvarColDetails(1, pintLoop))) Then
+						vData = New String("#", mvarColDetails(1, pintLoop))
 					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = Format(vData, "#,0")
+						vData = String.Format(mvarColDetails(23, pintLoop), vData)
 					End If
 
 				End If
 
-				'Check if has decimal places
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(1, pintLoop) > 0 Then	'Size restriction
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) > 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If InStr(vData, ".") > mvarColDetails(1, pintLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							vData = Left(vData, mvarColDetails(1, pintLoop)) & Mid(vData, InStr(vData, "."))
-						End If
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If Not IsDBNull(vData) Then
-							If Len(vData) > mvarColDetails(1, pintLoop) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = Left(vData, mvarColDetails(1, pintLoop))
-							End If
-						End If
-					End If
-				End If
 
 				' SRV ?
 				If Not mbIsBradfordIndexReport Then
