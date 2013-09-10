@@ -163,7 +163,7 @@
 									<h6>Delete</h6></a>
 							</div>
 						</li>
-						<li><span>Navigate</span>
+						<li id="mnuNavigate"><span>Navigate</span>
 							<div id="mnutoolParentRecord" class="button">
 								<a href="#" rel="table" title="Return to parent record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />

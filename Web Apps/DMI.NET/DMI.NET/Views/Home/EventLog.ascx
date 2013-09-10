@@ -203,6 +203,20 @@
 		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
+		//Disable navigation controls if number of records is less than 20
+		if (sRecords <= 20)
+		{
+			$("#mnutoolFirstRecord").addClass('disabled');
+			$("#mnutoolPreviousRecord").addClass('disabled');
+			$("#mnutoolNextRecord").addClass('disabled');
+			$("#mnutoolLastRecord").addClass('disabled');
+		} else {
+			$("#mnutoolFirstRecord").removeClass('disabled');
+			$("#mnutoolPreviousRecord").removeClass('disabled');
+			$("#mnutoolNextRecord").removeClass('disabled');
+			$("#mnutoolLastRecord").removeClass('disabled');
+		}
+		
 		return true;
 	}
 
