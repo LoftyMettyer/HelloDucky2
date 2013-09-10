@@ -552,11 +552,12 @@
 </div>
 
 <script type="text/javascript">
-	//Accessibility
-	
-	//Get current settings (if any)
-	$(document).ready(function() {
-		var accordionFontSize = OpenHR.GetRegistrySetting("HR Pro", "AccordionAccessibilityFontSizeSize", "accordion-font-size");
+	$(document).ready(function (){
+		//Change style of the third-level Database section leafs
+		$('[aria-labelledby="mnutoolDatabase"] [id^="PV_"] .ui-state-default').css('font-weight', 'normal');
+		
+		//Get current accessibility settings (if any)
+		var accordionFontSize = OpenHR.GetRegistrySetting("HR Pro", "AccordionAccessibilityFontSizeSize", "accordion-font-size"); //Font size
 
 		if (accordionFontSize != "") {
 			$(".accordion").css("font-size", accordionFontSize);
