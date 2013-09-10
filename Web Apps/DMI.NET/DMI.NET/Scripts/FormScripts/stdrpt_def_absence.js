@@ -1,4 +1,9 @@
-﻿
+﻿var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
+var div3 = document.getElementById("div3");
+var div4 = document.getElementById("div4");
+var div5 = document.getElementById("div5");
+
 function stdrpt_def_absence_window_onload() {
 
     $("#workframe").attr("data-framesource", "STDRPT_DEF_ABSENCE");
@@ -18,8 +23,8 @@ function stdrpt_def_absence_window_onload() {
 
     populatePrinters();
     SetReportDefaults();
-    displayPage(1);
-    refreshTab3Controls();
+    absenceDisplayPage(1);
+    absenceBreakdownRefreshTab3Controls();
 	
     // Disable the menu
     menu_disableMenu();
@@ -28,17 +33,17 @@ function stdrpt_def_absence_window_onload() {
 
 function changeTab1Control() {
     frmAbsenceUseful.txtChanged.value = 1;
-    refreshTab1Controls();
+    absenceBreakdownRefreshTab1Controls();
 }
 
 function changeTab2Control() {
     frmAbsenceUseful.txtChanged.value = 1;
-    refreshTab2Controls();
+    absenceBreakdownRefreshTab2Controls();
 }
 
 function changeTab3Control() {
     frmAbsenceUseful.txtChanged.value = 1;
-    refreshTab3Controls();
+    absenceBreakdownRefreshTab3Controls();
 }
 
 function populatePrinters()
@@ -107,7 +112,7 @@ function formatClick(index)
     }
 
     frmAbsenceUseful.txtChanged.value = 1;
-    refreshTab3Controls();
+    absenceBreakdownRefreshTab3Controls();
 }
 
 function selectEmailGroup()
@@ -217,7 +222,7 @@ function validateAbsenceTab3()
     if (sErrMsg.length > 0) 
     {    
         OpenHR.messageBox(sErrMsg,48);
-        displayPage(3);
+        absenceDisplayPage(3);
         return (false);
     }
 	
@@ -301,7 +306,7 @@ function absence_okClick(){
     if (fOK == false)
     {
         OpenHR.messageBox("Invalid start date value entered.");
-        displayPage(1);		
+        absenceDisplayPage(1);		
         frmAbsenceDefinition.txtDateFrom.focus();
         return;
     }
@@ -327,7 +332,7 @@ function absence_okClick(){
     if (fOK == false)
     {
         OpenHR.messageBox("Invalid end date value entered.");
-        displayPage(1);
+        absenceDisplayPage(1);
         frmAbsenceDefinition.txtDateTo.focus();
         return;
     }
@@ -341,7 +346,7 @@ function absence_okClick(){
     }
     if (lngEnd < lngStart) {
         OpenHR.messageBox("The report end date is before the report start date.");
-        displayPage(1);
+        absenceDisplayPage(1);
         frmAbsenceDefinition.txtDateFrom.focus();
         return;
     }
@@ -370,7 +375,7 @@ function absence_okClick(){
     if (frmPostDefinition.txtAbsenceTypes.value == "")
     {
         OpenHR.messageBox("You must have at least 1 absence type selected.");
-        displayPage(1);		
+        absenceDisplayPage(1);		
         fOK = false;
     }
 
@@ -381,14 +386,14 @@ function absence_okClick(){
     if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0")) 
     {
         OpenHR.messageBox("You must have a picklist selected.");
-        displayPage(1);
+        absenceDisplayPage(1);
         fOK = false;
     }
 		
     if ((frmAbsenceDefinition.optFilter.checked == true) && (frmPostDefinition.txtBaseFilterID.value == "0"))
     {
         OpenHR.messageBox("You must have a filter selected.");
-        displayPage(1);		
+        absenceDisplayPage(1);		
         fOK = false;
     }
 
@@ -572,7 +577,8 @@ function openWindow(mypage, myname, w, h, scroll)
 {
     var winl = (screen.width - w) / 2;
     var wint = (screen.height - h) / 2;
-
+    var winprops;
+    
     if (scroll == 'no')	{
         winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resize=no';
     }
@@ -580,7 +586,7 @@ function openWindow(mypage, myname, w, h, scroll)
         winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable';
     }
 
-    win = window.open(mypage, myname, winprops);
+    var win = window.open(mypage, myname, winprops);
     if (win.opener == null) win.opener = self;
     if (parseInt(navigator.appVersion) >= 4) win.window.focus();
 }
@@ -597,60 +603,55 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
     window.showModalDialog(pDestination, self, dlgwinprops);
 }
 
-function displayPage(piPageNumber) {
-    var iLoop;
-    var iCurrentChildCount;
-    //window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-			
-    if (piPageNumber == 1) 
-    {
-        div1.style.visibility="visible";
-        div1.style.display="block";
-        div2.style.visibility="hidden";
-        div2.style.display="none";
-        div3.style.visibility="hidden";
-        div3.style.display="none";
+function absenceDisplayPage(piPageNumber) {
+    OpenHR.submitForm(window.frmRefresh);
+    
+    if (piPageNumber == 1) {
+        div1.style.visibility = "visible";
+        div1.style.display = "block";
+        div2.style.visibility = "hidden";
+        div2.style.display = "none";
+        div3.style.visibility = "hidden";
+        div3.style.display = "none";
         button_disable(frmAbsenceDefinition.btnTab1, true);
-        if (frmSessionInformation.txtUtilID.value = 16) 
-        {
+
+        if (frmSessionInformation.txtUtilID.value = 16) {
             button_disable(frmAbsenceDefinition.btnTab2, false);
         }
         button_disable(frmAbsenceDefinition.btnTab3, false);
-        refreshTab1Controls();
+        absenceBreakdownRefreshTab1Controls();
     }
 
-    if (piPageNumber == 2) 
-    {
-        div1.style.visibility="hidden";
-        div1.style.display="none";
-        div2.style.visibility="visible";
-        div2.style.display="block";		
-        div3.style.visibility="hidden";
-        div3.style.display="none";
+    if (piPageNumber == 2) {
+        div1.style.visibility = "hidden";
+        div1.style.display = "none";
+        div2.style.visibility = "visible";
+        div2.style.display = "block";
+        div3.style.visibility = "hidden";
+        div3.style.display = "none";
         button_disable(frmAbsenceDefinition.btnTab1, false);
         button_disable(frmAbsenceDefinition.btnTab2, true);
         button_disable(frmAbsenceDefinition.btnTab3, false);
-        refreshTab2Controls();	
+        absenceBreakdownRefreshTab2Controls();
     }
 
     if (piPageNumber == 3) {
-        div1.style.visibility="hidden";
-        div1.style.display="none";
-        div2.style.visibility="hidden";
-        div2.style.display="none";
-        div3.style.visibility="visible";
-        div3.style.display="block";
+        div1.style.visibility = "hidden";
+        div1.style.display = "none";
+        div2.style.visibility = "hidden";
+        div2.style.display = "none";
+        div3.style.visibility = "visible";
+        div3.style.display = "block";
         button_disable(frmAbsenceDefinition.btnTab1, false);
-        if (frmSessionInformation.txtUtilID.value = 16) 
-        {
+        if (frmSessionInformation.txtUtilID.value = 16) {
             button_disable(frmAbsenceDefinition.btnTab2, false);
         }
         button_disable(frmAbsenceDefinition.btnTab3, true);
-        refreshTab3Controls();
+        absenceBreakdownRefreshTab3Controls();
     }
 }
 
-function refreshTab1Controls()
+function  absenceBreakdownRefreshTab1Controls()
 {		 
     if (frmAbsenceDefinition.optAllRecords.checked == true) 
     {
@@ -663,7 +664,7 @@ function refreshTab1Controls()
     }
 }
 
-function refreshTab2Controls()
+function  absenceBreakdownRefreshTab2Controls()
 {
     if (frmPostDefinition.txtRecSelCurrentID.value > 0)
     {
@@ -726,7 +727,7 @@ function refreshTab2Controls()
     }
 }
 
-function refreshTab3Controls()
+function absenceBreakdownRefreshTab3Controls()
 {
     
     var fViewing = (frmAbsenceUseful.txtAction.value.toUpperCase() == "VIEW");
@@ -1006,7 +1007,7 @@ function refreshTab3Controls()
         {
             optOutputFormat0.checked = true;
             chkDestination0.checked=true;
-            refreshTab3Controls();
+            absenceBreakdownRefreshTab3Controls();
         }
 		
         if (txtEmailSubject.disabled)
@@ -1047,56 +1048,56 @@ function refreshTab3Controls()
 function saveFile()
 {
 
-    dialog.CancelError = true;
-    dialog.DialogTitle = "Output Document";
-    dialog.Flags = 2621444;
+    window.dialog.CancelError = true;
+    window.dialog.DialogTitle = "Output Document";
+    window.dialog.Flags = 2621444;
 
     if (frmAbsenceDefinition.optOutputFormat1.checked == true) {
         //CSV
-        dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
+        window.dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
     }
 
     else if (frmAbsenceDefinition.optOutputFormat2.checked == true) {
         //HTML
-        dialog.Filter = "HTML Document (*.htm)|*.htm";
+        window.dialog.Filter = "HTML Document (*.htm)|*.htm";
     }
 
     else if (frmAbsenceDefinition.optOutputFormat3.checked == true) {
         //WORD
         //dialog.Filter = "Word Document (*.doc)|*.doc";
-        dialog.Filter = frmAbsenceDefinition.txtWordFormats.value;
-        dialog.FilterIndex = frmAbsenceDefinition.txtWordFormatDefaultIndex.value;
+        window.dialog.Filter = frmAbsenceDefinition.txtWordFormats.value;
+        window.dialog.FilterIndex = frmAbsenceDefinition.txtWordFormatDefaultIndex.value;
     }
 
     else {
         //EXCEL
         //dialog.Filter = "Excel Workbook (*.xls)|*.xls";
-        dialog.Filter = frmAbsenceDefinition.txtExcelFormats.value;
-        dialog.FilterIndex = frmAbsenceDefinition.txtExcelFormatDefaultIndex.value;
+        window.dialog.Filter = frmAbsenceDefinition.txtExcelFormats.value;
+        window.dialog.FilterIndex = frmAbsenceDefinition.txtExcelFormatDefaultIndex.value;
     }
 
 
 
     if (frmAbsenceDefinition.txtFilename.value.length == 0) {
-        sKey = new String("documentspath_");
+        var sKey = new String("documentspath_");
         sKey = sKey.concat(frmAbsenceDefinition.txtDatabase.value);
-        sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        dialog.InitDir = sPath;
+        var sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        window.dialog.InitDir = sPath;
     }
     else {
-        dialog.FileName = frmAbsenceDefinition.txtFilename.value;
+        window.dialog.FileName = frmAbsenceDefinition.txtFilename.value;
     }
 
 
     try {
-        dialog.ShowSave();
+        window.dialog.ShowSave();
 
-        if (dialog.FileName.length > 256) {
+        if (window.dialog.FileName.length > 256) {
             OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
             return;
         }
 
-        frmAbsenceDefinition.txtFilename.value = dialog.FileName;
+        frmAbsenceDefinition.txtFilename.value = window.dialog.FileName;
 
     }
     catch(e) {
@@ -1104,53 +1105,53 @@ function saveFile()
 
 }
 
-function populateSaveExisting()
-{
-    with (frmAbsenceDefinition.cboSaveExisting)
-    {
-        lngCurrentOption = 0;
+function populateSaveExisting() {
+    var iLoop;
+    var lngCurrentOption = 0;
+    var selectedIndex;
+
+    with (frmAbsenceDefinition.cboSaveExisting) {
+
         if (selectedIndex > 0) {
             lngCurrentOption = options[selectedIndex].value;
         }
-        length = 0;
+        var length = 0;
 
         var oOption = document.createElement("OPTION");
         options.add(oOption);
         oOption.innerText = "Overwrite";
         oOption.value = 0;
-		
-        var oOption = document.createElement("OPTION");
+
+        oOption = document.createElement("OPTION");
         options.add(oOption);
         oOption.innerText = "Do not overwrite";
         oOption.value = 1;
-		
-        var oOption = document.createElement("OPTION");
+
+        oOption = document.createElement("OPTION");
         options.add(oOption);
         oOption.innerText = "Add sequential number to name";
         oOption.value = 2;
-		
-        var oOption = document.createElement("OPTION");
+
+        oOption = document.createElement("OPTION");
         options.add(oOption);
         oOption.innerText = "Append to file";
         oOption.value = 3;
-		
+
         if ((frmAbsenceDefinition.optOutputFormat4.checked) ||
             (frmAbsenceDefinition.optOutputFormat5.checked) ||
-            (frmAbsenceDefinition.optOutputFormat6.checked))
-        {
-            var oOption = document.createElement("OPTION");
+            (frmAbsenceDefinition.optOutputFormat6.checked)) {
+            oOption = document.createElement("OPTION");
             options.add(oOption);
             oOption.innerText = "Create new sheet in workbook";
             oOption.value = 4;
         }
 
-        for (iLoop=0; iLoop<options.length; iLoop++)  {
+        for (iLoop = 0; iLoop < options.length; iLoop++) {
             if (options(iLoop).value == lngCurrentOption) {
-                selectedIndex = iLoop
+                selectedIndex = iLoop;
                 break;
             }
         }
-
     }
 }
 
@@ -1255,7 +1256,7 @@ function absencedef_convertLocaleDateToSQL(psDateString)
     }
 
     if (sYears.length == 2) {
-        iValue = parseInt(sYears);
+        var iValue = parseInt(sYears);
         if (iValue < 30) {
             sTempValue = "20";
         }
