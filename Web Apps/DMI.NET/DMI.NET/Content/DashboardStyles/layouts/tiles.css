@@ -1,6 +1,6 @@
 ﻿html {background-image: none;
-      height: 100%;
-      }
+			height: 100%;
+			}
 
 header { height: 126px;}
 
@@ -28,10 +28,10 @@ background-color: rgb(7, 55, 99);
 }
 
 .DashContent {position: absolute; top: 95px; bottom: 2px;left: 0px; right: 0px;
-              margin: 0px 0px 0px 120px;
-              padding: 30px 0px 0px 10px;
-              height: 680px;
-              overflow-x: hidden; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
+							margin: 0px 0px 0px 120px;
+							padding: 30px 0px 0px 10px;
+							height: 680px;
+							overflow-x: hidden; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
 
 
 
@@ -114,8 +114,8 @@ text-overflow:ellipsis;
 
 	/*margin-left: 10px;*/
 	background-color: transparent!Important;
-   font-size: 11pt;
-   text-decoration: none;
+	 font-size: 11pt;
+	 text-decoration: none;
 	color: white!important;
 }
 
@@ -158,10 +158,10 @@ li {list-style: none;}
 	position: relative;
 	white-space: nowrap;
 	text-align: center;
-   margin-top: 0px;
-   font-style: normal;
-   font-size: 26pt;
-   margin: 0 auto;
+	 margin-top: 0px;
+	 font-style: normal;
+	 font-size: 26pt;
+	 margin: 0 auto;
 }
 
 
@@ -170,64 +170,64 @@ li {list-style: none;}
 
 
 .greenTile {
-   /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a9600', endColorstr='#c2db5e',GradientType=1 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7a9600), to(#c2db5e));
-   background-image: -webkit-linear-gradient(top, #7a9600, #c2db5e); 
-   background-image:    -moz-linear-gradient(top, #7a9600, #c2db5e);
-   background-image:     -ms-linear-gradient(top, #7a9600, #c2db5e);
-   background-image:      -o-linear-gradient(top, #7a9600, #c2db5e);
-   color: White;        
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a9600', endColorstr='#c2db5e',GradientType=1 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7a9600), to(#c2db5e));
+	 background-image: -webkit-linear-gradient(top, #7a9600, #c2db5e); 
+	 background-image:    -moz-linear-gradient(top, #7a9600, #c2db5e);
+	 background-image:     -ms-linear-gradient(top, #7a9600, #c2db5e);
+	 background-image:      -o-linear-gradient(top, #7a9600, #c2db5e);
+	 color: White;        
 }      
 
 .redTile
 {
-   /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff8075',GradientType=1 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#cf0404), to(#ff8075));
-   background-image: -webkit-linear-gradient(top, #cf0404, #ff8075); 
-   background-image:    -moz-linear-gradient(top, #cf0404, #ff8075);
-   background-image:     -ms-linear-gradient(top, #cf0404, #ff8075);
-   background-image:      -o-linear-gradient(top, #cf0404, #ff8075);
-   color: White;        
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff8075',GradientType=1 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#cf0404), to(#ff8075));
+	 background-image: -webkit-linear-gradient(top, #cf0404, #ff8075); 
+	 background-image:    -moz-linear-gradient(top, #cf0404, #ff8075);
+	 background-image:     -ms-linear-gradient(top, #cf0404, #ff8075);
+	 background-image:      -o-linear-gradient(top, #cf0404, #ff8075);
+	 color: White;        
 }
 
 .blueTile {
-   /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#164c89', endColorstr='#687687',GradientType=1 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#164c89), to(#687687));
-   background-image: -webkit-linear-gradient(top, #164c89, #687687); 
-   background-image:    -moz-linear-gradient(top, #164c89, #687687);
-   background-image:     -ms-linear-gradient(top, #164c89, #687687);
-   background-image:      -o-linear-gradient(top, #164c89, #687687);
-   color: White;        
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#164c89', endColorstr='#687687',GradientType=1 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#164c89), to(#687687));
+	 background-image: -webkit-linear-gradient(top, #164c89, #687687); 
+	 background-image:    -moz-linear-gradient(top, #164c89, #687687);
+	 background-image:     -ms-linear-gradient(top, #164c89, #687687);
+	 background-image:      -o-linear-gradient(top, #164c89, #687687);
+	 color: White;        
 }      
-         
+				 
 .orangeTile {
-   /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7b0d', endColorstr='#ffa84c',GradientType=1 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff7b0d), to(#ffa84c));
-   background-image: -webkit-linear-gradient(top, #ff7b0d, #ffa84c); 
-   background-image:    -moz-linear-gradient(top, #ff7b0d, #ffa84c);
-   background-image:     -ms-linear-gradient(top, #ff7b0d, #ffa84c);
-   background-image:      -o-linear-gradient(top, #ff7b0d, #ffa84c);
-   color: White;        
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7b0d', endColorstr='#ffa84c',GradientType=1 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff7b0d), to(#ffa84c));
+	 background-image: -webkit-linear-gradient(top, #ff7b0d, #ffa84c); 
+	 background-image:    -moz-linear-gradient(top, #ff7b0d, #ffa84c);
+	 background-image:     -ms-linear-gradient(top, #ff7b0d, #ffa84c);
+	 background-image:      -o-linear-gradient(top, #ff7b0d, #ffa84c);
+	 color: White;        
 }           
-         
+				 
 .lightBlueTile {
-   /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#067fdb', endColorstr='#d6d6d6',GradientType=1 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#067fdb), to(#d6d6d6));
-   background-image: -webkit-linear-gradient(top, #067fdb, #d6d6d6); 
-   background-image:    -moz-linear-gradient(top, #067fdb, #d6d6d6);
-   background-image:     -ms-linear-gradient(top, #067fdb, #d6d6d6);
-   background-image:      -o-linear-gradient(top, #067fdb, #d6d6d6);
-   color: White;        
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#067fdb', endColorstr='#d6d6d6',GradientType=1 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#067fdb), to(#d6d6d6));
+	 background-image: -webkit-linear-gradient(top, #067fdb, #d6d6d6); 
+	 background-image:    -moz-linear-gradient(top, #067fdb, #d6d6d6);
+	 background-image:     -ms-linear-gradient(top, #067fdb, #d6d6d6);
+	 background-image:      -o-linear-gradient(top, #067fdb, #d6d6d6);
+	 color: White;        
 }
 
 
@@ -298,16 +298,16 @@ div.officetab > ul { padding-left: 0;}
 
 div.officetab li div.button 
 {
-  text-align: center;
-  display: inline-block;
-  position: relative;
-  float: left;
-  /*top: -84px;*/
-  left: 0px;
-  height: 66px;
-  width: 49px;
-  overflow: hidden;
-  line-height: normal;
+	text-align: center;
+	display: inline-block;
+	position: relative;
+	float: left;
+	/*top: -84px;*/
+	left: 0px;
+	height: 66px;
+	width: 49px;
+	overflow: hidden;
+	line-height: normal;
 }
 
 
@@ -399,13 +399,13 @@ div.officetab div.panel > span { display: none;}
 
 
 div.officetab li div.textboxlist li {
-  background: transparent none;
-  float:none;
-  margin:0;
-  padding:0;
-  height:22px;
-  font-size: 12px;
-  line-height: 12px;
+	background: transparent none;
+	float:none;
+	margin:0;
+	padding:0;
+	height:22px;
+	font-size: 12px;
+	line-height: 12px;
 }
 
 div.officetab li div.textboxlist {
@@ -413,20 +413,30 @@ div.officetab li div.textboxlist {
 }
 
 /* Start by setting display:none to make this hidden.
-   Then we position it in relation to the viewport window
-   with position:fixed. Width, height, top and left speak
-   speak for themselves. Background we set to 80% white with
-   our animation centered, and no-repeating */
+	 Then we position it in relation to the viewport window
+	 with position:fixed. Width, height, top and left speak
+	 speak for themselves. Background we set to 80% white with
+	 our animation centered, and no-repeating */
 .modal {
-    display:    none;
-    position:   fixed;
-    z-index:    1000;
-    top:        0;
-    left:       0;
-    height:     100%;
-    width:      100%;
-    background: rgba( 255, 255, 255, 0) 
-                url("../../images/ajax-loader.gif") 
-                50% 50% 
-                no-repeat;	
+		display:    none;
+		position:   fixed;
+		z-index:    1000;
+		top:        0;
+		left:       0;
+		height:     100%;
+		width:      100%;
+		background: rgba( 255, 255, 255, 0) 
+								url("../../images/ajax-loader.gif") 
+								50% 50% 
+								no-repeat;	
 }
+
+
+
+/* Formatting for SSI based utilities	*/
+.SSI #dataRow {
+	width: 30%; margin: 0 auto;color: white;
+}
+
+/* Formatting for SSI based utilities	*/
+.SSI #frmOutputDef table { color: white;}

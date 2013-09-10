@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-   <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+	 <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
 
 	<%--<meta name="apple-mobile-web-app-capable" content="yes" />--%>
 	
@@ -12,8 +12,8 @@
 	<!-- ipad -->
 	<link href="Content/images/ABSLogo/OpenHRLogo748x1024.png"
 		media="(device-width: 768px) and (device-height: 1024px)
-                 and (orientation: landscape)
-                 and (-webkit-device-pixel-ratio: 1)"
+								 and (orientation: landscape)
+								 and (-webkit-device-pixel-ratio: 1)"
 		rel="apple-touch-startup-image">
 
 	<!-- iPhone -->
@@ -22,7 +22,7 @@
 		rel="apple-touch-icon">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo320x460.png"
 		media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 1)"
+								 and (-webkit-device-pixel-ratio: 1)"
 		rel="apple-touch-startup-image">
 
 	<!-- iPhone (Retina) -->
@@ -31,13 +31,13 @@
 		rel="apple-touch-icon">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo640x920.png"
 		media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 2)"
+								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
 
 	<!-- iPhone 5 -->
 	<link href="~/Content/images/ABSLogo/OpenHRLogo640x1096.png"
 		media="(device-width: 320px) and (device-height: 568px)
-                 and (-webkit-device-pixel-ratio: 2)"
+								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
 
 	<!-- iPad -->
@@ -46,13 +46,13 @@
 		rel="apple-touch-icon">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo768x1004.png"
 		media="(device-width: 768px) and (device-height: 1024px)
-                 and (orientation: portrait)
-                 and (-webkit-device-pixel-ratio: 1)"
+								 and (orientation: portrait)
+								 and (-webkit-device-pixel-ratio: 1)"
 		rel="apple-touch-startup-image">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo748x1024.png"
 		media="(device-width: 768px) and (device-height: 1024px)
-                 and (orientation: landscape)
-                 and (-webkit-device-pixel-ratio: 1)"
+								 and (orientation: landscape)
+								 and (-webkit-device-pixel-ratio: 1)"
 		rel="apple-touch-startup-image">
 
 	<!-- iPad (Retina) -->
@@ -61,15 +61,15 @@
 		rel="apple-touch-icon">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo1536x2008.png"
 		media="(device-width: 768px) and (device-height: 1024px)
-                 and (orientation: portrait)
-                 and (-webkit-device-pixel-ratio: 2)"
+								 and (orientation: portrait)
+								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
 	<link href="~/Content/images/ABSLogo/OpenHRLogo1496x2048.png"
 		media="(device-width: 768px) and (device-height: 1024px)
-                 and (orientation: landscape)
-                 and (-webkit-device-pixel-ratio: 2)"
+								 and (orientation: landscape)
+								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
-    
+		
 	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
@@ -113,10 +113,10 @@
 	
 
 	<%--External script resources--%>
-    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
+		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
 	<%--licence manager reference for activeX--%>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -175,7 +175,8 @@
 			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
+				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
+				$('body').addClass('DMI');
 			}
 			else {
 				//only load themes for linksMain.				
@@ -187,6 +188,7 @@
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
 				window.currentTheme = cookieTheme;
 
+				$('body').addClass('SSI');
 				//Kill themeRoller:
 				if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
 					$("link[id=DMIthemeLink]").attr({ href: "" });
@@ -196,7 +198,7 @@
 										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 										$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
 										$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-                    	break;
+											break;
 										case "wireframe":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
 											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" });
@@ -206,21 +208,21 @@
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
 											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
 											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-                    	break;
+											break;
 									}
 
-			    switch (window.currentTheme) {
-			        case "red":
-			            $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-			            break;
-                    case "blue":
-                        $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-                        break;
-                    case "white":
-                        $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-                    default:
-                        break;
-                }
+					switch (window.currentTheme) {
+							case "red":
+									$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+									break;
+										case "blue":
+												$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+												break;
+										case "white":
+												$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+										default:
+												break;
+								}
 
 			}
 			
@@ -278,16 +280,16 @@
 				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
 				break;
 			case "theme-Blue":
-			    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
 				break;
 			case "theme-White":
-			    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
 			default:
 				break;
 			}
 		}
 
-        //set up ROOT variable for use in external JS files.
+				//set up ROOT variable for use in external JS files.
 		window.ROOT = '<%= Url.Content("~/") %>';      
 		
 		function loadPartialView(action, controller, targetDiv, params) {

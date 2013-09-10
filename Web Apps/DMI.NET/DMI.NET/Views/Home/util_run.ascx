@@ -163,56 +163,66 @@
 	<input type="hidden" id="txtErrorDesc" name="txtErrorDesc">
 </form>
 
-<div class="pageTitleDiv" style="display: block; position: relative; top:0">
-	<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-	<h3 class="pageTitle"><% =Session("utilname")%></h3>
-</div>
+<div id="divUtilRunForm">
+	<div class="absolutefull">
 
-<div id="main" data-framesource="util_run" style="display: block; height:90%; overflow:auto">
+		<div class="pageTitleDiv" style="margin-left: 20px;">
+			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
+			<h3 class="pageTitle"><% =Session("utilname")%></h3>
+		</div>
 
-	<%   
-		If Session("utiltype") = "1" Then
-			Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
-		ElseIf Session("utiltype") = "2" Then
-			Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-		ElseIf Session("utiltype") = "3" Then
-			'Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
-		ElseIf Session("utiltype") = "4" Then
-			'Html.RenderPartial("~/Views/Home/util_run_export.ascx")
-		ElseIf Session("utiltype") = "5" Then
-			'Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
-		ElseIf Session("utiltype") = "6" Then
-			'Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
-		ElseIf Session("utiltype") = "7" Then
-			'Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
-		ElseIf Session("utiltype") = "8" Then
-			'Html.RenderPartial("~/Views/Home/util_run_import.ascx")
-		ElseIf Session("utiltype") = "9" Then
-					Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
-		ElseIf Session("utiltype") = "15" Then
-					Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
-		ElseIf Session("utiltype") = "16" Then
+		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 20px 0 20px; overflow: auto;">
+
+			<%   
+				If Session("utiltype") = "1" Then
+					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
+				ElseIf Session("utiltype") = "2" Then
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-		ElseIf Session("utiltype") = "17" Then
+				ElseIf Session("utiltype") = "3" Then
+					'Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
+				ElseIf Session("utiltype") = "4" Then
+					'Html.RenderPartial("~/Views/Home/util_run_export.ascx")
+				ElseIf Session("utiltype") = "5" Then
+					'Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
+				ElseIf Session("utiltype") = "6" Then
+					'Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
+				ElseIf Session("utiltype") = "7" Then
+					'Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
+				ElseIf Session("utiltype") = "8" Then
+					'Html.RenderPartial("~/Views/Home/util_run_import.ascx")
+				ElseIf Session("utiltype") = "9" Then
+					Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
+				ElseIf Session("utiltype") = "15" Then
+					Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
+				ElseIf Session("utiltype") = "16" Then
+					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+				ElseIf Session("utiltype") = "17" Then
 					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
-		Else
-			' blah.
-		End If
-	%>
+				Else
+					' blah.
+				End If
+			%>
+		</div>
+
+		<div style="margin: 5px 20px 0 25px;">
+			<div style="float: right;">
+				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
+				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
+				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
+				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+			</div>
+		</div>
 
 	</div>
-
-<div class="reportfooter">
-	<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
-	<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-	<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
-	<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 </div>
+
+
 
 <script type="text/javascript">
 
 	if (menu_isSSIMode() == false) {
 		$(".pageTitleDiv").hide();
+		$('#main').css('marginTop', '50px').css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 
 	$("#outputoptions").hide();
