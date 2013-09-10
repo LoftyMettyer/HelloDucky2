@@ -198,17 +198,6 @@ ErrorTrap:
 		Dim datData As clsDataAccess
 		Dim fIsSysSecUser As Boolean
 		
-		'sSQL = "SELECT count(*) AS [result]" & _
-		'" FROM ASRSysGroupPermissions" & _
-		'" INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & _
-		'"   AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & _
-		'"   OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & _
-		'" INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & _
-		'"   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & _
-		'" INNER JOIN sysusers b ON b.name = ASRSysGroupPermissions.groupname" & _
-		'" INNER JOIN sysusers a ON b.uid = a.gid" & _
-		'"   AND a.Name = current_user" & _
-		'" WHERE ASRSysGroupPermissions.permitted = 1"
 		sSQL = "SELECT count(*) AS [result]" & " FROM ASRSysGroupPermissions" & " INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "   AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "   OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & " WHERE ASRSysGroupPermissions.permitted = 1" & "   AND ASRSysGroupPermissions.groupname = '" & gsUserGroup & "'"
 		
 		datData = New clsDataAccess

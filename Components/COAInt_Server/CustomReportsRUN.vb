@@ -714,7 +714,7 @@ ExecuteSQL_ERROR:
 
 		On Error GoTo GetCustomReportDefinition_ERROR
 
-		Dim rsTemp_Definition As Recordset
+		Dim rsDefinition As Recordset
 		Dim strSQL As String
 		Dim i As Short
 
@@ -722,11 +722,10 @@ ExecuteSQL_ERROR:
 
 		mbIsBradfordIndexReport = False
 
-		strSQL = "SELECT * FROM ASRSYSCustomReportsName " & "WHERE ID = " & mlngCustomReportID & " "
+		strSQL = "EXEC spASRIntGetCustomReport " & mlngCustomReportID
+		rsDefinition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
-		rsTemp_Definition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-		With rsTemp_Definition
+		With rsDefinition
 
 			' Dont run if its been deleted by another user.
 			If .BOF And .EOF Then
@@ -744,7 +743,7 @@ ExecuteSQL_ERROR:
 
 			mstrCustomReportsName = .Fields("Name").Value
 			mlngCustomReportsBaseTable = .Fields("BaseTable").Value
-			mstrCustomReportsBaseTableName = mclsGeneral.GetTableName(mlngCustomReportsBaseTable)
+			mstrCustomReportsBaseTableName = .Fields("TableName").Value
 			mlngCustomReportsPickListID = .Fields("picklist").Value
 			mlngCustomReportsFilterID = .Fields("Filter").Value
 			mlngCustomReportsParent1Table = .Fields("parent1table").Value
@@ -755,11 +754,8 @@ ExecuteSQL_ERROR:
 			mblnCustomReportsSummaryReport = .Fields("Summary").Value
 			mblnIgnoreZerosInAggregates = .Fields("IgnoreZeros").Value
 			mblnCustomReportsPrintFilterHeader = .Fields("PrintFilterHeader").Value
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngCustomReportsParent1PickListID = IIf(IsDBNull(.Fields("parent1Picklist").Value), 0, .Fields("parent1Picklist").Value)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngCustomReportsParent2PickListID = IIf(IsDBNull(.Fields("parent2Picklist").Value), 0, .Fields("parent2Picklist").Value)
+			mlngCustomReportsParent1PickListID = .Fields("parent1Picklist").Value
+			mlngCustomReportsParent2PickListID = .Fields("parent2Picklist").Value
 
 			'New Default Output Variables
 			mblnOutputPreview = .Fields("OutputPreview").Value
@@ -771,46 +767,39 @@ ExecuteSQL_ERROR:
 			mlngOutputSaveExisting = .Fields("OutputSaveExisting").Value
 			mblnOutputEmail = .Fields("OutputEmail").Value
 			mlngOutputEmailID = .Fields("OutputEmailAddr").Value
-			mstrOutputEmailName = GetEmailGroupName(.Fields("OutputEmailAddr").Value)
+			mstrOutputEmailName = .Fields("EmailGroupName").Value
 			mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
+			mstrOutputEmailAttachAs = .Fields("OutputEmailAttachAs").Value
 			mstrOutputFilename = .Fields("OutputFilename").Value
-
 			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 		End With
 
-		strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & "FROM ASRSYSCustomReportsChildDetails C " & "      INNER JOIN ASRSysTables T " & "      ON T.TableID = C.ChildTable " & "WHERE C.CustomReportID = " & mlngCustomReportID & " "
-
-		rsTemp_Definition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		' Child data recordset
+		rsDefinition = rsDefinition.NextRecordset()
 
 		i = 0
-		With rsTemp_Definition
-			If Not (.BOF And .EOF) Then
-				.MoveLast()
-				.MoveFirst()
-				miChildTablesCount = .RecordCount
-				.MoveFirst()
-				Do Until .EOF
-					ReDim Preserve mvarChildTables(5, i)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(0, i) = .Fields("ChildTable").Value	'Childs Table ID
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(1, i) = .Fields("childFilter").Value 'Childs Filter ID (if any)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(2, i) = .Fields("ChildMaxRecords").Value 'Number of records to take from child
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(3, i) = .Fields("TableName").Value 'Child Table Name
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarChildTables(5, i) = .Fields("ChildOrder").Value	'Childs Order ID (if any)
-					i = i + 1
-					.MoveNext()
-				Loop
-			End If
+		With rsDefinition
+			Do Until .EOF
+				ReDim Preserve mvarChildTables(5, i)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(0, i) = .Fields("ChildTable").Value	'Childs Table ID
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(1, i) = .Fields("childFilter").Value 'Childs Filter ID (if any)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(2, i) = .Fields("ChildMaxRecords").Value 'Number of records to take from child
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(3, i) = .Fields("TableName").Value 'Child Table Name
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(5, i) = .Fields("ChildOrder").Value	'Childs Order ID (if any)
+				i = i + 1
+				.MoveNext()
+			Loop
 		End With
+
+		miChildTablesCount = i
 
 		If Not IsRecordSelectionValid() Then
 			GetCustomReportDefinition = False
@@ -824,7 +813,7 @@ ExecuteSQL_ERROR:
 TidyAndExit:
 
 		'UPGRADE_NOTE: Object rsTemp_Definition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp_Definition = Nothing
+		rsDefinition = Nothing
 
 		Exit Function
 
@@ -4582,9 +4571,8 @@ ClearUp_ERROR:
 
 	Private Function IsRecordSelectionValid() As Boolean
 		Dim sSQL As String
-		Dim lCount As Integer
-		Dim rsTemp As ADODB.Recordset
-		Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
+		Dim rsTemp As Recordset
+		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 		Dim i As Short
 		Dim lngFilterID As Integer
@@ -4594,25 +4582,25 @@ ClearUp_ERROR:
 		' Base Table First
 		If mlngSingleRecordID = 0 Then
 			If mlngCustomReportsFilterID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsFilterID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsFilterID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The base table filter used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The base table filter used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The base table filter used in this definition has been made hidden by another user."
 						End If
 				End Select
 			ElseIf mlngCustomReportsPickListID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsPickListID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsPickListID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The base table picklist used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The base table picklist used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The base table picklist used in this definition has been made hidden by another user."
 						End If
@@ -4623,25 +4611,25 @@ ClearUp_ERROR:
 		If Len(mstrErrorString) = 0 Then
 			' Parent 1 Table
 			If mlngCustomReportsParent1FilterID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent1FilterID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent1FilterID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The first parent table filter used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The first parent table filter used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The first parent table filter used in this definition has been made hidden by another user."
 						End If
 				End Select
 			ElseIf mlngCustomReportsParent1PickListID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent1PickListID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent1PickListID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The first parent table picklist used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The first parent table picklist used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The first parent table picklist used in this definition has been made hidden by another user."
 						End If
@@ -4652,25 +4640,25 @@ ClearUp_ERROR:
 		' Parent 2 Table
 		If Len(mstrErrorString) = 0 Then
 			If mlngCustomReportsParent2FilterID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent2FilterID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent2FilterID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The second parent table filter used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The second parent table filter used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The second parent table filter used in this definition has been made hidden by another user."
 						End If
 				End Select
 			ElseIf mlngCustomReportsParent2PickListID > 0 Then
-				iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent2PickListID)
+				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent2PickListID)
 				Select Case iResult
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The second parent table picklist used in this definition has been deleted by another user."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 						mstrErrorString = "The second parent table picklist used in this definition is invalid."
-					Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 						If Not fCurrentUserIsSysSecMgr Then
 							mstrErrorString = "The second parent table picklist used in this definition has been made hidden by another user."
 						End If
@@ -4685,13 +4673,13 @@ ClearUp_ERROR:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					lngFilterID = mvarChildTables(1, i)
 					If lngFilterID > 0 Then
-						iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
+						iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
 						Select Case iResult
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 								mstrErrorString = "The child table filter used in this definition has been deleted by another user."
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 								mstrErrorString = "The child table filter used in this definition is invalid."
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 								If Not fCurrentUserIsSysSecMgr Then
 									mstrErrorString = "The child table filter used in this definition has been made hidden by another user."
 								End If
@@ -4719,11 +4707,11 @@ ClearUp_ERROR:
 						Do Until .EOF
 							iResult = ValidateCalculation(.Fields("ColExprID").Value)
 							Select Case iResult
-								Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+								Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 									mstrErrorString = "A calculation used in this definition has been deleted by another user."
-								Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+								Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 									mstrErrorString = "A calculation used in this definition is invalid."
-								Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+								Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 									If Not fCurrentUserIsSysSecMgr Then
 										mstrErrorString = "A calculation used in this definition has been made hidden by another user."
 									End If
@@ -4750,7 +4738,7 @@ ClearUp_ERROR:
 	Private Function CheckCalcsStillExist() As Boolean
 
 		Dim pstrBadCalcs As String
-		Dim prstTemp As ADODB.Recordset
+		Dim prstTemp As Recordset
 
 		On Error GoTo Check_ERROR
 
