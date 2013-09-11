@@ -538,7 +538,7 @@
 </script>
 
 <div <%=session("BodyTag")%> >
-<form action="" method=post id=frmRecordEditForm name=frmRecordEditForm >
+<form action="" method=post id="frmRecordEditForm" name="frmRecordEditForm" >
 
 
 <%
