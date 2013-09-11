@@ -1,8 +1,12 @@
-﻿<% Response.CacheControl = "no-cache" %>
+﻿h<% Response.CacheControl = "no-cache" %>
 <% Response.AddHeader("Pragma", "no-cache")%>
 <% Response.Expires = -1 %>
-<%@ Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
+<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
+
+<%-- For other devs: Do not remove below line. --%>
+<%="" %>
+<%-- For other devs: Do not remove above line. --%>
 
 <link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
 <link href="<%:Url.Content("~/Content/jquery.mCustomScrollbar.min.css")%>" rel="stylesheet" />
@@ -14,11 +18,11 @@
 <%Session("recordID") = 0%>
 
 	<script type="text/javascript">
-
-		function loadjscssfile(filename, filetype) {			
+		dragged = 0;
+		function loadjscssfile(filename, filetype) {
 
 			var fileref;
-			
+
 			if (filetype == "ajax") {
 				fileref = document.createElement("script");
 				fileref.setAttribute("type", "text/javascript");
@@ -41,16 +45,58 @@
 			}
 		}
 
+		//function showPWFS() {
+		//	$('#pwfs').dialog('open');
+		//}
+
+		function refreshPendingWorkflowTiles() {
+			//Add pending worklow tiles if in tiles mode
+			if ((window.currentLayout == "tiles") && ($("#PendingStepsTable_Dash td").length > 0)) {				
+				$('.pendingworkflowlinks').show();
+				var rowNumber = 1;
+				$("#PendingStepsTable_Dash tr td:nth-child(1)").each(function () {
+					var url = 'launchWorkflow(\'' + $(this).next().html() + '\')';
+					var desc = $(this).html();
+					var name = $(this).next().next().html();
+					if (desc.substring(0, name.length) === name) {
+						//description starts with 'name' string, so remove it.
+						desc = desc.substr(name.length + 2); // 2chars for the dash.
+					}
+
+					var lihtml = '<li class="pendingworkflowtext White" data-col="1" data-row="' + rowNumber + '" ';
+					lihtml += 'data-sizex="2" data-sizey="1" onclick="' + url + '">';
+					lihtml += '<a href="#">';
+					lihtml += '<span class="pendingworkflowname">' + name + '</span>';
+					lihtml += '<br />';
+					lihtml += '<span class="pendingworkflowdesc">' + desc + '</span>';
+					lihtml += '</a>';
+					lihtml += '<p class="pendingworkflowtileIcon"><i class="icon-adjust"></i></p>';
+					lihtml += '</li>';
+
+					$('#pendingworkflowstepstiles').append(lihtml);
+					rowNumber += 1;
+				});
+			}
+		}
+
+
+
 		$(document).ready(function () {
 
 			$("#fixedlinksframe").show();
 			$("#toolbarHome").show();
 			$("#toolbarHome").click();
-			
+
+			$("#workframe").attr("data-framesource", "linksmain");
+			$('#workframe').css('height', '100%');
+			$('#SSILinksFrame').css('height', '100%');
+
+			refreshPendingWorkflowTiles();
+
+
 			if (window.currentLayout == "tiles") {
 				setupTiles();
-			}
-			else {
+			} else {
 				// for wireframe layout, convert the dropdownlinks to a <select> element
 				$(function () {
 					$('ul.DropDownListMenu').each(function () {
@@ -70,7 +116,7 @@
 
 			if (window.currentLayout == "wireframe") {
 				//set up the classes 
-				
+
 				$(".hypertextlinks").addClass("ui-accordion ui-widget ui-helper-reset");
 				$(".ButtonLinkColumn").addClass("ui-accordion ui-widget ui-helper-reset");
 				$(".wrapupcontainer").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-default ui-state-default ui-corner-top");
@@ -93,14 +139,34 @@
 			// re-call the function each 30 seconds
 			window.setInterval("loadPartialView('poll', 'home')", 30000);
 
-			$(".DashContent").fadeIn("slow");
-
 			// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
 
+			//resize columns that have wide tiles
+			$("li[data-sizex='2']").each(function () {
+
+				var ulelement = $(this).closest('.linkspagebuttonseparatorframe');
+
+				if ($(ulelement).hasClass('cols2')) {
+					$(ulelement).removeClass('cols2');
+					$(ulelement).addClass('cols3');
+				}
+				else if ($(ulelement).hasClass('cols3')) {
+					$(ulelement).removeClass('cols3');
+					$(ulelement).addClass('cols4');
+				}
+				else if ($(ulelement).hasClass('cols4')) {
+					$(ulelement).removeClass('cols4');
+					$(ulelement).addClass('cols5');
+				} else {
+					//no cols class, so add one.
+					$(ulelement).addClass('cols2');
+				}
+
+			});
 		});
 
-		function setupTiles() { 
+		function setupTiles() {
 			//apply the gridster functionality.
 			griditup(true);
 
@@ -113,19 +179,25 @@
 		}
 
 		function griditup(mode) {
-			if (mode == true) {				
+			if (mode == true) {
 				$(".gridster ul").gridster({
 					widget_margins: [5, 5],
 					widget_base_dimensions: [120, 120],
 					min_rows: 4,
 					min_cols: 1,
-					avoid_overlapped_widgets: true
+					avoid_overlapped_widgets: true,
+					draggable: {
+						start: function (event, ui) {
+							dragged = 1;
+							// DO SEOMETHING
+						}
+					}
 				});
 			}
 		}
 
 		function changeLayout(newLayoutName) {
-				
+
 			setCookie('Intranet_Layout', newLayoutName, 365);
 			if (newLayoutName == "winkit") {
 				setCookie('Intranet_Theme', "white", 365);
@@ -140,11 +212,59 @@
 			});
 		}
 
-		function goScreen(psScreenInfo) {
+		//NPG20082901 Fault 12873
+		function isEMail(psURL) {
+			var pblnIsEMail, psSearchString;
+			psSearchString = /mailto/;
+			pblnIsEMail = psURL.search(psSearchString);
+			return (pblnIsEMail);
+		}
 
-			var sDestination;
-			menu_disableMenu();
-			loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
+		function refreshSession() {
+			// Submit the refresh.asp to keep the session alive
+			try {
+				var frmRefresh = document.getElementById('frmRefresh');
+				OpenHR.submitForm(frmRefresh);
+			}
+			catch (e) { }
+		}
+
+		function relocateURL(psURL, pfNewWindow) {
+			if (!dragged) {
+				// Submit the refresh.asp to keep the session alive
+
+				refreshSession();
+
+				//NPG20081102 Fault 12873
+				if ((pfNewWindow == 1) || (isEMail(psURL) == 0)) {
+					window.open(psURL);
+				} else {
+					loadPartialView(psURL, 'home', 'workframe', '');
+				}
+			}
+		}
+
+
+		function goHyperlink(psURL, pfNewWindow) {
+			try {
+				//if (txtHypertextLinksEnabled.value != 0) {
+					relocateURL(psURL, pfNewWindow);
+				//}
+			}
+			catch (e) {
+			}
+		}
+
+
+		function goScreen(psScreenInfo) {
+			//check to see if we're completing a drag event
+			if (!dragged) {
+				var sDestination;
+				menu_disableMenu();				
+				loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
+			}
+			//reset drag value
+			dragged = 0;
 			// Submit the refresh.asp to keep the session alive
 			//refreshSession();
 			//psScreenInfo = escape(psScreenInfo);
@@ -170,17 +290,97 @@
 
 		}
 
+		function launchWorkflow(url) {
+			
+			
+			$('#externalContentFrame').attr('src', url);
+			$('.DashContent').fadeOut();
+			$('#workflowDisplay').fadeIn();
+
+			//var newWindow = window.open(url);
+			//if (window.focus) {
+			//	newWindow.focus();
+			//}
+		}
 
 	</script>
 
 
-	<div id="workframe" class="DashContent" style="display: none;">
+<%
+	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
+	Dim _StepCount As Integer = 0
+	Dim _WorkflowGood As Boolean = True
+		
+	'Get the pendings workflow steps from the database
+	Dim _cmdDefSelRecords = New ADODB.Command
+	_cmdDefSelRecords.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+	_cmdDefSelRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+	_cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
+
+	Dim prmKeyParameter = _cmdDefSelRecords.CreateParameter("screenID", 200, 1, 8000)	
+	_cmdDefSelRecords.Parameters.Append(prmKeyParameter)
+	prmKeyParameter.Value = Session("username")
+
+	Err.Clear()
+	Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
+	  
+	If (Err.Number <> 0) Then		
+	' Workflow not licensed or configured. Go to default page.
+	_WorkflowGood = False
+	Else
+	With _PendingWorkflowStepsHTMLTable
+			.Append("<table id=""PendingStepsTable_Dash"">")
+		.Append("<tr>")
+		.Append("<th id=""DescriptionHeader"">Description</th>")
+		.Append("<th id=""URLHeader"">URL</th>")
+		.Append("<th id=""NameHeader"">URL</th>")
+		.Append("</tr>")
+	End With
+	'Loop over the records
+	Do Until _rstDefSelRecords.eof
+		_StepCount += 1
+		With _PendingWorkflowStepsHTMLTable
+			.Append("<tr>")
+			.Append("<td>" & _rstDefSelRecords.Fields("description").Value & "</td>")
+			.Append("<td>" & _rstDefSelRecords.Fields("url").Value & "</td>")
+			.Append("<td>" & _rstDefSelRecords.Fields("name").Value & "</td>")
+			.Append("</tr>")
+		End With
+		_rstDefSelRecords.movenext()
+	Loop
+						
+	_PendingWorkflowStepsHTMLTable.Append("</table>")
+						
+	_rstDefSelRecords.close()
+	_rstDefSelRecords = Nothing
+	End If
+				
+	' Release the ADO command object.
+	_cmdDefSelRecords = Nothing
+
+%>
+
+	<div id="" class="DashContent" style="display: block;">
 		<div class="tileContent">
 		<%Dim fFirstSeparator = True%>
 		<%Const iMaxRows As Integer = 4%>
 		<%Dim iRowNum = 1%>
 		<%Dim iColNum = 1%>
 		<%Dim iSeparatorNum = 0%>
+			<%Dim sOnclick As String = ""%>
+			
+			<div class="pendingworkflowlinks">
+			<ul class="pendingworkflowsframe cols2">
+				<li class="pendingworkflowlink-displaytype">
+					<div class="wrapupcontainer"><div class="wrapuptext"><p class="pendingworkflowlinkseparator">Pending Workflow Steps</p></div></div>					
+					<div class="gridster pendingworkflowlinkcontent" >
+						<ul id="pendingworkflowstepstiles">
+						</ul>
+					</div>					
+				</li>
+			</ul>	
+			</div>
+
 			<div class="hypertextlinks">
 				<%For Each navlink In Model.NavigationLinks%>
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>				
@@ -211,16 +411,41 @@
 							</script>
 							<%End If%>
 							<%
-								Dim classIcon As String = ""
+								Dim classIcon As String = ""								
+								Dim sNewWindow As String = ""
+								
 								Select Case navlink.Element_Type%>
 							<%Case 0
+									Dim sURL = Html.Encode(navlink.URL).Replace("'", "\'")
+									Dim sAppFilePath = navlink.AppFilePath.Replace("\", "\\")
+									Dim sAppParameters = navlink.AppParameters.Replace("\", "\\")
+								
 									classIcon = "icon-external-link"
+									If navlink.AppFilePath.Length > 0 Then
+										sOnclick = "goApp('" & sAppFilePath & "', '" & sAppParameters & "')"
+										' sCheckKeyPressed = "CheckKeyPressed('APP', '" & sDestination & "',0,'')"
+									ElseIf navlink.URL.Length > 0 Then
+										If navlink.NewWindow = True Then
+											sNewWindow = "1"
+										Else
+											sNewWindow = "0"
+										End If
+			
+										sOnclick = "goHyperlink('" & sURL & "', " & sNewWindow & ")"
+										' sCheckKeyPressed = "CheckKeyPressed('HYPERLINK', '" & sURL & "', " & sNewWindow & ",'')"
+									Else
+										Dim sUtilityType = Convert.ToString(navlink.UtilityType)
+										Dim sUtilityID = Convert.ToString(navlink.UtilityID)
+										Dim sUtilityDef = sUtilityType & "_" & sUtilityID
+			
+										sOnclick = "goUtility('" & sUtilityDef & "')"
+										' sCheckKeyPressed = "CheckKeyPressed('UTILITY', '" & sUtilityDef & "', 0,'')"
+									End If
 									
-									
-							 End Select%>
+							End Select%>
 
 							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
-								data-sizex="1" data-sizey="1">
+								data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
 								<a href="#"><%: navlink.Text %></a>
 								<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
 							</li>
@@ -240,7 +465,7 @@
 		<%fFirstSeparator = True%>
 		<div class="linkspagebutton">
 			<div class="ButtonLinkColumn">
-								<%Dim sOnclick As String = ""
+								<%sOnclick = ""
 										Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
 				
@@ -355,9 +580,11 @@
 								<%iRowNum += 1%>
 
 							<%Case 3		 ' Pending Workflows	%>
-								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
+									<div class="pwfTile <%=sTileColourClass%>">
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-inbox"></i>
+										<div class="workflowCount"></div>
 									</p>
 									<p>
 										<a href="#">Pending Workflows</a>
@@ -365,6 +592,11 @@
 									<div class="widgetplaceholder generaltheme">
 										<div><i class="icon-inbox"></i></div>
 										<a href="#">Pending Workflows</a>
+									</div>
+									</div>
+									<div class="pwfList <%=sTileColourClass%>" style="display: none;">
+										<p><span>Pending steps:</span></p>
+										<table></table>											
 									</div>
 								</li>
 								<%iRowNum += 1%>
@@ -385,7 +617,7 @@
 											<%: navlink.Text %></p>
 									</a>
 								</li>
-								<script type="text/javascript">//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
+								<script type="text/javascript">									//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
 							<%Case 5		 ' Todays events	%>
@@ -475,6 +707,8 @@
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>    
 	
+<div id="pwfs"><%Response.Write(_PendingWorkflowStepsHTMLTable.ToString())%></div>
+
 <FORM action="" method="POST" id="frmMenuInfo" name="frmMenuInfo">
 <%
 	Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
@@ -528,4 +762,12 @@
 		<input type="hidden" id="utilname" name="utilname" value="">
 		<input type="hidden" id="action" name="action" value="run">
 	</form>
+</div>
+
+<div id="workflowDisplay" class="absolutefull" style="display: none; background-color: transparent; text-align: center; ">
+	<div class="pageTitleDiv" style="text-align: left;">
+		<a href="<%=Url.Action("Main", "Home", New With {.SSIMode = "True"})%>" title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
+		<h3 class="pageTitle">Workflow</h3>
+	</div>
+	<iframe id="externalContentFrame" style="width: 515px; height: 283px; margin: 0 auto;"></iframe>
 </div>

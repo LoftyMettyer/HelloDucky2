@@ -109,11 +109,27 @@
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
 			if (SelfServiceUserType == 'True') {
+				
 				$.ajax({
 					url: 'linksMain',
 					dataType: 'html',
 					success: function (html) {
-						$("#workframe").html(html);
+						$("#workframe").hide();
+						$("#SSILinksFrame").html(html).show();
+						
+
+						//final resize of the dashboard - for tiles, ensure width is sufficient
+						if (window.currentLayout == 'tiles') {
+							var pwfswidth = Number($('.pendingworkflowsframe').css('width').replace('px', ''));
+							var hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
+							var buttonwidth = Number($('.linkspagebutton').css('width').replace('px', ''));
+							if ((pwfswidth > 0) && (hlwidth > 0) && (buttonwidth > 0)) {
+								var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300;
+								requiredWidth += 'px';								
+								$('.tileContent').css('width', requiredWidth);
+							}
+						}
+
 					},
 					error: function (req, status, errorObj) {
 						debugger;
@@ -130,7 +146,6 @@
 				);
 
 			}
-
 
 		});
 
@@ -173,6 +188,7 @@
 <div id="mainframeset">
 	
 	<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
+		<div id="SSILinksFrame" style="display: none"></div>
 		<div id="workframe" data-framesource="default.asp"><%Html.RenderPartial("~/views/home/default.ascx")%></div>
 		<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
 	</div>

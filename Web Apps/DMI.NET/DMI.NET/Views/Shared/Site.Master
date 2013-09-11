@@ -1,13 +1,16 @@
 ﻿<%@ Master Language="VB" Inherits="System.Web.Mvc.ViewMasterPage" %>
-<%@Import namespace="DMI.NET" %>
+
+<%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
 <html>
 <head runat="server">
-	 <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+	<title>
+		<asp:ContentPlaceHolder ID="TitleContent" runat="server" />
+	</title>
 
 	<%--<meta name="apple-mobile-web-app-capable" content="yes" />--%>
-	
+
 	<%--Keep these media queries inline - external stylesheets cause a delay--%>
 	<!-- ipad -->
 	<link href="Content/images/ABSLogo/OpenHRLogo748x1024.png"
@@ -69,7 +72,7 @@
 								 and (orientation: landscape)
 								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
-		
+
 	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
@@ -83,40 +86,40 @@
 			End If
 		End If
 	%>
-	
+
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
-	
+
 
 	<%--Base stylesheets--%>
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	
+
 	<%--stylesheet for slide-out dmi menu--%>
 	<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
-	
+
 	<%--ThemeRoller stylesheet--%>
 	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-	
+
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
-	
+
 	<link href="<%: Url.LatestContent("~/Content/table.css")%>" rel="stylesheet" type="text/css" />
-	
+
 
 
 	<%--Placeholders for theme and layout--%>
 	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
 	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
-	
+
 
 	<%--External script resources--%>
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
 	<%--licence manager reference for activeX--%>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -175,7 +178,7 @@
 			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
+					$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
 				$('body').addClass('DMI');
 			}
 			else {
@@ -238,7 +241,7 @@
 		});
 	</script>
 
-	<meta name="viewport"/>
+	<meta name="viewport" />
 
 	<script type="text/javascript">
 		if ((screen.width < 768) || (screen.height < 768)) {
@@ -276,46 +279,86 @@
 
 		function changeTheme(newThemeName) {
 			switch (newThemeName) {
-			case "theme-Red":
-				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-				break;
-			case "theme-Blue":
+				case "theme-Red":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+					break;
+				case "theme-Blue":
 					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
 				break;
 			case "theme-White":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
 			default:
 				break;
-			}
 		}
+	}
 
-				//set up ROOT variable for use in external JS files.
-		window.ROOT = '<%= Url.Content("~/") %>';      
-		
-		function loadPartialView(action, controller, targetDiv, params) {
+	//set up ROOT variable for use in external JS files.
+	window.ROOT = '<%= Url.Content("~/") %>';
 
+	function loadPartialView(action, controller, targetDiv, params) {
+		if (action.toUpperCase() == "LINKSMAIN") {
+			$('#workframe').fadeOut('slow');
+			$('.DashContent').hide();
+			$('#SSILinksFrame').show();
+			$('.DashContent').fadeIn('slow');
+			$("#toolbarHome").show();
+			$("#toolbarHome").click();
+
+		} else {
 			$.ajax({
 				url: window.ROOT + controller + "/" + action,
 				data: { psScreenInfo: params },
 				dataType: 'html',
 				type: "POST",
-				success: function (html) {
+				success: function(html) {
 					try {
-						$("#" + targetDiv).html(html);
+						
+						if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
+								//Leaving Dashboard
+								$("#" + targetDiv).css('top', '-9999px');
+								$('#' + targetDiv).show();
+								$("#" + targetDiv).html('');
+								$("#" + targetDiv).html(html);
+							//jquery Styling...
+							
+								$(function () {
+									$("input[type=submit], input[type=button], button")
+										.button();
+									$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+									$("input").removeClass("text");
+
+									$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+									$("textarea").removeClass("text");
+
+									$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+									$("select").removeClass("text");
+									$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+									$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+								});
+								//$('#' + targetDiv).hide();
+								//setTimeout("$('#workframe').hide();$('#workframe').css('top', '0px');$('#workframe').fadeIn('slow')", 1500);								
+								setTimeout("$('#workframe').hide();$('#workframe').css('top', '0px');$('#workframe').fadeIn('slow')", 1500);
+							$('#SSILinksFrame').fadeOut('slow');
+						} else {
+								$("#" + targetDiv).html('');
+								$("#" + targetDiv).html(html);						
+							}
+						
+
+
 						var breadcrumb = $(".pageTitle").text();
 						if (action.toUpperCase() == 'LINKSMAIN') {
 							$(".RecordDescription a:nth-child(n+2)").remove();
-						}
-						else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
+						} else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
 							$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
 						}
-					} catch (e) {
+					} catch(e) {
 						$("#errorDialogTitle").text(e.toString);
 						$("#errorDialogContentText").text(e.responseText);
 						$("#errorDialog").dialog("open");
 					}
 				},
-				error: function (req, status, errorObj) {
+				error: function(req, status, errorObj) {
 					//TODO: remove this popup. Used for debugging only.
 					//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
 					$("#errorDialogTitle").text(errorObj);
@@ -324,16 +367,16 @@
 				}
 			});
 		}
+	}
 
-
-</script>
+	</script>
 </head>
 <body class="ui-widget absolutefull">
-	
+
 	<div id="banner" class="header-banner" style="background-color: <%=Session("Config-banner-colour")%>"><%Html.RenderPartial("~/views/shared/_banner.ascx")%></div>
-	
+
 	<header class="ui-widget ui-widget-header">
-		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
+		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>
 	</header>
 	<asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
 	<div class="modal">
@@ -344,13 +387,13 @@
 
 	<div id="errorDialog" title="AJAX call failed.">
 		<div id="errorDialogTitleContent">
-			<h1 id="errorDialogTitle"></h1>			
+			<h1 id="errorDialogTitle"></h1>
 		</div>
 		<div id="errorDialogContent">
 			<p id="errorDialogContentText"></p>
 		</div>
 	</div>
-	
+
 	<div id="divthemeRoller" title="ThemeRoller"></div>
 
 	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default">

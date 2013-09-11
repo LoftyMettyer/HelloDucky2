@@ -756,3 +756,9 @@ div.officetab li div.textboxlist input {
 .SSI #dataRow {
 	width: 30%; margin: 0 auto;color: black;
 }
+
+#pwfs { display: none;}
+
+.pendingworkflowlinks{
+	display: none;
+}

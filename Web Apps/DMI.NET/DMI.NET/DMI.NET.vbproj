@@ -180,6 +180,7 @@
     <Content Include="Content\images\PunchHole.png" />
     <Content Include="Content\images\PunchHoleWhite.png" />
     <Content Include="Content\images\PunchHoleWhite2.png" />
+    <Content Include="Content\images\TilesBackground.jpg" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
