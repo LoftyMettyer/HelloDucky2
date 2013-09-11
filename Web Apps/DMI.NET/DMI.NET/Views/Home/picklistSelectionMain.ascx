@@ -2,36 +2,32 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <%
-	
 	Session("selectionType") = Request.Form("selectionType")
 	Session("selectionTableID") = Request.Form("txtTableID")
-	
 	Session("selectedIDs1") = Request.Form("selectedIDs1")
 	Session("picklistSelectionDataLoading") = True
 %>
 
 <script type="text/javascript">
 
-		function loadAddRecords() {
+	function loadAddRecords() {
+		var iCount;
+		iCount = new Number(txtLoadCount.value);
+		txtLoadCount.value = iCount + 1;
 
-				var iCount;
-				 
-				iCount = new Number(txtLoadCount.value);
-				txtLoadCount.value = iCount + 1;
-				 
-				if (iCount > 0) {	
-					var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
+		if (iCount > 0) {
+			var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 
-						dataForm.txtTableID.value = txtTableID.value;
-						dataForm.txtViewID.value = txtViewID.value;
-						dataForm.txtOrderID.value = txtOrderID.value;
-						dataForm.txtFirstRecPos.value = 1;
-						dataForm.txtCurrentRecCount.value = 0;
-						dataForm.txtPageAction.value = "LOAD";
+			dataForm.txtTableID.value = txtTableID.value;
+			dataForm.txtViewID.value = txtViewID.value;
+			dataForm.txtOrderID.value = txtOrderID.value;
+			dataForm.txtFirstRecPos.value = 1;
+			dataForm.txtCurrentRecCount.value = 0;
+			dataForm.txtPageAction.value = "LOAD";
 
-						picklist_refreshData();
-				}
+			picklist_refreshData();
 		}
+	}
 
 </script>
 
@@ -48,16 +44,16 @@
 
 <script type="text/javascript">
 
-		$("#workframeset").hide();
-		$("#reportframe").show();
-		
-		picklistSelectionData_window_onload();
-		picklistSelection_window_onload();
-		picklistSelection_addhandlers();
+	$("#workframeset").hide();
+	$("#reportframe").show();
 
-		$('.popup').bind('dialogclose', function (event) {
-			closeclick();
-		});
+	picklistSelectionData_window_onload();
+	picklistSelection_window_onload();
+	picklistSelection_addhandlers();
+
+	$('.popup').bind('dialogclose', function (event) {
+		closeclick();
+	});
 
 
 </script>
