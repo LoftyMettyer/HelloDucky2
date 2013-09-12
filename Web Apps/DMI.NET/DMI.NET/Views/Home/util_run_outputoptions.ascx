@@ -5,9 +5,15 @@
 <script type="text/javascript">
 	function output_setOptions() {
 
+		var frmExport;
+
 		$("#outputoptions").attr("data-framesource", "OUTPUTOPTIONS");
 
-		var frmExport = OpenHR.getForm("reportframe", "frmExportData");
+		if (menu_isSSIMode() == true) {
+			frmExport = OpenHR.getForm("reportworkframe", "frmExportData");
+		} else {
+			frmExport = OpenHR.getForm("reportframe", "frmExportData");
+		}
 
 		if (frmExport == null) {
 			return;
@@ -951,7 +957,7 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left colspan=6 nowrap>
 																		<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1" 
-																									onClick="refreshControls();"/>
+																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination0"
 																					class="checkbox"
@@ -969,7 +975,7 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>																	
 																		<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1" 
-																									onClick="refreshControls();"/>
+																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination1"
 																					class="checkbox"
@@ -996,7 +1002,7 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
 																		<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1" 
-																									onClick="refreshControls();"/>
+																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination2"
 																					class="checkbox"
@@ -1053,7 +1059,7 @@
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
 																		<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1" 
-																									onClick="refreshControls();"/>
+																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination3"
 																					class="checkbox"

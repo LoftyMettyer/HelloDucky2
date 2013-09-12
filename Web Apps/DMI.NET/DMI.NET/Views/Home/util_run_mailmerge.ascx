@@ -102,8 +102,6 @@
 <script type="text/javascript">
 		function util_run_mailmerge_onload() {
 
-			debugger;
-
 				var frmOutput = OpenHR.getForm("main", "frmMailMergeOutput");
 
 				<%
