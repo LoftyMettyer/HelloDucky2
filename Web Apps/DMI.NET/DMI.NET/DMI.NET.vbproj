@@ -186,6 +186,15 @@
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
     <Content Include="Content\table.css" />
+    <Content Include="Content\themes\activeX\images\animated-overlay.gif" />
+    <Content Include="Content\themes\activeX\images\ui-bg_diagonals-small_50_262626_40x40.png" />
+    <Content Include="Content\themes\activeX\images\ui-bg_flat_0_303030_40x100.png" />
+    <Content Include="Content\themes\activeX\images\ui-bg_flat_100_F3F2F7_40x100.png" />
+    <Content Include="Content\themes\activeX\images\ui-bg_flat_100_F9F7FB_40x100.png" />
+    <Content Include="Content\themes\activeX\images\ui-bg_flat_100_FDEB9F_40x100.png" />
+    <Content Include="Content\themes\activeX\images\ui-icons_333366_256x240.png" />
+    <Content Include="Content\themes\activeX\images\ui-icons_999999_256x240.png" />
+    <Content Include="Content\themes\activeX\jquery-ui.min.css" />
     <Content Include="Content\themes\cupertino\images\animated-overlay.gif" />
     <Content Include="Content\themes\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
     <Content Include="Content\themes\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
