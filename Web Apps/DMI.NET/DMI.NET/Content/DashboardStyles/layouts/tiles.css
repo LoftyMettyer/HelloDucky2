@@ -528,3 +528,6 @@ div#pwfs {
 	display: none;
 }
 
+.pwfslink:hover {
+	cursor: default;
+}

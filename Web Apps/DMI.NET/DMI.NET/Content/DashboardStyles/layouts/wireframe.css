@@ -372,3 +372,7 @@ div.officetab div.panel > span { display: none;}
 .pendingworkflowlinks {
 	display: none;
 }
+
+.pwfslink:hover {
+	cursor: pointer;
+}

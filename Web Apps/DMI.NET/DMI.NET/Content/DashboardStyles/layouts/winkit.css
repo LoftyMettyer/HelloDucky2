@@ -762,3 +762,7 @@ div.officetab li div.textboxlist input {
 .pendingworkflowlinks{
 	display: none;
 }
+
+.pwfslink:hover {
+	cursor: pointer;
+}
