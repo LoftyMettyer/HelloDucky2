@@ -48,9 +48,9 @@
 
 				Dim objUtilities As HR.Intranet.Server.Utilities
 		
-				Dim cmdEventBatchJobs
-				Dim prmBatchRunID
-				Dim prmEventID
+				Dim cmdEventBatchJobs As Command
+				Dim prmBatchRunID As ADODB.Parameter
+				Dim prmEventID As ADODB.Parameter
 		
 				objUtilities = Session("UtilitiesObject")
 		
@@ -66,16 +66,16 @@
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='0'>" & vbCrLf)
 				End If
 
-				cmdEventBatchJobs = CreateObject("ADODB.Command")
+				cmdEventBatchJobs = New Command
 				cmdEventBatchJobs.CommandText = "spASRIntGetEventLogBatchDetails"
-				cmdEventBatchJobs.CommandType = 4	' Stored procedure
+				cmdEventBatchJobs.CommandType = CommandTypeEnum.adCmdStoredProc
 				cmdEventBatchJobs.ActiveConnection = Session("databaseConnection")
 								
-				prmBatchRunID = cmdEventBatchJobs.CreateParameter("BatchRunID", 3, 1)	' 3=integer, 1=input
+				prmBatchRunID = cmdEventBatchJobs.CreateParameter("BatchRunID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 				cmdEventBatchJobs.Parameters.Append(prmBatchRunID)
 				prmBatchRunID.value = CleanNumeric(Request("txtEventBatchRunID"))
 
-				prmEventID = cmdEventBatchJobs.CreateParameter("EventID", 3, 1)	' 3=integer, 1=input
+				prmEventID = cmdEventBatchJobs.CreateParameter("EventID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 				cmdEventBatchJobs.Parameters.Append(prmEventID)
 				prmEventID.value = CleanNumeric(Request("txtEventID"))
 
@@ -282,16 +282,16 @@
 																				</tr>
 
 																				<%
-																					Dim iDetailCount
-																					Dim rsEventDetails
-																					Dim cmdEventDetails
-																					Dim prmEventExists
+																					Dim iDetailCount As Integer
+																					Dim rsEventDetails As Recordset
+																					Dim cmdEventDetails As Command
+																					Dim prmEventExists As ADODB.Parameter
 
 																					iDetailCount = 0
 	
-																					cmdEventDetails = CreateObject("ADODB.Command")
+																					cmdEventDetails = New Command
 																					cmdEventDetails.CommandText = "spASRIntGetEventLogDetails"
-																					cmdEventDetails.CommandType = 4	' Stored procedure
+																					cmdEventDetails.CommandType = CommandTypeEnum.adCmdStoredProc
 																					cmdEventDetails.ActiveConnection = Session("databaseConnection")
 								
 																					prmBatchRunID = cmdEventDetails.CreateParameter("BatchRunID", 3, 1)	' 3=integer, 1=input
@@ -381,26 +381,27 @@
 		<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 			<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 			<%
-				Dim cmdDefinition
-				Dim prmModuleKey
-				Dim prmParameterKey
-				Dim prmParameterValue
+				Dim cmdDefinition As Command
+				Dim prmModuleKey As ADODB.Parameter
+				Dim prmParameterKey As ADODB.Parameter
+				Dim prmParameterValue As ADODB.Parameter
 				Dim sErrorDescription As String
 		
-				cmdDefinition = CreateObject("ADODB.Command")
+				cmdDefinition = New Command
 				cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-				cmdDefinition.CommandType = 4	' Stored procedure.
+				cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
 				cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-				prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+			
+				prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 				cmdDefinition.Parameters.Append(prmModuleKey)
 				prmModuleKey.value = "MODULE_PERSONNEL"
 
-				prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+				prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 				cmdDefinition.Parameters.Append(prmParameterKey)
 				prmParameterKey.value = "Param_TablePersonnel"
 
-				prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
+				prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 				cmdDefinition.Parameters.Append(prmParameterValue)
 
 				Err.Clear()
@@ -436,12 +437,13 @@
 					rowNum: 1000
 				});
 
+				$('#ssOleDBGridEventLogDetails').hideCol("ID");
+
 				$("#ssOleDBGridEventLogDetails").jqGrid('setGridHeight', $("#findGridRow").height());
 				var y = $("#gbox_findGridTable").height();
 				var z = $('#gbox_findGridTable .ui-jqgrid-bdiv').height();
 
-				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
-				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
+				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width() - 50);
 
 				if ($("#txtEventExists").value == 0) {
 
@@ -659,11 +661,14 @@
 				}
 				iTotalRec--;
 
-				//Update the grid caption after the user has used keys to view the details
-				if (iTotalRec == 0) {
+				// Update the grid caption after the user has used keys to view the details
+				if (iTotalRec < 1) {
 					sCaption = "No details exist for this entry";
 				}
-				else {
+				else if (iTotalRec == 1) {
+					sCaption = "Details (1 Entry)";
+
+				} else {
 					sCaption = "Details (" + iTotalRec + " Entries)";
 				}
 
