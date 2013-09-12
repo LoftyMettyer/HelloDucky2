@@ -630,6 +630,7 @@
 	function abMainMenu_DataReady() {
 
 		var sKey;
+		var sPath;
 		sKey = new String("tempmenufilepath_");
 		sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
 		sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
@@ -758,13 +759,16 @@
 
 
 <%
-	If (UCase(Session("selectionType")) <> UCase("picklist")) And _
-			(UCase(Session("selectionType")) <> UCase("filter")) Then
+	If (UCase(Session("selectionType")) <> UCase("picklist")) And (UCase(Session("selectionType")) <> UCase("filter")) Then
 %>
 
 <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"
 	codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-	height="32" id="abMainMenu" name="abMainMenu" style="LEFT: 0px; TOP: 0px" width="100%" viewastext>
+	height="32"
+	id="abMainMenu"
+	name="abMainMenu"
+	style="LEFT: 0px; TOP: 0px; width: 100%"
+	viewastext>
 	<param name="_ExtentX" value="847">
 	<param name="_ExtentY" value="847">
 </object>
@@ -779,27 +783,26 @@
 		%>
 		<tr>
 			<td>
-				<table align="center" class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
+				<table class="invisible" style="text-align: center; border-spacing: 0; border: thick; padding: 0; width:100%; height:100%">
 					<tr height="10">
 						<td colspan="3" align="center" height="10">
 							<h3 align="center">
 								<% 
 									If UCase(Session("selectionType")) = UCase("picklist") Then
 								%>	
-														Select Picklist
-																		<%
-																		Else
-																			If UCase(Session("selectionType")) = UCase("filter") Then
-																		%>
+									Select Picklist
+								<%
+								Else
+									If UCase(Session("selectionType")) = UCase("filter") Then
+										%>
 											Select Filter
-																		<%
-																		Else
-																		%>		
-														Select Records
-																		<%
-																		End If
-																	End If
-																		%>
+										<%
+									Else
+										%>		
+											Select Records
+										<%
+									End If
+							End If%>
 							</h3>
 						</td>
 					</tr>
@@ -1163,8 +1166,8 @@
 									<td height="10">&nbsp;</td>
 								</tr>
 								<tr>
-									<td>
-										<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
+									<td style="height: 260px;vertical-align: top">
+										<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
 											<param name="ScrollBars" value="4">
 											<param name="_Version" value="196617">
 											<param name="DataMode" value="2">
