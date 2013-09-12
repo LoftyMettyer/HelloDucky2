@@ -330,14 +330,8 @@
 
 <form id="frmAbsenceDefinition" name="frmAbsenceDefinition">
 	<div id="frmAbsenceDefinitiontabs">
-		<div id="thefrmAbsenceDefinitionButtons">
-			<div id="RunBackButtons" style="float: left; padding: 5px">
-				<input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
-					onclick="absence_okClick()" />
-				<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
-					onclick="absence_returnToRecEdit()" />
-			</div>
-			<div style="float: left; padding: 5px">
+		<div style="padding: 10px 0px 50px 10px"  id="thefrmAbsenceDefinitionButtons">
+			<div style="float: left">
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
 					onclick="absenceDisplayPage(1);"
 					onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -357,7 +351,7 @@
 				End If
 				%>
 			</div>
-			<div style="float: left; padding: 5px">
+			<div style="float: left; padding-left: 5px">
 				<input type="button" class="btn" value="Output" id="btnTab3" name="btnTab3"
 					onclick="absenceDisplayPage(3);"
 					onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -384,8 +378,11 @@
 		<div id="div1">
 			<table style="width: 100%; height: 100%; border-collapse: collapse; padding: 5px">
 				<tr style="vertical-align: top">
+					<td style="width: 10px;" rowspan="2"></td>
 					<td style="vertical-align: top; width: 25%; height: 100%" rowspan="2">
+						
 						<table class="invisible" style="border-collapse: collapse; padding: 4px; width: 100%; height: 100%">
+							
 							<tr style="height: 40px">
 								<td style="width: 400px; height: 40px; text-align: left; vertical-align: top"><strong>Absence Types :</strong>
 									<br>
@@ -452,124 +449,124 @@
 										</tr>
 									</table>
 									&nbsp;
-						<span id="RecordSelection">
-							<table style="border-collapse: separate; border-collapse: separate; padding: 1px; width: 300px">
-								<tr style="height: 10px">
-									<td style="height: 10px; text-align: left; vertical-align: top; font-weight: bold">Record Selection :</td>
-									<table class="invisible" style="border-collapse: collapse; padding: 3px">
-										<tr style="height: 10px"></tr>
-										<tr>
-											<table style="width: 325px; height: 80%; border-collapse: collapse; padding: 5px">
+									<span id="RecordSelection">
+										<table style="border-collapse: separate; border-collapse: separate; padding: 1px; width: 300px">
+											<tr style="height: 10px">
+												<td style="height: 10px; text-align: left; vertical-align: top; font-weight: bold">Record Selection :</td>
+												<table class="invisible" style="border-collapse: collapse; padding: 3px">
+													<tr style="height: 10px"></tr>
+													<tr>
+														<table style="width: 325px; height: 80%; border-collapse: collapse; padding: 5px">
+															<td>
+																<table class="invisible" style="width: 360px; border-collapse: collapse; padding: 0px">
+																	<tr>
+																		<td style="width: 95PX; padding-bottom: 6px" colspan="3">
+																			<input checked id="optAllRecords" name="optAllRecords" type="radio"
+																				onclick="changeRecordOptions('all')"
+																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																				onfocus="try{radio_onFocus(this);}catch(e){}"
+																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																			<label
+																				tabindex="-1"
+																				for="optAllRecords"
+																				class="radio"
+																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				All
+																			</label>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="white-space: nowrap">
+																			<input id="optPickList" name="optPickList" type="radio"
+																				onclick="changeRecordOptions('picklist')"
+																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																				onfocus="try{radio_onFocus(this);}catch(e){}"
+																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																			<label
+																				tabindex="-1"
+																				for="optPickList"
+																				class="radio"
+																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				Picklist
+																			</label>
+																		</td>
+																		<td>
+																			<input id="Text2" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="width: 250px">
+																		</td>
+																		<td style="width: 15px">
+																			<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
+																				onclick="selectRecordOption('picklist')"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);absencerefreshControls();}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="white-space: nowrap">
+																			<input id="optFilter" name="optFilter" type="radio"
+																				onclick="changeRecordOptions('filter')"
+																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
+																				onfocus="try{radio_onFocus(this);}catch(e){}"
+																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																			<label
+																				tabindex="-1"
+																				for="optFilter"
+																				class="radio"
+																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				Filter
+																			</label>
+																		</td>
+																		<td>
+																			<input id="Text3" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="width: 250px">
+																		</td>
+																		<td>
+																			<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
+																				onclick="selectRecordOption('filter')"
+																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																				onfocus="try{button_onFocus(this);absencerefreshControls();}catch(e){}"
+																				onblur="try{button_onBlur(this);}catch(e){}" />
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="white-space: nowrap;" colspan="3">
+																			<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1"
+																				onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																			<label
+																				for="chkPrintInReportHeader"
+																				class="checkbox"
+																				tabindex="0"
+																				onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																				onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																				onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																				onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																				onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																				Display filter or picklist title in the report header
+																			</label>
+																		</td>
+																	</tr>
+																</table>
+															</td>
+														</table>
+													</tr>
+												</table>
+											</tr>
+											<tr>
 												<td>
-													<table class="invisible" style="width: 360px; border-collapse: collapse; padding: 0px">
-														<tr>
-															<td style="width: 95PX; padding-bottom: 6px" colspan="3">
-																<input checked id="optAllRecords" name="optAllRecords" type="radio"
-																	onclick="changeRecordOptions('all')"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
-																<label
-																	tabindex="-1"
-																	for="optAllRecords"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
-																	All
-																</label>
-															</td>
-														</tr>
-														<tr>
-															<td style="white-space: nowrap">
-																<input id="optPickList" name="optPickList" type="radio"
-																	onclick="changeRecordOptions('picklist')"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
-																<label
-																	tabindex="-1"
-																	for="optPickList"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
-																	Picklist
-																</label>
-															</td>
-															<td>
-																<input id="Text2" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="width: 250px">
-															</td>
-															<td style="width: 15px">
-																<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																	onclick="selectRecordOption('picklist')"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);refreshControls();}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
-															</td>
-														</tr>
-														<tr>
-															<td style="white-space: nowrap">
-																<input id="optFilter" name="optFilter" type="radio"
-																	onclick="changeRecordOptions('filter')"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
-																<label
-																	tabindex="-1"
-																	for="optFilter"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
-																	Filter
-																</label>
-															</td>
-															<td>
-																<input id="Text3" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="width: 250px">
-															</td>
-															<td>
-																<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																	onclick="selectRecordOption('filter')"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);refreshControls();}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
-															</td>
-														</tr>
-														<tr>
-															<td style="white-space: nowrap;" colspan="3">
-																<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1"
-																	onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label
-																	for="chkPrintInReportHeader"
-																	class="checkbox"
-																	tabindex="0"
-																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																	onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																	onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																	onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																	Display filter or picklist title in the report header
-																</label>
-															</td>
-														</tr>
+													<table class="invisible" style="width: 100%; border-collapse: collapse;">
 													</table>
 												</td>
-											</table>
-										</tr>
-									</table>
-								</tr>
-								<tr>
-									<td>
-										<table class="invisible" style="width: 100%; border-collapse: collapse;">
+											</tr>
 										</table>
-									</td>
-								</tr>
-							</table>
-						</span>
+									</span>
 								</td>
 							</tr>
 						</table>
@@ -665,8 +662,8 @@
 									<tr>
 										<td>
 											<input type="checkbox" id="chkShowAbsenceDetails" name="chkAbsenceDetails" tabindex="-1"
-												onclick="refreshTab2Controls();"
-												onchange="refreshTab2Controls();"
+												onclick="absenceBreakdownRefreshTab2Controls();"
+												onchange="absenceBreakdownRefreshTab2Controls();"
 												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 											<label
@@ -735,8 +732,8 @@
 													<tr>
 														<td>
 															<input type="checkbox" id="chkMinimumBradfordFactor" name="chkMinimumBradfordFactor" tabindex="-1"
-																onclick="refreshTab2Controls();"
-																onchange="refreshTab2Controls();"
+																onclick="absenceBreakdownRefreshTab2Controls();"
+																onchange="absenceBreakdownRefreshTab2Controls();"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 															<label
@@ -773,7 +770,7 @@
 										<td style="white-space: nowrap; width: 5%">Order By :</td>
 										<td style="width: 60%">
 											<select id="cboOrderBy1" name="cboOrderBy1" style="width: 20%" class="combo"
-												onchange="refreshTab2Controls();">
+												onchange="absenceBreakdownRefreshTab2Controls();">
 												<option value="0">&lt;None&gt;</option>
 												<%
 													For iCount = 0 To UBound(aColumnNames, 2) - 1
@@ -803,7 +800,7 @@
 										<td style="white-space: nowrap; width: 5%">Then : </td>
 										<td style="width: 60%">
 											<select id="cboOrderBy2" name="cboOrderBy2" style="width: 20%" class="combo"
-												onchange="refreshTab2Controls();">
+												onchange="absenceBreakdownRefreshTab2Controls();">
 												<option value="0">&lt;None&gt;</option>
 												<%
 													For iCount = 0 To UBound(aColumnNames, 2) - 1
@@ -1125,7 +1122,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
 															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="	absenceBreakdownRefreshTab3Controls();"
+																onclick="absenceBreakdownRefreshTab3Controls();"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 															<label
@@ -1179,8 +1176,9 @@
 														<td style="text-align: left; white-space: nowrap">File name :</td>
 														<td style="width: 5px"></td>
 														<td style="width: 5px"></td>
-														<td>
-															<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled">
+														<td style="width: 100%">
+															<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled"
+															style="width: 100%">
 														</td>
 														<td style="width: 5px">
 															<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
@@ -1282,6 +1280,13 @@
 				</tr>
 			</table>
 		</div>
+		
+<%--		<div id="RunBackButtons" style="float: left; padding: 10px">
+			<input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
+				onclick="absence_okClick()" />
+			<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
+				onclick="absence_returnToRecEdit()" />
+		</div>--%>
 	</div>
 
 		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
