@@ -7,7 +7,7 @@ var div5 = document.getElementById("div5");
 function stdrpt_def_absence_window_onload() {
 
     $("#workframe").attr("data-framesource", "STDRPT_DEF_ABSENCE");
-       
+
     // Set the frameset as 1 because 0 doesn't clear any combo boxes /dropdown controls
     if (frmPostDefinition.txtRecSelCurrentID.value > 0) {
         $("#workframe").hide();
@@ -565,11 +565,11 @@ function changeRecordOptions(psType)
         frmPostDefinition.txtBaseFilterID.value = 0;	
     }
 
-    refreshTab1Controls();
-
+    //refreshTab1Controls();
+    absenceBreakdownRefreshTab1Controls();
 }
 
-function refreshControls()
+function absencerefreshControls()
 {
 }
 
