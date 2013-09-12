@@ -55,7 +55,6 @@
 				$('.pendingworkflowlinks').show();
 				var rowNumber = 1;
 				$("#PendingStepsTable_Dash tr td:nth-child(1)").each(function () {
-					var url = 'launchWorkflow(\'' + $(this).next().html() + '\')';
 					var desc = $(this).html();
 					var name = $(this).next().next().html();
 					if (desc.substring(0, name.length) === name) {
@@ -63,6 +62,8 @@
 						desc = desc.substr(name.length + 2); // 2chars for the dash.
 					}
 
+					var url = 'launchWorkflow(\'' + $(this).next().html() + '\', \'' + name + '\')';
+					
 					var lihtml = '<li class="pendingworkflowtext White" data-col="1" data-row="' + rowNumber + '" ';
 					lihtml += 'data-sizex="2" data-sizey="1" onclick="' + url + '">';
 					lihtml += '<a href="#">';
@@ -276,23 +277,29 @@
 
 		function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 
-			menu_disableMenu();
+			if (!dragged) {
+				//menu_disableMenu();
+				$('#SSILinksFrame').fadeOut();
 
-			var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
-			frmPrompt.utiltype.value = sUtilityType;
-			frmPrompt.utilid.value = sUtilityID;
-			frmPrompt.utilname.value = sUtilityName;
-			//OpenHR.showInReportFrame(frmPrompt, false);
-			OpenHR.submitForm(frmPrompt, "workframe", false);
+				$('#SSILinksFrame').promise().done(function() {
+					var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
+					frmPrompt.utiltype.value = sUtilityType;
+					frmPrompt.utilid.value = sUtilityID;
+					frmPrompt.utilname.value = sUtilityName;
+					//OpenHR.showInReportFrame(frmPrompt, false);
+					OpenHR.submitForm(frmPrompt, "workframe", false);
+					$('#workframe').fadeIn();
 
-			//var breadcrumb = $(".pageTitle").text();
-			//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+					//var breadcrumb = $(".pageTitle").text();
+					//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
 
+				});
+			}
 		}
 
-		function launchWorkflow(url) {
-			
-			
+		function launchWorkflow(url, name) {
+
+			$('.pageTitle').text(name);
 			$('#externalContentFrame').attr('src', url);
 			$('.DashContent').fadeOut();
 			$('#workflowDisplay').fadeIn();
@@ -764,10 +771,13 @@
 	</form>
 </div>
 
-<div id="workflowDisplay" class="absolutefull" style="display: none; background-color: transparent; text-align: center; ">
+<div id="workflowDisplay" class="absolutefull" style="display: none; background-color: transparent; text-align: center;">
 	<div class="pageTitleDiv" style="text-align: left;">
-		<a href="<%=Url.Action("Main", "Home", New With {.SSIMode = "True"})%>" title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-		<h3 class="pageTitle">Workflow</h3>
+		<a href='<%=Url.Action("Main", "Home", New With {.SSIMode = "True"})%>' title='Home'>
+			<i class='pageTitleIcon icon-arrow-left'></i>
+		</a>
+		<span class="pageTitle">Workflow</span>
 	</div>
-	<iframe id="externalContentFrame" style="width: 515px; height: 283px; margin: 0 auto;"></iframe>
+
+	<iframe id="externalContentFrame" style="width: 700px; height: 400px; margin: 0 auto;"></iframe>
 </div>

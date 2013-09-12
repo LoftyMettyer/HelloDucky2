@@ -86,11 +86,12 @@
 
 
 <div class="absolutefull">
-	<div class="pageTitleDiv">
-		<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-		<h3 class="pageTitle"><% =Session("utilname")%></h3>
-	</div>
-
+		<div class="pageTitleDiv">
+			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+				<i class='pageTitleIcon icon-arrow-left'></i>
+			</a>
+			<span class="pageTitle"><% =Session("utilname")%></span>
+		</div>	
 	<div id="dataRow">
 		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action='<%
 			If bStandardReportPrompt Then

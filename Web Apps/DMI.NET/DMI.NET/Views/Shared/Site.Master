@@ -297,13 +297,21 @@
 
 	function loadPartialView(action, controller, targetDiv, params) {
 		if (action.toUpperCase() == "LINKSMAIN") {
-			$('#workframe').fadeOut('slow');
-			$('.DashContent').hide();
-			$('#SSILinksFrame').show();
-			$('.DashContent').fadeIn('slow');
-			$("#toolbarHome").show();
-			$("#toolbarHome").click();
-
+			if (window.currentLayout == 'tiles') {
+				$('#workframe').fadeOut('slow');
+				$('.DashContent').hide();
+				$('#SSILinksFrame').show();
+				$('.DashContent').fadeIn('slow');
+				$("#toolbarHome").show();
+				$("#toolbarHome").click();
+			} else {
+				$('#workframe').hide();
+				$('.DashContent').hide();
+				$('#SSILinksFrame').show();
+				$('.DashContent').show();
+				$("#toolbarHome").show();
+				$("#toolbarHome").click();
+			}
 		} else {
 			$.ajax({
 				url: window.ROOT + controller + "/" + action,
@@ -348,9 +356,9 @@
 
 						var breadcrumb = $(".pageTitle").text();
 						if (action.toUpperCase() == 'LINKSMAIN') {
-							$(".RecordDescription a:nth-child(n+2)").remove();
+							//$(".RecordDescription a:nth-child(n+2)").remove();
 						} else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
-							$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+							//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
 						}
 					} catch(e) {
 						$("#errorDialogTitle").text(e.toString);

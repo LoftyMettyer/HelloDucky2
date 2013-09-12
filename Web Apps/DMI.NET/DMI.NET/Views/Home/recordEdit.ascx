@@ -539,7 +539,7 @@
 
 <div <%=session("BodyTag")%> >
 <form action="" method=post id="frmRecordEditForm" name="frmRecordEditForm" >
-
+	<div class="absolutefull">
 
 <%
 	On Error Resume Next
@@ -581,12 +581,14 @@
 		
 
 %>
-<div class="pageTitleDiv">
-<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-<h3 class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
+		<div class="pageTitleDiv">
+			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+				<i class='pageTitleIcon icon-arrow-left'></i>
+			</a>
+			<span class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
     ' Release the ADO command object.
-    cmdRecEditWindowTitle = Nothing%></h3>
-</div>
+    cmdRecEditWindowTitle = Nothing%></span>
+		</div>	
     
 <div id="ctlRecordEdit" style="margin:0 auto; " >
     <ul id="tabHeaders">        
@@ -789,7 +791,7 @@
 	<input type='hidden' id="txtImagePath" name="txtImagePath">
 	<input type='hidden' id="txtOLEServerPath" name="txtOLEServerPath">
 	<input type='hidden' id="txtOLELocalPath" name="txtOLELocalPath">
-
+		</div>
 </form>
 
 <form action="default_Submit" method=post id=frmGoto name=frmGoto>

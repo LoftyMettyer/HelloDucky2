@@ -42,8 +42,9 @@ body
 }
 
 .pageTitle {
-	margin-top: 0;
-	margin-bottom: 0;
+	margin-top: 0;	
+	font-size: 24pt;
+	margin-bottom: 20px;
 }
 
 .DashContent {position: absolute; top: 0px; bottom: 2px;left: 0px; right: 0px;}

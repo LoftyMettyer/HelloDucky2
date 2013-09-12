@@ -141,10 +141,12 @@
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 						<tr>
 							<td colspan="5" align="left" height="10">
-								<div class="pageTitleDiv">
-								<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-								<h3 class="pageTitle">Pending Workflow Steps</h3>
-									</div>
+								<div class="pageTitleDiv" style="margin-left: 20px;">
+									<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+										<i class='pageTitleIcon icon-arrow-left'></i>
+									</a>
+									<span class="pageTitle">Pending Workflow Steps</span>
+								</div>
 							</td>
 						</tr>
 

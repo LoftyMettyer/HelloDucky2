@@ -165,12 +165,12 @@
 
 <div id="divUtilRunForm">
 	<div class="absolutefull">
-
-		<div class="pageTitleDiv" style="margin-left: 20px;">
-			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a>
-			<h3 class="pageTitle"><% =Session("utilname")%></h3>
+		<div class="pageTitleDiv">
+			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+				<i class='pageTitleIcon icon-arrow-left'></i>
+			</a>
+			<span class="pageTitle"><% =Session("utilname")%></span>
 		</div>
-
 		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 20px 0 20px; overflow: auto;">
 
 			<%   
