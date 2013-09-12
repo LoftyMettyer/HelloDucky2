@@ -129,7 +129,7 @@
 </div>
 
 <div style="width: 20%; padding-left: 5px;position :static; white-space: nowrap; float: left">
-		<input type="checkbox" id="Checkbox3" name="chkSuppressZeros" value="checkbox"
+		<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
 		onclick="UpdateGrid()" />
 	<label
 		for="chkSuppressZeros"
@@ -138,7 +138,7 @@
 		Suppress Zeros<br>
 	</label>
 
-	<input type="checkbox" id="Checkbox1" name="chkPercentType" value="checkbox"
+	<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
 		onclick="chkPercentType_Click()" />
 	<label
 		for="chkPercentType"
@@ -151,7 +151,7 @@
 		%>
 	</label>
 	<br>
-	<input type="checkbox" id="Checkbox2" name="chkPercentPage" value="checkbox"
+	<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
 		onclick="UpdateGrid();" />
 	<label
 		for="chkPercentPage"
@@ -165,7 +165,7 @@
 	</label>
 	<br>
 
-	<input type="checkbox" id="Checkbox4" name="chkUse1000" value="checkbox"
+	<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
 		onclick="UpdateGrid()" />
 	<label
 		for="chkUse1000"
