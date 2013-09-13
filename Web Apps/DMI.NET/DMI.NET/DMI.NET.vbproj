@@ -576,6 +576,7 @@
     <Content Include="Content\themes\ui-lightness\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\ui-lightness\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\ui-lightness\jquery.ui.tooltip.min.css" />
+    <Content Include="Database\UpdateScript8.0.11.sql" />
     <Content Include="Database\UpdateScript8.0.8.sql" />
     <Content Include="Database\UpdateScript8.0.9.sql" />
     <Content Include="lpks\ssmain.lpk" />
