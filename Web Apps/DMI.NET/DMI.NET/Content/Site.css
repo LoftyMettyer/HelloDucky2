@@ -193,19 +193,6 @@ body.loading .modal {
     display: block;
 }
 
-
-
-/* When the body has the loading class, we turn
-   the scrollbar off with overflow:hidden */
-body.loadingreport {
-    overflow: hidden;   
+#officebar>ul>li {
+	display: none;
 }
-
-/* Anytime the body has the loading class, our
-   modal element will be visible */
-body.loadingreport .modal {
-    display: block;
-}
-
-
-

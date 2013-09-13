@@ -315,10 +315,11 @@
 			
 				if (rowCount() > 0) {
 					moveFirst();
-				} else {
-					//enable the new button.
-					menu_toolbarEnableItem("mnutoolNewUtil", true);
 				}
+				//else {
+				//	//enable the new button.
+				//	menu_toolbarEnableItem("mnutoolNewUtil", true);
+				//}
 
 		}
 
@@ -331,56 +332,300 @@
 		}
 
 
+		//Case 0
+		//sTemp = sTemp & "BatchJobs"
+		//Case 1
+		//sTemp = sTemp & "CrossTabs"
+		//Case 2
+		//sTemp = sTemp & "CustomReports"
+		//Case 3
+		//sTemp = sTemp & "DataTransfer"
+		//Case 4
+		//sTemp = sTemp & "Export"
+		//Case 5
+		//sTemp = sTemp & "GlobalAdd"
+		//Case 6
+		//sTemp = sTemp & "GlobalDelete"
+		//Case 7
+		//sTemp = sTemp & "GlobalUpdate"
+		//Case 8
+		//sTemp = sTemp & "Import"
+		//Case 9
+		//sTemp = sTemp & "MailMerge"
+		//Case 10
+		//sTemp = sTemp & "Picklists"
+		//Case 11
+		//sTemp = sTemp & "Filters"
+		//Case 12
+		//sTemp = sTemp & "Calculations"
+		//Case 17
+		//sTemp = sTemp & "CalendarReports"
+		//Case 25
+		//sTemp = sTemp & "Workflow"
+
+		function disableNonDefselTabs() {
+			$("#toolbarRecordFind").parent().hide();
+		    $("#toolbarRecord").parent().hide();
+		    $("#toolbarRecordAbsence").parent().hide();
+		    $("#toolbarRecordQuickFind").parent().hide();
+		    $("#toolbarRecordSortOrder").parent().hide();
+		    $("#toolbarRecordFilter").parent().hide();
+		    $("#toolbarRecordMailMerge").parent().hide();
+		    //$("#toolbarReportFind").hide();
+		    $("#toolbarReportNewEditCopy").parent().hide();
+		    $("#toolbarReportRun").parent().hide();
+		    //$("#toolbarUtilitiesFind").hide();
+		    $("#toolbarUtilitiesNewEditCopy").parent().hide();
+		    //$("#toolbarToolsFind").hide();
+		    //$("#toolbarEventLogFind").hide();
+		    $("#toolbarEventLogView").parent().hide();
+		    //$("#toolbarWFPendingStepsFind").hide();
+		    $("#toolbarAdminConfig").parent().hide();
+        }
+
 		function refreshControls() {			
-			//show the utilities menu block.
+			//show the Defsel-Find menu block.
 			//$("#mnuSectionUtilities").show();
 			frmDefSel = document.getElementById('frmDefSel');
 
-			menu_toolbarEnableItem("mnutoolNewUtil", true);
-			menu_toolbarEnableItem("mnutoolEditUtil", true);
-			menu_toolbarEnableItem("mnutoolCopyUtil", true);
-			menu_toolbarEnableItem("mnutoolDeleteUtil", true);
-			menu_toolbarEnableItem("mnutoolPrintUtil", true);
-			menu_toolbarEnableItem("mnutoolPropertiesUtil", true);
-			menu_toolbarEnableItem("mnutillRunUtil", true);
-			//only display the 'close' button for defsel when called from rec edit...
-			if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-				menu_setVisibleMenuItem('mnuutilCancelUtil', true);
-				menu_toolbarEnableItem('mnuutilCancelUtil', true);
+			disableNonDefselTabs();
+
+			switch ('<%=Session("defseltype")%>') {
+			    case '0':  // "BatchJobs"
+			        break;
+			    case '1':  // "CrossTabs"
+                    // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarToolsFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+                    // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewReportFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyReportFind", true);
+			        menu_toolbarEnableItem("mnutoolEditReportFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
+			        menu_toolbarEnableItem("mnutoolRunReportFind", true);
+			        //only display the 'close' button for defsel when called from rec edit...
+			        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			            menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+			        }
+			        else {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+			        }
+			        // Show and select the tab
+			        $("#toolbarReportFind").parent().show();
+			        $("#toolbarReportFind").click();
+			        break;
+			    case '2':  // "CustomReports"
+			        // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarToolsFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewReportFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyReportFind", true);
+			        menu_toolbarEnableItem("mnutoolEditReportFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
+			        menu_toolbarEnableItem("mnutoolRunReportFind", true);
+			        //only display the 'close' button for defsel when called from rec edit...
+			        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			            menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+			        }
+			        else {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+			        }
+			        // Show and select the tab
+			        $("#toolbarReportFind").parent().show();
+			        $("#toolbarReportFind").click();
+			        break;
+			    case '3':  //sTemp = sTemp & "DataTransfer"
+			        break;
+			    case '4':  //sTemp = sTemp & "Export"
+			        break;
+			    case '5':  //sTemp = sTemp & "GlobalAdd"
+			        break;
+			    case '6':  //sTemp = sTemp & "GlobalDelete"
+			        break;
+			    case '7':  //sTemp = sTemp & "GlobalUpdate"
+			        break;
+			    case '8':  //sTemp = sTemp & "Import"
+			        break;
+			    case '9':  // "MailMerge"
+			        // Hide the remaining tabs
+			        $("#toolbarToolsFind").parent().hide();
+			        $("#toolbarReportFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolEditUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", true);
+			        //only display the 'close' button for defsel when called from rec edit...
+			        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
+			            menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', true);
+			        }
+			        else {
+			            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
+			        }
+			        // Show and select the tab
+			        $("#toolbarUtilitiesFind").parent().show();
+			        $("#toolbarUtilitiesFind").click();
+			        break;
+			    case '10': // "Picklists"
+			        // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarReportFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolEditToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolRunToolsFind", true);
+			        // Show and select the tab
+			        $("#toolbarToolsFind").parent().show();
+			        $("#toolbarToolsFind").click();
+			        break;
+			    case '11': // "Filters"
+			        // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarReportFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolEditToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolRunToolsFind", true);
+			        // Show and select the tab
+			        $("#toolbarToolsFind").parent().show();
+			        $("#toolbarToolsFind").click();
+			        break;
+			    case '12': // "Calculations"
+			        // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarReportFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolEditToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
+			        menu_toolbarEnableItem("mnutoolRunToolsFind", true);
+			        // Show and select the tab
+			        $("#toolbarToolsFind").parent().show();
+			        $("#toolbarToolsFind").click();
+			        break;
+			    case '17': // "CalendarReports"
+			        // Hide the remaining tabs
+			        $("#toolbarUtilitiesFind").parent().hide();
+			        $("#toolbarToolsFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewReportFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyReportFind", true);
+			        menu_toolbarEnableItem("mnutoolEditReportFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
+			        menu_toolbarEnableItem("mnutoolRunReportFind", true);
+			        //only display the 'close' button for defsel when called from rec edit...
+			        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			            menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+			        }
+			        else {
+			            menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+			        }
+			        // Show and select the tab
+			        $("#toolbarReportFind").parent().show();
+			        $("#toolbarReportFind").click();
+			        break;
+			    case '25': // "Workflow"
+			        // Hide the remaining tabs
+			        $("#toolbarToolsFind").parent().hide();
+			        $("#toolbarReportFind").parent().hide();
+			        $("#toolbarEventLogFind").parent().hide();
+			        $("#toolbarWFPendingStepsFind").parent().hide();
+			        // Enable the buttons
+			        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolEditUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", true);
+			        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", true);
+			        //only display the 'close' button for defsel when called from rec edit...
+			        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
+			            menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', true);
+			        }
+			        else {
+			            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
+			        }
+			        // Show and select the tab
+			        $("#toolbarUtilitiesFind").parent().show();
+			        $("#toolbarUtilitiesFind").click();
+			        break;
 			}
-			$("#toolbarUtilities").click();
+			//menu_toolbarEnableItem("mnutoolNewReportFind", true);
+			//menu_toolbarEnableItem("mnutoolCopyReportFind", true);
+			//menu_toolbarEnableItem("mnutoolEditReportFind", true);
+			//menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
+			//menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
+			//menu_toolbarEnableItem("mnutoolRunReportFind", true);
+			////only display the 'close' button for defsel when called from rec edit...
+			//if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			//    menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			//    menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+			//}
+			//$("#toolbarReportFind").click();
 
-				var fNoneSelected;
-				var frmpermissions = document.getElementById('frmpermissions');
-				var frmDefSel = document.getElementById('frmDefSel');
+			var fNoneSelected;
+			var frmpermissions = document.getElementById('frmpermissions');
+			var frmDefSel = document.getElementById('frmDefSel');
 		
-				//TODO - Check if anything selected
-				//fNoneSelected = (frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Count == 0);
+			//TODO - Check if anything selected
+			//fNoneSelected = (frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Count == 0);
 
-				button_disable(frmDefSel.cmdEdit, (fNoneSelected ||
-						((frmpermissions.grantedit.value == 0) && (frmpermissions.grantview.value == 0))));
-				button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
-				button_disable(frmDefSel.cmdCopy, (fNoneSelected || (frmpermissions.grantnew.value == 0)));
-				button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
-						(frmpermissions.grantdelete.value == 0) ||
-						(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
+			button_disable(frmDefSel.cmdEdit, (fNoneSelected ||
+					((frmpermissions.grantedit.value == 0) && (frmpermissions.grantview.value == 0))));
+			button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
+			button_disable(frmDefSel.cmdCopy, (fNoneSelected || (frmpermissions.grantnew.value == 0)));
+			button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
+					(frmpermissions.grantdelete.value == 0) ||
+					(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
 
-				if (((frmpermissions.grantedit.value == 0) &&
-								(frmpermissions.grantview.value == 1)) ||
-						(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
-						frmDefSel.cmdEdit.value = "View";
-				}
-				else {
-						frmDefSel.cmdEdit.value = "Edit";
-				}
+			if (((frmpermissions.grantedit.value == 0) &&
+							(frmpermissions.grantview.value == 1)) ||
+					(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
+					frmDefSel.cmdEdit.value = "View";
+			}
+			else {
+					frmDefSel.cmdEdit.value = "Edit";
+			}
 
-				button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
-						((frmpermissions.grantnew.value == 0) &&
-								(frmpermissions.grantedit.value == 0) &&
-								(frmpermissions.grantview.value == 0) &&
-								(frmpermissions.grantdelete.value == 0) &&
-								(frmpermissions.grantrun.value == 0))));
-				button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
+			button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
+					((frmpermissions.grantnew.value == 0) &&
+							(frmpermissions.grantedit.value == 0) &&
+							(frmpermissions.grantview.value == 0) &&
+							(frmpermissions.grantdelete.value == 0) &&
+							(frmpermissions.grantrun.value == 0))));
+			button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
 		}
 
 		function showproperties() {
