@@ -2195,8 +2195,8 @@ function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pf
 	var frmOptionArea;
 	var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 	
-	//ShowWait("Loading lookup find records. Please wait...");
-	menu_disableMenu();
+	//Don't disable the menu as we can't reliably re-enable it when exiting the lookup screen.
+	//menu_disableMenu(); 
 
 	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
