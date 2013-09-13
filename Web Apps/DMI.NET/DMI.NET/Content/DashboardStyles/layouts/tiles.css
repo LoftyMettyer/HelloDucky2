@@ -139,7 +139,9 @@ body
 }
 
 
-.hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe, .pendingworkflowsframe, .pendingworkflowlinkseparator {border: none;width: 140px;margin-right: 10px;}
+.hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe, .pendingworkflowsframe  {
+	border: none;width: 140px;margin-right: 10px;
+}
 
 .hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator, .pendingworkflowlinkseparator
 {
@@ -420,7 +422,7 @@ div.officetab div.panel > span { display: none;}
 
 .wrapupcontainer {
 	position: relative;
-	width: 130px;
+	/*width: 130px;*/
 	height: 3em;
 }
 
@@ -428,7 +430,7 @@ div.officetab div.panel > span { display: none;}
 	padding-left: 5px;
 	position: absolute;
 	bottom: 0;
-	width: 130px;
+	/*width: 130px;*/
 	min-height: 10%;
 }
 

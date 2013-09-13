@@ -379,7 +379,7 @@
 			<div class="pendingworkflowlinks">
 			<ul class="pendingworkflowsframe cols2">
 				<li class="pendingworkflowlink-displaytype">
-					<div class="wrapupcontainer"><div class="wrapuptext"><p class="pendingworkflowlinkseparator">Pending Workflow Steps</p></div></div>					
+					<div class="wrapupcontainer"><div class="wrapuptext"><p class="pendingworkflowlinkseparator">To-do list (Pending workflows)</p></div></div>					
 					<div class="gridster pendingworkflowlinkcontent" >
 						<ul id="pendingworkflowstepstiles">
 						</ul>
