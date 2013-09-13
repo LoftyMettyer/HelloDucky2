@@ -162,7 +162,7 @@ function insertUpdateDef() {
 	//	' which we'll construct an insert or update SQL string.
 
 	var uniqueIdentifier = 0;
-	
+
 	$('input[id^="txtRecEditControl_"]').each(function (index) {
 
 		uniqueIdentifier += 1;
@@ -189,8 +189,7 @@ function insertUpdateDef() {
 		//only process column controls. (not labels, frames etc...)
 		if ((objScreenControl.ColumnID > 0) && ((objScreenControl.ControlType !== 256) && (objScreenControl.ControlType !== Math.pow(2, 14)))) {
 
-			//		'JPD 20040706 Fault 8884
-			fDoControl = (!$(objControl).is(":disabled")); //objScreenControl.enabled;
+			fDoControl = objScreenControl.UpdateGranted;
 
 			if (fDoControl) {
 				if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline)) {	//tdbtextctl.tdbtext
@@ -503,27 +502,30 @@ function insertUpdateDef() {
 	//	Set objControl = Nothing
 
 	//	See if we are a history screen and if we are save away the id of the parent also
-	if ($("txtCurrentParentTableID").val() > 0) {
+	if ($("#txtCurrentParentTableID").val() > 0) {
 		//	Check if the column's update string has already been constructed.
 		fColumnDone = false;
 		var ubound = asColumns.length - 1;
 		for (iNextIndex = 0; iNextIndex <= ubound; iNextIndex++) {
-			if (asColumns[iNextIndex][0] == "ID_" + $("#txtCurrentParentTableID").val()) {
+			if (asColumns[iNextIndex][0] == "ID_" + $.trim($("#txtCurrentParentTableID").val())) {
 				fColumnDone = true;
 				break;
 			}
 		}
 
 		if (!fColumnDone) {
+			
+			var asIDToAdd = [0, 0, 0, 0];
 			//	Add the column name to the array of columns that have already been entered in the
 			//	SQL update/insert string.
-			iNextIndex = asColumns.length + 1; //TODO: check this...			
-			asColumnsToAdd[iNextIndex][0] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
-			asColumnsToAdd[iNextIndex][1] = $.trim($("#txtCurrentParentRecordID").val());
-			asColumnsToAdd[iNextIndex][2] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
-			asColumnsToAdd[iNextIndex][3] = $.trim($("#txtCurrentParentRecordID").val());
+			//iNextIndex = asColumns.length + 1; //TODO: check this...			
+			asIDToAdd[0] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asIDToAdd[1] = $.trim($("#txtCurrentParentRecordID").val());
+			asIDToAdd[2] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asIDToAdd[3] = $.trim($("#txtCurrentParentRecordID").val());
 
-			asColumns.push(asColumnsToAdd);
+			asColumns.push(asIDToAdd);
+
 		}
 	}
 
