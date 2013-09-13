@@ -152,39 +152,15 @@
 	}
 
 	function refreshStatusBar() {
-		var sText;
-		var sOrderColumn;
-		var sOrderOrder;
-		var sRecords;
+	var sRecords;
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
-		sOrderColumn = frmLog.ssOleDBGridEventLog.Columns(parseInt(frmLog.txtELSortColumnIndex.value)).caption;
-		sOrderOrder = frmLog.txtELOrderOrder.value;
 		sRecords = frmData.txtELTotalRecordCount.value;
 
-		if (sRecords == 0) {
-			sText = '0 Records';
-		}
-		else if (sRecords == 1) {
-			sText = '1 Record'
-		}
-		else {
-			sText = sRecords + ' Records Sorted by ' + sOrderColumn;
-
-			if (sOrderOrder == 'ASC') {
-				sText = sText + ' in Ascending order';
-			}
-			else {
-				sText = sText + ' in Descending order';
-			}
-		}
-
-		document.getElementById('sbEventLog').innerText = sText;
-
+		var iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
+		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
+		
 		if (sRecords > 0) {
-			iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
-			iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
-
 			sCaption = "Records " +
 					iStartPosition +
 					" to " +
@@ -203,18 +179,30 @@
 		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
-		//Disable navigation controls if number of records is less than 20
-		if (sRecords <= 20)
-		{
-			$("#mnutoolFirstRecord").addClass('disabled');
-			$("#mnutoolPreviousRecord").addClass('disabled');
-			$("#mnutoolNextRecord").addClass('disabled');
-			$("#mnutoolLastRecord").addClass('disabled');
-		} else {
-			$("#mnutoolFirstRecord").removeClass('disabled');
-			$("#mnutoolPreviousRecord").removeClass('disabled');
-			$("#mnutoolNextRecord").removeClass('disabled');
-			$("#mnutoolLastRecord").removeClass('disabled');
+		//Enable/disable navigation controls based on certain conditions
+		if (sRecords <= 1000) { //TODO set this to blocksize...
+			if (iStartPosition == 1) { //Disable first and previous
+				menu_toolbarEnableItem("mnutoolFirstRecord", false);
+				menu_toolbarEnableItem("mnutoolPreviousRecord", false);
+				menu_toolbarEnableItem("mnutoolNextRecord", true);
+				menu_toolbarEnableItem("mnutoolLastRecord", true);
+			} else if (iEndPosition == sRecords) { //Disable next and last
+				menu_toolbarEnableItem("mnutoolFirstRecord", true);
+				menu_toolbarEnableItem("mnutoolPreviousRecord", true);
+				menu_toolbarEnableItem("mnutoolNextRecord", false);
+				menu_toolbarEnableItem("mnutoolLastRecord", false);
+			}
+			else { //Enable all
+				menu_toolbarEnableItem("mnutoolFirstRecord", true);
+				menu_toolbarEnableItem("mnutoolPreviousRecord", true);
+				menu_toolbarEnableItem("mnutoolNextRecord", true);
+				menu_toolbarEnableItem("mnutoolLastRecord", true);
+			}
+		} else { //Disable all
+			menu_toolbarEnableItem("mnutoolFirstRecord", false);
+			menu_toolbarEnableItem("mnutoolPreviousRecord", false);
+			menu_toolbarEnableItem("mnutoolNextRecord", false);
+			menu_toolbarEnableItem("mnutoolLastRecord", false);
 		}
 		
 		return true;
