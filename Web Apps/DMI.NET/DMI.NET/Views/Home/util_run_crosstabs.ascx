@@ -31,7 +31,7 @@
 		objCrossTab.EventLogChangeHeaderStatus(3)	 'Successful
 
 	Else
-		Response.Write("<FORM Name=frmPopup ID=frmPopup>" & vbCrLf)
+		Response.Write("<form Name=frmPopup ID=frmPopup>" & vbCrLf)
 		Response.Write("<table align=center class=""outline="" cellPadding=5 cellSpacing=0>" & vbCrLf)
 		Response.Write("	<TR>" & vbCrLf)
 		Response.Write("		<TD>" & vbCrLf)
@@ -44,18 +44,8 @@
 		Response.Write("			    <td align=center> " & vbCrLf)
 
 		If objCrossTab.NoRecords Then
-			If objCrossTab.CrossTabType = 3 Then
-				Response.Write("						<H4>Absence Breakdown Completed successfully.</H4>" & vbCrLf)
-			Else
-				Response.Write("						<H4>Cross Tab '" & Session("utilname").ToString.Trim & "' Completed successfully.</H4>" & vbCrLf)
-			End If
 			objCrossTab.EventLogChangeHeaderStatus(3)		 'Successful
 		Else
-			If objCrossTab.CrossTabType = 3 Then
-				Response.Write("						<H4>Absence Breakdown Failed." & vbCrLf)
-			Else
-				Response.Write("						<H4>Cross Tab '" & Session("utilname").ToString.Trim & "' Failed." & vbCrLf)
-			End If
 			objCrossTab.EventLogChangeHeaderStatus(2)		 'Failed
 		End If
 
@@ -84,7 +74,7 @@
 		Response.Write("		</td>" & vbCrLf)
 		Response.Write("	</tr>" & vbCrLf)
 		Response.Write("</table>" & vbCrLf)
-		Response.Write("</FORM>" & vbCrLf)
+		Response.Write("</form>" & vbCrLf)
 		
 		If objCrossTab.ErrorString <> "" Then
 			objCrossTab.FailedMessage = objCrossTab.ErrorString

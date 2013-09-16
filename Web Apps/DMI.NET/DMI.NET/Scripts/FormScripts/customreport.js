@@ -6,6 +6,8 @@ function ShowCustomReport() {
 
 	if (txtSuccessFlag.value == 2) {
 
+		$("#divReportButtons").css("visibility", "visible");
+
 		var frmGridItems = OpenHR.getForm("reportworkframe", "frmGridItems");
 
 		var dataCollection = frmGridItems.elements;

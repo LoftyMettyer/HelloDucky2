@@ -11,9 +11,9 @@
 	Dim lngLoopMin As Long
 	Dim lngLoopMax As Long
 	Dim strEmailAddresses As String
-	Dim cmdReportsCols
-	Dim prmEmailGroupID
-	Dim rstReportColumns
+	Dim cmdReportsCols As ADODB.Command
+	Dim prmEmailGroupID As ADODB.Parameter
+	Dim rstReportColumns As ADODB.Recordset
 	Dim iLoop As Integer
 	Dim sErrorDescription As String
 		
@@ -28,7 +28,8 @@
 	Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf)
 	Response.Write("    $(""#outputoptions"").hide();" & vbCrLf)
 	Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)
-		
+	Response.Write("    $(""#divReportButtons"").css(""visibility"", ""visible"");" & vbCrLf)
+
 	Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
 	Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
 	Response.Write("    var ssOutputGrid;" & vbCrLf)

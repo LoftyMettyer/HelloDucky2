@@ -2,9 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>dev_build_latest</TargetDatabaseName>
+    <TargetDatabaseName>OpenHR52_MASTER</TargetDatabaseName>
     <DeployScriptFileName>OpenHR.sql</DeployScriptFileName>
     <TargetConnectionString>Data Source=harpdev02;Persist Security Info=True;User ID=sa;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
+    <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
+    <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
+    <ScriptDatabaseCompatibility>True</ScriptDatabaseCompatibility>
+    <VerifyDeployment>False</VerifyDeployment>
   </PropertyGroup>
 </Project>

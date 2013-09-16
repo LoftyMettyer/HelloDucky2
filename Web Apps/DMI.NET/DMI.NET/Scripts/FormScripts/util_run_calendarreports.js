@@ -1035,20 +1035,21 @@ function loadAddRecords(sFrom) {
 
 function util_run_calendarreport_data_window_onload() {
 
-		if (txtFirstLoad.value == 1) {
-				loadAddRecords('data');
-				return;
-		}
+	if (txtFirstLoad.value == 1) {
+		loadAddRecords('data');
+		$("#divReportButtons").css("visibility", "visible");
+		return;
+	}
 
-		if (frmCalendarData.txtCalendarMode.value == "LOADCALENDARREPORTDATA") {
-				fillCalBoxes();
-		}
-		else if (frmCalendarData.txtCalendarMode.value == "OUTPUTREPORT") {
-				setGridFont(frmCalendarData.grdCalendarOutput);
-				setGridFont(frmCalendarData.ssHiddenGrid);
+	if (frmCalendarData.txtCalendarMode.value == "LOADCALENDARREPORTDATA") {
+		fillCalBoxes();
+	}
+	else if (frmCalendarData.txtCalendarMode.value == "OUTPUTREPORT") {
+		setGridFont(frmCalendarData.grdCalendarOutput);
+		setGridFont(frmCalendarData.ssHiddenGrid);
 
-				outputReport();
-		}
+		outputReport();
+	}
 }
 
 function ExportData(strMode) {  
