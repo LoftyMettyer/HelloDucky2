@@ -402,6 +402,92 @@ function menu_MenuClick(sTool) {
 	frmRefresh = OpenHR.getForm("refresh", "frmRefresh");
 	OpenHR.submitForm(frmRefresh);
 
+
+	//Remapping of menu click ID's for menu refactor.
+	
+	//------------------------DEFSEL----------------------------//
+	//NEW buttons
+	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
+		try {
+			setnew();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+
+	//COPY buttons
+	if ((sToolName == 'mnutoolCopyReportFind') || (sToolName == 'mnutoolCopyUtilitiesFind') || (sToolName == 'mnutoolCopyToolsFind')) {
+		try {
+			setcopy();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+	
+	//EDIT buttons
+	if ((sToolName == 'mnutoolEditReportFind') || (sToolName == 'mnutoolEditUtilitiesFind') || (sToolName == 'mnutoolEditToolsFind')) {
+		try {
+			showDefaultRibbon();
+			$("#toolbarReportNewEditCopy").parent().show();
+			$("#toolbarReportNewEditCopy").click();
+			setedit();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+	
+	//DELETE buttons
+	if ((sToolName == 'mnutoolDeleteReportFind') || (sToolName == 'mnutoolDeleteUtilitiesFind') || (sToolName == 'mnutoolDeleteToolsFind')) {
+		try {
+			setdelete();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+
+	//PROPERTIES buttons
+	if ((sToolName == 'mnutoolPropertiesReportFind') || (sToolName == 'mnutoolPropertiesUtilitiesFind') || (sToolName == 'mnutoolPropertiesToolsFind')) {
+		try {
+			showproperties();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+
+	//RUN buttons
+	if ((sToolName == 'mnutoolRunReportFind') || (sToolName == 'mnutoolRunUtilitiesFind') || (sToolName == 'mnutoolRunRecordMailMerge')) {
+		try {
+			setrun();
+		}
+		catch (e) { }
+		finally {
+			return false;
+		}
+	}
+
+	//PENDING WORKFLOW STEPS 'RUN'
+	if (sToolName == 'mnutoolRunWFPendingStepsFind') {
+		try {
+			$("#cmdRun").click();
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+
+
+
+
 	if (sToolName == "mnutoolOrgChart") {
 		//window.location.href = "OrgChart";		
 		$.ajax({
@@ -740,10 +826,10 @@ function menu_MenuClick(sTool) {
 		// TODO: The following handlers need to be fixed or may be redundant
 
 
-	if (sToolName == "mnutoolWorkflowPendingSteps") {
+		if (sToolName == "mnutoolWorkflowPendingSteps") {
 			if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
 				menu_autoLoadPage("workflowPendingSteps", false);
-		}
+			}
 			return;
 		}
 
