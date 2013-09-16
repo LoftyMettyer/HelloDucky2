@@ -333,41 +333,25 @@
 		<div style="padding: 10px 0px 50px 10px"  id="thefrmAbsenceDefinitionButtons">
 			<div style="float: left">
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
-					onclick="absenceDisplayPage(1);"
-					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-					onfocus="try{button_onFocus(this);}catch(e){}"
-					onblur="try{button_onBlur(this);}catch(e){}" />
+					onclick="display_Absence_Page(1);"/>
 				<%
 					If Session("StandardReport_Type") = 16 Then
 				%>
 				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-					onclick="absenceDisplayPage(2);"
-					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-					onfocus="try{button_onFocus(this);}catch(e){}"
-					onblur="try{button_onBlur(this);}catch(e){}" />
+					onclick="display_Absence_Page(2);"/>
 				<%
 				End If
 				%>
 			</div>
 			<div style="float: left; padding-left: 5px">
 				<input type="button" class="btn" value="Output" id="btnTab3" name="btnTab3"
-					onclick="absenceDisplayPage(3);"
-					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-					onfocus="try{button_onFocus(this);}catch(e){}"
-					onblur="try{button_onBlur(this);}catch(e){}" />
+					onclick="display_Absence_Page(3);"/>
 				<%
 					' Causes problems if button isn't there
 					If Session("StandardReport_Type") <> 16 Then
 				%>
 				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-					onclick="absenceDisplayPage(2);"
-					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-					onfocus="try{button_onFocus(this);}catch(e){}"
-					onblur="try{button_onBlur(this);}catch(e){}" />
+					onclick="display_Absence_Page(2);"/>
 				<%
 				End If
 				%>
@@ -396,19 +380,12 @@
 													%>
 													<tr>
 														<td>
-															<input id="chkAbsenceType_<%=iCount%>" name="chkAbsenceType_<%=iCount%>" type="checkbox" tagname="<%=aAbsenceTypes(iCount)%>" tabindex="-1"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+															<input id="chkAbsenceType_<%=iCount%>" name="chkAbsenceType_<%=iCount%>" 
+																type="checkbox" tagname="<%=aAbsenceTypes(iCount)%>" tabindex="-1"/>
 															<label
 																for="chkAbsenceType_<%=iCount%>"
 																class="checkbox"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-
+																tabindex="0">
 																<%=aAbsenceTypes(iCount)%>
 															</label>
 														</td>
@@ -462,17 +439,11 @@
 																	<tr>
 																		<td style="width: 95PX; padding-bottom: 6px" colspan="3">
 																			<input checked id="optAllRecords" name="optAllRecords" type="radio"
-																				onclick="changeRecordOptions('all')"
-																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																				onfocus="try{radio_onFocus(this);}catch(e){}"
-																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																				onclick="changeRecordOptions('all')"/>
 																			<label
 																				tabindex="-1"
 																				for="optAllRecords"
-																				class="radio"
-																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				class="radio">
 																				All
 																			</label>
 																		</td>
@@ -480,17 +451,11 @@
 																	<tr>
 																		<td style="white-space: nowrap">
 																			<input id="optPickList" name="optPickList" type="radio"
-																				onclick="changeRecordOptions('picklist')"
-																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																				onfocus="try{radio_onFocus(this);}catch(e){}"
-																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																				onclick="changeRecordOptions('picklist')" />
 																			<label
 																				tabindex="-1"
 																				for="optPickList"
-																				class="radio"
-																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				class="radio">
 																				Picklist
 																			</label>
 																		</td>
@@ -499,27 +464,17 @@
 																		</td>
 																		<td style="width: 15px">
 																			<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectRecordOption('picklist')"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);absencerefreshControls();}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+																				onclick="selectRecordOption('picklist')" />
 																		</td>
 																	</tr>
 																	<tr>
 																		<td style="white-space: nowrap">
 																			<input id="optFilter" name="optFilter" type="radio"
-																				onclick="changeRecordOptions('filter')"
-																				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																				onfocus="try{radio_onFocus(this);}catch(e){}"
-																				onblur="try{radio_onBlur(this);}catch(e){}" />
+																				onclick="changeRecordOptions('filter')" />
 																			<label
 																				tabindex="-1"
 																				for="optFilter"
-																				class="radio"
-																				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																				class="radio">
 																				Filter
 																			</label>
 																		</td>
@@ -528,27 +483,16 @@
 																		</td>
 																		<td>
 																			<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectRecordOption('filter')"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);absencerefreshControls();}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+																				onclick="selectRecordOption('filter')" />
 																		</td>
 																	</tr>
 																	<tr>
 																		<td style="white-space: nowrap;" colspan="3">
-																			<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1"
-																				onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																			<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1" />
 																			<label
 																				for="chkPrintInReportHeader"
 																				class="checkbox"
-																				tabindex="0"
-																				onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																				onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																				onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																				onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																				tabindex="0">
 																				Display filter or picklist title in the report header
 																			</label>
 																		</td>
@@ -589,72 +533,44 @@
 									<tr style="height: 10px"></tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+											<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="-1" />
 											<label
 												for="chkSRV"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Suppress Repeated Personnel Details
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowDurations" name="chkShowDurations" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}">
+											<input type="checkbox" id="chkShowDurations" name="chkShowDurations" tabindex="-1">
 											<label
 												for="chkShowDurations"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Show Duration Totals
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowInstances" name="chkShowInstances" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+											<input type="checkbox" id="chkShowInstances" name="chkShowInstances" tabindex="-1" />
 											<label
 												for="chkShowInstances"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Show Instances Count
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowFormula" name="chkShowFormula" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+											<input type="checkbox" id="chkShowFormula" name="chkShowFormula" tabindex="-1" />
 											<label
 												for="chkShowFormula"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Show Bradford Factor Formula
 											</label>
 										</td>
@@ -663,18 +579,11 @@
 										<td>
 											<input type="checkbox" id="chkShowAbsenceDetails" name="chkAbsenceDetails" tabindex="-1"
 												onclick="absenceBreakdownRefreshTab2Controls();"
-												onchange="absenceBreakdownRefreshTab2Controls();"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+												onchange="absenceBreakdownRefreshTab2Controls();" />
 											<label
 												for="chkShowAbsenceDetails"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Show Absence Details
 											</label>
 										</td>
@@ -692,36 +601,22 @@
 										<tr style="height: 10px"></tr>
 										<tr>
 											<td>
-												<input type="checkbox" id="chkOmitBeforeStart" name="chkOmitBeforeStart" tabindex="-1"
-													onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-													onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+												<input type="checkbox" id="chkOmitBeforeStart" name="chkOmitBeforeStart" tabindex="-1"/>
 												<label
 													for="chkOmitBeforeStart"
 													class="checkbox"
-													tabindex="0"
-													onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-													onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-													onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+													tabindex="0">
 													Omit absences starting before the report start date
 												</label>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<input type="checkbox" id="chkOmitAfterEnd" name="chkOmitAfterEnd" tabindex="-1"
-													onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-													onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+												<input type="checkbox" id="chkOmitAfterEnd" name="chkOmitAfterEnd" tabindex="-1" />
 												<label
 													for="chkOmitAfterEnd"
 													class="checkbox"
-													tabindex="0"
-													onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-													onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-													onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+													tabindex="0">
 													Omit absences ending after the report end date
 												</label>
 											</td>
@@ -733,18 +628,11 @@
 														<td>
 															<input type="checkbox" id="chkMinimumBradfordFactor" name="chkMinimumBradfordFactor" tabindex="-1"
 																onclick="absenceBreakdownRefreshTab2Controls();"
-																onchange="absenceBreakdownRefreshTab2Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onchange="absenceBreakdownRefreshTab2Controls();" />
 															<label
 																for="chkMinimumBradfordFactor"
 																class="checkbox"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Minimum Bradford Factor
 															</label>
 															&nbsp;
@@ -779,18 +667,11 @@
 												%>
 											</select>
 
-											<input type="checkbox" id="chkOrderBy1Asc" name="chkOrderBy1Asc" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+											<input type="checkbox" id="chkOrderBy1Asc" name="chkOrderBy1Asc" tabindex="-1" />
 											<label
 												for="chkOrderBy1Asc"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Ascending
 											</label>
 										</td>
@@ -808,18 +689,11 @@
 													Next
 												%>
 											</select>
-											<input type="checkbox" id="chkOrderBy2Asc" name="chkOrderBy2Asc" tabindex="-1"
-												onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+											<input type="checkbox" id="chkOrderBy2Asc" name="chkOrderBy2Asc" tabindex="-1" />
 											<label
 												for="chkOrderBy2Asc"
 												class="checkbox"
-												tabindex="0"
-												onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-												onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-												onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-												onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												tabindex="0">
 												Ascending
 											</label>
 										</td>
@@ -852,19 +726,13 @@
 														<td style="text-align: left; width: 15px">
 															<input type="radio" name="optOutputFormat" id="optOutputFormat0" value="0"
 																style="width: 20px"
-																onclick="formatClick(0);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="formatClick(0);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
 																for="optOutputFormat0"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																Data Only
 															</label>
 														</td>
@@ -876,11 +744,7 @@
 														If Session("StandardReport_Type") = 16 Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
-														onclick="formatClick(1);"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="formatClick(1);" />
 													<%
 													Else
 													%>
@@ -891,19 +755,13 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
-																onclick="formatClick(1);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="formatClick(1);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
 																for="optOutputFormat1"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																CSV File
 															</label>
 														</td>
@@ -919,19 +777,13 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
-																onclick="formatClick(2);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="formatClick(2);"/>
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
 																for="optOutputFormat2"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																HTML Document
 															</label>
 														</td>
@@ -944,19 +796,13 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
-																onclick="	formatClick(3);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="	formatClick(3);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
 																for="optOutputFormat3"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																Word Document
 															</label>
 														</td>
@@ -969,19 +815,13 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
-																onclick="	formatClick(4);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="	formatClick(4);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
 																for="optOutputFormat4"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																Excel Worksheet
 															</label>
 														</td>
@@ -1005,9 +845,7 @@
 															<label
 																tabindex="-1"
 																for="optOutputFormat5"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																Excel Chart
 															</label>
 														</td>
@@ -1019,11 +857,7 @@
 														If Session("StandardReport_Type") = 16 Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
-														onclick="formatClick(6);"
-														onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-														onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-														onfocus="try{radio_onFocus(this);}catch(e){}"
-														onblur="try{radio_onBlur(this);}catch(e){}" />
+														onclick="formatClick(6);" />
 													<%
 													Else
 													%>
@@ -1034,19 +868,13 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
-																onclick="formatClick(6);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="formatClick(6);" />
 														</td>
 														<td>
 															<label
 																tabindex="-1"
 																for="optOutputFormat6"
-																class="radio"
-																onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																class="radio">
 																Excel Pivot Table
 															</label>
 														</td>
@@ -1074,18 +902,11 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap" colspan="6">
 															<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="absenceBreakdownRefreshTab3Controls();"/>
 															<label
 																for="chkPreview"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Preview on screen
 															</label>
 														</td>
@@ -1098,18 +919,11 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap" colspan="6">
 															<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination0"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Display output on screen
 															</label>
 														</td>
@@ -1122,18 +936,11 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
 															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="absenceBreakdownRefreshTab3Controls();"/>
 															<label
 																for="chkDestination1"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Send to printer -
 															</label>
 														</td>
@@ -1157,18 +964,11 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap; width: 150px">
 															<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination2"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Save to file - 
 															</label>
 														</td>
@@ -1182,11 +982,7 @@
 														</td>
 														<td style="width: 5px">
 															<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
-																onclick="saveFile();"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="saveFile();" />
 														</td>
 													</tr>
 
@@ -1214,18 +1010,11 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
 															<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="absenceBreakdownRefreshTab3Controls();"/>
 																<label
 																for="chkDestination3"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="0">
 																Send as email
 															</label>
 														</td>
@@ -1240,11 +1029,7 @@
 														</td>
 														<td>
 															<input id="cmdEmailGroup" name="cmdEmailGroup" class="btn" type="button" value="..."
-																onclick="selectEmailGroup();"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="selectEmailGroup();" />
 														</td>
 														
 													</tr>

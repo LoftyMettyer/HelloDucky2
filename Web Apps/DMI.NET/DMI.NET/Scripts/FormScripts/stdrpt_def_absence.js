@@ -23,7 +23,7 @@ function stdrpt_def_absence_window_onload() {
 
     populatePrinters();
     SetReportDefaults();
-    absenceDisplayPage(1);
+    display_Absence_Page(1);
     absenceBreakdownRefreshTab3Controls();
 	
     // Disable the menu
@@ -222,7 +222,7 @@ function validateAbsenceTab3()
     if (sErrMsg.length > 0) 
     {    
         OpenHR.messageBox(sErrMsg,48);
-        absenceDisplayPage(3);
+        display_Absence_Page(3);
         return (false);
     }
 	
@@ -306,7 +306,7 @@ function absence_okClick(){
     if (fOK == false)
     {
         OpenHR.messageBox("Invalid start date value entered.");
-        absenceDisplayPage(1);		
+        display_Absence_Page(1);		
         frmAbsenceDefinition.txtDateFrom.focus();
         return;
     }
@@ -332,7 +332,7 @@ function absence_okClick(){
     if (fOK == false)
     {
         OpenHR.messageBox("Invalid end date value entered.");
-        absenceDisplayPage(1);
+        display_Absence_Page(1);
         frmAbsenceDefinition.txtDateTo.focus();
         return;
     }
@@ -346,7 +346,7 @@ function absence_okClick(){
     }
     if (lngEnd < lngStart) {
         OpenHR.messageBox("The report end date is before the report start date.");
-        absenceDisplayPage(1);
+        display_Absence_Page(1);
         frmAbsenceDefinition.txtDateFrom.focus();
         return;
     }
@@ -375,7 +375,7 @@ function absence_okClick(){
     if (frmPostDefinition.txtAbsenceTypes.value == "")
     {
         OpenHR.messageBox("You must have at least 1 absence type selected.");
-        absenceDisplayPage(1);		
+        display_Absence_Page(1);		
         fOK = false;
     }
 
@@ -386,14 +386,14 @@ function absence_okClick(){
     if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0")) 
     {
         OpenHR.messageBox("You must have a picklist selected.");
-        absenceDisplayPage(1);
+        display_Absence_Page(1);
         fOK = false;
     }
 		
     if ((frmAbsenceDefinition.optFilter.checked == true) && (frmPostDefinition.txtBaseFilterID.value == "0"))
     {
         OpenHR.messageBox("You must have a filter selected.");
-        absenceDisplayPage(1);		
+        display_Absence_Page(1);		
         fOK = false;
     }
 
@@ -603,7 +603,7 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
     window.showModalDialog(pDestination, self, dlgwinprops);
 }
 
-function absenceDisplayPage(piPageNumber) {
+function display_Absence_Page(piPageNumber) {
     OpenHR.submitForm(window.frmRefresh);
     
     if (piPageNumber == 1) {
@@ -1035,14 +1035,6 @@ function absenceBreakdownRefreshTab3Controls()
 
     }
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try
-    {
-        window.resizeBy(0,-1);
-        window.resizeBy(0,1);
-    }
-    catch(e) {}
 }
 
 function saveFile()

@@ -73,7 +73,7 @@ function util_def_mailmerge_window_onload() {
 							frmUseful.txtChanged.value = 1;
 					}
 
-					displayPage(1);
+					display_MailMerge_Page(1);
 
 					frmUseful.txtLoading.value = 'N';
 					try {
@@ -208,8 +208,8 @@ function TemplateSelect() {
 	refreshTab4Controls();
 }
 
-function displayPage(piPageNumber) {
-	//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+function display_MailMerge_Page(piPageNumber) {
+
 	OpenHR.submitForm(window.frmRefresh);
 	
 		if (piPageNumber == 1) {
@@ -315,13 +315,6 @@ function displayPage(piPageNumber) {
 				refreshTab4Controls();
 		}
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-				window.resizeBy(0, -1);
-				window.resizeBy(0, 1);
-		}
-		catch (e) { }
 }
 function populateBaseTableCombo() {
 		var i;
@@ -505,14 +498,8 @@ function refreshTab1Controls() {
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-				window.resizeBy(0, -1);
-				window.resizeBy(0, 1);
-		}
-		catch (e) { }
 }
+
 function refreshTab2Controls() {
 		var fAddDisabled;
 		var fAddAllDisabled;
@@ -673,13 +660,6 @@ function refreshTab3Controls() {
 function refreshTab4Controls() {
 		var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
-		// Little dodge to get around a browser bug that
-	// does not refresh the display on all controls.
-	try {
-		window.resizeBy(0, -1);
-		window.resizeBy(0, 1);
-	}
-	catch (e) { }
 
 }
 function changeBaseTableRecordOptions() {
@@ -895,7 +875,7 @@ function validateTab2() {
 
 		if (sErrMsg.length > 0) {
 				OpenHR.messageBox(sErrMsg, 48);
-				displayPage(2);
+				display_MailMerge_Page(2);
 				return (false);
 		}
 
@@ -2656,7 +2636,7 @@ function validateTab1() {
 		// check name has been entered
 		if (frmDefinition.txtName.value == '') {
 				OpenHR.messageBox("You must enter a name for this definition.", 48);
-				displayPage(1);
+				display_MailMerge_Page(1);
 				return (false);
 		}
 
@@ -2664,7 +2644,7 @@ function validateTab1() {
 		if ((frmDefinition.optRecordSelection2.checked == true) &&
 				(frmDefinition.txtBasePicklistID.value == 0)) {
 				OpenHR.messageBox("You must select a picklist for the base table.", 48);
-				displayPage(1);
+				display_MailMerge_Page(1);
 				return (false);
 		}
 
@@ -2672,7 +2652,7 @@ function validateTab1() {
 		if ((frmDefinition.optRecordSelection3.checked == true) &&
 				(frmDefinition.txtBaseFilterID.value == 0)) {
 				OpenHR.messageBox("You must select a filter for the base table.", 48);
-				displayPage(1);
+				display_MailMerge_Page(1);
 				return (false);
 		}
 
@@ -2712,7 +2692,7 @@ function validateTab3() {
 
 		if (sErrMsg.length > 0) {
 				OpenHR.messageBox(sErrMsg, 48);
-				displayPage(3);
+				display_MailMerge_Page(3);
 				return (false);
 		}
 
@@ -2782,7 +2762,7 @@ function validateTab4() {
 
 		if (sErrMsg.length > 0) {
 				OpenHR.messageBox(sErrMsg, 48);
-				displayPage(4);
+				display_MailMerge_Page(4);
 				return (false);
 		}
 

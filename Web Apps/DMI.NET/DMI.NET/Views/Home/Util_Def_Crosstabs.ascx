@@ -4,6 +4,8 @@
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
+<div <%=session("BodyTag")%>>
+
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
 	id="dialog"
 	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
@@ -361,11 +363,11 @@
 							<td width="10"></td>
 							<td>
 								<input type="button" value="Definition" id="btnTab1" name="btnTab1" class="btn btndisabled" disabled="disabled"
-									onclick="displayPage(1)"/>
+									onclick="display_CrossTab_Page(1)"/>
 								<input type="button" value="Columns" id="btnTab2" name="btnTab2" class="btn btndisabled" disabled="disabled"
-									onclick="displayPage(2)"/>
+									onclick="display_CrossTab_Page(2)"/>
 								<input type="button" value="Output" id="btnTab3" name="btnTab3" class="btn btndisabled" disabled="disabled"
-									onclick="displayPage(3)"/>
+									onclick="display_CrossTab_Page(3)"/>
 							</td>
 							<td width="10"></td>
 						</tr>
@@ -1417,8 +1419,10 @@
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
 
-<input type='hidden' id="txtTicker" name="txtTicker" value="0">
-<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
+	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+
+</div>
 
 <script type="text/javascript">
 	util_def_crosstabs_window_onload();

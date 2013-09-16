@@ -45,29 +45,13 @@
 							<td width="10"></td>
 							<td>
 								<input type="button" value="Definition" id="btnTab1" name="btnTab1" class="btn btndisabled" disabled="disabled"
-									onclick="displayPage(1)"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="display_MailMerge_Page(1)"/>
 								<input type="button" value="Columns" id="btnTab2" name="btnTab2" class="btn"
-									onclick="displayPage(2)"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="display_MailMerge_Page(2)"/>
 								<input type="button" value="Sort Order" id="btnTab3" name="btnTab3" class="btn"
-									onclick="displayPage(3)"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="display_MailMerge_Page(3)"/>
 								<input type="button" value="Output" id="btnTab4" name="btnTab4" class="btn"
-									onclick="displayPage(4)"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="display_MailMerge_Page(4)"/>
 							</td>
 							<td width="10"></td>
 						</tr>

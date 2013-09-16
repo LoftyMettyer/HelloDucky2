@@ -90,7 +90,7 @@
 			{
 				frmUseful.txtChanged.value = 1;
 			}
-			displayPage(1);
+			display_CustomReport_Page(1);
 
 			refreshTab5Controls();
 		
@@ -207,7 +207,7 @@
 		return false;
 	}
 
-	function displayPage(piPageNumber) {
+	function display_CustomReport_Page(piPageNumber) {
 
 		if (piPageNumber == 1) {
 			div1.style.visibility = "visible";
@@ -1046,13 +1046,6 @@
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-			window.resizeBy(0, -1);
-			window.resizeBy(0, 1);
-		}
-		catch (e) { }
 	}
 
 	function refreshTab2Controls() {
@@ -1106,13 +1099,6 @@
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-			window.resizeBy(0, -1);
-			window.resizeBy(0, 1);
-		}
-		catch (e) { }
 	}
 
 	function refreshTab3Controls() {
@@ -1511,14 +1497,6 @@
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-			window.resizeBy(0, -1);
-			window.resizeBy(0, 1);
-		}
-		catch (e) { }
-
 	}
 
 	function refreshTab5Controls() {
@@ -1797,13 +1775,6 @@
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try {
-			window.resizeBy(0, -1);
-			window.resizeBy(0, 1);
-		}
-		catch (e) { }
 	}
 
 	function clearRepetition() {
@@ -3957,21 +3928,21 @@
 		// check name has been entered
 		if (frmDefinition.txtName.value == '') {
 			OpenHR.messageBox("You must enter a name for this definition.", 48, "Custom Reports");
-			displayPage(1);
+			display_CustomReport_Page(1);
 			return (false);
 		}
 
 		// check base picklist
 		if ((frmDefinition.optRecordSelection2.checked == true) && (frmDefinition.txtBasePicklistID.value == 0)) {
 			OpenHR.messageBox("You must select a picklist for the base table.", 48, "Custom Reports");
-			displayPage(1);
+			display_CustomReport_Page(1);
 			return (false);
 		}
 
 		// check base filter
 		if ((frmDefinition.optRecordSelection3.checked == true) && (frmDefinition.txtBaseFilterID.value == 0)) {
 			OpenHR.messageBox("You must select a filter for the base table.", 48, "Custom Reports");
-			displayPage(1);
+			display_CustomReport_Page(1);
 			return (false);
 		}
 
@@ -3984,7 +3955,7 @@
 		if ((frmDefinition.optParent1RecordSelection2.checked == true) &&
 			(frmDefinition.txtParent1PicklistID.value == 0)) {
 			OpenHR.messageBox("You must select a picklist for the first parent table.", 48, "Custom Reports");
-			displayPage(2);
+			display_CustomReport_Page(2);
 			return (false);
 		}
 
@@ -3992,7 +3963,7 @@
 		if ((frmDefinition.optParent1RecordSelection3.checked == true) &&
 			(frmDefinition.txtParent1FilterID.value == 0)) {
 			OpenHR.messageBox("You must select a filter for the first parent table.", 48, "Custom Reports");
-			displayPage(2);
+			display_CustomReport_Page(2);
 			return (false);
 		}
 
@@ -4000,7 +3971,7 @@
 		if ((frmDefinition.optParent2RecordSelection2.checked == true) &&
 			(frmDefinition.txtParent2PicklistID.value == 0)) {
 			OpenHR.messageBox("You must select a picklist for the second parent table.", 48, "Custom Reports");
-			displayPage(2);
+			display_CustomReport_Page(2);
 			return (false);
 		}
 
@@ -4008,7 +3979,7 @@
 		if ((frmDefinition.optParent2RecordSelection3.checked == true) &&
 			(frmDefinition.txtParent2FilterID.value == 0)) {
 			OpenHR.messageBox("You must select a filter for the second parent table.", 48, "Custom Reports");
-			displayPage(2);
+			display_CustomReport_Page(2);
 			return (false);
 		}
 
@@ -4198,7 +4169,7 @@
 
 		if (sErrMsg.length > 0) {
 			OpenHR.messageBox(sErrMsg, 48, "Custom Reports");
-			displayPage(3);
+			display_CustomReport_Page(3);
 			return (false);
 		}
 
@@ -4286,7 +4257,7 @@
 			if (!blnHasVOC) {
 				sErrMsg = "You have defined this report as a summary report but have not set a column as 'Value on Change'.\n\nDo you wish to continue?";
 				if ((OpenHR.messageBox(sErrMsg, 36, "Custom Reports") == 7)) {
-					displayPage(4);
+					display_CustomReport_Page(4);
 					return (false);
 				}
 			}
@@ -4294,7 +4265,7 @@
 		else {
 			if (sErrMsg.length > 0) {
 				OpenHR.messageBox(sErrMsg, 48, "Custom Reports");
-				displayPage(4);
+				display_CustomReport_Page(4);
 				return (false);
 			}
 		}
@@ -4337,7 +4308,7 @@
 
 		if (sErrMsg.length > 0) {
 			OpenHR.messageBox(sErrMsg, 48, "Custom Reports");
-			displayPage(5);
+			display_CustomReport_Page(5);
 			return (false);
 		}
 

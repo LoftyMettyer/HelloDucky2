@@ -96,7 +96,7 @@ function util_def_calendarreport_window_onload() {
 		}
 
 		refreshTab5Controls();
-		displayPage(1);
+		display_CalendarReport_Page(1);
 
 
 		if (frmDefinition.chkDestination1.checked == true) {
@@ -117,11 +117,8 @@ function util_def_calendarreport_window_onload() {
 var fValidating;
 fValidating = false;
 
-function displayPage(piPageNumber) {
+function display_CalendarReport_Page(piPageNumber) {
 
-	var iLoop;
-	////debugger;
-	//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
 	OpenHR.submitForm(window.frmRefresh);
 
 	if (piPageNumber == 1) {
@@ -2052,7 +2049,7 @@ function validateTab1() {
 	// check name has been entered
 	if (frmDefinition.txtName.value == '') {
 		OpenHR.messageBox("You must enter a name for this definition.", 48, "Calendar Reports");
-		displayPage(1);
+		display_CalendarReport_Page(1);
 		return (false);
 	}
 
@@ -2060,7 +2057,7 @@ function validateTab1() {
 	if ((frmDefinition.optRecordSelection2.checked == true) &&
 		(frmDefinition.txtBasePicklistID.value == 0)) {
 		OpenHR.messageBox("You must select a picklist for the base table.", 48, "Calendar Reports");
-		displayPage(1);
+		display_CalendarReport_Page(1);
 		return (false);
 	}
 
@@ -2068,14 +2065,14 @@ function validateTab1() {
 	if ((frmDefinition.optRecordSelection3.checked == true) &&
 		(frmDefinition.txtBaseFilterID.value == 0)) {
 		OpenHR.messageBox("You must select a filter for the base table.", 48, "Calendar Reports");
-		displayPage(1);
+		display_CalendarReport_Page(1);
 		return (false);
 	}
 
 	// Check that a valid description column or a valid calculation has been selected
 	if ((frmDefinition.cboDescription1.options[frmDefinition.cboDescription1.selectedIndex].value < 1) && (frmDefinition.txtDescExprID.value < 1) && (frmDefinition.cboDescription2.options[frmDefinition.cboDescription2.selectedIndex].value < 1)) {
 		OpenHR.messageBox("You must select at least one base description column or calculation for the report.", 48, "Calendar Reports");
-		displayPage(1);
+		display_CalendarReport_Page(1);
 		return (false);
 	}
 
@@ -2130,7 +2127,7 @@ function validateTab2() {
 
 	if (sErrMsg.length > 0) {
 		OpenHR.messageBox(sErrMsg, 48, "Calendar Reports");
-		displayPage(2);
+		display_CalendarReport_Page(2);
 		return (false);
 	}
 
@@ -2149,24 +2146,24 @@ function validateTab3() {
 	with (frmDefinition) {
 		if (optFixedStart.checked && (trim(txtFixedStart.value) == '')) {
 			OpenHR.messageBox("You must select a Fixed Start Date for the report.", 48, "Calendar Reports");
-			displayPage(3);
+			display_CalendarReport_Page(3);
 			return (false);
 		}
 
 		if (optFixedStart.checked && (!validateStringDate(txtFixedStart))) {
 		    OpenHR.messageBox("You must enter a valid Fixed Start Date for the report.", 48, "Calendar Reports");
-		    displayPage(3);
+		    display_CalendarReport_Page(3);
 		    return (false);
 		}
 	    
 		if (optFixedEnd.checked && (trim(txtFixedEnd.value) == '')) {
 			OpenHR.messageBox("You must select a Fixed End Date for the report.", 48, "Calendar Reports");
-			displayPage(3);
+			display_CalendarReport_Page(3);
 			return (false);
 		}
 		if (optFixedEnd.checked && (!validateStringDate(txtFixedEnd))) {
 			OpenHR.messageBox("You must enter a valid Fixed End Date for the report.", 48, "Calendar Reports");
-			displayPage(3);
+			display_CalendarReport_Page(3);
 			return (false);
 		}
 
@@ -2176,7 +2173,7 @@ function validateTab3() {
 
 			if (dtEndDate.getTime() < dtStartDate.getTime()) {
 				OpenHR.messageBox("You must select a Fixed End Date later than or equal to the Fixed Start Date.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 		}
@@ -2184,7 +2181,7 @@ function validateTab3() {
 		if (optOffsetStart.checked && optFixedEnd.checked) {
 			if (Number(txtFreqEnd.value) < 0) {
 				OpenHR.messageBox("You must select an End Date Offset greater than or equal to zero.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 		}
@@ -2192,7 +2189,7 @@ function validateTab3() {
 		if (optCurrentStart.checked && optOffsetEnd.checked) {
 			if (Number(txtFreqEnd.value) < 0) {
 				OpenHR.messageBox("You must select an End Date Offset greater than or equal to zero.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 		}
@@ -2200,7 +2197,7 @@ function validateTab3() {
 		if (optOffsetStart.checked && (optFixedEnd.checked || optCurrentEnd.checked)) {
 			if (Number(txtFreqStart.value) > 0) {
 				OpenHR.messageBox("You must select a Start Date Offset less than or equal to zero.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 		}
@@ -2208,26 +2205,26 @@ function validateTab3() {
 		if (optOffsetStart.checked && optOffsetEnd.checked) {
 			if (cboPeriodStart.selectedIndex != cboPeriodEnd.selectedIndex) {
 				OpenHR.messageBox("You must select the same End Date Offset period as Start Date Offset period.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 
 			if (Number(txtFreqEnd.value) < Number(txtFreqStart.value)) {
 				OpenHR.messageBox("You must select an End Date Offset greater than or equal to the Start Date Offset.", 48, "Calendar Reports");
-				displayPage(3);
+				display_CalendarReport_Page(3);
 				return (false);
 			}
 		}
 
 		if (optCustomStart.checked && (txtCustomStartID.value < 1)) {
 			OpenHR.messageBox("You must select a calculation for the Report Start Date.", 48, "Calendar Reports");
-			displayPage(3);
+			display_CalendarReport_Page(3);
 			return (false);
 		}
 
 		if (optCustomEnd.checked && (txtCustomEndID.value < 1)) {
 			OpenHR.messageBox("You must select a calculation for the Report End Date.", 48, "Calendar Reports");
-			displayPage(3);
+			display_CalendarReport_Page(3);
 			return (false);
 		}
 	}
@@ -2292,7 +2289,7 @@ function validateTab4() {
 						sErrMsg = "The sort order does not reflect the selected Group By Description columns. Do you wish to continue?";
 						if (OpenHR.messageBox(sErrMsg, 36, "Calendar Report Definition") == 7) {
 							frmDefinition.ssOleDBGridSortOrder.Redraw = true;
-							displayPage(4);
+							display_CalendarReport_Page(4);
 							return (false);
 						} else {
 							frmDefinition.ssOleDBGridSortOrder.Redraw = true;
@@ -2324,7 +2321,7 @@ function validateTab4() {
 
 	if (sErrMsg.length > 0) {
 		OpenHR.messageBox(sErrMsg, 48, "Calendar Reports");
-		displayPage(4);
+		display_CalendarReport_Page(4);
 		return (false);
 	}
 
@@ -2374,7 +2371,7 @@ function validateTab5() {
 
 	if (sErrMsg.length > 0) {
 		OpenHR.messageBox(sErrMsg, 48, "Calendar Reports");
-		displayPage(5);
+		display_CalendarReport_Page(5);
 		return (false);
 	}
 

@@ -10,6 +10,13 @@ var frmValidate = document.getElementById("frmValidate");
 var frmEmailSelection = document.getElementById("frmEmailSelection");
 var frmTables = document.getElementById("frmTables");
 
+var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
+var div3 = document.getElementById("div3");
+var div4 = document.getElementById("div4");
+var div5 = document.getElementById("div5");
+
+
 function util_def_crosstabs_window_onload() {
 				var fOK;
 				fOK = true;
@@ -74,7 +81,7 @@ function util_def_crosstabs_window_onload() {
 
 						refreshTab3Controls();
 
-						displayPage(1);
+						display_CrossTab_Page(1);
 				}
 		}
 
@@ -85,11 +92,8 @@ function util_def_crosstabs_addhandlers() {
 		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccess_RowLoaded);
 }
 
-function displayPage(piPageNumber) {
-				var iLoop;
-				var iCurrentChildCount;
-				//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-				
+function display_CrossTab_Page(piPageNumber) {
+
 				if (piPageNumber == 1) {
 
 						div1.style.visibility = "visible";
@@ -162,15 +166,6 @@ function displayPage(piPageNumber) {
 						button_disable(frmDefinition.btnTab2, false);
 						button_disable(frmDefinition.btnTab3, true);
 				}
-
-				// Little dodge to get around a browser bug that
-				// does not refresh the display on all controls.
-				try
-				{
-						window.resizeBy(0,-1);
-						window.resizeBy(0,1);
-				}
-				catch(e) {}
 
 				frmUseful.txtLoading.value = 'N';
 		}
@@ -771,15 +766,6 @@ function refreshTab1Controls()
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try
-		{
-				window.resizeBy(0,-1);
-				window.resizeBy(0,1);
-		}
-		catch(e) {}
-
 }
 
 function refreshTab2Controls()
@@ -815,14 +801,6 @@ function refreshTab2Controls()
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
 	
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try
-		{
-				window.resizeBy(0,-1);
-				window.resizeBy(0,1);
-		}
-		catch(e) {}
 }
 
 function formatClick(index)
@@ -1163,14 +1141,6 @@ function refreshTab3Controls()
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
-		try
-		{
-				window.resizeBy(0,-1);
-				window.resizeBy(0,1);
-		}
-		catch(e) {}
 }
 
 function saveFile() {
@@ -1648,7 +1618,7 @@ function validateTab1()
 		// check name has been entered
 		if (frmDefinition.txtName.value == '') {
 				OpenHR.messageBox("You must enter a name for this definition.",48,"Cross Tabs");
-				displayPage(1);
+				display_CrossTab_Page(1);
 				return (false);
 		}
 			
@@ -1656,7 +1626,7 @@ function validateTab1()
 		if ((frmDefinition.optRecordSelection2.checked == true) &&
 				(frmDefinition.txtBasePicklistID.value == 0)) {
 				OpenHR.messageBox("You must select a picklist for the base table.",48,"Cross Tabs");
-				displayPage(1);
+				display_CrossTab_Page(1);
 				return (false);
 		}
 
@@ -1664,7 +1634,7 @@ function validateTab1()
 		if ((frmDefinition.optRecordSelection3.checked == true) &&
 				(frmDefinition.txtBaseFilterID.value == 0)) {
 				OpenHR.messageBox("You must select a filter for the base table.",48,"Cross Tabs");
-				displayPage(1);
+				display_CrossTab_Page(1);
 				return (false);
 		}
 
@@ -1677,17 +1647,17 @@ function validateTab2()
 		if ((frmDefinition.txtHorStart.Value != 0) || (frmDefinition.txtHorStop.Value != 0)) {
 				if (frmDefinition.txtHorStop.Value <= frmDefinition.txtHorStart.Value) {
 						OpenHR.messageBox("Horizontal stop value must be greater than Horizontal start value",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (frmDefinition.txtHorStep.Value <= 0) {
 						OpenHR.messageBox("Horizontal increment must be greater than zero",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (((frmDefinition.txtHorStop.Value - frmDefinition.txtHorStart.Value) / frmDefinition.txtHorStep.Value) > 32768) {
 						OpenHR.messageBox("Maximum number of steps between start, stop and increment value for the Horizontal Range\nhas been exceeded. You must either increase the increment value or decrease the stop value.",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 		}
@@ -1695,17 +1665,17 @@ function validateTab2()
 		if ((frmDefinition.txtVerStart.Value != 0) || (frmDefinition.txtVerStop.Value != 0)) {
 				if (frmDefinition.txtVerStop.Value <= frmDefinition.txtVerStart.Value) {
 						OpenHR.messageBox("Vertical stop value must be greater than Vertical start value",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (frmDefinition.txtVerStep.Value <= 0) {
 						OpenHR.messageBox("Vertical increment must be greater than zero",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (((frmDefinition.txtVerStop.Value - frmDefinition.txtVerStart.Value) / frmDefinition.txtVerStep.Value) > 32768) {
 						OpenHR.messageBox("Maximum number of steps between start, stop and increment value for the Vertical Range\nhas been exceeded. You must either increase the increment value or decrease the stop value.",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 		}
@@ -1713,17 +1683,17 @@ function validateTab2()
 		if ((frmDefinition.txtPgbStart.Value != 0) || (frmDefinition.txtPgbStop.Value != 0)) {
 				if (frmDefinition.txtPgbStop.Value <= frmDefinition.txtPgbStart.Value) {
 						OpenHR.messageBox("Page Break stop value must be greater than Page Break start value",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (frmDefinition.txtPgbStep.Value <= 0) {
 						OpenHR.messageBox("Page Break increment must be greater than zero",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 				if (((frmDefinition.txtPgbStop.Value - frmDefinition.txtPgbStart.Value) / frmDefinition.txtPgbStep.Value) > 32768) {
 						OpenHR.messageBox("Maximum number of steps between start, stop and increment value for the Page Break Range\nhas been exceeded. You must either increase the increment value or decrease the stop value.",48,"Cross Tabs");
-						displayPage(2);
+						display_CrossTab_Page(2);
 						return (false);
 				}
 		}
@@ -1769,7 +1739,7 @@ function validateTab3()
 		if (sErrMsg.length > 0) 
 		{    
 				OpenHR.messageBox(sErrMsg,48,"Cross Tabs");
-				displayPage(5);
+				display_CrossTab_Page(5);
 				return (false);
 		}
 	

@@ -400,7 +400,7 @@
 				//frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
 				//frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
-				displayPage(1);
+				display_Config_Page(1);
 
 		}
 </script>
@@ -408,7 +408,7 @@
 
 <script type="text/javascript">
 
-		function displayPage(piPageNumber) {
+		function display_Config_Page(piPageNumber) {
 
 				if (piPageNumber == 1) {
 						div1.style.visibility = "visible";
@@ -555,7 +555,7 @@
 				if (isNaN(sConvertedFindSize) == true) {
 						OpenHR.messageBox("Find window block size must be numeric.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						displayPage(1);
+						display_Config_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -563,7 +563,7 @@
 				if (frmConfiguration.txtFindSize.value <= 0) {
 						OpenHR.messageBox("Find window block size must be greater than 0.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						displayPage(1);
+						display_Config_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -572,7 +572,7 @@
 				if (sConvertedFindSize.indexOf(".") >= 0) {
 						OpenHR.messageBox("Find window block size must be an integer value.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						displayPage(1);
+						display_Config_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -581,7 +581,7 @@
 				if (iValue > 100000) {
 						OpenHR.messageBox("Find window block size cannot be greater than 100000.");
 						frmConfiguration.txtFindSize.value = "100000";
-						displayPage(1);
+						display_Config_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -774,11 +774,7 @@
 										<td width=10></td>
 										<TD width=10>
 												<INPUT type="button" value="Reports/Utilities & Tools" id=btnTab2 name=btnTab2 class="btn" 
-														onclick="displayPage(2)"
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
+														onclick="display_Config_Page(2)"/>
 										</TD>
 									</TR>
 								</TABLE>
@@ -1018,11 +1014,7 @@
 									<TR>
 										<TD width=10>
 												<INPUT type="button" value="Display Defaults" id=btnTab1 name=btnTab1 class="btn"
-														onclick="displayPage(1)" 
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
+														onclick="display_Config_Page(1)" />
 										</TD>
 										<td width=10></td>
 										<TD width=10>

@@ -21,15 +21,15 @@
 							<td width="10"></td>
 							<td>
 								<input type="button" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled" class="btn btndisabled"
-									onclick="displayPage(1)" />
+									onclick="display_CustomReport_Page(1)" />
 								<input type="button" value="Related Tables" id="btnTab2" name="btnTab2" class="btn"
-									onclick="displayPage(2)" />
+									onclick="display_CustomReport_Page(2)" />
 								<input type="button" value="Columns" id="btnTab3" name="btnTab3" class="btn"
-									onclick="displayPage(3)" />
+									onclick="display_CustomReport_Page(3)" />
 								<input type="button" value="Sort Order" id="btnTab4" name="btnTab4" class="btn"
-									onclick="displayPage(4)" />
+									onclick="display_CustomReport_Page(4)" />
 								<input type="button" value="Output" id="btnTab5" name="btnTab5" class="btn"
-									onclick="displayPage(5)" />
+									onclick="display_CustomReport_Page(5)" />
 							</td>
 							<td width="10"></td>
 						</tr>
