@@ -1,13 +1,15 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿c<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
 <%="" %>
 
 <object
-		id="ClientDLL"
-		classid="CLSID:3A4EA159-1138-4AC3-B175-966CCB958820"
-		codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
+	id="ActiveXClientDLL"
+	style="left: 0; top: 0; visibility: hidden"
+	classid="clsid:3A4EA159-1138-4AC3-B175-966CCB958820"
+	codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
 </object>
+
 
 <%
 		Dim MergeFieldsData
@@ -102,8 +104,8 @@
 <script type="text/javascript">
 		function util_run_mailmerge_onload() {
 
-				var frmOutput = OpenHR.getForm("main", "frmMailMergeOutput");
-
+			var frmOutput = OpenHR.getForm("main", "frmMailMergeOutput");
+				
 				<%
 		If fok = False Then
 %>
@@ -131,14 +133,16 @@ End If
 						frmOutput.fok.value = "true";
 						frmOutput.cancelled.value = "false";
 			
-						ClientDLL.MM_DimArrays();
+						ActiveXClientDLL.MM_DimArrays();
+
+
 
 						<%  
 		OutputArrayData = objMailMerge.OutputArrayData
 
 		For intCount = 0 To UBound(OutputArrayData)
 %>	
-						ClientDLL.MM_AddToOutputArrayData("<%=cleanStringForJavaScript(OutputArrayData(intCount))%>");
+						ActiveXClientDLL.MM_AddToOutputArrayData("<%=cleanStringForJavaScript(OutputArrayData(intCount))%>");
 						<%
 Next
 
@@ -146,39 +150,40 @@ MergeFieldsData = objMailMerge.MergeFieldsData
 
 For intCount = 0 To UBound(MergeFieldsData)
 %>	
-						ClientDLL.MM_AddToMergeFieldsData("<%=cleanStringForJavaScript(MergeFieldsData(intCount))%>");
+						ActiveXClientDLL.MM_AddToMergeFieldsData("<%=cleanStringForJavaScript(MergeFieldsData(intCount))%>");
 						<%
 Next
 %>
 
-						ClientDLL.MM_MergeFieldsUbound = <%=cleanStringForJavaScript(objMailMerge.MergeFieldsUbound)%>;
-						ClientDLL.MM_DefName = "<%=cleanStringForJavaScript(objMailMerge.DefName)%>";
-						ClientDLL.MM_DefTemplateFile = "<%=cleanStringForJavaScript(objMailMerge.DefTemplateFile)%>";
-						ClientDLL.MM_DefPauseBeforeMerge(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefPauseBeforeMerge)))%>);
-						ClientDLL.MM_DefSuppressBlankLines(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefSuppressBlankLines)))%>);
+						ActiveXClientDLL.MM_MergeFieldsUbound = <%=cleanStringForJavaScript(objMailMerge.MergeFieldsUbound)%>;
+						ActiveXClientDLL.MM_DefName = "<%=cleanStringForJavaScript(objMailMerge.DefName)%>";
+						ActiveXClientDLL.MM_DefTemplateFile = "<%=cleanStringForJavaScript(objMailMerge.DefTemplateFile)%>";
+						ActiveXClientDLL.MM_DefPauseBeforeMerge(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefPauseBeforeMerge)))%>);
+						ActiveXClientDLL.MM_DefSuppressBlankLines(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefSuppressBlankLines)))%>);
 
-						ClientDLL.MM_DefEmailSubject = "<%=cleanStringForJavaScript(objMailMerge.DefEmailSubject)%>";
-						ClientDLL.MM_DefEmailAddrCalc = <%=cleanStringForJavaScript(objMailMerge.DefEmailAddrCalc)%>;
-						ClientDLL.MM_DefEMailAttachment(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefEMailAttachment)))%>);
-						ClientDLL.MM_DefAttachmentName = "<%=cleanStringForJavaScript(objMailMerge.DefAttachmentName)%>";
+						ActiveXClientDLL.MM_DefEmailSubject = "<%=cleanStringForJavaScript(objMailMerge.DefEmailSubject)%>";
+						ActiveXClientDLL.MM_DefEmailAddrCalc = <%=cleanStringForJavaScript(objMailMerge.DefEmailAddrCalc)%>;
+						ActiveXClientDLL.MM_DefEMailAttachment(<%=cleanStringForJavaScript(LCase(CStr(objMailMerge.DefEMailAttachment)))%>);
+						ActiveXClientDLL.MM_DefAttachmentName = "<%=cleanStringForJavaScript(objMailMerge.DefAttachmentName)%>";
 
-						ClientDLL.MM_DefOutputFormat = <%=cleanStringForJavaScript(objMailMerge.DefOutputFormat)%>;
-						ClientDLL.MM_DefOutputScreen(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputScreen))%>);
-						ClientDLL.MM_DefOutputPrinter(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputPrinter))%>);
-						ClientDLL.MM_DefOutputPrinterName = "<%=cleanStringForJavaScript(objMailMerge.DefOutputPrinterName)%>";
-						ClientDLL.MM_DefOutputSave(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputSave))%>);
-						ClientDLL.MM_DefOutputFileName = "<%=cleanStringForJavaScript(objMailMerge.DefOutputFileName)%>";
+						ActiveXClientDLL.MM_DefOutputFormat = <%=cleanStringForJavaScript(objMailMerge.DefOutputFormat)%>;
+						ActiveXClientDLL.MM_DefOutputScreen(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputScreen))%>);
+						ActiveXClientDLL.MM_DefOutputPrinter(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputPrinter))%>);
+						ActiveXClientDLL.MM_DefOutputPrinterName = "<%=cleanStringForJavaScript(objMailMerge.DefOutputPrinterName)%>";
+						ActiveXClientDLL.MM_DefOutputSave(<%=cleanStringForJavaScript(LCase(objMailMerge.DefOutputSave))%>);
+						ActiveXClientDLL.MM_DefOutputFileName = "<%=cleanStringForJavaScript(objMailMerge.DefOutputFileName)%>";
 
-						ClientDLL.MM_DefDocManMapID = <%=cleanStringForJavaScript(objMailMerge.DefDocManMapID)%>;
-						ClientDLL.MM_DefDocManManualHeader(<%=cleanStringForJavaScript(LCase(objMailMerge.DefDocManManualHeader))%>);
+						ActiveXClientDLL.MM_DefDocManMapID = <%=cleanStringForJavaScript(objMailMerge.DefDocManMapID)%>;
+						ActiveXClientDLL.MM_DefDocManManualHeader(<%=cleanStringForJavaScript(LCase(objMailMerge.DefDocManManualHeader))%>);
 
 
 
 						//Execute merge.
 						var sOfficeSaveAsValues = '<%=session("OfficeSaveAsValues")%>';
-						ClientDLL.SaveAsValues = sOfficeSaveAsValues;
-						var blnTest = ClientDLL.MM_WORD_ExecuteMailMerge();
-						var blnCancelled = ClientDLL.MM_Cancelled();
+						ActiveXClientDLL.SaveAsValues = sOfficeSaveAsValues;
+
+						var blnTest = ActiveXClientDLL.MM_WORD_ExecuteMailMerge();
+						var blnCancelled = ActiveXClientDLL.MM_Cancelled();
 						if (blnTest == false)
 						{
 								if (blnCancelled == true)
@@ -191,7 +196,7 @@ Next
 										frmOutput.fok.value = 'false';
 										frmOutput.cancelled.value = 'false';
 								}
-								frmOutput.statusmessage.value = ClientDLL.MM_StatusMessage;
+								frmOutput.statusmessage.value = ActiveXClientDLL.MM_StatusMessage;
 						}
 						<%
 		If objMailMerge.DefOutput = 2 Then
@@ -217,7 +222,8 @@ End If
 				frmOutput.successcount.value = <%=cleanStringForJavaScript(cstr(objMailMerge.SuccessCount))%>;
 				frmOutput.norecords.value = <%=cleanStringForJavaScript(lcase(objMailMerge.NoRecords))%>;
 				frmOutput.nodefinition.value = <%=cleanStringForJavaScript(lcase(blnNoDefinition))%>;
-				OpenHR.submitForm(frmOutput);
+			
+			OpenHR.submitForm(frmOutput);
 
 		}
 	 
