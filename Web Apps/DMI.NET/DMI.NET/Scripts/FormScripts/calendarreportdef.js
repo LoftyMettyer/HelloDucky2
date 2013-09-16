@@ -98,6 +98,8 @@ function util_def_calendarreport_window_onload() {
 		refreshTab5Controls();
 		display_CalendarReport_Page(1);
 
+		$('#cmdOK').hide();
+		$('#cmdCancel').hide();
 
 		if (frmDefinition.chkDestination1.checked == true) {
 			if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
@@ -562,7 +564,8 @@ function refreshTab1Controls() {
 
 	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 		(fViewing == true)));
-
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 }
 
 function refreshTab2Controls() {
@@ -822,6 +825,8 @@ function refreshTab3Controls() {
 
 	button_disable(frmDefinition.cmdOK, ((frmUse.txtChanged.value == 0) ||
 		(fViewing == true)));
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUse.txtChanged.value == 0) ||
+		(fViewing == true))));
 }
 
 function refreshTab4Controls() {
@@ -879,6 +884,8 @@ function refreshTab4Controls() {
 	frmDefinition.ssOleDBGridSortOrder.RowHeight = 19;
 	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 		(fViewing == true)));
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 
 }
 
@@ -1156,7 +1163,8 @@ function refreshTab5Controls() {
 
 	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 		(fViewing == true)));
-
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 
 }
 

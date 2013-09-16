@@ -80,7 +80,9 @@ function util_def_crosstabs_window_onload() {
 						}
 
 						refreshTab3Controls();
-
+						$('#cmdOK').hide();
+						$('#cmdCancel').hide();
+					
 						display_CrossTab_Page(1);
 				}
 		}
@@ -93,7 +95,7 @@ function util_def_crosstabs_addhandlers() {
 }
 
 function display_CrossTab_Page(piPageNumber) {
-
+				
 				if (piPageNumber == 1) {
 
 						div1.style.visibility = "visible";
@@ -765,8 +767,10 @@ function refreshTab1Controls()
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 
-}
+		}
 
 function refreshTab2Controls()
 {
@@ -800,6 +804,8 @@ function refreshTab2Controls()
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 	
 }
 
@@ -1140,6 +1146,8 @@ function refreshTab3Controls()
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		(fViewing == true))));
 
 }
 
