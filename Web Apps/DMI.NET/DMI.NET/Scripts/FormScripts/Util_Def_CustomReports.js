@@ -100,6 +100,9 @@
 				//OpenHR.refreshMenu();		
 				menu_refreshMenu();
 
+			$('#cmdOK').hide();
+			$('#cmdCancel').hide();
+
 			if ((frmUseful.txtAction.value.toUpperCase() != "NEW") &&
 				(frmOriginalDefinition.txtDefn_Info.value != "")) 
 			{
@@ -1045,8 +1048,10 @@
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true))));
 
-	}
+		}
 
 	function refreshTab2Controls() {
 
@@ -1098,8 +1103,9 @@
 		refreshTab1Controls();
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
 
-	}
+		}
 
 	function refreshTab3Controls() {
 		var fAddDisabled;
@@ -1350,6 +1356,8 @@
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true))));
 	}
 
 	function refreshTab4Controls() {
@@ -1496,8 +1504,10 @@
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true))));
 
-	}
+		}
 
 	function refreshTab5Controls() {
 		var i;
@@ -1774,6 +1784,8 @@
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true))));
 
 	}
 

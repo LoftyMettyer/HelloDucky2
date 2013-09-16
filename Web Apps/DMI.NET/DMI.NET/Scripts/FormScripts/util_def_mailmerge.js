@@ -84,6 +84,10 @@ function util_def_mailmerge_window_onload() {
 					// Get menu.asp to refresh the menu.
 					menu_refreshMenu();
 
+					$('#cmdOK').hide();
+					$('#cmdCancel').hide();
+
+
 					//Check that the specified printer exists on this client machine.
 					if ((frmDefinition.optDestination0.checked == true) && (frmUseful.txtAction.value.toUpperCase() != "NEW")) {
 							if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
@@ -315,7 +319,7 @@ function display_MailMerge_Page(piPageNumber) {
 				refreshTab4Controls();
 		}
 
-}
+		}
 function populateBaseTableCombo() {
 		var i;
 
@@ -497,8 +501,10 @@ function refreshTab1Controls() {
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+				(fViewing == true))));
 
-}
+		}
 
 function refreshTab2Controls() {
 		var fAddDisabled;
@@ -575,6 +581,10 @@ function refreshTab2Controls() {
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+				(fViewing == true))));
+	
+
 }
 function refreshTab3Controls() {
 		var i;
@@ -656,11 +666,14 @@ function refreshTab3Controls() {
 
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 				(fViewing == true)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+				(fViewing == true))));
+
 }
 function refreshTab4Controls() {
 		var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
-
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
 }
 function changeBaseTableRecordOptions() {
 		frmDefinition.txtBasePicklist.value = '';

@@ -60,6 +60,9 @@ function util_def_expression_onload() {
 
 		// Get menu.asp to refresh the menu.
 		menu_refreshMenu();
+		$('#cmdOK').hide();
+		$('#cmdCancel').hide();
+
 	}
 }
 
@@ -729,7 +732,9 @@ function refreshControls() {
 
 	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true)));
-
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true))));
+	
 	if (fDisableMoveDown == true) {
 		frmUseful.txtCanMoveDown.value = 0;
 	}
@@ -1963,6 +1968,8 @@ function disableButtons() {
 
 	button_disable(frmDefinition.cmdOK, true);
 	button_disable(frmDefinition.cmdCancel, true);
+	menu_toolbarEnableItem('mnutoolSaveReport', false);
+	menu_toolbarEnableItem('mnutoolCancelReport', false);
 }
 
 function reEnableControls() {
@@ -1975,6 +1982,7 @@ function reEnableControls() {
 	refreshControls();
 
 	button_disable(frmDefinition.cmdCancel, false);
+	menu_toolbarEnableItem('mnutoolCancelReport', true);
 	button_disable(frmDefinition.cmdPrint, false);
 
 	if (frmUseful.txtUtilType.value == 11) {

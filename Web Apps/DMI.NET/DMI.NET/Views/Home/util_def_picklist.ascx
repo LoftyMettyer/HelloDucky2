@@ -47,6 +47,10 @@
 
 			// Get menu.asp to refresh the menu.
 			menu_refreshMenu();
+			$('#cmdOK').hide();
+			$('#cmdCancel').hide();
+
+
 		}
 	}
 
@@ -75,9 +79,13 @@
 		button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 		button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 
-		//        button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
-		//            (fViewing == true) ||
-		//            (frmDefinition.ssOleDBGrid.Rows == 0)));
+		button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
+		    (fViewing == true) ||
+		    (frmDefinition.ssOleDBGrid.Rows == 0)));
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
+		    (fViewing == true) ||
+		    (frmDefinition.ssOleDBGrid.Rows == 0))));
+
 
 		// Get menu.asp to refresh the menu.
 		menu_refreshMenu();

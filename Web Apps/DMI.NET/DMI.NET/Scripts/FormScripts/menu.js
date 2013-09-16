@@ -408,8 +408,22 @@ function menu_MenuClick(sTool) {
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
-		try {
+		try {			
+			showDefaultRibbon();
 			setnew();
+			$("#toolbarReportNewEditCopy").parent().show();
+			$("#toolbarReportNewEditCopy").click();
+			switch (sToolName) {
+				case 'mnutoolNewReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolNewUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					break;
+				case 'mnutoolNewToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					break;
+			}
 		}
 		catch (e) { }
 		finally {
@@ -420,7 +434,21 @@ function menu_MenuClick(sTool) {
 	//COPY buttons
 	if ((sToolName == 'mnutoolCopyReportFind') || (sToolName == 'mnutoolCopyUtilitiesFind') || (sToolName == 'mnutoolCopyToolsFind')) {
 		try {
+			showDefaultRibbon();
 			setcopy();
+			$("#toolbarReportNewEditCopy").parent().show();
+			$("#toolbarReportNewEditCopy").click();
+			switch (sToolName) {
+				case 'mnutoolCopyReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolCopyUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					break;
+				case 'mnutoolCopyToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					break;
+			}
 		}
 		catch (e) { }
 		finally {
@@ -432,9 +460,20 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == 'mnutoolEditReportFind') || (sToolName == 'mnutoolEditUtilitiesFind') || (sToolName == 'mnutoolEditToolsFind')) {
 		try {
 			showDefaultRibbon();
+			setedit();
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
-			setedit();
+			switch (sToolName) {
+				case 'mnutoolEditReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolEditUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					break;
+				case 'mnutoolEditToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					break;
+			}
 		}
 		catch (e) { }
 		finally {
@@ -486,6 +525,25 @@ function menu_MenuClick(sTool) {
 	}
 
 
+
+	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
+	if (sToolName == 'mnutoolSaveReport') {
+		try {
+			$("#cmdOK").click();
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+
+	if (sToolName == 'mnutoolCancelReport') {
+		try {
+			$("#cmdCancel").click();
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
 
 
 	if (sToolName == "mnutoolOrgChart") {
