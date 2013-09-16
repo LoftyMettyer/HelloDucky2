@@ -911,7 +911,7 @@ GetCustomReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mvarColDetails(13, intTemp) = .Fields("Type").Value
 
-				lngTableID = .Fields("TableID").Value
+				lngTableID = IIf(IsDBNull(.Fields("TableID").Value), 0, .Fields("TableID").Value)
 				mvarColDetails(14, intTemp) = lngTableID
 				mvarColDetails(15, intTemp) = .Fields("TableName").Value
 
