@@ -1431,6 +1431,7 @@ Namespace Controllers
 			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
 			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
 			Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
+			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 
 			' Go to the requested page.
 			Return RedirectToAction(Request.Form("txtGotoOptionPage"))
@@ -1718,6 +1719,8 @@ Namespace Controllers
 			Session("optionParentTableID") = Request.Form("txtOptionParentTableID")
 			Session("optionParentRecordID") = Request.Form("txtOptionParentRecordID")
 			Session("option1000SepCols") = Request.Form("txtOption1000SepCols")
+
+			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 
 			' Go to the requested page.
 			Return RedirectToAction("OptionData")
@@ -4884,6 +4887,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateInput(False)>
 		Function util_run_outputoptions() As ActionResult
 
 			Session("CT_Mode") = Request("txtMode")

@@ -1,5 +1,43 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
+
+
+<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
+	id="dialog"
+	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
+	style="LEFT: 0; TOP: 0">
+	<param name="_ExtentX" value="847">
+	<param name="_ExtentY" value="847">
+	<param name="_Version" value="393216">
+	<param name="CancelError" value="0">
+	<param name="Color" value="0">
+	<param name="Copies" value="1">
+	<param name="DefaultExt" value="">
+	<param name="DialogTitle" value="">
+	<param name="FileName" value="">
+	<param name="Filter" value="">
+	<param name="FilterIndex" value="0">
+	<param name="Flags" value="0">
+	<param name="FontBold" value="0">
+	<param name="FontItalic" value="0">
+	<param name="FontName" value="">
+	<param name="FontSize" value="8">
+	<param name="FontStrikeThru" value="0">
+	<param name="FontUnderLine" value="0">
+	<param name="FromPage" value="0">
+	<param name="HelpCommand" value="0">
+	<param name="HelpContext" value="0">
+	<param name="HelpFile" value="">
+	<param name="HelpKey" value="">
+	<param name="InitDir" value="">
+	<param name="Max" value="0">
+	<param name="Min" value="0">
+	<param name="MaxFileSize" value="260">
+	<param name="PrinterDefault" value="1">
+	<param name="ToPage" value="0">
+	<param name="Orientation" value="1">
+</object>
 
 <%="" %>
 
@@ -35,9 +73,9 @@
 
 	Dim aColumnNames
 	Dim aAbsenceTypes
-	Dim cmdReportsCols
-	Dim prmBaseTableID
-	Dim rstReportColumns
+	Dim cmdReportsCols As Command
+	Dim prmBaseTableID As ADODB.Parameter
+	Dim rstReportColumns As Recordset
 	Dim sErrorDescription As String
 	Dim iCount As Integer
 		
@@ -46,9 +84,9 @@
 	ReDim aAbsenceTypes(0)
 
 	' Get the table records.
-	cmdReportsCols = Server.CreateObject("ADODB.Command")
+	cmdReportsCols = New Command
 	cmdReportsCols.CommandText = "sp_ASRIntGetColumns"
-	cmdReportsCols.CommandType = 4 ' Stored procedure
+	cmdReportsCols.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdReportsCols.ActiveConnection = Session("databaseConnection")
 																				
 	prmBaseTableID = cmdReportsCols.CreateParameter("piTableID", 3, 1) ' 3=integer, 1=input
@@ -84,12 +122,12 @@
 	End If
 
 	' Load absence types
-	Dim cmdTables
-	Dim rstTablesInfo
+	Dim cmdTables As Command
+	Dim rstTablesInfo As Recordset
 		
-	cmdTables = Server.CreateObject("ADODB.Command")
+	cmdTables = New Command
 	cmdTables.CommandText = "sp_ASRIntGetAbsenceTypes"
-	cmdTables.CommandType = 4	' Stored Procedure
+	cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
 	cmdTables.ActiveConnection = Session("databaseConnection")
 
 	rstTablesInfo = cmdTables.Execute
@@ -127,7 +165,7 @@
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
 	Response.Write("function SetReportDefaults(){" & vbCrLf)
-	Response.Write("   var frmAbsenceDefinition = OpenHR.getForm(""workframe"",""frmAbsenceDefinition"");" & vbCrLf)
+	Response.Write("   var frmAbsenceDefinition = OpenHR.getForm(""frmAbsenceDefinitiontabs"",""frmAbsenceDefinition"");" & vbCrLf)
 		
 	' Type of standard report being run
 	If Session("StandardReport_Type") = 16 Then
@@ -328,8 +366,9 @@
 
 %>
 
-<form id="frmAbsenceDefinition" name="frmAbsenceDefinition">
-	<div id="frmAbsenceDefinitiontabs">
+<div id="frmAbsenceDefinitiontabs">
+	<form id="frmAbsenceDefinition" name="frmAbsenceDefinition">
+
 		<div style="padding: 10px 0px 50px 10px"  id="thefrmAbsenceDefinitionButtons">
 			<div style="float: left">
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
@@ -1072,7 +1111,6 @@
 			<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
 				onclick="absence_returnToRecEdit()" />
 		</div>--%>
-	</div>
 
 		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 		<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
@@ -1082,6 +1120,7 @@
 		<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 		<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 </form>
+</div>
 
 <form id="frmAbsenceUseful" name="frmAbsenceUseful" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
@@ -1168,7 +1207,7 @@
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
 
-<form action="tbAddFromWaitingListFind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
+<form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption">
 	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </form>
 
@@ -1214,4 +1253,14 @@
 
 <script type="text/javascript">
 	stdrpt_def_absence_window_onload();
+
+	// doesn't yet work.TODO
+//	menu_toolbarEnableItem("mnutillRunUtil", true);
+
+	//only display the 'close' button for defsel when called from rec edit...
+	<% If Not Session("optionRecordID") = "0" Then%>
+		menu_setVisibleMenuItem('mnuutilCancelUtil', true);
+		menu_toolbarEnableItem('mnuutilCancelUtil', true);
+	<% End If%>
+	
 </script>

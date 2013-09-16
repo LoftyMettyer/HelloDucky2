@@ -444,9 +444,10 @@
 										Dim sUtilityType = Convert.ToString(navlink.UtilityType)
 										Dim sUtilityID = Convert.ToString(navlink.UtilityID)
 										Dim sUtilityDef = sUtilityType & "_" & sUtilityID
-			
-										sOnclick = "goUtility('" & sUtilityDef & "')"
-										' sCheckKeyPressed = "CheckKeyPressed('UTILITY', '" & sUtilityDef & "', 0,'')"
+										Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+
+										sOnclick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
+
 									End If
 									
 							End Select%>

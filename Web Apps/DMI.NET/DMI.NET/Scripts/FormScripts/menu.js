@@ -408,7 +408,7 @@ function menu_MenuClick(sTool) {
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
-		try {			
+		try {
 			showDefaultRibbon();
 			setnew();
 			$("#toolbarReportNewEditCopy").parent().show();
@@ -423,7 +423,7 @@ function menu_MenuClick(sTool) {
 				case 'mnutoolNewToolsFind':
 					$('#toolbarReportNewEditCopy').text('Tools');
 					break;
-			}
+		}
 		}
 		catch (e) { }
 		finally {
@@ -448,7 +448,7 @@ function menu_MenuClick(sTool) {
 				case 'mnutoolCopyToolsFind':
 					$('#toolbarReportNewEditCopy').text('Tools');
 					break;
-			}
+		}
 		}
 		catch (e) { }
 		finally {
@@ -1689,6 +1689,17 @@ function menu_refreshMenu() {
 			
 			}
 			else {
+
+				if (sCurrentWorkPage == "DEFSEL" || sCurrentWorkPage == "STD_ABSENCECALENDAR"
+						|| sCurrentWorkPage == "STDRPT_DEF_ABSENCE" || sCurrentWorkPage == "UTIL_RUN_PROMPTEDVALUES") {
+					$("#toolbarUtilities").show();
+					$("#toolbarUtilities").click();
+				} else {
+					$("#mnutoolRecord").hide();
+					$("#mnutoolHistory").hide();
+				}
+
+
 				if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
 
 						return;

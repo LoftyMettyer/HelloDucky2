@@ -27,7 +27,7 @@ function stdrpt_def_absence_window_onload() {
     absenceBreakdownRefreshTab3Controls();
 	
     // Disable the menu
-    menu_disableMenu();
+    //menu_disableMenu();
 
 }
 
@@ -1073,7 +1073,7 @@ function saveFile()
     if (frmAbsenceDefinition.txtFilename.value.length == 0) {
         var sKey = new String("documentspath_");
         sKey = sKey.concat(frmAbsenceDefinition.txtDatabase.value);
-        var sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        var sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
         window.dialog.InitDir = sPath;
     }
     else {
@@ -1294,3 +1294,14 @@ function absencedef_convertLocaleDateToSQL(psDateString)
     }
 }
 
+
+function setcancel() {
+
+	refreshData();
+
+	$("#optionframe").hide();
+	$("#workframe").show();
+	$("#toolbarRecord").show();
+	$("#toolbarRecord").click();
+
+}
