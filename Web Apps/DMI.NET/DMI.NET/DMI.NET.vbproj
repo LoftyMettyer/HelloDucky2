@@ -1134,6 +1134,7 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\dialog.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssHiddenGrid.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssMailMergeOleDBGridSortOrder.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridAvailableColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridChildren.ascx" />
