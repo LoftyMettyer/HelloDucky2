@@ -2244,7 +2244,7 @@
 		}
 		if (answer == 6) {
 			// Yes
-			okCalClick();
+			okClick();
 		}
 
 		return 2; //Cancel.
