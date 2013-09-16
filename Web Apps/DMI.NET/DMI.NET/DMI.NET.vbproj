@@ -165,6 +165,7 @@
     <Content Include="Content\images\ABSLogo\OpenHRLogo748x1024.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo768x1004.png" />
     <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\anonymous.png" />
     <Content Include="Content\images\CalendarReports\First_Disabled.gif" />
     <Content Include="Content\images\CalendarReports\First_Enabled.gif" />
     <Content Include="Content\images\CalendarReports\Last_Disabled.gif" />

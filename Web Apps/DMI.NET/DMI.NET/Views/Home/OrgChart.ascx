@@ -15,11 +15,11 @@
 			var props = $(this).val().split("\t");
 			//props[5] is the hierarchyLevel.
 			if (props[5] == "1") {
-				$('#root').append('<li>' + props[4] + '<p>' + props[0] + " " + props[1] + '</p><ul id="' + props[2] + '"></ul></li>');
+				$('#root').append('<li>' + props[4] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[0] + " " + props[1] + '</p><ul id="' + props[2] + '"></ul></li>');
 			}
 
 			if (props[5] >= "2") {
-				$('#' + props[3]).append('<li>' + props[4] + '<p>' + props[0] + ' ' + props[1] + '</p><ul id="' + props[2] + '"></li>');
+				$('#' + props[3]).append('<li>' + props[4] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[0] + ' ' + props[1] + '</p><ul id="' + props[2] + '"></li>');
 			}
 		});
 
