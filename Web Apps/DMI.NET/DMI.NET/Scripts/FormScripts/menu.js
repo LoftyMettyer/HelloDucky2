@@ -965,16 +965,16 @@ function menu_MenuClick(sTool) {
 		// TODO: The following handlers need to be fixed or may be redundant
 
         // Administration Menu -------------------------------------------------------------------------------------------------------------------
-    
-		if (sToolName == "mnutoolWorkflowPendingSteps") {
-		    if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
+
+	if (sToolName == "mnutoolWorkflowPendingSteps") {
+			if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
 		        //New bit: display the default ribbon, then add required tab, then activate it.
 		        showDefaultRibbon();
 		        $("#toolbarWFPendingStepsFind").parent().show();
 		        $("#toolbarWFPendingStepsFind").click();
-		        menu_autoLoadPage("workflowPendingSteps", false);
-		    }
-		    return;
+				menu_autoLoadPage("workflowPendingSteps", false);
+		}
+			return;
 		}
 
 
@@ -996,7 +996,7 @@ function menu_MenuClick(sTool) {
 				menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
 			return;
 		}
-
+		
 		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
 			if (sToolName.substr(0, 7) == "mnutool") {
 				
@@ -1858,7 +1858,7 @@ function menu_refreshMenu() {
 							menu_setVisibleMenuItem("mnutoolPreviousEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolNextEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolLastEventLogFind", true);
-					    
+
 							// Enable the Event Log tab
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
@@ -1979,12 +1979,12 @@ function menu_refreshMenu() {
 	catch (e) { }
 
 	//abMainMenu.Bands("mnubandDatabase").Tools("mnutoolTableScreens").visible = fCanSeeLookupTableMenu;
-	//HC: Is this a menu item only?
+		//HC: Is this a menu item only?
 	//		abMainMenu.Tools("mnutoolCustomReports").enabled = (txtCustomReportsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolCrossTabs").enabled = (txtCrossTabsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolCalendarReports").enabled = (txtCalendarReportsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolMailMerge").enabled = (txtMailMergeGranted.value == "True");
-	//HC: Seems redundant
+		//HC: Seems redundant
 	//menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
 	//menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
 	//menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
@@ -2015,7 +2015,7 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
     
-    menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
+	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
 
