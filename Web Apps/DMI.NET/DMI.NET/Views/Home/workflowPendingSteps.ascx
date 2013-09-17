@@ -5,36 +5,49 @@
 <%-- For other devs: Do not remove above line. --%>
 
 <script type="text/javascript">
-		function workpendingsteps_window_onload() {
-				// Table to jQuery grid
-				tableToGrid("#PendingStepsTable", {
-						onSelectRow: function(rowID) {
-						},
-						ondblClickRow: function(rowID) {
-						},
-						rowNum: 1000   //TODO set this to blocksize...
-				});
-				
-				//debugger;
-				//Hide the URL table header and its column
-				$('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
-				$('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
-				
-				//Select the first row
-				$("#PendingStepsTable").jqGrid('setSelection', 1);
-			 
-				//On clicking "Run", open window with the selected item's URL
-				$("#cmdRun").click(function() {
-						var selectedRow = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row
-						//debugger;
-						var url = $(selectedRow.children()[1]).html(); //Get the url
-						//window.open(url, '_blank', 'fullscreen=yes');
-						var newWindow = window.open(url);
-						if (window.focus) {
-								newWindow.focus();
-						}
-				});
-		}
+	function workpendingsteps_window_onload() {
+		// Table to jQuery grid
+		tableToGrid("#PendingStepsTable", {
+			onSelectRow: function(rowID) {
+			},
+			ondblClickRow: function(rowID) {
+			},
+			rowNum: 1000   //TODO set this to blocksize...
+		});
+
+		//debugger;
+		//Hide the URL table header and its column
+		$('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
+		$('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
+
+		//Select the first row
+		$("#PendingStepsTable").jqGrid('setSelection', 1);
+
+		//On clicking "Refresh",
+		$("#mnutoolRefreshWFPendingStepsFind").click(function() {
+			setrefresh();
+		});
+
+		//On clicking "Run", open window with the selected item's URL
+		//$("#cmdRun").click(function () {
+		$("#mnutoolRunWFPendingStepsFind").click(function() {
+			var selectedRow = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row
+			var url = $(selectedRow.children()[1]).html(); //Get the url
+			var newWindow = window.open(url);
+			if (window.focus) {
+				newWindow.focus();
+			}
+		});
+
+		//On clicking "Close" generic closeclck in general.js
+		$("#mnutoolCloseWFPendingStepsFind").click(function() {
+			closeclick();
+		});
+		
+		<% if _StepCount = 0 Then%> 
+			menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+		<%End If%>
+	}
 </script>
 
 <script runat="server">
@@ -83,27 +96,28 @@
 				End If
 				
 				' Release the ADO command object.
-				_cmdDefSelRecords = Nothing
-		End Sub
+			_cmdDefSelRecords = Nothing
+	End Sub
 		
 		Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
 				GetPendingWorkflowSteps()
 		End Sub
 
 </script>
+
 <form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
 	<%On Error Resume Next
 
 		Response.Expires = -1
 	
 		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
-					' Reset the Workflow OutOfOffice flag.
-					Dim cmdOutOfOffice = CreateObject("ADODB.Command")
-					cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
+			' Reset the Workflow OutOfOffice flag.
+			Dim cmdOutOfOffice = CreateObject("ADODB.Command")
+			cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
 			cmdOutOfOffice.CommandType = 4 ' Stored Procedure
 			cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
-					Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)   ' 11=bit, 1=input
+			Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)		' 11=bit, 1=input
 			cmdOutOfOffice.Parameters.Append(prmValue)
 			prmValue.value = 0
 
@@ -162,7 +176,13 @@
 								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
 									<tr> 
 										<td>
-											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px; margin-bottom:3px;" width="80" id="cmdRefresh" class="btn" onclick="setrefresh();" />
+											<input type="button"
+											name="cmdRefresh"
+											value="Refresh" 
+											style="width: 80px; margin-bottom:3px;" 
+											id="cmdRefresh"
+											class="btn" 
+											onclick="setrefresh();" />
 										</td>
 									</tr>
 									<tr height=3px>
@@ -170,7 +190,7 @@
 									</tr>
 									<tr>
 										<td>
-											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" width="80" id="cmdRun" class="btn" />
+											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" id="cmdRun" class="btn" />
 										</td>
 									</tr>
 									<tr>
@@ -194,14 +214,14 @@
 		</table>
 		<%							
 		Else
-				Dim sMessage As String
-				If _WorkflowGood = True Then
-						' Display message saying no pending steps.
-						sMessage = "No pending workflow steps"
-				Else
-						' Display error message.
-						sMessage = "Error getting the pending workflow steps"
-				End If
+			Dim sMessage As String
+			If _WorkflowGood = True Then
+				' Display message saying no pending steps.
+				sMessage = "No pending workflow steps"
+			Else
+				' Display error message.
+				sMessage = "Error getting the pending workflow steps"
+			End If
 		%>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
@@ -219,9 +239,7 @@
 						</tr>
 
 						<tr>
-							<td align="center">
-								<%=sMessage%>
-							</td>
+							<td align="center"><%=sMessage%></td>
 						</tr>
 
 						<tr>
@@ -229,9 +247,7 @@
 						</tr>
 
 						<tr>
-							<td height="10" align="center">
-								
-							</td>
+							<td height="10" align="center"></td>
 						</tr>
 
 						<tr>

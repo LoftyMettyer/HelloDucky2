@@ -839,10 +839,11 @@
 					<ul>
 						<li><span>Find</span>											
 											<div id="mnutoolRefreshWFPendingStepsFind" class="button">
-								<a href="#" rel="table" title="Run">
+								<a href="#" rel="table" title="Refresh">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Refresh64HOVER.png")%>" alt="" />
-								<i class="icon-RefreshWFPendingStepsFind"></i>
-								<h6>Run</h6></a>
+								<i class="icon-refresh"></i>
+								<%--<i class="icon-RefreshWFPendingStepsFind"></i>--%>
+								<h6>Refresh</h6></a>
 							</div>
 											<div id="mnutoolRunWFPendingStepsFind" class="button">
 								<a href="#" rel="table" title="Run">
@@ -851,10 +852,12 @@
 								<h6>Run</h6></a>
 							</div>
 							<div id="mnutoolCloseWFPendingStepsFind" class="button">
-								<a href="#" rel="table" title="Close">
+								<%--<a href="#" rel="table" title="Close">--%>
+									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseWFPendingStepsFind"></i>
-								<h6>Close</h6></a>
+								<h6>Close</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>

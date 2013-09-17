@@ -937,13 +937,19 @@ function menu_MenuClick(sTool) {
 		
 		// TODO: The following handlers need to be fixed or may be redundant
 
+        // Administration Menu -------------------------------------------------------------------------------------------------------------------
+    
+		if (sToolName == "mnutoolWorkflowPendingSteps") {
+		    if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
+		        //New bit: display the default ribbon, then add required tab, then activate it.
+		        showDefaultRibbon();
+		        $("#toolbarWFPendingStepsFind").parent().show();
+		        $("#toolbarWFPendingStepsFind").click();
+		        menu_autoLoadPage("workflowPendingSteps", false);
+		    }
+		    return;
+		}
 
-	if (sToolName == "mnutoolWorkflowPendingSteps") {
-			if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
-				menu_autoLoadPage("workflowPendingSteps", false);
-		}
-			return;
-		}
 
 	if (sToolName == "mnutoolWorkflowOutOfOffice") {
 			if (menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
@@ -1831,7 +1837,7 @@ function menu_refreshMenu() {
 							menu_setVisibleMenuItem("mnutoolPreviousEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolNextEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolLastEventLogFind", true);
-
+					    
 							// Enable the Event Log tab
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
@@ -1951,50 +1957,47 @@ function menu_refreshMenu() {
 	}
 	catch (e) { }
 
-
 	//abMainMenu.Bands("mnubandDatabase").Tools("mnutoolTableScreens").visible = fCanSeeLookupTableMenu;
-
-		//HC: Is this a menu item only?
-	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
-
-
+	//HC: Is this a menu item only?
 	//		abMainMenu.Tools("mnutoolCustomReports").enabled = (txtCustomReportsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolCrossTabs").enabled = (txtCrossTabsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolCalendarReports").enabled = (txtCalendarReportsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolMailMerge").enabled = (txtMailMergeGranted.value == "True");
-
-		//HC: Seems redundant
+	//HC: Seems redundant
 	//menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
 	//menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
 	//menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	//menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
-
-
-
 	//abMainMenu.Tools("mnutoolWorkflow").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
 	//abMainMenu.Tools("mnutoolWorkflow").enabled = (txtWorkflowGranted.value == "True");
+	//		abMainMenu.Tools("mnutoolWorkflowPopup").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
+	//		abMainMenu.Tools("mnutoolWorkflowPopup").enabled = true;
+    //		abMainMenu.Tools("mnutoolWorkflowPendingSteps").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
+    //		abMainMenu.Tools("mnutoolWorkflowPendingSteps").enabled = true;
+    //		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").visible = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
+    //		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").enabled = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
+    //		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
+    //		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
+    //		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
+
+	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
+
 	menu_setVisibleMenuItem("mnutoolWorkflow", frmMenuInfo.txtWFEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflow", $("#txtWorkflowGranted").val());
 
-
-	//		abMainMenu.Tools("mnutoolWorkflowPopup").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-	//		abMainMenu.Tools("mnutoolWorkflowPopup").enabled = true;
 	menu_setVisibleMenuItem("mnutoolWorkflowPopup", frmMenuInfo.txtWFEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowPopup", true);
-	//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-	//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").enabled = true;
+
 	menu_setVisibleMenuItem("mnutoolWorkflowPendingSteps", frmMenuInfo.txtWFEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowPendingSteps", true);
-	//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").visible = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
-	//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").enabled = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
+	
 	menu_setVisibleMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
-	//		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
-	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
-	//		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
+    
+    menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
-	//		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
+
 
 	try {
 		
