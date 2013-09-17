@@ -537,16 +537,34 @@ function menu_MenuClick(sTool) {
 		}
 	}
 
-	//PENDING WORKFLOW STEPS 'RUN'
+    //--------------------------PENDING WORKFLOW STEPS-------------------------------//
+    // 'RUN'
 	if (sToolName == 'mnutoolRunWFPendingStepsFind') {
 		try {
-			$("#cmdRun").click();
+		    $("#cmdRun").click();
 		} catch (e) {
 		} finally {
 			return false;
 		}
 	}
-
+    // 'CLOSE'
+	if (sToolName == 'mnutoolCloseWFPendingStepsFind') {
+	    try {
+	        closeclick();
+	    } catch (e) {
+	    } finally {
+	        return false;
+	    }
+	}
+    // 'REFRESH'
+	if (sToolName == 'mnutoolRefreshWFPendingStepsFind') {
+	    try {
+	        $("#cmdRefresh").click();
+	    } catch (e) {
+	    } finally {
+	        return false;
+	    }
+	}
 
 
 	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//

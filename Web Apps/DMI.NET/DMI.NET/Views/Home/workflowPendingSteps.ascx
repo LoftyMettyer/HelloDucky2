@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -38,8 +39,13 @@
 				newWindow.focus();
 			}
 		});
-
+		
 		//On clicking "Close" generic closeclck in general.js
+		$("#mnutoolCloseWFPendingStepsFind").hide(function () {
+			// We're hiding this for now but I'm leaving it's 
+			//click code below in case we need it in the future
+		});
+			
 		$("#mnutoolCloseWFPendingStepsFind").click(function() {
 			closeclick();
 		});
@@ -172,14 +178,13 @@
 
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-							<td width="80">
-								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
+							<td style="visibility: hidden">
+								<table style="height: 100%" class="invisible" cellspacing="0" cellpadding="0">
 									<tr> 
 										<td>
 											<input type="button"
 											name="cmdRefresh"
 											value="Refresh" 
-											style="width: 80px; margin-bottom:3px;" 
 											id="cmdRefresh"
 											class="btn" 
 											onclick="setrefresh();" />
@@ -190,7 +195,7 @@
 									</tr>
 									<tr>
 										<td>
-											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" id="cmdRun" class="btn" />
+											<input type="button" name="cmdRun" value="Run" id="cmdRun" class="btn" />
 										</td>
 									</tr>
 									<tr>
@@ -203,7 +208,7 @@
 									</tr>
 								</table>
 							</td>
-							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 						</tr>
 						<tr>
 							<td colspan="5" align="center" height="10"></td>
