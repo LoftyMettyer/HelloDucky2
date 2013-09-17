@@ -405,6 +405,29 @@ function menu_MenuClick(sTool) {
 
 	//Remapping of menu click ID's for menu refactor.
 	
+	// Fixed Links ---------------------------------------------------------------------------------------------------
+	
+	if (sToolName == "mnutoolFixedSelfService") {   // This already has an href target defined in fixedlinks. No action here
+		return false;
+	}
+
+	if (sToolName == "mnutoolFixedLogoff") {   // This already has an href target defined in fixedlinks. No action here
+		return false;
+	}
+
+	if (sToolName == "mnutoolFixedOpenHR") {   // This already has an href target defined in fixedlinks. No action here
+		return false;
+	}
+
+	if (sToolName == "mnutoolFixedLayout") {   // This already has an href target defined in fixedlinks. No action here
+		return false;
+	}
+
+	if (sToolName == "mnutoolFixedAbout") {   // This already has an href target defined in fixedlinks. No action here
+		return false;
+	}
+
+	
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
@@ -907,30 +930,34 @@ function menu_MenuClick(sTool) {
 			if (menu_saveChanges("EVENTLOG", true, false) != 2) {
 				menu_loadPage("eventLog");
 			}
-			return;
+			return false;
 		}
 
 		if (sToolName == "mnutoolViewEventLogFind") {
 			EventLog_viewEvent();
+			return false;
 		}
 	
 		if (sToolName == "mnutoolPurgeEventLogFind") {
 			EventLog_purgeEvent();
+			return false;
 		}
 
 		if (sToolName == "mnutoolEmailEventLogFind") {
 			EventLog_emailEvent();
+			return false;
 		}
 
 		if (sToolName == "mnutoolDeleteEventLogFind") {
 			EventLog_deleteEvent();
+			return false;
 		}
 
 
 	  // User Config and PC Config
 		if (sToolName == "mnutoolSaveAdminConfig") {
 			Configuration_okClick();
-			return;
+			return false;
 		}
 
 	//--------------------------------------------------------------------------------------------------------------
@@ -969,12 +996,6 @@ function menu_MenuClick(sTool) {
 				menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
 			return;
 		}
-
-		if (sToolName == "mnutoolVersionInfo") {
-				menu_displayVersionInfo();
-			return;
-		}
-		
 
 		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
 			if (sToolName.substr(0, 7) == "mnutool") {
