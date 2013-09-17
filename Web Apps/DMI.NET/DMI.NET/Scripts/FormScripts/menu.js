@@ -1429,7 +1429,7 @@ function menu_refreshMenu() {
 				menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
 				menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);	//Toolbar Icon
 				menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);	//Toolbar Icon
-				menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);	//Menu Item - Calendar Reports
+				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
 				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
 				//Hide Calendar Reports Group if all items are hidden.
@@ -1600,13 +1600,15 @@ function menu_refreshMenu() {
 			//	}
 			//}
 			
+			
+			
 			menu_setVisibleMenuItem("mnutoolPositionRecordFind", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
 			menu_setVisibleMenuItem("mnutoolHistory", false);
 			$("#mnutoolDatabase").click();
 				
-				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", false);
+				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&
 					(frmMenuInfo.txtUserType.value == 0));
@@ -1910,29 +1912,30 @@ function menu_refreshMenu() {
 	//menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Context menu item
 
 	
-	//menu_setVisibleMenuItem("mnutoolCancelCourse", fCancelCourseVisible);
-	//menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
-	//menu_setVisibleMenuItem("mnutoolBookCourse", fBookCourseVisible);
-	//menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
-	//menu_setVisibleMenuItem("mnutoolTransferBooking", fTransferBookingVisible);
-	//menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
-	//menu_setVisibleMenuItem("mnutoolAddFromWaitingList", fAddFromWaitingListVisible);
-	//menu_toolbarEnableItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListEnabled);
-	//menu_setVisibleMenuItem("mnutoolCancelBooking", fCancelBookingVisible);
-	//menu_toolbarEnableItem("mnutoolCancelBookingRecordFind", fCancelBookingEnabled);
-	//menu_setVisibleMenuItem("mnutoolBulkBooking", fBulkBookingVisible);
-	//menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
+	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
+	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
+	menu_setVisibleMenuItem("mnutoolBookCourseRecord", fBookCourseVisible);
+	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
+	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
+	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
+	menu_setVisibleMenuItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListVisible);
+	menu_toolbarEnableItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListEnabled);
+	menu_setVisibleMenuItem("mnutoolCancelBookingRecordFind", fCancelBookingVisible);
+	menu_toolbarEnableItem("mnutoolCancelBookingRecordFind", fCancelBookingEnabled);
+	menu_setVisibleMenuItem("mnutoolBulkBookingRecordFind", fBulkBookingVisible);
+	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
+	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);
+	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);
 
-			//new functionality
+	//New functionality
 			//if all these are false, then hide the Training Booking group.			
-	//menu_setVisibletoolbarGroup("mnuSectionRecordFindTrainingBooking", ((fBulkBookingVisible) ||
-	//																	(fAddFromWaitingListVisible) || 
-	//																		(fTransferBookingVisible) || 
-	//																			(fCancelBookingVisible)));			
+	menu_setVisibletoolbarGroup("mnutoolTransferBookingRecordFind", ((fBulkBookingVisible) ||
+																		(fAddFromWaitingListVisible) || 
+																			(fTransferBookingVisible) || 
+																				(fCancelBookingVisible)));			
 
-	////if all these are false, then hide the Course Booking group.			
-	//menu_setVisibletoolbarGroup("mnuSectionRecordCourseBooking", ((fBookCourseVisible) || (fCancelCourseVisible)));
-
+	//if all these are false, then hide the Course Booking group.			
+	menu_setVisibletoolbarGroup("mnutoolBookCourseRecord", ((fBookCourseVisible) || (fCancelCourseVisible)));
 
 
 	fCanSeeLookupTableMenu = true;
@@ -4626,7 +4629,6 @@ function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
 	}
 	else {
 		$("#" + itemId).parent().hide();
-
 	}
 
 }
@@ -4669,6 +4671,7 @@ function applyJSTree(element) {
 function menu_SetmnutoolRecordPositionCaption(newCaption) {
 	//update the record position text.
 	$("#mnutoolRecordPosition span").text(newCaption);
+	$("#mnutoolPositionRecordFind span").text(newCaption);
 }
 
 function menu_SetmnutoolLocateRecordsText(newCaption) {

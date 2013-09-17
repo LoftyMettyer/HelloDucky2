@@ -258,7 +258,7 @@
 																		<h6>Cancel<br />Booking</h6></a>
 							</div>
 						</li>
-												<li id="mnuSectionPositionRecordFind"><span>Record Position</span>
+						<li id="mnuSectionPositionRecordFind"><span>Record Position</span>
 							<div id="mnutoolPositionRecordFind" class="textboxlist">
 								<ul>
 									<li>
@@ -267,10 +267,8 @@
 								</ul>
 							</div>
 						</li>
-
-										</ul>
-								</li>
-
+				</ul>
+			</li>
 
 								<%-- Record: Record Edit --%>
 				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="Record">Record</a>
@@ -340,15 +338,6 @@
 									<h6>Last</h6></a>
 							</div>
 						</li>
-						<li id="mnuSectionPositionRecord"><span>Record Position</span>
-							<div id="mnutoolPositionRecord" class="textboxlist">
-								<ul>
-									<li>
-										<span>Record n of m [(filtered)]</span>
-									</li>
-								</ul>
-							</div>
-						</li>
 						<li id="mnuSectionRecordFind"><span>Find</span>
 							<div id="mnutoolFindRecord" class="button">
 								<a href="#" rel="table" title="Find">
@@ -390,6 +379,22 @@
 									<h6>Output</h6></a>
 							</div>
 						</li>
+						<li id="mnuSectionRecordCourseBooking"><span>Course Booking</span>
+							<div id="mnutoolBookCourseRecord" class="button">
+								<a href="#" rel="table" title="Book Course">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
+										alt="" />
+																		<i class="icon-BookCourseRecord"></i>
+																		<h6>Book<br />Course</h6></a>
+							</div>
+							<div id="mnutoolCancelCourseRecord" class="button">
+								<a href="#" rel="table" title="Cancel Course">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
+										alt="" />
+																		<i class="icon-CancelCourseRecord"></i>
+																		<h6>Cancel<br />Course</h6></a>
+							</div>
+						</li>
 						<li id="mnuSectionRecordReports"><span>Reports</span>
 							<div id="mnutoolCalendarReportsRecord" class="button">
 								<a href="#" rel="table" title="Calendar Reports">
@@ -428,28 +433,21 @@
 																		<h6>Mail<br/>Merge</h6></a>
 							</div>
 						</li>
-						<li id="mnuSectionRecordCourseBooking"><span>Course Booking</span>
-							<div id="mnutoolBookCourseRecord" class="button">
-								<a href="#" rel="table" title="Book Course">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
-										alt="" />
-																		<i class="icon-BookCourseRecord"></i>
-																		<h6>Book<br />Course</h6></a>
-							</div>
-							<div id="mnutoolCancelCourseRecord" class="button">
-								<a href="#" rel="table" title="Cancel Course">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
-										alt="" />
-																		<i class="icon-CancelCourseRecord"></i>
-																		<h6>Cancel<br />Course</h6></a>
+						<li id="mnuSectionPositionRecord"><span>Record Position</span>
+							<div id="mnutoolRecordPosition" class="textboxlist">
+								<ul>
+									<li>
+										<span>Record n of m [(filtered)]</span>
+									</li>
+								</ul>
 							</div>
 						</li>
 					</ul>
 				</li>
 
 
-								<%-- Record - Absence Calendar --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarRecordAbsence" href="#" rel="toolbarRecord_Absence">Absence Calendar</a>
+				<%-- Record - Absence Calendar --%>
+				<li class="ui-state-default ui-corner-top"><a id="toolbarRecordAbsence" href="#" rel="toolbarRecord_Absence">Absence Calendar</a>
 					<ul>
 						<li id="mnuSectionRecordAbsence"><span>Absence Calendar</span>
 							<div id="mnutoolPrintRecordAbsence" class="button" title="Print">
