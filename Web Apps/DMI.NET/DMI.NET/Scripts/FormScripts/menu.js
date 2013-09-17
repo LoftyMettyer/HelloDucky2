@@ -1312,7 +1312,6 @@ function menu_refreshMenu() {
 	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) && (fStdRptBradfordFactorVisible));
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
-	
 
 		if (sCurrentWorkPage == "DEFAULT") {
 				showDefaultRibbon();

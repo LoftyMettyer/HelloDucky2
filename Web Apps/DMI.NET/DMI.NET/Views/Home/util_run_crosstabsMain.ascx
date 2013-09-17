@@ -109,8 +109,6 @@
 <script type="text/javascript">
 		function crosstab_loadAddRecords() {
 
-			debugger;
-
 		var iCount;
 		iCount = new Number(txtLoadCount.value);
 		txtLoadCount.value = iCount + 1;

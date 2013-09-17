@@ -567,7 +567,7 @@
 <%
 	'	on error resume next
 	
-	Dim lngRecordID As Object
+	Dim lngRecordID As Long
 	
 	Const DEADLOCK_ERRORNUMBER = -2147467259
 	Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
@@ -775,8 +775,8 @@
 				fDeadlock = False
 
 				cmdGetRecord.ActiveConnection.Errors.Clear()
-
-				Dim rstRecord = cmdGetRecord.Execute
+				
+				Dim rstRecord = cmdGetRecord.Execute()
 		
 				If cmdGetRecord.ActiveConnection.Errors.Count > 0 Then
 					For iLoop = 1 To cmdGetRecord.ActiveConnection.Errors.Count
@@ -814,18 +814,18 @@
 						sErrorDescription = "Unable to retrieve the required record." & vbCrLf & sErrorDescription
 					End If
 				Else
-				
-					If Not (rstRecord.bof And rstRecord.eof) Then
-						For iloop = 0 To (rstRecord.fields.count - 1)
+								
+					If Not (rstRecord.BOF And rstRecord.EOF) Then
+						For iloop = 0 To (rstRecord.Fields.Count - 1)
 						
-							If IsDBNull(rstRecord.fields(iloop).value) Then
-								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
+							If IsDBNull(rstRecord.Fields(iloop).Value) Then
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Fields(iloop).Name & "' name='txtData_" & rstRecord.Fields(iloop).Name & "' value=''>" & vbCrLf)
 							Else
 								' Is column a embedded/linked OLE								
-								If VarType(rstRecord.fields(iloop).value) = 8209 Then
-									oleColumnData.Add(rstRecord.fields(iloop).name)
+								If VarType(rstRecord.Fields(iloop).Value) = 8209 Then
+									oleColumnData.Add(rstRecord.Fields(iloop).Name)
 								Else
-									Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+									Response.Write("<input type='hidden' id='txtData_" & rstRecord.Fields(iloop).Name & "' name='txtData_" & rstRecord.Fields(iloop).Name & "' value='" & Replace(rstRecord.Fields(iloop).Value, """", "&quot;") & "'>" & vbCrLf)
 								End If
 							End If
 						Next

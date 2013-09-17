@@ -945,8 +945,8 @@ Namespace Controllers
 		' GET: /Home
 		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
 
+			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
-
 
 			Return View()
 		End Function

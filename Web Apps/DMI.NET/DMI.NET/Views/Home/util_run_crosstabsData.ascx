@@ -596,8 +596,6 @@
 
 	function getCrossTabData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand) {
 
-		debugger;
-
 		control_disable(window.cboIntersectionType, true);
 		control_disable(window.chkPercentPage, true);
 		control_disable(window.chkPercentType, true);

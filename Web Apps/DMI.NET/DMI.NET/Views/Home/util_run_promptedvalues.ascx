@@ -41,7 +41,13 @@
 			$("#workframe").hide();
 			$("#optionframe").show();
 		} else {
-			$("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+
+			if (window.menu_isSSIMode() == true) {
+				$("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+			} else {
+				$("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+			}
+
 			if (frmPromptedValues.StandardReportPrompt.value == "True") {
 				$("#reportframe").show();
 			}
