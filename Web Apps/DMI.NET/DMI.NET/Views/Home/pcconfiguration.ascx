@@ -57,6 +57,16 @@
 				frmOriginalConfiguration.txtTempMenuFilePath.value = sPath;
 
 				frmConfiguration.txtDocuments.focus();
+
+				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+				// $('#mnutoolSaveAdminConfig').click('okClick()');
+
+				$('#btnDiv2OK').hide();
+				$('#btnDiv2Cancel').hide();
+
+				$("#toolbarAdminConfig").parent().show();
+				$("#toolbarAdminConfig").click();
+
 		}
 
 		function clearPath(psKey) {
@@ -232,12 +242,13 @@
 
 		}
 
-		function okClick() {
+		function Configuration_okClick() {
 				frmConfiguration.txtReaction.value = "DEFAULT";
 				saveConfiguration();
 		}
 
-		/* Return to the default page. */
+		// Return to the default page. //
+		/* Not used anymore -----------------------------------------------------------------------------------
 		function cancelClick() {
 				// Try to use the height property of the menu.
 				// If this fails then the menu has failed to load properly, so we need to define
@@ -272,6 +283,7 @@
 						saveConfiguration();
 				}
 		}
+		---------------------------------------------------------------------------------------------------*/
 
 		function saveChanges(psAction, pfPrompt, pfTBOverride) {
 				if (definitionChanged() == false) {
@@ -287,6 +299,7 @@
 						// Yes
 						frmConfiguration.txtReaction.value = psAction;
 						saveConfiguration();
+					//TODO: don't show a confirmation message after saving
 				}
 
 				return 2; //Cancel.
@@ -583,20 +596,26 @@
 																<td>&nbsp;</td>
 																<td width="80">
 																		<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-																				onclick="okClick()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+																			<%--
+																			onclick = "okClick()"
+																			onmouseover = "try{button_onMouseOver(this);}catch(e){}"
+																			onmouseout = "try{button_onMouseOut(this);}catch(e){}"
+																			onfocus = "try{button_onFocus(this);}catch(e){}"
+																			onblur = "try{button_onBlur(this);}catch(e){}"
+																			--%>
+																			/>
 																</td>
 																<td width="20"></td>
 																<td width="80">
 																		<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-																				onclick="cancelClick()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+																			<%--
+																			onclick = "cancelClick()"
+																			onmouseover = "try{button_onMouseOver(this);}catch(e){}"
+																			onmouseout = "try{button_onMouseOut(this);}catch(e){}"
+																			onfocus = "try{button_onFocus(this);}catch(e){}"
+																			onblur = "try{button_onBlur(this);}catch(e){}"
+																			--%>
+																			/>
 																</td>
 																<td>&nbsp;</td>
 														</table>

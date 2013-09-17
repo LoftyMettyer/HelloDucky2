@@ -121,15 +121,28 @@
 			window.parent.location.replace("login");
 		}
 
+		// Hide the on-screen buttons
+		$('#cmdView').hide();
+		$('#cmdDelete').hide();
+		$('#cmdPurge').hide();
+		$('#cmdEmail').hide();
+
 		if (fOK == true) {
 			// Get menu to refresh the menu.
 			menu_refreshMenu();
+			
 		}
 
 		frmLog.txtELDeletePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_DELETE");
 		frmLog.txtELViewAllPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_VIEWALL");
 		frmLog.txtELPurgePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_PURGE");
 		frmLog.txtELEmailPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_EMAIL");
+		// Buttons are enabled/disabled in EventLog_refreshButtons();
+
+		// Visible buttons and tabs set in menu.js
+		
+		$("#toolbarAdminConfig").parent().show();
+		$("#toolbarAdminConfig").click();
 
 		refreshUsers();
 
@@ -138,7 +151,7 @@
 
 <script type="text/javascript">
 
-	function eventlog_moveRecord(psMovement) {
+	function EventLog_moveRecord(psMovement) {
 		var frmGetData = OpenHR.getForm("dataframe", "frmGetData");
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
@@ -175,34 +188,35 @@
 		if (frmLog.txtELViewAllPermission.value == 0) {
 			sCaption = sCaption + "     [Viewing own entries only]";
 		}
-
-		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+		
+		//TODO: We don't have a record position indicator yet on the ribbon for this form
+		
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
 		//Enable/disable navigation controls based on certain conditions
 		if (sRecords <= 1000) { //TODO set this to blocksize...
 			if (iStartPosition == 1) { //Disable first and previous
-				menu_toolbarEnableItem("mnutoolFirstRecord", false);
-				menu_toolbarEnableItem("mnutoolPreviousRecord", false);
-				menu_toolbarEnableItem("mnutoolNextRecord", true);
-				menu_toolbarEnableItem("mnutoolLastRecord", true);
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
 			} else if (iEndPosition == sRecords) { //Disable next and last
-				menu_toolbarEnableItem("mnutoolFirstRecord", true);
-				menu_toolbarEnableItem("mnutoolPreviousRecord", true);
-				menu_toolbarEnableItem("mnutoolNextRecord", false);
-				menu_toolbarEnableItem("mnutoolLastRecord", false);
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
 			}
 			else { //Enable all
-				menu_toolbarEnableItem("mnutoolFirstRecord", true);
-				menu_toolbarEnableItem("mnutoolPreviousRecord", true);
-				menu_toolbarEnableItem("mnutoolNextRecord", true);
-				menu_toolbarEnableItem("mnutoolLastRecord", true);
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
 			}
 		} else { //Disable all
-			menu_toolbarEnableItem("mnutoolFirstRecord", false);
-			menu_toolbarEnableItem("mnutoolPreviousRecord", false);
-			menu_toolbarEnableItem("mnutoolNextRecord", false);
-			menu_toolbarEnableItem("mnutoolLastRecord", false);
+			menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
 		}
 		
 		return true;
@@ -263,13 +277,13 @@
 		frmLog.cboMode.style.color = 'black';
 		frmLog.cboStatus.style.color = 'black';
 
-		refreshButtons();
-
 		//Set the event log loaded flag, used in the menu
 		frmLog.txtELLoaded.value = 1;
 
 		// Get menu to refresh the menu.
 		menu_refreshMenu();
+
+		EventLog_refreshButtons();
 
 		refreshStatusBar();
 
@@ -323,14 +337,15 @@
 		frmGetDataForm.txtELOrderColumn.value = frmLog.txtELOrderColumn.value;
 		frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value;
 
-		refreshButtons();
+		EventLog_refreshButtons();
 		OpenHR.submitForm(frmGetDataForm);
 
 	}
 
-	function viewEvent() {
+	function EventLog_viewEvent() {
 		var sURL;
 
+		
 		if (frmLog.ssOleDBGridEventLog.Rows > 0 && frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1) {
 			frmDetails.txtEventID.value = frmLog.ssOleDBGridEventLog.Columns(0).text;
 
@@ -374,10 +389,10 @@
 			openDialog(sURL, 900, 770);
 		}
 
-		refreshButtons();
+		EventLog_refreshButtons();
 	}
 
-	function deleteEvent() {
+	function EventLog_deleteEvent() {
 		var sURL;
 
 		sURL = "eventLogSelection" +
@@ -400,7 +415,7 @@
 		openDialog(sURL, 600, 220);
 	}
 
-	function purgeEvent() {
+	function EventLog_purgeEvent() {
 		var sURL;
 
 		sURL = "EventLogPurge" +
@@ -424,7 +439,7 @@
 
 	}
 
-	function emailEvent() {
+	function EventLog_emailEvent() {
 		var eventID;
 		var sEventList = new String("");
 		var sURL;
@@ -447,36 +462,40 @@
 		openDialog(sURL, 500, 400);
 	}
 
-	function refreshButtons() {
+	function EventLog_refreshButtons() {
 		with (frmLog.ssOleDBGridEventLog) {
-			if (Rows > 0) {
-				button_disable(frmLog.cmdView, false);
-			}
-			else {
-				button_disable(frmLog.cmdView, true);
-			}
+			menu_enableMenuItem("mnutoolViewEventLogFind", (Rows > 0) );
+			//if (Rows > 0) {
+			//	button_disable(frmLog.cmdView, false);
+			//}
+			//else {
+			//	button_disable(frmLog.cmdView, true);
+			//}
 
 
-			if ((frmLog.txtELPurgePermission.value == 1)) {
-				button_disable(frmLog.cmdPurge, false);
-			}
-			else {
-				button_disable(frmLog.cmdPurge, true);
-			}
+			menu_enableMenuItem("mnutoolPurgeEventLogFind", (frmLog.txtELPurgePermission.value == 1) );
+			//if ((frmLog.txtELPurgePermission.value == 1)) {
+			//	button_disable(frmLog.cmdPurge, false);
+			//}
+			//else {
+			//	button_disable(frmLog.cmdPurge, true);
+			//}
 
-			if ((Rows > 0) && (frmLog.txtELDeletePermission.value == 1)) {
-				button_disable(frmLog.cmdDelete, false);
-			}
-			else {
-				button_disable(frmLog.cmdDelete, true);
-			}
+			menu_enableMenuItem("mnutoolDeleteEventLogFind", ((Rows > 0) && (frmLog.txtELDeletePermission.value == 1)) );
+			//if ((Rows > 0) && (frmLog.txtELDeletePermission.value == 1)) {
+			//	button_disable(frmLog.cmdDelete, false);
+			//}
+			//else {
+			//	button_disable(frmLog.cmdDelete, true);
+			//}
 
-			if ((SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == 1)) {
-				button_disable(frmLog.cmdEmail, false);
-			}
-			else {
-				button_disable(frmLog.cmdEmail, true);
-			}
+			menu_enableMenuItem("mnutoolEmailEventLogFind", ((SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == 1)) );
+			//if ((SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == 1)) {
+			//	button_disable(frmLog.cmdEmail, false);
+			//}
+			//else {
+			//	button_disable(frmLog.cmdEmail, true);
+			//}
 		}
 	}
 
@@ -539,7 +558,7 @@
 			oOption.selected = true;
 		}
 
-		refreshButtons();
+		EventLog_refreshButtons();
 
 		refreshGrid();
 	}
@@ -597,7 +616,7 @@
 <form id="frmLog">
 	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 		<tr>
-			<td>
+			<tr>
 				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 					<tr height="5">
 						<td colspan="3"></td>
@@ -1060,11 +1079,11 @@
 											<tr>
 												<td width="10">
 													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80"
-														onclick="viewEvent();"
+														<%--onclick="viewEvent();"
 														onmouseover="try{button_onMouseOver(this);}catch(e){}"
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
 														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1073,11 +1092,11 @@
 											<tr>
 												<td width="10">
 													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80"
-														onclick="deleteEvent();"
+														<%--onclick="deleteEvent();"
 														onmouseover="try{button_onMouseOver(this);}catch(e){}"
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
 														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1086,11 +1105,11 @@
 											<tr>
 												<td width="10">
 													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80"
-														onclick="purgeEvent();"
+														<%--onclick="purgeEvent();"
 														onmouseover="try{button_onMouseOver(this);}catch(e){}"
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
 														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1099,11 +1118,11 @@
 											<tr>
 												<td width="10">
 													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80"
-														onclick="emailEvent();"
+														<%--onclick="emailEvent();"
 														onmouseover="try{button_onMouseOver(this);}catch(e){}"
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
 														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 										</table>
@@ -1116,18 +1135,17 @@
 					</tr>
 					<tr height="8">
 						<td width="5"></td>
-						<td colspan="1">
+						<tr colspan="1">
 							<table width="100%" class="invisible" cellspacing="0" cellpadding="1">
 								<tr>
 									<td name="sbEventLog" id="sbEventLog">&nbsp
 									</td>
-						</td>
+						</tr>
 				</table>
-			</td>
+			</tr>
 			<td width="5"></td>
 		</tr>
 	</table>
-	</td>
 	</tr> 
 </TABLE>
 
@@ -1270,26 +1288,35 @@
 
 	function ssOleDBGridEventLog_dblclick() {
 		if ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)) {
-			viewEvent();
+			EventLog_viewEvent();
 		}
 	}
 
 	function ssOleDBGridEventLog_rowcolchange() {
-		if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) {
-			button_disable(frmLog.cmdView, true);
-		}
-		else {
-			button_disable(frmLog.cmdView, false);
-		}
+
+		menu_enableMenuItem("mnutoolViewEventLogFind", frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1);
+		
+		//if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) {
+		//	button_disable(frmLog.cmdView, true);
+		//}
+		//else {
+		//	button_disable(frmLog.cmdView, false);
+		//}
 	}
 
 	function ssOleDBGridEventLog_click() {
-		if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) {
-			button_disable(frmLog.cmdView, true);
-		}
-		else {
-			button_disable(frmLog.cmdView, false);
-		}
+		
+		menu_enableMenuItem("mnutoolViewEventLogFind",
+												(!(frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)));
+
+		//if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) {
+		//	//button_disable(frmLog.cmdView, true);
+		//	$("#mnutoolViewEventLogFind").disable();
+		//}
+		//else {
+		//	//button_disable(frmLog.cmdView, false);
+		//	$("#mnutoolViewEventLogFind").enable();
+		//}
 	}
 
 	function ssOleDBGridEventLog_headclick() {

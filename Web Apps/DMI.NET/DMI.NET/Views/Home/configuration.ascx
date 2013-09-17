@@ -362,6 +362,8 @@
 
 //        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
+				showDefaultRibbon();
+
 				// Load the original values into tab 1.
 				setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
 				setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
@@ -400,21 +402,29 @@
 				//frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
 				//frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
-				display_Config_Page(1);
+				display_Configuration_Page(1);
 
+				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+			  // $('#mnutoolSaveAdminConfig').click('okClick()');
+
+				$("#toolbarAdminConfig").parent().show();
+				$("#toolbarAdminConfig").click();
 		}
 </script>
 
 
 <script type="text/javascript">
 
-		function display_Config_Page(piPageNumber) {
+		function display_Configuration_Page(piPageNumber) {
 
 				if (piPageNumber == 1) {
 						div1.style.visibility = "visible";
 						div1.style.display = "block";
 						div2.style.visibility = "hidden";
 						div2.style.display = "none";
+						$('#btnDiv1OK').hide();
+						$('#btnDiv1Cancel').hide();
+
 
 						frmConfiguration.cboPrimaryTableDisplay.focus();
 				}
@@ -424,6 +434,8 @@
 						div1.style.display = "none";
 						div2.style.visibility = "visible";
 						div2.style.display = "block";
+						$('#btnDiv2OK').hide();
+						$('#btnDiv2Cancel').hide();
 				}
 		}
 
@@ -555,7 +567,7 @@
 				if (isNaN(sConvertedFindSize) == true) {
 						OpenHR.messageBox("Find window block size must be numeric.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Config_Page(1);
+						display_Configuration_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -563,7 +575,7 @@
 				if (frmConfiguration.txtFindSize.value <= 0) {
 						OpenHR.messageBox("Find window block size must be greater than 0.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Config_Page(1);
+						display_Configuration_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -572,7 +584,7 @@
 				if (sConvertedFindSize.indexOf(".") >= 0) {
 						OpenHR.messageBox("Find window block size must be an integer value.");
 						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Config_Page(1);
+						display_Configuration_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -581,7 +593,7 @@
 				if (iValue > 100000) {
 						OpenHR.messageBox("Find window block size cannot be greater than 100000.");
 						frmConfiguration.txtFindSize.value = "100000";
-						display_Config_Page(1);
+						display_Configuration_Page(1);
 						frmConfiguration.txtFindSize.focus();
 						return false;
 				}
@@ -591,13 +603,14 @@
 				return true;
 		}
 
-		function okClick() {
+		function Configuration_okClick() {
 				frmConfiguration.txtReaction.value = "DEFAULT";
 				saveConfiguration();
 		}
 
 		/* Return to the default page. */
 		function cancelClick() {
+			/* ------------------------------------ Not used anymore ---------------------------------------------------
 				if (definitionChanged() == false) {
 						window.location.href = "main";
 						return;
@@ -614,9 +627,11 @@
 						frmConfiguration.txtReaction.value = "DEFAULT";
 						saveConfiguration();
 				}
+				-----------------------------------------------------------------------------------------------------------*/
 		}
 
 		function saveChanges(psAction, pfPrompt, pfTBOverride) {
+			
 				if (definitionChanged() == false) {
 						return 7; //No to saving the changes, as none have been made.
 				}
@@ -630,6 +645,7 @@
 						// Yes
 						frmConfiguration.txtReaction.value = psAction;
 						saveConfiguration();
+					//TODO: don't show a confirmation message after saving
 				}
 
 				return 2; //Cancel.
@@ -774,7 +790,11 @@
 										<td width=10></td>
 										<TD width=10>
 												<INPUT type="button" value="Reports/Utilities & Tools" id=btnTab2 name=btnTab2 class="btn" 
-														onclick="display_Config_Page(2)"/>
+														onclick=" display_Configuration_Page(2)"
+																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																					onfocus="try{button_onFocus(this);}catch(e){}"
+																					onblur="try{button_onBlur(this);}catch(e){}" />
 										</TD>
 									</TR>
 								</TABLE>
@@ -969,20 +989,22 @@
 									<TD>&nbsp;</TD>
 									<TD width=75>
 										<input id="btnDiv1OK" name="btnDiv1OK" type="button" value="OK" class="btn" style="WIDTH: 75px" width="75" 
-												onclick="okClick()"
+<%--												onclick="okClick()"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onblur="try{button_onBlur(this);}catch(e){}" --%>
+																			/>
 									</TD>
 									<TD width=20></TD>
 									<TD width=75>
 										<input id="btnDiv1Cancel" name="btnDiv1Cancel" type="button" value="Cancel" class="btn" style="WIDTH: 75px" width="75" 
-												onclick="cancelClick()"
+<%--												onclick="cancelClick()"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onblur="try{button_onBlur(this);}catch(e){}" --%>
+																			/>
 									</TD>
 									<td width=20>
 									</td>
@@ -1014,7 +1036,11 @@
 									<TR>
 										<TD width=10>
 												<INPUT type="button" value="Display Defaults" id=btnTab1 name=btnTab1 class="btn"
-														onclick="display_Config_Page(1)" />
+														onclick=" display_Configuration_Page(1)" 
+																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																					onfocus="try{button_onFocus(this);}catch(e){}"
+																					onblur="try{button_onBlur(this);}catch(e){}" />
 										</TD>
 										<td width=10></td>
 										<TD width=10>
@@ -1204,20 +1230,26 @@
 									<TD>&nbsp;</TD>
 									<TD width=80>
 										<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75" 
-												onclick="okClick()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+											<%--
+											onclick = "okClick()"
+											onmouseover = "try{button_onMouseOver(this);}catch(e){}"
+											onmouseout = "try{button_onMouseOut(this);}catch(e){}"
+											onfocus = "try{button_onFocus(this);}catch(e){}"
+											onblur = "try{button_onBlur(this);}catch(e){}"
+											--%>
+ 											/>
 									</TD>
 									<TD width=20></TD>
 									<TD width=80>
 										<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-												onclick="cancelClick()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+											<%--
+											onclick = "cancelClick()"
+											onmouseover = "try{button_onMouseOver(this);}catch(e){}"
+											onmouseout = "try{button_onMouseOut(this);}catch(e){}"
+											onfocus = "try{button_onFocus(this);}catch(e){}"
+											onblur = "try{button_onBlur(this);}catch(e){}"
+											--%>
+											/>
 									</TD>
 									<td width=20>
 									</td>

@@ -545,6 +545,25 @@ function menu_MenuClick(sTool) {
 		}
 	}
 
+	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
+	if (sToolName == 'mnutoolSaveReport') {
+		try {
+			$("#cmdOK").click();
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+
+	if (sToolName == 'mnutoolCancelReport') {
+		try {
+			$("#cmdCancel").click();
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+
 
 	if (sToolName == "mnutoolOrgChart") {
 		//window.location.href = "OrgChart";		
@@ -880,27 +899,55 @@ function menu_MenuClick(sTool) {
 			return;
 		}
 
+	// Administration Menu -------------------------------------------------------------------------------------------------------------------
+
+	// Event Log
+	
+		if (sToolName == "mnutoolEventLog") {
+			if (menu_saveChanges("EVENTLOG", true, false) != 2) {
+				menu_loadPage("eventLog");
+			}
+			return;
+		}
+
+		if (sToolName == "mnutoolViewEventLogFind") {
+			EventLog_viewEvent();
+		}
+	
+		if (sToolName == "mnutoolPurgeEventLogFind") {
+			EventLog_purgeEvent();
+		}
+
+		if (sToolName == "mnutoolEmailEventLogFind") {
+			EventLog_emailEvent();
+		}
+
+		if (sToolName == "mnutoolDeleteEventLogFind") {
+			EventLog_deleteEvent();
+		}
+
+
+	  // User Config and PC Config
+		if (sToolName == "mnutoolSaveAdminConfig") {
+			Configuration_okClick();
+			return;
+		}
+
+	//--------------------------------------------------------------------------------------------------------------
 		
 		// TODO: The following handlers need to be fixed or may be redundant
 
 
-		if (sToolName == "mnutoolWorkflowPendingSteps") {
+	if (sToolName == "mnutoolWorkflowPendingSteps") {
 			if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
 				menu_autoLoadPage("workflowPendingSteps", false);
-			}
+		}
 			return;
 		}
 
 	if (sToolName == "mnutoolWorkflowOutOfOffice") {
 			if (menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
 				menu_WorkflowOutOfOffice();
-		}
-			return;
-		}
-
-	if (sToolName == "mnutoolEventLog") {
-			if (menu_saveChanges("EVENTLOG", true, false) != 2) {
-			menu_loadPage("eventLog");
 		}
 			return;
 		}
@@ -1221,6 +1268,7 @@ function menu_refreshMenu() {
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 	
+
 		if (sCurrentWorkPage == "DEFAULT") {
 				showDefaultRibbon();
 		}
@@ -1799,6 +1847,12 @@ function menu_refreshMenu() {
 								menu_enableMenuItem("mnutoolLastEventLogFind", bLastPage.toUpperCase() == "FALSE");
 							}
 						}
+		else {
+			if ((sCurrentWorkPage == "PCCONFIGURATION") ||
+			    (sCurrentWorkPage == "CONFIGURATION")) {
+				// handled in configuration.configuration_window_onload()
+			}
+	}
 					}
 				}
 			}
@@ -3542,8 +3596,8 @@ function menu_moveRecord(psMovement) {
 	sSaveChangesTag = psMovement;
 	sAction = psMovement;
 	
-	if (sCurrentWorkPage == "EVENTLOG")	{
-		eventlog_moveRecord(psMovement);  //should be in scope.
+	if (sCurrentWorkPage == "EVENTLOG") {
+		EventLog_moveRecord(psMovement);  //should be in scope.
 		return;
 	}
 	

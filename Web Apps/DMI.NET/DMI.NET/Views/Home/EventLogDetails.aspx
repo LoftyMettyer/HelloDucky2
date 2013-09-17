@@ -356,7 +356,7 @@
 																			<input id="cmdPrint"  type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent(true);" />
 																		</td>
 																		<td width="5">
-																			<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="OK" name="cmdOK" style="width: 80px" onclick="okClick();" />
+																			<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Close" name="cmdOK" style="width: 80px" onclick="okClick();" />
 																		</td>
 																	</tr>
 																</table>
