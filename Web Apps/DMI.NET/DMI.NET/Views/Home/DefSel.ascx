@@ -2,6 +2,8 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
 
+<%="" %>
+
 <%
 	Dim fGotId As Boolean
 	Dim sTemp As String
@@ -206,7 +208,7 @@
 				frmDefSel.txtDescription.value = selectedRecordDetails("description");
 
 				// Populate the hidden fields with the selected utils information       
-				frmDefSel.utilid.value = selectedRecordDetails("ID");
+				frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
 				frmDefSel.utilname.value = selectedRecordDetails("Name");
 
 				// Check for RO access and set EDIT/VIEW caption as appropriate
@@ -312,20 +314,20 @@
 				frmDefSel.cmdCancel.focus();
 
 				refreshControls();
-			
+
 				if (rowCount() > 0) {
-					moveFirst();
+
+					<% if Session("utilid").ToString() > 0 then %>
+						$("#DefSelRecords").setSelection(<% =Session("utilid").ToString()%>);					
+					<% else %>
+						var firstid = $("#DefSelRecords").getDataIDs()[0];
+						$("#DefSelRecords").setSelection(firstid);
+					<% end If %>				
+					
 				}
-				//else {
-				//	//enable the new button.
-				//	menu_toolbarEnableItem("mnutoolNewUtil", true);
-				//}
 
 		}
 
-		function moveFirst() {
-			$("#DefSelRecords").jqGrid('setSelection', 1);
-		}
 
 		function rowCount() {
 			return $("#DefSelRecords tr").length - 1;
@@ -778,6 +780,7 @@
 		}
 
 		function setedit() {
+
 			if (!$("#mnutoolEditUtil").hasClass("disabled")) {
 				var frmDefSel = document.getElementById('frmDefSel');
 
@@ -1132,53 +1135,51 @@
 																									 
 																										If Len(sErrorDescription) = 0 Then
 																												' Instantiate and initialise the grid. 
-																												Response.Write("<table class='outline' style='width : 100%; ' id='DefSelRecords'>" & vbCrLf)
-																												Response.Write("<tr class='header'>" & vbCrLf)
-						
-																												For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
+																									Response.Write("<table class='outline' style='width : 100%; ' id='DefSelRecords'>" & vbCrLf)																									
+																									Response.Write("<tr class='header'>" & vbCrLf)																								
+																									Response.Write("<th style='display: none;'>ID</th>")
+																									
+																									For iLoop = 0 To (rstDefSelRecords.Fields.Count - 1)
 								
-																														Dim headerStyle As New StringBuilder
-																														Dim headerCaption As String
+																										Dim headerStyle As New StringBuilder
+																										Dim headerCaption As String
 								
-																														headerStyle.Append("width: 373px; ")
+																										If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then
+																											headerStyle.Append("width: 373px; ")
 								
-																														If rstDefSelRecords.fields(iLoop).name <> "Name" Then
-																																headerStyle.Append("display: none; ")
-																														End If
+																											If rstDefSelRecords.Fields(iLoop).Name <> "Name" Then
+																												headerStyle.Append("display: none; ")
+																											End If
 
-																														headerCaption = Replace(rstDefSelRecords.fields(iLoop).name.ToString(), "_", " ")
-																														headerStyle.Append("text-align: left; ")
+																											headerCaption = Replace(rstDefSelRecords.Fields(iLoop).Name.ToString(), "_", " ")
+																											headerStyle.Append("text-align: left; ")
 						
-																														Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
-								
-																												Next
+																											Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
+																										End If
+																									Next
 
-																												Response.Write("</tr>")
+																									Response.Write("</tr>")
 						
 																												Dim lngRowCount = 0
 																												Do While Not rstDefSelRecords.EOF
 																														Dim sAddString = ""
 																														Dim iLoop As Integer = 0
-																	
-																														Dim iIDNumber As Integer = 0
 
-																														For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
-																																If rstDefSelRecords.fields(iLoop).name = "ID" Then
-																																		iIDNumber = rstDefSelRecords.fields(iLoop).Value
-																																		Exit For
-																																End If
-																														Next
+																										Dim IDRowNumber As Long = rstDefSelRecords.Fields("ID").Value
 								
-																														Response.Write("<tr disabled='disabled' id='row_" & iIDNumber.ToString() & "'>")
-																														For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
-																											sAddString = Replace(Replace(CStr(rstDefSelRecords.Fields(iLoop).Value), "_", " "), Chr(34), "&quot;")
-									 
-																																Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.fields(iLoop).name & "' type='hidden' value='" & sAddString & "'></td>")
-										
-																														Next
+
+																										Response.Write("<tr disabled='disabled' id='" & IDRowNumber & "'>")
+																										Response.Write("<td><input type='radio' id='sel' value='" & IDRowNumber & "'></td>")
+																										
+																										For iLoop = 0 To (rstDefSelRecords.Fields.Count - 1)
+																											If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then
+																												sAddString = Replace(Replace(CStr(rstDefSelRecords.Fields(iLoop).Value), "_", " "), Chr(34), "&quot;")									 
+																												Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.Fields(iLoop).Name & "' type='hidden' value='" & sAddString & "'></td>")
+																											End If
+																										Next
 
 																														Response.Write("</tr>")
-																										Response.Write("<input type='hidden' id=txtAddString_" & lngRowCount & " name=txtAddString_" & lngRowCount & " value=""" & sAddString & """>" & vbCrLf)
+																										'																										Response.Write("<input type='hidden' id=txtAddString_" & lngRowCount & " name=txtAddString_" & lngRowCount & " value=""" & sAddString & """>" & vbCrLf)
 
 																														lngRowCount = lngRowCount + 1
 																														rstDefSelRecords.MoveNext()

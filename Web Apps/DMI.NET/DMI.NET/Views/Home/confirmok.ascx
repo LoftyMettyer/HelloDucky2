@@ -199,5 +199,6 @@
 </form>
 
 <script type="text/javascript">
-    confirmok_window_onload();
+	confirmok_window_onload();
+	confirmok_okClick();
 </script>
