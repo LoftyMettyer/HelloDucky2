@@ -3,53 +3,53 @@
 <%@ import Namespace="System.Web.Configuration" %>
 
 <script runat="server">
-    Private _txtDatabaseValue As String = "" 'To set the value of the txtDatabase input tag
-    Private _txtServerValue As String = "" 'To set the value of the txtServer input tag
-    
-    Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
-        'If no query string is present, hide the "Details" button and the Database and Server labels and input box controls
-        If Request.QueryString.Count = 0 Then
-            btnToggleDetailsDiv.Attributes.Add("style", "display: none")
-            DatabaseTextLabelDiv.Attributes.Add("style", "display: none")
-            DatabaseTextValueDiv.Attributes.Add("style", "display: none")
-            ServerTextLabelDiv.Attributes.Add("style", "display: none")
-            ServerTextValueDiv.Attributes.Add("style", "display: none")
-        Else 'Override database or server if a value is provided in the querystring
-            If Not String.IsNullOrEmpty(Request.QueryString("database")) Then
-                _txtDatabaseValue = Server.HtmlDecode(Request.QueryString("database"))
-            End If
-            If Not String.IsNullOrEmpty(Request.QueryString("server")) Then
-                _txtServerValue = Server.HtmlDecode(Request.QueryString("server"))
-            End If
-        End If
+		Private _txtDatabaseValue As String = "" 'To set the value of the txtDatabase input tag
+		Private _txtServerValue As String = "" 'To set the value of the txtServer input tag
+		
+		Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+				'If no query string is present, hide the "Details" button and the Database and Server labels and input box controls
+				If Request.QueryString.Count = 0 Then
+						btnToggleDetailsDiv.Attributes.Add("style", "display: none")
+						DatabaseTextLabelDiv.Attributes.Add("style", "display: none")
+						DatabaseTextValueDiv.Attributes.Add("style", "display: none")
+						ServerTextLabelDiv.Attributes.Add("style", "display: none")
+						ServerTextValueDiv.Attributes.Add("style", "display: none")
+				Else 'Override database or server if a value is provided in the querystring
+						If Not String.IsNullOrEmpty(Request.QueryString("database")) Then
+								_txtDatabaseValue = Server.HtmlDecode(Request.QueryString("database"))
+						End If
+						If Not String.IsNullOrEmpty(Request.QueryString("server")) Then
+								_txtServerValue = Server.HtmlDecode(Request.QueryString("server"))
+						End If
+				End If
 
-        'If no override values were provided in the querystring, use default values from web.config
-        If String.IsNullOrEmpty(_txtDatabaseValue) Then
-            _txtDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")
-        End If
-        If String.IsNullOrEmpty(_txtServerValue) Then
-            _txtServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")
-        End If
-    End Sub
+				'If no override values were provided in the querystring, use default values from web.config
+				If String.IsNullOrEmpty(_txtDatabaseValue) Then
+						_txtDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")
+				End If
+				If String.IsNullOrEmpty(_txtServerValue) Then
+						_txtServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")
+				End If
+		End Sub
 </script>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    <%= GetPageTitle("Login") %>    
+		<%= GetPageTitle("Login") %>    
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
 <%	
 	On Error Resume Next            
-    
+		
 	Dim sBrowserInfo As String
-	  
-    ' Ensure the database connection object is closed.
-    Dim conX = Session("databaseConnection")
-    If Not conX Is Nothing Then
-        conX.Close()
-    End If
-    conX = Nothing
+		
+		' Ensure the database connection object is closed.
+		Dim conX = Session("databaseConnection")
+		If Not conX Is Nothing Then
+				conX.Close()
+		End If
+		conX = Nothing
 
 	Session("databaseConnection") = Nothing
 	session("action") = ""
@@ -197,7 +197,7 @@
 		var fLoginOK;
 		var sWindowsAuthentication;
 		var frmLoginForm = document.getElementById('frmLoginForm');
-
+	
 		fLoginOK = true;
 		frmLoginForm.txtUserNameCopy.value = frmLoginForm.txtUserName.value;
 		sUserName = frmLoginForm.txtUserName.value;
@@ -257,8 +257,8 @@
 
 			//Splash
 			$(".splashDiv").show();
-            
-		    frmLoginForm.submit();			
+						
+				frmLoginForm.submit();			
 
 		}
 
@@ -337,6 +337,40 @@
 		trDetails2.style.visibility = sVisibility;
 		trDetails2.style.display = sDisplay;
 	}
+	
+	function updateViews() {
+		$('.header-banner').toggle();
+		$('.ui-widget-header').toggle();
+		$('.loginframetheme img').toggle();
+		$('.loginframetheme img').toggle();
+		$('.verticalpadding200').toggle();
+		$('.loginframetheme img').toggle();		
+	}	
+
+
+	$(document).ready(function () {
+		toggleChromeIfAndroid();
+	});
+
+
+	function toggleChromeIfAndroid() {
+		var is_keyboard = false;
+		var is_landscape = false;
+		var initial_screen_size = window.innerHeight;
+		/* Android */
+		var ua = navigator.userAgent.toLowerCase();		
+		isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+		if (isAndroid) {
+			//remove some padding
+			window.addEventListener("resize", function () {
+				is_keyboard = (window.innerHeight < initial_screen_size);
+				is_landscape = (screen.height < screen.width);
+				updateViews();
+			}, false);
+			$('.android-padding').toggle();
+		}
+	}
+
 </script>
 
 <div style="scroll:auto" class="COAwallpapered ui-widget-content" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0" class="ui-widget">
@@ -347,11 +381,11 @@
 		<td>
 			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
 				<tr style="height:40px"> 
-			    <td align=right>
-            <img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();"
-            onmouseover="this.style.cursor='pointer'; this.style.color='<%=session("Config-hypertextlinktext-highlightcolour")%>';" 
+					<td align=right>
+						<img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();"
+						onmouseover="this.style.cursor='pointer'; this.style.color='<%=session("Config-hypertextlinktext-highlightcolour")%>';" 
 													 onmouseout="this.style.color=''" 
-            onclick="HelpAbout();">			      
+						onclick="HelpAbout();">			      
 					</td>
 				</tr>
 			</table>
@@ -359,195 +393,195 @@
 	</tr>
 </table>
 <div class="verticalpadding200"></div>
-    <table CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
-        <tr> 
-            <TD width=15 height="15"></TD>
-            <td colSpan=3 height="15">&nbsp;</td>
-            <TD width=15 height="15"></TD>
-        </tr>
-        <tr>
-          <td height=40></td>
-        </tr>
-        <tr> 
-            <TD width=15></TD>
-            <td colSpan=3> 
-                <p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/COAInt_Splash.png")%>" width=410></p>
-            </td>
-            <TD width=15></TD>
-        </tr>
-	    <tr height=10>
-		    <td colSpan=5></td>
-    	</tr>
-	    <tr  class="" height=10>
-		    <TD width=15></TD>
-		    <td colSpan=3 style="font-weight: bold;" align=center>Version <%=session("Version")%></td>
-		    <TD width=15></TD>
-	    </tr>
-	    <tr height=10>
-		    <td colSpan=5></td>
-	    </tr>
+		<table CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
+				<tr class="android-padding"> 
+						<TD width=15 height="15"></TD>
+						<td colSpan=3 height="15">&nbsp;</td>
+						<TD width=15 height="15"></TD>
+				</tr>
+				<tr class="android-padding">
+					<td height=40></td>
+				</tr>
+				<tr> 
+						<TD width=15></TD>
+						<td colSpan=3> 
+								<p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/COAInt_Splash.png")%>" width=410></p>
+						</td>
+						<TD width=15></TD>
+				</tr>
+			<tr height=10 class="android-padding">
+				<td colSpan=5></td>
+			</tr>
+			<tr  class="android-padding" height=10>
+				<TD width=15></TD>
+				<td colSpan=3 style="font-weight: bold;" align=center>Version <%=session("Version")%></td>
+				<TD width=15></TD>
+			</tr>
+			<tr height=10 class="android-padding">
+				<td colSpan=5></td>
+			</tr>
 <%
 	If (Session("MSBrowser") = True) And (Session("IEVersion") < 9.0) Then
 %>
-        <tr height=10>
-	        <td colSpan=5></td>
-	    </tr>
-	    <tr height=10>
-		    <td width=15></td>
-		    <td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 9 or later.</td>
-    		<td width=15></td>
-	    </tr>
+				<tr height=10>
+					<td colSpan=5></td>
+			</tr>
+			<tr height=10>
+				<td width=15></td>
+				<td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 9 or later.</td>
+				<td width=15></td>
+			</tr>
 <%
 Else
 	If Len(Session("version")) = 0 Then
 %>
-	    <tr height=10>
-		    <td colSpan=5></td>
-	    </tr>
-	    <tr class="" height=10>
-		    <td width=15></td>
-		    <td style="font-weight: bold;"  colSpan=3 >Unable to determine the intranet version.</td>
-		    <td width=15></td>
-	    </tr>
-	    <tr  class="" height=10>
-		    <td width=15></td>
-		    <td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your intranet web server.</td>
-		    <td width=15></td>" & vbcrlf
-	    </tr>
+			<tr height=10>
+				<td colSpan=5></td>
+			</tr>
+			<tr class="" height=10>
+				<td width=15></td>
+				<td style="font-weight: bold;"  colSpan=3 >Unable to determine the intranet version.</td>
+				<td width=15></td>
+			</tr>
+			<tr  class="" height=10>
+				<td width=15></td>
+				<td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your intranet web server.</td>
+				<td width=15></td>" & vbcrlf
+			</tr>
 <%
 		else
 %>
-        <tr style="height: 10px">
-		    <td style="height: 15px"></td>
-		    <td colspan="3">
-			    <table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
-			        <tr class="" style="display: block;">
-			            <td style="font-weight:bold; width: 100px;">User name :</td>
-			            <td style="width: 10px"></td>
-			            <td style="width: 200px;">
+				<tr style="height: 10px">
+				<td style="height: 15px"></td>
+				<td colspan="3">
+					<table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
+							<tr class="" style="display: block;">
+									<td style="font-weight:bold; width: 120px;">User name :</td>
+									<td style="width: 10px"></td>
+									<td style="width: 200px;">
 								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; " onkeypress="CheckKeyPressed(event)"/>
-				        <input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
-			            </td>
-			            
-        		    </tr>
-    			    <tr class="" style="display:block;">
-	    		        <td style="font-weight:bold; width: 100px;">Password :</td>
-			            <td style="width: 10px">
+								<input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
+									</td>
+									
+								</tr>
+							<tr class="" style="display:block;">
+									<td style="font-weight:bold; width: 120px;">Password :</td>
+									<td style="width: 10px">
 							</td>
-			            <td style="width: 200px;">
+									<td style="width: 200px;">
 
 								<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%; " onkeypress="CheckKeyPressed(event);"/>
-			            </td>
-    			    </tr>
+									</td>
+							</tr>
 
-	    		    <tr class="" >
+							<tr class="" >
 <%
 			if Request.ServerVariables("LOGON_USER") <> "" then
 %>			
-		    		    <td style="font-weight: bold;" colspan="3" >
-		    		        <input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
-		    		            onclick="ToggleWindowsAuthentication()"/> 
-				            <label 
-				                for="chkWindowsAuthentication"
-				                class="checkbox"
-				                tabindex="0"
-			                    onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-					            onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-					            onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-		                        onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-		                        onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-	    	    		        Use Windows Authentication
-    		    		    </label>
-		    		    </td>
-				        <td></td>
-				        <td></td>
+								<td style="font-weight: bold;" colspan="3" >
+										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
+												onclick="ToggleWindowsAuthentication()"/> 
+										<label 
+												for="chkWindowsAuthentication"
+												class="checkbox"
+												tabindex="0"
+													onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+											onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+											onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+														onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+														onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+												Use Windows Authentication
+										</label>
+								</td>
+								<td></td>
+								<td></td>
 <%
 			else
 %>
-				        <td class="" colspan="3" >
-				            <input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
-				        </td>
+								<td class="" colspan="3" >
+										<input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
+								</td>
 <%
 			end if 
 %>
-                 </tr>
+								 </tr>
 
-			            <tr class="" style="visibility:hidden;display:none" id="trDetails1">
-			                <td style="width: 100px;font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
-			                <td style="width: 10px">
-							    </td>
-			                <td style="width: 200px;">
-                                <div id="DatabaseTextValueDiv" runat="server">
-                                    <input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
-                                </div>
-			                </td>
-			            </tr>
-                    
-			        <tr class="" style="visibility:hidden;display:none" id="trDetails2">
-			            <td style="width: 100px;font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
-			            <td style="width: 10px">
+									<tr class="" style="visibility:hidden;display:none" id="trDetails1">
+											<td style="width: 120px;font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
+											<td style="width: 10px">
+									</td>
+											<td style="width: 200px;">
+																<div id="DatabaseTextValueDiv" runat="server">
+																		<input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
+																</div>
+											</td>
+									</tr>
+										
+							<tr class="" style="visibility:hidden;display:none" id="trDetails2">
+									<td style="width: 120px;font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
+									<td style="width: 10px">
 							</td>
-			            <td style="width: 200px;">
-                            <div id="ServerTextValueDiv" runat="server">
-                                <input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
-                            </div>
-			            </td>
-			        </tr>
-			    </table>
-	        </td>
-		    <td style="width:15px"></td>
-	    </tr>
+									<td style="width: 200px;">
+														<div id="ServerTextValueDiv" runat="server">
+																<input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
+														</div>
+									</td>
+							</tr>
+					</table>
+					</td>
+				<td style="width:15px"></td>
+			</tr>
 	
-	    <tr height=10>
-	        <td colSpan=5></td>
-	    </tr>
+			<tr height=10>
+					<td colSpan=5></td>
+			</tr>
 
-    <tr height="10">
-        <td width="15"></td>
-        <td colspan="3">
-            <table border="0" cellspacing="0" cellpadding="0" align="center">
-                <tr>
-                    <td align="center">
-	                    <input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
-	                           onclick="SubmitLoginDetails()" value="Login"/>
-                    </td>
-                    <td width="10"></td>
-                    <td align="center">
-	                    <%--<input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;" onclick="CancelLogin()" value="Cancel"/>--%>
-                    </td>
-                    <td width="10"></td>
-                    <td align="center">
-                        <div id="btnToggleDetailsDiv" runat="server">
-	                        <input type="button" id="details" name="details" class="ui-button" style="" onclick="toggleDetails()" value="Details" />
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </td>
-        <td width="15"></td>
-    </tr>
+		<tr height="10">
+				<td width="15"></td>
+				<td colspan="3">
+						<table border="0" cellspacing="0" cellpadding="0" align="center">
+								<tr>
+										<td align="center">
+											<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
+														 onclick="SubmitLoginDetails()" value="Login"/>
+										</td>
+										<td width="10"></td>
+										<td align="center">
+											<%--<input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;" onclick="CancelLogin()" value="Cancel"/>--%>
+										</td>
+										<td width="10"></td>
+										<td align="center">
+												<div id="btnToggleDetailsDiv" runat="server">
+													<input type="button" id="details" name="details" class="ui-button" style="" onclick="toggleDetails()" value="Details" />
+												</div>
+										</td>
+								</tr>
+						</table>
+				</td>
+				<td width="15"></td>
+		</tr>
 <%
 End If
 End If
 %>
 
-	    <tr height=10>
-		    <td colSpan=5></td>
-	    </tr>
-	    <tr height=5>
-		    <td colSpan=5></td>
-	    </tr>   	
-	    <tr height=10>
-		    <td colSpan=5></td>
-	    </tr>
-    </table>
+			<tr height=10>
+				<td colSpan=5></td>
+			</tr>
+			<tr height=5>
+				<td colSpan=5></td>
+			</tr>   	
+			<tr height=10>
+				<td colSpan=5></td>
+			</tr>
+		</table>
 
 	<INPUT type="hidden" id=txtSetDetails name=txtSetDetails value="<%=Session("showLoginDetails")%>">
-   <INPUT type="hidden" id=txtLocaleDateFormat name=txtLocaleDateFormat>
-   <INPUT type="hidden" id=txtLocaleDateSeparator name=txtLocaleDateSeparator>
-   <INPUT type="hidden" id=txtLocaleDecimalSeparator name=txtLocaleDecimalSeparator>
-   <INPUT type="hidden" id=txtLocaleThousandSeparator name=txtLocaleThousandSeparator>
-   <INPUT type="hidden" id=txtSystemUser name=txtSystemUser value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
+	 <INPUT type="hidden" id=txtLocaleDateFormat name=txtLocaleDateFormat>
+	 <INPUT type="hidden" id=txtLocaleDateSeparator name=txtLocaleDateSeparator>
+	 <INPUT type="hidden" id=txtLocaleDecimalSeparator name=txtLocaleDecimalSeparator>
+	 <INPUT type="hidden" id=txtLocaleThousandSeparator name=txtLocaleThousandSeparator>
+	 <INPUT type="hidden" id=txtSystemUser name=txtSystemUser value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
 	<INPUT type="hidden" id=txtWordVer name=txtWordVer value="12">
 	<INPUT type="hidden" id=txtExcelVer name=txtExcelVer value="12">
 
@@ -560,6 +594,7 @@ End If
 		
 
 		window.onunload = function () { };
+
 	</script>	
 
 <%end if %>

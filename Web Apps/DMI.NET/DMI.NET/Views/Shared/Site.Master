@@ -80,14 +80,15 @@
 		Dim ua As String = Request.UserAgent
 		Dim currentTheme As String = "blue"
 		Dim currentLayout As String = "winkit"
-		
 		If Not ua = Nothing Then
-			If ua.Contains("iPhone") Or ua.Contains("iPad") Then
+			If ua.Contains("iPhone") Or ua.Contains("iPad") Or ua.Contains("Android") Then
 				currentTheme = "blue"
 				currentLayout = "tiles"				
+				Session("isMobileDevice") = True
 			End If
 		End If
 	%>
+
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
@@ -129,9 +130,8 @@
 
 
 	<script type="text/javascript">
-
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
-
+		
 		document.title = 'OpenHR v8.0';
 		
 		$(document).ready(function () {
@@ -186,7 +186,7 @@
 				//only load themes for linksMain.				
 				var cookieLayout = getCookie('Intranet_Layout');
 				if (cookieLayout === undefined || cookieLayout === "undefined" || cookieLayout.length <= 0) cookieLayout = "winkit";
-				window.currentLayout = cookieLayout;
+				if('<%=currentLayout%>' != 'tiles') window.currentLayout = cookieLayout;
 
 				var cookieTheme = getCookie('Intranet_Theme');
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
@@ -277,7 +277,6 @@
 		
 		window.currentTheme = "<%=currentTheme %>";
 		window.currentLayout = "<%=currentLayout %>";
-
 		function changeTheme(newThemeName) {
 			switch (newThemeName) {
 				case "theme-Red":

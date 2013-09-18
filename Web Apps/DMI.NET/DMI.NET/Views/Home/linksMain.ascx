@@ -141,7 +141,10 @@
 			window.setInterval("loadPartialView('poll', 'home')", 30000);
 
 			// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
-			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
+			if ('<%=session("isMobileDevice")%>' != "True") {				
+				setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
+			}
+			
 
 			//resize columns that have wide tiles
 			$("li[data-sizex='2']").each(function () {
@@ -169,19 +172,27 @@
 
 		function setupTiles() {
 			//apply the gridster functionality.
-			griditup(true);
+			//griditup(true);
 
-			//add mousewheel scrollability to the main content window
-			$(".DashContent").mousewheel(function (event, delta) {
-				this.scrollLeft -= (delta * 30);
-				event.preventDefault();
+			$('.gridster').each(function() {
+				var id = $(this).attr('id');
+				griditup(id, true);
 			});
-
+			
+			//add mousewheel scrollability to the main content window
+			if ('<%=session("isMobileDevice")%>' != "True") {
+				$(".DashContent").mousewheel(function(event, delta) {
+					this.scrollLeft -= (delta * 30);
+					event.preventDefault();
+				});
+			} else {
+				$('.DashContent').css('overflow-x', 'auto');
+			}
 		}
 
-		function griditup(mode) {
+		function griditup(objectID, mode) {
 			if (mode == true) {
-				$(".gridster ul").gridster({
+				$("#" + objectID + " > ul").gridster({
 					widget_margins: [5, 5],
 					widget_base_dimensions: [120, 120],
 					min_rows: 4,
@@ -189,11 +200,14 @@
 					avoid_overlapped_widgets: true,
 					draggable: {
 						start: function (event, ui) {
-							dragged = 1;
-							// DO SEOMETHING
+							//dragged = 1;
 						}
 					}
 				});
+				
+				var gridster = $("#" + objectID + " > ul").gridster().data('gridster');
+				gridster.disable();
+
 			}
 		}
 
@@ -380,7 +394,7 @@
 			<ul class="pendingworkflowsframe cols2">
 				<li class="pendingworkflowlink-displaytype">
 					<div class="wrapupcontainer"><div class="wrapuptext"><p class="pendingworkflowlinkseparator">To-do list (Pending workflows)</p></div></div>					
-					<div class="gridster pendingworkflowlinkcontent" >
+					<div class="gridster pendingworkflowlinkcontent" id="gridster_PendingWorkflow" >
 						<ul id="pendingworkflowstepstiles">
 						</ul>
 					</div>					
@@ -389,6 +403,7 @@
 			</div>
 
 			<div class="hypertextlinks">
+				<%Dim tileCount = 1%>
 				<%For Each navlink In Model.NavigationLinks%>
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>				
 				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
@@ -406,7 +421,7 @@
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
 					<div class="wrapupcontainer"><div class="wrapuptext"><p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p></div></div>					
-					<div class="gridster hypertextlinkcontent" >
+					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then%>
@@ -460,6 +475,7 @@
 							<%iRowNum += 1%>
 							<%End If%>
 							<%End If%>
+							<%tileCount += 1%>
 							<%Next%>
 							<%If Not fFirstSeparator Then		' close off the hypertext group%>
 						</ul>
@@ -474,7 +490,7 @@
 		<div class="linkspagebutton">
 			<div class="ButtonLinkColumn">
 								<%sOnclick = ""
-										Dim sLinkKey As String = ""%>
+									Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
 				
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
@@ -516,7 +532,7 @@
 							<p class="linkspagebuttonseparator"><%: navlink.Text %></p>
 						</div>
 					</div>
-					<div class="gridster buttonlinkcontent">
+					<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)%>
@@ -654,6 +670,7 @@
 
 							<%End If%>
 							<%End If%>
+							<%tileCount += 1%>
 							<%Next%>
 								<%If Not fFirstSeparator Then%>
 							</ul>
