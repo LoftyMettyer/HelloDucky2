@@ -714,7 +714,6 @@ Private Function UpdateDatabase( _
   ' Calculate how many files we're going to process
   Set fso = New FileSystemObject
   lngNewVersions = fso.GetFolder(strScriptPath).Files.Count + 1 '- 14
-  Set fso = Nothing
     
   rsInfo.Open strSQLVersion, gADOCon, adOpenForwardOnly, adLockReadOnly
   lngDBVersion = CLng(rsInfo.Fields(0).value) + 1
@@ -812,13 +811,16 @@ Private Function UpdateDatabase( _
         End If
       End If
   
-      gobjProgress.Bar1Caption = strFileName
-      RunScript strScriptPath & strFileName, sConnect
-      gobjProgress.UpdateProgress False
-      
-      fReRunScript = False
-      
-      gobjHRProEngine.Options.VersionUpgraded = True
+      ' Handle missing versions of 6 and 7
+      If fso.FileExists(strScriptPath & strFileName) Then
+        gobjProgress.Bar1Caption = strFileName
+        RunScript strScriptPath & strFileName, sConnect
+        gobjProgress.UpdateProgress False
+        
+        fReRunScript = False
+        
+        gobjHRProEngine.Options.VersionUpgraded = True
+      End If
       
     End If
 
@@ -853,6 +855,7 @@ Private Function UpdateDatabase( _
 
 TidyUpAndExit:
   Screen.MousePointer = vbDefault
+  Set fso = Nothing
   Set rsInfo = Nothing
   Exit Function
 

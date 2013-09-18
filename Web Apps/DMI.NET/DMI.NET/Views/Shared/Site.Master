@@ -73,6 +73,8 @@
 								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
 
+		<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
+
 	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
@@ -108,12 +110,9 @@
 
 	<link href="<%: Url.LatestContent("~/Content/table.css")%>" rel="stylesheet" type="text/css" />
 
-
-
 	<%--Placeholders for theme and layout--%>
 	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
 	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
-
 
 	<%--External script resources--%>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
@@ -132,6 +131,8 @@
 	<script type="text/javascript">
 
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
+
+		document.title = 'OpenHR v8.0';
 		
 		$(document).ready(function () {
 
