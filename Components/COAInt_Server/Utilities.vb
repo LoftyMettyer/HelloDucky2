@@ -264,39 +264,42 @@ ErrorTrap:
 
   End Function
 
-  Public Function GetBackgroundPicture(ByRef psTempPath As String) As Object
+	Public Function GetBackgroundPicture(ByRef psTempPath As String) As String
 
-    Dim sSQL As String
-    Dim rsTemp As ADODB.Recordset
-    Dim sFileName As String = ""
-    Dim lngPictureID As Short
+	' We are not currently using this functionality - disbale. To review!
+	Return ""
+
+		Dim sSQL As String
+		Dim rsTemp As Recordset
+		Dim sFileName As String = ""
+		Dim lngPictureID As Short
 
 		sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue FROM ASRSysSystemSettings WHERE ASRSysSystemSettings.section = 'desktopsetting' " _
 				 & " AND  ASRSysSystemSettings.settingKey = 'bitmapid'"
 		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-    With rsTemp
-      If Not (.BOF And .EOF) Then
-        lngPictureID = .Fields("settingValue").Value
-      End If
-      .Close()
-    End With
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
+		With rsTemp
+			If Not (.BOF And .EOF) Then
+				lngPictureID = .Fields("settingValue").Value
+			End If
+			.Close()
+		End With
+		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		rsTemp = Nothing
 
 		sSQL = "SELECT DISTINCT ASRSysPictures.pictureID, ASRSysPictures.name" & " FROM ASRSysPictures " & " WHERE ASRSysPictures.pictureID = " & CStr(lngPictureID)
 		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-    With rsTemp
-      If Not (.BOF And .EOF) Then
-        sFileName = LoadScreenControlPicture(.Fields("PictureID").Value, psTempPath, .Fields("Name").Value)
-      End If
-      .Close()
-    End With
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
+		With rsTemp
+			If Not (.BOF And .EOF) Then
+				sFileName = LoadScreenControlPicture(.Fields("PictureID").Value, psTempPath, .Fields("Name").Value)
+			End If
+			.Close()
+		End With
+		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		rsTemp = Nothing
 
-    GetBackgroundPicture = Mid(sFileName, InStrRev(sFileName, "\") + 1)
+		GetBackgroundPicture = Mid(sFileName, InStrRev(sFileName, "\") + 1)
 
-  End Function
+	End Function
 
   Public Function GetBackgroundPosition() As Short
 

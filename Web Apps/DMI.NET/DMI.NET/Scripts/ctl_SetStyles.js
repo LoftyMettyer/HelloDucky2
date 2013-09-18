@@ -610,54 +610,25 @@ function radio_disable(obj, pfDisable)
 // --------------------------------------------------
 // Text Input
 // --------------------------------------------------
-function text_disable(obj, pfDisable)
-{
-	obj.disabled = pfDisable;
-	obj.readonly = pfDisable;
-	obj.locked = pfDisable;
-	
-	if (pfDisable == true)
-	{
-		obj.className='text textdisabled';
-	}
-	else
-	{
-		obj.className='text';
-	}
+function text_disable(obj, pfDisable) {
+	$(obj).prop("disabled", pfDisable);
+	return false;
 }
 
 // --------------------------------------------------
 // TextArea
 // --------------------------------------------------
-function textarea_disable(obj, pfDisable)
-{
-	obj.disabled = pfDisable;
-
-	if (pfDisable == true)
-	{
-		obj.className='textarea disabled';
-	}
-	else
-	{
-		obj.className='textarea';
-	}
+function textarea_disable(obj, pfDisable) {
+	$(obj).prop("disabled", pfDisable);
+	return false;
 }
 
 // --------------------------------------------------
 // Select (combos)
 // --------------------------------------------------
-function combo_disable(obj, pfDisable)
-{
-	obj.disabled = pfDisable;
-
-	if (pfDisable == true)
-	{
-		obj.className='combo combodisabled';
-	}
-	else
-	{
-		obj.className='combo';
-	}
+function combo_disable(obj, pfDisable) {
+	$(obj).prop("disabled", pfDisable);
+	return false;
 }
 
 // --------------------------------------------------
