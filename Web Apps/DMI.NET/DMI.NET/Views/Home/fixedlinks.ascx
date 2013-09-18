@@ -342,7 +342,7 @@
 							<div id="mnutoolFindRecord" class="button">
 								<a href="#" rel="table" title="Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
-									<i class="icon-FindRecord"></i>
+									<i class="icon-search"></i>
 									<h6>Find</h6></a>
 							</div>
 							<div id="mnutoolQuickFindRecord" class="button">

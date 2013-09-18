@@ -1399,24 +1399,30 @@ function menu_refreshMenu() {
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 							(frmRecEdit.txtCurrentParentTableID.value > 0))));		
 
-		menu_setVisibletoolbarGroup("mnutoolFindRecord", true);
+		if (menu_isSSIMode()) {
+			menu_setVisibleMenuItem("mnutoolChangeOrderRecord", false);
+			menu_setVisibleMenuItem("mnutoolFilterRecord", false);
+			menu_setVisibleMenuItem("mnutoolClearFilterRecord", false);
+		}
+		else {
+			menu_setVisibletoolbarGroup("mnutoolFindRecord", true);
 
-		// Order Group
-		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
-		menu_setVisibleMenuItem("mnutoolChangeOrderRecord", true);
-		menu_toolbarEnableItem("mnutoolChangeOrderRecord", ((frmMenuInfo.txtUserType.value == 0) ||
-				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-				(frmRecEdit.txtCurrentParentTableID.value > 0)));
-		menu_setVisibleMenuItem("mnutoolFilterRecord", true);
-		menu_toolbarEnableItem("mnutoolFilterRecord", ((frmMenuInfo.txtUserType.value == 0) ||
-				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-				(frmRecEdit.txtCurrentParentTableID.value > 0)));
-		menu_setVisibleMenuItem("mnutoolClearFilterRecord", true);
-		menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
+			// Order Group
+			//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
+			menu_setVisibleMenuItem("mnutoolChangeOrderRecord", true);
+			menu_toolbarEnableItem("mnutoolChangeOrderRecord", ((frmMenuInfo.txtUserType.value == 0) ||
+					(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+					(frmRecEdit.txtCurrentParentTableID.value > 0)));
+			menu_setVisibleMenuItem("mnutoolFilterRecord", true);
+			menu_toolbarEnableItem("mnutoolFilterRecord", ((frmMenuInfo.txtUserType.value == 0) ||
+					(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+					(frmRecEdit.txtCurrentParentTableID.value > 0)));
+			menu_setVisibleMenuItem("mnutoolClearFilterRecord", true);
+			menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
+		}
 		menu_setVisibleMenuItem("mnutoolPrintRecord", true);
 		menu_toolbarEnableItem("mnutoolPrintRecord", true);
 
-		menu_setVisibletoolbarGroup("mnutoolOrderRecord", !menu_isSSIMode());  // Hide the entire group if in SSI mode
 
 		
 						// Standard reports group
@@ -1503,7 +1509,7 @@ function menu_refreshMenu() {
 		}
 
 			// Mail Merge (Toolbar!)
-		menu_setVisibleMenuItem("mnutoolMailMergeRecord", fMailMergeVisible);
+		menu_setVisibleMenuItem("mnutoolMailMergeRecord", fMailMergeVisible && !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
 
 
