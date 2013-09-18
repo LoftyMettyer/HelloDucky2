@@ -1157,6 +1157,8 @@ function showDefaultRibbon() {
 	$("#toolbarRecordQuickFind").parent().hide();
 	$("#toolbarRecordSortOrder").parent().hide();
 	$("#toolbarRecordFilter").parent().hide();
+	$("#toolbarDelegateBookingTransfer").parent().hide();
+	$("#toolbarDelegateBookingBulkBooking").parent().hide();
 	$("#toolbarRecordMailMerge").parent().hide();
 	$("#toolbarReportFind").parent().hide();
 	$("#toolbarReportNewEditCopy").parent().hide();
@@ -1875,6 +1877,8 @@ function menu_refreshMenu() {
 							$("#toolbarRecordSortOrder").parent().hide();
 							$("#toolbarRecordFilter").parent().hide();
 							$("#toolbarRecordMailMerge").parent().hide();
+							$("#toolbarDelegateBookingTransfer").parent().hide();
+							$("#toolbarDelegateBookingBulkBooking").parent().hide();
 							$("#toolbarReportFind").parent().hide();
 							$("#toolbarReportNewEditCopy").parent().hide();
 							$("#toolbarReportRun").parent().hide();
@@ -1900,12 +1904,12 @@ function menu_refreshMenu() {
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
 
-			var frmLog = document.getElementById("frmLog");
+							var frmLog = document.getElementById("frmLog");
 
-		if (frmLog.txtELLoaded.value == 1) {
-				frmData = OpenHR.getForm("dataframe", "frmData");
-			var bLastPage = frmData.txtELIsLastPage.value;
-			var bFirstPage = frmData.txtELIsFirstPage.value;
+							if (frmLog.txtELLoaded.value == 1) {
+									frmData = OpenHR.getForm("dataframe", "frmData");
+								var bLastPage = frmData.txtELIsLastPage.value;
+								var bFirstPage = frmData.txtELIsFirstPage.value;
 
 								menu_enableMenuItem("mnutoolFirstEventLogFind", bFirstPage.toUpperCase() == "FALSE");
 								menu_enableMenuItem("mnutoolPreviousEventLogFind", bFirstPage.toUpperCase() == "FALSE");

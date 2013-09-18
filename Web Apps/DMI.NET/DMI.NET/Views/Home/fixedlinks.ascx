@@ -80,23 +80,23 @@
 						<li><span>Fixed Links</span>
 							<div id="mnutoolFixedSelfService" class="button">
 									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service">
-								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" />
-									<i class="icon-home"></i>
+								<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png")%>" alt="" />
+									<i class="icon-user"></i>
 										<h6>Self-service</h6>
 									</a>
-							</div>
-							<div id="mnutoolFixedLogoff" class="button">
-								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Logoff64HOVER.png")%>" alt="" />
-									<i class="icon-off"></i>
-									<h6>Log Off</h6>
-								</a>
 							</div>
 							<div id="mnutoolFixedOpenHR" class="button">
 								<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="OpenHR">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png") %>" alt="" />
 									<i class="icon-group"></i>
 									<h6>OpenHR</h6>
+								</a>
+							</div>
+							<div id="mnutoolFixedLogoff" class="button">
+								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Logoff64HOVER.png")%>" alt="" />
+									<i class="icon-off"></i>
+									<h6>Log Off</h6>
 								</a>
 							</div>
 							<div id="mnutoolFixedChangePassword" class="button">
@@ -167,13 +167,13 @@
 							<div id="mnutoolParentRecordFind" class="button">
 								<a href="#" rel="table" title="Return to parent record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
-									<i class="icon-ParentRecordFind"></i>
+									<i class="icon-arrow-up"></i>
 									<h6>Parent</h6></a>
 							</div>
 							<div id="mnutoolBackRecordFind" class="button">
 								<a href="#" rel="table" title="Return to record editing">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
-									<i class="icon-BackRecordFind"></i>
+									<i class="icon-arrow-left"></i>
 									<h6>Back</h6></a>
 							</div>
 
@@ -295,7 +295,7 @@
 							<div id="mnutoolDeleteRecord" class="button">
 								<a href="#" rel="table" title="Delete Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
-									<i class="icon-close"></i>
+									<i class="icon-minus"></i>
 									<h6>Delete</h6></a>
 							</div>
 						</li>
@@ -303,13 +303,13 @@
 							<div id="mnutoolParentRecord" class="button">
 								<a href="#" rel="table" title="Return to parent record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
-									<i class="icon-ParentRecord"></i>
+									<i class="icon-arrow-up"></i>
 									<h6>Parent</h6></a>
 							</div>
 							<div id="mnutoolBackRecord" class="button">
 								<a href="#" rel="table" title="Return to record editing">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
-									<i class="icon-BackRecord"></i>
+									<i class="icon-arrow-left"></i>
 									<h6>Back</h6></a>
 							</div>
 
@@ -375,7 +375,7 @@
 							<div id="mnutoolPrintRecord" class="button" title="Output">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
-									<i class="icon-PrintRecord"></i>
+									<i class="icon-print"></i>
 									<h6>Output</h6></a>
 							</div>
 						</li>
@@ -546,7 +546,74 @@
 					</ul>
 				</li>
 
+				<%-- Record - Booking - Transfer Booking / Add from waiting list --%>
+				<li class="ui-state-default ui-corner-top"><a id="toolbarDelegateBookingTransfer" href="#" rel="Delegate Booking">Delegate Booking</a>
+					<ul>
+						<li id="mnuSectionSelectDelegateBookingTransfer"><span>Select</span>
+							<div id="mnutoolSelectDelegateBookingTransfer" class="button" title="Select">
+								<a href="#" rel="table">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
+									<i class="icon-OK"></i>
+									<h6>Select</h6></a>
+							</div>
+							<div id="mnutoolCloseDelegateBookingTransfer" class="button">
+								<a href="#" rel="table" title="Close">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
+								<i class="icon-remove"></i>
+								<h6>Close</h6></a>
+							</div>
+						</li>
+						<li id="mnuSectionNavigateDelegateBookingTransfer"><span>Navigate</span>
+							<div id="mnutoolFirstDelegateBookingTransfer" class="button">
+								<a href="#" rel="table" title="First Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
+									<i class="icon-previous"></i>
+									<h6>First</h6></a>
+							</div>
+							<div id="mnutoolPreviousDelegateBookingTransfer" class="button">
+								<a href="#" rel="table" title="Previous Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
+									<i class="icon-backward"></i>
+									<h6>Previous</h6></a>
+							</div>
+							<div id="mnutoolNextDelegateBookingTransfer" class="button">
+								<a href="#" rel="table" title="Next Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
+									<i class="icon-forward"></i>
+									<h6>Next</h6></a>
+							</div>
+							<div id="mnutoolLastDelegateBookingTransfer" class="button">
+								<a href="#" rel="table" title="Last Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
+									<i class="icon-next"></i>
+									<h6>Last</h6></a>
+							</div>
+						</li>
+					</ul>
+				</li>
 
+				<%-- Record - Booking - Bulk Booking --%>
+
+				<li class="ui-state-default ui-corner-top"><a id="toolbarDelegateBookingBulkBooking" href="#" rel="Report_NewEditCopy">Bulk Booking</a>
+					<ul>
+						<li id="mnuSectionDelegateBookingBulkBooking"><span>Report</span>
+							<div id="mnutoolSaveDelegateBookingBulkBooking" class="button">
+								<a href="#" rel="table" title="Save">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt ="" />
+									<i class="icon-disk"></i>
+									<h6>Save</h6></a>
+							</div>
+							<div id="mnutoolCancelDelegateBookingBulkBooking" class="button">
+								<a href="#" rel="table" title="Cancel">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
+								<i class="icon-remove"></i>
+								<h6>Cancel</h6></a>
+							</div>
+						</li>
+					</ul>
+				</li>
+
+				<%-- Report NewEditCopy --%>
 								<%-- Report Find --%>
 								<li class="ui-state-default ui-corner-top"><a id="toolbarReportFind" href="#" rel="Report_Find">Find</a>
 					<ul>
@@ -880,7 +947,17 @@
 					</ul>
 				</li>
 			</ul>
-		</div></div><div class="FixedLinksRight"><ul><li></li></ul></div></div>
+		</div>
+
+	</div>
+	<div class="FixedLinksRight">
+		<ul>
+			<li>
+				</li>
+			</ul>
+	</div>
+
+</div>
 
 
 <%--<				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="home">Record</a>
