@@ -150,7 +150,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
+    <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
@@ -583,9 +583,6 @@
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
-    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
-    <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
@@ -641,8 +638,6 @@
     <Content Include="Content\dragdrop\cog.png" />
     <Content Include="Content\dragdrop\collapse.png" />
     <Content Include="Content\dragdrop\styles.css" />
-    <Content Include="Content\font-awesome-ie7.css" />
-    <Content Include="Content\font-awesome.css" />
     <Content Include="Content\fonts\general_enclosed_foundicons.svg" />
     <Content Include="Content\general_enclosed_foundicons.css" />
     <Content Include="Content\images\abssmall.png" />

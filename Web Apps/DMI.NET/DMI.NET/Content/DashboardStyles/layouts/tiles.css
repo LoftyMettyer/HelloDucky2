@@ -534,5 +534,5 @@ div#pwfs {
 }
 
 .pwfslink:hover {
-	cursor: default;
+	cursor: pointer;
 }

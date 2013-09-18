@@ -92,7 +92,7 @@
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
 
@@ -151,8 +151,8 @@
 			$("#divthemeRoller").dialog({
 				autoOpen: false,
 				modal: false,
-				width: 300,
-				height: 500
+				width: 350,
+				height: 150
 			});
 
 			$(function () {
@@ -322,7 +322,8 @@
 					try {
 						
 						if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
-								//Leaving Dashboard
+							//Leaving Dashboard
+								$('.DashContent').fadeOut('slow');
 								$("#" + targetDiv).css('top', '-9999px');
 								$('#' + targetDiv).show();
 								$("#" + targetDiv).html('');
@@ -402,7 +403,7 @@
 		</div>
 	</div>
 
-	<div id="divthemeRoller" title="ThemeRoller"></div>
+	<div id="divthemeRoller" title="Select a layout"></div>
 
 	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default">
 		<p id="footerbannerprogress" class="footer-banner-p-progress" runat="server"></p>

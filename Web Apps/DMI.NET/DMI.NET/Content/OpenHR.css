@@ -3,10 +3,10 @@
 
 BODY
 {    
-    /*COLOR: black;*/
+		/*COLOR: black;*/
 	color: #2e6e9e;
 
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
 }
 div.COAwallpapered
 {
@@ -16,12 +16,12 @@ div.COAwallpapered
 	-o-background-size: cover;
 	background-size: cover;
 	background-repeat: repeat-y;          
-    margin: 0px;
-    position: fixed;
-    top:44px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+		margin: 0px;
+		position: fixed;
+		top:44px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
 }
 
 .footer-banner {	
@@ -120,23 +120,23 @@ TD.calendar_nonday
 
 hr 
 {
-    height:1px;
-    COLOR: #83389b;
+		height:1px;
+		COLOR: #83389b;
 }
 
 INPUT
 {
 	/*padding: 3px;*/
-    /*FONT-SIZE: 10pt;
-    COLOR: black;
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+		/*FONT-SIZE: 10pt;
+		COLOR: black;
+		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
 }
 
 textarea
 {
-    /*FONT-SIZE: 10pt;
-    COLOR: #333366;
-    FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
+		/*FONT-SIZE: 10pt;
+		COLOR: #333366;
+		FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
 	background-color: #f6f5f3;
 	border: 1px solid;
 	border-color: #9a7057;*/
@@ -153,9 +153,9 @@ textarea.disabled
 
 DIV
 {
-   /*FONT-SIZE: 11pt;*/
-   /*COLOR: black;*/
-   /*FONT-FAMILY: Segoe UI, Verdana, Tahoma, 'MS Sans Serif'*/
+	 /*FONT-SIZE: 11pt;*/
+	 /*COLOR: black;*/
+	 /*FONT-FAMILY: Segoe UI, Verdana, Tahoma, 'MS Sans Serif'*/
 }
 
 input.btn
@@ -297,9 +297,9 @@ input.textinformation
 
 SELECT
 {
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
-    FONT-SIZE: 10pt;
-    COLOR: #333366;
+		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
+		FONT-SIZE: 10pt;
+		COLOR: #333366;
 	background-color: #f6f5f3;
 	border-color: #9a7057;*/
 }
@@ -365,23 +365,23 @@ table.calendarcell
 
 
 .ContextMenu-panel {
-	   /*padding:20px;*/
-	   width: 350px;	       
+		 /*padding:20px;*/
+		 width: 350px;	       
 	border-right: 1px;
 	border-right-color: #29216d;
-   /*background: white;*/
+	 /*background: white;*/
 	border-right-style: solid;
-	   position:absolute;
-	   top:170px;
-	   bottom: 0px;
-	   left:0px;
-	   z-index: 99;
-	   opacity: 1;
-	   /*overflow-y: auto;*/
-	   -webkit-overflow-scrolling: touch ;
+		 position:absolute;
+		 top:170px;
+		 bottom: 0px;
+		 left:0px;
+		 z-index: 99;
+		 opacity: 1;
+		 /*overflow-y: auto;*/
+		 -webkit-overflow-scrolling: touch ;
 }
-	   
-	   
+		 
+		 
 .ContextMenu-panel .ContextMenu-tab 
 {
 	width: 30px;
@@ -404,7 +404,7 @@ table.calendarcell
 	overflow: auto;
 }
 
-	   
+		 
 .ContextMenu-tab:hover 
 {
 	padding: 0px; 
@@ -426,19 +426,19 @@ table.calendarcell
 	padding-left: 0;
 	padding-top: 0;
 }
-   
+	 
 .rot-neg-90 
 {
 	width: 500px;
 	/*font-family: Verdana;*/
 	font-size: large;
-    -moz-transform:rotate(90deg); 
-    -moz-transform-origin: bottom left;
-    -webkit-transform: rotate(90deg);
-    -webkit-transform-origin: bottom left;
-    -o-transform: rotate(90deg);
-    -o-transform-origin:  bottom left;
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+		-moz-transform:rotate(90deg); 
+		-moz-transform-origin: bottom left;
+		-webkit-transform: rotate(90deg);
+		-webkit-transform-origin: bottom left;
+		-o-transform: rotate(90deg);
+		-o-transform-origin:  bottom left;
+		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
 .metro 
@@ -452,8 +452,8 @@ table.calendarcell
 
 .loginframetheme {background-color: white;
 	border-radius: 20px 0px 20px 0px;
-                  }
-                  
+									}
+									
 .logintext 
 {
 	font-family:Verdana;
@@ -556,7 +556,7 @@ header {
 		{
 			/*font-size: 28px;*/
 			float: left;
-			margin-left: 10px;
+			margin-left: 5px;
 		}
 		
 			.FixedLinksLeft a {text-decoration: none;}
@@ -597,14 +597,14 @@ header {
 	font-family: Segoe UI Light, Verdana, "Open Sans", Tahoma, Helvetica, sans-serif;
 	padding-left: 8px;
 
-   /* Chuck all possibilities at the browser for gradients... */
-   /*background-color: #1a82f7; 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
-   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
-   background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
-   background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
-   background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
-   background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);*/
+	 /* Chuck all possibilities at the browser for gradients... */
+	 /*background-color: #1a82f7; 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
+	 background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
+	 background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);*/
 	
 }
 
@@ -676,9 +676,9 @@ header {
 
 .accessibility li {
 	float: right;
-  height: 25px;
-  margin-right: 4px;
-  width: 11px;
+	height: 25px;
+	margin-right: 4px;
+	width: 11px;
 }
 
 .accessibility a, .accessibility a:visited {

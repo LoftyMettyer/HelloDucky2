@@ -43,8 +43,8 @@
 	function wrapTileIcons() {
 		if (window.currentLayout == "tiles") {
 			//Wrap the icons with circles or boxes or whatever...
-			$(".officetab i[class^='icon-']").css("padding-left", "7px");
-			$(".officetab i[class^='icon-']").css("padding-bottom", "4px");
+			//$(".officetab i[class^='icon-']").css("padding-left", "7px");
+			//$(".officetab i[class^='icon-']").css("padding-bottom", "4px");
 			$(".officetab i[class^='icon-']").wrap("<span class='icon-stack' />");
 			$(".officetab .icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
 		}
