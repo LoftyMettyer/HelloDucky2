@@ -199,6 +199,6 @@ frmPictMgr = 175, 175, 1243, 838, C, 110, 145, 1150, 796, C
 frmAbout = 0, 0, 0, 0, C, 198, 261, 1238, 912, C
 modSysMgr = 22, 29, 632, 453, C
 frmLogin = 0, 0, 0, 0, C, 176, 232, 1216, 883, C
-modCheckVersion = 0, 0, 0, 0, C
 modOvernightProcess = 0, 0, 0, 0, C
 modApplication = 25, 25, 1093, 688, C
+modCheckVersion = 0, 0, 0, 0, C
