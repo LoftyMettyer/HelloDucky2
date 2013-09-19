@@ -294,7 +294,7 @@
 													<tr height="5">
 														<td width="5" height="5"></td>
 														<td valign="top" height="5">
-															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+															<table style="width: 100%;padding-bottom: 10px" class="invisible" cellspacing="0" cellpadding="0">
 																<tr height="25px">
 																	<td height="25px" colspan="7" width="100%">
 																		<select id="cboTblAvailable" name="cboTblAvailable" disabled="disabled" class="combo combodisabled" style="width: 100%; HEIGHT: 100%"
