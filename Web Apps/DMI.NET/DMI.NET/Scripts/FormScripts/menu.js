@@ -364,11 +364,11 @@ function menu_abMainMenu_Click(pTool) {
 
 
 function menu_MenuClick(sTool) {
-		//ignore clicks from 'fixed links' which have no 'id'.
-		if (!sTool) return false;
-		//new ribbon buttons for utils - ignore click.
-		if (sTool.substr(sTool.length - 4).toLowerCase() == "util") return false;
-		
+	//ignore clicks from 'fixed links' which have no 'id'.
+	if (!sTool) return false;
+	//new ribbon buttons for utils - ignore click.
+	if (sTool.substr(sTool.length - 4).toLowerCase() == "util") return false;
+
 	// Perform the selected menu action.
 	var lngRecordID;
 	var lngTableID;
@@ -404,30 +404,30 @@ function menu_MenuClick(sTool) {
 
 
 	//Remapping of menu click ID's for menu refactor.
-	
+
 	// Fixed Links ---------------------------------------------------------------------------------------------------
-	
-	if (sToolName == "mnutoolFixedSelfService") {   // This already has an href target defined in fixedlinks. No action here
+
+	if (sToolName == "mnutoolFixedSelfService") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
 
-	if (sToolName == "mnutoolFixedLogoff") {   // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedLogoff") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
 
-	if (sToolName == "mnutoolFixedOpenHR") {   // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedOpenHR") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
 
-	if (sToolName == "mnutoolFixedLayout") {   // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedLayout") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
 
-	if (sToolName == "mnutoolFixedAbout") {   // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedAbout") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
 
-	
+
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
@@ -437,19 +437,18 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-				case 'mnutoolNewReportFind':
-					$('#toolbarReportNewEditCopy').text('Report');
-					break;
-				case 'mnutoolNewUtilitiesFind':
-					$('#toolbarReportNewEditCopy').text('Utility');
-					break;
-				case 'mnutoolNewToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					break;
-		}
-		}
-		catch (e) { }
-		finally {
+			case 'mnutoolNewReportFind':
+				$('#toolbarReportNewEditCopy').text('Report');
+				break;
+			case 'mnutoolNewUtilitiesFind':
+				$('#toolbarReportNewEditCopy').text('Utility');
+				break;
+			case 'mnutoolNewToolsFind':
+				$('#toolbarReportNewEditCopy').text('Tools');
+				break;
+			}
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
@@ -462,23 +461,22 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-				case 'mnutoolCopyReportFind':
-					$('#toolbarReportNewEditCopy').text('Report');
-					break;
-				case 'mnutoolCopyUtilitiesFind':
-					$('#toolbarReportNewEditCopy').text('Utility');
-					break;
-				case 'mnutoolCopyToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					break;
-		}
-		}
-		catch (e) { }
-		finally {
+			case 'mnutoolCopyReportFind':
+				$('#toolbarReportNewEditCopy').text('Report');
+				break;
+			case 'mnutoolCopyUtilitiesFind':
+				$('#toolbarReportNewEditCopy').text('Utility');
+				break;
+			case 'mnutoolCopyToolsFind':
+				$('#toolbarReportNewEditCopy').text('Tools');
+				break;
+			}
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
-	
+
 	//EDIT buttons
 	if ((sToolName == 'mnutoolEditReportFind') || (sToolName == 'mnutoolEditUtilitiesFind') || (sToolName == 'mnutoolEditToolsFind')) {
 		try {
@@ -487,30 +485,28 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-				case 'mnutoolEditReportFind':
-					$('#toolbarReportNewEditCopy').text('Report');
-					break;
-				case 'mnutoolEditUtilitiesFind':
-					$('#toolbarReportNewEditCopy').text('Utility');
-					break;
-				case 'mnutoolEditToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					break;
+			case 'mnutoolEditReportFind':
+				$('#toolbarReportNewEditCopy').text('Report');
+				break;
+			case 'mnutoolEditUtilitiesFind':
+				$('#toolbarReportNewEditCopy').text('Utility');
+				break;
+			case 'mnutoolEditToolsFind':
+				$('#toolbarReportNewEditCopy').text('Tools');
+				break;
 			}
-		}
-		catch (e) { }
-		finally {
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
-	
+
 	//DELETE buttons
 	if ((sToolName == 'mnutoolDeleteReportFind') || (sToolName == 'mnutoolDeleteUtilitiesFind') || (sToolName == 'mnutoolDeleteToolsFind')) {
 		try {
 			setdelete();
-		}
-		catch (e) { }
-		finally {
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
@@ -519,30 +515,46 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == 'mnutoolPropertiesReportFind') || (sToolName == 'mnutoolPropertiesUtilitiesFind') || (sToolName == 'mnutoolPropertiesToolsFind')) {
 		try {
 			showproperties();
-		}
-		catch (e) { }
-		finally {
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
 
 	//RUN buttons
 	if ((sToolName == 'mnutoolRunReportFind') || (sToolName == 'mnutoolRunUtilitiesFind') || (sToolName == 'mnutoolRunRecordMailMerge')) {
-    try
-    {
-      if (OpenHR.currentWorkPage() == "STDRPT_DEF_ABSENCE" || OpenHR.currentWorkPage() == "UTIL_RUN_PROMPTEDVALUES") {
-        absence_okClick();
-      } else {
-			setrun();
-		}
-    }
-		catch (e) { }
-		finally {
+		try {
+			if (OpenHR.currentWorkPage() == "STDRPT_DEF_ABSENCE" || OpenHR.currentWorkPage() == "UTIL_RUN_PROMPTEDVALUES") {
+				absence_okClick();
+			} else {
+				setrun();
+			}
+		} catch(e) {
+		} finally {
 			return false;
 		}
 	}
 
-    //--------------------------PENDING WORKFLOW STEPS-------------------------------//
+
+	// Cancel buttoons
+	if (sToolName == 'mnutoolCloseReportFind' || sToolName == 'mnutoolCloseUtilitiesFind') {
+		try {
+			$("#optionframe").hide();
+			$("#workframe").show();
+			$("#workframe").attr("data-framesource", "RECORDEDIT");
+			$("#toolbarRecord").show();
+			$("#toolbarRecord").click();
+
+			menu_refreshMenu();
+
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+
+
+//--------------------------PENDING WORKFLOW STEPS-------------------------------//
     // 'RUN'
 	if (sToolName == 'mnutoolRunWFPendingStepsFind') {
 		try {
@@ -837,7 +849,7 @@ function menu_MenuClick(sTool) {
 		// Calendar Reports  (from record menu)
 	if (sToolName == "mnutoolCalendarReportsRecord") {
 			if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
-					menu_loadDefSelPage(17, 0, 0, true);
+					menu_loadDefSelPage(17, 0, 0, false);
 			}
 			return;
 	}
@@ -861,7 +873,7 @@ function menu_MenuClick(sTool) {
 
 		// Mail Merge  (from record menu)
 	if (sToolName == "mnutoolMailMergeRecord") {
-			menu_loadRecordDefSelPage(9, 0, 0, true);
+			menu_loadDefSelPage(9, 0, 0, false);
 			return;
 	}
 
@@ -2352,7 +2364,7 @@ function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 
 	// Submit the current "workframe" form, and then load the required page.
 	var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
-	
+
 	frmWorkArea.txtGotoTableID.value = piTableID;
 	frmWorkArea.txtGotoViewID.value = 0;
 	frmWorkArea.txtGotoScreenID.value = 0;
@@ -2364,7 +2376,8 @@ function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 		frmWorkArea.txtGotoFromMenu.value = 1;
 	}
 	else {
-		frmWorkArea.txtGotoFromMenu.value = 0;
+		frmWorkArea.txtGotoFromMenu.value = 1;
+		frmWorkArea.txtGotoOptionDefSelRecordID.value = $('#txtCurrentRecordID').val();
 	}
 
 	OpenHR.submitForm(frmWorkArea);
@@ -4442,12 +4455,12 @@ function menu_LoadStandardReport(psReportType, psRecordSelection)
 	}
 
 	// If we came from an individual record
-	if (psRecordSelection == "REC")
-		{
+	if (psRecordSelection == "REC") {
+
 		if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
 			{
 			frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
-			frmSendArea.txtGotoOptionRecordID.value = $('txtCurrentRecordID').val();
+			frmSendArea.txtGotoOptionRecordID.value = $('#txtCurrentRecordID').val();
 			frmSendArea.txtGotoOptionPage.value = sPage;
 			frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
 			bOK = true;

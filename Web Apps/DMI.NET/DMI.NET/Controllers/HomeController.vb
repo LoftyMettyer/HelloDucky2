@@ -1380,6 +1380,8 @@ Namespace Controllers
 
 			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 			Session("optionRecordID") = "0"
+			Session("singleRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
+
 			Session("optionAction") = ""
 
 			' Go to the requested page.

@@ -1,26 +1,26 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-	<INPUT type="hidden" id=txtAction name=txtAction>
-	<INPUT type="hidden" id=txtGotoTableID name=txtGotoTableID>
-	<INPUT type="hidden" id=txtGotoViewID name=txtGotoViewID>
-	<INPUT type="hidden" id=txtGotoScreenID name=txtGotoScreenID>
-	<INPUT type="hidden" id=txtGotoOrderID name=txtGotoOrderID>
-	<INPUT type="hidden" id=txtGotoRecordID name=txtGotoRecordID>
-	<INPUT type="hidden" id=txtGotoParentTableID name=txtGotoParentTableID>
-	<INPUT type="hidden" id=txtGotoParentRecordID name=txtGotoParentRecordID>
-	<INPUT type="hidden" id=txtGotoRealSource name=txtGotoRealSource>
-	<INPUT type="hidden" id=txtGotoFilterDef name=txtGotoFilterDef>
-	<INPUT type="hidden" id=txtGotoFilterSQL name=txtGotoFilterSQL>
-	<INPUT type="hidden" id=txtGotoLineage name=txtGotoLineage>
-	<INPUT type="hidden" id=txtGotoPage name=txtGotoPage>
-	<INPUT type="hidden" id=txtGotoDefSelType name=txtGotoDefSelType> 
-	<INPUT type="hidden" id=txtGotoUtilID name=txtGotoUtilID> 
-	<INPUT type="hidden" id=txtGotoFirstRecPos name=txtGotoFirstRecPos>
-	<INPUT type="hidden" id=txtGotoCurrentRecCount name=txtGotoCurrentRecCount>
-	<INPUT type="hidden" id=txtGotoLocateValue name=txtGotoLocateValue>
-	<INPUT type="hidden" id=txtGotoFromMenu name=txtGotoFromMenu value=0>
-	<INPUT type="hidden" id=txtStandardReportType name=txtStandardReportType value="">
-	<INPUT type="hidden" id=txtReloadMenu name=txtReloadMenu value="0">
-	<INPUT type="hidden" id=txtReset name=txtReset value="0">
-	
+<input type="hidden" id="txtAction" name="txtAction">
+<input type="hidden" id="txtGotoTableID" name="txtGotoTableID">
+<input type="hidden" id="txtGotoViewID" name="txtGotoViewID">
+<input type="hidden" id="txtGotoScreenID" name="txtGotoScreenID">
+<input type="hidden" id="txtGotoOrderID" name="txtGotoOrderID">
+<input type="hidden" id="txtGotoRecordID" name="txtGotoRecordID">
+<input type="hidden" id="txtGotoParentTableID" name="txtGotoParentTableID">
+<input type="hidden" id="txtGotoParentRecordID" name="txtGotoParentRecordID">
+<input type="hidden" id="txtGotoRealSource" name="txtGotoRealSource">
+<input type="hidden" id="txtGotoFilterDef" name="txtGotoFilterDef">
+<input type="hidden" id="txtGotoFilterSQL" name="txtGotoFilterSQL">
+<input type="hidden" id="txtGotoLineage" name="txtGotoLineage">
+<input type="hidden" id="txtGotoPage" name="txtGotoPage">
+<input type="hidden" id="txtGotoDefSelType" name="txtGotoDefSelType">
+<input type="hidden" id="txtGotoUtilID" name="txtGotoUtilID">
+<input type="hidden" id="txtGotoFirstRecPos" name="txtGotoFirstRecPos">
+<input type="hidden" id="txtGotoCurrentRecCount" name="txtGotoCurrentRecCount">
+<input type="hidden" id="txtGotoLocateValue" name="txtGotoLocateValue">
+<input type="hidden" id="txtGotoFromMenu" name="txtGotoFromMenu" value="0">
+<input type="hidden" id="txtStandardReportType" name="txtStandardReportType" value="">
+<input type="hidden" id="txtReloadMenu" name="txtReloadMenu" value="0">
+<input type="hidden" id="txtReset" name="txtReset" value="0">
+<input type="hidden" id="txtGotoOptionDefSelRecordID" name="txtGotoOptionDefSelRecordID" value="0">
 

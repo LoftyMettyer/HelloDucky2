@@ -270,15 +270,15 @@
 				}
 
 			// Expand the option frame and hide the work frame.
-				if (frmDefSel.txtSingleRecordID.value > 0) {
-					$("#optionframe").attr("data-framesource", "DEFSEL");
-					$("#workframe").hide();
-					$("#optionframe").show();
-				} else {
+				//if (frmDefSel.txtSingleRecordID.value > 0) {
+				//	$("#optionframe").attr("data-framesource", "DEFSEL");
+				//	$("#workframe").hide();
+				//	$("#optionframe").show();
+				//} else {
 					$("#workframe").attr("data-framesource", "DEFSEL");
 					$("#optionframe").hide();
 					$("#workframe").show();
-				}
+				//}
 
 				tableToGrid("#DefSelRecords", {
 						onSelectRow: function (rowID) {
@@ -414,6 +414,7 @@
 							menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
 							menu_toolbarEnableItem("mnutoolRunReportFind", true);
 							//only display the 'close' button for defsel when called from rec edit...
+
 							if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
 									menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
 									menu_toolbarEnableItem('mnutoolCloseReportFind', true);
@@ -564,6 +565,7 @@
 							menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
 							menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
 							menu_toolbarEnableItem("mnutoolRunReportFind", true);
+
 							//only display the 'close' button for defsel when called from rec edit...
 							if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
 									menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
