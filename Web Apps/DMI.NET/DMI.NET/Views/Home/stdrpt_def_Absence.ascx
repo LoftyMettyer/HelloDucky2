@@ -1259,8 +1259,20 @@
 
 	//only display the 'close' button for defsel when called from rec edit...
 	<% If Not Session("optionRecordID") = "0" Then%>
-		menu_setVisibleMenuItem('mnuutilCancelUtil', true);
-		menu_toolbarEnableItem('mnuutilCancelUtil', true);
+		//menu_setVisibleMenuItem('mnuutilCancelUtil', true);
+		//menu_toolbarEnableItem('mnuutilCancelUtil', true);
 	<% End If%>
+	
+	menu_setVisibleMenuItem("mnutoolNewReportFind", false);
+	menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
+	menu_setVisibleMenuItem("mnutoolEditReportFind", false);
+	menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
+	menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
+	menu_toolbarEnableItem("mnutoolRunReportFind", false);
+	menu_setVisibleMenuItem("mnutoolRunReportFind", true);
+	menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+	// Show and select the tab
+	$("#toolbarReportFind").parent().show();
+	$("#toolbarReportFind").click();
 	
 </script>

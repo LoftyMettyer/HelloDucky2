@@ -528,9 +528,14 @@ function menu_MenuClick(sTool) {
 
 	//RUN buttons
 	if ((sToolName == 'mnutoolRunReportFind') || (sToolName == 'mnutoolRunUtilitiesFind') || (sToolName == 'mnutoolRunRecordMailMerge')) {
-		try {
+    try
+    {
+      if (OpenHR.currentWorkPage() == "STDRPT_DEF_ABSENCE" || OpenHR.currentWorkPage() == "UTIL_RUN_PROMPTEDVALUES") {
+        absence_okClick();
+      } else {
 			setrun();
 		}
+    }
 		catch (e) { }
 		finally {
 			return false;
@@ -1405,20 +1410,20 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolClearFilterRecord", false);
 		}
 		else {
-			menu_setVisibletoolbarGroup("mnutoolFindRecord", true);
+		menu_setVisibletoolbarGroup("mnutoolFindRecord", true);
 
-			// Order Group
-			//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
-			menu_setVisibleMenuItem("mnutoolChangeOrderRecord", true);
-			menu_toolbarEnableItem("mnutoolChangeOrderRecord", ((frmMenuInfo.txtUserType.value == 0) ||
-					(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-					(frmRecEdit.txtCurrentParentTableID.value > 0)));
-			menu_setVisibleMenuItem("mnutoolFilterRecord", true);
-			menu_toolbarEnableItem("mnutoolFilterRecord", ((frmMenuInfo.txtUserType.value == 0) ||
-					(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-					(frmRecEdit.txtCurrentParentTableID.value > 0)));
-			menu_setVisibleMenuItem("mnutoolClearFilterRecord", true);
-			menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
+		// Order Group
+		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
+		menu_setVisibleMenuItem("mnutoolChangeOrderRecord", true);
+		menu_toolbarEnableItem("mnutoolChangeOrderRecord", ((frmMenuInfo.txtUserType.value == 0) ||
+				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+				(frmRecEdit.txtCurrentParentTableID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolFilterRecord", true);
+		menu_toolbarEnableItem("mnutoolFilterRecord", ((frmMenuInfo.txtUserType.value == 0) ||
+				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+				(frmRecEdit.txtCurrentParentTableID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolClearFilterRecord", true);
+		menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		}
 		menu_setVisibleMenuItem("mnutoolPrintRecord", true);
 		menu_toolbarEnableItem("mnutoolPrintRecord", true);
@@ -1910,12 +1915,12 @@ function menu_refreshMenu() {
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
 
-							var frmLog = document.getElementById("frmLog");
+			var frmLog = document.getElementById("frmLog");
 
-							if (frmLog.txtELLoaded.value == 1) {
-									frmData = OpenHR.getForm("dataframe", "frmData");
-								var bLastPage = frmData.txtELIsLastPage.value;
-								var bFirstPage = frmData.txtELIsFirstPage.value;
+		if (frmLog.txtELLoaded.value == 1) {
+				frmData = OpenHR.getForm("dataframe", "frmData");
+			var bLastPage = frmData.txtELIsLastPage.value;
+			var bFirstPage = frmData.txtELIsFirstPage.value;
 
 								menu_enableMenuItem("mnutoolFirstEventLogFind", bFirstPage.toUpperCase() == "FALSE");
 								menu_enableMenuItem("mnutoolPreviousEventLogFind", bFirstPage.toUpperCase() == "FALSE");
@@ -1980,11 +1985,10 @@ function menu_refreshMenu() {
 
 		//HC: Seems redundant
 
-	//menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);	//Context menu item
-	//menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);	//Context menu item
-	//menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);	//Context menu item
-	//menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Context menu item
-
+  menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);
+  menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);
+  menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);
+  menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);
 	
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
@@ -2150,10 +2154,7 @@ function menu_disableMenu() {
 	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
 		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
 		$("#officebar").fadeOut("fast");
-		}
-		else {
-		
-				//disable menu items on Record tab.
+  } else { //disable menu items on Record tab.
 		menu_toolbarEnableItem('mnutoolNewRecord', false);
 		menu_toolbarEnableItem('mnutoolEditRecord', false);
 		menu_toolbarEnableItem('mnutoolSaveRecord', false);

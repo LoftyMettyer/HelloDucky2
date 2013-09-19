@@ -5084,7 +5084,7 @@ GenerateSQLBradford_ERROR:
 
 CalculateBradfordFactors_ERROR:
 
-		CalculateBradfordFactors = CBool("Error while checking calculating Bradford factors." & vbNewLine & "(" & Err.Description & ")")
+		mstrErrorString = "Error while checking calculating Bradford factors." & vbNewLine & "(" & Err.Description & ")"
 		CalculateBradfordFactors = False
 
 	End Function
