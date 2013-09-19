@@ -80,37 +80,37 @@
 <script type="text/JavaScript">
 
 	// Resize the popup.
-	iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-	if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
-		try {
-			window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
-			window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.availHeight);
-		}
-		catch (e) { }
-	}
-	else {
-		try {
-			window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
-			window.parent.resizeBy(0, iResizeByHeight);
-		}
-		catch (e) { }
-	}
+	//iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
+	//if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
+	//	try {
+	//		window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
+	//		window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.availHeight);
+	//	}
+	//	catch (e) { }
+	//}
+	//else {
+	//	try {
+	//		window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
+	//		window.parent.resizeBy(0, iResizeByHeight);
+	//	}
+	//	catch (e) { }
+	//}
 
-	iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
-	if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
-		try {
-			window.parent.moveTo(0, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-			window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
-		}
-		catch (e) { }
-	}
-	else {
-		try {
-			window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-			window.parent.resizeBy(iResizeByWidth, 0);
-		}
-		catch (e) { }
-	}
+	//iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
+	//if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
+	//	try {
+	//		window.parent.moveTo(0, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
+	//		window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
+	//	}
+	//	catch (e) { }
+	//}
+	//else {
+	//	try {
+	//		window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
+	//		window.parent.resizeBy(iResizeByWidth, 0);
+	//	}
+	//	catch (e) { }
+	//}
 
 	var dataCollection = frmPopup.elements;
 	if (dataCollection != null) {
@@ -125,12 +125,13 @@
 	}
 
 		<%
+	
 	If (Len(sMessage) = 0) _
 		And (Len(sFormElements) > 0) _
 		And (Len(sURL) > 0) Then
 %>
-	try {
-		self.close();
+	try {		
+		//self.close();
 	}
 	catch (e) { }
 		<%
@@ -163,6 +164,19 @@ End If
 		}
 		catch (e) { }
 	}
+	
+
+	function util_run_workflow_okClick() {		
+		$("#optionframe").hide();
+		$("#workframe").show();
+	}
+
+	//hide workframe, display option frame.
+	$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
+	$("#workframe").hide();
+	$("#optionframe").show();
+
+
 </script>
 
 <div>
@@ -256,7 +270,7 @@ End If
 						<tr>
 							<td colspan="3" height="10" align="center">
 								<input type="button" value="OK" name="cmdClose" class="btn" style="WIDTH: 80px" width="80" id="cmdClose"
-									onclick="window.parent.parent.self.close();"
+									onclick="util_run_workflow_okClick();//window.parent.parent.self.close();"
 									onmouseover="try{button_onMouseOver(this);}catch(e){}"
 									onmouseout="try{button_onMouseOut(this);}catch(e){}"
 									onfocus="try{button_onFocus(this);}catch(e){}"

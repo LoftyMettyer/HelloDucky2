@@ -36,7 +36,7 @@
 			var url = $(selectedRow.children()[1]).html(); //Get the url
 			var newWindow = window.open(url);
 			if (window.focus) {
-				newWindow.focus();
+				//newWindow.focus();
 			}
 		});
 		

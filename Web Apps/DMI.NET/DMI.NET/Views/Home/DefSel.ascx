@@ -760,8 +760,8 @@
 					sUtilId = new String(frmDefSel.utilid.value);
 
 					frmWorkflow.target = sUtilId;
-					NewWindow('', sUtilId, '500', '200', 'yes');
-					OpenHR.submitForm(frmWorkflow, null, false);
+					//NewWindow('', sUtilId, '500', '200', 'yes');
+					OpenHR.submitForm(frmWorkflow, 'optionframe', false);
 				} else {
 
 					var frmPrompt = document.getElementById('frmPrompt');
