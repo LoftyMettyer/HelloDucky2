@@ -45,13 +45,13 @@
 							<td width="10"></td>
 							<td>
 								<input type="button" value="Definition" id="btnTab1" name="btnTab1" class="btn btndisabled" disabled="disabled"
-									onclick="display_MailMerge_Page(1)"/>
+									onclick="display_MailMerge_Page(1)" />
 								<input type="button" value="Columns" id="btnTab2" name="btnTab2" class="btn"
-									onclick="display_MailMerge_Page(2)"/>
+									onclick="display_MailMerge_Page(2)" />
 								<input type="button" value="Sort Order" id="btnTab3" name="btnTab3" class="btn"
-									onclick="display_MailMerge_Page(3)"/>
+									onclick="display_MailMerge_Page(3)" />
 								<input type="button" value="Output" id="btnTab4" name="btnTab4" class="btn"
-									onclick="display_MailMerge_Page(4)"/>
+									onclick="display_MailMerge_Page(4)" />
 							</td>
 							<td width="10"></td>
 						</tr>
@@ -76,41 +76,43 @@
 																<td width="10">Name :</td>
 																<td width="5">&nbsp;</td>
 																<td>
-																	<input id="txtName" name="txtName" maxlength="50" style="WIDTH: 100%" class="text"
+																	<input id="txtName" name="txtName" maxlength="50" style="width: 100%" class="text"
 																		onkeyup="changeName()">
 																</td>
 																<td width="20">&nbsp;</td>
-																<td width="10">Owner :</td>
+																<td style="padding-left: 10px; width: 10px">Owner :</td>
 																<td width="5">&nbsp;</td>
 																<td width="40%">
-																	<input id="txtOwner" name="txtOwner" style="WIDTH: 100%" disabled="disabled" class="text textdisabled">
+																	<input id="txtOwner" name="txtOwner" style="width: 100%" disabled="disabled" class="text textdisabled">
 																</td>
-																<td width="5">&nbsp;</td>
+																<td style="width: 40%">&nbsp;</td>
 															</tr>
 
 															<tr>
 																<td colspan="9" height="5"></td>
 															</tr>
 
-															<tr style="height: 90px; vertical-align: top">
-																<td width="5">&nbsp;</td>
-																<td width="10" nowrap valign="top">Description :</td>
-																<td width="5">&nbsp;</td>
-																<td width="40%" rowspan="3">
-																	<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" height="0" maxlength="255"
+															<tr>
+																<td style="width: 5px">&nbsp;</td>
+																<td style="width: 10px; white-space: nowrap; vertical-align: top">Description :</td>
+																<td style="width: 5px">&nbsp;</td>
+																<td style="width: 40%;vertical-align: top" rowspan="3">
+																	<textarea id="txtDescription"
+																		name="txtDescription"
+																		class="textarea"
+																		style="height: 99%; width: 100%" maxlength="255"
 																		onkeyup="changeDescription()"
 																		onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
 																		onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
-																</textarea>
+																	</textarea>
 																</td>
-																<td width="20" nowrap>&nbsp;</td>
-																<td width="10" valign="top">Access :</td>
-																<td width="5">&nbsp;</td>
-																<td width="40%" rowspan="3" valign="top" style="height: 99%">
+																<td style="width: 20px; white-space: nowrap">&nbsp;</td>
+																<td style="padding-left: 10px; width: 10px">Access :</td>
+																<td style="width: 5px">&nbsp;</td>
+																<td style="width: 40%; height: 100px; vertical-align: top" rowspan="3">
 																	<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>
 																</td>
-																<td width="5">&nbsp;</td>
-
+																<td style="width: 5px">&nbsp;</td>
 															</tr>
 
 															<tr height="10">
@@ -131,12 +133,12 @@
 																<td width="100" nowrap valign="top">Base Table :</td>
 																<td width="5">&nbsp;</td>
 																<td width="40%" valign="top">
-																	<select id="cboBaseTable" name="cboBaseTable" class="combo" style="WIDTH: 100%"
+																	<select id="cboBaseTable" name="cboBaseTable" class="combo" style="width: 100%"
 																		onchange="changeBaseTable()">
 																	</select>
 																</td>
 																<td width="20" nowrap>&nbsp;</td>
-																<td width="10" valign="top">Records :</td>
+																<td style="padding-left: 10px; width: 10px">Records :</td>
 																<td width="5">&nbsp;</td>
 																<td width="40%">
 																	<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -183,10 +185,10 @@
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td>
-																				<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" style="WIDTH: 98%" class="text textdisabled">
+																				<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" style="width: 98%" class="text textdisabled">
 																			</td>
 																			<td width="30">
-																				<input id="cmdBasePicklist" name="cmdBasePicklist" style="WIDTH: 100%" type="button" value="..." class="btn"
+																				<input id="cmdBasePicklist" name="cmdBasePicklist" style="width: 100%" type="button" value="..." class="btn"
 																					onclick="selectRecordOption('base', 'picklist')"
 																					onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -215,10 +217,10 @@
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td>
-																				<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="WIDTH: 98%">
+																				<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="width: 98%">
 																			</td>
 																			<td width="30">
-																				<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 100%" type="button" value="..." class="btn"
+																				<input id="cmdBaseFilter" name="cmdBaseFilter" style="width: 100%" type="button" value="..." class="btn"
 																					onclick="selectRecordOption('base', 'filter')"
 																					onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -236,7 +238,7 @@
 																<td width="90" nowrap>&nbsp;</td>
 																<td width="5">&nbsp;</td>
 																<td width="40%">
-																	<input id="txtParent1" name="txtParent1" style="WIDTH: 100%" disabled="disabled" class="text textdisabled" type="hidden">
+																	<input id="txtParent1" name="txtParent1" style="width: 100%" disabled="disabled" class="text textdisabled" type="hidden">
 																</td>
 																<td width="20" nowrap>&nbsp;</td>
 																<td width="10">&nbsp;</td>
@@ -257,7 +259,7 @@
 																<td width="90">&nbsp;</td>
 																<td width="5">&nbsp;</td>
 																<td width="40%">
-																	<input id="txtParent2" name="txtParent2" style="WIDTH: 100%" disabled="disabled" class="text textdisabled" type="hidden">
+																	<input id="txtParent2" name="txtParent2" style="width: 100%" disabled="disabled" class="text textdisabled" type="hidden">
 																</td>
 																<td width="20" nowrap>&nbsp;</td>
 																<td width="10">&nbsp;</td>
@@ -295,7 +297,7 @@
 															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																<tr height="25px">
 																	<td height="25px" colspan="7" width="100%">
-																		<select id="cboTblAvailable" name="cboTblAvailable" disabled="disabled" class="combo combodisabled" style="WIDTH: 100%; HEIGHT: 100%"
+																		<select id="cboTblAvailable" name="cboTblAvailable" disabled="disabled" class="combo combodisabled" style="width: 100%; HEIGHT: 100%"
 																			onchange="refreshAvailableColumns();">
 																		</select>
 																	</td>
@@ -362,12 +364,8 @@
 																</tr>
 															</table>
 														</td>
-														<td width="5"></td>
+														<td  style="width: 100%"></td>
 													</tr>
-
-<%--													<tr height="5">
-														<td height="5" colspan="6"></td>
-													</tr>--%>
 
 													<tr>
 														<td width="5"></td>
@@ -376,11 +374,11 @@
 														</td>
 														<td width="10" nowrap></td>
 														<td height="5" valign="top" align="center">
-															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+															<table   style="width:100%;padding: 5px" class="invisible" cellspacing="0">
 																<tr height="25">
 																	<td>&nbsp</td>
 																	<td width="100" nowrap align="center">
-																		<input type="button" name="cmdColumnAdd" id="cmdColumnAdd" value="Add..." style="WIDTH: 100%; HEIGHT: 100%" class="btn"
+																		<input type="button" name="cmdColumnAdd" id="cmdColumnAdd" value="Add..." style="width: 100%; HEIGHT: 100%" class="btn"
 																			onclick="columnSwap(true)"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -395,7 +393,7 @@
 																<tr height="25">
 																	<td></td>
 																	<td width="100" nowrap align="center">
-																		<input type="button" name="cmdColumnAddAll" id="cmdColumnAddAll" value="Add All" style="WIDTH: 100%; HEIGHT: 100%" class="btn"
+																		<input type="button" name="cmdColumnAddAll" id="cmdColumnAddAll" value="Add All" style="width: 100%; HEIGHT: 100%" class="btn"
 																			onclick="columnSwapAll(true)"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -404,13 +402,13 @@
 																	</td>
 																	<td></td>
 																</tr>
-																<tr height="15">
+																<tr style="height: 100px">
 																	<td></td>
 																</tr>
 																<tr height="25">
 																	<td></td>
 																	<td width="100" nowrap align="center">
-																		<input type="button" name="cmdColumnRemove" id="cmdColumnRemove" value="Remove" style="WIDTH: 100%; HEIGHT: 100%" class="btn"
+																		<input type="button" name="cmdColumnRemove" id="cmdColumnRemove" value="Remove" style="width: 100%; HEIGHT: 100%" class="btn"
 																			onclick="columnSwap(false)"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -425,7 +423,7 @@
 																<tr height="25">
 																	<td></td>
 																	<td width="100" nowrap align="center">
-																		<input type="button" name="cmdColumnRemoveAll" id="cmdColumnRemoveAll" value="Remove All" style="WIDTH: 100%; HEIGHT: 100%" class="btn"
+																		<input type="button" name="cmdColumnRemoveAll" id="cmdColumnRemoveAll" value="Remove All" style="width: 100%; HEIGHT: 100%" class="btn"
 																			onclick="columnSwapAll(false)"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -459,7 +457,7 @@
 																	<td width="125">Size :</td>
 																	<td width="5"></td>
 																	<td>
-																		<input id="txtSize" name="txtSize" maxlength="50" style="WIDTH: 100%" class="text"
+																		<input id="txtSize" name="txtSize" maxlength="50" style="width: 100%" class="text"
 																			onchange="validateColSize();"
 																			onkeyup="validateColSize();">
 																	</td>
@@ -468,7 +466,7 @@
 																	<td width="125">Decimals :</td>
 																	<td width="5"></td>
 																	<td>
-																		<input id="txtDecPlaces" name="txtDecPlaces" maxlength="50" style="WIDTH: 100%" class="text"
+																		<input id="txtDecPlaces" name="txtDecPlaces" maxlength="50" style="width: 100%" class="text"
 																			onchange="validateColDecimals();"
 																			onkeyup="validateColDecimals();">
 																	</td>
@@ -489,7 +487,7 @@
 
 								<!-- Third tab -->
 								<div id="div3" style="visibility: hidden; display: none">
-									<table width="100%" height="80%" cellspacing="0" cellpadding="5">
+									<table width="50%" height="80%" cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -499,20 +497,21 @@
 
 													<tr height="20">
 														<td width="5">&nbsp;</td>
-														<td colspan="3">Sort Order :</td>
+														<%--<td colspan="3">Sort Order :</td>--%>
+														<td colspan="3"></td>
 														<td width="5">&nbsp;</td>
 													</tr>
 
 													<tr height="5">
 														<td width="5">&nbsp;</td>
-														<td rowspan="12">
+														<td style="vertical-align: top" rowspan="12">
 															<%Html.RenderPartial("Util_Def_CustomReports/ssMailMergeOleDBGridSortOrder")%>
 																
 														</td>
 
 														<td width="10">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortAdd" name="cmdSortAdd" value="Add..." style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortAdd" name="cmdSortAdd" value="Add..." style="width: 100%" class="btn"
 																onclick="sortAdd()"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -530,7 +529,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="5">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortEdit" name="cmdSortEdit" value="Edit..." style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortEdit" name="cmdSortEdit" value="Edit..." style="width: 100%" class="btn"
 																onclick="sortEdit()"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -548,7 +547,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="5">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortRemove" name="cmdSortRemove" value="Remove" style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortRemove" name="cmdSortRemove" value="Remove" style="width: 100%" class="btn"
 																onclick="sortRemove()"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -565,7 +564,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="5">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortRemoveAll" name="cmdSortRemoveAll" value="Remove All" style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortRemoveAll" name="cmdSortRemoveAll" value="Remove All" style="width: 100%" class="btn"
 																onclick="sortRemoveAll()"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -583,7 +582,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="5">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortMoveUp" name="cmdSortMoveUp" value="Move Up" style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortMoveUp" name="cmdSortMoveUp" value="Move Up" style="width: 100%" class="btn"
 																onclick="sortMove(true)"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -601,7 +600,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="5">&nbsp;</td>
 														<td width="100">
-															<input type="button" id="cmdSortMoveDown" name="cmdSortMoveDown" value="Move Down" style="WIDTH: 100%" class="btn"
+															<input type="button" id="cmdSortMoveDown" name="cmdSortMoveDown" value="Move Down" style="width: 100%" class="btn"
 																onclick="sortMove(false)"
 																onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -629,21 +628,19 @@
 									<table width="100%" height="80%" cellspacing="0" cellpadding="0">
 										<tr valign="top">
 											<td>
-												<table width="100%" class="invisible" cellspacing="0" cellpadding="4">
-
+												<table style="width:100%;padding-bottom: 20px" class="invisible" cellspacing="0" cellpadding="4">
 													<tr height="5">
 														<td colspan="9"></td>
 													</tr>
-
 													<tr>
 														<td width="20">&nbsp;&nbsp;&nbsp;</td>
-														<td nowrap width="100">Template :</td>
+														<td style="width: 100px;white-space: nowrap; font-weight: bold;">Template :</td>
 														<td width="20">&nbsp;&nbsp;&nbsp;</td>
-														<td width="20">
-															<input id="txtTemplate" name="txtTemplate" style="width: 400px" class="text textdisabled" disabled="disabled">
+														<td style="width: 45%">
+															<input id="txtTemplate" name="txtTemplate" style="width: 100%" class="text textdisabled" disabled="disabled">
 														</td>
 														<td width="30">
-															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+															<table style="width: 100%; padding: 0" class="invisible" cellspacing="0">
 																<tr>
 																	<td>
 																		<input type="button" value="..." id="cmdTemplateSelect" name="cmdTemplateSelect" class="btn"
@@ -664,38 +661,52 @@
 																</tr>
 															</table>
 														</td>
-														<%--<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>--%>
+														<td style="width: 100%" > </td>
+														<td> </td>
+														<td> </td>
+														<td> </td>
+													</tr>
+
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
 														<td nowrap>
 															<input type="checkbox" id="chkPause" name="chkPause" tabindex="-1"
 																onclick="changeTab4Control()"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" /><label
-																	for="chkPause"
-																	class="checkbox"
-																	tabindex="0"
-																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																	onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																	onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																	onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Pause before mail merge</label>
+																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+															<label
+																for="chkPause"
+																class="checkbox"
+																tabindex="0"
+																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																Pause before mail merge</label>
 														</td>
-														<td width="100%">&nbsp;&nbsp;&nbsp;</td>
-														<td width="20">&nbsp;&nbsp;&nbsp;</td>
+														
+														
+														<td> </td>
+														<td> </td>
+														
+														<td> </td>
+														<td> </td>
+														<td> </td>
+
 													</tr>
-
 													<tr>
-														<td width="20">&nbsp;&nbsp;&nbsp;</td>
-														<td nowrap width="100"></td>
-														<td width="20">&nbsp;&nbsp;&nbsp;</td>
-														<td width="420"></td>
-														<td width="30"></td>
-														<%--<td width="80">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>--%>
-
+														<td></td>
+														<td></td>
+														<td></td>
 														<td nowrap>
 															<input type="checkbox" id="chkSuppressBlanks" name="chkSuppressBlanks" tabindex="-1"
 																onclick="changeTab4Control()"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" /><label
+																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																<label
 																	for="chkSuppressBlanks"
 																	class="checkbox"
 																	tabindex="0"
@@ -705,21 +716,16 @@
 																	onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
 																	onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Suppress blank lines</label>
 														</td>
-
-														<td colspan="2"></td>
+														<td> </td>
+														<td> </td>
+														
+														<td> </td>
+														<td> </td>
+														<td> </td>
 													</tr>
-
-													<%--													<tr height="5">
-														<td></td>
-														<td colspan="7">
-															<hr>
-														</td>
-														<td></td>
-													</tr>--%>
 												</table>
 
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0" height="100%">
-
 													<tr style="height: 100%">
 														<td></td>
 														<td colspan="6">
@@ -802,33 +808,31 @@
 																			</tr>
 																			<tr></tr>
 																		</table>
-
-
 																		<td style="width: 30px"></td>
-
 																	<td valign="top">
-																		<%--<table  cellspacing="0" cellpadding="4" style="width: 100%; height: 200px; vertical-align: top">--%>
-																		<table style="padding: 4px; width: 100%; height: 200px; vertical-align: top; border: thin;">
+																		<table  style="padding: 4px; width: 100%; height: 200px; vertical-align: top;">
 
 																			<tr style="height: 20px; font-weight: bold;">
-																				<td colspan="4" align="left">Output Destinations :
+																				<td colspan="4" style="text-align: left">Output Destinations :
 																					<br>
 																				</td>
 																			</tr>
 
 																			<tr style="height: 20px; padding: 5px" name="row1" id="row1">
-																				<td width="150px" nowrap>Engine :</td>
-																				<td width="5px"></td>
+																				<td style="width: 60px;white-space: nowrap">Engine :</td>
+																				<td style="width: 5px"></td>
 																				<td colspan="2">
-																					<select id="cboDMEngine" name="cboDMEngine" style="WIDTH: 400px" class="combo"
+																					<select id="cboDMEngine" name="cboDMEngine" 
+																						style="width: 400px" class="combo"
 																						onchange="changeTab4Control()">
 																					</select>
 																				</td>
 																			</tr>
+
 																			<tr style="width: 5px"></tr>
 
 																			<tr id="row4" name="row4" style="height: 20px; padding: 5px">
-																				<td nowrap colspan="2">
+																				<td style="white-space: nowrap" colspan="2">
 																					<input type="checkbox" id="chkOutputScreen" name="chkOutputScreen" tabindex="-1"
 																						onclick="changeTab4Control()"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
@@ -854,7 +858,7 @@
 																				<td nowrap></td>
 																				<td></td>
 																				<td style="width: 30px" colspan="3">
-																					<table class="invisible" cellspacing="0" cellpadding="0">
+																					<table  class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td width="20"></td>
 																							<td style="padding-right: 0; vertical-align: middle"></td>
@@ -889,7 +893,7 @@
 																				</td>
 																				<td class="text" style="width: 150px; white-space: nowrap">Printer location :</td>
 																				<td colspan="2">
-																					<select id="cboPrinterName" name="cboPrinterName" style="WIDTH: 400px" class="combo"
+																					<select id="cboPrinterName" name="cboPrinterName" style="width: 330px" class="combo"
 																						onchange="changeTab4Control()">
 																					</select>
 																				</td>
@@ -915,12 +919,12 @@
 																				</td>
 																				<td class="text" style="width: 150px; white-space: nowrap">File name :</td>
 																				<td colspan="2">
-																					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																					<table style="width: 100%; padding: 0" class="invisible" cellspacing="0">
 																						<tr>
-																							<td width="20">
-																								<input id="  " name="txtSaveFile" style="WIDTH: 325px" disabled="disabled" class="text textdisabled">
+																							<td style="width: 20px">
+																								<input id="  " name="txtSaveFile" style="width: 325px" disabled="disabled" class="text textdisabled">
 																							</td>
-																							<td>
+																							<td style="padding-right: 2px; padding-left: 2px;" >
 																								<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
 																									onclick="saveFile()"
 																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
@@ -946,7 +950,7 @@
 																				<td style="width: 150px; white-space: nowrap">Email Address :</td>
 																				<td width="5px"></td>
 																				<td>
-																					<select id="cboEmail" name="cboEmail" style="WIDTH: 400px" class="combo"
+																					<select id="cboEmail" name="cboEmail" style="width: 400px" class="combo"
 																						onchange="changeTab4Control()">
 																					</select>
 																				</td>
@@ -957,7 +961,7 @@
 																				<td style="width: 150px; white-space: nowrap">Subject :</td>
 																				<td width="5px"></td>
 																				<td colspan="2">
-																					<input id="txtSubject" name="txtSubject" style="WIDTH: 400px" maxlength="255" class="text"
+																					<input id="txtSubject" name="txtSubject" style="width: 400px" maxlength="255" class="text"
 																						onkeyup="changeTab4Control()">
 																				</td>
 																			</tr>
@@ -983,14 +987,16 @@
 																			</tr>
 
 																			<tr style="height: 20px; padding: 5px" name="row10" id="row10">
-
-																				<td style="width: 150px; white-space: nowrap; text-align: center">Attach as :</td>
+																				<td style="width: 150px; white-space: nowrap; text-align: left">Attach as :</td>
 																				<td style="width: 5px"></td>
+																				<td colspan="2">
+																					<input id="txtAttachmentName" name="txtAttachmentName" maxlength="255" style="width: 400px" class="text"
+																						onkeyup="changeTab4Control()" />
+																				</td>
+																			</tr>
+																		</table>
 																	</td>
-																	<td colspan="2">
-																		<input id="txtAttachmentName" name="txtAttachmentName" maxlength="255" style="WIDTH: 400px" class="text"
-																			onkeyup="changeTab4Control()" />
-																	</td>
+																	
 																</tr>
 																<tr height="100%"></tr>
 															</table>
@@ -1000,74 +1006,44 @@
 											</td>
 											<td width="20">&nbsp;&nbsp;&nbsp;</td>
 										</tr>
-
 									</table>
+								</div>
 							</td>
 						</tr>
 					</table>
-</div>
-
-</td>
-							<td width="10"></td>
-</tr>
-
-						<tr height="10">
-							<td colspan="3"></td>
-						</tr>
-
-<tr height="10">
-	<td width="10"></td>
-	<td>
-		<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-			<tr>
-				<td style="width: 10px">&nbsp;</td>
-				<td>
-					<input type="button" id="cmdOK" name="cmdOK" value="OK" class="btn"
-						onclick="okClick()"
-						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-						onfocus="try{button_onFocus(this);}catch(e){}"
-						onblur="try{button_onBlur(this);}catch(e){}" />
-				</td>
-				<td style="width: 10px">&nbsp;</td>
-				<td>
-					<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" class="btn"
-						onclick="cancelClick()"
-						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-						onfocus="try{button_onFocus(this);}catch(e){}"
-						onblur="try{button_onBlur(this);}catch(e){}" />
-				</td>
-				<td style="width: 100%"></td>
-			</tr>
 		</table>
-	</td>
-	<td width="10"></td>
-</tr>
+		<div id="MailMergeOldScreenButtons">
+			<%--these buttons are superceded by ribbon but are 
+			here because the ribbon calls their click event--%>
+			<input type="button" id="cmdOK" name="cmdOK" value="OK" class="btn"
+				onclick="okClick()"
+				onmouseover="try{button_onMouseOver(this);}catch(e){}"
+				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+				onfocus="try{button_onFocus(this);}catch(e){}"
+				onblur="try{button_onBlur(this);}catch(e){}" />
+			<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" class="btn"
+				onclick="cancelClick()"
+				onmouseover="try{button_onMouseOver(this);}catch(e){}"
+				onmouseout="try{button_onMouseOut(this);}catch(e){}"
+				onfocus="try{button_onFocus(this);}catch(e){}"
+				onblur="try{button_onBlur(this);}catch(e){}" />
+		</div>
 
-<tr height="5">
-	<td colspan="3"></td>
-</tr>
-</table>
-				</td>
-			</tr>
-		</table>
-		
-<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
-<input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
+		<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
+		<input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
 
-<input type='hidden' id="txtParent1ID" name="txtParent1ID">
-<input type='hidden' id="txtParent2ID" name="txtParent2ID">
-<input type='hidden' id="txtParent1FilterID" name="txtParent1FilterID">
-<input type='hidden' id="txtParent1PicklistID" name="txtParent1PicklistID">
-<input type='hidden' id="txtParent2FilterID" name="txtParent2FilterID">
-<input type='hidden' id="txtParent2PicklistID" name="txtParent2PicklistID">
+		<input type='hidden' id="txtParent1ID" name="txtParent1ID">
+		<input type='hidden' id="txtParent2ID" name="txtParent2ID">
+		<input type='hidden' id="txtParent1FilterID" name="txtParent1FilterID">
+		<input type='hidden' id="txtParent1PicklistID" name="txtParent1PicklistID">
+		<input type='hidden' id="txtParent2FilterID" name="txtParent2FilterID">
+		<input type='hidden' id="txtParent2PicklistID" name="txtParent2PicklistID">
 
-<input type='hidden' id="txtChildFilterID" name="txtChildFilterID">
+		<input type='hidden' id="txtChildFilterID" name="txtChildFilterID">
 
-<input type="hidden" id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
-<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
-</form>
+		<input type="hidden" id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
+		<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
+	</form>
 
 	<form id="frmTables">
 		<%
