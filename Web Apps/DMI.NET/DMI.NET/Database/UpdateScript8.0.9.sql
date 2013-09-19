@@ -47779,6 +47779,8 @@ BEGIN
 
 END
 
+GO
+
 
 /*---------------------------------------------*/
 /* Ensure the required permissions are granted */
