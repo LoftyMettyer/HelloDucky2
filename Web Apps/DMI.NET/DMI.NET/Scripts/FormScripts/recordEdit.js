@@ -1270,7 +1270,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//replaces the SetControlLevel function in recordDMI.ocx.
 			span.style.zIndex = 0;
 
-			if (!fControlEnabled) span.disabled = true;
+			//if (!fControlEnabled) span.disabled = true;
 
 			addControl(iPageNo, span);
 
