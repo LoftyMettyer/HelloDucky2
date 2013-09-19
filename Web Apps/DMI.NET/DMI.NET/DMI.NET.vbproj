@@ -597,6 +597,7 @@
     <Content Include="Scripts\FormScripts\stdrpt_def_absence.js" />
     <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\FormScripts\util_run_calendarreports.js" />
+    <None Include="My Project\PublishProfiles\Mark Edwynn machine.pubxml" />
     <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
     <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\custom.css" />
