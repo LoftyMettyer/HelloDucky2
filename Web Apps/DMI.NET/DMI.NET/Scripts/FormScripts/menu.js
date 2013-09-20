@@ -1364,7 +1364,7 @@ function menu_refreshMenu() {
 		$("#toolbarRecord").parent().show();
 
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
-		menu_setVisibleMenuItem("mnutoolRecord", true);
+		menu_setVisibleMenuItem("mnutoolRecord", false);
 
 		// Enable the record editing options as necessary.
 		menu_setVisibleMenuItem("mnutoolNewRecord", true);
@@ -1756,7 +1756,7 @@ function menu_refreshMenu() {
 				frmOption = document.getElementById("frmOptionData");
 
 				menu_setVisibleMenuItem("mnubandMainToolBar", true);
-				menu_setVisibleMenuItem("mnutoolRecord", true);
+				menu_setVisibleMenuItem("mnutoolRecord", false);
 				
 				// Enable the record editing options as necessary.
 				menu_setVisibleMenuItem("mnutoolNewRecord", false);
