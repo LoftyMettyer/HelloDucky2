@@ -474,16 +474,16 @@
 
 																		<tr height="10">
 																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
-																			<td width="110" nowrap>Order :</td>
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<td width="65" nowrap>Order :</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="50%">
 																				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
-																						<td>
-																							<input type="text" id="txtFieldRecOrder" name="txtFieldRecOrder" class="text textdisabled" style="width: 100%" disabled="disabled">
+																						<td width="95%">
+																							<input type="text" id="txtFieldRecOrder" name="txtFieldRecOrder" class="text textdisabled" style="width: 99%" disabled="disabled">
 																						</td>
-																						<td style="width: 30px;">
-																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="width: 100%" class="btn" type="button" value="..."
+																						<td >
+																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="width: 100%; " class="btn" type="button" value="..."
 																								onclick="field_selectRecOrder()"
 																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -503,16 +503,16 @@
 
 																		<tr height="10">
 																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
-																			<td width="110" nowrap>Filter :</td>
-																			<td width="20">&nbsp;&nbsp;</td>
+																			<td width="65" nowrap>Filter :</td>
+																			<%--<td width="20">&nbsp;&nbsp;</td>--%>
 																			<td width="50%">
 																				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																					<tr>
-																						<td>
-																							<input type="text" id="txtFieldRecFilter" name="txtFieldRecFilter" class="text textdisabled" style="width: 100%" disabled="disabled">
+																						<td  width="95%">
+																							<input type="text" id="txtFieldRecFilter" name="txtFieldRecFilter" class="text textdisabled" style="width: 99%" disabled="disabled">
 																						</td>
-																						<td width="30">
-																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="width: 100%" type="button" value="..."
+																						<td >
+																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="width: 100%; " type="button" value="..."
 																								onclick="field_selectRecFilter()"
 																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -1491,14 +1491,14 @@
 					</tr>
 
 					<tr height="10">
-						<td width="10"></td>
-						<td colspan="3">
-							<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+						
+						<td colspan="3" alinn="left">
+							<table   width="100%" class="invisible" cellspacing="0" cellpadding="0">
 								<tr>
 									<td colspan="4"></td>
 								</tr>
 								<tr>
-									<td></td>
+									
 									<td width="10">
 										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="width: 75px" width="75"
 											onclick="component_OKClick()"
@@ -1507,7 +1507,7 @@
 											onfocus="try{button_onFocus(this);}catch(e){}"
 											onblur="try{button_onBlur(this);}catch(e){}" />
 									</td>
-									<td width="40"></td>
+									<td width="20"></td>
 									<td width="10">
 										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="width: 75px" width="75"
 											onclick="component_CancelClick()"
@@ -1516,10 +1516,12 @@
 											onfocus="try{button_onFocus(this);}catch(e){}"
 											onblur="try{button_onBlur(this);}catch(e){}" />
 									</td>
+                                    <td></td>
 								</tr>
 							</table>
 						</td>
 						<td width="10"></td>
+                        <td width="10"></td>
 					</tr>
 					<tr>
 						<td height="10" colspan="7"></td>
