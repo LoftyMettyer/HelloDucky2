@@ -166,16 +166,14 @@ End If
 	}
 	
 
-	function util_run_workflow_okClick() {		
-		$("#optionframe").hide();
-		$("#workframe").show();
-	}
+	function util_run_workflow_okClick() {
+			$("#optionframe").hide();
+			$("#workframe").show();
 
-	//hide workframe, display option frame.
-	$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
-	$("#workframe").hide();
-	$("#optionframe").show();
-
+			$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
+			$("#workframe").hide();
+			$("#optionframe").show();
+	}	
 
 </script>
 

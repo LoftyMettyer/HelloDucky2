@@ -293,23 +293,41 @@
 
 			if (!dragged) {
 				//menu_disableMenu();
-				$('#SSILinksFrame').fadeOut();
 
-				$('#SSILinksFrame').promise().done(function() {
-					var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
-					frmPrompt.utiltype.value = sUtilityType;
-					frmPrompt.utilid.value = sUtilityID;
-					frmPrompt.utilname.value = sUtilityName;
-					//OpenHR.showInReportFrame(frmPrompt, false);
-					OpenHR.submitForm(frmPrompt, "workframe", false);
-					$('#workframe').fadeIn();
 
-					//var breadcrumb = $(".pageTitle").text();
-					//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+				if (sUtilityType == "25") {
+					// Workflow
+					var frmWorkflow = document.getElementById('frmUtilityPrompt');
+					frmWorkflow.utiltype.value = sUtilityType;
+					frmWorkflow.utilid.value = sUtilityID;
+					frmWorkflow.utilname.value = sUtilityName;
+					frmWorkflow.action.value = "run";
 
-				});
+					var sUtilId = new String(sUtilityID);
+					frmWorkflow.target = sUtilId;
+					frmWorkflow.action = "util_run_workflow";				
+					
+					//submit but leave hidden - no point showing the message.
+					OpenHR.submitForm(frmWorkflow, 'workframe', false);
+					$('#workframe').hide();
+					$('#SSILinksFrame').show();
+					
+				} else {
+					//Not a workflow!
+					$('#SSILinksFrame').fadeOut();
+					$('#SSILinksFrame').promise().done(function () {
+						var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
+						frmPrompt.utiltype.value = sUtilityType;
+						frmPrompt.utilid.value = sUtilityID;
+						frmPrompt.utilname.value = sUtilityName;
+						OpenHR.submitForm(frmPrompt, "workframe", false);
+						$('#workframe').fadeIn();
+					});
+				}
 			}
 		}
+
+		
 
 		function launchWorkflow(url, name) {
 
@@ -553,7 +571,7 @@
 										<p class="linkspagebuttontileIcon"><i class="icon-table" ></i></p>
 									</li>								
 								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-magic"></i></p>
 									</li>								
