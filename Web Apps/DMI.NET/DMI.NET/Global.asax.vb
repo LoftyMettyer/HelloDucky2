@@ -96,6 +96,10 @@ Public Class MvcApplication
 		Session("Config-banner-justification") = ConfigurationManager.AppSettings("ui-banner-justification")
 		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
 
+		' get the WIREFRAME theme out the web config.
+		Session("ui-wireframe-theme") = ConfigurationManager.AppSettings("ui-wireframe-theme")
+		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
+
 		' Banner layout
 		' leftmost banner graphic
 		Dim customImageFileName As String = FindImageFileByName("customtopbar")

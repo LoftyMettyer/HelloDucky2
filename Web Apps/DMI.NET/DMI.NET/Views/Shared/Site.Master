@@ -205,8 +205,8 @@
 											break;
 										case "wireframe":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
-											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" });
+											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
+											$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
 											break;
 										case "tiles":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
