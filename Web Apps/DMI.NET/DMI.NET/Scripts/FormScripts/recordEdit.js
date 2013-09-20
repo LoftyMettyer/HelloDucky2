@@ -1026,7 +1026,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 
-		case 4: //Image
+		case 4: //Image - NOT PHOTO!!!
 			var image = document.createElement('img');
 			image.id = controlID;
 			applyLocation(image, controlItemArray, true);
@@ -1295,6 +1295,25 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 1024: //ctlPhoto
+			var image = document.createElement('img');
+			image.id = controlID;
+			applyLocation(image, controlItemArray, true);
+			image.style.border = "1px solid gray";
+			image.style.padding = "0px";
+			image.setAttribute("data-columnID", columnID);
+			image.setAttribute('data-controlType', controlItemArray[3]);
+			image.setAttribute("data-control-key", key);
+
+			if (!fControlEnabled) image.disabled = true;
+
+			//var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
+
+			//image.setAttribute('src', path);
+
+			//Add control to relevant tab, create if required.                
+			addControl(iPageNo, image);
+
+
 			break;
 
 
@@ -1745,6 +1764,8 @@ function updateControl(lngColumnID, value) {
 		// .Text = RTrim(CStr(pvValue) & vbNullString)
 
 		//Input type controls...
+		var oleType;
+		var filename;
 		if ($(this).is("input")) {
 			switch ($(this).attr("type")) {
 				case "text":
@@ -1764,32 +1785,10 @@ function updateControl(lngColumnID, value) {
 					break;
 				case "checkbox":
 					$(this).prop("checked", value == "True" ? true : false);
-					break;
+					break;							
 				case "button":
 					if (controlType == 8) {						
-						//OLE												
-						//TODO if coa_image.....		
-						//If InStr(1, CStr(pvValue), "::LINKED_OLE_DOCUMENT::", vbTextCompare) Then
-						//.SetPicturePath Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", "")
-						//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", ""))
-						//.OLEType = 3
-						// ElseIf InStr(1, CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", vbTextCompare) Then
-						//.SetPicturePath Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", "")
-						//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", ""))
-						//.OLEType = 2
-						// Else
-						// 	.SetPicturePath msPhotoPath & "\" & CStr(pvValue)
-						// 	.ASRDataField = CStr(pvValue)
-						// 	.OLEType = mobjScreenControls.Item(sTag).OLEType
-						// End If
-						//button.setAttribute("data-columnID", columnID);
-						//button.setAttribute('data-controlType', controlItemArray[3]);
-						//button.setAttribute("data-control-key", key);
-						//button.setAttribute('data-OleType', controlItemArray[55] == 2 ? 3 : controlItemArray[55]);
-						//button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
-
-						var oleType;
-
+						//OLE																		
 						if (value.indexOf('::LINKED_OLE_DOCUMENT') > 0) {
 							oleType = 3;
 						}
@@ -1797,9 +1796,8 @@ function updateControl(lngColumnID, value) {
 							oleType = 2;
 						} else {
 							oleType = $(this).attr('data-OleType');
-						}						
-						
-						var filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');						
+						}
+						filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
 						var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
 						var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
 						var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
@@ -1858,6 +1856,65 @@ function updateControl(lngColumnID, value) {
 					$(this).val(value);
 
 			}
+		}
+
+		if($(this).is("img")) {
+
+			filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
+			var msPhotoPath = $('#frmRecordEditForm #txtPicturePath').val();
+			
+			if (value.indexOf('::LINKED_OLE_DOCUMENT') > 0) {
+				$(this).attr('src', filename);
+				oleType = 3;
+			}
+			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT') > 0) {
+				$(this).attr('src', filename);
+				oleType = 2;
+			} else {
+				if (value != "") {
+					$(this).attr('src', msPhotoPath + "\\" + value);
+					oleType = $(this).attr('data-OleType');
+				} else {
+					$(this).attr('src', '../Content/Images/anonymous.png');
+				}
+			}
+
+			
+			var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
+			var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
+			var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
+
+			//OLE_LOCAL = 0
+			//OLE_SERVER = 1
+			//OLE_EMBEDDED = 2
+			//OLE_UNC = 3
+			var strOLEType = 'OLE';
+
+			switch (Number(oleType)) {
+				case 0:
+					strOLEType = '(Local)';
+					break;
+				case 1:
+					strOLEType = '(Server)';
+					break;
+				case 2:
+					strOLEType = '(Embedded)';
+					break;
+				case 3:
+					strOLEType = (filename.length > 0 ? '(Linked)' : '(Link)');
+					break;
+				default:
+					strOLEType = 'failed to load caption';
+					break;
+			}
+
+			var tooltipText = (filename.length > 0 ? filename + ' ' + strOLEType : 'empty');
+
+			$(this).val(strOLEType);
+			$(this).attr('title', tooltipText);
+			$(this).attr('data-fileName', filename);
+			
+
 		}
 
 		//Working pattern & Option group

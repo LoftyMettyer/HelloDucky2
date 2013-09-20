@@ -794,3 +794,13 @@ div.officetab li div.textboxlist input {
 .pwfslink:hover {
 	cursor: pointer;
 }
+
+
+.FixedLinksRight { margin-top: 15px;}
+.FixedLinksRight .userdetails {
+	float: left;
+	margin-right: 5px;
+}
+
+.FixedLinksRight .userid { font-size: large;}
+.FixedLinksRight .groupid { font-size: small;font-weight: normal;}

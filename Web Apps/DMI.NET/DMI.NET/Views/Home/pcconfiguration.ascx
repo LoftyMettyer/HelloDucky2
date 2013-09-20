@@ -32,19 +32,19 @@
 				frmConfiguration.txtOLELocal.value = sPath;
 				frmOriginalConfiguration.txtOLELocalPath.value = sPath;
 
-				sKey = new String("photopath_");
+				sKey = new String("photoPath_");
 				sKey = sKey.concat(frmMenu.txtDatabase.value);
 				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 				frmConfiguration.txtPhoto.value = sPath;
 				frmOriginalConfiguration.txtPhotoPath.value = sPath;
 
-				sKey = new String("imagepath_");
+				sKey = new String("imagePath_");
 				sKey = sKey.concat(frmMenu.txtDatabase.value);
 				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 				frmConfiguration.txtImage.value = sPath;
 				frmOriginalConfiguration.txtImagePath.value = sPath;
 
-				sKey = new String("tempmenufilepath_");
+				sKey = new String("tempMenuFilePath_");
 				sKey = sKey.concat(frmMenu.txtDatabase.value);
 				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 				if (sPath == "") {

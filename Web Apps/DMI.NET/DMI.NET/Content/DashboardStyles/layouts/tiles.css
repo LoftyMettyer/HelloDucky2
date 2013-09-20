@@ -536,3 +536,14 @@ div#pwfs {
 .pwfslink:hover {
 	cursor: pointer;
 }
+
+
+
+.FixedLinksRight { bottom: 0;}
+.FixedLinksRight .userdetails {
+	float: left;
+	margin-right: 5px;
+}
+
+.FixedLinksRight .userid { font-size: large;}
+.FixedLinksRight .groupid { font-size: small;font-weight: normal;}

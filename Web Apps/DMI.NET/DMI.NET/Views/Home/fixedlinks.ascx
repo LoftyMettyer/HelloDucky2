@@ -957,6 +957,17 @@
 
 	</div>
 	<div class="FixedLinksRight">
+		<div class="userdetails">
+		<div class="userid">
+			<%=Session("username")%>
+			</div>
+		<div class="groupid">
+			<%=Session("UserGroup")%>		
+		</div>
+		</div>
+		<div class="userpic">
+			<img src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt=""/>
+		</div>
 		<ul>
 			<li>
 				</li>

@@ -380,3 +380,14 @@ div.officetab div.panel > span { display: none;}
 .pwfslink:hover {
 	cursor: pointer;
 }
+
+
+
+.FixedLinksRight { margin-top: 0;}
+.FixedLinksRight .userdetails {
+	float: left;
+	margin-right: 5px;
+}
+
+.FixedLinksRight .userid { font-size: large;}
+.FixedLinksRight .groupid { font-size: small;font-weight: normal;}
