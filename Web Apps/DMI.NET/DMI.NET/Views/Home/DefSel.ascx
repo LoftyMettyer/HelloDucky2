@@ -84,7 +84,7 @@
 	End If
 	Session("fromMenu") = 0
 
-	If (CStr(Session("singleRecordID")) = "") Or (Session("singleRecordID") < 1) Then
+	If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
 		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
 			Session("utilTableID") = Request.Form("txtTableID")
 		Else
@@ -124,7 +124,7 @@
 	session("tableID") = session("utilTableID")
 	
 	If CStr(Session("singleRecordID")) <> "" Then
-		If Session("singleRecordID") < 1 Then
+		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
 			If CStr(Session("optionDefSelRecordID")) <> "" Then
 				If Session("optionDefSelRecordID") > 0 Then
 					Session("singleRecordID") = Session("optionDefSelRecordID")
@@ -151,9 +151,9 @@
 	End If
 
 	if (session("defseltype") <> 10) and (session("defseltype") <> 11) and (session("defseltype") <> 12) then
-		if (session("singleRecordID") < 1) then
-			session("utilTableID") = 0
-		end if
+		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
+			Session("utilTableID") = 0
+		End If
 	end if 
 %>
 
@@ -1236,9 +1236,11 @@
 																				<td>
 																						<input type="button" id="cmdNew" class="btn" name="cmdNew" value="New" style="width: 80px"
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %>
 																								onclick="setnew();" />
 																				</td>
@@ -1250,9 +1252,11 @@
 																				<td>
 																						<input type="button" name="cmdEdit" class="btn" value="Edit" style="width: 80px"
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %>
 																								onclick="setedit();" />
 																				</td>
@@ -1264,9 +1268,11 @@
 																				<td>
 																						<input type="button" name="cmdCopy" class="btn" id="cmdCopy" value="Copy" style="width: 80px"
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %>
 																								onclick="setcopy();" />
 																				</td>
@@ -1278,9 +1284,11 @@
 																				<td>
 																						<input type="button" name="cmdDelete" class="btn" value="Delete" style="width: 80px"
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %>
 																								onclick="setdelete();" />
 																				</td>
@@ -1292,9 +1300,11 @@
 																				<td>
 																						<input type="button" name="cmdPrint" class="btn btndisabled" value="Print" style="width: 80px" disabled
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %> />
 																				</td>
 																		</tr>
@@ -1305,9 +1315,11 @@
 																				<td>
 																						<input type="button" name="cmdProperties" class="btn" value="Properties" style="width: 80px"
 																								<% 
+																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																										Response.Write(" style=""visibility:hidden""")
+																									Response.Write(" style=""visibility:hidden""")
 																								End If
+																							End If
 %>
 																								onclick="showproperties();" />
 																				</td>
