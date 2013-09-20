@@ -1336,6 +1336,9 @@ function menu_refreshMenu() {
 
 	//$("#toolbarHome").click();
 
+	if(window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode);
+
+
 		//Standard reports (reports menu)
 	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 						(frmMenuInfo.txtUserType.value == 0) &&
@@ -1374,8 +1377,8 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
 		menu_toolbarEnableItem("mnutoolNewRecord", fMnutoolNewRecord);
-						//menu_setVisibleMenuItem("mnutoolCopyRecord", true);
-						//menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
+						menu_setVisibleMenuItem("mnutoolCopyRecord", true);
+						menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);		
 		menu_toolbarEnableItem("mnutoolSaveRecord", ($("#ctlRecordEdit #changed").val() == "true"));
@@ -2016,7 +2019,7 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolBulkBookingRecordFind", fBulkBookingVisible);
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
-
+	
 	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);
 	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);
 

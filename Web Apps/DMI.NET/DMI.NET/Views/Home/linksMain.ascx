@@ -686,7 +686,7 @@
 		<ul class="dropdownlinkseparatorframe" id="dropdownlinkseparatorframe_<%=iSeparatorNum %>">
 		<li class="dropdownlink-displaytype">
 			<p class="dropdownlinkseparator">Dropdown links:</p>
-			<div class="gridster">
+			<div class="gridster" id="gridster_DropdownLinks">
 			<ul class="DropDownListMenu">
 				<%iRowNum = 1%>
 				<%iColNum = 1%>

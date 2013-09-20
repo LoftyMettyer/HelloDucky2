@@ -280,6 +280,12 @@
 									<i class="icon-plus"></i>
 									<h6>Add</h6>
 							</a></div>
+							<div id="mnutoolCopyRecord" class="button">
+								<a href="#" rel="table" title="Copy Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
+									<i class="icon-copy"></i>
+									<h6>Copy</h6></a>
+							</div>
 							<div id="mnutoolEditRecord" class="button">
 								<a href="#" rel="table" title="Edit Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
