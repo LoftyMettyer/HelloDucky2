@@ -2015,7 +2015,8 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolCancelBookingRecordFind", fCancelBookingEnabled);
 	menu_setVisibleMenuItem("mnutoolBulkBookingRecordFind", fBulkBookingVisible);
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
-	
+	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
+
 	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);
 	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);
 
