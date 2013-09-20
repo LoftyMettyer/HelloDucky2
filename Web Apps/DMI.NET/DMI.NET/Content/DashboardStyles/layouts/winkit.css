@@ -37,14 +37,41 @@ body
 	width: 100%;
 }
 
-.pageTitleIcon {
+.pageTitle {
+	/*display: none!important;*/
+	margin-top: 0;
+	font-size: 24pt;
+	margin-bottom: 20px;
+}
+
+
+.DMI .pageTitleIcon {
 	display: none!important;
 }
 
-.pageTitle {
-	margin-top: 0;	
+.SSI .pageTitleDiv {
+	 height: 50px;
+		margin: 0 0 40px 0;
+		padding: 0;
+}
+
+.SSI .pageTitle {	
+	font-weight: lighter;
+	font-size: 26pt;
+	padding-left: 30px!important;
+}
+
+.SSI .pageTitleIcon {
+	cursor: pointer;
+	text-decoration: none!important;
 	font-size: 24pt;
-	margin-bottom: 20px;
+	line-height: 50px;
+	float: left;
+}
+
+
+.SSI .pageTitleIcon:hover {
+	color: orange;
 }
 
 .DashContent {position: absolute; top: 0px; bottom: 2px;left: 0px; right: 0px;}

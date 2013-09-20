@@ -555,32 +555,32 @@ function menu_MenuClick(sTool) {
 
 
 //--------------------------PENDING WORKFLOW STEPS-------------------------------//
-    // 'RUN'
+		// 'RUN'
 	if (sToolName == 'mnutoolRunWFPendingStepsFind') {
 		try {
-		    $("#cmdRun").click();
+				$("#cmdRun").click();
 		} catch (e) {
 		} finally {
 			return false;
 		}
 	}
-    // 'CLOSE'
+		// 'CLOSE'
 	if (sToolName == 'mnutoolCloseWFPendingStepsFind') {
-	    try {
-	        closeclick();
-	    } catch (e) {
-	    } finally {
-	        return false;
-	    }
+			try {
+					closeclick();
+			} catch (e) {
+			} finally {
+					return false;
+			}
 	}
-    // 'REFRESH'
+		// 'REFRESH'
 	if (sToolName == 'mnutoolRefreshWFPendingStepsFind') {
-	    try {
-	        $("#cmdRefresh").click();
-	    } catch (e) {
-	    } finally {
-	        return false;
-	    }
+			try {
+					$("#cmdRefresh").click();
+			} catch (e) {
+			} finally {
+					return false;
+			}
 	}
 
 
@@ -1009,7 +1009,7 @@ function menu_MenuClick(sTool) {
 		}
 
 
-	  // User Config and PC Config
+		// User Config and PC Config
 		if (sToolName == "mnutoolSaveAdminConfig") {
 			Configuration_okClick();
 			return false;
@@ -1019,17 +1019,17 @@ function menu_MenuClick(sTool) {
 		
 		// TODO: The following handlers need to be fixed or may be redundant
 
-        // Administration Menu -------------------------------------------------------------------------------------------------------------------
-    
+				// Administration Menu -------------------------------------------------------------------------------------------------------------------
+		
 		if (sToolName == "mnutoolWorkflowPendingSteps") {
-		    if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
-		        //New bit: display the default ribbon, then add required tab, then activate it.
-		        showDefaultRibbon();
-		        $("#toolbarWFPendingStepsFind").parent().show();
-		        $("#toolbarWFPendingStepsFind").click();
-		        menu_autoLoadPage("workflowPendingSteps", false);
-		    }
-		    return;
+				if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
+						//New bit: display the default ribbon, then add required tab, then activate it.
+						showDefaultRibbon();
+						$("#toolbarWFPendingStepsFind").parent().show();
+						$("#toolbarWFPendingStepsFind").click();
+						menu_autoLoadPage("workflowPendingSteps", false);
+				}
+				return;
 		}
 
 
@@ -1336,7 +1336,7 @@ function menu_refreshMenu() {
 
 	//$("#toolbarHome").click();
 
-	if(window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode);
+	if(window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode());
 
 
 		//Standard reports (reports menu)
@@ -1407,7 +1407,7 @@ function menu_refreshMenu() {
 		//menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", false);
 		//menu_setVisibleMenuItem("mnutoolLocateRecords", false);
 		//menu_setVisibleMenuItem("mnutoolLocateRecordsLogic", false);
-		//menu_setVisibletoolbarGroup("mnutoolLocateRecords", false);	//hide the group too.
+		//menu_setVisibletoolbarGroup("mnutoolLocateRecords", false);	//hide the group too
 
 		// Find Group
 		menu_setVisibleMenuItem("mnutoolFindRecord", true);
@@ -1628,6 +1628,10 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolLastRecordFind", true);
 			menu_toolbarEnableItem("mnutoolLastRecordFind", (frmFind.txtIsLastPage.value.toUpperCase() == "FALSE"));
 
+			if (menu_isSSIMode()) {				
+				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
+			}
+			
 			//TODO menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", true);
 			//TODO menu_setVisibleMenuItem("mnutoolLocateRecords", (parseInt(frmFind.txtFirstColumnType.value) != -7));
 			//TODO abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
@@ -1925,7 +1929,7 @@ function menu_refreshMenu() {
 							menu_setVisibleMenuItem("mnutoolPreviousEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolNextEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolLastEventLogFind", true);
-					    
+							
 							// Enable the Event Log tab
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
@@ -1945,7 +1949,7 @@ function menu_refreshMenu() {
 						}
 		else {
 			if ((sCurrentWorkPage == "PCCONFIGURATION") ||
-			    (sCurrentWorkPage == "CONFIGURATION")) {
+					(sCurrentWorkPage == "CONFIGURATION")) {
 				// handled in configuration.configuration_window_onload()
 			}
 	}
@@ -2000,10 +2004,10 @@ function menu_refreshMenu() {
 
 		//HC: Seems redundant
 
-  menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);
-  menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);
-  menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);
-  menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);
+	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);
+	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);
+	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);
+	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);
 	
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
@@ -2062,13 +2066,13 @@ function menu_refreshMenu() {
 	//abMainMenu.Tools("mnutoolWorkflow").enabled = (txtWorkflowGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolWorkflowPopup").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
 	//		abMainMenu.Tools("mnutoolWorkflowPopup").enabled = true;
-    //		abMainMenu.Tools("mnutoolWorkflowPendingSteps").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-    //		abMainMenu.Tools("mnutoolWorkflowPendingSteps").enabled = true;
-    //		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").visible = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
-    //		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").enabled = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
-    //		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
-    //		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
-    //		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
+		//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
+		//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").enabled = true;
+		//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").visible = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
+		//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").enabled = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
+		//		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
+		//		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
+		//		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
 
 	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
 
@@ -2083,8 +2087,8 @@ function menu_refreshMenu() {
 	
 	menu_setVisibleMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
-    
-    menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
+		
+		menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
 
@@ -2170,7 +2174,7 @@ function menu_disableMenu() {
 	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
 		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
 		$("#officebar").fadeOut("fast");
-  } else { //disable menu items on Record tab.
+	} else { //disable menu items on Record tab.
 		menu_toolbarEnableItem('mnutoolNewRecord', false);
 		menu_toolbarEnableItem('mnutoolEditRecord', false);
 		menu_toolbarEnableItem('mnutoolSaveRecord', false);

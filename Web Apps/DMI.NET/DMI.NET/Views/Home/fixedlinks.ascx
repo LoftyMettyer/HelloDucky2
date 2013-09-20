@@ -202,7 +202,7 @@
 									<h6>Last</h6></a>
 							</div>
 						</li>
-						<li id="mnuSectionLocateRecordFind"><span>Locate Record</span>
+						<li id="mnuSectionLocateRecordFind">
 							<div id="mnutoolLocateRecordFind" class="textboxlist">
 								<ul><li>Go To<input type="text" /></li></ul>
 							</div>
