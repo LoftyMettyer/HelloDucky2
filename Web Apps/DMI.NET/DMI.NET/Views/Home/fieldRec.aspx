@@ -260,194 +260,197 @@
 					</td>
 				</tr>
 				<tr>
-					<td width=20></td>
-										<td>
-<%
-		Dim cmdSelRecords
-		Dim prmTableID
-		Dim prmUser
-		Dim rstSelRecords
-		Dim lngRowCount As Long
+					<td style="width: 20px;"></td>
+					<td style="height: 350px">
+						<%
+							Dim cmdSelRecords
+							Dim prmTableID
+							Dim prmUser
+							Dim rstSelRecords
+							Dim lngRowCount As Long
 		
-		cmdSelRecords = Server.CreateObject("ADODB.Command")
-	cmdSelRecords.CommandType = 4
-		cmdSelRecords.ActiveConnection = Session("databaseConnection")
+							cmdSelRecords = Server.CreateObject("ADODB.Command")
+							cmdSelRecords.CommandType = 4
+							cmdSelRecords.ActiveConnection = Session("databaseConnection")
 
-	if ucase(session("selectionType")) = ucase("order") then
-		cmdSelRecords.CommandText = "spASRIntGetAvailableOrdersInfo"
-				cmdSelRecords.CommandType = 4
+							If UCase(Session("selectionType")) = UCase("order") Then
+								cmdSelRecords.CommandText = "spASRIntGetAvailableOrdersInfo"
+								cmdSelRecords.CommandType = 4
 				
-				prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-				cmdSelRecords.Parameters.Append(prmTableID)
-		prmTableID.value = clng(cleanNumeric(session("selectionTableID")))
-	else
-				cmdSelRecords.CommandText = "spASRIntGetAvailableFiltersInfo"
-				cmdSelRecords.CommandType = 4
+								prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+								cmdSelRecords.Parameters.Append(prmTableID)
+								prmTableID.value = CLng(CleanNumeric(Session("selectionTableID")))
+							Else
+								cmdSelRecords.CommandText = "spASRIntGetAvailableFiltersInfo"
+								cmdSelRecords.CommandType = 4
 
-				prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-				cmdSelRecords.Parameters.Append(prmTableID)
-		prmTableID.value = clng(cleanNumeric(session("selectionTableID")))
+								prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+								cmdSelRecords.Parameters.Append(prmTableID)
+								prmTableID.value = CLng(CleanNumeric(Session("selectionTableID")))
 			
-				prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 8000) ' 200 = varchar, 1 = input, 8000=size
-				cmdSelRecords.Parameters.Append(prmUser)
-				prmUser.value = CStr(Session("username"))
-	end if
+								prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 8000)	' 200 = varchar, 1 = input, 8000=size
+								cmdSelRecords.Parameters.Append(prmUser)
+								prmUser.value = CStr(Session("username"))
+							End If
 
-		Err.Clear()
-		rstSelRecords = cmdSelRecords.Execute
+							Err.Clear()
+							rstSelRecords = cmdSelRecords.Execute
 
-	' Instantiate and initialise the grid. 
-%>
-							<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridSelRecords name=ssOleDBGridSelRecords codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:300px">
-								<PARAM NAME="ScrollBars" VALUE="4">
-							<PARAM NAME="_Version" VALUE="196616">
-							<PARAM NAME="DataMode" VALUE="2">
-							<PARAM NAME="Cols" VALUE="0">
-							<PARAM NAME="Rows" VALUE="0">
-							<PARAM NAME="BorderStyle" VALUE="1">
-							<PARAM NAME="RecordSelectors" VALUE="0">
-							<PARAM NAME="GroupHeaders" VALUE="0">
-							<PARAM NAME="ColumnHeaders" VALUE="0">
-							<PARAM NAME="GroupHeadLines" VALUE="0">
-							<PARAM NAME="HeadLines" VALUE="0">
-							<PARAM NAME="FieldDelimiter" VALUE="(None)">
-							<PARAM NAME="FieldSeparator" VALUE="(Tab)">
-							<PARAM NAME="Col.Count" VALUE="<%=rstSelRecords.fields.count%>">
-							<PARAM NAME="stylesets.count" VALUE="0">
-							<PARAM NAME="TagVariant" VALUE="EMPTY">
-							<PARAM NAME="UseGroups" VALUE="0">
-							<PARAM NAME="HeadFont3D" VALUE="0">
-							<PARAM NAME="Font3D" VALUE="0">
-							<PARAM NAME="DividerType" VALUE="3">
-							<PARAM NAME="DividerStyle" VALUE="1">
-							<PARAM NAME="DefColWidth" VALUE="0">
-							<PARAM NAME="BeveColorScheme" VALUE="2">
-							<PARAM NAME="BevelColorFrame" VALUE="-2147483642">
-							<PARAM NAME="BevelColorHighlight" VALUE="-2147483628">
-							<PARAM NAME="BevelColorShadow" VALUE="-2147483632">
-							<PARAM NAME="BevelColorFace" VALUE="-2147483633">
-							<PARAM NAME="CheckBox3D" VALUE="-1">
-							<PARAM NAME="AllowAddNew" VALUE="0">
-							<PARAM NAME="AllowDelete" VALUE="0">
-							<PARAM NAME="AllowUpdate" VALUE="0">
-							<PARAM NAME="MultiLine" VALUE="0">
-							<PARAM NAME="ActiveCellStyleSet" VALUE="">
-							<PARAM NAME="RowSelectionStyle" VALUE="0">
-							<PARAM NAME="AllowRowSizing" VALUE="0">
-							<PARAM NAME="AllowGroupSizing" VALUE="0">
-							<PARAM NAME="AllowColumnSizing" VALUE="0">
-							<PARAM NAME="AllowGroupMoving" VALUE="0">
-							<PARAM NAME="AllowColumnMoving" VALUE="0">
-							<PARAM NAME="AllowGroupSwapping" VALUE="0">
-							<PARAM NAME="AllowColumnSwapping" VALUE="0">
-							<PARAM NAME="AllowGroupShrinking" VALUE="0">
-							<PARAM NAME="AllowColumnShrinking" VALUE="0">
-							<PARAM NAME="AllowDragDrop" VALUE="0">
-							<PARAM NAME="UseExactRowCount" VALUE="-1">
-							<PARAM NAME="SelectTypeCol" VALUE="0">
-							<PARAM NAME="SelectTypeRow" VALUE="1">
-							<PARAM NAME="SelectByCell" VALUE="-1">
-							<PARAM NAME="BalloonHelp" VALUE="0">
-							<PARAM NAME="RowNavigation" VALUE="1">
-							<PARAM NAME="CellNavigation" VALUE="0">
-							<PARAM NAME="MaxSelectedRows" VALUE="1">
-							<PARAM NAME="HeadStyleSet" VALUE="">
-							<PARAM NAME="StyleSet" VALUE="">
-							<PARAM NAME="ForeColorEven" VALUE="0">
-							<PARAM NAME="ForeColorOdd" VALUE="0">
-							<PARAM NAME="BackColorEven" VALUE="16777215">
-							<PARAM NAME="BackColorOdd" VALUE="16777215">
-							<PARAM NAME="Levels" VALUE="1">
-							<PARAM NAME="RowHeight" VALUE="503">
-							<PARAM NAME="ExtraHeight" VALUE="0">
-							<PARAM NAME="ActiveRowStyleSet" VALUE="">
-							<PARAM NAME="CaptionAlignment" VALUE="2">
-							<PARAM NAME="SplitterPos" VALUE="0">
-							<PARAM NAME="SplitterVisible" VALUE="0">
-							<PARAM NAME="Columns.Count" VALUE="<%=rstSelRecords.fields.count%>">
-<%
-	for iLoop = 0 to (rstSelRecords.fields.count - 1)
-		if rstSelRecords.fields(iLoop).name <> "name" then
-%>
-														<PARAM NAME="Columns(<%=iLoop%>).Width" VALUE="0">
-											<PARAM NAME="Columns(<%=iLoop%>).Visible" VALUE="0">
-<%
-		else
-%>
-											<PARAM NAME="Columns(<%=iLoop%>).Width" VALUE="100000">
-											<PARAM NAME="Columns(<%=iLoop%>).Visible" VALUE="-1">
-<%
-		end if
-%>								
-												<PARAM NAME="Columns(<%=iLoop%>).Columns.Count" VALUE="1">
-												<PARAM NAME="Columns(<%=iLoop%>).Caption" VALUE="<%=replace(rstSelRecords.fields(iLoop).name, "_", " ")%>">
-												<PARAM NAME="Columns(<%=iLoop%>).Name" VALUE="<%=rstSelRecords.fields(iLoop).name%>">
-												<PARAM NAME="Columns(<%=iLoop%>).Alignment" VALUE="0">
-												<PARAM NAME="Columns(<%=iLoop%>).CaptionAlignment" VALUE="3">
-												<PARAM NAME="Columns(<%=iLoop%>).Bound" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).AllowSizing" VALUE="1"> 
-												<PARAM NAME="Columns(<%=iLoop%>).DataField" VALUE="Column <%=iLoop%>"> 
-												<PARAM NAME="Columns(<%=iLoop%>).DataType" VALUE="8">
-												<PARAM NAME="Columns(<%=iLoop%>).Level" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).NumberFormat" VALUE=""> 			
-												<PARAM NAME="Columns(<%=iLoop%>).Case" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).FieldLen" VALUE="4096"> 
-												<PARAM NAME="Columns(<%=iLoop%>).VertScrollBar" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).Locked" VALUE="0"> 			
-												<PARAM NAME="Columns(<%=iLoop%>).Style" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).ButtonsAlways" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).RowCount" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).ColCount" VALUE="1"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HasHeadForeColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HasHeadBackColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HasForeColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HasBackColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HeadForeColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HeadBackColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).ForeColor" VALUE="0">
-												<PARAM NAME="Columns(<%=iLoop%>).BackColor" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).HeadStyleSet" VALUE=""> 
-												<PARAM NAME="Columns(<%=iLoop%>).StyleSet" VALUE=""> 
-												<PARAM NAME="Columns(<%=iLoop%>).Nullable" VALUE="1"> 
-												<PARAM NAME="Columns(<%=iLoop%>).Mask" VALUE=""> 
-												<PARAM NAME="Columns(<%=iLoop%>).PromptInclude" VALUE="0">
-												<PARAM NAME="Columns(<%=iLoop%>).ClipMode" VALUE="0"> 
-												<PARAM NAME="Columns(<%=iLoop%>).PromptChar" VALUE="95"> 
-<%
-	next 
-%>
-													<PARAM NAME="UseDefaults" VALUE="-1"> 
-													<PARAM NAME="TabNavigation" VALUE="1"> 
-													<PARAM NAME="_ExtentX" VALUE="17330"> 
-													<PARAM NAME="_ExtentY" VALUE="1323"> 
-													<PARAM NAME="_StockProps" VALUE="79"> 
-													<PARAM NAME="Caption" VALUE=""> 
-													<PARAM NAME="ForeColor" VALUE="0"> 
-													<PARAM NAME="BackColor" VALUE="16777215">
-													<PARAM NAME="Enabled" VALUE="-1"> 
-													<PARAM NAME="DataMember" VALUE="">
-<%								
-		lngRowCount = 0
-		Do While Not rstSelRecords.EOF
-				For iLoop = 0 To (rstSelRecords.fields.count - 1)
-%>		
-											<PARAM NAME="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" VALUE="<%=replace(replace(rstSelRecords.Fields(iLoop).Value, "_", " "), "", "&quot;")%>">
-<%
-		next 				
-		lngRowCount = lngRowCount + 1
-		rstSelRecords.MoveNext
-	loop
-%>
-													<PARAM NAME="Row.Count" VALUE="<%=lngRowCount%>">
-											</OBJECT>
-<%	
-	rstSelRecords.close
-		rstSelRecords = Nothing
+							' Instantiate and initialise the grid. 
+						%>
+						<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
+							id="ssOleDBGridSelRecords"
+							name="ssOleDBGridSelRecords"
+							codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
+							style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+							<param name="ScrollBars" value="4">
+							<param name="_Version" value="196616">
+							<param name="DataMode" value="2">
+							<param name="Cols" value="0">
+							<param name="Rows" value="0">
+							<param name="BorderStyle" value="1">
+							<param name="RecordSelectors" value="0">
+							<param name="GroupHeaders" value="0">
+							<param name="ColumnHeaders" value="0">
+							<param name="GroupHeadLines" value="0">
+							<param name="HeadLines" value="0">
+							<param name="FieldDelimiter" value="(None)">
+							<param name="FieldSeparator" value="(Tab)">
+							<param name="Col.Count" value="<%=rstSelRecords.fields.count%>">
+							<param name="stylesets.count" value="0">
+							<param name="TagVariant" value="EMPTY">
+							<param name="UseGroups" value="0">
+							<param name="HeadFont3D" value="0">
+							<param name="Font3D" value="0">
+							<param name="DividerType" value="3">
+							<param name="DividerStyle" value="1">
+							<param name="DefColWidth" value="0">
+							<param name="BeveColorScheme" value="2">
+							<param name="BevelColorFrame" value="-2147483642">
+							<param name="BevelColorHighlight" value="-2147483628">
+							<param name="BevelColorShadow" value="-2147483632">
+							<param name="BevelColorFace" value="-2147483633">
+							<param name="CheckBox3D" value="-1">
+							<param name="AllowAddNew" value="0">
+							<param name="AllowDelete" value="0">
+							<param name="AllowUpdate" value="0">
+							<param name="MultiLine" value="0">
+							<param name="ActiveCellStyleSet" value="">
+							<param name="RowSelectionStyle" value="0">
+							<param name="AllowRowSizing" value="0">
+							<param name="AllowGroupSizing" value="0">
+							<param name="AllowColumnSizing" value="0">
+							<param name="AllowGroupMoving" value="0">
+							<param name="AllowColumnMoving" value="0">
+							<param name="AllowGroupSwapping" value="0">
+							<param name="AllowColumnSwapping" value="0">
+							<param name="AllowGroupShrinking" value="0">
+							<param name="AllowColumnShrinking" value="0">
+							<param name="AllowDragDrop" value="0">
+							<param name="UseExactRowCount" value="-1">
+							<param name="SelectTypeCol" value="0">
+							<param name="SelectTypeRow" value="1">
+							<param name="SelectByCell" value="-1">
+							<param name="BalloonHelp" value="0">
+							<param name="RowNavigation" value="1">
+							<param name="CellNavigation" value="0">
+							<param name="MaxSelectedRows" value="1">
+							<param name="HeadStyleSet" value="">
+							<param name="StyleSet" value="">
+							<param name="ForeColorEven" value="0">
+							<param name="ForeColorOdd" value="0">
+							<param name="BackColorEven" value="16777215">
+							<param name="BackColorOdd" value="16777215">
+							<param name="Levels" value="1">
+							<param name="RowHeight" value="503">
+							<param name="ExtraHeight" value="0">
+							<param name="ActiveRowStyleSet" value="">
+							<param name="CaptionAlignment" value="2">
+							<param name="SplitterPos" value="0">
+							<param name="SplitterVisible" value="0">
+							<param name="Columns.Count" value="<%=rstSelRecords.fields.count%>">
+							<%
+								For iLoop = 0 To (rstSelRecords.fields.count - 1)
+									If rstSelRecords.fields(iLoop).name <> "name" Then
+							%>
+							<param name="Columns(<%=iLoop%>).Width" value="0">
+							<param name="Columns(<%=iLoop%>).Visible" value="0">
+							<%
+							Else
+							%>
+							<param name="Columns(<%=iLoop%>).Width" value="100000">
+							<param name="Columns(<%=iLoop%>).Visible" value="-1">
+							<%
+							End If
+							%>
+							<param name="Columns(<%=iLoop%>).Columns.Count" value="1">
+							<param name="Columns(<%=iLoop%>).Caption" value="<%=replace(rstSelRecords.fields(iLoop).name, "_", " ")%>">
+							<param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.fields(iLoop).name%>">
+							<param name="Columns(<%=iLoop%>).Alignment" value="0">
+							<param name="Columns(<%=iLoop%>).CaptionAlignment" value="3">
+							<param name="Columns(<%=iLoop%>).Bound" value="0">
+							<param name="Columns(<%=iLoop%>).AllowSizing" value="1">
+							<param name="Columns(<%=iLoop%>).DataField" value="Column <%=iLoop%>">
+							<param name="Columns(<%=iLoop%>).DataType" value="8">
+							<param name="Columns(<%=iLoop%>).Level" value="0">
+							<param name="Columns(<%=iLoop%>).NumberFormat" value="">
+							<param name="Columns(<%=iLoop%>).Case" value="0">
+							<param name="Columns(<%=iLoop%>).FieldLen" value="4096">
+							<param name="Columns(<%=iLoop%>).VertScrollBar" value="0">
+							<param name="Columns(<%=iLoop%>).Locked" value="0">
+							<param name="Columns(<%=iLoop%>).Style" value="0">
+							<param name="Columns(<%=iLoop%>).ButtonsAlways" value="0">
+							<param name="Columns(<%=iLoop%>).RowCount" value="0">
+							<param name="Columns(<%=iLoop%>).ColCount" value="1">
+							<param name="Columns(<%=iLoop%>).HasHeadForeColor" value="0">
+							<param name="Columns(<%=iLoop%>).HasHeadBackColor" value="0">
+							<param name="Columns(<%=iLoop%>).HasForeColor" value="0">
+							<param name="Columns(<%=iLoop%>).HasBackColor" value="0">
+							<param name="Columns(<%=iLoop%>).HeadForeColor" value="0">
+							<param name="Columns(<%=iLoop%>).HeadBackColor" value="0">
+							<param name="Columns(<%=iLoop%>).ForeColor" value="0">
+							<param name="Columns(<%=iLoop%>).BackColor" value="0">
+							<param name="Columns(<%=iLoop%>).HeadStyleSet" value="">
+							<param name="Columns(<%=iLoop%>).StyleSet" value="">
+							<param name="Columns(<%=iLoop%>).Nullable" value="1">
+							<param name="Columns(<%=iLoop%>).Mask" value="">
+							<param name="Columns(<%=iLoop%>).PromptInclude" value="0">
+							<param name="Columns(<%=iLoop%>).ClipMode" value="0">
+							<param name="Columns(<%=iLoop%>).PromptChar" value="95">
+							<%
+							Next
+							%>
+							<param name="UseDefaults" value="-1">
+							<param name="TabNavigation" value="1">
+							<param name="_ExtentX" value="17330">
+							<param name="_ExtentY" value="1323">
+							<param name="_StockProps" value="79">
+							<param name="Caption" value="">
+							<param name="ForeColor" value="0">
+							<param name="BackColor" value="16777215">
+							<param name="Enabled" value="-1">
+							<param name="DataMember" value="">
+							<%								
+								lngRowCount = 0
+								Do While Not rstSelRecords.EOF
+									For iLoop = 0 To (rstSelRecords.fields.count - 1)
+							%>
+							<param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=replace(replace(rstSelRecords.Fields(iLoop).Value, "_", " "), "", "&quot;")%>">
+							<%
+							Next
+							lngRowCount = lngRowCount + 1
+							rstSelRecords.MoveNext()
+						Loop
+							%>
+							<param name="Row.Count" value="<%=lngRowCount%>">
+						</object>
+						<%	
+							rstSelRecords.close()
+							rstSelRecords = Nothing
 
-	' Release the ADO command object.
-		cmdSelRecords = Nothing
-%>
-
+							' Release the ADO command object.
+							cmdSelRecords = Nothing
+						%>
 					</td>
 					<td width=20></td>
 				</tr>

@@ -1086,8 +1086,8 @@
 				<td>
 					<table id="filterTable" style="width: 100%; height: 100%; border-spacing: 0px; border-collapse: collapse;" class="invisible">
 						<tr>
-							<td style="height: 10%;" colspan="3">
-								<h3 class="pageTitle">Define Filter</h3>
+							<td style="height: 10%;text-align: left" colspan="3">
+								<span class="pageTitle">Define Filter</span>
 							</td>
 						</tr>
 

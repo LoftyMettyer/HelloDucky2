@@ -296,6 +296,7 @@
 						}
 				});
 
+				$("#findGridRow").height("60%");
 				$(window).bind('resize', function () {
 					$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
 					$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
@@ -1008,7 +1009,7 @@
 										<table width="100%" height="100%" class="invisible">
 												<tr>
 														<td colspan="5" height="10">
-																<h3 class="pageTitle">
+																<span class="pageTitle">
 																		<%
 																				If Session("defseltype") = 0 Then           'BATCH JOB
 																						Response.Write("Batch Jobs")
@@ -1042,7 +1043,7 @@
 																						Response.Write("Workflow")
 																				End If
 																		%>
-																</h3>
+																</span>
 														</td>
 												</tr>
 
@@ -1233,7 +1234,7 @@
 																<table height="100%" class="invisible">
 																		<tr>
 																				<td>
-																						<input type="button" id="cmdNew" class="btn" name="cmdNew" value="New" style="WIDTH: 80px" width="80"
+																						<input type="button" id="cmdNew" class="btn" name="cmdNew" value="New" style="width: 80px"
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1247,7 +1248,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdEdit" class="btn" value="Edit" style="WIDTH: 80px" width="80"
+																						<input type="button" name="cmdEdit" class="btn" value="Edit" style="width: 80px"
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1261,7 +1262,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdCopy" class="btn" id="cmdCopy" value="Copy" style="WIDTH: 80px" width="80"
+																						<input type="button" name="cmdCopy" class="btn" id="cmdCopy" value="Copy" style="width: 80px"
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1275,7 +1276,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdDelete" class="btn" value="Delete" style="WIDTH: 80px" width="80"
+																						<input type="button" name="cmdDelete" class="btn" value="Delete" style="width: 80px"
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1289,7 +1290,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdPrint" class="btn btndisabled" value="Print" style="WIDTH: 80px" width="80" disabled
+																						<input type="button" name="cmdPrint" class="btn btndisabled" value="Print" style="width: 80px" disabled
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1302,7 +1303,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdProperties" class="btn" value="Properties" style="WIDTH: 80px" width="80"
+																						<input type="button" name="cmdProperties" class="btn" value="Properties" style="width: 80px"
 																								<% 
 																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1319,7 +1320,7 @@
 																		</tr>
 																		<tr>
 																				<td>
-																						<input type="button" name="cmdRun" class="btn" value="Run" style="WIDTH: 80px" width="80" id="cmdRun"
+																						<input type="button" name="cmdRun" class="btn" value="Run" style="width: 80px" id="cmdRun"
 																								<% 
 																								If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
 																										Response.Write(" style=""visibility:hidden""")
@@ -1331,34 +1332,33 @@
 																		<tr height="10">
 																				<td></td>
 																		</tr>
-																		<tr>
-																				<td>
-																						<input type="button" name="cmdCancel" class="btn" value='<% 
-																								If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
-																										Response.Write("""OK""")
-																								Else
-																										Response.Write("""Cancel""")
-																								End If
+																	<tr>
+																		<td>
+																			<input type="button" name="cmdCancel" class="btn" value='<% 
+																				If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
+																					Response.Write("""OK""")
+																				Else
+																					Response.Write("""Cancel""")
+																				End If
 %>'
-																								style="WIDTH: 80px" width="80"
-																								onclick="setcancel()" />
-																				</td>
-																		</tr>
+																				style="width: 80px"
+																				onclick="setcancel()" />
+																		</td>
+																	</tr>
 																</table>
 														</td>
 														<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 												</tr>
 
-												<tr>
-														<td colspan="5" height="10"
-																<%
-																If Session("defseltype") = 25 Then
-																		Response.Write(" style=""visibility:hidden""")
-																End If
-%>>
-																<input type='hidden' id="txtusername" name="txtusername" value="<%=lcase(session("Username"))%>">
-														</td>
-												</tr>
+											<tr>
+												<td colspan="5" height="10"
+													<%
+													If Session("defseltype") = 25 Then
+														Response.Write(" style=""visibility:hidden""")
+															End If%>>
+													<input type='hidden' id="txtusername" name="txtusername" value="<%=lcase(session("Username"))%>">
+												</td>
+											</tr>
 
 												<tr>
 														<td colspan="4" height="10"

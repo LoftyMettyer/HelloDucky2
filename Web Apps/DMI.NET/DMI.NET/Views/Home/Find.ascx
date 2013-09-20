@@ -57,7 +57,7 @@
 <div id="divFindForm" <%=session("BodyTag")%>>
 	<form action="" class="absolutefull" method="POST" id="frmFindForm" name="frmFindForm">
 			<div class="absolutefull">
-		<div id="row1">
+		<div id="row1" style="margin-left: 20px;margin-right: 20px">
 							<%
 								On Error Resume Next
 	

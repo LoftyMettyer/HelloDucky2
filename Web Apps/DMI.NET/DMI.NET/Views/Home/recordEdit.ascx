@@ -581,12 +581,12 @@
 		
 
 %>
-		<div class="pageTitleDiv">
+		<div class="pageTitleDiv" >
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
 				<i class='pageTitleIcon icon-arrow-left'></i>
 			</a>
-			<span class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
-    ' Release the ADO command object.
+			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
+			                        	' Release the ADO command object.
     cmdRecEditWindowTitle = Nothing%></span>
 		</div>	
     

@@ -227,8 +227,8 @@
 						</td>
 					</tr>
 					<tr>
-						<td width="20"></td>
-						<td>
+						<td></td>
+						<td style="width: 20px;height: 350px">
 							<%
 								' Get the order records.
 								Dim cmdDefSelRecords = CreateObject("ADODB.Command")

@@ -218,7 +218,7 @@
 <div <%=session("BodyTag")%>>
 	<form action="" method="POST" id="frmOrderForm" name="frmOrderForm">
 		<div class="absolutefull">
-			<div id="row1">
+			<div id="row1" style="margin-left: 20px;margin-right: 20px">
 				<h3 align="center">Select Order</h3>
 			</div>
 			<div id="orderGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">

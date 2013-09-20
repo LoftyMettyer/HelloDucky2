@@ -333,7 +333,7 @@
 		%>
 		<div id="divFindForm" <%=session("BodyTag")%>>
 			<div class="absolutefull">
-				<div id="row1">
+				<div id="row1" style="margin-left: 20px;margin-right: 20px">
 					<h3 class="pageTitle" align="left">Find Lookup Record</h3>
 				</div>
 
