@@ -583,6 +583,7 @@
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
+    <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
@@ -630,8 +631,12 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <Content Include="Content\contextmenustyle.css" />
-    <Content Include="Content\DashboardStyles\layouts\winkit.css" />
-    <Content Include="Content\DashboardStyles\layouts\tiles.css" />
+    <Content Include="Content\DashboardStyles\layouts\winkit.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\DashboardStyles\layouts\tiles.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\DashboardStyles\themes\Blue.css" />
     <Content Include="Content\DashboardStyles\themes\White.css" />
     <Content Include="Content\DashboardStyles\themes\Red.css" />
@@ -659,7 +664,9 @@
     <Content Include="Content\images\next_48.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo2.png" />
     <Content Include="Content\images\Retract.png" />
-    <Content Include="Content\DashboardStyles\layouts\wireframe.css" />
+    <Content Include="Content\DashboardStyles\layouts\wireframe.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\spinner04.gif" />
     <Content Include="Content\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
     <Content Include="Content\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
