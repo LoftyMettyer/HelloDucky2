@@ -391,3 +391,7 @@ div.officetab div.panel > span { display: none;}
 
 .FixedLinksRight .userid { font-size: large;}
 .FixedLinksRight .groupid { font-size: small;font-weight: normal;}
+
+
+/* Always hide course booking ribbon buttons for SSI */
+.SSI #mnuSectionRecordFindTrainingBooking { display: none!important;}
