@@ -77,7 +77,7 @@
 						<%-- Home --%>
 				<li class="current ui-state-default"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
-						<li><span>Fixed Links</span>
+						<li><span>&nbsp;   </span> <%-- Fixed Links value removed By mayank to avoide duplicasy--%>
 							<div id="mnutoolFixedSelfService" class="button">
 									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service">
 								<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png")%>" alt="" />
@@ -127,7 +127,7 @@
 								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR v8">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/info64HOVER.png")%>" alt="" />
 									<i class="icon-question-sign"></i>
-									<h6>Help</h6>
+									<h6>About</h6>
 								</a>
 							</div>
 						</li>
