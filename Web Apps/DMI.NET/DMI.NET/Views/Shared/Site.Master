@@ -297,6 +297,7 @@
 
 	function loadPartialView(action, controller, targetDiv, params) {
 		if (action.toUpperCase() == "LINKSMAIN") {
+			showDefaultRibbon();
 			if (window.currentLayout == 'tiles') {
 				$('#workframe').fadeOut('slow');
 				$('.DashContent').hide();
