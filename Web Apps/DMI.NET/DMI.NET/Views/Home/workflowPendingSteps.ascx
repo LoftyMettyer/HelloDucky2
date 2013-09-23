@@ -53,6 +53,10 @@
 		<% if _StepCount = 0 Then%> 
 			menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
 		<%End If%>
+
+		var newGridHeight = $("#findGridRow").height() - 50;
+		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
+
 	}
 </script>
 
@@ -152,24 +156,19 @@
 <div <%=session("BodyTag")%>>
 
 	<form name="frmDefSel" method="post" id="frmDefSel">
-
 		<%If (_WorkflowGood = True) Or (Session("fromMenu") = 1) Then%>
 		<% If _StepCount > 0 Then%>
-		<table align="center" class="outline" cellpadding="5" cellspacing="0" height="100%" width="100%">
-			<tr>
-				<td>
-					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td colspan="5" align="left" height="10">
-								<div class="pageTitleDiv" style="margin-left: 20px;">
-									<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
-										<i class='pageTitleIcon icon-arrow-left'></i>
-									</a>
-									<span class="pageTitle">Pending Workflow Steps</span>
-								</div>
-							</td>
-						</tr>
-
+		<div class="absolutefull">
+		<div id="row1" style="margin-left: 20px;margin-right: 20px">
+		<div class="pageTitleDiv" >
+			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+				<i class='pageTitleIcon icon-arrow-left'></i>
+			</a>
+			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle">Pending Workflow Steps</span>
+		</div>
+			</div>	
+			<div id="findGridRow" style="height: 85%; margin-right: 20px; margin-left: 20px;">
+					<table class='outline' style='width : 100%;' cellspacing="0" cellpadding="0">
 						<tr>
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td width="100%">
@@ -207,16 +206,11 @@
 										</td>
 									</tr>
 								</table>
-							</td>
-							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
-							<td colspan="5" align="center" height="10"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+							</td>							
+						</tr>						
+					</table>				
+				</div>				
+		</div>
 		<%							
 		Else
 			Dim sMessage As String
