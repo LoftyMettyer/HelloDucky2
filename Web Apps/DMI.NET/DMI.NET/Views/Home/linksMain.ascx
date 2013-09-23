@@ -55,6 +55,8 @@
 				$('.pendingworkflowlinks').show();
 				var rowNumber = 1;
 				$("#PendingStepsTable_Dash tr td:nth-child(1)").each(function () {
+					if (rowNumber > 4) return false;
+
 					var desc = $(this).html();
 					var name = $(this).next().next().html();
 					if (desc.substring(0, name.length) === name) {
