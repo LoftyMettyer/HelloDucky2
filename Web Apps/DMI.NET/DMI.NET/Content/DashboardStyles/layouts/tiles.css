@@ -539,10 +539,14 @@ div#pwfs {
 
 
 
-.FixedLinksRight { bottom: 0;}
+.FixedLinksRight { bottom: 0;width: 300px;}
 .FixedLinksRight .userdetails {
 	float: left;
 	margin-right: 5px;
+}
+
+.userpic {
+	width: 200px;
 }
 
 .FixedLinksRight .userid { font-size: large;}
