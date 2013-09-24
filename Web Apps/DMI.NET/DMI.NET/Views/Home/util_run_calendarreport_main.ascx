@@ -46,8 +46,11 @@
 		objCalendar.CalendarReportID = Session("utilid")
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
-		objCalendar.SingleRecordID = Session("singleRecordID")
-		
+		If Session("singleRecordID") <> "undefined" Then
+			objCalendar.SingleRecordID = Session("singleRecordID")
+		Else
+			objCalendar.SingleRecordID = 0
+		End If
 		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
 		If fok Then
 			fok = objCalendar.SetPromptedValues(aPrompts)
@@ -119,7 +122,7 @@
 				
 	End If
 
-	If fok Then
+		If fok Then
 %>
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 <input type='hidden' id="txtOK" name="txtOK" value="True">
