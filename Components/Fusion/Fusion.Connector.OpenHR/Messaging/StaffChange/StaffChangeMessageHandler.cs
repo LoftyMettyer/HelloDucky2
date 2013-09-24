@@ -1,15 +1,16 @@
 ﻿using System.Data.SqlClient;
 using System.Linq;
 using Fusion.Connector.OpenHR.Configuration;
+using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Core;
+using Fusion.Core.Sql.OutboundBuilder;
 using log4net;
 
 using NServiceBus;
 using StructureMap.Attributes;
 using System.IO;
 using System;
-using Fusion.Core.Sql;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.MessageComponents;
 using System.Xml.Serialization;
@@ -24,15 +25,18 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
     {
 
 			[SetterProperty]
+			public IOutboundBuilderFactory OutboundBuilderFactory { get; set; }
+
+			[SetterProperty]
 			public IFusionConfiguration config { get; set; }
 
         private readonly string _connectionString;
 
-        public StaffChangeMessageHandler ()
-        {
+        public StaffChangeMessageHandler () {
             _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["db"].ConnectionString;
             Logger = LogManager.GetLogger(typeof(StaffChangeMessageHandler));
         }
+
 
         public void Handle(StaffChangeMessage message)
         {
@@ -43,11 +47,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             bool isNew = true;
             bool isValid = true;
 
-            // testing hack - remove!!!!
-            //shouldProcess = true;
-
-
-            if (shouldProcess == true)
+            if (shouldProcess)
             {
                 StaffChange staff;
                 using (StringReader sr = new StringReader(message.Xml))
@@ -56,26 +56,29 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof (StaffChange));
                         staff = (StaffChange) serializer.Deserialize(xr);
-
                     }
                 }
 
 
-                Guid busRef = new Guid(message.EntityRef.ToString());
-                string localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, busRef);
+                var busRef = new Guid(message.EntityRef.ToString());
+                var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, busRef);
 
-                // testing hack
-                //localId = null;
+								isNew = (localId == null);
 
-                isNew = (localId  == null);
-
+								//// Check if update is actually required (ping-pong avoidance)
+								//if (!isNew) {
+								//	var oldData = DatabaseAccess.readStaff(Convert.ToInt32(localId));
+								//	if (XMLCompare(oldData, staff.data.staff)){
+								//		Logger.WarnFormat("Inbound message {0}/{1} ignored. No data changes required", message.GetMessageName(), message.EntityRef);
+								//		return;
+								//	}									
+								//}
 
                 using (var c = new SqlConnection(_connectionString))
                 {
                     c.Open();
 
-                    var cmd = new SqlCommand("fusion.pMessageUpdate_StaffChange", c)
-                        {
+                    var cmd = new SqlCommand("fusion.pMessageUpdate_StaffChange", c) {
                             CommandType = CommandType.StoredProcedure
                         };
 
@@ -117,11 +120,16 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     cmd.Parameters.Add(new SqlParameter("@postcode", staff.data.staff.homeAddress.postCode ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@nationalInsuranceNumber", staff.data.staff.nationalInsuranceNumber ?? (object)DBNull.Value));
 
-
                     try
                     {
                         c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
                         cmd.ExecuteNonQuery();
+
+												// Store the message in a format as if we'd generated it.
+												var newData = DatabaseAccess.readStaff(Convert.ToInt32(localId));
+												var ChangeMessage = new StaffChange(busRef, newData);
+												MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+
                     }
                     catch (Exception e)
                     {
@@ -131,76 +139,12 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
                 }
 
-                if (isNew & isValid)
-                {
+                if (isNew & isValid) {
                     BusRefTranslator.SetBusRef(EntityTranslationNames.Staff, idParameter.Value.ToString(), busRef);
-										//FusionLogger.LogRefTranslationTransactional(config.Community, message.GetType().ToString(), busRef, localId);               
                 }
 
             }
         }
-
-        //public void updateDb(string sql, string messageType)
-        //{
-
-        //    using (SqlConnection c = new SqlConnection(_connectionString))
-        //    {
-        //        c.Open();
-
-        //        c.Execute("fusion.pSetFusionContext", new
-        //            {
-        //                MessageType = messageType
-        //            },
-        //                  commandType: CommandType.StoredProcedure);
-
-        //        c.Execute(sql);
-
-        //    }
-        //}
-
-//        public int insertIntoDb(string sql, string messageType)
-//        {
-
-//            using (SqlConnection c = new SqlConnection(_connectionString))
-//            {
-//                c.Open();
-
-//                    c.Execute("fusion.pSetFusionContext", new
-//                    {
-//                        MessageType = messageType
-//                    },
-//                    commandType: CommandType.StoredProcedure);
-
-//                return (int)c.Query<decimal>(sql,null).First();
-
-//            }
-//        }
-
-//        private string formatForSQL(object data)
-//        {
-//            if (data != null)
-//            {
-//                string type = data.GetType().ToString();
-
-//                switch (type)
-//                {
-//                    case "System.String":
-//                        return string.Format("'{0}'", data);
-
-//                    case "System.DateTime":
-//                        return Convert.ToDateTime(data).ToString("yyyy-MM-dd");
-
-//                    default:
-////                        Enum.GetUnderlyingType(data.GetType())
-//                       return string.Format("'{0}'", data);
-
-//                }
-
-//            }
-
-//        return "NULL";
-
-//        }
 
     }
 

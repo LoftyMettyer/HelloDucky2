@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
+using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageHandlers;
@@ -38,6 +39,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
 
             var contactRef = new Guid(message.EntityRef.ToString());
+	        var parentRef = message.PrimaryEntityRef;
 
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Contact, contactRef);
             var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
@@ -90,6 +92,12 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 {
                     c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
                     cmd.ExecuteNonQuery();
+
+										// Store the message in a format as if we'd generated it.
+										var newData = DatabaseAccess.readContact(Convert.ToInt32(localId));
+										var ChangeMessage = new StaffContactChange(contactRef, parentRef, newData);
+										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+
                 }
                 catch (Exception e)
                 {

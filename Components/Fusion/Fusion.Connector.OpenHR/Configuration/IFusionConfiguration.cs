@@ -1,10 +1,9 @@
-﻿using System;
-
-namespace Fusion.Connector.OpenHR.Configuration
+﻿namespace Fusion.Connector.OpenHR.Configuration
 {
-    public interface IFusionConfiguration
-    {
-        string ServiceName { get; }
-        string Community { get; }
-    }
+	public interface IFusionConfiguration
+	{
+		string ServiceName { get; }
+		string Community { get; }
+		string SendAsUser { get; }
+	}
 }

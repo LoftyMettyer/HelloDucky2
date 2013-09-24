@@ -95,8 +95,8 @@ namespace Fusion
                                 {
                                     MessageSenderInvoker.Invoke(fusionMessage);
 																		Logger.InfoFormat("Outbound message {0}/{1} Message sent successfully", message.MessageType, message.LocalId);
-															//			FusionLogger.LogRefTranslationTransactional(config.Community, message.MessageType, new Guid(fusionMessage.EntityRef.ToString()), message.LocalId);
 																		FusionLogger.InfoMessageTransactional(fusionMessage, FusionLogLevel.Info, "Message sent successfully");
+																		TrackMessage(fusionMessage);
                                 }
                                 else
                                 {

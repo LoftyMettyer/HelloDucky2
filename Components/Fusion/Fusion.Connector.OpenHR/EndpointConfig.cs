@@ -8,28 +8,29 @@ namespace Fusion.Connector.OpenHR
 	{
 		public void Init()
 		{
-			Configure.With()
-//			         .DisableTimeoutManager()
 
+
+			Configure.With()
+			         .DisableTimeoutManager()
 			         .StructureMapBuilder()
 			         .JsonSerializer()
 			         .UnicastBus()
 
 
 			         .DoNotAutoSubscribe()
-//                .DisableRavenInstall()
+                .DisableRavenInstall()
 
 //			         .RavenPersistence("Data Source=.;Initial Catalog=OpenHR51_std;Integrated Security=True;APP=OpenHR Fusion Connector")
-								.RavenSagaPersister()
-								.RavenSubscriptionStorage()
-								.UseRavenTimeoutPersister()
+								//.RavenSagaPersister()
+//								.RavenSubscriptionStorage()
+//								.UseRavenTimeoutPersister()
 
 				//			.DisableSecondLevelRetries()
 
 
 				//		.MsmqTransport()
-				//	.MsmqSubscriptionStorage();
-				;
+					.MsmqSubscriptionStorage();
+				
 		}
 	}
 

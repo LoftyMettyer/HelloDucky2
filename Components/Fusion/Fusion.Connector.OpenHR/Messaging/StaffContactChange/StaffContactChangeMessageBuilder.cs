@@ -26,28 +26,11 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
+
             var contactRef = refTranslator.GetBusRef(EntityTranslationNames.Contact, source.LocalId);
-
             var contact = DatabaseAccess.readContact(Convert.ToInt32(source.LocalId));
-
-            var xsSubmit = new XmlSerializer(typeof(StaffContactChange));
-            var subReq = new StaffContactChange();
-            subReq.data = new StaffContactChangeData
-                {
-                    staffContact = contact,
-                    recordStatus = contact.isRecordInactive == true ? RecordStatusStandard.Inactive : RecordStatusStandard.Active,
-                    auditUserName = "OpenHR user"
-                };
-
-            var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contact.id_Staff.ToString());
-
-            subReq.staffContactRef = contactRef.ToString();
-            subReq.staffRef = staffRef.ToString();
-
-            var sww = new StringWriter();
-            var writer = XmlWriter.Create(sww);
-            xsSubmit.Serialize(writer, subReq);
-            var xml = sww.ToString();
+						var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contact.id_Staff.ToString());
+						var ChangeMessage = new StaffContactChange(contactRef, staffRef, contact);
 
             var messageType = source.MessageType + "Request";
             var myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
@@ -63,7 +46,7 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
                 theMessage.Id = Guid.NewGuid();
                 theMessage.Originator = config.ServiceName;
                 theMessage.EntityRef = contactRef;
-                theMessage.Xml = xml;
+								theMessage.Xml = ChangeMessage.ToXml();
 
                 return theMessage;
             }

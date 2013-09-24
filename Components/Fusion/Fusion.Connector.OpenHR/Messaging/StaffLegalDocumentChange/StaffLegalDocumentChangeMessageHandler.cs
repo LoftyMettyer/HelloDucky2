@@ -38,6 +38,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
 
             var docRef = new Guid(message.EntityRef.ToString());
+						var parentRef = message.PrimaryEntityRef;
 
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Document, docRef);
             var staffId = Convert.ToInt32(BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString())));
@@ -96,6 +97,12 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 {
                     c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
                     cmd.ExecuteNonQuery();
+
+										// Store the message in a format as if we'd generated it.
+										var newData = DatabaseAccess.readDocument(Convert.ToInt32(localId));
+										var ChangeMessage = new StaffLegalDocumentChange(docRef, parentRef, newData);
+										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+
                 }
                 catch (Exception e)
                 {

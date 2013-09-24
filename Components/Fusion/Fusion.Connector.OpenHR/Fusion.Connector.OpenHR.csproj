@@ -87,6 +87,7 @@
     <Compile Include="MessageComponents\Component\Picture.cs" />
     <Compile Include="MessageComponents\Component\Skill.cs" />
     <Compile Include="MessageComponents\Component\TimesheetPerContract.cs" />
+    <Compile Include="Messaging\Base\BaseMessageComponent.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChangeData.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeData.cs" />
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeData.cs" />

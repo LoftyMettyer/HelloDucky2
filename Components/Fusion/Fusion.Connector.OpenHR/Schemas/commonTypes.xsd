@@ -16,7 +16,7 @@
 		<xs:restriction base="xs:string">
 			<xs:maxLength value="50"/>
 			<xs:minLength value="1"/>
-			<xs:pattern value="[0-9,\s]+"/>
+			<xs:pattern value="^[+0-9][0-9\s]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="email">

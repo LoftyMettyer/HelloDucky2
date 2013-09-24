@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
+using Fusion.Connector.OpenHR.Database;
 using Fusion.Core;
 using log4net;
 using NServiceBus;
@@ -70,6 +71,13 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     c.Execute("fusion.pSetFusionContext", new {MessageType = message.GetMessageName()},
                               commandType: CommandType.StoredProcedure);
                     cmd.ExecuteNonQuery();
+
+										// Store the message in a format as if we'd generated it.
+										var newData = DatabaseAccess.readPicture(Convert.ToInt32(localId));
+										var ChangeMessage = new StaffPictureChange(busRef, newData);
+										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+
+
                 }
                 catch (Exception e)
                 {

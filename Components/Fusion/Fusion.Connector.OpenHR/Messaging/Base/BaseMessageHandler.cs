@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Fusion.Connector.OpenHR.Messaging;
 using Fusion.Messages.General;
+using NServiceBus.Encryption;
 using log4net;
 using StructureMap.Attributes;
 using Fusion.Connector.OpenHR.Configuration;
@@ -68,8 +70,6 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             Logger = LogManager.GetLogger(typeof(BaseMessageHandler));
         }
 
-
-
         public bool StartHandlingMessage(FusionMessage message)
         {
             Logger.Info(string.Format("Connector received " + message.GetMessageName() + " with Id {0} from {1} - xml {2}.", message.Id, message.Originator, message.Xml));
@@ -113,8 +113,54 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 MessageTracking.SetLastProcessedDate(message.GetMessageName(), message.EntityRef.Value, message.CreatedUtc);
             }
 
+						if (IsAlreadyprocessed(message))
+						{
+							shouldProcess = false;
+						}
+
             return shouldProcess;
         }
+
+				public bool XMLCompare(object a, object b)
+				{
+					// They're both null.
+					if (a == null && b == null) return true;
+					// One is null, so they can't be the same.
+					if (a == null || b == null) return false;
+					// How can they be the same if they're different types?
+					if (a.GetType() != b.GetType()) return false;
+					var Props = a.GetType().GetProperties();
+					foreach (var Prop in Props)
+					{
+						// See notes *
+						var aPropValue = Prop.GetValue(a) ?? string.Empty;
+						var bPropValue = Prop.GetValue(b) ?? string.Empty;
+						if (aPropValue.ToString() != bPropValue.ToString())
+							return false;
+					}
+					return true;
+				}
+
+				private bool IsAlreadyprocessed(FusionMessage message)
+				{
+					var messageType = message.GetMessageName();
+
+					if (message.EntityRef != null)
+					{
+						var busRef = message.EntityRef.Value;
+
+						var lastMessageGenerated = MessageTracking.GetLastGeneratedXml(messageType, busRef);
+
+						// Simple compare, could be more elaborate
+						if (lastMessageGenerated == message.Xml)
+						{
+							Logger.InfoFormat("Inbound Message {0} {1} no changes", messageType, busRef);
+							return true;
+						}
+					}
+
+					return false;
+				}
 
     }
 }

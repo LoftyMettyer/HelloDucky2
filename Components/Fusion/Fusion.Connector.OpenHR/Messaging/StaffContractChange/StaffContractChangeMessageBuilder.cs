@@ -28,27 +28,10 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
         public FusionMessage Build(SendFusionMessageRequest source)
         {
             var contractRef = refTranslator.GetBusRef(EntityTranslationNames.Contract, source.LocalId);
-
             var contract = DatabaseAccess.readContract(Convert.ToInt32(source.LocalId));
+						var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contract.id_Staff.ToString());
 
-            var xsSubmit = new XmlSerializer(typeof(StaffContractChange));
-            var subReq = new StaffContractChange();
-            subReq.data = new StaffContractChangeData
-                {
-                    staffContract = contract,
-                    recordStatus = contract.isRecordInactive == true ? RecordStatusStandard.Inactive: RecordStatusStandard.Active,
-                    auditUserName = "OpenHR user"
-                };
-
-            var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contract.id_Staff.ToString());
-
-            subReq.staffContractRef = contractRef.ToString();
-            subReq.staffRef = staffRef.ToString();
-
-            var sww = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sww);
-            xsSubmit.Serialize(writer, subReq);
-            string xml = sww.ToString();
+						var ChangeMessage = new StaffContractChange(contractRef, staffRef, contract);
 
             string messageType = source.MessageType + "Request";
             Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
@@ -58,13 +41,12 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
                 var theMessage = (StaffContractChangeRequest)Activator.CreateInstance(myType);
 
                 theMessage.Community = config.Community;
-
                 theMessage.PrimaryEntityRef = staffRef;
                 theMessage.CreatedUtc = source.TriggerDate;
                 theMessage.Id = Guid.NewGuid();
                 theMessage.Originator = config.ServiceName;
                 theMessage.EntityRef = contractRef;
-                theMessage.Xml = xml;
+								theMessage.Xml = ChangeMessage.ToXml();
 
                 return theMessage;
             }

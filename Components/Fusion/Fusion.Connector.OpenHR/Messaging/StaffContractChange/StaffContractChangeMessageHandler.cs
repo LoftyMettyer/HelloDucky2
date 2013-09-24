@@ -37,9 +37,10 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             }
 
 
-            var contactRef = new Guid(message.EntityRef.ToString());
+            var contractRef = new Guid(message.EntityRef.ToString());
+	        var parentRef = message.PrimaryEntityRef;
 
-            var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Contract, contactRef);
+            var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Contract, contractRef);
             var staffId = Convert.ToInt32(BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString())));
 
             var isNew = (localId == null);
@@ -91,6 +92,12 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 {
                     c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
                     cmd.ExecuteNonQuery();
+
+										// Store the message in a format as if we'd generated it.
+										var newData = DatabaseAccess.readContract(Convert.ToInt32(localId));
+										var ChangeMessage = new StaffContractChange(contractRef, parentRef, newData);
+										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+
                 }
                 catch (Exception e)
                 {
@@ -102,7 +109,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
             if (isNew & isValid)
             {
-                BusRefTranslator.SetBusRef(EntityTranslationNames.Contract, idParameter.Value.ToString(), contactRef);
+                BusRefTranslator.SetBusRef(EntityTranslationNames.Contract, idParameter.Value.ToString(), contractRef);
             }  
 
         }
