@@ -46,7 +46,7 @@
 		objCalendar.CalendarReportID = Session("utilid")
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
-		If Session("singleRecordID") <> "undefined" Then
+		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
 			objCalendar.SingleRecordID = Session("singleRecordID")
 		Else
 			objCalendar.SingleRecordID = 0
