@@ -6,20 +6,28 @@
 <link href="<%= Url.Content("~/Scripts/jquery/jOrgChart/css/custom.css")%>" rel="stylesheet" />
 <link href="<%= Url.Content("~/Scripts/jquery/jOrgChart/css/prettify.css")%>" rel="stylesheet" />
 
+<style>
+	.MAT, .SICK, .HOLS {
+		background-color: lightgray!important;
+	}
+
+
+</style>
+
 <script>
 	$(document).ready(function () {
 
-		//process the results into unordered list.
-
+		//process the results into unordered list.		
 		$("#hiddenTags").find(":hidden").not("script").each(function () {
 			var props = $(this).val().split("\t");
-			//props[5] is the hierarchyLevel.
-			if (props[5] == "1") {
-				$('#root').append('<li>' + props[4] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[0] + " " + props[1] + '</p><ul id="' + props[2] + '"></ul></li>');
+			//props[6] is the hierarchyLevel.
+			//If hierarchy level =1 add to #root, otherwise append to previous manager's staff_number
+			if (props[6] == "1") {
+				$('#root').append('<li class="' + props[7] + '">' + props[5] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[1] + " " + props[2] + '</p><ul id="' + props[3] + '"></ul></li>');
 			}
 
-			if (props[5] >= "2") {
-				$('#' + props[3]).append('<li>' + props[4] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[0] + ' ' + props[1] + '</p><ul id="' + props[2] + '"></li>');
+			if (props[6] >= "2") {
+				$('#' + props[4]).append('<li class="' + props[7] + '">' + props[5] + '<img src="<%=url.Content("~/Content/images/anonymous.png")%>"/><p>' + props[1] + ' ' + props[2] + '</p><ul id="' + props[3] + '"></li>');
 			}
 		});
 
@@ -70,7 +78,11 @@
 															 rstHierarchyRecords.fields(2).value & vbTab &
 															 rstHierarchyRecords.fields(3).value & vbTab &
 															 rstHierarchyRecords.fields(4).value & vbTab &
-															 rstHierarchyRecords.fields(5).value & vbTab), String)
+															 rstHierarchyRecords.fields(5).value & vbTab &
+															 rstHierarchyRecords.fields(6).value & vbTab &
+															 rstHierarchyRecords.fields(7).value & vbTab &
+															 rstHierarchyRecords.fields(8).value & vbTab &
+															 rstHierarchyRecords.fields(9).value & vbTab), String)
 				
 					Response.Write("<input type='hidden' value='" & inputString & "'/>" & vbCrLf)
 				

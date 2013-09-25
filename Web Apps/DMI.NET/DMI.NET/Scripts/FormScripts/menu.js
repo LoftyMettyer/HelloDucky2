@@ -622,19 +622,6 @@ function menu_MenuClick(sTool) {
 		}
 	}
 
-
-	if (sToolName == "mnutoolOrgChart") {
-		//window.location.href = "OrgChart";		
-		$.ajax({
-			url: "Home/OrgChart",
-			type: "GET",
-			dataType: 'html',
-			success: function(html) {
-				$('#workframe').html(html);
-			}
-		});
-	}
-
 	if (sToolName == "mnutoolLogoff") {
 		menu_logoffIntranet();
 		return;

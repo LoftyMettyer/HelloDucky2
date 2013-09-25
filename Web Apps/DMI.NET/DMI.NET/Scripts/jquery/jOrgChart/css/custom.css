@@ -1,4 +1,4 @@
-body, html, div, p, span, a, h1, h2, h3, h4, h5{
+/*body, html, div, p, span, a, h1, h2, h3, h4, h5{
 	margin 				: 0;
 	padding 			: 0;
 }
@@ -36,11 +36,13 @@ a{
 a:hover{
 	text-decoration		: underline;
 }
+	*/
 
-/* general */
+/* general 
 .clear {
 	clear: both;
 }
+	*/
 
 /* Header */
 .brand{

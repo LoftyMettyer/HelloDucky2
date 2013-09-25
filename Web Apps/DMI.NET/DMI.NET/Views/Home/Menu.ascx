@@ -469,7 +469,6 @@
 				<li id="mnutoolTableScreens"><a href="#">Table Screens</a>
 					<ul id="mnubandTableScreens"></ul>
 				</li>
-				<li id="mnutoolOrgChart"><a href="#">Org Chart...</a></li>
 				<li id="mnutoolLogoff"><a href="#">Log Off...</a></li>
 			</ul>
 		</div>
@@ -491,6 +490,7 @@
 				<li class="hidden" id="mnutoolStdRpt_BradfordFactor"><a href="#">Bradford Factor...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_StabilityReport"><a href="#">Stability Report...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_TurnoverReport"><a href="#">Turnover...</a></li>
+				<li id="mnutoolOrgChart"><a href="#">Organisation Chart</a></li>
 			</ul>
 		</div>
 		<h3 id="mnutoolUtilities">Utilities</h3>
