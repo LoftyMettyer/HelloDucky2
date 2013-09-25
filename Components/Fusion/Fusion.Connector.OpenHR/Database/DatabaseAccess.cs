@@ -184,19 +184,21 @@ namespace Fusion.Connector.OpenHR.Database
                         }
                         ).FirstOrDefault();
 
-                if (su != null)
-                {
-                    su.documentReference = su.documentReference == "" ? null : su.documentReference;
-                    su.requestedBy = su.requestedBy == "" ? null : su.requestedBy;
-                    su.acceptedBy = su.acceptedBy == "" ? null : su.acceptedBy;
-	                su.validFromSpecified = true;
-	                su.validToSpecified = true;
-	                su.requestedBySpecified = true;
-	                su.requestedDateSpecified = true;
-                    su.acceptedDateSpecified = true;
-                    su.requestedDateSpecified = true;
-                    return su;
-                }
+								if (su != null)
+								{
+									su.documentReference = su.documentReference == "" ? "" : su.documentReference;
+									su.requestedBy = su.requestedBy == "" ? null : su.requestedBy;
+									su.acceptedBy = su.acceptedBy == "" ? null : su.acceptedBy;
+
+									su.validFromSpecified = true;
+									su.validToSpecified = true;
+									su.acceptedBySpecified = true;
+									su.acceptedDateSpecified = true;
+									su.requestedBySpecified = true;
+									su.requestedDateSpecified = true;
+
+									return su;
+								}
 
                 return null;
             }
@@ -281,26 +283,35 @@ namespace Fusion.Connector.OpenHR.Database
                 su.jobTitle = pRow["jobTitle"].ToString() == "" ? null : pRow["jobTitle"].ToString();
                 su.managerRef = pRow["managerRef"].ToString() == "" ? null : pRow["managerRef"].ToString();
 
-								if (pRow["AddressLine1"].ToString() != ""
-										|| pRow["AddressLine2"].ToString() != ""
-										|| pRow["AddressLine3"].ToString() != ""
-										|| pRow["AddressLine4"].ToString() != ""
-										|| pRow["AddressLine5"].ToString() != ""
-										|| pRow["postcode"].ToString() != "")
-								{
-									su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString() == "" ? " " : pRow["AddressLine1"].ToString();
-									su.homeAddress.addressLine2 = pRow["AddressLine2"].ToString();
-									su.homeAddress.addressLine3 = pRow["AddressLine3"].ToString();
-									su.homeAddress.addressLine4 = pRow["AddressLine4"].ToString();
-									su.homeAddress.addressLine5 = pRow["AddressLine5"].ToString();
-									su.homeAddress.postCode = pRow["postcode"].ToString() == "" ? " " : pRow["postcode"].ToString();
-								}
-								else
-								{
-									su.homeAddress = null;
-								}
+		            if (pRow["AddressLine1"].ToString() != ""
+		                || pRow["AddressLine2"].ToString() != ""
+		                || pRow["AddressLine3"].ToString() != ""
+		                || pRow["AddressLine4"].ToString() != ""
+		                || pRow["AddressLine5"].ToString() != ""
+		                || pRow["postcode"].ToString() != "")
+		            {
+			            su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString() == ""
+				                                          ? " "
+				                                          : pRow["AddressLine1"].ToString();
+			            su.homeAddress.addressLine2 = pRow["AddressLine2"].ToString();
+			            su.homeAddress.addressLine3 = pRow["AddressLine3"].ToString();
+			            su.homeAddress.addressLine4 = pRow["AddressLine4"].ToString();
+			            su.homeAddress.addressLine5 = pRow["AddressLine5"].ToString();
+			            su.homeAddress.postCode = pRow["postcode"].ToString() == "" ? " " : pRow["postcode"].ToString();
+		            }
+		            else
+		            {
+			            su.homeAddress = null;
+		            }
 
-								su.nationalInsuranceNumber = pRow["nationalInsuranceNumber"].ToString() == "" ? null : pRow["nationalInsuranceNumber"].ToString();
+	            su.nationalInsuranceNumber = pRow["nationalInsuranceNumber"].ToString() == "" ? null : pRow["nationalInsuranceNumber"].ToString();
+
+							// Calculated columns cause headaches when sending message as inactive
+	            if (su.isRecordInactive == true)
+	            {
+		            su.homeAddress = null;
+		            su.jobTitle = null;
+	            }
 
                 return su;
             }

@@ -18,6 +18,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 				[XmlElementAttribute(DataType = "date", IsNullable = true)]
 				public DateTime? validTo { get; set; }
 
+				[XmlElementAttribute(IsNullable = false)]
 				public string documentReference { get; set; }
 
 				[XmlElementAttribute(IsNullable = true)]
