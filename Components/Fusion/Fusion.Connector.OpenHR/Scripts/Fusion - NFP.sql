@@ -241,7 +241,7 @@ BEGIN
 			, DOB = @DOB, employeeType = @employeeType, workMobile = @workMobile
             , personalMobile = @personalMobile, workPhoneNumber = @workPhoneNumber, homePhoneNumber = @homePhoneNumber
 			, email = @email, personalEmail = @personalEmail, gender = @gender, startDate = @startDate, leavingDate = @leavingDate
-            , leavingReason = @leavingReason, companyName = @companyName, jobTitle = @companyName, managerRef = @managerRef
+            , leavingReason = @leavingReason, companyName = @companyName, jobTitle = @jobTitle, managerRef = @managerRef
             , nationalInsuranceNumber = @nationalInsuranceNumber WHERE StaffID = @ID;
 
 		SELECT TOP 1 @childID = ID FROM dbo.Address 
