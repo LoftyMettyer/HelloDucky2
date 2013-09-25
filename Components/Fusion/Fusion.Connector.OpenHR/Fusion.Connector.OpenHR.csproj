@@ -179,14 +179,20 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Scripts\Fusion - Generic.sql" />
-    <Content Include="Scripts\Fusion - NFP.sql" />
-    <Content Include="Scripts\Fusion - Personnel.sql" />
+    <Content Include="Scripts\Fusion - Generic.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\Fusion - NFP.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\Fusion - Personnel.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Deployment\Setup.bat">
+    <Content Include="Support\Setup.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Schemas\commonTypes.xsd">
@@ -218,6 +224,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Deployment\" />
     <Folder Include="MessageComponents\Data\" />
   </ItemGroup>
   <ItemGroup>
