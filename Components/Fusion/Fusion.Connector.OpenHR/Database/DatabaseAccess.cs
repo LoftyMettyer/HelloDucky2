@@ -66,6 +66,12 @@ namespace Fusion.Connector.OpenHR.Database
 										su.costCenter = su.costCenter == "" ? null : su.costCenter;
                     su.effectiveToSpecified = true;
 	                su.costCenterSpecified = true;
+
+									if (su.isRecordInactive == true)
+									{
+										su.contractName = "** Deleted **";
+									}
+
                     return su;
                 }
             }
@@ -152,6 +158,12 @@ namespace Fusion.Connector.OpenHR.Database
                     su.validFromSpecified = true;
                     su.validToSpecified = true;
                     su.didNotAttendSpecified = true;
+
+										if (su.isRecordInactive == true)
+										{
+											su.name = "** Deleted **";
+										}
+
                     return su;
                 }
             }
