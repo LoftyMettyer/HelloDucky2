@@ -125,10 +125,10 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                         c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
                         cmd.ExecuteNonQuery();
 
-												// Store the message in a format as if we'd generated it.
-												var newData = DatabaseAccess.readStaff(Convert.ToInt32(localId));
-												var ChangeMessage = new StaffChange(busRef, newData);
-												MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+												//// Store the message in a format as if we'd generated it.
+												//var newData = DatabaseAccess.readStaff(Convert.ToInt32(localId));
+												//var ChangeMessage = new StaffChange(busRef, newData);
+												MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, staff.ToXml());
 
                     }
                     catch (Exception e)

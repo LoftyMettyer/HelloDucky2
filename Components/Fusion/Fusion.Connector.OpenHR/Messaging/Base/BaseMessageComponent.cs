@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Fusion.Connector.OpenHR.Configuration;
@@ -8,6 +9,8 @@ namespace Fusion.Connector.OpenHR.Messaging.Base
 {
 	public class BaseMessageComponent
 	{
+
+		private int _version = 1;
 
 		[SetterProperty]
 		public static IFusionConfiguration config { get; set; }
@@ -21,7 +24,19 @@ namespace Fusion.Connector.OpenHR.Messaging.Base
 			return sww.ToString();
 		}
 
+
 		[XmlAttribute]
-		public int version { get; set; }
+		public int version
+		{
+			get
+			{
+				return _version;
+			}
+			set
+			{
+				_version = value;
+			}
+		}
+
 	}
 }

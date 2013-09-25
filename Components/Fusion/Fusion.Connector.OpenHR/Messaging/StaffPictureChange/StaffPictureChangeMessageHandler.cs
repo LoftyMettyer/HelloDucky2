@@ -72,10 +72,10 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                               commandType: CommandType.StoredProcedure);
                     cmd.ExecuteNonQuery();
 
-										// Store the message in a format as if we'd generated it.
-										var newData = DatabaseAccess.readPicture(Convert.ToInt32(localId));
-										var ChangeMessage = new StaffPictureChange(busRef, newData);
-										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, ChangeMessage.ToXml());
+										//// Store the message in a format as if we'd generated it.
+										//var newData = DatabaseAccess.readPicture(Convert.ToInt32(localId));
+										//var ChangeMessage = new StaffPictureChange(busRef, newData);
+										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, picture.ToXml());
 
 
                 }
