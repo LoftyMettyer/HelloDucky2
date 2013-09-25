@@ -128,12 +128,19 @@ namespace Fusion.Test.SocialCare
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("careSysInvoiceLineInsert", "CareSysInvoiceLineRef")  // case problem in message?
                     },
 
+										new OutboundWatcherDefinition { 
+                        PathToWatch = "StaffTimeSheetPerContractSubmissionMessage", 
+                        MessageType = typeof(Fusion.Messages.SocialCare.StaffTimeSheetPerContractSubmissionMessage) ,
+                        MetadataExtrator = new SocialCareGenericMetadataExtractor("staffTimesheetPerContractSubmission", "submissionRef", "staffRef")
+                    },
+
                     new OutboundWatcherDefinition { 
                         PathToWatch = "ServiceUserDailyRecordChange", 
                         MessageType = typeof(Fusion.Messages.SocialCare.ServiceUserDailyRecordChangeMessage) ,
                         MetadataExtrator = new SocialCareGenericMetadataExtractor("serviceUserDailyRecordChange", "serviceUserDailyRecordRef", "serviceUserRef")
+										},
 
-                    },
+
                 };
 
                 string outRoot = Path.Combine(directory, "out");

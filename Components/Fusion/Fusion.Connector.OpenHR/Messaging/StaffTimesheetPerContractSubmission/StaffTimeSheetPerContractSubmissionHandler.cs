@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
 using Fusion.Connector.OpenHR.MessageComponents;
+using Fusion.Connector.OpenHR.MessageComponents.Data;
 using Fusion.Core;
 using Fusion.Messages.SocialCare;
 using NServiceBus;
@@ -27,12 +28,10 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 			{
 				using (var xr = new XmlTextReader(sr))
 				{
-					var serializer = new XmlSerializer(typeof(StaffContractChange));
+					var serializer = new XmlSerializer(typeof(StaffTimesheetPerContractSubmission));
 					timesheet = (StaffTimesheetPerContractSubmission)serializer.Deserialize(xr);
-
 				}
 			}
-
 
 			var timesheetRef = new Guid(message.EntityRef.ToString());
 

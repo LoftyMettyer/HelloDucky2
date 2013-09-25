@@ -514,8 +514,8 @@ BEGIN
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
-		INSERT fusion.staffTimesheet(ID_Timesheet, ID_Staff, timesheetDate, plannedHours, workedHours, toilHoursAccrued, holidayHoursTaken, toilHoursTaken)
-			VALUES (@ID, @staffID, @timesheetDate, @plannedHours, @workedHours, @toilHoursAccrued, @holidayHoursTaken, @toilHoursTaken)
+		INSERT fusion.staffTimesheet(ID_Staff, timesheetDate, plannedHours, workedHours, toilHoursAccrued, holidayHoursTaken, toilHoursTaken)
+			VALUES (@staffID, @timesheetDate, @plannedHours, @workedHours, @toilHoursAccrued, @holidayHoursTaken, @toilHoursTaken)
 		
 		SELECT @ID = MAX(ID_Timesheet) FROM fusion.staffTimesheet;
 
