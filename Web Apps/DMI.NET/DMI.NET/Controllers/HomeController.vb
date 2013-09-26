@@ -5648,6 +5648,11 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
+		<HttpPost()>
+		Public Sub ResetSessionVars()
+			Session("recordID") = ""
+		End Sub
+
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse
