@@ -159,57 +159,53 @@
 		<%If (_WorkflowGood = True) Or (Session("fromMenu") = 1) Then%>
 		<% If _StepCount > 0 Then%>
 		<div class="absolutefull">
-		<div id="row1" style="margin-left: 20px;margin-right: 20px">
-		<div class="pageTitleDiv" >
-			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
-				<i class='pageTitleIcon icon-arrow-left'></i>
-			</a>
-			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle">Pending Workflow Steps</span>
-		</div>
-			</div>	
+			<div id="row1" style="margin-left: 20px; margin-right: 20px">
+				<div class="pageTitleDiv">
+					<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+						<i class='pageTitleIcon icon-arrow-left'></i>
+					</a>
+					<span style="margin-left: 40px; margin-right: 20px" class="pageTitle">Pending Workflow Steps</span>
+				</div>
+			</div>
 			<div id="findGridRow" style="height: 85%; margin-right: 20px; margin-left: 20px;">
-					<table class='outline' style='width : 100%;' cellspacing="0" cellpadding="0">
-						<tr>
-							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td width="100%">
-								<%Response.Write(_PendingWorkflowStepsHTMLTable.ToString())%>
-							</td>
+				<%Response.Write(_PendingWorkflowStepsHTMLTable.ToString())%>
+				<table class='outline' style='width: 100%;' cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-							<td style="visibility: hidden">
-								<table style="height: 100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr> 
-										<td>
-											<input type="button"
+						<td style="visibility: hidden">
+							<table style="height: 100%" class="invisible" cellspacing="0" cellpadding="0">
+								<tr>
+									<td>
+										<input type="button"
 											name="cmdRefresh"
-											value="Refresh" 
+											value="Refresh"
 											id="cmdRefresh"
-											class="btn" 
+											class="btn"
 											onclick="setrefresh();" />
-										</td>
-									</tr>
-									<tr height=3px>
-										<td></td>
-									</tr>
-									<tr>
-										<td>
-											<input type="button" name="cmdRun" value="Run" id="cmdRun" class="btn" />
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-									</tr>
-									<tr>
-										<td>
-											
-										</td>
-									</tr>
-								</table>
-							</td>							
-						</tr>						
-					</table>				
-				</div>				
+									</td>
+								</tr>
+								<tr height="3px">
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<input type="button" name="cmdRun" value="Run" id="cmdRun" class="btn" />
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<%							
 		Else
