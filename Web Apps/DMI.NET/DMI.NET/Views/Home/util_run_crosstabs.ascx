@@ -6,10 +6,10 @@
 	$("#top").hide();
 	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
 	//$(".popup").height("470px");
-	
+
 	$(window).bind('resize', function () {
 		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
-		$("#ssOutputGrid").setGridHeight("230px", true);
+		//$("#ssOutputGrid").setGridHeight("230px", true);
 	}).trigger('resize');
 </script>
 
@@ -94,88 +94,108 @@
 	</table>
 </div>
 
-<div>
-	<%	If CLng(Session("utiltype")) <> 15 Then%>
-		<div style="float: left; font-weight: bold; padding-top: 10px; padding-bottom: 5px; width: 59%">
-			<Label>Intersection</label>
-		</div>
-		<div id="txtWordVer" style=" font-weight: bold; padding-top: 10px; padding-bottom: 5px">Page</div>
-	<%Else%>
-		<div style="float: left; font-weight: bold; padding-top: 10px;padding-bottom: 5px; width: 100%">Intersection</div>
-	<%End If%>
-</div>
 
-<div style="width: 35%;position: static; float: left; white-space: nowrap; text-align: right">
-	<%	If CLng(Session("utiltype")) = 15 Then%>
-	<input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; width: 200px">
-	<%	Else%>
-	<label>Column :</label>
-	<input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 200px;" disabled="disabled">
-	<%	End If%>
-	<div>
-		<label>Type :</label>
-		<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
+<%--Session("utiltype = 1 		Cross Tab
+Session("utiltype = 2		Custom Report
+Session("utiltype = 9 		Mail Merge
+Session("utiltype = 15 		Absence Breakdown
+Session("utiltype = 16 		Bradford Factor
+Session("utiltype = 17 		Calendar Report--%>
+<br />
+
+<div id="practiceNicky">
+	<%--Not a Absence Breakdown so show all components--%>
+	<div id="CrossTabsIntersectionControls" style="float: left; width: 45%">
+		<div id="Div1" style="font-weight: bold;">Intersection</div>
+		<div style="width: 80px; float: left">
+			<label>Column :</label>
+		</div>
+		<div>
+			<input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 200px;" disabled="disabled">
+		</div>
+		<div style="width: 80px; float: left">
+			<label>Type :</label>
+		</div>
+		<div>
+			<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
+		</div>
+	</div>
+	<div id="PageControls" style="float: left">
+		<div id="txtWordVer" style="font-weight: bold;">Page</div>
+
+		<div id="CrossTabPage" name="CrossTabPage">
+			<div style="width: 80px; float: left">
+				<label>Column :</label>
+			</div>
+			<div>
+				<input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 200px;" class="text textdisabled" disabled="disabled">
+			</div>
+
+			<div style="width: 80px; float: left">
+				<label>Value :</label>
+			</div>
+			<div>
+				<select id="cboPage" name="cboPage" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
+			</div>
+		</div>
+	</div>
+	<div id="CrossTabCheckBoxes" style="float: left; margin-left: 80px; padding-top: 10px">
+		<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
+			onclick="UpdateGrid()" />
+		<label
+			for="chkSuppressZeros"
+			class="checkbox"
+			tabindex="0">
+			Suppress Zeros<br>
+		</label>
+
+		<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
+			onclick="chkPercentType_Click()" />
+		<label
+			for="chkPercentType"
+			class="checkbox"
+			tabindex="0">
+			<%
+				If objCrossTab.CrossTabType <> 3 Then
+					Response.Write(" Percentage of Type")
+				End If
+			%>
+		</label>
+		<br>
+		<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
+			onclick="UpdateGrid();" />
+		<label
+			for="chkPercentPage"
+			class="checkbox"
+			tabindex="0">
+			<%
+				If objCrossTab.CrossTabType <> 3 Then
+					Response.Write(" Percentage of Page")
+				End If
+			%>
+		</label>
+		<br>
+		<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
+			onclick="UpdateGrid()" />
+		<label
+			for="chkUse1000"
+			class="checkbox"
+			tabindex="0">
+			<%
+				If objCrossTab.CrossTabType <> 3 Then
+					Response.Write(" Use 1000 Separators (,)")
+				End If
+			%>
+		</label>
 	</div>
 </div>
 
-<div style="width: 20%; padding-left: 5px;position :static; white-space: nowrap; float: left">
-		<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
-		onclick="UpdateGrid()" />
-	<label
-		for="chkSuppressZeros"
-		class="checkbox"
-		tabindex="0">
-		Suppress Zeros<br>
-	</label>
+<%--<%If CLng(Session("utiltype")) <> 15 Then%>
 
-	<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
-		onclick="chkPercentType_Click()" />
-	<label
-		for="chkPercentType"
-		class="checkbox"
-		tabindex="0">
-		<%
-			If objCrossTab.CrossTabType <> 3 Then
-				Response.Write(" Percentage of Type")
-			End If
-		%>
-	</label>
-	<br>
-	<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
-		onclick="UpdateGrid();" />
-	<label
-		for="chkPercentPage"
-		class="checkbox"
-		tabindex="0">
-		<%
-			If objCrossTab.CrossTabType <> 3 Then
-				Response.Write(" Percentage of Page")
-			End If
-		%>
-	</label>
-	<br>
-
-	<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
-		onclick="UpdateGrid()" />
-	<label
-		for="chkUse1000"
-		class="checkbox"
-		tabindex="0">
-		<%
-			If objCrossTab.CrossTabType <> 3 Then
-				Response.Write(" Use 1000 Separators (,)")
-			End If
-		%>
-	</label>
-</div>
-
-<div style="width: 35%;float: left;white-space: nowrap;padding-left: 30px;text-align: right;" id="CrossTabPage" name="CrossTabPage">
-	<label style="padding-left: 5px;text-align: left">Column :</label>
-	<input id="txtPageColumn" name="txtPageColumn" style="width: 200px" class="text textdisabled" disabled="disabled">
-	<br/>
-	<label style="padding-left: 5px;text-align: left">Value :</label>
-	<select id="cboPage" name="cboPage" style="WIDTH: 205px" class="combo" onchange="UpdateGrid()"></select>
-</div>
+<%Else%>
+<%--It is an Absence Breakdown so show only Intersection Type combo and suppress Zero components--%>
+<%-- %><input type="HIDDEN" id="HIDDEN1" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; width: 200px">
+<%End If%>--%>
 
 <form id="frmOriginalDefinition">
 	<input type="hidden" id="txtDefn_Name" name="txtDefn_Name" value="<%=session("utilname")%>">
@@ -212,5 +232,5 @@
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 </form>
 
-<%--<select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
-</select>--%>
+<select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
+</select>

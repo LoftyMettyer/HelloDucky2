@@ -43,7 +43,7 @@
 	<param name="Orientation" value="1">
 </object>
 
-	<form id="frmTables" style="visibility: hidden; display: none">
+<form id="frmTables" style="visibility: hidden; display: none">
 		<%
 			Dim sErrorDescription = ""
 
@@ -86,7 +86,7 @@
 		%>
 	</form>
 
-	<form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
+<form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
 		<%
 			Dim sErrMsg = ""
 			Dim lngHStart = 0
@@ -352,34 +352,35 @@
 		%>
 	</form>
 
-	<form id="frmDefinition" name="frmDefinition">
-		<table valign="top" align="center"  cellpadding="5" width="100%" height="100%" cellspacing="0">
+<form id="frmDefinition" name="frmDefinition">
+		<table valign="top" align="center" cellpadding="5" width="100%" height="100%" cellspacing="0">
 			<tr>
 				<td colspan="2">
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-						<tr height="5"><td colspan="3"></td></tr>
-
+						<tr height="5">
+							<td colspan="3"></td>
+						</tr>
 						<tr height="10">
 							<td width="10"></td>
 							<td>
 								<input type="button" value="Definition" id="btnTab1" name="btnTab1" class="btn btndisabled" disabled="disabled"
-									onclick="display_CrossTab_Page(1)"/>
+									onclick="display_CrossTab_Page(1)" />
 								<input type="button" value="Columns" id="btnTab2" name="btnTab2" class="btn btndisabled" disabled="disabled"
-									onclick="display_CrossTab_Page(2)"/>
+									onclick="display_CrossTab_Page(2)" />
 								<input type="button" value="Output" id="btnTab3" name="btnTab3" class="btn btndisabled" disabled="disabled"
-									onclick="display_CrossTab_Page(3)"/>
+									onclick="display_CrossTab_Page(3)" />
 							</td>
 							<td width="10"></td>
 						</tr>
-
-						<tr height="10"><td colspan="3"></td></tr>
-
+						<tr height="10">
+							<td colspan="3"></td>
+						</tr>
 						<tr>
 							<td width="10"></td>
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%" cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -408,8 +409,9 @@
 														<td width="5">&nbsp;</td>
 														<td width="10" nowrap valign="top">Description :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" rowspan="3">
-															<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
+														<td style="width: 40%; vertical-align: top" rowspan="3">
+															<textarea id="txtDescription" name="txtDescription" class="textarea" wrap="VIRTUAL" height="0" maxlength="255"
+																style="width: 100%"
 																onkeyup="changeTab1Control()"
 																onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
 																onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
@@ -418,24 +420,19 @@
 														<td width="20" nowrap>&nbsp;</td>
 														<td width="10" valign="top">Access :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" rowspan="3" valign="top">
+														<td style="height: 100px; width: 40%; vertical-align: top" rowspan="2" valign="top">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>    
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
-
 													<tr height="10">
 														<td colspan="7">&nbsp;</td>
 													</tr>
-
 													<tr height="10">
 														<td colspan="7">&nbsp;</td>
 													</tr>
-
 													<tr>
-														<td colspan="9">
-															
-														</td>
+														<td colspan="9"></td>
 													</tr>
 
 													<tr height="10">
@@ -455,7 +452,7 @@
 																<tr>
 																	<td width="5">
 																		<input checked id="optRecordSelection1" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()"/>
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td width="30">
@@ -463,7 +460,7 @@
 																			tabindex="-1"
 																			for="optRecordSelection1"
 																			class="radio">
-																		All
+																			All
 																		</label>
 																	</td>
 																	<td>&nbsp;</td>
@@ -474,7 +471,7 @@
 																<tr>
 																	<td width="5">
 																		<input id="optRecordSelection2" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()"/>
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td width="20">
@@ -482,7 +479,7 @@
 																			tabindex="-1"
 																			for="optRecordSelection2"
 																			class="radio">
-																		Picklist
+																			Picklist
 																		</label>
 																	</td>
 																	<td width="5">&nbsp;</td>
@@ -508,7 +505,7 @@
 																			tabindex="-1"
 																			for="optRecordSelection3"
 																			class="radio">
-																		Filter
+																			Filter
 																		</label>
 																	</td>
 																	<td width="5">&nbsp;</td>
@@ -517,7 +514,7 @@
 																	</td>
 																	<td width="30">
 																		<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 100%" type="button" class="btn btndisabled" disabled="disabled" value="..."
-																			onclick="selectRecordOption('base', 'filter')"/>
+																			onclick="selectRecordOption('base', 'filter')" />
 																	</td>
 																</tr>
 															</table>
@@ -552,13 +549,16 @@
 										</tr>
 									</table>
 								</div>
+								<!-- Second tab -->
 								<div id="div2" style="visibility: hidden; display: none">
-									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%" cellspacing="0" cellpadding="5">
 
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-													<tr><td colspan="9" height="5"></td></tr>
+													<tr>
+														<td colspan="9" height="5"></td>
+													</tr>
 													<tr height="10">
 														<td width="5">&nbsp;</td>
 														<td colspan="4" valign="top"><u>Headings & Breaks</u></td>
@@ -569,22 +569,24 @@
 														<td width="15%" align="Center">Increment</td>
 														<td>&nbsp;</td>
 													</tr>
-													<tr><td colspan="9" height="5"></td></tr>
+													<tr>
+														<td colspan="9" height="5"></td>
+													</tr>
 													<tr height="23">
 														<td width="5">&nbsp;</td>
 														<td width="80" nowrap valign="top">Horizontal :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" valign="top">
+														<td width="20%" valign="top">
 															<select id="cboHor" name="cboHor" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="cboHor_Change();changeTab2Control(); ">
 															</select>
 														</td>
 														<td width="15">&nbsp;</td>
 														<td>
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-																id="txtHorStart" name="txtHorStart" 
-																style="height:24px; WIDTH:195px"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtHorStart" name="txtHorStart"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -597,11 +599,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
 																id="txtHorStop"
-																name="txtHorStop" 
-																style="height:24px; WIDTH:195px"
+																name="txtHorStop"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -615,10 +617,10 @@
 														<td width="5">&nbsp;</td>
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-																id="txtHorStep" 
-																name="txtHorStep" 
-																style="height:24px; WIDTH:195px"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtHorStep"
+																name="txtHorStep"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -632,12 +634,14 @@
 
 														<td>&nbsp;</td>
 													</tr>
-													<tr><td colspan="9" height="5"></td></tr>
+													<tr>
+														<td colspan="9" height="5"></td>
+													</tr>
 													<tr height="23">
 														<td width="5">&nbsp;</td>
 														<td width="80" nowrap valign="top">Vertical :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" valign="top">
+														<td width="20%" valign="top">
 															<select id="cboVer" name="cboVer" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="cboVer_Change();changeTab2Control(); ">
 															</select>
@@ -645,10 +649,10 @@
 														<td width="15">&nbsp;</td>
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-																id="txtVerStart" 
-																name="txtVerStart" 
-																style="height:24px; WIDTH:195px"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtVerStart"
+																name="txtVerStart"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -665,7 +669,7 @@
 																codebase="cabs/tinumb6.cab#version=6,0,1,1"
 																id="txtVerStop"
 																name="txtVerStop"
-																style="height:24px; WIDTH:195px"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -678,11 +682,11 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-																id="txtVerStep" 
-																name="txtVerStep" 
-																style="height:24px; WIDTH:195px"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtVerStep"
+																name="txtVerStep"
+																style="height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -696,12 +700,14 @@
 
 														<td>&nbsp;</td>
 													</tr>
-													<tr><td colspan="9" height="5"></td></tr>
+													<tr>
+														<td colspan="9" height="5"></td>
+													</tr>
 													<tr height="23">
 														<td width="5">&nbsp;</td>
 														<td width="100" nowrap valign="top">Page Break :</td>
 														<td width="5">&nbsp;</td>
-														<td width="40%" valign="top">
+														<td width="20%" valign="top">
 															<select id="cboPgb" name="cboPgb" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="cboPgb_Change();changeTab2Control(); ">
 															</select>
@@ -710,7 +716,7 @@
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
 																codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtPgbStart" name="txtPgbStart"
-																style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
+																style="LEFT: 0px; TOP: 0px; height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -725,7 +731,7 @@
 														<td width="15%">
 															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
 																codebase="cabs/tinumb6.cab#version=6,0,1,1" id="txtPgbStop"
-																name="txtPgbStop" style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
+																name="txtPgbStop" style="LEFT: 0px; TOP: 0px; height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -738,10 +744,10 @@
 														</td>
 														<td width="5">&nbsp;</td>
 														<td width="15%">
-															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830" 
-																codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-																id="txtPgbStep" name="txtPgbStep" 
-																style="LEFT: 0px; TOP: 0px; height:24px; WIDTH:195px"
+															<object classid="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"
+																codebase="cabs/tinumb6.cab#version=6,0,1,1"
+																id="txtPgbStep" name="txtPgbStep"
+																style="LEFT: 0px; TOP: 0px; height: 24px; WIDTH: 195px"
 																onkeyup="changeTab2Control()">
 																<param name="DisplayFormat" value="##########0.0000">
 																<param name="Format" value="##########0.0000">
@@ -754,450 +760,480 @@
 														</td>
 														<td>&nbsp;</td>
 													</tr>
-
-													<tr height="40">
-														<td colspan="11">
-															
-														</td>
+													<tr height="20">
+														<td colspan="11"></td>
 													</tr>
-
 													<tr height="10">
 														<td width="5">&nbsp;</td>
-														<td width="80" colspan="4" nowrap valign="top"><u>Intersection</u></td>
+														<td style="width: 80px; white-space: nowrap; vertical-align: top; text-decoration: underline" colspan="4">Intersection</td>
 													</tr>
-													<tr><td colspan="9" height="5"></td></tr>												
-
-												</table>
-
-												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-													
 													<tr>
-
-												<td colspan="2">
-													<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-														<tr height="10">
-															<td width="5">&nbsp;</td>
-															<td width="80" nowrap valign="top">Column :</td>
-															<td width="5">&nbsp;</td>
-															<td width="100%" valign="top">
-																<select id="cboInt" name="cboInt" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
-																	onchange="cboInt_Change();changeTab2Control(); ">
-																</select>
-															</td>
-														</tr>
-														<tr><td colspan="9" height="5"></td></tr>
-														<tr height="10">
-															<td width="5">&nbsp;</td>
-															<td width="80" nowrap valign="top">Type :</td>
-															<td width="5">&nbsp;</td>
-															<td width="100%" valign="top">
-																<select id="cboIntType" name="cboIntType" 
-																	style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
-																	onchange="changeTab2Control()">
-																	<option value="1">Average</option>
-																	<option value="0" selected>Count</option>
-																	<option value="2">Maximum</option>
-																	<option value="3">Minimum</option>
-																	<option value="4">Total</option>
-																</select>
-															</td>
-														</tr>
-													</table>
-												</td>
-
-											<td width="15">&nbsp;</td>
-											<td>
-												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-													<tr><td>
-															<input type="checkbox" id="chkPercentage" name="chkPercentage" tabindex="-1"
-																onclick="changeTab2Control()" />
-															<label
-																for="chkPercentage"
-																class="checkbox"
-																tabindex="0">
-																Percentage of Type
-															</label>
-														</td></tr>
-													<tr><td height="5"></td></tr>
-													<tr>
-														<td>
-															<input type="checkbox" id="chkPerPage" name="chkPerPage" tabindex="-1"
-																onclick="changeTab2Control()" />
-															<label
-																for="chkPerPage"
-																class="checkbox"
-																tabindex="0">
-																Percentage of Page
-															</label>
-														</td>
-													</tr>
-													<tr><td height="5"></td></tr>
-													<tr>
-														<td>
-															<input type="checkbox" id="chkSuppress" name="chkSuppress" tabindex="-1"
-																onclick="changeTab2Control()" />
-															<label
-																for="chkSuppress"
-																class="checkbox"
-																tabindex="0">
-																Suppress Zeros
-															</label>
-														</td>
-													</tr>
-													<tr><td height="5"></td></tr>
-													<tr>
-														<td>
-															<input type="checkbox" id="chkUse1000" name="chkUse1000" tabindex="-1"
-																onclick="changeTab2Control()" />
-															<label
-																for="chkUse1000"
-																class="checkbox"
-																tabindex="0">
-																Use 1000 Separators (,)
-															</label>
-														</td>
+														<td colspan="12" height="5"></td>
 													</tr>
 												</table>
-											</td>
-											
-											</tr>
+												<table style="width: 60%;" class="invisible" cellspacing="0" cellpadding="0">
+													<tr>
+														<td colspan="2">
+															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																<tr height="10">
+																	<td width="5">&nbsp;</td>
+																	<td style="width:80px;white-space: nowrap; vertical-align: top">Column :</td>
+																	<td width="5">&nbsp;</td>
+																	<td style="vertical-align: top" >
+																		<select id="cboInt" name="cboInt" class="combo combodisabled" disabled="disabled"
+																			style="width: 100%"
+																			onchange="cboInt_Change();changeTab2Control(); ">
+																		</select>
+																	</td>
+																</tr>
+																<tr>
+																	<td colspan="9" height="5"></td>
+																</tr>
+																<tr height="10">
+																	<td width="5">&nbsp;</td>
+																	<td width="80" nowrap valign="top">Type :</td>
+																	<td width="5">&nbsp;</td>
+																	<td>
+																		<select id="cboIntType" name="cboIntType"
+																			class="combo combodisabled" disabled="disabled"
+																			style="width: 100%"
+																			onchange="changeTab2Control()">
+																			<option value="1">Average</option>
+																			<option value="0" selected>Count</option>
+																			<option value="2">Maximum</option>
+																			<option value="3">Minimum</option>
+																			<option value="4">Total</option>
+																		</select>
+																	</td>
+																</tr>
+															</table>
+														</td>
 
-											<tr><td colspan="9" height="5"></td></tr>
+														<td style="width: 15px;">&nbsp;</td>
 
-										</table>
+														<td>
+															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																<tr>
+																	<td>
+																		<input type="checkbox" id="chkPercentage" name="chkPercentage" tabindex="-1"
+																			onclick="changeTab2Control()" />
+																		<label
+																			for="chkPercentage"
+																			class="checkbox"
+																			tabindex="0">
+																			Percentage of Type
+																		</label>
+																	</td>
+																</tr>
+																<tr>
+																	<td height="5"></td>
+																</tr>
+																<tr>
+																	<td>
+																		<input type="checkbox" id="chkPerPage" name="chkPerPage" tabindex="-1"
+																			onclick="changeTab2Control()" />
+																		<label
+																			for="chkPerPage"
+																			class="checkbox"
+																			tabindex="0">
+																			Percentage of Page
+																		</label>
+																	</td>
+																</tr>
+																<tr>
+																	<td height="5"></td>
+																</tr>
+																<tr>
+																	<td>
+																		<input type="checkbox" id="chkSuppress" name="chkSuppress" tabindex="-1"
+																			onclick="changeTab2Control()" />
+																		<label
+																			for="chkSuppress"
+																			class="checkbox"
+																			tabindex="0">
+																			Suppress Zeros
+																		</label>
+																	</td>
+																</tr>
+																<tr>
+																	<td height="5"></td>
+																</tr>
+																<tr>
+																	<td>
+																		<input type="checkbox" id="chkUse1000" name="chkUse1000" tabindex="-1"
+																			onclick="changeTab2Control()" />
+																		<label
+																			for="chkUse1000"
+																			class="checkbox"
+																			tabindex="0">
+																			Use 1000 Separators (,)
+																		</label>
+																	</td>
+																</tr>
+															</table>
+														</td>
 
+													</tr>
+													<tr>
+														<td colspan="9" height="5"></td>
+													</tr>
+												</table>
 									</table>
-								</div>							
+								</div>
+								<!-- OUTPUT OPTIONS -->
+								<div id="div3" style="visibility: hidden; display: none">
+									<table width="100%" height="100%" cellspacing="0" cellpadding="5">
+										<tr valign="top">
+											<td>
+												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
+													<tr>
+														<td valign="top" rowspan="2" width="15%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
+																<tr height="10">
+																	<td height="10" align="left" valign="top"><strong>Output Format :</strong>
+																		<br>
+																		<br>
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat0" value="0"
+																						onclick="formatClick(0);" />
+																				</td>
+																				<td align="left" nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat0"
+																						class="radio">
+																						Data Only
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
+																						onclick="formatClick(1);" />
+																				</td>
+																				<td align="left" nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat1"
+																						class="radio">
+																						CSV File
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
+																						onclick="formatClick(2);" />
+																				</td>
+																				<td align="left" nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat2"
+																						class="radio">
+																						HTML Document
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
+																						onclick="formatClick(3);" />
+																				</td>
+																				<td align="left" nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat3"
+																						class="radio">
+																						Word Document
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
+																						onclick="formatClick(4);" />
+																				</td>
+																				<td align="left" nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat4"
+																						class="radio">
+																						Excel Worksheet
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="5">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
+																						onclick="formatClick(5);" />
+																				</td>
+																				<td>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat5"
+																						class="radio">
+																						Excel Chart
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="4"></td>
+																			</tr>
+																			<tr height="5">
+																				<td width="5">&nbsp</td>
+																				<td align="left" width="15">
+																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
+																						onclick="formatClick(6);" />
+																				</td>
+																				<td nowrap>
+																					<label
+																						tabindex="-1"
+																						for="optOutputFormat6"
+																						class="radio">
+																						Excel Pivot Table
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="5">
+																				<td colspan="4"></td>
+																			</tr>
+																		</table>
+																	</td>
+																</tr>
+															</table>
+														</td>
+														<td valign="top" width="75%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
+																<tr height="10">
+																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
+																		<br>
+																		<br>
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																			<tr height="20">
+																				<td width="5">&nbsp</td>
+																				<td align="left" colspan="6" nowrap>
+																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
+																						onclick="changeTab3Control();" />
+																					<label
+																						for="chkPreview"
+																						class="checkbox checkboxdisabled"
+																						tabindex="0">
+																						Preview on screen
+																					</label>
+																				</td>
+																				<td width="5">&nbsp</td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																			<tr height="20">
+																				<td></td>
+																				<td align="left" colspan="6" nowrap>
+																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
+																						onclick="changeTab3Control();" />
+																					<label
+																						for="chkDestination0"
+																						class="checkbox checkboxdisabled"
+																						tabindex="0">
+																						Display output on screen 
+																					</label>
+																				</td>
+																				<td></td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																			<tr height="20">
+																				<td></td>
+																				<td align="left" nowrap>
+																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
+																						onclick="changeTab3Control();" />
+																					<label
+																						for="chkDestination1"
+																						class="checkbox checkboxdisabled"
+																						tabindex="0">
+																						Send to printer 
+																					</label>
+																				</td>
+																				<td width="30" nowrap>&nbsp</td>
+																				<td align="left" nowrap>Printer location : 
+																				</td>
+																				<td width="15">&nbsp</td>
+																				<td colspan="2">
+																					<select id="cboPrinterName" name="cboPrinterName" width="100%" style="WIDTH: 400px" class="combo"
+																						onchange="changeTab3Control()">
+																					</select>
+																				</td>
+																				<td></td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																			<tr height="20">
+																				<td></td>
+																				<td align="left" nowrap>
+																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
+																						onclick="changeTab3Control();" />
+																					<label
+																						for="chkDestination2"
+																						class="checkbox checkboxdisabled"
+																						tabindex="0">
+																						Save to file
+																					</label>
+																				</td>
+																				<td></td>
+																				<td align="left" nowrap>File name :   
+																				</td>
+																				<td></td>
+																				<td colspan="2">
+																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
+																						<tr>
+																							<td>
+																								<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" style="width: 100%">
+																							</td>
+																							<td width="25">
+																								<input id="cmdFilename" name="cmdFilename" style="WIDTH: 100%" type="button" class="btn" value="..."
+																									onclick="saveFile(); changeTab3Control();" />
+																							</td>
 
-<!-- OUTPUT OPTIONS -->
-<div id="div3" style="visibility: hidden; display: none">
-	<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
-		<tr valign="top">
-			<td>
-				<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
-					<tr>
-						<td valign="top" rowspan="2" width="25%" height="100%">
-							<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
-								<tr height="10">
-									<td height="10" align="left" valign="top"><strong>Output Format :</strong>
-										<br>
-										<br>
-										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat0" value="0"
-														onclick="formatClick(0);"/>
-												</td>
-												<td align="left" nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat0"
-														class="radio">
-														Data Only
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
-														onclick="formatClick(1);" />
-												</td>
-												<td align="left" nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat1"
-														class="radio">
-														CSV File
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
-														onclick="formatClick(2);"/>
-												</td>
-												<td align="left" nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat2"
-														class="radio">
-														HTML Document
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
-														onclick="formatClick(3);" />
-												</td>
-												<td align="left" nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat3"
-														class="radio">
-														Word Document
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
-														onclick="formatClick(4);" />
-												</td>
-												<td align="left" nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat4"
-														class="radio">
-														Excel Worksheet
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="5">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
-														onclick="formatClick(5);" />
-												</td>
-												<td>
-													<label
-														tabindex="-1"
-														for="optOutputFormat5"
-														class="radio">
-														Excel Chart
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="4"></td></tr>
-											<tr height="5">
-												<td width="5">&nbsp</td>
-												<td align="left" width="15">
-													<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
-														onclick="formatClick(6);" />
-												</td>
-												<td nowrap>
-													<label
-														tabindex="-1"
-														for="optOutputFormat6"
-														class="radio">
-														Excel Pivot Table
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="5"><td colspan="4"></td></tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td valign="top" width="75%">
-							<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
-								<tr height="10">
-									<td height="10" align="left" valign="top"><strong> Output Destination(s) :</strong>
-										<br>
-										<br>
-										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-											<tr height="20">
-												<td width="5">&nbsp</td>
-												<td align="left" colspan="6" nowrap>
-													<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
-														onclick="changeTab3Control();" />
-													<label
-														for="chkPreview"
-														class="checkbox checkboxdisabled"
-														tabindex="0">
-														Preview on screen
-													</label>
-												</td>
-												<td width="5">&nbsp</td>
-											</tr>
-											<tr height="10"><td colspan="8"></td></tr>
-											<tr height="20">
-												<td></td>
-												<td align="left" colspan="6" nowrap>
-													<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
-														onclick="changeTab3Control();" />
-													<label
-														for="chkDestination0"
-														class="checkbox checkboxdisabled"
-														tabindex="0">
-														Display output on screen 
-													</label>
-												</td>
-												<td></td>
-											</tr>
-											<tr height="10"><td colspan="8"></td></tr>
-											<tr height="20">
-												<td></td>
-												<td align="left" nowrap>
-													<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
-														onclick="changeTab3Control();" />
-													<label
-														for="chkDestination1"
-														class="checkbox checkboxdisabled"
-														tabindex="0">
-														Send to printer 
-													</label>
-												</td>
-												<td width="30" nowrap>&nbsp</td>
-												<td align="left" nowrap>Printer location : 
-												</td>
-												<td width="15">&nbsp</td>
-												<td colspan="2">
-													<select id="cboPrinterName" name="cboPrinterName" width="100%" style="WIDTH: 400px" class="combo"
-														onchange="changeTab3Control()">
-													</select>
-												</td>
-												<td></td>
-											</tr>
-											<tr height="10"><td colspan="8"></td></tr>
-											<tr height="20">
-												<td></td>
-												<td align="left" nowrap>
-													<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
-														onclick="changeTab3Control();" />
-													<label
-														for="chkDestination2"
-														class="checkbox checkboxdisabled"
-														tabindex="0">
-														Save to file
-													</label>
-												</td>
-												<td></td>
-												<td align="left" nowrap>File name :   
-												</td>
-												<td></td>
-												<td colspan="2">
-													<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
-														<tr>
-															<td>
-																<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" style="width: 375px">
-															</td>
-															<td width="25">
-																<input id="cmdFilename" name="cmdFilename" style="WIDTH: 100%" type="button" class="btn" value="..."
-																	onclick="saveFile(); changeTab3Control();"/>
-															</td>
+																						</tr>
+																					</table>
 
-</tr>
-</table>
-															
-												</td>
+																				</td>
 
-								</tr>
-								<tr height="10"><td colspan="8"></td></tr>
-								<tr height="20">
-									<td colspan="3"></td>
-									<td align="left" nowrap>If existing file :</td>
-									<td></td>
-									<td colspan="2" width="100%" nowrap>
-										<select id="cboSaveExisting" name="cboSaveExisting" width="100%" style="WIDTH: 400px" class="combo"
-											onchange="changeTab3Control()">
-										</select>
-									</td>
-									<td></td>
-								</tr>
-								<tr height="10"><td colspan="8"></td></tr>
-								<tr height="20">
-									<td></td>
-									<td align="left" nowrap>
-										<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-											onclick="changeTab3Control();"/>
-										<label
-											for="chkDestination3"
-											class="checkbox checkboxdisabled"
-											tabindex="0">
-											Send as email 
-										</label>
-									</td>
-									<td></td>
-									<td align="left" nowrap>Email group : </td>
-									<td></td>
-									<td colspan="2">
-										<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
-											<tr>
-												<td>
-													<input id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
-													<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
-												</td>
-												<td width="25">
-													<input id="cmdEmailGroup" name="cmdEmailGroup" style="WIDTH: 100%" type="button" class="btn" value="..."
-														onclick="selectEmailGroup(); changeTab3Control();" />
-												</td>
-												
-											</tr>	
-										</table>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																			<tr height="20">
+																				<td colspan="3"></td>
+																				<td align="left" nowrap>If existing file :</td>
+																				<td></td>
+																				<td colspan="2" width="100%" nowrap>
+																					<select id="cboSaveExisting" name="cboSaveExisting" width="100%" style="WIDTH: 400px" class="combo"
+																						onchange="changeTab3Control()">
+																					</select>
+																				</td>
+																				<td></td>
+																			</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																			<tr height="20">
+																				<td></td>
+																				<td align="left" nowrap>
+																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
+																						onclick="changeTab3Control();" />
+																					<label
+																						for="chkDestination3"
+																						class="checkbox checkboxdisabled"
+																						tabindex="0">
+																						Send as email 
+																					</label>
+																				</td>
+																				<td></td>
+																				<td align="left" nowrap>Email group : </td>
+																				<td></td>
+																				<td colspan="2">
+																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
+																						<tr>
+																							<td>
+																								<input id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
+																								<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
+																							</td>
+																							<td width="25">
+																								<input id="cmdEmailGroup" name="cmdEmailGroup" style="WIDTH: 100%" type="button" class="btn" value="..."
+																									onclick="selectEmailGroup(); changeTab3Control();" />
+																							</td>
 
-									</td>
-					</tr>
+																						</tr>
+																					</table>
 
-					<tr height="10"><td colspan="8"></td></tr>
+																				</td>
+																			</tr>
 
-					<tr height="20">
-						<td colspan="3"></td>
-						<td align="left" nowrap>Email subject :</td>
-						<td></td>
-						<td colspan="2" width="100%" nowrap>
-							<input id="txtEmailSubject" disabled="disabled" class="text textdisabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 400px"
-								onchange="frmUseful.txtChanged.value = 1;"
-								onkeydown="frmUseful.txtChanged.value = 1;">
-						</td>
-						<td></td>
-					</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
 
-					<tr height="10"><td colspan="8"></td></tr>
+																			<tr height="20">
+																				<td colspan="3"></td>
+																				<td align="left" nowrap>Email subject :</td>
+																				<td></td>
+																				<td colspan="2" width="100%" nowrap>
+																					<input id="txtEmailSubject" disabled="disabled" class="text textdisabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 400px"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;">
+																				</td>
+																				<td></td>
+																			</tr>
 
-					<tr height="20">
-						<td colspan="3"></td>
-						<td align="left" nowrap>Attach as : </td>
-						<td></td>
-						<td colspan="2" width="100%" nowrap>
-							<input id="txtEmailAttachAs" disabled="disabled" maxlength="255" class="text textdisabled" name="txtEmailAttachAs" style="WIDTH: 400px"
-								onchange="frmUseful.txtChanged.value = 1;"
-								onkeydown="frmUseful.txtChanged.value = 1;">
-						</td>
-						<td></td>
-					</tr>
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
 
-					<tr height="10">
-						<td colspan="8"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-	</td>
-												</tr>
-										</table>									
-										</table>
-</div>					
+																			<tr height="20">
+																				<td colspan="3"></td>
+																				<td align="left" nowrap>Attach as : </td>
+																				<td></td>
+																				<td colspan="2" width="100%" nowrap>
+																					<input id="txtEmailAttachAs" disabled="disabled" maxlength="255" class="text textdisabled" name="txtEmailAttachAs" style="WIDTH: 400px"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;">
+																				</td>
+																				<td></td>
+																			</tr>
 
+																			<tr height="10">
+																				<td colspan="8"></td>
+																			</tr>
+																		</table>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</table>
+									</table>
+								</div>
 							</td>
 						</tr>
 					</table>
-
-
 				</td>
 			</tr>
-
-			<tr height="5"><td colspan="3"></td></tr>
-		
+			<tr height="5">
+				<td colspan="3"></td>
+			</tr>
 			<tr height="10">
 				<td width="10"></td>
 				<td>
@@ -1218,20 +1254,18 @@
 				</td>
 				<td width="10"></td>
 			</tr>
-
 		</table>
-	
+
 		<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
 		<input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
 		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
-
 		<input type='hidden' id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
 		<input type='hidden' id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
 		<input type='hidden' id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
 		<input type='hidden' id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
 		<input type='hidden' id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 		<input type='hidden' id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
-</form>
+	</form>
 
 <form id="frmAccess">
 	<%
@@ -1421,7 +1455,6 @@
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
 </div>
 
 <script type="text/javascript">
