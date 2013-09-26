@@ -40,6 +40,11 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
 			var isNew = (localId == null);
 
+			if (staffId == null)
+			{
+				this.Bus().HandleCurrentMessageLater();
+				return;
+			}
 
 			SqlParameter idParameter;
 			using (var c = new SqlConnection(ConnectionString))

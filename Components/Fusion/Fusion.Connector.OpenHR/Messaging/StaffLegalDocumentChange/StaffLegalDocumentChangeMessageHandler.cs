@@ -41,17 +41,15 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 						var parentRef = message.PrimaryEntityRef;
 
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Document, docRef);
-            var staffId = Convert.ToInt32(BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString())));
+	        var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
 
             var isNew = (localId == null && document.data.recordStatus == RecordStatusStandard.Active);
 
-						// Push to saga?
-						if (staffId == 0)
+						if (staffId == null)
 						{
-							Logger.WarnFormat("Inbound message {0}/{1} pushed to saga. No parent found for {2}", message.GetMessageName(), message.EntityRef, message.PrimaryEntityRef);
-							return;							
+							this.Bus().HandleCurrentMessageLater();
+							return;
 						}
-
 
             SqlParameter idParameter;
             using (var c = new SqlConnection(ConnectionString))

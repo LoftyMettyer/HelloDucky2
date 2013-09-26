@@ -5,10 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
-using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Component;
-using Fusion.Connector.OpenHR.MessageHandlers;
 using Fusion.Core;
 using Fusion.Messages.SocialCare;
 using NServiceBus;
@@ -46,6 +43,11 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
             var isNew = (localId == null);
 
+						if (staffId == null)
+						{
+							this.Bus().HandleCurrentMessageLater();
+							return;
+						}
 
             SqlParameter idParameter;
             using (var c = new SqlConnection(ConnectionString))

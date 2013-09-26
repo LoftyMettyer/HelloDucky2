@@ -38,13 +38,16 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
 
                 var skillRef = new Guid(message.EntityRef.ToString());
-								var parentRef = message.PrimaryEntityRef;
-
                 var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Skill, skillRef);
                 var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
 
                 isNew = (localId == null);
 
+								if (staffId == null)
+								{
+									this.Bus().HandleCurrentMessageLater();
+									return;
+								}
 
                 SqlParameter idParameter;
                 using (var c = new SqlConnection(ConnectionString))

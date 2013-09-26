@@ -44,7 +44,13 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             }
 
             var busRef = new Guid(message.EntityRef.ToString());
-            string localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, busRef);
+						var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, busRef);
+
+						if (staffId == null)
+						{
+							this.Bus().HandleCurrentMessageLater();
+							return;
+						}
 
             using (var c = new SqlConnection(_connectionString))
             {
@@ -55,7 +61,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                         CommandType = CommandType.StoredProcedure
                     };
 
-                SqlParameter idParameter = cmd.Parameters.Add(new SqlParameter("@ID", localId ?? (object) DBNull.Value));
+								SqlParameter idParameter = cmd.Parameters.Add(new SqlParameter("@ID", staffId ?? (object)DBNull.Value));
                 idParameter.SqlDbType = SqlDbType.Int;
                 idParameter.Direction = ParameterDirection.InputOutput;
 
