@@ -47,9 +47,9 @@
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
-			objCalendar.SingleRecordID = Session("singleRecordID")
-		Else
 			objCalendar.SingleRecordID = 0
+		Else
+			objCalendar.SingleRecordID = Session("singleRecordID")
 		End If
 		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
 		If fok Then

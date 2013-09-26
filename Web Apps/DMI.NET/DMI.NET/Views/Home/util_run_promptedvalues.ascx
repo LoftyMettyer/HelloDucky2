@@ -184,9 +184,9 @@
 					prmRecordID = cmdDefn.CreateParameter("recordID", 3, 1)	' 3=integer, 1=input
 					cmdDefn.Parameters.Append(prmRecordID)
 					If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
-						prmRecordID.value = CleanNumeric(CLng(Session("singleRecordID")))
-					Else
 						prmRecordID.value = 0
+					Else
+						prmRecordID.value = CleanNumeric(CLng(Session("singleRecordID")))
 					End If
 				End If
 
