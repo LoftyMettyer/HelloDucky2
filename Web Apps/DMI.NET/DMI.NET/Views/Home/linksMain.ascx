@@ -425,7 +425,8 @@
 			<div class="hypertextlinks">
 				<%Dim tileCount = 1%>
 				<%For Each navlink In Model.NavigationLinks%>
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>				
+				<%--<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>			--%>
+				<%Dim sTileColourClass = "absColour3"%>			
 				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
@@ -440,8 +441,13 @@
 			<%iSeparatorNum += 1%>
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
-					<div class="wrapupcontainer"><div class="wrapuptext"><p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p></div></div>					
+					<div class="wrapupcontainer">
+						<div class="wrapuptext">
+							<p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p>
+						</div>
+					</div>					
 					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
+						
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then%>
@@ -513,7 +519,8 @@
 									Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
 				
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
+				<%--<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>--%>
+				<%Dim sTileColourClass = "absColour7"%>
 
 				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
 								<%

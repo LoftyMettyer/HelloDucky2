@@ -47,6 +47,12 @@ div.COAwallpapered
 	right: 10px;
 }
 
+.footer-banner-p-copyright a {
+		color: #EEAF00;
+		/*background-color: #639ec8*/
+}
+
+
 TD
 {
 	/*font-size: 10pt;
@@ -501,6 +507,7 @@ table.calendarcell
 	{		
 		margin: 0px;
 		font-size: xx-large;
+		color: white;
 		/*font-weight: bold;*/
 	}
 

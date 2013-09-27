@@ -22,9 +22,11 @@ body
 }
 
 #workframeset {
+	/*background: url("../../../Content/images/Default Background.jpg") no-repeat center center fixed;
 	background: url("../../../Content/images/TilesBackground.jpg") no-repeat center center fixed;
+	background: url("../../../Content/images/ABSYellowGradient_64colors.png") no-repeat center center fixed;*/
+	background: url("../../../Content/images/ABSLittleLessBrightTilesBackground.png") no-repeat center center fixed;
 	background-size: cover;
-/*background-color: rgb(7, 55, 99);*/
 	background-color: rgb(4, 106, 169);
 	top: 0!important;
 	left: 0!important;
@@ -37,13 +39,10 @@ body
 							height: 680px;
 							overflow-x: hidden; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
 
-
-
-
 /********************
 *   Mobile Styles   *
 ********************/
-@media only screen and (max-height: 850px) {
+@media only screen and (max-height: 850px) {  
 	.DashContent {
 		top: 0;
 		margin-left: 0;
@@ -145,17 +144,15 @@ body
 
 .hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator, .pendingworkflowlinkseparator
 {
-
-/*white-space:nowrap; 
+	/*white-space:nowrap; 
 width:12em; */
-overflow:hidden; 
-text-overflow:ellipsis;
-
-	/*margin-left: 10px;*/
+	overflow: hidden;
+	text-overflow: ellipsis;
 	background-color: transparent!Important;
-	 font-size: 11pt;
-	 text-decoration: none;
+	font-size: 11pt;
+	text-decoration: none;
 	color: white!important;
+	text-shadow: 0 0 5px #000000;
 }
 
 .linkspagebuttonseparator h2 {
@@ -289,6 +286,26 @@ li {list-style: none;}
 .White { background-color: white;color: gray;}
 .White a { color: gray;}
 
+/*ABS Colour Scheme*/
+/*Primary Colour Pallete*/
+.absColour1 {background-color: rgb(238, 175, 0);color: white;}  /*Pantone 7409*/
+.absColour1 a {color: white;}
+.absColour2 { background-color: rgb(0, 84, 159);color: white;}  /*Pantone 2945*/ 
+.absColour2 a { color: white;}
+/*Secondary Colour Pallete*/
+.absColour3 {background-color: rgba(98, 164,211, 0.36);color: white;} /*Pantone 542 (iNurse) */
+.absColour3 a {color: white;}
+.absColour4 {background-color: rgb(93, 0, 74);color: white;} /*Pantone 262 (Staffplan)*/
+.absColour4 a {color: white;}
+.absColour5 {background-color: rgba(0, 144, 137, 0.36);color: white;} /*Pantone 3285 (Crosscare)*/
+.absColour5 a {color: white;}
+.absColour6 {background-color: rgb(0, 70,135);color: white;} /*Pantone 288 (Adastra)*/
+.absColour6 a {color: white;}
+.absColour7 {background-color: rgba(132, 134, 135, 0.36);color: rgb(10, 10, 10);} /*Pantone 424 (Healthchecks)*/
+.absColour7 a {color: black;}
+.absColour8 {background-color: rgb(170, 1, 50);color: white;} /*Pantone 194 (Saturn)*/
+.absColour8 a {color: white;}
+
 .holidaycontainer { display: none;}
 
 
@@ -301,7 +318,9 @@ li {list-style: none;}
 	text-decoration: none;
 }
 .RecordDescription a:hover {
-	border-bottom: 2px solid orange;
+	/*border-bottom: 2px solid orange;*/
+	border-bottom: 2px solid white;
+
 }
 
 .FixedLinksLeft, #fixedlinks {

@@ -77,7 +77,7 @@
 						<%-- Home --%>
 				<li class="current ui-state-default"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
-						<li><span>&nbsp;   </span> <%-- Fixed Links value removed By mayank to avoide duplicasy--%>
+						<li><span>&nbsp;   </span><%-- Fixed Links value removed By mayank to avoide duplicasy--%>
 							<div id="mnutoolFixedSelfService" class="button">
 									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service">
 								<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png")%>" alt="" />
@@ -104,7 +104,8 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/ChangePassword64HOVER.png") %>"
 										alt="" />
 									<i class="icon-lock"></i>
-									<h6>Change<br/>Password</h6>
+									<h6>Change<br />
+										Password</h6>
 								</a>
 							</div>
 							<div id="mnutoolFixedLayout" class="button">
@@ -143,24 +144,28 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 									<i class="icon-plus"></i>  
 									<h6>New</h6>
-							</a></div>
+								</a>
+							</div>
 							<div id="mnutoolCopyRecordFind" class="button">
 								<a href="#" rel="table" title="Copy Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 									<i class="icon-copy"></i>
-									<h6>Copy</h6></a>
+									<h6>Copy</h6>
+								</a>
 							</div>
 							<div id="mnutoolEditRecordFind" class="button">
 								<a href="#" rel="table" title="Edit Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 									<i class="icon-pencil"></i>
-									<h6>Edit</h6></a>
+									<h6>Edit</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteRecordFind" class="button">
 								<a href="#" rel="table" title="Delete Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 									<i class="icon-close"></i>
-									<h6>Delete</h6></a>
+									<h6>Delete</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordFindNavigate"><span>Navigate</span>
@@ -168,43 +173,51 @@
 								<a href="#" rel="table" title="Return to parent record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-up"></i>
-									<h6>Parent</h6></a>
+									<h6>Parent</h6>
+								</a>
 							</div>
 							<div id="mnutoolBackRecordFind" class="button">
 								<a href="#" rel="table" title="Return to record editing">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-left"></i>
-									<h6>Back</h6></a>
+									<h6>Back</h6>
+								</a>
 							</div>
 
 							<div id="mnutoolFirstRecordFind" class="button">
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
 									<i class="icon-previous"></i>
-									<h6>First</h6></a>
+									<h6>First</h6>
+								</a>
 							</div>
 							<div id="mnutoolPreviousRecordFind" class="button">
 								<a href="#" rel="table" title="Previous Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Previous</h6></a>
+									<h6>Previous</h6>
+								</a>
 							</div>
 							<div id="mnutoolNextRecordFind" class="button">
 								<a href="#" rel="table" title="Next Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
 									<i class="icon-forward"></i>
-									<h6>Next</h6></a>
+									<h6>Next</h6>
+								</a>
 							</div>
 							<div id="mnutoolLastRecordFind" class="button">
 								<a href="#" rel="table" title="Last Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
 									<i class="icon-next"></i>
-									<h6>Last</h6></a>
+									<h6>Last</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionLocateRecordFind">
 							<div id="mnutoolLocateRecordFind" class="textboxlist">
-								<ul><li>Go To<input type="text" /></li></ul>
+								<ul>
+									<li>Go To<input type="text" /></li>
+								</ul>
 							</div>
 						</li>
 												<li id="mnuSectionRecordFindOrder"><span>Order</span>
@@ -212,20 +225,23 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" />
 									<i class="icon-ChangeOrderRecordFind"></i>
-									<h6>Change Order</h6></a>
+									<h6>Change Order</h6>
+								</a>
 							</div>
 							<div id="mnutoolFilterRecordFind" class="button" title="Filter">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Filtering64HOVER.png") %>" alt="" />
 									<i class="icon-FilterRecordFind"></i>
-									<h6>Filter</h6></a>
+									<h6>Filter</h6>
+								</a>
 							</div>
 							<div id="mnutoolClearFilterRecordFind" class="button" title="Clear Filter">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/FilteringDelete64HOVER.png") %>"
 										alt="" />
 									<i class="icon-ClearFilterRecordFind"></i>
-									<h6>Clear Filter</h6></a>
+									<h6>Clear Filter</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordFindTrainingBooking"><span>Training Booking</span>
@@ -234,28 +250,36 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BulkBooking64HOVER.png")%>"
 										alt="" />
 																		<i class="icon-BulkBookingRecordFind"></i>
-																		<h6>Bulk<br />Booking</h6></a>
+									<h6>Bulk<br />
+										Booking</h6>
+								</a>
 							</div>
 							<div id="mnutoolAddFromWaitingListRecordFind" class="button">
 								<a href="#" rel="table" title="Add from Waiting List">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AddFromWaitingList64HOVER.png")%>"
 										alt="" />
 																		<i class="icon-AddFromWaitingListRecordFind"></i>
-																		<h6>Add from<br />Waiting List</h6></a>
+									<h6>Add from<br />
+										Waiting List</h6>
+								</a>
 							</div>
 							<div id="mnutoolTransferBookingRecordFind" class="button">
 								<a href="#" rel="table" title="Transfer Booking">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/TransferBooking64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-TransferBookingRecordFind"></i>
-																		<h6>Transfer<br />Booking</h6></a>
+									<h6>Transfer<br />
+										Booking</h6>
+								</a>
 							</div>
 							<div id="mnutoolCancelBookingRecordFind" class="button">
 								<a href="#" rel="table" title="Cancel Booking">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelBooking64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-CancelBookingRecordFind"></i>
-																		<h6>Cancel<br />Booking</h6></a>
+									<h6>Cancel<br />
+										Booking</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionPositionRecordFind"><span>Record Position</span>
@@ -279,24 +303,28 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 									<i class="icon-plus"></i>
 									<h6>Add</h6>
-							</a></div>
+								</a>
+							</div>
 							<div id="mnutoolCopyRecord" class="button">
 								<a href="#" rel="table" title="Copy Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 									<i class="icon-copy"></i>
-									<h6>Copy</h6></a>
+									<h6>Copy</h6>
+								</a>
 							</div>
 							<div id="mnutoolEditRecord" class="button">
 								<a href="#" rel="table" title="Edit Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 									<i class="icon-pencil"></i>
-									<h6>Edit</h6></a>
+									<h6>Edit</h6>
+								</a>
 							</div>
 							<div id="mnutoolSaveRecord" class="button">
 								<a href="#" rel="table" title="Save">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" />
 									<i class="icon-disk"></i>
-									<h6>Save</h6></a>
+									<h6>Save</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteRecord" class="button">
 								<a href="#" rel="table" title="Delete Record">
@@ -310,38 +338,44 @@
 								<a href="#" rel="table" title="Return to parent record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-up"></i>
-									<h6>Parent</h6></a>
+									<h6>Parent</h6>
+								</a>
 							</div>
 							<div id="mnutoolBackRecord" class="button">
 								<a href="#" rel="table" title="Return to record editing">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-left"></i>
-									<h6>Back</h6></a>
+									<h6>Back</h6>
+								</a>
 							</div>
 
 							<div id="mnutoolFirstRecord" class="button">
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
 									<i class="icon-previous"></i>
-									<h6>First</h6></a>
+									<h6>First</h6>
+								</a>
 							</div>
 							<div id="mnutoolPreviousRecord" class="button">
 								<a href="#" rel="table" title="Previous Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Previous</h6></a>
+									<h6>Previous</h6>
+								</a>
 							</div>
 							<div id="mnutoolNextRecord" class="button">
 								<a href="#" rel="table" title="Next Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
 									<i class="icon-forward"></i>
-									<h6>Next</h6></a>
+									<h6>Next</h6>
+								</a>
 							</div>
 							<div id="mnutoolLastRecord" class="button">
 								<a href="#" rel="table" title="Last Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
 									<i class="icon-next"></i>
-									<h6>Last</h6></a>
+									<h6>Last</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordFind"><span>Find</span>
@@ -349,13 +383,15 @@
 								<a href="#" rel="table" title="Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
 									<i class="icon-search"></i>
-									<h6>Find</h6></a>
+									<h6>Find</h6>
+								</a>
 							</div>
 							<div id="mnutoolQuickFindRecord" class="button">
 								<a href="#" rel="table" title="Quick Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/QuickFind64HOVER.png") %>" alt="" />
 									<i class="icon-QuickFindRecord"></i>
-									<h6>Quick Find</h6></a>
+									<h6>Quick Find</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordOrder"><span>Order</span>
@@ -363,26 +399,30 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" />
 									<i class="icon-ChangeOrderRecord"></i>
-									<h6>Change Order</h6></a>
+									<h6>Change Order</h6>
+								</a>
 							</div>
 							<div id="mnutoolFilterRecord" class="button" title="Filter">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Filtering64HOVER.png") %>" alt="" />
 									<i class="icon-FilterRecord"></i>
-									<h6>Filter</h6></a>
+									<h6>Filter</h6>
+								</a>
 							</div>
 							<div id="mnutoolClearFilterRecord" class="button" title="Clear Filter">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/FilteringDelete64HOVER.png") %>"
 										alt="" />
 									<i class="icon-ClearFilterRecord"></i>
-									<h6>Clear Filter</h6></a>
+									<h6>Clear Filter</h6>
+								</a>
 							</div>
 							<div id="mnutoolPrintRecord" class="button" title="Output">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
 									<i class="icon-print"></i>
-									<h6>Output</h6></a>
+									<h6>Output</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordCourseBooking"><span>Course Booking</span>
@@ -391,14 +431,18 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-BookCourseRecord"></i>
-																		<h6>Book<br />Course</h6></a>
+									<h6>Book<br />
+										Course</h6>
+								</a>
 							</div>
 							<div id="mnutoolCancelCourseRecord" class="button">
 								<a href="#" rel="table" title="Cancel Course">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-CancelCourseRecord"></i>
-																		<h6>Cancel<br />Course</h6></a>
+									<h6>Cancel<br />
+										Course</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordReports"><span>Reports</span>
@@ -407,27 +451,35 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
 										alt="" />
 									<i class="icon-CalendarReportsRecord"></i>
-																		<h6>Calendar<br />Reports</h6></a>
+									<h6>Calendar<br />
+										Reports</h6>
+								</a>
 							</div>
 							<div id="mnutoolAbsenceBreakdownRecord" class="button">
 								<a href="#" rel="table" title="Absence Breakdown">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceBreakdown64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-AbsenceBreakdownRecord"></i>
-																		<h6>Absence<br />Breakdown</h6></a>
+									<h6>Absence<br />
+										Breakdown</h6>
+								</a>
 							</div>
 							<div id="mnutoolAbsenceCalendarRecord" class="button">
 								<a href="#" rel="table" title="Absence Calendar">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceCalendar64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-AbsenceCalendarRecord"></i>
-																		<h6>Absence<br />Calendar</h6></a>
+									<h6>Absence<br />
+										Calendar</h6>
+								</a>
 							</div>
 							<div id="mnutoolBradfordRecord" class="button">
 								<a href="#" rel="table" title="Bradford Factor">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BradfordFactor64HOVER.png") %>"
 										alt="" /><i class="icon-BradfordRecord"></i>
-																		<h6>Bradford<br />Factor</h6></a>
+									<h6>Bradford<br />
+										Factor</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionRecordMailmerge"><span>Mail Merge</span>
@@ -436,7 +488,9 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-MailMergeRecord"></i>
-																		<h6>Mail<br/>Merge</h6></a>
+									<h6>Mail<br />
+										Merge</h6>
+								</a>
 							</div>
 						</li>
 						<li id="mnuSectionPositionRecord"><span>Record Position</span>
@@ -460,13 +514,15 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
 									<i class="icon-PrintRecordAbsence"></i>
-									<h6>Output</h6></a>
+									<h6>Output</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseRecordAbsence" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseRecordAbsence"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -480,13 +536,15 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png")%>" alt="" />
 									<i class="icon-FindRecordQuickFind"></i>
-									<h6>Find</h6></a>
+									<h6>Find</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseRecordQuickFind" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseRecordQuickFind"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -500,13 +558,15 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
 									<i class="icon-CheckRecordSortOrder"></i>
-									<h6>Select</h6></a>
+									<h6>Select</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseRecordSortOrder" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseRecordSortOrder"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -520,13 +580,15 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
 									<i class="icon-ApplyRecordFilter"></i>
-									<h6>Apply</h6></a>
+									<h6>Apply</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseRecordFilter" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseRecordFilter"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -540,13 +602,15 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 									<i class="icon-RunRecordMailMerge"></i>
-									<h6>Run</h6></a>
+									<h6>Run</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseRecordMailMerge" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseRecordMailMerge"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -560,7 +624,8 @@
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />
 									<i class="icon-OK"></i>
-									<h6>Select</h6></a>
+									<h6>Select</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseDelegateBookingTransfer" class="button">
 								<a href="#" rel="table" title="Close">
@@ -574,25 +639,29 @@
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
 									<i class="icon-previous"></i>
-									<h6>First</h6></a>
+									<h6>First</h6>
+								</a>
 							</div>
 							<div id="mnutoolPreviousDelegateBookingTransfer" class="button">
 								<a href="#" rel="table" title="Previous Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Previous</h6></a>
+									<h6>Previous</h6>
+								</a>
 							</div>
 							<div id="mnutoolNextDelegateBookingTransfer" class="button">
 								<a href="#" rel="table" title="Next Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
 									<i class="icon-forward"></i>
-									<h6>Next</h6></a>
+									<h6>Next</h6>
+								</a>
 							</div>
 							<div id="mnutoolLastDelegateBookingTransfer" class="button">
 								<a href="#" rel="table" title="Last Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
 									<i class="icon-next"></i>
-									<h6>Last</h6></a>
+									<h6>Last</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -605,9 +674,10 @@
 						<li id="mnuSectionDelegateBookingBulkBooking"><span>Report</span>
 							<div id="mnutoolSaveDelegateBookingBulkBooking" class="button">
 								<a href="#" rel="table" title="Save">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
 									<i class="icon-disk"></i>
-									<h6>Save</h6></a>
+									<h6>Save</h6>
+								</a>
 							</div>
 							<div id="mnutoolCancelDelegateBookingBulkBooking" class="button">
 								<a href="#" rel="table" title="Cancel">
@@ -626,45 +696,52 @@
 						<li id="mnuSectionReportFind"><span>Find</span>
 							<div id="mnutoolNewReportFind" class="button">
 								<a href="#" rel="table" title="New">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 																<i class="icon-plus"></i>
-																<h6>New</h6></a>
+									<h6>New</h6>
+								</a>
 							</div>
 							<div id="mnutoolCopyReportFind" class="button">
 								<a href="#" rel="table" title="Copy">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 								<i class="icon-copy"></i>
-								<h6>Copy</h6></a>
+									<h6>Copy</h6>
+								</a>
 							</div>
 							<div id="mnutoolEditReportFind" class="button">
 								<a href="#" rel="table" title="Edit">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 								<i class="icon-pencil"></i>
-								<h6>Edit</h6></a>
+									<h6>Edit</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteReportFind" class="button">
 								<a href="#" rel="table" title="Delete">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
-								<h6>Delete</h6></a>
+									<h6>Delete</h6>
+								</a>
 							</div>
 							<div id="mnutoolPropertiesReportFind" class="button">
 								<a href="#" rel="table" title="Properties">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png")%>" alt="" />								
 								<i class="icon-PropertiesReportFind"></i>
-								<h6>Properties</h6></a>
+									<h6>Properties</h6>
+								</a>
 							</div>
 							<div id="mnutoolRunReportFind" class="button">
 								<a href="#" rel="table" title="Run">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 								<i class="icon-RunReportFind"></i>
-								<h6>Run</h6></a>
+									<h6>Run</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseReportFind" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseReportFind"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
@@ -676,15 +753,17 @@
 						<li id="mnuSectionNewEditCopyReport"><span>Report</span>
 							<div id="mnutoolSaveReport" class="button">
 								<a href="#" rel="table" title="Save">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
 																<i class="icon-disk"></i>
-																<h6>Save</h6></a>
+									<h6>Save</h6>
+								</a>
 							</div>
 							<div id="mnutoolCancelReport" class="button">
 								<a href="#" rel="table" title="Cancel">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
 								<i class="icon-CancelReport"></i>
-								<h6>Cancel</h6></a>
+									<h6>Cancel</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -696,15 +775,17 @@
 						<li id="mnuSectionRunReport"><span>Output</span>
 							<div id="mnutoolOutputReport" class="button">
 								<a href="#" rel="table" title="Output">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" />
 																<i class="icon-OutputReportRun"></i>
-																<h6>Output</h6></a>
+									<h6>Output</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseReport" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-mnutoolCloseReportRun"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
@@ -716,45 +797,52 @@
 						<li id="mnuSectionUtilitiesFind"><span>Find</span>
 							<div id="mnutoolNewUtilitiesFind" class="button">
 								<a href="#" rel="table" title="New">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 																<i class="icon-plus"></i>
-																<h6>New</h6></a>
+									<h6>New</h6>
+								</a>
 							</div>
 							<div id="mnutoolCopyUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Copy">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 								<i class="icon-copy"></i>
-								<h6>Copy</h6></a>
+									<h6>Copy</h6>
+								</a>
 							</div>
 							<div id="mnutoolEditUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Edit">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 								<i class="icon-pencil"></i>
-								<h6>Edit</h6></a>
+									<h6>Edit</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Delete">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
-								<h6>Delete</h6></a>
+									<h6>Delete</h6>
+								</a>
 							</div>
 							<div id="mnutoolPropertiesUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Properties">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png")%>" alt="" />								
 								<i class="icon-PropertiesUtilitiesFind"></i>
-								<h6>Properties</h6></a>
+									<h6>Properties</h6>
+								</a>
 							</div>
 							<div id="mnutoolRunUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Run">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 								<i class="icon-RunUtilitiesFind"></i>
-								<h6>Run</h6></a>
+									<h6>Run</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 								<i class="icon-CloseUtilitiesFind"></i>
-								<h6>Close</h6></a>
+									<h6>Close</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
@@ -766,15 +854,17 @@
 						<li id="mnuSectionNewEditCopyUtilities"><span>Utilities</span>
 							<div id="mnutoolSaveUtilities" class="button">
 								<a href="#" rel="table" title="Save">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
 																<i class="icon-disk"></i>
-																<h6>Save</h6></a>
+									<h6>Save</h6>
+								</a>
 							</div>
 							<div id="mnutoolCancelUtilities" class="button">
 								<a href="#" rel="table" title="Cancel">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
 								<i class="icon-CancelUtilities"></i>
-								<h6>Cancel</h6></a>
+									<h6>Cancel</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
@@ -786,39 +876,45 @@
 						<li id="mnuSectionToolsFind"><span>Find</span>
 							<div id="mnutoolNewToolsFind" class="button">
 								<a href="#" rel="table" title="New">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt ="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 																<i class="icon-plus"></i>
-																<h6>New</h6></a>
+									<h6>New</h6>
+								</a>
 							</div>
 							<div id="mnutoolCopyToolsFind" class="button">
 								<a href="#" rel="table" title="Copy">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
 								<i class="icon-copy"></i>
-								<h6>Copy</h6></a>
+									<h6>Copy</h6>
+								</a>
 							</div>
 							<div id="mnutoolEditToolsFind" class="button">
 								<a href="#" rel="table" title="Edit">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 								<i class="icon-pencil"></i>
-								<h6>Edit</h6></a>
+									<h6>Edit</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteToolsFind" class="button">
 								<a href="#" rel="table" title="Delete">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
-								<h6>Delete</h6></a>
+									<h6>Delete</h6>
+								</a>
 							</div>
 							<div id="mnutoolPropertiesToolsFind" class="button">
 								<a href="#" rel="table" title="Properties">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png")%>" alt="" />								
 								<i class="icon-PropertiesToolsFind"></i>
-								<h6>Properties</h6></a>
+									<h6>Properties</h6>
+								</a>
 							</div>
 							<div id="mnutoolRunToolsFind" class="button">
 								<a href="#" rel="table" title="Run">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 								<i class="icon-RunToolsFind"></i>
-								<h6>Run</h6></a>
+									<h6>Run</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
@@ -832,25 +928,29 @@
 								<a href="#" rel="table" title="View">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/preview64HOVER.png")%>" alt="" />
 									<i class="icon-ViewEventLogFind"></i> 
-									<h6>View</h6></a>
+									<h6>View</h6>
+								</a>
 							</div>
 							<div id="mnutoolPurgeEventLogFind" class="button">
 								<a href="#" rel="table" title="Purge">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Purge64HOVER.png")%>"	alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Purge64HOVER.png")%>" alt="" />
 									<i class="icon-PurgeEventLogFind"></i>
-									<h6>Purge</h6></a>
+									<h6>Purge</h6>
+								</a>
 							</div>
 							<div id="mnutoolEmailEventLogFind" class="button">
 								<a href="#" rel="table" title="Email">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Email64HOVER.png")%>" alt="" />
 									<i class="icon-EmailEventLogFind"></i>
-									<h6>Email</h6></a>
+									<h6>Email</h6>
+								</a>
 							</div>
 							<div id="mnutoolDeleteEventLogFind" class="button">
 								<a href="#" rel="table" title="Delete">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 									<i class="icon-close"></i>
-									<h6>Delete</h6></a>
+									<h6>Delete</h6>
+								</a>
 							</div>
 						</li>
 						<li><span>Navigate</span>
@@ -858,25 +958,29 @@
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
 									<i class="icon-previous"></i>
-									<h6>First</h6></a>
+									<h6>First</h6>
+								</a>
 							</div>
 							<div id="mnutoolPreviousEventLogFind" class="button">
 								<a href="#" rel="table" title="Previous Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Back</h6></a>
+									<h6>Back</h6>
+								</a>
 							</div>
 							<div id="mnutoolNextEventLogFind" class="button">
 								<a href="#" rel="table" title="Next Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
 									<i class="icon-forward"></i>
-									<h6>Next</h6></a>
+									<h6>Next</h6>
+								</a>
 							</div>
 							<div id="mnutoolLastEventLogFind" class="button">
 								<a href="#" rel="table" title="Last Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
 									<i class="icon-next"></i>
-									<h6>Last</h6></a>
+									<h6>Last</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -889,19 +993,22 @@
 								<a href="#" rel="table" title="Email">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Email64HOVER.png")%>" alt="" />
 									<i class="icon-EmailEventLogView"></i> 
-									<h6>Email</h6></a>
+									<h6>Email</h6>
+								</a>
 							</div>
 							<div id="mnutoolOutputEventLogView" class="button">
 								<a href="#" rel="table" title="Output">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" />
 									<i class="icon-OutputEventLogView"></i> 
-									<h6>Email</h6></a>
+									<h6>Email</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseEventLogView" class="button">
 								<a href="#" rel="table" title="View">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
 									<i class="icon-CloseEventLogView"></i> 
-									<h6>Email</h6></a>
+									<h6>Email</h6>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -924,7 +1031,8 @@
 								<i class="icon-refresh"></i>
 								
 
-								<h6>Run</h6></a>
+									<h6>Run</h6>
+								</a>
 							</div>
 							<div id="mnutoolCloseWFPendingStepsFind" class="button">
 								<%--<a href="#" rel="table" title="Close">--%>
@@ -947,16 +1055,20 @@
 								<a href="#" rel="table" title="Save">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
 								<i class="icon-disk"></i>
-								<h6>Save</h6></a>
+									<h6>Save</h6>
+								</a>
 							</div>
 						</li>						
 					</ul>
 				</li>
 			</ul>
 		</div>
-
 	</div>
-	<div class="FixedLinksRight">
+	<div class="FixedLinksRight" >
+		<div class="userpic" style="float: right;vertical-align: central;padding:0 10px 0 10px">
+			<%--<img src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />--%>
+			<img src="<%=Url.Content("~/Content/images/Penfold.png")%>" alt="" />
+	</div>
 		<div class="userdetails">
 		<div class="userid">
 			<%=Session("username")%>
@@ -965,15 +1077,7 @@
 			<%=Session("UserGroup")%>		
 		</div>
 		</div>
-		<div class="userpic">
-			<img src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt=""/>
-		</div>
-		<ul>
-			<li>
-				</li>
-			</ul>
 	</div>
-
 </div>
 
 
