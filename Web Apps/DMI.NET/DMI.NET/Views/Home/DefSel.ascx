@@ -121,7 +121,7 @@
 		Session("defseltype") = Session("optionDefSelType")
 	End If
 
-	session("tableID") = session("utilTableID")
+	Session("tableID") = Session("utilTableID")
 	
 	If CStr(Session("singleRecordID")) <> "" Then
 		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
@@ -150,11 +150,13 @@
 		Session("utilTableID") = 0
 	End If
 
-	if (session("defseltype") <> 10) and (session("defseltype") <> 11) and (session("defseltype") <> 12) then
+	If (Session("defseltype") <> 10) And (Session("defseltype") <> 11) And (Session("defseltype") <> 12) Then
 		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
 			Session("utilTableID") = 0
 		End If
-	end if 
+	Else 'defseltype=10 or 11 or 12 (picklist, filter or calculation)
+		Session("utilTableID") = Session("Personnel_EmpTableID")
+	End If
 %>
 
 <script type="text/javascript">
