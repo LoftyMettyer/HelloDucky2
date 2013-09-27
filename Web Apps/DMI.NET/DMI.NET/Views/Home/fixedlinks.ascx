@@ -158,7 +158,7 @@
 							</div>
 							<div id="mnutoolDeleteRecordFind" class="button">
 								<a href="#" rel="table" title="Delete Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 									<i class="icon-close"></i>
 									<h6>Delete</h6></a>
 							</div>
@@ -300,8 +300,8 @@
 							</div>
 							<div id="mnutoolDeleteRecord" class="button">
 								<a href="#" rel="table" title="Delete Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
-									<i class="icon-minus"></i>
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
+									<i class="icon-close"></i>
 									<h6>Delete</h6></a>
 							</div>
 						</li>
@@ -565,7 +565,7 @@
 							<div id="mnutoolCloseDelegateBookingTransfer" class="button">
 								<a href="#" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
-								<i class="icon-remove"></i>
+								<i class="icon-close"></i>
 								<h6>Close</h6></a>
 							</div>
 						</li>
@@ -612,7 +612,7 @@
 							<div id="mnutoolCancelDelegateBookingBulkBooking" class="button">
 								<a href="#" rel="table" title="Cancel">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
-								<i class="icon-remove"></i>
+								<i class="icon-close"></i>
 								<h6>Cancel</h6></a>
 							</div>
 						</li>
@@ -644,7 +644,7 @@
 							</div>
 							<div id="mnutoolDeleteReportFind" class="button">
 								<a href="#" rel="table" title="Delete">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
 								<h6>Delete</h6></a>
 							</div>
@@ -734,7 +734,7 @@
 							</div>
 							<div id="mnutoolDeleteUtilitiesFind" class="button">
 								<a href="#" rel="table" title="Delete">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
 								<h6>Delete</h6></a>
 							</div>
@@ -804,7 +804,7 @@
 							</div>
 							<div id="mnutoolDeleteToolsFind" class="button">
 								<a href="#" rel="table" title="Delete">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 								<i class="icon-close"></i>
 								<h6>Delete</h6></a>
 							</div>
@@ -848,7 +848,7 @@
 							</div>
 							<div id="mnutoolDeleteEventLogFind" class="button">
 								<a href="#" rel="table" title="Delete">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png")%>" alt="" />
 									<i class="icon-close"></i>
 									<h6>Delete</h6></a>
 							</div>
