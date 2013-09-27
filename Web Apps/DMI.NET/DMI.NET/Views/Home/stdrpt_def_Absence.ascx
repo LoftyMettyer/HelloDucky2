@@ -1105,12 +1105,12 @@
 			</table>
 		</div>
 		
-<%--		<div id="RunBackButtons" style="float: left; padding: 10px">
+		<div id="RunBackButtons" style="visibility: hidden; float: left; padding: 10px">
 			<input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
 				onclick="absence_okClick()" />
 			<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
 				onclick="absence_returnToRecEdit()" />
-		</div>--%>
+		</div>
 
 		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 		<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
