@@ -588,11 +588,11 @@
 							$("#toolbarEventLogFind").parent().hide();
 							$("#toolbarWFPendingStepsFind").parent().hide();
 							// Enable the buttons
-							menu_toolbarEnableItem("mnutoolNewUtilitiesFind", true);
-							menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", true);
-							menu_toolbarEnableItem("mnutoolEditUtilitiesFind", true);
-							menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", true);
-							menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", true);
+							menu_toolbarEnableItem("mnutoolNewUtilitiesFind", false);
+							menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", false);
+							menu_toolbarEnableItem("mnutoolEditUtilitiesFind", false);
+							menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", false);
+							menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", false);
 							menu_toolbarEnableItem("mnutoolRunUtilitiesFind", true);
 							//only display the 'close' button for defsel when called from rec edit...
 							if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
