@@ -125,7 +125,7 @@
 --%>
 							<div id="mnutoolFixedAbout" class="button">
 								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR v8">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/info64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png")%>" alt="" />
 									<i class="icon-question-sign"></i>
 									<h6>About</h6>
 								</a>
