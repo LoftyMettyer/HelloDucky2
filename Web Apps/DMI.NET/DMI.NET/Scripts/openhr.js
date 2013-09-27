@@ -198,10 +198,14 @@
 				},
 				error: function (req, status, errorObj) {
 					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-					$("#errorDialogTitle").text(errorObj);
-					$("#errorDialogContentText").text(req.responseText);
-					$("#errorDialog").dialog("open");
 
+					//Sometimes (when?) an error is thrown with both errorObj and/or req.Response being empty; in this case don't show the empty error window
+					if (!(errorObj == "" || req.responseText == "")) {
+						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+						$("#errorDialogTitle").text(errorObj);
+						$("#errorDialogContentText").text(req.responseText);
+						$("#errorDialog").dialog("open");
+					}
 				}
 			});
 		},
