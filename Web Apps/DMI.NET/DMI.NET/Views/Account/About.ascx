@@ -148,13 +148,13 @@
 						</td>
 						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<%If Session("SupportEmail") = "" Then%>
-							<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Data Manager Intranet" class="hypertext"
+							<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Intranet Login" class="hypertext"
 								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
 								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
 								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
 								onblur="try{hypertextARef_onBlur(this);}catch(e){}">service.delivery@advancedcomputersoftware.com</a>
 							<%Else%>
-							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Data Manager Intranet" class="hypertext"
+							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Intranet Login" class="hypertext"
 								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
 								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
 								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
