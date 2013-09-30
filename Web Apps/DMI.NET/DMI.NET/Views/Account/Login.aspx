@@ -453,10 +453,10 @@ Else
 %>
 				<tr style="height: 10px">
 				<td style="height: 15px"></td>
-				<td colspan="3">
+				<td colspan="3" align="center">
 					<table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
 							<tr class="" style="display: block;">
-									<td style="font-weight:bold; width: 120px;">User name :</td>
+									<td style="font-weight:bold; width: 120px;text-align: left;">User name :</td>
 									<td style="width: 10px"></td>
 									<td style="width: 200px;">
 								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; " onkeypress="CheckKeyPressed(event)"/>
@@ -465,7 +465,7 @@ Else
 									
 								</tr>
 							<tr class="" style="display:block;">
-									<td style="font-weight:bold; width: 120px;">Password :</td>
+									<td style="font-weight:bold; width: 120px;text-align: left;">Password :</td>
 									<td style="width: 10px">
 							</td>
 									<td style="width: 200px;">
@@ -478,7 +478,7 @@ Else
 <%
 			if Request.ServerVariables("LOGON_USER") <> "" then
 %>			
-								<td style="font-weight: bold;" colspan="3" >
+								<td style="font-weight: bold;text-align: left;" colspan="3" >
 										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
 												onclick="ToggleWindowsAuthentication()"/> 
 										<label 
@@ -507,7 +507,7 @@ Else
 								 </tr>
 
 									<tr class="" style="visibility:hidden;display:none" id="trDetails1">
-											<td style="width: 120px;font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
+											<td style="width: 120px;font-weight: bold;text-align: left;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
 											<td style="width: 10px">
 									</td>
 											<td style="width: 200px;">
@@ -518,7 +518,7 @@ Else
 									</tr>
 										
 							<tr class="" style="visibility:hidden;display:none" id="trDetails2">
-									<td style="width: 120px;font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
+									<td style="width: 120px;font-weight: bold;text-align: left;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
 									<td style="width: 10px">
 							</td>
 									<td style="width: 200px;">
