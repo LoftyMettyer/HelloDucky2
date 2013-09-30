@@ -12,7 +12,7 @@
 <%
 	Session("CalendarFrameLoaded") = False
 	
-	Dim rsCalendarBaseInfo As Object
+	Dim rsCalendarBaseInfo As ADODB.Recordset
 	Dim intBaseRecordCount As Integer
 	Dim blnNewBaseRecord As Boolean
 	Dim strTempRecordDesc As String
@@ -44,15 +44,8 @@
 			sDescription1 = rsCalendarBaseInfo.Fields("Description1").Value.ToString()
 			sDescription2 = rsCalendarBaseInfo.Fields("Description2").Value.ToString()
 			sDescription3 = rsCalendarBaseInfo.Fields("DescriptionExpr").Value.ToString()
-
-			'						strTempRecordDesc = objCalendar.ConvertDescription(sDescription1, CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("Description2").Value), "", rsCalendarBaseInfo.Fields("Description2").Value), String), CType(IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value), String))
 			strTempRecordDesc = objCalendar.ConvertDescription(sDescription1, sDescription2, sDescription3)
-			'If Not IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr ").Value) Then
-			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
-			'	strTempRecordDesc = objCalendar.ConvertDescription(rsCalendarBaseInfo.Fields("Description1").Value, rsCalendarBaseInfo.Fields("Description2").Value, IIf(IsDBNull(rsCalendarBaseInfo.Fields("DescriptionExpr").Value), "", rsCalendarBaseInfo.Fields("DescriptionExpr").Value))
-			'Else
-			'	strTempRecordDesc = vbNullString
-			'End If
+
 			blnDescEmpty = (strTempRecordDesc = "")
 			If blnDescEmpty Then
 				intDescEmpty = intDescEmpty + 1

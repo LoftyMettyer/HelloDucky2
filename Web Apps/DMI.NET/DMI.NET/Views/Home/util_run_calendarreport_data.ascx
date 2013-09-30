@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
@@ -98,13 +99,7 @@
 					strEventID = rsEvents.Fields(objCalendar.EventIDColumn).value
 					intBaseRecordIndex = objCalendar.BaseIndex_Get(CStr(lngCurrentBaseID))
 
-					strBaseDescription_BD = objCalendar.ConvertDescription(CStr(.Fields("Description1").Value), CType(IIf(IsDBNull(.Fields("Description2").Value), "", .Fields("Description2").Value), String), CType(IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value), String))
-					'If Not IsDBNull(.Fields("DescriptionExpr").Value) Then
-					'	strBaseDescription_BD = objCalendar.ConvertDescription(.Fields("Description1").Value, .Fields("Description2").Value, IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value))
-					'Else
-					'	strBaseDescription_BD = vbNullString
-					'End If
-					
+					strBaseDescription_BD = objCalendar.ConvertDescription(CStr(.Fields("Description1").Value), CType(IIf(IsDBNull(.Fields("Description2").Value), "", .Fields("Description2").Value), String), CType(IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value), String))				
 					If IsDBNull(.Fields("Legend").value) Then
 						strKeyCode = ""
 					Else
@@ -374,20 +369,20 @@
 End If
 End If
 	
-Dim cmdEmailGroup As Object
-Dim prmEmailGroupID As Object
-Dim rstEmails As Object
+Dim cmdEmailGroup As Command
+Dim prmEmailGroupID As ADODB.Parameter
+Dim rstEmails As Recordset
 Dim iLoop As Integer
 
 If Session("EmailGroupID") > 0 Then
-cmdEmailGroup = CreateObject("ADODB.Command")
+cmdEmailGroup = New Command
 cmdEmailGroup.CommandText = "spASRIntGetEmailGroupAddresses"
-cmdEmailGroup.CommandType = 4 ' Stored procedure
+cmdEmailGroup.CommandType = CommandTypeEnum.adCmdStoredProc
 cmdEmailGroup.ActiveConnection = Session("databaseConnection")
 
-prmEmailGroupID = cmdEmailGroup.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
+prmEmailGroupID = cmdEmailGroup.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 cmdEmailGroup.Parameters.Append(prmEmailGroupID)
-prmEmailGroupID.value = CleanNumeric(Session("EmailGroupID"))
+prmEmailGroupID.Value = CleanNumeric(Session("EmailGroupID"))
 
 Err.Clear()
 rstEmails = cmdEmailGroup.Execute
@@ -423,8 +418,8 @@ If Not objCalendar Is Nothing Then
 sErrorDescription = objCalendar.ErrorString
 End If
 	
-Response.Write("<INPUT type='hidden' id=txtCalendarMode name=txtCalendarMode value=" & Session("CalRep_Mode") & ">" & vbCrLf)
-Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+Response.Write("<input type='hidden' id=txtCalendarMode name=txtCalendarMode value=" & Session("CalRep_Mode") & ">" & vbCrLf)
+Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 
 %>
 </form>
@@ -440,22 +435,22 @@ Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescrip
 	
 		For iPage = 0 To UBound(arrayMerges)
 			arrayPageMerges = arrayMerges(iPage)
-			Response.Write("<FORM id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & ">" & vbCrLf)
+			Response.Write("<form id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & ">" & vbCrLf)
 			For iMerge = 0 To UBound(arrayPageMerges)
 				INPUT_VALUE = arrayPageMerges(iMerge)
-				Response.Write("	<INPUT type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+				Response.Write("	<input type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
 			Next
-			Response.Write("</FORM>" & vbCrLf)
+			Response.Write("</form>" & vbCrLf)
 		Next
 
 		For iPage = 0 To UBound(arrayStyles)
 			arrayPageStyles = arrayStyles(iPage)
-			Response.Write("<FORM id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & ">" & vbCrLf)
+			Response.Write("<form id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & ">" & vbCrLf)
 			For iStyle = 0 To UBound(arrayPageStyles)
 				INPUT_VALUE = arrayPageStyles(iStyle)
-				Response.Write("	<INPUT type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+				Response.Write("	<input type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
 			Next
-			Response.Write("</FORM>" & vbCrLf)
+			Response.Write("</form>" & vbCrLf)
 		Next
 
 	End If

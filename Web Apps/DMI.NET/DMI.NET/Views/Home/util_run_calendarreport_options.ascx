@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-
 <form name="frmOptions" id="frmOptions">
 		<table align="center" cellpadding="0" cellspacing="0" width="100%" height="100%">
 				<tr>
@@ -22,50 +21,29 @@
 																						If objCalendar.IncludeBankHolidays_Enabled And objCalendar.IncludeBankHolidays Then
 																				%>
 																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" checked tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0"/>
 																				<%
 																				ElseIf objCalendar.IncludeBankHolidays_Enabled And objCalendar.IncludeBankHolidays = False Then
 																				%>
 																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				Else
 																				%>
 																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				End If
 																				%>
@@ -81,50 +59,29 @@
 																						If objCalendar.IncludeWorkingDaysOnly_Enabled And objCalendar.IncludeWorkingDaysOnly Then
 																				%>
 																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" checked tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				ElseIf objCalendar.IncludeWorkingDaysOnly_Enabled And objCalendar.IncludeWorkingDaysOnly = False Then
 																				%>
 																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				Else
 																				%>
 																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				End If
 																				%>
@@ -141,50 +98,29 @@
 																				%>
 
 																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" checked tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				ElseIf objCalendar.ShowBankHolidays_Enabled And objCalendar.ShowBankHolidays = False Then
 																				%>
 																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				Else
 																				%>
 																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}" />
+																						tabindex="0" />
 																				<%
 																				End If
 																				%>
@@ -200,28 +136,19 @@
 																						If objCalendar.ShowCaptions Then
 																				%>
 																				<input name="chkCaptions" id="chkCaptions" type="checkbox" checked tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<%
 																				Else
 																				%>
 																				<input name="chkCaptions" id="chkCaptions" type="checkbox" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 																				<%
 																				End If
 																				%>
 																				<label
 																						for="chkCaptions"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="0">
 																						Show Calendar Captions 
 																				</label>
 																		</td>
@@ -234,16 +161,13 @@
 																						If objCalendar.ShowWeekends Then
 																				%>
 																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" checked tabindex="-1"
-																						onclick="refreshInfo();" onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 
 																				<%
 																				Else
 																				%>
 																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" tabindex="-1"
-																						onclick="refreshInfo();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="refreshInfo();" />
 
 																				<%
 																				End If
@@ -253,12 +177,7 @@
 																				<label
 																						for="chkShadeWeekends"
 																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="0">
 																						Show Weekends 
 																				</label>
 																		</td>

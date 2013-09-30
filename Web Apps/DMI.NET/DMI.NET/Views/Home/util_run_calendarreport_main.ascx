@@ -122,13 +122,13 @@
 				
 	End If
 
-		If fok Then
+	If fok Then
 %>
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 <input type='hidden' id="txtOK" name="txtOK" value="True">
 <%
 	Dim objUser As New HR.Intranet.Server.clsSettings
-	Dim cmdEmailAddr As Object
+	Dim cmdEmailAddr As ADODB.Command
 		
 	Dim arrayDefinition
 	Dim arrayColumnsDefinition

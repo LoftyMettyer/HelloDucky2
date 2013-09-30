@@ -1,11 +1,13 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
 
 <%
-	Dim objCalendar As HR.Intranet.Server.CalendarReport
-	objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
+	Dim objCalendar As CalendarReport
+	objCalendar = CType(Session("objCalendar" & Session("CalRepUtilID")), CalendarReport)
 %>
 
 <script type="text/javascript">
@@ -17,16 +19,14 @@
 
 		if (frmCalendar.txtGroupByDesc.value == 1) {
 			frmUseful.txtCTLsPopulated.value = 1;
-			return;
+			return false;
 		}
 
 		//var docCalendar = window.parent.frames("calendarframe_calendar").document;
 
 		var objBaseCTL;
 		var vControlName;
-		var strSession;
-		var dtLabelsDate = new Date();
-		var lblTemp;
+
 		var INPUT_VALUE = new String("");
 		var intWPCOUNT = new Number(0);
 		var intBHolCOUNT = new Number(0);
@@ -286,25 +286,25 @@ End If
 	<input type="hidden" id="txtLockGridEvents" name="txtLockGridEvents" value="0">
 	<input type="hidden" id="txtCTLsPopulated" name="txtCTLsPopulated" value="0">
 	<%
-		Dim cmdDefinition As Object
-		Dim prmModuleKey As Object
-		Dim prmParameterKey As Object
-		Dim prmParameterValue As Object
+		Dim cmdDefinition As Command
+		Dim prmModuleKey As ADODB.Parameter
+		Dim prmParameterKey As ADODB.Parameter
+		Dim prmParameterValue As ADODB.Parameter
 				
-		cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = New Command()
 		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-		cmdDefinition.CommandType = 4	' Stored procedure.
+		cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)	' 200=varchar, 1=input, 8000=size
 		cmdDefinition.Parameters.Append(prmModuleKey)
 		prmModuleKey.value = "MODULE_PERSONNEL"
 
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)	' 200=varchar, 1=input, 8000=size
 		cmdDefinition.Parameters.Append(prmParameterKey)
 		prmParameterKey.value = "Param_TablePersonnel"
 
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)	'200=varchar, 2=output, 8000=size
 		cmdDefinition.Parameters.Append(prmParameterValue)
 
 		Err.Clear()

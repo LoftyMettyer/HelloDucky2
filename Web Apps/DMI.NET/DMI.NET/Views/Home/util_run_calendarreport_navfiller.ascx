@@ -1,16 +1,16 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
-		Dim objCalendar As HR.Intranet.Server.CalendarReport
-	
-		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
+	Dim objCalendar As CalendarReport
+	objCalendar = CType(Session("objCalendar" & Session("CalRepUtilID")), CalendarReport)
 
 	if Request.Form("txtChangeOptions") <> "" then
-		objCalendar.IncludeBankHolidays = Request.Form("txtIncludeBankHolidays")
-		objCalendar.IncludeWorkingDaysOnly = Request.Form("txtIncludeWorkingDaysOnly")
-		objCalendar.ShowBankHolidays = Request.Form("txtShowBankHolidays")
-		objCalendar.ShowCaptions = Request.Form("txtShowCaptions")
-		objCalendar.ShowWeekends = Request.Form("txtShowWeekends")
+		objCalendar.IncludeBankHolidays = CBool(Request.Form("txtIncludeBankHolidays"))
+		objCalendar.IncludeWorkingDaysOnly = CBool(Request.Form("txtIncludeWorkingDaysOnly"))
+		objCalendar.ShowBankHolidays = CBool(Request.Form("txtShowBankHolidays"))
+		objCalendar.ShowCaptions = CBool(Request.Form("txtShowCaptions"))
+		objCalendar.ShowWeekends = CBool(Request.Form("txtShowWeekends"))
 	end if
 %>
 
@@ -23,7 +23,3 @@
 		<input type="hidden" name="txtChangeOptions" id="txtChangeOptions" value="1">
 		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Session("CalRepUtilID").ToString()%>'>
 </form>
-
-<%	
-		objCalendar = Nothing
-%>

@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
@@ -31,20 +32,20 @@
 
 	<form id=frmKeyInfo name=frmKeyInfo style="visibility:hidden;display:none">
 <%
-    Dim rsColours As Object
-    Dim intColourCount As Integer
-    Dim intNextIndex As Integer
-    Dim mavAvailableColours(,)
-    Dim cmdColours As Object
+	Dim rsColours As Recordset
+	Dim intColourCount As Integer
+	Dim intNextIndex As Integer
+	Dim mavAvailableColours(,)
+	Dim cmdColours As Command
 	
   intColourCount = 0
   intNextIndex = 0
   ReDim mavAvailableColours(3, intNextIndex)
   
-    cmdColours = CreateObject("ADODB.Command")
+	cmdColours = New Command
 	cmdColours.CommandText = "spASRIntGetCalendarColours"
-	cmdColours.CommandType = 4
-    cmdColours.ActiveConnection = Session("databaseConnection")
+	cmdColours.CommandType = CommandTypeEnum.adCmdStoredProc
+	cmdColours.ActiveConnection = Session("databaseConnection")
 
     Err.Clear()
     rsColours = cmdColours.Execute
@@ -78,10 +79,9 @@
     Dim blnNewEvent As Boolean
     Dim intColourIndex As Integer
     Dim intColourMax As Integer
-    Dim intLegendCount As Integer
+	Dim intLegendCount As Integer
     Dim intNewIndex As Integer
-	
-    
+	   
     Dim mavLegend(,)
 	
     
@@ -136,24 +136,20 @@
 		end if
 	end with 
 
-    intLegendCount = UBound(mavLegend, 2)
-    Response.Write("<INPUT name=key_Count id=key_Count value=" & intLegendCount & ">" & vbCrLf)
+	intLegendCount = UBound(mavLegend, 2)
+	Response.Write("<input name=key_Count id=key_Count value=" & intLegendCount & ">" & vbCrLf)
 	
-    If objCalendar.HasMultipleEvents Then
-        Response.Write("<INPUT name=txtHasMultiple id=txtHasMultiple value='1'>" & vbCrLf)
-    Else
-        Response.Write("<INPUT name=txtHasMultiple id=txtHasMultiple value='0'>" & vbCrLf)
-    End If
+	If objCalendar.HasMultipleEvents Then
+		Response.Write("<input name=txtHasMultiple id=txtHasMultiple value='1'>" & vbCrLf)
+	Else
+		Response.Write("<input name=txtHasMultiple id=txtHasMultiple value='0'>" & vbCrLf)
+	End If
 
+	objCalendar = Nothing
 %>
-		<INPUT type="hidden" id=txtCalRep_UtilID name=txtCalRep_UtilID value=<%Session("CalRepUtilID").ToString()%>>
+		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%Session("CalRepUtilID").ToString()%>'>
 	</form>
-
-
-<%
-    objCalendar = Nothing
-%>
-    
+ 
 <script type="text/javascript">
     populateKey();
 </script>
