@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
@@ -61,74 +62,74 @@
 	pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
 	pstrOutputFilename = session("stdReport_OutputFilename")
 
-		Dim cmdDefinition
-		Dim prmModuleKey
-		Dim prmParameterKey
-		Dim prmParameterValue
-		Dim lngHorColID As Long
-		Dim lngVerColID As Long
+	Dim cmdDefinition As Command
+	Dim prmModuleKey As ADODB.Parameter
+	Dim prmParameterKey As ADODB.Parameter
+	Dim prmParameterValue As ADODB.Parameter
+	Dim lngHorColID As Long
+	Dim lngVerColID As Long
 		
 	'Hard coded values for the horizontal cross tab fields (start sesssion)
-		cmdDefinition = CreateObject("ADODB.Command")
+	cmdDefinition = New Command
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
+	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
+	cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
+	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+	cmdDefinition.Parameters.Append(prmModuleKey)
+	prmModuleKey.Value = "MODULE_ABSENCE"
 
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldStartSession"
+	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+	cmdDefinition.Parameters.Append(prmParameterKey)
+	prmParameterKey.Value = "Param_FieldStartSession"
 
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
+	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
+	cmdDefinition.Parameters.Append(prmParameterValue)
 
-		Err.Clear()
-	cmdDefinition.Execute
+	Err.Clear()
+	cmdDefinition.Execute()
 	
-	lngHorColID = cmdDefinition.Parameters("paramValue").value
-	lngStartSessionColID = cmdDefinition.Parameters("paramValue").value
+	lngHorColID = cmdDefinition.Parameters("paramValue").Value
+	lngStartSessionColID = cmdDefinition.Parameters("paramValue").Value
 
 	'Hard coded values for the vertical cross tab fields (absence type)
-		cmdDefinition = CreateObject("ADODB.Command")
+	cmdDefinition = New Command
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
+	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
+	cmdDefinition.ActiveConnection = Session("databaseConnection")
 
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
+	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+	cmdDefinition.Parameters.Append(prmModuleKey)
+	prmModuleKey.Value = "MODULE_ABSENCE"
 
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldType"
+	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+	cmdDefinition.Parameters.Append(prmParameterKey)
+	prmParameterKey.Value = "Param_FieldType"
 
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
+	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
+	cmdDefinition.Parameters.Append(prmParameterValue)
 
-		Err.Clear()
-	cmdDefinition.Execute
+	Err.Clear()
+	cmdDefinition.Execute()
 	
 	lngVerColID = cmdDefinition.Parameters("paramValue").value
 	lngTypeColID = cmdDefinition.Parameters("paramValue").value
 
-		cmdDefinition = CreateObject("ADODB.Command")
+	cmdDefinition = New Command
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
+	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 		cmdDefinition.Parameters.Append(prmModuleKey)
 	prmModuleKey.value = "MODULE_ABSENCE"
 
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 		cmdDefinition.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_FieldStartDate"
 
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 		cmdDefinition.Parameters.Append(prmParameterValue)
 
 		Err.Clear()
@@ -423,7 +424,7 @@ if fModuleOK then
 else
 %>
 
-<FORM Name=frmPopup ID=frmPopup>
+<form Name=frmPopup ID=frmPopup>
 <table align=center class="outline" cellPadding=5 cellSpacing=0>
 	<TR>
 		<TD>
@@ -448,13 +449,8 @@ else
 					<td colspan=3 height=10>&nbsp;</td>
 				</tr>
 				<tr> 
-					<td colspan=3 height=10 align=center> 
-										<INPUT TYPE=button VALUE=Close NAME=cmdClose class="btn" style="WIDTH: 80px" width=80 id=cmdClose
-							OnClick=closeclick(); 
-												onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+					<td colspan=3 height=10 align=center>
+						<input type="button" value="Close" name="cmdClose" class="btn" style="WIDTH: 80px" width="80" id="cmdClose" onclick="closeclick();" />
 					</td>
 				</tr>
 				<tr> 
@@ -464,7 +460,7 @@ else
 		</td>
 	</tr>
 </table>
-</FORM>
+</form>
 
 <%
 end if

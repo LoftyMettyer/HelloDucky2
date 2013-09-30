@@ -499,7 +499,7 @@ function absence_okClick(){
     return;
 }
 
-function selectRecordOption(psType) {	
+function selectAbsenceRecordOption(psType) {	
     var sURL;
 		
     if (psType == 'picklist') {

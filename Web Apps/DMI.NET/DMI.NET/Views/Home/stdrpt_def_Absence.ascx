@@ -503,7 +503,7 @@
 																		</td>
 																		<td style="width: 15px">
 																			<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectRecordOption('picklist')" />
+																				onclick="selectAbsenceRecordOption('picklist')" />
 																		</td>
 																	</tr>
 																	<tr>
@@ -522,7 +522,7 @@
 																		</td>
 																		<td>
 																			<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectRecordOption('filter')" />
+																				onclick="selectAbsenceRecordOption('filter')" />
 																		</td>
 																	</tr>
 																	<tr>
@@ -1263,7 +1263,7 @@
 	menu_setVisibleMenuItem("mnutoolEditReportFind", false);
 	menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
 	menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
-	menu_toolbarEnableItem("mnutoolRunReportFind", false);
+	menu_toolbarEnableItem("mnutoolRunReportFind", true);
 	menu_setVisibleMenuItem("mnutoolRunReportFind", true);
 	menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
 	

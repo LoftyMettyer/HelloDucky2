@@ -1247,8 +1247,6 @@ function selectRecordOption(psTable, psType)
 	
 		if (psTable == 'base') {
 				iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
-
-
 		
 				if (psType == 'picklist') {
 						iCurrentID = frmDefinition.txtBasePicklistID.value;
