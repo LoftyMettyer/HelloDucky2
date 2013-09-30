@@ -103,7 +103,7 @@ Session("utiltype = 16 		Bradford Factor
 Session("utiltype = 17 		Calendar Report--%>
 <br />
 
-<div id="practiceNicky">
+<div>
 	<%--Not a Absence Breakdown so show all components--%>
 	<div id="CrossTabsIntersectionControls" style="float: left; width: 45%">
 		<div id="Div1" style="font-weight: bold;">Intersection</div>

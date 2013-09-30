@@ -5,7 +5,15 @@
 <html>
 <head>
 	<title>OpenHR Intranet</title>
+	<%--Base stylesheets--%>
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<%--ThemeRoller stylesheet--%>
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<%--External script resources--%>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 </head>
 
@@ -595,6 +603,24 @@
 				iNewHeight = iNewHeight + iResizeBy;
 				window.dialogHeight = new String(iNewHeight) + "px";
 			}
+			
+			//jQuery styling
+			$(function () {
+				$("input[type=submit], input[type=button], button")
+					.button();
+				$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("input").removeClass("text");
+
+				$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("textarea").removeClass("text");
+
+				$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("select").removeClass("text");
+				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+			});
+			
 		}
 	</script>
 </body>
