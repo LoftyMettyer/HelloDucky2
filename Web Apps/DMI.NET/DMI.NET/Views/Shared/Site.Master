@@ -132,7 +132,7 @@
 	<script type="text/javascript">
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
 		
-		document.title = 'OpenHR v8.0';
+		document.title = 'OpenHR 8.0';
 		
 		$(document).ready(function () {
 
