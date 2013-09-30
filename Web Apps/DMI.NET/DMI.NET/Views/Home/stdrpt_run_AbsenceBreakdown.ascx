@@ -18,7 +18,7 @@
 
 	' Default output options
 		Dim bOutputPreview As Boolean
-		Dim lngOutputFormat As Long
+	Dim lngOutputFormat As Integer
 		Dim pblnOutputScreen As Boolean
 		Dim pblnOutputPrinter As Boolean
 		Dim pstrOutputPrinterName As String

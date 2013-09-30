@@ -765,7 +765,7 @@
 														<td style="text-align: left; width: 15px">
 															<input type="radio" name="optOutputFormat" id="optOutputFormat0" value="0"
 																style="width: 20px"
-																onclick="formatClick(0);" />
+																onclick="formatAbsenceClick(0);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -783,7 +783,7 @@
 														If Session("StandardReport_Type") = 16 Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
-														onclick="formatClick(1);" />
+														onclick="formatAbsenceClick(1);" />
 													<%
 													Else
 													%>
@@ -794,7 +794,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
-																onclick="formatClick(1);" />
+																onclick="formatAbsenceClick(1);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -816,7 +816,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
-																onclick="formatClick(2);"/>
+																onclick="formatAbsenceClick(2);"/>
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -835,7 +835,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
-																onclick="	formatClick(3);" />
+																onclick="	formatAbsenceClick(3);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -854,7 +854,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
-																onclick="	formatClick(4);" />
+																onclick="	formatAbsenceClick(4);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -874,7 +874,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
-																onclick="formatClick(5);"
+																onclick="formatAbsenceClick(5);"
 																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
 																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
 																onfocus="try{radio_onFocus(this);}catch(e){}"
@@ -896,7 +896,7 @@
 														If Session("StandardReport_Type") = 16 Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
-														onclick="formatClick(6);" />
+														onclick="formatAbsenceClick(6);" />
 													<%
 													Else
 													%>
@@ -907,7 +907,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
-																onclick="formatClick(6);" />
+																onclick="formatAbsenceClick(6);" />
 														</td>
 														<td>
 															<label

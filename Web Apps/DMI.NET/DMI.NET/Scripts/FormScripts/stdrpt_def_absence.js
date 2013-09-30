@@ -90,11 +90,11 @@ function populatePrinters()
     //}	
 }
 
-function formatClick(index)
+function formatAbsenceClick(index)
 {
     var fViewing = (frmAbsenceUseful.txtAction.value.toUpperCase() == "VIEW");
 
-    checkbox_disable(frmAbsenceDefinition.chkPreview, ((index == 0) || (fViewing == true)))
+	checkbox_disable(frmAbsenceDefinition.chkPreview, ((index == 0) || (fViewing == true)));
     frmAbsenceDefinition.chkPreview.checked = (index != 0);
 
     frmAbsenceDefinition.chkDestination0.checked = false;

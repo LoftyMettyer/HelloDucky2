@@ -2361,28 +2361,28 @@ LocalErr:
 
   ' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
   '    which don't exist for standard reports)
-  Public Function SetAbsenceBreakDownDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Boolean, ByRef pblnOutputScreen As Boolean, _
-                                                          ByRef pblnOutputPrinter As Boolean, ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, _
-                                                          ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean, ByRef plngOutputEmailID As Long, _
-                                                          ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String, _
-                                                          ByRef pstrOutputFilename As String) As Boolean
+	Public Function SetAbsenceBreakDownDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Integer, ByRef pblnOutputScreen As Boolean, _
+																													ByRef pblnOutputPrinter As Boolean, ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, _
+																													ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean, ByRef plngOutputEmailID As Long, _
+																													ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String, _
+																													ByRef pstrOutputFilename As String) As Boolean
 
-    mblnOutputPreview = pbOutputPreview
-    mlngOutputFormat = plngOutputFormat
-    mblnOutputScreen = pblnOutputScreen
-    mblnOutputPrinter = pblnOutputPrinter
-    mstrOutputPrinterName = pstrOutputPrinterName
-    mblnOutputSave = pblnOutputSave
-    mlngOutputSaveExisting = plngOutputSaveExisting
-    mblnOutputEmail = pblnOutputEmail
-    mlngOutputEmailID = plngOutputEmailID
-    mstrOutputEmailName = GetEmailGroupName(mlngOutputEmailID)
-    mstrOutputEmailSubject = pstrOutputEmailSubject
-    mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-    mstrOutputFilename = pstrOutputFilename
-    mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
+		mblnOutputPreview = pbOutputPreview
+		mlngOutputFormat = plngOutputFormat
+		mblnOutputScreen = pblnOutputScreen
+		mblnOutputPrinter = pblnOutputPrinter
+		mstrOutputPrinterName = pstrOutputPrinterName
+		mblnOutputSave = pblnOutputSave
+		mlngOutputSaveExisting = plngOutputSaveExisting
+		mblnOutputEmail = pblnOutputEmail
+		mlngOutputEmailID = plngOutputEmailID
+		mstrOutputEmailName = GetEmailGroupName(mlngOutputEmailID)
+		mstrOutputEmailSubject = pstrOutputEmailSubject
+		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
+		mstrOutputFilename = pstrOutputFilename
+		mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
 
-  End Function
+	End Function
 
   Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
 		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
