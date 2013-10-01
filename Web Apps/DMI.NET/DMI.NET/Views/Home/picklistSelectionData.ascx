@@ -14,7 +14,7 @@
 			return;
 		}
 
-		var sFatalErrorMsg = frmPicklistData.txtErrorDescription.value
+		var sFatalErrorMsg = frmPicklistData.txtErrorDescription.value;
 		if (sFatalErrorMsg.length > 0) {
 			OpenHR.messageBox(sFatalErrorMsg);
 		} else {

@@ -300,7 +300,7 @@ function loadComponentDefinition() {
 								frmMainForm.optPValDate_YearEnd.checked = true;
 						}
 
-						pVal_changeDateOption(util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value)
+					pVal_changeDateOption(util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value);
 				}		
 		}
 
@@ -550,20 +550,20 @@ function field_refreshColumn() {
 		if (frmMainForm.txtPassByType.value == 2) {
 				frmMainForm.cboFieldColumn.style.visibility = "visible";
 				frmMainForm.cboFieldColumn.style.display= "block";
-				frmMainForm.cboFieldDummyColumn.style.visibility = "hidden"
+			frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 				frmMainForm.cboFieldDummyColumn.style.display = "none";
 		}
 		else {	
 				if (frmMainForm.optField_Count.checked == true) {
 						frmMainForm.cboFieldColumn.style.visibility = "hidden";
 						frmMainForm.cboFieldColumn.style.display= "none";
-						frmMainForm.cboFieldDummyColumn.style.visibility = "visible"
+					frmMainForm.cboFieldDummyColumn.style.visibility = "visible";
 						frmMainForm.cboFieldDummyColumn.style.display = "block";
 				}
 				else {
 						frmMainForm.cboFieldColumn.style.visibility = "visible";
 						frmMainForm.cboFieldColumn.style.display= "block";
-						frmMainForm.cboFieldDummyColumn.style.visibility = "hidden"
+					frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 						frmMainForm.cboFieldDummyColumn.style.display = "none";
 				}
 		}
@@ -804,13 +804,13 @@ function functionAndOperator_refresh() {
 								}
 
 								if (fCategoryDone == false) {
-										objNode = trvTreeView.Nodes.Add(sRootKey, 4, sCategory, sCategory)
+									objNode = trvTreeView.Nodes.Add(sRootKey, 4, sCategory, sCategory);
 										objNode.Font.Bold = true;
 										objNode.Sorted = 1;
 								}
 
 								// Add the function node.
-								objNode = trvTreeView.Nodes.Add(sCategory, 4, sID, sName)
+							objNode = trvTreeView.Nodes.Add(sCategory, 4, sID, sName);
 						}
 				}	
 	
@@ -1034,8 +1034,8 @@ function lookupValue_refreshTable() {
 		else {
 				combo_disable(frmMainForm.cboLookupValueTable, true);
 		}
-		
-		lookupValue_refreshColumn()
+
+	lookupValue_refreshColumn();
 }
 
 function lookupValue_refreshColumn() {
@@ -1323,8 +1323,8 @@ function pVal_refreshTable() {
 		else {
 				combo_disable(frmMainForm.cboPValTable, true);
 		}
-	
-		pVal_refreshColumn()
+
+	pVal_refreshColumn();
 }
 
 function pVal_refreshColumn() {
@@ -1769,9 +1769,8 @@ function locateGridRecord(piID)
 }
 
 /* Sequential search the grid for the required OLE. */
-function locateGridRecordString(psString)
-{  
-		var fFound
+function locateGridRecordString(psString) {
+	var fFound;
 		var grdGrid;
 	
 		if (frmMainForm.optType_Filter.checked == true) {

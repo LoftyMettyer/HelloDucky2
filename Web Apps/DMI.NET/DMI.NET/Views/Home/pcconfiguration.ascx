@@ -193,7 +193,7 @@
 				}
 
 				// Save the registry values.
-				var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo")
+			var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
 				sKey = new String("documentspath_");
 				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
 				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtDocuments.value);

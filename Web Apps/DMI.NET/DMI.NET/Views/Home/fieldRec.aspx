@@ -119,9 +119,8 @@
 						setForm();
 				}
 
-				function locateRecord(psSearchFor)
-				{  
-						var fFound
+				function locateRecord(psSearchFor) {
+					var fFound;
 
 						fFound = false;
 	
@@ -156,9 +155,8 @@
 						ssOleDBGridSelRecords.redraw = true;
 				}
 
-				function locateRecordID(piRecordID)
-				{  
-						var fFound
+				function locateRecordID(piRecordID) {
+					var fFound;
 
 						fFound = false;
 	

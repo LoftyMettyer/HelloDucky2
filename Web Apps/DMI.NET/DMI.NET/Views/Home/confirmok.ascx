@@ -86,7 +86,7 @@
                 // PT_ = primary table
                 // PV_ = primary table view
                 if (frmMenuInfo.txtPrimaryStartMode.value == 3) {
-                    frmData.txtRecordDescription.value = ""
+	                frmData.txtRecordDescription.value = "";
                     menu_loadFindPageFirst(sAction);
                 }
                 else {
@@ -98,7 +98,7 @@
             if (sAction.substring(0, 3) == "TS_") {
                 // TS_ = Table screen
                 if (frmMenuInfo.txtLookupStartMode.value == 3) {
-                    frmData.txtRecordDescription.value = ""
+	                frmData.txtRecordDescription.value = "";
                     menu_loadFindPageFirst(sAction);
                 }
                 else {
@@ -110,7 +110,7 @@
             if (sAction.substring(0, 3) == "QE_") {
                 // QE_ = quick entry screen
                 if (frmMenuInfo.txtQuickAccessStartMode.value == 3) {
-                    frmData.txtRecordDescription.value = ""
+	                frmData.txtRecordDescription.value = "";
                     menu_loadFindPageFirst(sAction);
                 }
                 else {
@@ -122,7 +122,7 @@
             if (sAction.substring(0, 3) == "HT_") {
                 // HT_ = history table
                 if (frmMenuInfo.txtHistoryStartMode.value == 3) {
-                    frmData.txtRecordDescription.value = ""
+	                frmData.txtRecordDescription.value = "";
                     menu_loadFindPageFirst(sAction);
                 }
                 else {

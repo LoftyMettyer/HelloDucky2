@@ -65,7 +65,7 @@ Else
 			//add all the historic WPs.
 			INPUT_VALUE = new String("");
 			vControlName = "";
-			objBaseCTL.StaticWP_Populated = false
+			objBaseCTL.StaticWP_Populated = false;
 			objBaseCTL.HistoricWP_Populated = true;
 			vControlName = 'txtWPCOUNT_' + intBaseID;
 			try {

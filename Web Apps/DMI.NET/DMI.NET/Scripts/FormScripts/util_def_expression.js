@@ -91,7 +91,7 @@ function loadDefinition() {
 
 					frmDefinition.txtDescription.value = expressionParameter(sExprDefn, "DESCRIPTION");
 
-					sAccess = expressionParameter(sExprDefn, "ACCESS")
+					sAccess = expressionParameter(sExprDefn, "ACCESS");
 					if (sAccess == "RW") {
 						frmDefinition.optAccessRW.checked = true;
 					}
@@ -501,7 +501,7 @@ function componentParameter(psDefnString, psParameter) {
 																															sDefn = sDefn.substr(iCharIndex + 1);
 																															iCharIndex = sDefn.indexOf("	");
 																															if (iCharIndex >= 0) {
-																																if (psParameter == "FIELDSELECTIONORDERNAME") return
+																																if (psParameter == "FIELDSELECTIONORDERNAME") return false;
 
 																																sDefn.substr(0, iCharIndex);
 																																sDefn = sDefn.substr(iCharIndex + 1);
@@ -1494,7 +1494,7 @@ function clipboardClick() {
 function cutComponents() {
 	copyComponents();
 	deleteClick();
-	frmUseful.txtUndoType.value = "CUT"
+	frmUseful.txtUndoType.value = "CUT";
 }
 
 function copyComponents() {
@@ -1839,7 +1839,7 @@ function createUndoView(psType) {
 	objNode.text = frmDefinition.SSTree1.Nodes(1).text;
 	objNode.tag = frmDefinition.SSTree1.Nodes(1).tag;
 
-	createUndoSubNodes(frmDefinition.SSTree1.Nodes(1).key, false)
+	createUndoSubNodes(frmDefinition.SSTree1.Nodes(1).key, false);
 }
 
 function createUndoSubNodes(sKey, pfExecuteUndo) {
@@ -2320,8 +2320,7 @@ function SSTree1_keyPress(piKeyAscii) {
 					}
 
 					sDefinition = sDefinition + "																" +
-							frmShortcutKeys.elements.item("txtShortcutName_" + iIndex).value +
-							"			"
+						frmShortcutKeys.elements.item("txtShortcutName_" + iIndex).value + "			";
 
 					sKey = frmDefinition.SSTree1.SelectedItem.key;
 

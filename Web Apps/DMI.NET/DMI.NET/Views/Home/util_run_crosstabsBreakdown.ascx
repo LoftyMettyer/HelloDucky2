@@ -155,7 +155,7 @@
 		End If
 
 		
-		Dim objData As String()
+			Dim objData As String()
 			For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
 								
 				Response.Write("  obj = {};" & vbCrLf)
@@ -166,20 +166,9 @@
 				Response.Write("  colData.push(obj);")
 			Next
 		
-		
-		'For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
-		'	Response.Write("  ssOutputBreakdown.AddItem(""" & CleanStringForJavaScript(objCrossTab.OutputArrayData(CLng(intCount))) & """);" & vbCrLf)
-		'Next
-		
-		'Response.Write("  ssOutputBreakdown.RowHeight = 10;" & vbCrLf)
-
-		'Response.Write("  ssOutputBreakdown.VisibleCols = 2;" & vbCrLf)
-		'Response.Write("  ssOutputBreakdown.VisibleRows = 10;" & vbCrLf)
-			
-		'Response.Write("  ssOutputBreakdown.Redraw = true;" & vbCrLf)
-
-		Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
-		Response.Write("	, cmTemplate: { editable: true }});")
+			Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
+			Response.Write("   ,rowNum:1000000")
+			Response.Write("	, cmTemplate: { editable: true }});")
 		
 			
 		Response.Write("}" & vbCrLf)

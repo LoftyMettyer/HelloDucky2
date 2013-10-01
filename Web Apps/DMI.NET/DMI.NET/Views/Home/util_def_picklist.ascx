@@ -533,7 +533,7 @@
 	}
 
 	function locateRecord(psSearchFor) {
-		var fFound
+		var fFound;
 
 		fFound = false;
 

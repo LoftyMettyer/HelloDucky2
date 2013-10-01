@@ -77,8 +77,8 @@ Public Class CrossTab
   Private Const TYPEMINIMUM As Short = 3
   Private Const TYPETOTAL As Short = 4
 
-  Private mvarHeadings(2) As Object
-  Private mvarSearches(2) As Object
+	Private mvarHeadings(2) As Object
+	Private mvarSearches(2) As Object
 
   Private mdblHorTotal(,,) As Double
   Private mdblVerTotal(,,) As Double
@@ -1007,8 +1007,7 @@ LocalErr:
 
     Dim objTableView As CTablePrivilege
     Dim objColumnPrivileges As CColumnPrivileges
-    Dim sRealSource As String
-    Dim sSource As String
+		Dim sSource As String
     Dim lngCount As Integer
     Dim fColumnOK As Boolean
     Dim alngTableViews(,) As Integer
@@ -1016,13 +1015,10 @@ LocalErr:
     Dim fFound As Boolean
 
     Dim sCaseStatement As String
-    Dim sWhereColumn As String
-    Dim strSelectedRecords As String
+		Dim strSelectedRecords As String
     Dim sWhereIDs As String
-    Dim blnOK As Boolean
-    Dim strColumn As String
+		Dim strColumn As String
     Dim blnCharColumn As Boolean
-
 
     On Error GoTo LocalErr
 
@@ -1034,7 +1030,7 @@ LocalErr:
     mstrSQLJoin = vbNullString
     Dim asViews(0) As Object
 
-    blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
+		blnCharColumn = (Val(mlngColDataType(lngCount)) = SQLDataType.sqlVarChar)
 
 
     For lngCount = 0 To UBound(strCol, 2)
@@ -1054,7 +1050,7 @@ LocalErr:
       objColumnPrivileges = Nothing
 
       If lngCount <= UBound(mlngColDataType) Then
-        blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
+				blnCharColumn = (Val(mlngColDataType(lngCount)) = SQLDataType.sqlVarChar)
       End If
 
       If fColumnOK Then
@@ -1256,9 +1252,9 @@ LocalErr:
       lngCount = 0
 
       strWhereEmpty = strColumnName & " IS NULL"
-      If mlngColDataType(lngLoop) <> CStr(Declarations.SQLDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(Declarations.SQLDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(Declarations.SQLDataType.sqlBoolean) Then
-        strWhereEmpty = strWhereEmpty & " OR RTrim(" & strColumnName & ") = ''"
-      End If
+			If mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlBoolean) Then
+				strWhereEmpty = strWhereEmpty & " OR RTrim(" & strColumnName & ") = ''"
+			End If
 
 			' Don't put in empty clauses if we're running an absence breakdown
       If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
@@ -1275,7 +1271,7 @@ LocalErr:
         strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & " FROM " & mstrTempTableName & " ORDER BY 1"
       End If
 
-      rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenDynamic, ADODB.LockTypeEnum.adLockReadOnly)
+			rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
       With rsTemp
 
@@ -1283,7 +1279,7 @@ LocalErr:
           Exit Sub
         End If
 
-        .MoveFirst()
+		 '   .MoveFirst()
 				Do While Not .EOF
 
 					'MH20010213 Had to make this change so that working pattern would work
@@ -1611,51 +1607,51 @@ LocalErr:
       For lngCount = 0 To UBound(mvarHeadings(Index))
 
         Select Case mlngColDataType(Index)
-          Case CStr(Declarations.SQLDataType.sqlDate)
+					Case CStr(SQLDataType.sqlDate)
 
-            'JDM - 22/10/2003 - Fault 7246 - Below fix seems to gone wrong...
-            'MH20020212 Fault 4893
-            'If mvarHeadings(Index)(lngCount) = Format(strValue, DateFormat) Then
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If mvarHeadings(Index)(lngCount) = VB6.Format(strValue, mstrClientDateFormat) Then
-              'If mvarHeadings(Index)(lngCount) = strValue Then
-              'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              GetGroupNumber = lngCount
-              Exit For
-            End If
+						'JDM - 22/10/2003 - Fault 7246 - Below fix seems to gone wrong...
+						'MH20020212 Fault 4893
+						'If mvarHeadings(Index)(lngCount) = Format(strValue, DateFormat) Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarHeadings(Index)(lngCount) = VB6.Format(strValue, mstrClientDateFormat) Then
+							'If mvarHeadings(Index)(lngCount) = strValue Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							GetGroupNumber = lngCount
+							Exit For
+						End If
 
-          Case CStr(Declarations.SQLDataType.sqlNumeric), CStr(Declarations.SQLDataType.sqlInteger)
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If UCase(mvarHeadings(Index)(lngCount)) = datGeneral.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
-              'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              GetGroupNumber = lngCount
-              Exit For
-            End If
+					Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If UCase(mvarHeadings(Index)(lngCount)) = datGeneral.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							GetGroupNumber = lngCount
+							Exit For
+						End If
 
-          Case CStr(Declarations.SQLDataType.sqlBoolean)
-            Select Case LCase(strValue)
-              Case ""
-                'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If mvarHeadings(Index)(lngCount) = "<Empty>" Then
-                  'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  GetGroupNumber = lngCount
-                  Exit For
-                End If
-              Case "false", "0"
-                'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If mvarHeadings(Index)(lngCount) = "False" Then
-                  'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  GetGroupNumber = lngCount
-                  Exit For
-                End If
-              Case Else
-                'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If mvarHeadings(Index)(lngCount) = "True" Then
-                  'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  GetGroupNumber = lngCount
-                  Exit For
-                End If
-            End Select
+					Case CStr(SQLDataType.sqlBoolean)
+						Select Case LCase(strValue)
+							Case ""
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If mvarHeadings(Index)(lngCount) = "<Empty>" Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									GetGroupNumber = lngCount
+									Exit For
+								End If
+							Case "false", "0"
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If mvarHeadings(Index)(lngCount) = "False" Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									GetGroupNumber = lngCount
+									Exit For
+								End If
+							Case Else
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If mvarHeadings(Index)(lngCount) = "True" Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									GetGroupNumber = lngCount
+									Exit For
+								End If
+						End Select
 
           Case Else
 
@@ -2010,7 +2006,7 @@ LocalErr:
 
         lngCount = lngCount + 1
         ReDim Preserve mstrOutput(lngCount)
-        mstrOutput(lngCount) = strOutput
+				mstrOutput(lngCount) = FormatString(strOutput)
 
         .MoveNext()
       Loop
@@ -2085,7 +2081,6 @@ LocalErr:
   Public Function AbsenceBreakdownBuildDataArrays() As Boolean
 
     Dim strTempValue As String
-    Dim dblThisIntersectionVal As Double
 
     Dim lngCol As Integer
     Dim lngRow As Integer
@@ -2380,7 +2375,7 @@ LocalErr:
 		mstrOutputEmailSubject = pstrOutputEmailSubject
 		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
 		mstrOutputFilename = pstrOutputFilename
-		mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
+		mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 	End Function
 
@@ -2526,6 +2521,7 @@ LocalErr:
     sReturnValue = Replace(sReturnValue, Chr(9), "")
     sReturnValue = Replace(sReturnValue, Chr(10), "")
     sReturnValue = Replace(sReturnValue, Chr(13), "")
+		sReturnValue = Replace(sReturnValue, "'", "&apos;")
 
     FormatString = sReturnValue
 

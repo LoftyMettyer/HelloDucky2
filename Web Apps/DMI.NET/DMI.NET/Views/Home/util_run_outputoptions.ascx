@@ -397,9 +397,8 @@
 								oOption.innerText = OpenHR.PrinterName(iLoop);
 								oOption.value = iLoop+1;
 
-								if (oOption.innerText == strCurrentPrinter) 
-								{
-										selectedIndex = iLoop+1
+								if (oOption.innerText == strCurrentPrinter) {
+									selectedIndex = iLoop + 1;
 								}
 						}
 				}
@@ -448,9 +447,8 @@
 
 						for (iLoop=0; iLoop<options.length; iLoop++)  
 						{
-								if (options(iLoop).value == lngCurrentOption) 
-								{
-										selectedIndex = iLoop
+								if (options(iLoop).value == lngCurrentOption) {
+									selectedIndex = iLoop;
 										break;
 								}
 						}

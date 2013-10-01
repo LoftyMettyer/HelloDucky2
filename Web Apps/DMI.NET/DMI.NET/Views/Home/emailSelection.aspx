@@ -692,9 +692,8 @@
 	<script type="text/javascript" id="scptGeneralFunctions">
 <!--
 
-	function populateEmailList()
-	{
-		var sAddLine = ''
+	function populateEmailList() {
+		var sAddLine = '';
 	
 		frmEmail.ssOleDBGridEmail.focus();
 		frmEmail.ssOleDBGridEmail.Redraw = false;

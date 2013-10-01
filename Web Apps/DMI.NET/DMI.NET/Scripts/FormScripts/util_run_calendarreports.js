@@ -589,7 +589,7 @@ function fillCalBoxes()
 				if (elementName.substring(0,6) == "Event_")
 				{
 						INPUT_STRING = frmCalendarData.item(i).value;
-						strEventID = INPUT_STRING.substring(INPUT_STRING.indexOf("***")+3,INPUT_STRING.indexOf("***",INPUT_STRING.indexOf("***")+3))
+					strEventID = INPUT_STRING.substring(INPUT_STRING.indexOf("***") + 3, INPUT_STRING.indexOf("***", INPUT_STRING.indexOf("***") + 3));
 						lngColour = Number(frmKey.ctlKey.GetKeyColour(strEventID));
 						intBaseRecordIndex = Number(INPUT_STRING.substring(0,INPUT_STRING.indexOf("***")));
 

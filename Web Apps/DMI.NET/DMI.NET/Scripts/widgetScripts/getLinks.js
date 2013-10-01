@@ -24,16 +24,16 @@
 				success: function (data) {
 
 
-					var currentColumn = 1
-					var currentRow = 1
-					var maxColumn = 50
-					var maxRow = 4
-					var GroupID = "accordion"
+					var currentColumn = 1;
+					var currentRow = 1;
+					var maxColumn = 50;
+					var maxRow = 4;
+					var GroupID = "accordion";
 					//First let's drop the LI links on to the page
 					$.each(data, function (i, item) {
 
-						var datax = 1
-						var datay = 1
+						var datax = 1;
+						var datay = 1;
 
 						switch (item.element_Type) {
 							case 0:
@@ -41,8 +41,8 @@
 								break;
 							case 1:
 								//Separator
-								datax = 2
-								datay = 2
+								datax = 2;
+								datay = 2;
 								break;
 							case 2:
 								//Chart
@@ -77,10 +77,10 @@
 								addWidget(GroupID, "newWidget" + item.ID, currentColumn, currentRow, datax, datay);
 
 							//calculate next tile position:
-							currentRow += datay
+								currentRow += datay;
 							if (currentRow > maxRow) {
-								currentRow = 1
-								currentColumn += 1
+								currentRow = 1;
+								currentColumn += 1;
 							}
 						}
 					}

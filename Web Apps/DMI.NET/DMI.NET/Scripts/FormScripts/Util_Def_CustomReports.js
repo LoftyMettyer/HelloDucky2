@@ -2911,7 +2911,7 @@
 				if (grdFrom.columns(0).text == 'C') {
 					sAddline = grdFrom.columns(0).text +
 						'	' + grdFrom.columns(1).text +
-							'	' + grdFrom.columns(2).text
+						'	' + grdFrom.columns(2).text;
 
 					if (pfSelect == true) {
 						sAddline = sAddline + '	' + getTableName(grdFrom.columns(1).text) + '.' + grdFrom.columns(3).text;

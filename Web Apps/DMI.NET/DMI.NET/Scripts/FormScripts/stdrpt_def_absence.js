@@ -757,7 +757,7 @@ function absenceBreakdownRefreshTab3Controls()
             }
 			
             //disable save options
-            chkDestination2.checked = false
+	        chkDestination2.checked = false;
             checkbox_disable(chkDestination2, true);
             combo_disable(cboSaveExisting, true);
             cboSaveExisting.length = 0;

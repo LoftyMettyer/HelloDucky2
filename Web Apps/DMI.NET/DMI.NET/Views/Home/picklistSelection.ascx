@@ -421,7 +421,7 @@
 					if (psLocateValue.length > 0) {
 						// Convert the date to SQL format (use this as a validation check).
 						// An empty string is returned if the date is invalid.
-						psLocateValue = convertLocaleDateToSQL(psLocateValue)
+						psLocateValue = convertLocaleDateToSQL(psLocateValue);
 						if (psLocateValue.length = 0) {
 							fValidLocateValue = false;
 							OpenHR.messageBox("Invalid date value entered.");
