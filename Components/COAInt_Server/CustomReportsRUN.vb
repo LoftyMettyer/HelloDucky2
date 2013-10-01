@@ -155,7 +155,7 @@ End Enum
 
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
-			Return mblnReportHasSummaryInfo
+			Return mblnReportHasSummaryInfo Or mbIsBradfordIndexReport
 		End Get
 	End Property
 
@@ -3294,6 +3294,11 @@ CheckRecordSet_ERROR:
 				intColCounter = intColCounter + 1
 				isHiddenColumn = (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?")		' there should be a cleaner way of deciding if this is an ID column, but would need more bigger changes. This will have to do for the moment. Sorry
 
+				' yet another hack beacsue this is an over complex array instead of an easily modifyable class
+				If mbIsBradfordIndexReport And iLoop > 12 Then
+					isHiddenColumn = True
+				End If
+
 				' Only suppress values for new records in the Bradford Factor report
 				bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
 
@@ -3573,7 +3578,9 @@ LoadRecords_ERROR:
 					If CLng(vData).ToString.Length > mvarColDetails(1, pintLoop) Then
 						vData = New String("#", mvarColDetails(1, pintLoop))
 					Else
-						vData = String.Format(mvarColDetails(23, pintLoop), vData)
+						If Not mvarColDetails(23, pintLoop) Is Nothing Then
+							vData = String.Format(mvarColDetails(23, pintLoop), vData)
+						End If
 					End If
 
 				End If
@@ -4110,7 +4117,8 @@ LoadRecords_ERROR:
 			End If
 
 		Else
-			mblnReportHasSummaryInfo = mblnCustomReportsSummaryReport
+
+			mblnReportHasSummaryInfo = True
 
 			asBradfordSummaryLine = Split(sTotalBradfordAddString, vbTab)
 
@@ -4151,7 +4159,7 @@ LoadRecords_ERROR:
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
-			AddToArray_Data(sBradfordSummary, enum_RowType.Data)
+			AddToArray_Data(sBradfordSummary, enum_RowType.Total)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			AddToArray_Data("*indicator*", enum_RowType.Data)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
@@ -4844,7 +4852,7 @@ ErrTrap:
 			intColCounter = intColCounter + 1
 
 			If Not mvarColDetails(24, iLoop + 1) Then
-				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?") Then
+				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
 					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
 				Else
 					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
@@ -5185,6 +5193,7 @@ GetBradfordReportDefinition_ERROR:
 		Dim lngTableID As Integer
 		Dim iCount As Short
 		Dim lngColumnID As Integer
+		Dim sMask As String
 
 		Dim lbHideStaffNumber As Boolean
 
@@ -5462,6 +5471,14 @@ GetBradfordReportDefinition_ERROR:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mvarColDetails(1, intTemp) = mvarColDetails(1, intTemp) + Int((mvarColDetails(1, intTemp) - mvarColDetails(2, intTemp)) / 3)
+				End If
+
+				' Format for this numeric column
+				If mvarColDetails(3, intTemp) Then
+					sMask = ""
+					If mvarColDetails(22, intTemp) Then sMask = ",0"
+					If mvarColDetails(2, intTemp) > 0 Then sMask = sMask & "." & New String("0", mvarColDetails(2, intTemp))
+					mvarColDetails(23, intTemp) = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", mvarColDetails(2, intTemp)) & "}"
 				End If
 
 			End If
