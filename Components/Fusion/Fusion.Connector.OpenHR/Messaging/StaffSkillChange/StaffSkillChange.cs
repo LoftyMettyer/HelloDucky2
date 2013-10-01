@@ -18,7 +18,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents
 
 		public StaffSkillChange(Guid busRef, Guid? parentRef, Skill skill)
 		{
-			StaffSkillRef = busRef.ToString();
+			staffSkillRef = busRef.ToString();
 			staffRef = parentRef.ToString();
 			data = new StaffSkillChangeData
 			{
@@ -30,8 +30,8 @@ namespace Fusion.Connector.OpenHR.MessageComponents
 
 		public StaffSkillChangeData data { get; set; }
 
-		[XmlAttributeAttribute(AttributeName = "staffSkillRef")]
-		public string StaffSkillRef { get; set; }
+		[XmlAttributeAttribute]
+		public string staffSkillRef { get; set; }
 
 		[XmlAttributeAttribute]
 		public string staffRef { get; set; }
