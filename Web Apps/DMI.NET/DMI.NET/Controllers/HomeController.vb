@@ -1352,6 +1352,11 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		Function _default() As ActionResult
+			Return View()
+		End Function
+
+
 		<HttpPost()>
 		Function default_Submit()
 

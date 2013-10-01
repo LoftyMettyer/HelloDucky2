@@ -1073,7 +1073,7 @@
     <Content Include="Views\Home\confirmok.ascx" />
     <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />
-    <Content Include="Views\Home\default.ascx" />
+    <Content Include="Views\Home\_default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
     <Content Include="Views\Home\downloadControls.aspx" />

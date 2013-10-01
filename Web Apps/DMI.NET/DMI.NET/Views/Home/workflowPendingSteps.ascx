@@ -15,8 +15,7 @@
 			},
 			rowNum: 1000   //TODO set this to blocksize...
 		});
-
-		//debugger;
+		
 		//Hide the URL table header and its column
 		$('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
 		$('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
@@ -50,13 +49,24 @@
 			closeclick();
 		});
 		
-		<% if _StepCount = 0 Then%> 
-			menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+		<%If _StepCount = 0 And Session("fromMenu") = 0 Then%>
+			//no pending steps, and this is called from login, so show default page
+			menu_loadPage('_default');
+		<%Else%>
+			<%If _StepCount = 0 Then%>
+				//disable run button if no steps pending
+				menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+			<%End If%>
+
+			$('#tblMessage').removeClass('hidden');
+			showDefaultRibbon();
+			$("#toolbarWFPendingStepsFind").parent().show();
+			setTimeout('$("#toolbarWFPendingStepsFind").click()', 50);
+
+			var newGridHeight = $("#findGridRow").height() - 50;
+			$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
 		<%End If%>
-
-		var newGridHeight = $("#findGridRow").height() - 50;
-		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
-
+		
 	}
 </script>
 
@@ -218,7 +228,7 @@
 				sMessage = "Error getting the pending workflow steps"
 			End If
 		%>
-		<table align="center" class="outline" cellpadding="5" cellspacing="0">
+		<table align="center" class="outline hidden" cellpadding="5" cellspacing="0" id="tblMessage">
 			<tr>
 				<td width="20"></td>
 				<td>

@@ -201,8 +201,7 @@ function menu_abMainMenu_DataReady() {
 	//		return;
 	//	}
 
-	if (OpenHR.currentWorkPage() == "DEFAULT") {
-
+	if (OpenHR.currentWorkPage() == "DEFAULT") {		
 		//window.parent.frames("workframe").hideMessage();
 		//window.hideMessage();
 		
@@ -244,12 +243,14 @@ function menu_abMainMenu_DataReady() {
 
 		//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
 		var frmWorkArea = document.getElementById("frmGoto");
-			try {
-					frmWorkArea.txtReset.value = iReset;
-			} catch(e) {
-			}
-
-			//menu_autoLoadPage("workflowPendingSteps", true);
+		try {
+			frmWorkArea.txtReset.value = iReset;
+		} catch (e) { }
+		
+		//Load Pending workflow steps if not in SSI mode.
+		if (!menu_isSSIMode()) {
+			menu_autoLoadPage("workflowPendingSteps", true);
+		}
 	}
 }
 

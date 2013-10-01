@@ -16,6 +16,7 @@
 <script src="<%:Url.Content("~/Scripts/jquery/jquery.mCustomScrollbar.min.js")%>"></script>
 
 <%Session("recordID") = 0%>
+<%Dim fWFDisplayPendingSteps As Boolean = True%>
 
 	<script type="text/javascript">
 		dragged = 0;
@@ -169,7 +170,7 @@
 					$(ulelement).addClass('cols2');
 				}
 
-			});
+			});		
 		});
 
 		function setupTiles() {
@@ -265,7 +266,7 @@
 		function goHyperlink(psURL, pfNewWindow) {
 			try {
 				//if (txtHypertextLinksEnabled.value != 0) {
-					relocateURL(psURL, pfNewWindow);
+				relocateURL(psURL, pfNewWindow);
 				//}
 			}
 			catch (e) {
@@ -651,7 +652,7 @@
 									</div>
 								</li>
 								<%iRowNum += 1%>
-
+								<%fWFDisplayPendingSteps = False%>
 
 
 							<%Case 4		' Database Value%>
@@ -826,3 +827,10 @@
 
 	<iframe id="externalContentFrame" style="width: 700px; height: 400px; margin: 0 auto;"></iframe>
 </div>
+
+<script type="text/javascript">
+	//Display Pending Workflow Steps if appropriate
+	if ('<%=fWFDisplayPendingSteps%>' == 'True') {		
+		relocateURL('WorkflowPendingSteps', 0);
+	}
+</script>
