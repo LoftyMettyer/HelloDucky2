@@ -46,37 +46,39 @@ namespace Fusion.Connector.OpenHR.Database
 
         }
 
-        public static Contract readContract(int localId)
-        {
+				public static Contract readContract(int localId)
+				{
 
-            using (var c = new SqlConnection(connectionString))
-            {
-                c.Open();
+					using (var c = new SqlConnection(connectionString))
+					{
+						c.Open();
 
-                Contract su =
-                    c.Query<Contract>(@"SELECT * from Fusion.staffContract WHERE ID_Contract = @ContractID",
-                                     new
-                                     {
-                                         ContractID = localId
-                                     }
-                        ).FirstOrDefault();
+						var su = c.Query<Contract>(@"SELECT * from Fusion.staffContract WHERE ID_Contract = @ContractID",
+																 new
+																 {
+																	 ContractID = localId
+																 }
+										).FirstOrDefault();
 
-                if (su != null)
-                {
-										su.costCenter = su.costCenter == "" ? null : su.costCenter;
-                    su.effectiveToSpecified = true;
-	                su.costCenterSpecified = true;
+						if (su != null)
+						{
+							su.costCenter = su.costCenter == "" ? null : su.costCenter;
+							su.effectiveToSpecified = true;
+							su.costCenterSpecified = true;
 
-									if (su.isRecordInactive == true)
-									{
-										su.contractName = "** Deleted **";
-									}
+							if (su.isRecordInactive == true)
+							{
+								su.contractName = "** Deleted **";
+								su.maximumHoursPerWeek = 0;
+								su.contractedHoursPerWeek = 0;
+								su.primarySite = "** Deleted **";
+							}
 
-                    return su;
-                }
-            }
-            return null;
-        }
+							return su;
+						}
+					}
+					return null;
+				}
 
         public static Contact readContact(int localId)
         {

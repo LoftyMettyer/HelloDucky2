@@ -1,5 +1,4 @@
 ﻿using System;
-using Fusion.Connector.OpenHR.MessageComponents.Data;
 using Fusion.Core.Sql.OutboundBuilder;
 using StructureMap.Attributes;
 using Fusion.Core.Sql;
@@ -8,12 +7,6 @@ using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Component;
-using Fusion.Connector.OpenHR.MessageComponents.Enums;
-using System.IO;
-
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace Fusion.Connector.OpenHR.OutboundBuilders
 {
