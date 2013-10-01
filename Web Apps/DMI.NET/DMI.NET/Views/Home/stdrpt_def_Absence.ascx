@@ -499,7 +499,7 @@
 																			</label>
 																		</td>
 																		<td>
-																			<input id="Text2" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="width: 250px">
+																			<input id="txtBasePicklist" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="width: 250px">
 																		</td>
 																		<td style="width: 15px">
 																			<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
@@ -518,7 +518,7 @@
 																			</label>
 																		</td>
 																		<td>
-																			<input id="Text3" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="width: 250px">
+																			<input id="txtBaseFilter" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="width: 250px">
 																		</td>
 																		<td>
 																			<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
