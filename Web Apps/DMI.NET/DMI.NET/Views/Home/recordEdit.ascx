@@ -346,7 +346,10 @@
       //$("input:checkbox").change(function () {enableSaveButton();});
 
 			//date, checkbox, text lostfocus, optiongroup, 
-			$('input[id^="FI_"]').on("change", function () {enableSaveButton();});
+			$('input[id^="FI_"]').on("change", function () { enableSaveButton(); });
+			
+			//Text area (Notes field, etc.)
+			$('textarea').on("keypress", function () { enableSaveButton(); });
 
     	//need char live, spinner, dropdown, textarea,
 			$('input[id^="FI_"]').on("keypress", function () {
