@@ -312,8 +312,8 @@
 					
 					//submit but leave hidden - no point showing the message.
 					OpenHR.submitForm(frmWorkflow, 'workframe', false);
-					$('#workframe').hide();
-					$('#SSILinksFrame').show();
+					$('#SSILinksFrame').hide();
+					$('#optionframe').show();
 					
 				} else {
 					//Not a workflow!

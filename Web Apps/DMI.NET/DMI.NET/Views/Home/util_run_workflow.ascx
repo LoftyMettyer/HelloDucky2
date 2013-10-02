@@ -176,11 +176,17 @@ End If
 	
 
 	function util_run_workflow_okClick() {
+		if (menu_isSSIMode) {
+			$("#optionframe").hide();
+			$("#SSILinksFrame").show();
+		} else {
 			$("#optionframe").hide();
 			$("#workframe").show();
-		
-		//re-enable run button.
+			//re-enable run button.
 			menu_toolbarEnableItem('mnutoolRunUtilitiesFind', true);
+		}
+			
+		
 	}	
 
 </script>
