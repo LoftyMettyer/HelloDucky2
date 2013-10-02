@@ -9,6 +9,11 @@
 	function workpendingsteps_window_onload() {
 		// Table to jQuery grid
 		tableToGrid("#PendingStepsTable", {
+			colNames: ['Description', 'URL'],
+			colModel: [
+				{ name: 'Description' },
+				{ name: 'URL', hidden: true}
+			],
 			onSelectRow: function(rowID) {
 			},
 			ondblClickRow: function(rowID) {
@@ -16,10 +21,6 @@
 			rowNum: 1000   //TODO set this to blocksize...
 		});
 		
-		//Hide the URL table header and its column
-		$('#frmDefSel .ui-jqgrid-htable tr th:nth-child(2)').hide();
-		$('#frmDefSel #PendingStepsTable tr td:nth-child(2)').hide();
-
 		//Select the first row
 		$("#PendingStepsTable").jqGrid('setSelection', 1);
 
@@ -90,13 +91,13 @@
 						' Workflow not licensed or configured. Go to default page.
 						_WorkflowGood = False
 				Else
-						With _PendingWorkflowStepsHTMLTable
-								.Append("<table id=""PendingStepsTable"">")
-								.Append("<tr>")
-								.Append("<th id=""DescriptionHeader"">Description</th>")
-								.Append("<th id=""URLHeader"">URL</th>")
-								.Append("</tr>")
-						End With
+			With _PendingWorkflowStepsHTMLTable
+				.Append("<table id=""PendingStepsTable"">")
+				.Append("<tr>")
+				.Append("<th id=""Description"">Description</th>")
+				.Append("<th id=""URL"">URL</th>")
+				.Append("</tr>")
+			End With
 						'Loop over the records
 						Do Until _rstDefSelRecords.eof
 								_StepCount += 1
