@@ -255,7 +255,8 @@ function menu_abMainMenu_DataReady() {
 		
 		//Load Pending workflow steps if not in SSI mode.
 		if (!menu_isSSIMode()) {
-			menu_autoLoadPage("workflowPendingSteps", true);
+			//short timeout, IE9 (maybe others) aren't loading the frmGoto partial view quick enough...
+			setTimeout('menu_autoLoadPage("workflowPendingSteps", true)', 100);
 		}
 	}
 }
