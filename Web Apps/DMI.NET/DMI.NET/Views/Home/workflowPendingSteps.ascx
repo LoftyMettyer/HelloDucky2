@@ -9,12 +9,17 @@
 	function workpendingsteps_window_onload() {
 		// Table to jQuery grid
 		tableToGrid("#PendingStepsTable", {
-			colNames: ['Description', 'URL'],
+			colNames: ['Name', 'URL'],
 			colModel: [
-				{ name: 'Description' },
+				{ name: 'Name' },
 				{ name: 'URL', hidden: true}
 			],
-			onSelectRow: function(rowID) {
+			multiselect: true,
+			onSelectRow: function (rowID) {
+				refreshControls();
+			},
+			onSelectAll: function(rowID) {
+				refreshControls();
 			},
 			ondblClickRow: function(rowID) {
 			},
@@ -22,24 +27,31 @@
 		});
 		
 		//Select the first row
-		$("#PendingStepsTable").jqGrid('setSelection', 1);
+		//JIRA 3356 - don't set top row, and disable run button.
+		//$("#PendingStepsTable").jqGrid('setSelection', 1);		
+		refreshControls();
 
 		//On clicking "Refresh",
 		$("#mnutoolRefreshWFPendingStepsFind").click(function() {
-			setrefresh();
+			setrefresh();	
 		});
 
 		//On clicking "Run", open window with the selected item's URL
-		//$("#cmdRun").click(function () {
-		$("#mnutoolRunWFPendingStepsFind").click(function() {
-			var selectedRow = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row
-			var url = $(selectedRow.children()[1]).html(); //Get the url
-			var newWindow = window.open(url);
-			if (window.focus) {
-				//newWindow.focus();
-			}
+		$("#mnutoolRunWFPendingStepsFind").unbind().click(function () {
+			var selectedRows = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row			
+			for (var i = 0; i < selectedRows.length; i++) {
+				try {
+					var url = selectedRows[i].children[2].innerHTML;					
+					var newWindow = window.open(url);
+					if (window.focus) {
+						//newWindow.focus();
+					}
+				}
+				catch(e) {}
+			}		
 		});
 		
+
 		//On clicking "Close" generic closeclck in general.js
 		$("#mnutoolCloseWFPendingStepsFind").hide(function () {
 			// We're hiding this for now but I'm leaving it's 
@@ -51,21 +63,21 @@
 		});
 		
 		<%If _StepCount = 0 And Session("fromMenu") = 0 Then%>
-			//no pending steps, and this is called from login, so show default page
-			menu_loadPage('_default');
+		//no pending steps, and this is called from login, so show default page
+		menu_loadPage('_default');
 		<%Else%>
-			<%If _StepCount = 0 Then%>
-				//disable run button if no steps pending
-				menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
-			<%End If%>
+		<%If _StepCount = 0 Then%>
+		//disable run button if no steps pending
+		menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+		<%End If%>
 
-			$('#tblMessage').removeClass('hidden');
-			showDefaultRibbon();
-			$("#toolbarWFPendingStepsFind").parent().show();
-			setTimeout('$("#toolbarWFPendingStepsFind").click()', 50);
+		$('#tblMessage').removeClass('hidden');
+		showDefaultRibbon();
+		$("#toolbarWFPendingStepsFind").parent().show();
+		setTimeout('$("#toolbarWFPendingStepsFind").click()', 50);
 
-			var newGridHeight = $("#findGridRow").height() - 50;
-			$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
+		var newGridHeight = $("#findGridRow").height() - 50;
+		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
 		<%End If%>
 		
 	}
@@ -94,7 +106,7 @@
 			With _PendingWorkflowStepsHTMLTable
 				.Append("<table id=""PendingStepsTable"">")
 				.Append("<tr>")
-				.Append("<th id=""Description"">Description</th>")
+				.Append("<th id=""Name"">Name</th>")
 				.Append("<th id=""URL"">URL</th>")
 				.Append("</tr>")
 			End With
@@ -154,14 +166,19 @@
 </form>
 
 <script type="text/javascript">
-		function setrefresh() {
-				OpenHR.submitForm("frmRefresh");
-				<%If Session("fromMenu") = 0 Then%>
-					menu_autoLoadPage("workflowPendingSteps", true);
-				<%Else%>
-					menu_autoLoadPage("workflowPendingSteps", false);
-				<%End If%>
-			}
+	function refreshControls() {
+		var sSelectionList = jQuery("#PendingStepsTable").jqGrid('getGridParam', 'selarrrow');
+		menu_toolbarEnableItem('mnutoolRunWFPendingStepsFind', (sSelectionList.length > 0));
+	}
+
+	function setrefresh() {
+		OpenHR.submitForm("frmRefresh");
+		<%If Session("fromMenu") = 0 Then%>
+		menu_autoLoadPage("workflowPendingSteps", true);
+		<%Else%>
+		menu_autoLoadPage("workflowPendingSteps", false);
+		<%End If%>
+	}
 </script>
 
 <div <%=session("BodyTag")%>>
@@ -276,6 +293,6 @@ End If
 </div>
 
 <script type="text/javascript">
-		workpendingsteps_window_onload();
+	workpendingsteps_window_onload();
 </script>
 
