@@ -223,7 +223,7 @@
 			Response.Write("</HTML>" & vbCrLf)
 			Response.End()
 		Else
-			Response.Redirect("default")
+			Response.Redirect("_default")
 		End If
 	%>
 </div>

@@ -835,7 +835,7 @@
 
 			}
 			else {
-				window.location.href = "default";
+				window.location.href = "_default";
 			}
 		}
 

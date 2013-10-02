@@ -58,7 +58,7 @@ function find_window_onload() {
 
 				//				window.parent.frames("menuframe").ASRIntranetFunctions.Closepopup();
 				OpenHR.messageBox(sErrMsg);
-				menu_loadPage("default");
+				menu_loadPage("_default");
 		}
 
 		if (fOk == true) {
