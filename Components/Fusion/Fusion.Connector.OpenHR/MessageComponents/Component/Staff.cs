@@ -57,7 +57,6 @@ public class Staff
 		[XmlElementAttribute(IsNullable = true)]
 		public string leavingReason { get; set; }
 
-		[XmlElementAttribute(IsNullable = true)]
 		public string companyName { get; set; }
 
 		public string jobTitle { get; set; }

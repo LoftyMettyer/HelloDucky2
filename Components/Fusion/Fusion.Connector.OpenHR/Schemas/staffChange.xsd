@@ -142,7 +142,7 @@
 												<xs:restriction base="common:phoneNumber"/>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="workPhoneNumber" nillable="true" minOccurs="0">
+										<xs:element name="workPhoneNumber" type="common:phoneNumber" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -150,12 +150,6 @@
 													</altova:exampleValues>
 												</xs:appinfo>
 											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="common:phoneNumber">
-													<xs:maxLength value="50"/>
-													<xs:pattern value="[0-9,\s]+"/>
-												</xs:restriction>
-											</xs:simpleType>
 										</xs:element>
 										<xs:element name="homePhoneNumber" nillable="true" minOccurs="0">
 											<xs:annotation>
@@ -232,7 +226,7 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="companyName" nillable="true" minOccurs="0">
+										<xs:element name="companyName">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
