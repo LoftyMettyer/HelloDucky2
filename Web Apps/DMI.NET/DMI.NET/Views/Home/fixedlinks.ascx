@@ -124,6 +124,14 @@
 								</a>
 							</div>
 --%>
+							<div id="mnutoolFixedWorkflowOutOfOffice" class="button">
+								<a href="#" rel="table" title="Workflow Out of Office">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/school_next64HOVER.png")%>" alt="" />
+									<i class="icon-signout"></i>
+									<h6>Workflow<br />Out of Office</h6>
+								</a>
+							</div>
+
 							<div id="mnutoolFixedAbout" class="button">
 								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR v8">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png")%>" alt="" />
@@ -131,6 +139,7 @@
 									<h6>About</h6>
 								</a>
 							</div>
+
 						</li>
 					</ul>
 				</li>

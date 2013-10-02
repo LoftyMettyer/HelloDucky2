@@ -1384,8 +1384,42 @@ Namespace Controllers
 
 						cmdGetRecordDesc = Nothing
 
-					Catch ex As Exception
 
+						' Are we displaying the Workflow Out of Office Hyperlink for this view?
+						Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
+						Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
+						Dim fShowOOOHyperlink As Boolean = False
+
+						Dim cmdShowOOOLink = CreateObject("ADODB.Command")
+						cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
+						cmdShowOOOLink.CommandType = 4 ' Stored procedure
+						cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
+
+						Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
+						cmdShowOOOLink.Parameters.Append(prmTableID2)
+						prmTableID2.Value = lngSSILinkTableID
+
+						Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
+						cmdShowOOOLink.Parameters.Append(prmViewID2)
+						prmViewID2.Value = lngSSILinkViewID
+
+						Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
+						cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
+
+						Err.Clear()
+						cmdShowOOOLink.Execute()
+
+						If (Err.Number() <> 0) Then
+							sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
+						Else
+							fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
+						End If
+
+						Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
+						cmdShowOOOLink = Nothing
+						
+					Catch ex As Exception
+						' TODO: SHow an error message
 					End Try
 
 					Dim cookie = New HttpCookie("Login")

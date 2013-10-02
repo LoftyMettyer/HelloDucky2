@@ -965,6 +965,7 @@
     <Content Include="Scripts\officebar\winkit\configuration64DIS.png" />
     <Content Include="Scripts\officebar\winkit\configuration64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\configuration64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\school_next64NORM.png" />
     <Content Include="Scripts\officebar\winkit\copy64DIS.png" />
     <Content Include="Scripts\officebar\winkit\copy64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\copy64NORM.png" />
@@ -1034,6 +1035,8 @@
     <Content Include="Scripts\officebar\winkit\Run64DIS.png" />
     <Content Include="Scripts\officebar\winkit\Run64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Run64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\school_next64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\school_next64DIS.png" />
     <Content Include="Scripts\officebar\winkit\sort64DIS.png" />
     <Content Include="Scripts\officebar\winkit\sort64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\sort64NORM.png" />

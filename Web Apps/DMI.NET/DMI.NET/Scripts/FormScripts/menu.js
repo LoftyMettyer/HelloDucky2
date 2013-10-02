@@ -200,14 +200,20 @@ function menu_abMainMenu_DataReady() {
 	//		loadPage("pcConfiguration");
 	//		return;
 	//	}
-
+	
 	if (OpenHR.currentWorkPage() == "DEFAULT") {		
 		//window.parent.frames("workframe").hideMessage();
 		//window.hideMessage();
 		
 		var iReset = 0;
-
-		if ("TRUE" == "<%=ucase(session('WF_OutOfOffice'))%>") {
+		var wfOutOfOffice;
+		try {
+			wfOutOfOffice = $('#txtWf_OutOfOffice').val().toUpperCase();
+		} catch(e) {
+			wfOutOfOffice = "FALSE";
+		}
+		
+		if ("TRUE" == wfOutOfOffice) {
 			var sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
 
 			var iWF_RecordCount;
@@ -1021,7 +1027,7 @@ function menu_MenuClick(sTool) {
 		}
 
 
-	if (sToolName == "mnutoolWorkflowOutOfOffice") {
+		if ((sToolName == "mnutoolWorkflowOutOfOffice") || (sToolName == "mnutoolFixedWorkflowOutOfOffice")) {
 			if (menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
 				menu_WorkflowOutOfOffice();
 		}
@@ -2075,8 +2081,12 @@ function menu_refreshMenu() {
 	
 	menu_setVisibleMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
-		
-		menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
+	
+	var fShowOutOfOffice = (frmMenuInfo.txtWFShowOutOfOffice.value == "True");
+	menu_setVisibleMenuItem("mnutoolFixedWorkflowOutOfOffice", (fShowOutOfOffice && menu_isSSIMode()));
+	menu_enableMenuItem("mnutoolFixedWorkflowOutOfOffice", (fShowOutOfOffice && menu_isSSIMode()));
+
+	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
 
@@ -2316,13 +2326,12 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 
 function menu_WorkflowOutOfOffice() {
-	//	var frmWorkArea;
-
-	//	// Submit the current "workframe" form, and then load the required page.
-	//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-	//	frmWorkArea.txtAction.value = "WORKFLOWOUTOFOFFICE_CHECK";
-	//	frmWorkArea.txtGotoPage.value = "default.asp";
-	//	frmWorkArea.submit();
+	var frmWorkArea;
+	// Submit the current "workframe" form, and then load the required page.
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea.txtAction.value = "WORKFLOWOUTOFOFFICE_CHECK";
+	frmWorkArea.txtGotoPage.value = "_default";
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_loadPage(psPage) {

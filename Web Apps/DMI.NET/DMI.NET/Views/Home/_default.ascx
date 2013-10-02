@@ -50,62 +50,59 @@
 
 <script type="text/javascript">
 function default_window_onload() {
-	try
-		{
+	try {		
 		// Do nothing if the menu controls are not yet instantiated.
-		if (window.parent.frames("menuframe").document.forms("frmWorkAreaInfo") != null) 
+		if (OpenHR.getForm("menuframe", "frmWorkAreaInfo") != null) 
 			{
-			window.parent.document.all.item("workframeset").cols = "*, 0";	
+			//window.parent.document.all.item("workframeset").cols = "*, 0";	
 			// Get menu.asp to refresh the menu.
 			//window.parent.frames("menuframe").refreshMenu();
 			menu_refreshMenu();
 
 			if ("<%=Session("action")%>" == "WORKFLOWOUTOFOFFICE_CHECK")
 			{
-				if (txtWorkflowRecordCount.value == 0)
+				if ($('#txtWorkflowRecordCount').val() == 0)
 				{
-					answer = window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to set Workflow Out of Office.\nYou do not have an identifiable personnel record.",0); // 0 = OKOnly
+					var answer = OpenHR.messageBox("Unable to set Workflow Out of Office.\nYou do not have an identifiable personnel record.",0); // 0 = OKOnly
 				}
 				else
 				{
-					if (txtWorkflowOutOfOffice.value == 1)
+					if ($('#txtWorkflowOutOfOffice').val() == 1)
 					{
-						sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
+						var sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
 					
-						if (txtWorkflowRecordCount.value > 1)
+						if ($('#txtWorkflowRecordCount').val() > 1)
 						{
-							if (txtWorkflowRecordCount.value == 2)
+							if ($('#txtWorkflowRecordCount').val() == 2)
 							{
 								sMsg = sMsg.concat(" for both");
 							}
 							else
 							{
 								sMsg = sMsg.concat(" for all ");
-								sMsg = sMsg.concat(txtWorkflowRecordCount.value);
+								sMsg = sMsg.concat($('#txtWorkflowRecordCount').val());
 								}
 									
 								sMsg = sMsg.concat(" of your identified personnel records");
 						}
 			
 						sMsg = sMsg.concat("?");
-					
-						answer = window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMsg,4); // 4 = Yes/No
-						iResetValue = 0;
+						answer =OpenHR.messageBox(sMsg,36); // 4 = Yes/No
+						var iResetValue = 0;
 					}
-					else
-					{
+					else {
 						sMsg = "Workflow Out of Office is currently off.\nWould you like to turn it on";
 					
-						if (txtWorkflowRecordCount.value > 1)
+						if ($('#txtWorkflowRecordCount').val() > 1)
 						{
-							if (txtWorkflowRecordCount.value == 2)
+							if ($('#txtWorkflowRecordCount').val() == 2)
 							{
 								sMsg = sMsg.concat(" for both");
 							}
 							else
 							{
 								sMsg = sMsg.concat(" for all ");
-								sMsg = sMsg.concat(txtWorkflowRecordCount.value);
+								sMsg = sMsg.concat($('#txtWorkflowRecordCount').val());
 								}
 									
 								sMsg = sMsg.concat(" of your identified personnel records");
@@ -113,70 +110,60 @@ function default_window_onload() {
 			
 						sMsg = sMsg.concat("?");
 					
-						answer = window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMsg,4); // 4 = Yes/No
+						answer = OpenHR.messageBox(sMsg,36); // 4 = Yes/No
 						iResetValue = 1;
 					}
 				
 					if (answer == 6) 
 					{
 						// Yes
+						var frmGoto = document.getElementById('frmGoto');
 						frmGoto.txtAction.value = "WORKFLOWOUTOFOFFICE_SET";
-						frmGoto.txtGotoPage.value = "default.asp";
+						frmGoto.txtGotoPage.value = "_default";
 						frmGoto.txtReset.value = iResetValue;
-						frmGoto.submit();
+						OpenHR.submitForm(frmGoto);
 					}
 				}
 						
-				return;	
+				return false;	
 			}
 		}
-		else 
-		{
-			tblMsg.style.visibility="visible";
-			tblMsg.style.display="block";
+		else {
+			$('#tblMsg').show();			
 		}
 	}
 	catch(e) {}
 }		
 </script>
 
-<INPUT type=hidden id=securitySettingFailure name=securitySettingFailure value=0>	
-<INPUT type=hidden id=txtWorkflowOutOfOffice name=txtWorkflowOutOfOffice value=<%=iOutOfOffice%>>
-<INPUT type=hidden id=txtWorkflowRecordCount name=txtWorkflowRecordCount value=<%=iRecordCount%>>
+<input type="hidden" id="securitySettingFailure" name="securitySettingFailure" value="0">
+<input type="hidden" id="txtWorkflowOutOfOffice" name="txtWorkflowOutOfOffice" value="<%=iOutOfOffice%>">
+<input type="hidden" id="txtWorkflowRecordCount" name="txtWorkflowRecordCount" value="<%=iRecordCount%>">
+<input type="hidden" id="txtWf_OutOfOffice" name="txtWf_OutOfOffice" value="<%=Session("WF_OutOfOffice")%>"/>
 <div <%=session("BodyTag")%>>
-<TABLE style="DISPLAY: none; VISIBILITY: hidden" id=tblMsg WIDTH="100%" height="50%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+	<table style="display: none;" id="tblMsg" width="100%" height="50%" class="invisible" cellspacing="0" cellpadding="0">
 		<tr></tr>
-	<TR>
-				<TD>
-			<TABLE class="outline" CELLSPACING=0 CELLPADDING=0 align=center>
-				<TR>
-					<TD height=100 width="50%" ALIGN=middle>
-						Loading menu. Please wait ...
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
+		<tr>
+			<td>
+				<table class="outline" cellspacing="0" cellpadding="0" align="center">
+					<tr>
+						<td height="100" width="50%" align="middle">Loading menu. Please wait ...
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <script type="text/javascript">
-<!--
 		function hideMessage() {
-				var fso;
-				var sMsg;
-
-				tblMsg.style.visibility = "hidden";
-				tblMsg.style.display = "none";
-
+				$('#tblMsg').hide();
 		}
-		-->
 </script>
 
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto>
-	
-<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-
-</FORM>
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
+	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+</form>
 
 <script type="text/javascript">	default_window_onload();</script>
