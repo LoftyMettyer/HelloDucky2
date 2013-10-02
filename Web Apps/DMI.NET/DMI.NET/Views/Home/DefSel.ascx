@@ -395,6 +395,15 @@
 
 			disableNonDefselTabs();
 
+			//reset utilities tab
+			menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+			menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+			menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+			menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
+			menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
+			menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
+
+
 			switch ('<%=Session("defseltype")%>') {
 					case '0':  // "BatchJobs"
 							break;
