@@ -112,6 +112,15 @@
 	//	catch (e) { }
 	//}
 
+	//Show optionframe and hide workframe
+	$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
+	$("#workframe").hide();
+	$("#optionframe").show();
+	
+	//disable run button
+	menu_toolbarEnableItem('mnutoolRunUtilitiesFind', false);
+
+
 	var dataCollection = frmPopup.elements;
 	if (dataCollection != null) {
 		for (i = 0; i < dataCollection.length; i++) {
@@ -169,10 +178,9 @@ End If
 	function util_run_workflow_okClick() {
 			$("#optionframe").hide();
 			$("#workframe").show();
-
-			$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
-			$("#workframe").hide();
-			$("#optionframe").show();
+		
+		//re-enable run button.
+			menu_toolbarEnableItem('mnutoolRunUtilitiesFind', true);
 	}	
 
 </script>
