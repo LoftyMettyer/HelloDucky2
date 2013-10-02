@@ -176,7 +176,7 @@ End If
 	
 
 	function util_run_workflow_okClick() {
-		if (menu_isSSIMode) {
+		if (menu_isSSIMode()) {
 			$("#optionframe").hide();
 			$("#SSILinksFrame").show();
 		} else {

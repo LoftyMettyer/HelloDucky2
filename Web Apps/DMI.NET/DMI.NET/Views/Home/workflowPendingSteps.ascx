@@ -42,16 +42,12 @@
 			for (var i = 0; i < selectedRows.length; i++) {
 				try {
 					var url = selectedRows[i].children[2].innerHTML;					
-					var newWindow = window.open(url);
-					if (window.focus) {
-						//newWindow.focus();
-					}
+					spawnWindow(url, '_blank', screen.availWidth, screen.availHeight, 'yes');
 				}
 				catch(e) {}
 			}		
 		});
 		
-
 		//On clicking "Close" generic closeclck in general.js
 		$("#mnutoolCloseWFPendingStepsFind").hide(function () {
 			// We're hiding this for now but I'm leaving it's 
@@ -80,6 +76,9 @@
 		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
 		<%End If%>
 		
+
+	
+
 	}
 </script>
 
@@ -178,6 +177,33 @@
 		<%Else%>
 		menu_autoLoadPage("workflowPendingSteps", false);
 		<%End If%>
+	}
+	
+	function pausecomp(millis) {
+		var date = new Date();
+		var curDate = null;
+
+		do {
+			curDate = new Date();
+		}
+		while (curDate - date < millis);
+	}
+
+	function spawnWindow(mypage, myname, w, h, scroll) {
+		var newWin;
+		var winl = (screen.availWidth - w) / 2;
+		var wint = (screen.availHeight - h) / 2;
+		var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+
+		newWin = window.open(mypage, myname, winprops);
+
+		try {
+			if (parseInt(navigator.appVersion) >= 4) {
+				pausecomp(300);
+				newWin.window.focus();
+			}
+		}
+		catch (e) { }
 	}
 </script>
 
