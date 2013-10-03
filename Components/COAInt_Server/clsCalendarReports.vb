@@ -4811,7 +4811,7 @@ ErrorTrap:
     Dim iCount As Integer
     Dim strHTML As String
 
-    strHTML = "<select name='cboMonth' id='cboMonth' class='combo' style='WIDTH: 100px' onChange='monthChange();'>" & vbNewLine
+		strHTML = "<select name='cboMonth' title='Current Month' id='cboMonth' class='combo' style='WIDTH: 100px' onChange='monthChange();'>" & vbNewLine
 
     For iCount = 1 To 12
 
