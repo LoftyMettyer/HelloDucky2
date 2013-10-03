@@ -209,7 +209,9 @@
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" disabled="disabled" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
 				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
-				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();
+						<%If Session("defseltype") = "" Then Response.Write(" $('#workframe').hide(); $('#optionframe').show();")%>"
+				/>
 			</div>
 		</div>
 
