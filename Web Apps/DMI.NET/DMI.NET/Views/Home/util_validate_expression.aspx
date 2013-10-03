@@ -1,13 +1,23 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <!DOCTYPE html>
 
 <html>
 <head>
-		<title>OpenHR Intranet</title>
+	<title>OpenHR Intranet</title>
 
-<script type="text/javascript">
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+
+
+	<script type="text/javascript">
 		function util_validate_window_onload() {
 			if (window.txtDisplay.value != "False") {
 				$('#PleaseWaitDiv').hide();
@@ -17,6 +27,7 @@
 				nextPass();
 			}
 		}
+		
 		function overwrite(){
 				nextPass();
 		}
@@ -128,27 +139,27 @@
 						<input type="button" value="Cancel" class="btn" name="Cancel" style="width: 80px" id="Cancel" onclick="cancelClick()" />
 					</div>
 <%
-	dim fOK
-	dim fDisplay
-	dim sUtilType
-	dim sUtilType2
-	dim iExprType
+	Dim fOK As Boolean
+	Dim fDisplay As Boolean
+	Dim sUtilType As String
+	Dim sUtilType2 As String
+	Dim iExprType As Integer
 
-	Dim cmdValidate
-	Dim prmUtilName
-	Dim prmUtilID
-	Dim prmExprType
-	Dim prmUtilOwner
-	Dim prmBaseTableID
-	Dim prmComponentDefn
-	Dim prmTimestamp
-	Dim prmDeletedKeys
-	Dim prmHiddenOwnerKeys
-	Dim prmHiddenNotOwnerKeys
-	Dim prmDeletedDescs
-	Dim prmHiddenOwnerDescs
-	Dim prmHiddenNotOwnerDescs
-	Dim prmErrorCode
+	Dim cmdValidate As Command
+	Dim prmUtilName As ADODB.Parameter
+	Dim prmUtilID As ADODB.Parameter
+	Dim prmExprType As ADODB.Parameter
+	Dim prmUtilOwner As ADODB.Parameter
+	Dim prmBaseTableID As ADODB.Parameter
+	Dim prmComponentDefn As ADODB.Parameter
+	Dim prmTimestamp As ADODB.Parameter
+	Dim prmDeletedKeys As ADODB.Parameter
+	Dim prmHiddenOwnerKeys As ADODB.Parameter
+	Dim prmHiddenNotOwnerKeys As ADODB.Parameter
+	Dim prmDeletedDescs As ADODB.Parameter
+	Dim prmHiddenOwnerDescs As ADODB.Parameter
+	Dim prmHiddenNotOwnerDescs As ADODB.Parameter
+	Dim prmErrorCode As ADODB.Parameter
 
 	Dim iErrorCode As Integer
 	Dim sDeletedKeys As String
@@ -160,21 +171,21 @@
 	Dim iIndex As Integer
 	Dim sDesc As String
 	
-	Dim objExpression
+	Dim objExpression As HR.Intranet.Server.Expression
 	Dim iReturnType As Integer
 			
 	Dim iValidityCode As Integer
 	Dim sValidityMessage As String
 	Dim iOriginalReturnType As Integer
-	Dim cmdDefPropRecords
-	Dim prmType
-	Dim prmID
-	Dim rsDefProp
+	Dim cmdDefPropRecords As Command
+	Dim prmType As ADODB.Parameter
+	Dim prmID As ADODB.Parameter
+	Dim rsDefProp As Recordset
 	Dim sDescription As String
-	Dim cmdCheckHidden
+	Dim cmdCheckHidden As Command
 		
-	Dim prmResult
-	Dim prmMsg
+	Dim prmResult As ADODB.Parameter
+	Dim prmMsg As ADODB.Parameter
 	Dim sHiddenErrorMsg As String
 		
 	fOK = True
@@ -191,9 +202,9 @@
 	End If
 		
 	If Request.Form("validatePass") = 1 Then
-		cmdValidate = CreateObject("ADODB.Command")
+		cmdValidate = New Command
 		cmdValidate.CommandText = "sp_ASRIntValidateExpression"
-		cmdValidate.CommandType = 4	' Stored Procedure
+		cmdValidate.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdValidate.ActiveConnection = Session("databaseConnection")
 
 		prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
@@ -295,20 +306,12 @@
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("			    <td align='right'> " & vbCrLf)
 			Response.Write("    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px; ' id='btnYes'" & vbCrLf)
-			Response.Write("    				        OnClick=""createNew()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("    				        OnClick=""createNew()""/>" & vbCrLf)
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("			    <td align='left'> " & vbCrLf)
 			Response.Write("    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo'" & vbCrLf)
-			Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("			  </tr>" & vbCrLf)
@@ -379,11 +382,7 @@
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 				Response.Write("    				    <input type='button' value='Close' class='btn' name='RemoveComponents' style='width: 80px' id='RemoveComponents'" & vbCrLf)
-				Response.Write("    				        OnClick=""removeComponents(1)""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+				Response.Write("    				        OnClick=""removeComponents(1)""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
@@ -445,11 +444,7 @@
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 							Response.Write("    				    <input type='button' value='Close' class='btn' name='RemoveComponents' style='width: 80px' id='RemoveComponents'" & vbCrLf)
-							Response.Write("    				        OnClick=""removeComponents(2)""" & vbCrLf)
-							Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+							Response.Write("    				        OnClick=""removeComponents(2)""/>" & vbCrLf)
 							Response.Write("			    </td>" & vbCrLf)
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			  </tr>" & vbCrLf)
@@ -507,11 +502,7 @@
 								Response.Write("					<td width='20'></td>" & vbCrLf)
 								Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 								Response.Write("    				    <input type='button' value='Close' class='btn' name='makeHidden' style='width: 80px' id='makeHidden'" & vbCrLf)
-								Response.Write("    				        OnClick=""makeHidden()""" & vbCrLf)
-								Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-								Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-								Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-								Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+								Response.Write("    				        OnClick=""makeHidden()""/>" & vbCrLf)
 								Response.Write("			    </td>" & vbCrLf)
 								Response.Write("					<td width='20'></td>" & vbCrLf)
 								Response.Write("			  </tr>" & vbCrLf)
@@ -572,11 +563,7 @@
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 							Response.Write("    				    <input type='button' value='Close' class='btn' name='ReturnToDefSel' style='width: 80px' id='ReturnToDefSel'" & vbCrLf)
-							Response.Write("    				        OnClick=""returnToDefSel()""" & vbCrLf)
-							Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+							Response.Write("    				        OnClick=""returnToDefSel()""/>" & vbCrLf)
 							Response.Write("			    </td>" & vbCrLf)
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			  </tr>" & vbCrLf)
@@ -631,11 +618,7 @@
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 							Response.Write("    				    <input type='button' value='Close' class='btn' name='RemoveComponents' style='width: 80px' id='RemoveComponents'" & vbCrLf)
-							Response.Write("    				        OnClick=""removeComponents(3)""" & vbCrLf)
-							Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-							Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+							Response.Write("    				        OnClick=""removeComponents(3)""/>" & vbCrLf)
 							Response.Write("			    </td>" & vbCrLf)
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			  </tr>" & vbCrLf)
@@ -670,20 +653,12 @@
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("			    <td align='right'> " & vbCrLf)
 			Response.Write("    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes'" & vbCrLf)
-			Response.Write("    				        OnClick=""overwrite()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("    				        OnClick=""overwrite()""/>" & vbCrLf)
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("			    <td align='left'> " & vbCrLf)
 			Response.Write("    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo'" & vbCrLf)
-			Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width='20'></td>" & vbCrLf)
 			Response.Write("				</tr>" & vbCrLf)
@@ -743,11 +718,7 @@
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 				Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
-				Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+				Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
@@ -769,9 +740,9 @@
 				objExpression = Nothing
 					
 				If iReturnType <> iOriginalReturnType Then
-					cmdDefPropRecords = CreateObject("ADODB.Command")
+					cmdDefPropRecords = New Command()
 					cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
-					cmdDefPropRecords.CommandType = 4	' Stored Procedure
+					cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 
 					cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
 
@@ -829,11 +800,7 @@
 						Response.Write("					<td width='20'></td>" & vbCrLf)
 						Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 						Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
-						Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-						Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-						Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-						Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-						Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+						Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 						Response.Write("			    </td>" & vbCrLf)
 						Response.Write("					<td width='20'></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
@@ -853,9 +820,9 @@
 				(Request.Form("validateOriginalAccess") <> "HD") Then
 			' Check if the expression can be made hidden.
 
-			cmdCheckHidden = CreateObject("ADODB.Command")
+			cmdCheckHidden = New Command()
 			cmdCheckHidden.CommandText = "sp_ASRIntCheckCanMakeHidden"
-			cmdCheckHidden.CommandType = 4 ' Stored Procedure
+			cmdCheckHidden.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdCheckHidden.CommandTimeout = 0
 
 			cmdCheckHidden.ActiveConnection = Session("databaseConnection")
@@ -882,7 +849,7 @@
 				fDisplay = True
 				sHiddenErrorMsg = "Making this " & sUtilType2 & " hidden will automatically make the following definition(s), of which you are the owner, hidden also :" & _
 					"<BR><BR>" & _
-					cmdCheckHidden.Parameters("msg").Value & _
+					cmdCheckHidden.Parameters("msg").Value.ToString() & _
 					"<BR><BR>" & _
 					"Do you wish to continue ?"
 				
@@ -907,20 +874,12 @@
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='right'> " & vbCrLf)
 				Response.Write("    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes'" & vbCrLf)
-				Response.Write("    				        OnClick=""overwrite()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+				Response.Write("    				        OnClick=""overwrite()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='left'> " & vbCrLf)
 				Response.Write("    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo'" & vbCrLf)
-				Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+				Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("				</tr>" & vbCrLf)
@@ -933,16 +892,16 @@
 				If (cmdCheckHidden.Parameters("result").Value = 2) Then
 					sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s) which are included in the following batch jobs of which you are not the owner :" & _
 						"<BR><BR>" & _
-						cmdCheckHidden.Parameters("msg").Value
+						cmdCheckHidden.Parameters("msg").Value.ToString()
 				Else
 					If (cmdCheckHidden.Parameters("result").Value = 3) Then
 						sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s), of which you are not the owner :" & _
 							"<BR><BR>" & _
-							cmdCheckHidden.Parameters("msg").Value
+							cmdCheckHidden.Parameters("msg").Value.ToString()
 					Else
 						sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s) which are included in the following batch jobs which are scheduled to be run by other user groups :" & _
 							"<BR><BR>" & _
-							cmdCheckHidden.Parameters("msg").Value
+							cmdCheckHidden.Parameters("msg").Value.ToString()
 					End If
 				End If
 				fDisplay = True
@@ -968,11 +927,7 @@
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
 				Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
-				Response.Write("    				        OnClick=""cancelClick()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+				Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)

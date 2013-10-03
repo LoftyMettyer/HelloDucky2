@@ -1,11 +1,12 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
 
 <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;" viewastext>
+	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;">
 	<param name="_ExtentX" value="0">
 	<param name="_ExtentY" value="0">
 </object>
@@ -158,20 +159,14 @@
 														<tr>
 															<td width="5">
 																<input checked id="optAccessRW" name="optAccess" type="radio"
-																	onclick="changeAccess()"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
+																	onclick="changeAccess()" />
 															</td>
 															<td width="5">&nbsp;</td>
 															<td width="30">
 																<label
 																	tabindex="-1"
 																	for="optAccessRW"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Read/Write</label>
+																	class="radio">Read/Write</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -199,20 +194,14 @@
 														<tr>
 															<td width="5">
 																<input id="optAccessRO" name="optAccess" type="radio"
-																	onclick="changeAccess()"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
+																	onclick="changeAccess()" />
 															</td>
 															<td width="5">&nbsp;</td>
 															<td width="80" nowrap>
 																<label
 																	tabindex="-1"
 																	for="optAccessRO"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Read Only</label>
+																	class="radio">Read Only</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -237,20 +226,14 @@
 														<tr>
 															<td width="5">
 																<input id="optAccessHD" name="optAccess" type="radio"
-																	onclick="changeAccess()"
-																	onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																	onfocus="try{radio_onFocus(this);}catch(e){}"
-																	onblur="try{radio_onBlur(this);}catch(e){}" />
+																	onclick="changeAccess()" />
 															</td>
 															<td width="5">&nbsp;</td>
 															<td width="60" nowrap>
 																<label
 																	tabindex="-1"
 																	for="optAccessHD"
-																	class="radio"
-																	onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" >Hidden</label>
+																	class="radio">Hidden</label>
 															</td>
 															<td>&nbsp;</td>
 														</tr>
@@ -446,9 +429,9 @@
 		End If
 
 		If Session("action") <> "new" Then
-			Dim cmdDefn = CreateObject("ADODB.Command")
+			Dim cmdDefn As Command = New Command
 			cmdDefn.CommandText = "sp_ASRIntGetExpressionDefinition"
-			cmdDefn.CommandType = 4	' Stored Procedure
+			cmdDefn.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdDefn.ActiveConnection = Session("databaseConnection")
 
 			Dim prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
@@ -530,9 +513,9 @@
 				
 		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 	
-		Dim cmdBaseTable = CreateObject("ADODB.Command")
+		Dim cmdBaseTable As Command = New Command
 		cmdBaseTable.CommandText = "sp_ASRIntGetTableName"
-		cmdBaseTable.CommandType = 4 ' Stored Procedure
+		cmdBaseTable.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdBaseTable.ActiveConnection = Session("databaseConnection")
 
 		Dim prmTableID = cmdBaseTable.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
@@ -605,9 +588,9 @@
 		
 		sShortcutKeys = ""
 	
-		Dim cmdShortcutKeys = CreateObject("ADODB.Command")
+		Dim cmdShortcutKeys As Command = New Command()
 		cmdShortcutKeys.CommandText = "spASRIntGetOpFuncShortcuts"
-		cmdShortcutKeys.CommandType = 4	' Stored Procedure
+		cmdShortcutKeys.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdShortcutKeys.ActiveConnection = Session("databaseConnection")
 
 		Err.Clear()

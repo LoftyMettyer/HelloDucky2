@@ -771,7 +771,6 @@ function refreshControls() {
 	}
 }
 
-
 function changeName() {
 	frmDefinition.SSTree1.Nodes(1).text = frmDefinition.txtName.value;
 	frmUseful.txtChanged.value = 1;
@@ -1445,6 +1444,7 @@ function testClick() {
 			"?action=test";
 
 	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+
 }
 
 function okClick() {
@@ -1461,20 +1461,21 @@ function okClick() {
 			break;
 		default:
 			window.location.href = "defsel";
-			return;
+			return false;
 	}
 
 	submitDefinition();
+	return true;
 }
 
 function cancelClick() {
 
 	if (definitionChanged() == false) {
 		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
-		return;
+		return false;
 	}
 
-	answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
 	if (answer == 7) {
 		// No
 		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
@@ -1485,6 +1486,8 @@ function cancelClick() {
 		// Yes
 		okClick();
 	}
+
+	return false;
 }
 
 function clipboardClick() {
@@ -1917,8 +1920,9 @@ function definitionChanged() {
 }
 
 function submitDefinition() {
-	if (validateExpression() == false) { menu_refreshMenu(); return; }
-	if (populateSendForm() == false) { menu_refreshMenu(); return; }
+
+	if (validateExpression() == false) { menu_refreshMenu(); return false; }
+	if (populateSendForm() == false) { menu_refreshMenu(); return false; }
 
 	// first populate the validate fields
 	frmValidate.validatePass.value = 1;
@@ -1941,11 +1945,13 @@ function submitDefinition() {
 
 	disableButtons();
 
-	sURL = "util_dialog_expression" + "?action=validate";
+	var sURL = "util_dialog_expression" + "?action=validate";
 
 	openDialog(sURL, 500, 170);
 
 	reEnableControls();
+	return true;
+
 }
 
 function disableButtons() {
@@ -2034,14 +2040,14 @@ function validateExpression() {
 	// Check name has been entered.
 	if (frmDefinition.txtName.value == "") {
 		OpenHR.messageBox("You must enter a name for this definition.");
-		return (false);
+		return false;
 	}
 
 	// Check the expression does have some components.      
 	if (frmDefinition.SSTree1.Nodes.Count <= 1) {
 		sMsg = " The " + sTypeName + " must have some components.";
 		OpenHR.messageBox(sMsg);
-		return (false);
+		return false;
 	}
 
 	// Check that all function parameters have some components.      
@@ -2052,12 +2058,12 @@ function validateExpression() {
 		if (sKey == "E") {
 			if (frmDefinition.SSTree1.Nodes(i).children == 0) {
 				OpenHR.messageBox("Function parameters must have components.");
-				return (false);
+				return false;
 			}
 		}
 	}
 
-	return (true);
+	return true;
 }
 
 function populateSendForm() {
@@ -2189,6 +2195,8 @@ function removeComponents(psNodeKeys) {
 }
 
 function returnToDefSel() {
+
+	debugger;
 	window.location.href = "defsel";
 }
 

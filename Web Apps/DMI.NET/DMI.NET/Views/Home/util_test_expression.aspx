@@ -3,17 +3,17 @@
 
 <!DOCTYPE html>
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
+<%--External script resources--%>
+<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 <script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+
 
 <%
 		' Write the prompted values from the calling form into a session variable.
@@ -53,9 +53,11 @@
 <head runat="server">
 		<title>OpenHR Intranet</title>
 		
-		<script ID="clientEventHandlersJS"  type="text/javascript">
+		<script type="text/javascript">
 				function util_test_expression_onload() {
 
+					var iNewWidth;
+					
 						if (txtDisplay.value != "False") {
 
 								// Hide the 'please wait' message.
@@ -73,7 +75,7 @@
 								var bdyMain = $("#bdyMain");
 
 								// Resize the grid to show all prompted values.
-								iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
+								var iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
 								if (bdyMain.offsetWidth + iResizeBy > screen.width) {
 										window.dialogWidth = new String(screen.width) + "px";
 								}
@@ -152,36 +154,29 @@
 				<tr id=trPleaseWait3> 
 					<td width=20></td>
 					<td align=center colspan=3> 
-						<INPUT id=Cancel name=Cancel class="btn" type=button value=OK style="WIDTH: 80px" width="80" 
-								onclick="self.close()"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+						<input id=Cancel name=Cancel class="btn" type=button value=OK style="WIDTH: 80px" width="80" 
+								onclick="self.close()" />
 					</td>
 					<td width=20></td>
 				</tr>
 
 
 <%
-	dim fOK
-	dim fDisplay
-	dim sUtilType
-		Dim sUtilType2
-		Dim objExpression
-		Dim iExprType As Integer
-		Dim iReturnType As Integer
-		Dim iValidityCode As Integer
-		Dim sValidityMessage As String
-		Dim sFilterCode As String
-		Dim iRecCount As Integer
-		Dim sMsg1 As String
-		Dim sMsg As String
+	Dim fOK As Boolean
+	Dim fDisplay As Boolean
+	Dim sUtilType As String
+	Dim sUtilType2 As String
+	Dim objExpression As HR.Intranet.Server.Expression
+	Dim iExprType As Integer
+	Dim iReturnType As Integer
+	Dim iValidityCode As Integer
+	Dim sValidityMessage As String
+	Dim sFilterCode As String
+	Dim iRecCount As Integer
+	Dim sMsg1 As String
+	Dim sMsg As String
 
-	dim mvarUDFsRequired()
-	redim preserve mvarUDFsRequired(0)
-
-	fOK = true
+	fOK = True
 	fDisplay = false
 	
 	if Request.form("type") = "11" then
@@ -245,13 +240,9 @@
 						Response.Write("			  <tr> " & vbCrLf)
 						Response.Write("					<td width=20></td>" & vbCrLf)
 						Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-%>			
-									<INPUT id=Button1 name=Cancel type=button class="btn" value=OK style="WIDTH: 80px" width=80 
-											onclick="self.close()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+%>
+				<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="WIDTH: 80px" width="80"
+					onclick="self.close()" />
 <%
 		Response.Write("			    </td>" & vbCrLf)
 		Response.Write("					<td width=20></td>" & vbCrLf)
@@ -317,11 +308,7 @@ Response.Write("					<td width=20></td>" & vbCrLf)
 Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 %>
 								<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="WIDTH: 80px" width="80"
-										onclick="self.close()"
-										onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}"
-										onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										onclick="self.close()"/>
 								<%
 										Response.Write("			    </td>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)
@@ -330,7 +317,7 @@ Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 	
 								objExpression = Nothing
 	
-								Response.Write("<INPUT type=hidden id=txtDisplay name=txtDisplay value=" & fDisplay & ">" & vbCrLf)
+								Response.Write("<input type=hidden id=txtDisplay name=txtDisplay value=" & fDisplay & ">" & vbCrLf)
 								%>
 								<tr height="10">
 										<td colspan="5"></td>

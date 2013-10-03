@@ -1,16 +1,16 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 
 
 <form action="" method="POST" id="frmMainForm" name="frmMainForm">
 	<%
-		Dim cmdParameter
-		Dim prmFunctionID
-		Dim prmParameterIndex
-		Dim prmPassByType
+		Dim cmdParameter As Command
+		Dim prmFunctionID As ADODB.Parameter
+		Dim prmParameterIndex As ADODB.Parameter
+		Dim prmPassByType As ADODB.Parameter
 		
 		Dim iPassBy As Integer
 		Dim sErrMsg As String
@@ -18,9 +18,9 @@
 		
 		iPassBy = 1
 		If (Len(sErrMsg) = 0) And (Session("optionFunctionID") > 0) Then
-			cmdParameter = CreateObject("ADODB.Command")
+			cmdParameter = New Command
 			cmdParameter.CommandText = "spASRIntGetParameterPassByType"
-			cmdParameter.CommandType = 4 ' Stored Procedure
+			cmdParameter.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdParameter.ActiveConnection = Session("databaseConnection")
 
 			prmFunctionID = cmdParameter.CreateParameter("functionID", 3, 1) ' 3=integer, 1=input
@@ -484,11 +484,7 @@
 																						</td>
 																						<td >
 																							<input id="btnFieldRecOrder" name="btnFieldRecOrder" style="width: 100%; " class="btn" type="button" value="..."
-																								onclick="field_selectRecOrder()"
-																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																								onfocus="try{button_onFocus(this);}catch(e){}"
-																								onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecOrder()"/>
 																						</td>
 																					</tr>
 																				</table>
@@ -513,11 +509,7 @@
 																						</td>
 																						<td >
 																							<input id="btnFieldRecFilter" name="btnFieldRecFilter" class="btn" style="width: 100%; " type="button" value="..."
-																								onclick="field_selectRecFilter()"
-																								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																								onfocus="try{button_onFocus(this);}catch(e){}"
-																								onblur="try{button_onBlur(this);}catch(e){}" />
+																								onclick="field_selectRecFilter()"/>
 																						</td>
 																					</tr>
 																				</table>
@@ -1097,8 +1089,7 @@
 														<label
 															for="chkOwnersFilters"
 															class="checkbox"
-															tabindex="0"
-															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
+															tabindex="0">
 															Only show filters where owner is '<% =session("Username") %>'
 														</label>
 													</td>
@@ -1501,20 +1492,12 @@
 									
 									<td width="10">
 										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="width: 75px" width="75"
-											onclick="component_OKClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_OKClick()" />
 									</td>
 									<td width="20"></td>
 									<td width="10">
 										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="width: 75px" width="75"
-											onclick="component_CancelClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="component_CancelClick()"/>
 									</td>
                                     <td></td>
 								</tr>
@@ -1618,15 +1601,15 @@
 
 <form id="frmTables" name="frmTables">
 	<%
-		Dim cmdTables
-		Dim prmTableID
-		Dim rstTables
+		Dim cmdTables As Command
+		Dim prmTableID As ADODB.Parameter
+		Dim rstTables As Recordset
 		Dim iCount As Integer
 		
 		If Len(sErrMsg) = 0 Then
-			cmdTables = CreateObject("ADODB.Command")
+			cmdTables = New Command
 			cmdTables.CommandText = "sp_ASRIntGetExprTables"
-			cmdTables.CommandType = 4	' Stored Procedure
+			cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdTables.ActiveConnection = Session("databaseConnection")
 
 			prmTableID = cmdTables.CreateParameter("tableID", 3, 1)	' 3=integer, 1=input
@@ -1643,7 +1626,7 @@
 					iCount = 0
 					Do While Not rstTables.EOF
 						iCount = iCount + 1
-						Response.Write("<INPUT type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & rstTables.fields("definitionString").value & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & rstTables.Fields("definitionString").Value & """>" & vbCrLf)
 						rstTables.MoveNext()
 					Loop
 
@@ -1661,13 +1644,13 @@
 
 <form id="frmFunctions" name="frmFunctions">
 	<%
-		Dim cmdFunctions
-		Dim rstFunctions
+		Dim cmdFunctions As Command
+		Dim rstFunctions As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFunctions = CreateObject("ADODB.Command")
+			cmdFunctions = New Command
 			cmdFunctions.CommandText = "sp_ASRIntGetExprFunctions"
-			cmdFunctions.CommandType = 4 ' Stored Procedure
+			cmdFunctions.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdFunctions.ActiveConnection = Session("databaseConnection")
 
 			prmTableID = cmdFunctions.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
@@ -1684,7 +1667,7 @@
 					iCount = 0
 					Do While Not rstFunctions.EOF
 						iCount = iCount + 1
-						Response.Write("<INPUT type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & rstFunctions.fields("definitionString").value & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & rstFunctions.Fields("definitionString").Value & """>" & vbCrLf)
 						rstFunctions.MoveNext()
 					Loop
 
@@ -1702,13 +1685,13 @@
 
 <form id="frmFunctionParameters" name="frmFunctionParameters">
 	<%
-		Dim cmdFunctionParameters
-		Dim rstFunctionParameters
+		Dim cmdFunctionParameters As Command
+		Dim rstFunctionParameters As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFunctionParameters = CreateObject("ADODB.Command")
+			cmdFunctionParameters = New Command()
 			cmdFunctionParameters.CommandText = "sp_ASRIntGetExprFunctionParameters"
-			cmdFunctionParameters.CommandType = 4	' Stored Procedure
+			cmdFunctionParameters.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdFunctionParameters.ActiveConnection = Session("databaseConnection")
 
 			Err.Clear()
@@ -1720,7 +1703,7 @@
 					' Read recordset values.
 					iCount = 1
 					Do While Not rstFunctionParameters.EOF
-						Response.Write("<INPUT type='hidden' id=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " name=txtFunctionParameters_" & rstFunctionParameters.fields("functionID").value & "_" & iCount & " value=""" & rstFunctionParameters.fields("parameterName").value & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtFunctionParameters_" & rstFunctionParameters.Fields("functionID").Value & "_" & iCount & " name=txtFunctionParameters_" & rstFunctionParameters.Fields("functionID").Value & "_" & iCount & " value=""" & rstFunctionParameters.Fields("parameterName").Value & """>" & vbCrLf)
 						iCount = iCount + 1
 						rstFunctionParameters.MoveNext()
 					Loop
@@ -1739,13 +1722,13 @@
 
 <form id="frmOperators" name="frmOperators">
 	<%
-		Dim cmdOperators
-		Dim rstOperators
+		Dim cmdOperators As Command
+		Dim rstOperators As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdOperators = CreateObject("ADODB.Command")
+			cmdOperators = New Command()
 			cmdOperators.CommandText = "sp_ASRIntGetExprOperators"
-			cmdOperators.CommandType = 4 ' Stored Procedure
+			cmdOperators.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdOperators.ActiveConnection = Session("databaseConnection")
 
 			Err.Clear()
@@ -1758,7 +1741,7 @@
 					iCount = 0
 					Do While Not rstOperators.EOF
 						iCount = iCount + 1
-						Response.Write("<INPUT type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & rstOperators.fields("definitionString").value & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & rstOperators.Fields("definitionString").Value & """>" & vbCrLf)
 						rstOperators.MoveNext()
 					Loop
 
@@ -1776,17 +1759,15 @@
 
 <form id="frmCalcs" name="frmCalcs">
 	<%
-		Dim cmdCalcs
-		Dim rstCalcs
-		Dim prmExprID
-		Dim prmBaseTableID
-		
-		
+		Dim cmdCalcs As Command
+		Dim rstCalcs As Recordset
+		Dim prmExprID As ADODB.Parameter
+		Dim prmBaseTableID As ADODB.Parameter	
 		
 		If Len(sErrMsg) = 0 Then
-			cmdCalcs = CreateObject("ADODB.Command")
+			cmdCalcs = New Command
 			cmdCalcs.CommandText = "sp_ASRIntGetExprCalcs"
-			cmdCalcs.CommandType = 4 ' Stored Procedure
+			cmdCalcs.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdCalcs.ActiveConnection = Session("databaseConnection")
 
 			prmExprID = cmdCalcs.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
@@ -1807,8 +1788,8 @@
 					iCount = 0
 					Do While Not rstCalcs.EOF
 						iCount = iCount + 1
-						Response.Write("<INPUT type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(rstCalcs.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(rstCalcs.fields("description").value, """", "&quot;") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(rstCalcs.Fields("definitionString").Value, """", "&quot;") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(rstCalcs.Fields("description").Value, """", "&quot;") & """>" & vbCrLf)
 						rstCalcs.MoveNext()
 					Loop
 
@@ -1826,13 +1807,13 @@
 
 <form id="frmFilters" name="frmFilters">
 	<%
-		Dim cmdFilters
-		Dim rstFilters
+		Dim cmdFilters As Command
+		Dim rstFilters As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFilters = CreateObject("ADODB.Command")
+			cmdFilters = New Command
 			cmdFilters.CommandText = "sp_ASRIntGetExprFilters"
-			cmdFilters.CommandType = 4 ' Stored Procedure
+			cmdFilters.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdFilters.ActiveConnection = Session("databaseConnection")
 
 			prmExprID = cmdFilters.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
@@ -1853,8 +1834,8 @@
 					iCount = 0
 					Do While Not rstFilters.EOF
 						iCount = iCount + 1
-						Response.Write("<INPUT type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(rstFilters.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(rstFilters.fields("description").value, """", "&quot;") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(rstFilters.Fields("definitionString").Value, """", "&quot;") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(rstFilters.Fields("description").Value, """", "&quot;") & """>" & vbCrLf)
 						rstFilters.MoveNext()
 					Loop
 
@@ -1887,8 +1868,8 @@
 <script runat="server" language="vb">
 
 	Function componentParameter(psDefnString, psParameter)
-		Dim iCharIndex
-		Dim sDefn
+		Dim iCharIndex As Integer
+		Dim sDefn As String
 	
 		sDefn = psDefnString
 	
