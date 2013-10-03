@@ -99,7 +99,7 @@
 									<h6>Log Off</h6>
 								</a>
 							</div>
-							<div id="mnutoolFixedChangePassword" class="button">
+							<div id="mnutoolPasswordChange" class="button">
 								<a href="#" rel="table" title="Change Password">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/ChangePassword64HOVER.png") %>"
 										alt="" />
