@@ -518,7 +518,7 @@ function selectAbsenceRecordOption(psType) {
         "&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) + 
         "&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
         "&recSelTable=" + escape(frmRecordSelection.recSelTable.value);
-    openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
+	  openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
 }
 
 function changeRecordOptions(psType)

@@ -37,10 +37,10 @@
 		With _RecordSelectionHTMLTable
 			.Append("<table id='RecordSelectionHTMLTable'>")
 			.Append("<tr>")
-			.Append("<th id='IDHeader'>ID</th>")
-			.Append("<th id='NameHeader'>Name</th>")
-			.Append("<th id='UserNameHeader'>UserName</th>")
-			.Append("<th id='AccessHeader'>Access</th>")
+			.Append("<th id='ID'>ID</th>")
+			.Append("<th id='Name'>Name</th>")
+			.Append("<th id='UserName'>UserName</th>")
+			.Append("<th id='Access'>Access</th>")
 			.Append("</tr>")
 		End With
 		'Loop over the records
@@ -84,7 +84,8 @@
 </head>
 
 <body id="bdyMain" bgcolor='<%=session("ConvertedDesktopColour")%>' leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
-
+	
+<div style="margin-left: 10px; margin-right: 10px;">
 	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
 		<input type="hidden" id="txtSelectedID" name="txtSelectedID">
 		<input type="hidden" id="txtSelectedName" name="txtSelectedName">
@@ -123,6 +124,8 @@
 			</td>
 		</tr>
 	</table>
+
+</div>
 
 	<form id="frmFromOpener" name="frmFromOpener" style="visibility: hidden; display: none">
 		<input type="hidden" id="txtSelType" name="txtSelType" value='<% =Request("recSelType") %>'>
@@ -412,12 +415,19 @@
 			});
 
 			tableToGrid("#RecordSelectionHTMLTable", {
+				colNames: ['ID', 'Name', 'UserName', 'Access'],
+				colModel: [
+					{ name: 'ID', hidden: true },
+					{ name: 'Name', sortable: false },
+					{ name: 'UserName', hidden: true },
+					{ name: 'Access', hidden: true }
+				],
 				onSelectRow: function (rowID){
 					//Get the values selected by the user...
-					var ID = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].IDHeader;
-					var Name = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].NameHeader;
-					var UserName = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].UserNameHeader;
-					var Access = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].AccessHeader;
+					var ID = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].ID;
+					var Name = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].Name;
+					var UserName = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].UserName;
+					var Access = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].Access;
 
 					// ... and set the form values accordingly
 					frmPopup.txtSelectedID.value = ID;
@@ -427,20 +437,17 @@
 				},
 				rowNum: 1000,   //TODO set this to blocksize...
 				height: 320,
+				width: (screen.width) / 3 + 5,
 				scrollerbar: true
 			});
 			
-			//Hide the ID, UserName, and Access table headers and their column
-			$('#bdyMain .ui-jqgrid-htable tr th:nth-child(1)').hide();
-			$('#bdyMain #RecordSelectionHTMLTable tr td:nth-child(1)').hide();
-			$('#bdyMain .ui-jqgrid-htable tr th:nth-child(3)').hide();
-			$('#bdyMain #RecordSelectionHTMLTable tr td:nth-child(3)').hide();
-			$('#bdyMain .ui-jqgrid-htable tr th:nth-child(4)').hide();
-			$('#bdyMain #RecordSelectionHTMLTable tr td:nth-child(4)').hide();
-
 			//Select the first row
 			$("#RecordSelectionHTMLTable").jqGrid('setSelection', 1);
 		}
 	</script>
+	
+	<style>
+		#gbox_RecordSelectionHTMLTable {margin-left: 5px; }
+	</style>
 </body>
 </html>
