@@ -1372,8 +1372,8 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
 		menu_toolbarEnableItem("mnutoolNewRecord", fMnutoolNewRecord);
-						menu_setVisibleMenuItem("mnutoolCopyRecord", true);
-						menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
+		menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);		
 		menu_toolbarEnableItem("mnutoolSaveRecord", ($("#ctlRecordEdit #changed").val() == "true"));
@@ -1385,8 +1385,8 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
 		menu_setVisibleMenuItem("mnutoolParentRecord", !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
-						menu_setVisibleMenuItem("mnutoolBackRecord", false);
-						menu_toolbarEnableItem("mnutoolBackRecord", false);
+		menu_setVisibleMenuItem("mnutoolBackRecord", false);
+		menu_toolbarEnableItem("mnutoolBackRecord", false);
 		menu_setVisibletoolbarGroup("mnutoolNewRecord", true);
 
 		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
@@ -1440,7 +1440,7 @@ function menu_refreshMenu() {
 
 
 		
-						// Standard reports group
+		// Standard reports group
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				(frmMenuInfo.txtUserType.value == 0) &&
@@ -1507,14 +1507,11 @@ function menu_refreshMenu() {
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);  //hide for SSI
 		}
 		else {
-				menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Calendar
-				menu_setVisibleMenuItem("mnutoolAbsenceCalendarRecord", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
+				menu_setVisibleMenuItem("mnutoolAbsenceCalendarRecord", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Calendar
 				menu_toolbarEnableItem("mnutoolAbsenceCalendarRecord", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
-				menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);	//Menu Item - Absence Breakdown
-				menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
+				menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Breakdown
 				menu_toolbarEnableItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
-				menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
-				menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);	//Toolbar Icon
+				menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
 				menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
@@ -4652,6 +4649,11 @@ function menu_enableMenuItem(itemId, fNewSetting) {
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
 
+	if ($("#" + itemId).length == 0)
+	{
+		console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId);
+	}
+	
 	var currSrc = $("#" + itemId + " img:first").attr("src");
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
@@ -4686,6 +4688,10 @@ function menu_toolbarEnableItem(itemId, fNewSetting) {
 function menu_setVisibleMenuItem(itemId, fNewSetting) {
 	
 		var sNewValue = "";
+
+		if ($("#" + itemId).length == 0) {
+			console.log('Wrong menu item ID in menu_setVisibleMenuItem: ' + itemId);
+		}
 
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 			if ($("#" + itemId).hasClass("hidden")) {
