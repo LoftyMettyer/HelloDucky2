@@ -1390,7 +1390,7 @@ Namespace Controllers
 						Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
 						Dim fShowOOOHyperlink As Boolean = False
 
-						Dim cmdShowOOOLink = CreateObject("ADODB.Command")
+						Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
 						cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
 						cmdShowOOOLink.CommandType = 4 ' Stored procedure
 						cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
