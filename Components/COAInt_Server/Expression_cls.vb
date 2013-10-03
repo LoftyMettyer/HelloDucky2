@@ -44,13 +44,12 @@ ErrorTrap:
     Dim lngRecCount As Integer
     Dim rstTemp As ADODB.Recordset
 
-    lngRecCount = 0
-
     rstTemp = datGeneral.GetRecords(psFilterCode)
     lngRecCount = rstTemp.Fields(0).Value
     rstTemp.Close()
     'UPGRADE_NOTE: Object rstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rstTemp = Nothing
+
 
 TidyUpAndExit:
     TestFilterCode = lngRecCount
@@ -70,14 +69,9 @@ ErrorTrap:
 
     fOK = mobjBaseExpr.RuntimeFilterCode(strFilterCode, True, False, mvarPrompts)
 
-    'JPD 20030325 Fault 5161
-    'If fOK then
-    If fOK And gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).AllowSelect Then
-      'strSQL = "SELECT COUNT(*) FROM " & _
-      'gcoTablePrivileges.Item(mobjBaseExpr.BaseTableName).RealSource & _
-      '" WHERE ID IN (" & strFilterCode & ")"
-      strSQL = "SELECT COUNT(ID) FROM " & gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).RealSource & " WHERE ID IN (" & strFilterCode & ")"
-    End If
+		If fOK And gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).AllowSelect Then
+			strSQL = "SELECT COUNT(ID) FROM " & gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).RealSource & " WHERE ID IN (" & strFilterCode & ")"
+		End If
 
     RuntimeFilterCode = strSQL
 
@@ -182,18 +176,18 @@ ErrorTrap:
     If SaveExpression Then
       If lngOriginalExprID = 0 Then
         Select Case mobjBaseExpr.ExpressionType
-          Case modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION
-            Call UtilCreated(modUtilAccessLog.UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
-          Case modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER
-            Call UtilCreated(modUtilAccessLog.UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
-        End Select
+					Case ExpressionTypes.giEXPR_RUNTIMECALCULATION
+						Call UtilCreated(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
+					Case ExpressionTypes.giEXPR_RUNTIMEFILTER
+						Call UtilCreated(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
+				End Select
       Else
         Select Case mobjBaseExpr.ExpressionType
-          Case modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION
-            Call UtilUpdateLastSaved(modUtilAccessLog.UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
-          Case modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER
-            Call UtilUpdateLastSaved(modUtilAccessLog.UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
-        End Select
+					Case ExpressionTypes.giEXPR_RUNTIMECALCULATION
+						Call UtilUpdateLastSaved(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
+					Case ExpressionTypes.giEXPR_RUNTIMEFILTER
+						Call UtilUpdateLastSaved(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
+				End Select
       End If
     End If
 
@@ -213,12 +207,11 @@ ErrorTrap:
     Dim sParameter As String
 
     Dim sNodeKey As String
-    Dim lngExprID As Integer
-    Dim lngCompID As Integer
+		Dim lngCompID As Integer
     Dim iType As Short
     Dim lngFieldColumnID As Integer
     Dim iFieldPassBy As Short
-    Dim lngFieldSelectionTableID As Integer
+		Dim lngFieldSelectionTableID As Integer
     Dim iFieldSelectionRecord As Short
     Dim lngFieldSelectionLine As Integer
     Dim lngFieldSelectionOrderID As Integer
@@ -313,33 +306,32 @@ ErrorTrap:
           Select Case iParameterIndex
             Case 1
               sNodeKey = sParameter
-              lngExprID = CInt(Mid(sNodeKey, 2))
-            Case 15
-              sCompType = "U"
+						Case 15
+							sCompType = "U"
 
-              ' Put this sub-expression in our array of sub-expressions.
-              For iCount = 1 To UBound(avSubExpressions, 2)
-                'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(2, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If (avSubExpressions(2, iCount) = sParentNodeKey) And (avSubExpressions(1, iCount) = "") Then
-                  'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  avSubExpressions(1, iCount) = sNodeKey
+							' Put this sub-expression in our array of sub-expressions.
+							For iCount = 1 To UBound(avSubExpressions, 2)
+								'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(2, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If (avSubExpressions(2, iCount) = sParentNodeKey) And (avSubExpressions(1, iCount) = "") Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									avSubExpressions(1, iCount) = sNodeKey
 
-                  iIndex2 = InStr(psNames, vbTab)
-                  If iIndex2 > 0 Then
-                    sName = Left(psNames, iIndex2 - 1)
-                    psNames = Mid(psNames, iIndex2 + 1)
-                  Else
-                    sName = psNames
-                    psNames = ""
-                  End If
+									iIndex2 = InStr(psNames, vbTab)
+									If iIndex2 > 0 Then
+										sName = Left(psNames, iIndex2 - 1)
+										psNames = Mid(psNames, iIndex2 + 1)
+									Else
+										sName = psNames
+										psNames = ""
+									End If
 
-                  'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions().Name. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  avSubExpressions(3, iCount).Name = sName
-                  Exit For
-                End If
-              Next iCount
-          End Select
+									'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions().Name. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									avSubExpressions(3, iCount).Name = sName
+									Exit For
+								End If
+							Next iCount
+					End Select
         Else
           ' Currently reading a component.
           Select Case iParameterIndex
@@ -509,130 +501,130 @@ ErrorTrap:
 
               With objComponent.Component
                 Select Case iType
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .TableID = lngFieldTableID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ColumnID = lngFieldColumnID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FieldPassType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .FieldPassType = iFieldPassBy
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .SelectionType = iFieldSelectionRecord
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionLine. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .SelectionLine = lngFieldSelectionLine
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionOrderID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .SelectionOrderID = lngFieldSelectionOrderID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionFilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .SelectionFilterID = lngFieldSelectionFilter
+									Case ExpressionComponentTypes.giCOMPONENT_FIELD
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.TableID = lngFieldTableID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ColumnID = lngFieldColumnID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FieldPassType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.FieldPassType = iFieldPassBy
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.SelectionType = iFieldSelectionRecord
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionLine. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.SelectionLine = lngFieldSelectionLine
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionOrderID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.SelectionOrderID = lngFieldSelectionOrderID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.SelectionFilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.SelectionFilterID = lngFieldSelectionFilter
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FunctionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .FunctionID = lngFunctionID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Parameters. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    For Each objParameter In .Parameters
-                      iNextIndex = UBound(avSubExpressions, 2) + 1
-                      ReDim Preserve avSubExpressions(3, iNextIndex)
-                      'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                      avSubExpressions(1, iNextIndex) = ""
-                      'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                      avSubExpressions(2, iNextIndex) = sNodeKey
-                      avSubExpressions(3, iNextIndex) = objParameter.Component
-                    Next objParameter
+									Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FunctionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.FunctionID = lngFunctionID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Parameters. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										For Each objParameter In .Parameters
+											iNextIndex = UBound(avSubExpressions, 2) + 1
+											ReDim Preserve avSubExpressions(3, iNextIndex)
+											'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											avSubExpressions(1, iNextIndex) = ""
+											'UPGRADE_WARNING: Couldn't resolve default property of object avSubExpressions(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											avSubExpressions(2, iNextIndex) = sNodeKey
+											avSubExpressions(3, iNextIndex) = objParameter.Component
+										Next objParameter
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_CALCULATION
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.CalculationID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .CalculationID = lngCalculationID
+									Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.CalculationID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.CalculationID = lngCalculationID
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_VALUE
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ReturnType = iValueType
-                    Select Case iValueType
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = sValueCharacter
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = dblValueNumeric
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = fValueLogic
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = dtValueDate
-                    End Select
+									Case ExpressionComponentTypes.giCOMPONENT_VALUE
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ReturnType = iValueType
+										Select Case iValueType
+											Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = sValueCharacter
+											Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = dblValueNumeric
+											Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = fValueLogic
+											Case ExpressionValueTypes.giEXPRVALUE_DATE
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = dtValueDate
+										End Select
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.OperatorID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .OperatorID = lngOperatorID
+									Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.OperatorID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.OperatorID = lngOperatorID
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .TableID = lngLookupTableID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ColumnID = lngLookupColumnID
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ReturnType = iValueType
+									Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.TableID = lngLookupTableID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ColumnID = lngLookupColumnID
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ReturnType = iValueType
 
-                    Select Case iValueType
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = sValueCharacter
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = dblValueNumeric
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = fValueLogic
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .Value = dtValueDate
-                    End Select
+										Select Case iValueType
+											Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = sValueCharacter
+											Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = dblValueNumeric
+											Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = fValueLogic
+											Case ExpressionValueTypes.giEXPRVALUE_DATE
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.Value = dtValueDate
+										End Select
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Prompt. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .Prompt = sPromptDescription
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ValueType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ValueType = iValueType
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnSize. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ReturnSize = iPromptSize
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnDecimals. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ReturnDecimals = iPromptDecimals
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ValueFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .ValueFormat = sPromptMask
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .DefaultDateType = iPromptDateType
+									Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.Prompt. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.Prompt = sPromptDescription
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ValueType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ValueType = iValueType
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnSize. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ReturnSize = iPromptSize
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ReturnDecimals. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ReturnDecimals = iPromptDecimals
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.ValueFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.ValueFormat = sPromptMask
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.DefaultDateType = iPromptDateType
 
-                    Select Case iValueType
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .DefaultValue = sValueCharacter
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .DefaultValue = dblValueNumeric
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .DefaultValue = fValueLogic
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .DefaultValue = dtValueDate
-                      Case modExpression.ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
-                        'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        .DefaultValue = sValueCharacter
-                    End Select
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.LookupColumn. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .LookupColumn = lngFieldColumnID
+										Select Case iValueType
+											Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.DefaultValue = sValueCharacter
+											Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.DefaultValue = dblValueNumeric
+											Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.DefaultValue = fValueLogic
+											Case ExpressionValueTypes.giEXPRVALUE_DATE
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.DefaultValue = dtValueDate
+											Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
+												'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												.DefaultValue = sValueCharacter
+										End Select
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.LookupColumn. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.LookupColumn = lngFieldColumnID
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
-                    ' Not required.
+									Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
+										' Not required.
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-                    ' Sub-expressions are handled via the Function component class.
+									Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+										' Sub-expressions are handled via the Function component class.
 
-                  Case modExpression.ExpressionComponentTypes.giCOMPONENT_FILTER
-                    ' Load information for filters
-                    'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    .FilterID = lngFilterID
-                End Select
+									Case ExpressionComponentTypes.giCOMPONENT_FILTER
+										' Load information for filters
+										'UPGRADE_WARNING: Couldn't resolve default property of object objComponent.Component.FilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										.FilterID = lngFilterID
+								End Select
               End With
 
               objComponent.ComponentID = lngCompID
@@ -663,11 +655,11 @@ ErrorTrap:
   End Function
 
   Public Function ReturnType() As Short
-    ReturnType = mobjBaseExpr.ReturnType
+		Return mobjBaseExpr.ReturnType
   End Function
 
   Public Function ExpressionID() As Integer
-    ExpressionID = mobjBaseExpr.ExpressionID
+		Return mobjBaseExpr.ExpressionID
   End Function
 
   Public Function ExistingExpressionReturnType(ByRef plngExprID As Integer) As Short
@@ -709,21 +701,18 @@ ErrorTrap:
     ValidateExpression = mobjBaseExpr.ValidateExpression(True)
 
     'JPD 20040507 Fault 8600
-    If (ValidateExpression = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And (mlngExpressionID > 0) Then
+		If (ValidateExpression = ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And (mlngExpressionID > 0) Then
 
-      If mobjBaseExpr.ContainsExpression(mlngExpressionID) Then
-        ValidateExpression = modExpression.ExprValidationCodes.giEXPRVALIDATION_CYCLIC
-      End If
-    End If
+			If mobjBaseExpr.ContainsExpression(mlngExpressionID) Then
+				ValidateExpression = ExprValidationCodes.giEXPRVALIDATION_CYCLIC
+			End If
+		End If
 
   End Function
 
   Public Function ValidityMessage(ByRef piValidityCode As Short) As String
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object mobjBaseExpr.ValidityMessage(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    ValidityMessage = mobjBaseExpr.ValidityMessage(piValidityCode)
-
-  End Function
+		Return mobjBaseExpr.ValidityMessage(piValidityCode)
+	End Function
 
   Public Sub UDFFilterCode(ByRef pbCreate As Boolean)
 
@@ -745,34 +734,32 @@ ErrorTrap:
     On Error GoTo ExecuteSQL_ERROR
 
     ' Create the UDFs
-    'JPD 20031219 Fault 7773
-    'mobjBaseExpr.UDFFilterCode varUDFs, false
-    mobjBaseExpr.UDFFilterCode(varUDFs, pbCreate)
+		mobjBaseExpr.UDFFilterCode(varUDFs, pbCreate)
 
     clsData = New clsDataAccess
 
-    For iCount = 1 To UBound(varUDFs)
+		For iCount = LBound(varUDFs) To UBound(varUDFs)
 
-      'JPD 20060110 Fault 10509
-      'strFunctionName = Mid(varUDFs(iCount), 17, 15)
-      iStart = InStr(varUDFs(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-      iEnd = InStr(1, Mid(varUDFs(iCount), 1, 1000), "(@Pers")
-      strFunctionNumber = Mid(varUDFs(iCount), iStart, iEnd - iStart)
-      strFunctionName = FUNCTIONPREFIX & strFunctionNumber
+			'JPD 20060110 Fault 10509
+			'strFunctionName = Mid(varUDFs(iCount), 17, 15)
+			iStart = InStr(varUDFs(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
+			iEnd = InStr(1, Mid(varUDFs(iCount), 1, 1000), "(@Pers")
+			strFunctionNumber = Mid(varUDFs(iCount), iStart, iEnd - iStart)
+			strFunctionName = FUNCTIONPREFIX & strFunctionNumber
 
-      'Drop existing function (could exist if the expression is used more than once in a report)
-      strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+			'Drop existing function (could exist if the expression is used more than once in a report)
+			strDropCode = "IF EXISTS" & " (SELECT * FROM sysobjects WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
 
-      gADOCon.Execute(strDropCode)
+			gADOCon.Execute(strDropCode)
 
-      ' Create the new function
-      If pbCreate Then
-        sUDFCode = varUDFs(iCount)
+			' Create the new function
+			If pbCreate Then
+				sUDFCode = varUDFs(iCount)
 
-        gADOCon.Execute(sUDFCode)
-      End If
+				gADOCon.Execute(sUDFCode)
+			End If
 
-    Next iCount
+		Next iCount
 
 
     Exit Sub

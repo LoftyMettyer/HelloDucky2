@@ -33,19 +33,15 @@ Friend Class clsExprExpression
 	
 	Public ReadOnly Property ComponentDescription() As String
 		Get
-			' Return the expression name.
-			ComponentDescription = msExpressionName
-			
+			Return msExpressionName		
 		End Get
 	End Property
-	
-	
 	
 	Public Property ExpressionID() As Integer
 		Get
 			' Return the expression ID.
 			ExpressionID = mlngExpressionID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the expression ID.
@@ -53,7 +49,7 @@ Friend Class clsExprExpression
 				mlngExpressionID = Value
 				mfConstructed = False
 			End If
-			
+
 		End Set
 	End Property
 	
@@ -73,8 +69,7 @@ Friend Class clsExprExpression
 				mlngBaseTableID = Value
 				
 				' Read the parent table name.
-				sSQL = "SELECT tableName" & " FROM ASRSysTables" & " WHERE tableID = " & Trim(Str(mlngBaseTableID))
-				
+				sSQL = "SELECT tableName FROM ASRSysTables WHERE tableID = " & Trim(Str(mlngBaseTableID))				
 				rsInfo = datGeneral.GetRecords(sSQL)
 				
 				If Not (rsInfo.EOF And rsInfo.BOF) Then
@@ -150,11 +145,10 @@ Friend Class clsExprExpression
 		End Set
 	End Property
 	
-	
-	
+
 	Public ReadOnly Property ErrorMessage() As String
 		Get
-			ErrorMessage = msErrorMessage
+			Return msErrorMessage
 		End Get
 	End Property
 	
@@ -441,969 +435,69 @@ ErrorTrap:
 	End Function
 	
 	Public Function SelectExpression(ByRef pfLockTable As Boolean, Optional ByRef plngOptions As Integer = 0) As Boolean
-		'  ' Display the expression selection form.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim fExit As Boolean
-		'  Dim lngOldExpressionID As Long
-		'  Dim sSQL As String
-		'  Dim rsExpressions As Recordset
-		'  Dim frmSelectExpr As frmDefSel
-		'  Dim strSQL As String
-		'
-		'  fOK = (mlngBaseTableID > 0) Or (Not pfLockTable)
-		'
-		'  If fOK Then
-		'    Set frmSelectExpr = New frmDefSel
-		'
-		'    fExit = False
-		'    lngOldExpressionID = mlngExpressionID
-		'
-		'    With frmSelectExpr
-		'
-		'        ' Set the selection form properties.
-		'        '.LockTable = pfLockTable
-		'
-		'        'Set .Expression = Me
-		'
-		'        ' Set the caption if necessary - only really needed because by default the
-		'        ' caption is SELECT XXXXX, but when the user chooses CALCULATIONS from the
-		'        ' utility menu, they arent really selecting one, so using this, we can change
-		'        ' the form caption to Maintain Calculations or something like that !
-		'        'If psCaption <> "" Then .Caption = psCaption
-		'
-		'
-		'        strSQL = " type = " & CStr(ExpressionType) & _
-		''                 " AND (returnType = " & CStr(ReturnType) & _
-		''                      " OR type = " & CStr(giEXPR_RUNTIMECALCULATION) & ")" & _
-		''                 " AND parentComponentID = 0"
-		'
-		'        .SelectedID = mlngExpressionID
-		'
-		'      ' Loop until an expression is selected, deselected, or the selection
-		'      ' form is cancelled.
-		'      Do While Not fExit
-		'
-		'        .TableId = BaseTableID
-		'        .TableComboEnabled = Not (pfLockTable)
-		'        .TableComboVisible = True
-		'
-		'        If plngOptions = 0 Then
-		'          .Options = edtAdd + edtDelete + edtEdit + edtCopy + edtPrint + edtSelect + edtDeselect + edtProperties
-		'        Else
-		'          .Options = plngOptions
-		'        End If
-		'
-		'        .EnableRun = False
-		'
-		'        Select Case ExpressionType
-		'        Case giEXPR_RUNTIMEFILTER
-		'          .ShowList "FILTERS", strSQL
-		'
-		'        Case giEXPR_RUNTIMECALCULATION
-		'          .ShowList "CALCULATIONS", strSQL
-		'
-		'        End Select
-		'
-		'
-		'        ' Display the selection form.
-		'        .Show vbModal
-		'        BaseTableID = .TableId
-		'
-		'        ' Execute the required operation.
-		'        Select Case .Action
-		'          ' Add a new expression.
-		'          Case edtAdd
-		'            NewExpression
-		'            .SelectedID = ExpressionID
-		'
-		'          ' Edit the selected expression.
-		'          Case edtEdit
-		'            ExpressionID = .SelectedID
-		'
-		'            If .FromCopy Then
-		'              CopyExpression
-		'              If ExpressionID > 0 Then
-		'                .SelectedID = ExpressionID
-		'              End If
-		'            Else
-		'              EditExpression
-		'            End If
-		'
-		'          ' Copy the selected expression.
-		'          'Case edtCopy
-		'          '  ExpressionID = .SelectedID
-		'          '  CopyExpression
-		'
-		'          ' Print the selected expression.
-		'          Case edtPrint
-		'            ExpressionID = .SelectedID
-		'            PrintExpression
-		'
-		'          ' Select the selected expression and return to the calling form.
-		'          Case edtSelect
-		'            ExpressionID = .SelectedID
-		'
-		'            ' Check that the selection is valid.
-		'            If ValidateSelection Then
-		'              fOK = True
-		'              fExit = True
-		'            End If
-		'
-		'          ' Deselect all expressions and return to the calling form.
-		'          Case edtDeselect
-		'            ExpressionID = 0
-		'            msExpressionName = ""
-		'            fOK = True
-		'            fExit = True
-		'
-		'          ' Exit the selection form and return to the calling form.
-		'          Case edtCancel
-		'            ' Check if the original expression still exists.
-		'            sSQL = "SELECT name" & _
-		''              " FROM ASRSysExpressions" & _
-		''              " WHERE exprID = " & Trim(Str(lngOldExpressionID))
-		'            Set rsExpressions = datGeneral.GetRecords(sSQL)
-		'            If rsExpressions.EOF And rsExpressions.BOF Then
-		'              ExpressionID = 0
-		'              msExpressionName = ""
-		'            Else
-		'              ExpressionID = lngOldExpressionID
-		'              msExpressionName = rsExpressions!Name
-		'            End If
-		'
-		'            rsExpressions.Close
-		'            fOK = False
-		'            fExit = True
-		'        End Select
-		'      Loop
-		'    End With
-		'
-		'    Set frmSelectExpr = Nothing
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  SelectExpression = fOK
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		
 	End Function
-	
-	
-	Private Sub CopyExpression()
-		'  ' Create a copy of the expression.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim sName As String
-		'  Dim frmEdit As frmExpression
-		'
-		'  fOK = False
-		'
-		'  ' Construct the expression to copy.
-		'  Screen.MousePointer = vbHourglass
-		'  fOK = ConstructExpression
-		'  Screen.MousePointer = vbDefault
-		'
-		'  If fOK Then
-		'    mlngExpressionID = 0
-		'
-		'    ' Initialise the copied expression's name.
-		'    sName = msExpressionName
-		'    msExpressionName = "Copy_of_" & Trim(sName)
-		'
-		'    'MH15062000
-		'    msOwner = datGeneral.UserName
-		'
-		'    ' Display the expression edit form.
-		'    Set frmEdit = New frmExpression
-		'    Set frmEdit.Expression = Me
-		'    frmEdit.Show vbModal
-		'
-		'    ' If the changes were confirmed then write the changes to the database.
-		'    fOK = Not frmEdit.Cancelled
-		'
-		'    If fOK Then
-		'      fOK = WriteExpression_Transaction
-		'
-		'
-		'      'MH20000712
-		'      Select Case miExpressionType
-		'      Case giEXPR_RUNTIMECALCULATION
-		'        Call UtilCreated(utlCalculation, Me.ExpressionID)
-		'      Case giEXPR_RUNTIMEFILTER
-		'        Call UtilCreated(utlFilter, Me.ExpressionID)
-		'      End Select
-		'
-		'
-		'    Else
-		'      mfConstructed = False
-		'    End If
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  ' Commit the data transaction if everything was okay.
-		'  Set frmEdit = Nothing
-		'  Exit Sub
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		'
-	End Sub
-	
-	Private Sub PrintExpression()
-		
-		'  ' Print the expression.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim objComponent As clsExprComponent
-		'  Dim objPrintDef As clsPrintDef
-		'
-		'  ' Construct the expression to print.
-		'  Screen.MousePointer = vbHourglass
-		'  fOK = ConstructExpression
-		'  Screen.MousePointer = vbDefault
-		'
-		'  If fOK Then
-		''    With Printer
-		''      .Font = "Tahoma"
-		''
-		''      ' Print the header.
-		''      .CurrentX = giPRINT_XINDENT
-		''      .CurrentY = Int(giPRINT_YINDENT / 3)
-		''      .FontSize = 8
-		''      .FontBold = False
-		''      Printer.Print Format(Date, "long date") & ", " & Format(Time, "medium time")
-		''
-		''      ' Print the title lines.
-		''      .CurrentX = giPRINT_XINDENT
-		''      .CurrentY = giPRINT_YINDENT
-		''      .FontSize = 12
-		''      .FontBold = True
-		''      Printer.Print ExpressionTypeName(miExpressionType) & " Definition : " & Trim(msExpressionName) & vbNewLine
-		''
-		''      .FontSize = 10
-		''
-		''      .CurrentX = giPRINT_XINDENT
-		''      Printer.Print "Description : " & Trim(msDescription) & vbNewLine
-		''
-		''      .CurrentX = giPRINT_XINDENT
-		''      Printer.Print "Base Table : " & Trim(msBaseTableName) & vbNewLine
-		''
-		''      .CurrentX = giPRINT_XINDENT
-		''      Printer.Print "Owner : " & Trim(msOwner) & vbNewLine
-		''
-		''      .CurrentX = giPRINT_XINDENT
-		''
-		''      'Printer.Print "Access : " & IIf(msAccess = giACCESS_HIDDEN, "Hidden", _
-		'''        IIf(msAccess = giAccess_READONLY, "Read only", "Read / Write")) & vbNewLine
-		''
-		''      Select Case msAccess
-		''      Case "RW": Printer.Print "Access : Read / Write" & vbNewLine
-		''      Case "RO": Printer.Print "Access : Read only" & vbNewLine
-		''      Case "HD": Printer.Print "Access : Hidden" & vbNewLine
-		''      End Select
-		''
-		''      .CurrentX = giPRINT_XINDENT
-		''      Printer.Print "Components : " & vbNewLine
-		'
-		'
-		'    Set objPrintDef = New HrPro.clsPrintDef
-		'
-		'    If objPrintDef.IsOK Then
-		'
-		'      With objPrintDef
-		'        .PrintHeader ExpressionTypeName(miExpressionType) & " Definition : " & Trim(msExpressionName)
-		'
-		'        .PrintNormal "Description : " & Trim(msDescription)
-		'        .PrintNormal
-		'
-		'        .PrintNormal "Owner : " & Trim(msOwner)
-		'        Select Case msAccess
-		'        Case "RW": .PrintNormal "Access : Read / Write"
-		'        Case "RO": .PrintNormal "Access : Read only"
-		'        Case "HD": .PrintNormal "Access : Hidden"
-		'        End Select
-		'        .PrintNormal
-		'
-		'        .PrintNormal "Base Table : " & Trim(msBaseTableName)
-		'        .PrintNormal
-		'
-		'        '--------
-		'
-		'        .PrintTitle "Components"
-		'
-		'
-		'
-		'        Printer.FontBold = False
-		'
-		'        ' Print the components.
-		'        For Each objComponent In mcolComponents
-		'          fOK = objComponent.PrintComponent(1)
-		'          If Not fOK Then
-		'            Printer.KillDoc
-		'            Exit For
-		'          End If
-		'        Next
-		'        Set objComponent = Nothing
-		'
-		'
-		'
-		'        '.EndDoc
-		'        .PrintEnd
-		'
-		'        MsgBox ExpressionTypeName(miExpressionType) & " : " & Trim(msExpressionName) & " printing complete." & vbNewLine & vbNewLine & "(" & Printer.DeviceName & ")", vbInformation, ExpressionTypeName(miExpressionType)
-		'
-		'      End With
-		'    End If
-		'
-		'
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  Set objComponent = Nothing
-		'  If Not fOK Then
-		'    MsgBox "Unable to print the " & ExpressionTypeName(miExpressionType) & " '" & Name & "'." & vbCr & vbCr & _
-		''      Err.Description, vbExclamation + vbOKOnly, App.ProductName
-		'  End If
-		'  Exit Sub
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		'
-	End Sub
 	
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		'  ' Print the component definition to the printer object.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim objComponent As clsExprComponent
-		'
-		'  fOK = True
-		'
-		'  With Printer
-		'    .CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-		'    .CurrentY = .CurrentY + giPRINT_YSPACE
-		'    Printer.Print "Parameter : " & ComponentDescription
-		'  End With
-		'
-		'  ' Print the components.
-		'  For Each objComponent In mcolComponents
-		'    fOK = objComponent.PrintComponent(piLevel + 1)
-		'    If Not fOK Then
-		'      Printer.KillDoc
-		'      Exit For
-		'    End If
-		'  Next
-		'
-		'TidyUpAndExit:
-		'  Set objComponent = Nothing
-		'  PrintComponent = fOK
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		'
 	End Function
+
 	Public Function CopyComponent() As clsExprExpression
-		'  ' Copies the selected component and all of it's children.
-		'
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim iCount As Integer
-		'  Dim fOK As Boolean
-		'  Dim objCopyComponent As New clsExprExpression
-		'
-		'    fOK = True
-		'    objCopyComponent.ResetConstructedFlag (True)
-		'    objCopyComponent.Name = msExpressionName
-		'    objCopyComponent.BaseTableID = BaseTableID
-		'    objCopyComponent.ExpressionType = ExpressionType
-		'    objCopyComponent.ReturnType = ReturnType
-		'
-		'    ' Copy the children
-		'    For iCount = 1 To mcolComponents.Count
-		'        objCopyComponent.PasteComponent mcolComponents(iCount), mcolComponents(iCount), True
-		'    Next iCount
-		'
-		'TidyUpAndExit:
-		'  If fOK Then
-		'    Set CopyComponent = objCopyComponent
-		'  Else
-		'    Set CopyComponent = Nothing
-		'  End If
-		'  Set objCopyComponent = Nothing
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		
 	End Function
 	
 	Public Function DeleteExpression() As Boolean
-		'  ' Delete the expression.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim fUsed As Boolean
-		'  Dim fInTransaction As Boolean
-		'  Dim sSQL As String
-		'
-		'  fUsed = False
-		'  fInTransaction = False
-		'
-		'  ' Construct the expression from the database definition.
-		'  Screen.MousePointer = vbHourglass
-		'  fOK = ConstructExpression
-		'  Screen.MousePointer = vbDefault
-		'
-		'  If fOK Then
-		'    fInTransaction = True
-		'    ' Begin the transaction of data.
-		'    gADOCon.BeginTrans
-		'
-		'    ' Check that the expression can be deleted.
-		'    ' ie. is not used anywhere.
-		'    fUsed = ExpressionIsUsed
-		'
-		'    If Not fUsed Then
-		'      ' Delete the expression's components.
-		'      fOK = DeleteExistingComponents
-		'
-		'      ' Delete the expression itself.
-		'      If fOK Then
-		'        sSQL = "DELETE FROM ASRSysExpressions" & _
-		''          " WHERE exprID = " & Trim(Str(mlngExpressionID))
-		'        gADOCon.Execute sSQL, , adCmdText
-		'      End If
-		'    End If
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  ' Commit the data transaction if everything was okay.
-		'  If fOK And (Not fUsed) Then
-		'    If fInTransaction Then
-		'      gADOCon.CommitTrans
-		'    End If
-		'  Else
-		'    If (Not fUsed) Then
-		'      MsgBox "Error deleting the expression.", _
-		''        vbOKOnly, App.ProductName
-		'    End If
-		'    If fInTransaction Then
-		'      gADOCon.RollbackTrans
-		'    End If
-		'  End If
-		'  DeleteExpression = fOK
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		
 	End Function
 	
-	
-	Private Function ExpressionIsUsed() As Boolean
-		'  ' Return true if the expression is used somewhere and
-		'  ' therefore cannot be deleted.
-		'  '
-		'  ' Expressions may be used in the following contexts :
-		'  '
-		'  ' Table definitions - each table can have a record description defined.
-		'  ' Column definitions - calculated columns require a calculation to be defined. All columns can have a validation check defined.
-		'  ' Views - A filter can be defined for which records can be seen through a view.
-		'  ' Expression definitions - expressions can refer to columns in child tables of the expression's base table. A filter for which child records are read can be defined. Expressions can also refer directly to other expressions.
-		'  ' Cross-Tabs - A filter can be defined for which records are included in the cross-tab.
-		'  ' Custom Reports - Filters can be defined for which records are included in the report, from the report's base table, and any parent or child tables that are also referred to. Custom reports can include calculations.
-		'  ' Data Transfer - A filter can be defined for which records are included in the data transfer.
-		'  ' Export - Filters can be defined for which records are included in the export, from the export's base table, and any parent or child tables that are also referred to. Exports can include calculations.
-		'  ' Global Functions - A filter can be defined for which records are included in the global function. Global functions can include calculations.
-		'  ' Mail Merge - A filter can be defined for which records are included in the mail merge. Mail merge definitions can include calculations.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim sExprName As String
-		'  Dim sExprParentTable As String
-		'  Dim sExprType As String
-		'  Dim sGlobalFunctionType As String
-		'  Dim objComp As clsExprComponent
-		'  Dim lngRootExprID As Long
-		'  Dim fUsed As Boolean
-		'  Dim rsCheck As Recordset
-		'  Dim sSQL As String
-		'
-		'  fUsed = False
-		'
-		'  ' Check that the expression is not used as a record description for a table.
-		'  If Not fUsed Then
-		'    sSQL = "SELECT ASRSysTables.tableName" & _
-		''      " FROM ASRSysTables" & _
-		''      " WHERE ASRSysTables.recordDescExprID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the record description for the '" & .Fields("tableName") & "' table.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Find any columns that use this expression as a Calculation,
-		'    ' a Got Focus clause, or a Lost Focus clause.
-		'    sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName" & _
-		''      " FROM ASRSysColumns" & _
-		''      " INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & _
-		''      " WHERE (ASRSysColumns.calcExprID = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR ASRSysColumns.lostFocusExprID = " & Trim(Str(mlngExpressionID)) & ")"
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used by the '" & !ColumnName & "' column in the '" & !TableName & "' table.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Find any views that use this expression as the view filter.
-		'    sSQL = "SELECT ASRSysViews.viewName, ASRSysTables.tableName" & _
-		''      " FROM ASRSysViews" & _
-		''      " INNER JOIN ASRSysTables ON ASRSysViews.viewTableID = ASRSysTables.tableID" & _
-		''      " WHERE ASRSysViews.expressionID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the filter for the '" & !ViewName & "' view, based on the '" & !TableName & "' table.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that it is not used as a calculation in another expression,
-		'    ' or as the filter in another expression.
-		'    sSQL = "SELECT componentID" & _
-		''      " FROM ASRSysExprComponents" & _
-		''      " WHERE (calculationID = " & Trim(Str(mlngExpressionID)) & ")" & _
-		''      " OR (fieldSelectionFilter = " & Trim(Str(mlngExpressionID)) & _
-		''      "   AND type = " & Trim(Str(giCOMPONENT_FIELD)) & ")"
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        Set objComp = New clsExprComponent
-		'        objComp.ComponentID = !ComponentID
-		'        lngRootExprID = objComp.RootExpressionID
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'
-		'    If fUsed Then
-		'      sExprName = "<unknown>"
-		'      sExprType = "<unknown>"
-		'      sExprParentTable = "<unknown>"
-		'
-		'      ' Get the expression definition.
-		'      sSQL = "SELECT ASRSysExpressions.name, ASRSysTables.tableName, ASRSysExpressions.type" & _
-		''        " FROM ASRSysExpressions" & _
-		''        " INNER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & _
-		''        " WHERE ASRSysExpressions.exprID = " & Trim(Str(lngRootExprID))
-		'      Set rsCheck = datGeneral.GetRecords(sSQL)
-		'      With rsCheck
-		'        If Not (.EOF And .BOF) Then
-		'          sExprName = !Name
-		'          sExprParentTable = !TableName
-		'          sExprType = LCase(ExpressionTypeName(!Type))
-		'        End If
-		'
-		'        .Close
-		'      End With
-		'      Set rsCheck = Nothing
-		'
-		'      ' Tell the user why the expression cannot be deleted.
-		'      MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''        "It is used by the " & sExprType & " '" & sExprName & "'," & vbCr & _
-		''        "which is owned by the '" & sExprParentTable & "' table.", _
-		''        vbExclamation + vbOKOnly, App.ProductName
-		'    End If
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for a Cross-Tab.
-		'    sSQL = "SELECT name" & _
-		''      " FROM ASRSysCrossTab" & _
-		''      " WHERE filterID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the filter for the '" & !Name & "' cross-tab.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for a Custom Report.
-		'    sSQL = "SELECT name" & _
-		''      " FROM ASRSysCustomReportsName" & _
-		''      " WHERE filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR parent1Filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR parent2Filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR childFilter = " & Trim(Str(mlngExpressionID))
-		'
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a filter in the '" & !Name & "' custom report.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a calculation in a Custom Report.
-		'    sSQL = "SELECT ASRSysCustomReportsName.name" & _
-		''      " FROM ASRSysCustomReportsDetails" & _
-		''      " INNER JOIN ASRSysCustomReportsName ON ASRSysCustomReportsDetails.customReportID = ASRSysCustomReportsName.ID" & _
-		''      " WHERE colExprID = " & Trim(Str(mlngExpressionID)) & _
-		''      " AND UPPER(type) = 'E'"
-		'
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a calculation in the '" & !Name & "' custom report.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for a Data Transfer.
-		'    sSQL = "SELECT name" & _
-		''      " FROM ASRSysDataTransferName" & _
-		''      " WHERE filterID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the filter for the '" & !Name & "' data transfer.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for an Export.
-		'    sSQL = "SELECT name" & _
-		''      " FROM ASRSysExportName" & _
-		''      " WHERE filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR parent1Filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR parent2Filter = " & Trim(Str(mlngExpressionID)) & _
-		''      " OR childFilter = " & Trim(Str(mlngExpressionID))
-		'
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a filter in the '" & !Name & "' export.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a calculation in an Export.
-		'    sSQL = "SELECT ASRSysExportName.name" & _
-		''      " FROM ASRSysExportDetails" & _
-		''      " INNER JOIN ASRSysExportName ON ASRSysExportDetails.exportID = ASRSysExportName.ID" & _
-		''      " WHERE colExprID = " & Trim(Str(mlngExpressionID)) & _
-		''      " AND UPPER(type) = 'E'"
-		'
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a calculation in the '" & !Name & "' export.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for a Global function.
-		'    sSQL = "SELECT name, UPPER(type)" & _
-		''      " FROM ASRSysGlobalFunctions" & _
-		''      " WHERE filterID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        Select Case !Type
-		'          Case "U"
-		'            sGlobalFunctionType = "update"
-		'          Case "A"
-		'            sGlobalFunctionType = "add"
-		'          Case "D"
-		'            sGlobalFunctionType = "delete"
-		'          Case Else
-		'            sGlobalFunctionType = "function"
-		'        End Select
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the filter for the '" & !Name & "' global " & sGlobalFunctionType & ".", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  ' Check that the expression is not used as a calculation for a Global function.
-		'  If Not fUsed Then
-		'    sSQL = "SELECT ASRSysGlobalFunctions.name, UPPER(ASRSysGlobalFunctions.type)" & _
-		''      " FROM ASRSysGlobalItems" & _
-		''      " INNER JOIN ASRSysGlobalFunctions ON ASRSysGlobalItems.functionID = ASRSysGlobalFunctions.functionID" & _
-		''      " WHERE ASRSysGlobalItems.exprID = " & Trim(Str(mlngExpressionID)) & _
-		''      " AND ASRSysGlobalItems.valueType = 4"
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        Select Case !Type
-		'          Case "U"
-		'            sGlobalFunctionType = "update"
-		'          Case "A"
-		'            sGlobalFunctionType = "add"
-		'          Case "D"
-		'            sGlobalFunctionType = "delete"
-		'          Case Else
-		'            sGlobalFunctionType = "function"
-		'        End Select
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a calculation in the '" & !Name & "' global " & sGlobalFunctionType & ".", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  If Not fUsed Then
-		'    ' Check that the expression is not used as a filter for a Mail Merge.
-		'    sSQL = "SELECT name" & _
-		''      " FROM ASRSysMailMergeName" & _
-		''      " WHERE filterID = " & Trim(Str(mlngExpressionID))
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as the filter for the '" & !Name & "' mail merge.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'  ' Check that the expression is not used as a calculation for a Mail Merge.
-		'  If Not fUsed Then
-		'    sSQL = "SELECT ASRSysMailMergeName.name" & _
-		''      " FROM ASRSysMailMergeColumns" & _
-		''      " INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeColumns.mailMergeID = ASRSysMailMergeName.mailMergeID" & _
-		''      " WHERE ASRSysMailMergeColumns.columnID = " & Trim(Str(mlngExpressionID)) & _
-		''      " AND UPPER(ASRSysMailMergeColumns.type) = 'E'"
-		'    Set rsCheck = datGeneral.GetRecords(sSQL)
-		'    With rsCheck
-		'      fUsed = Not (.EOF And .BOF)
-		'
-		'      If fUsed Then
-		'        ' Tell the user why the expression cannot be deleted.
-		'        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
-		''          "It is used as a calculation in the '" & !Name & "' mail merge.", _
-		''          vbExclamation + vbOKOnly, App.ProductName
-		'      End If
-		'
-		'      .Close
-		'    End With
-		'    Set rsCheck = Nothing
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  ' Disassociate object variables.
-		'  Set rsCheck = Nothing
-		'  Set objComp = Nothing
-		'
-		'  ExpressionIsUsed = fUsed
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  MsgBox "Error checking if the expression is used.", _
-		''    vbOKOnly + vbExclamation, App.ProductName
-		'  fUsed = True
-		'  Resume TidyUpAndExit
-		'
-	End Function
-	
-	
-	
-	
-	
-	Public Function ValidityMessage(ByRef piInvalidityCode As Short) As Object
-		' Return the text nmessage that describes the given
-		' expression invalidity code.
-		
+	Public Function ValidityMessage(ByRef piInvalidityCode As Short) As String
+		' Return the text nmessage that describes the given expression invalidity code.
+
 		Select Case piInvalidityCode
-			
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 				ValidityMessage = "No errors."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
 				ValidityMessage = "Missing operand."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
 				ValidityMessage = "Syntax error."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
 				ValidityMessage = "Return type mismatch."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
 				ValidityMessage = "Unknown error."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
 				ValidityMessage = "Operand type mismatch."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
 				ValidityMessage = "Parameter type mismatch."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
 				ValidityMessage = "The " & LCase(ExpressionTypeName(miExpressionType)) & " must have at least one component."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERSYNTAXERROR
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_PARAMETERSYNTAXERROR
 				ValidityMessage = "Function parameter syntax error."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERNOCOMPONENTS
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_PARAMETERNOCOMPONENTS
 				ValidityMessage = "The function parameter expression must have at least one component."
-				
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
-				' JPD20020419 Fault 3687
-				'ValidityMessage = "Logic components must be compared with other logic components."
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
 				ValidityMessage = "Error creating SQL runtime code."
-				
-				' JPD20020419 Fault 3687
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_SQLERROR
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_SQLERROR
 				ValidityMessage = "The complexity of the " & LCase(ExpressionTypeName(miExpressionType)) & " has caused the following SQL error : " & vbNewLine & vbNewLine & "'" & msErrorMessage & "'" & vbNewLine & vbNewLine & "Try simplifying the " & LCase(ExpressionTypeName(miExpressionType)) & "."
-				
-				' JPD20020419 Fault 3687
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_ASSOCSQLERROR
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_ASSOCSQLERROR
 				ValidityMessage = "The complexity of this " & LCase(ExpressionTypeName(miExpressionType)) & " would cause an expression that uses this " & LCase(ExpressionTypeName(miExpressionType)) & " to suffer from the following SQL error : " & vbNewLine & vbNewLine & "'" & msErrorMessage & "'" & vbNewLine & vbNewLine & "Try simplifying this " & LCase(ExpressionTypeName(miExpressionType)) & "."
-				
-				'JPD 20040507 Fault 8600
-			Case modExpression.ExprValidationCodes.giEXPRVALIDATION_CYCLIC
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+			Case ExprValidationCodes.giEXPRVALIDATION_CYCLIC
 				ValidityMessage = "Invalid definition due to cyclic reference."
-				
+
 			Case Else
-				'UPGRADE_WARNING: Couldn't resolve default property of object ValidityMessage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				ValidityMessage = "The function parameter expression must have at least one component."
-				
+
 		End Select
-		
+
 	End Function
 	
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
@@ -2128,12 +1222,12 @@ ErrorTrap:
     Dim iParameter2Index As Short
     Dim iParam1ReturnType As Short
     Dim iParam2ReturnType As Short
-    Dim iOperatorReturnType As modExpression.ExpressionValueTypes
+		Dim iOperatorReturnType As ExpressionValueTypes
     Dim iBadLogicColumnIndex As Short
     Dim iMinOperatorPrecedence As Short
     Dim iMaxOperatorPrecedence As Short
-    Dim iValidationCode As modExpression.ExprValidationCodes
-    Dim iEvaluatedReturnType As modExpression.ExpressionValueTypes
+		Dim iValidationCode As ExprValidationCodes
+		Dim iEvaluatedReturnType As ExpressionValueTypes
     Dim aiDummyValues(,) As Short
     Dim avDummyPrompts(,) As Object
     Dim iTempReturnType As Short
@@ -2144,13 +1238,13 @@ ErrorTrap:
     iBadLogicColumnIndex = 0
     iMinOperatorPrecedence = -1
     iMaxOperatorPrecedence = -1
-    iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS
     'UPGRADE_NOTE: Object mobjBadComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mobjBadComponent = Nothing
 
     ' If there are no expression components then report the error.
     If mcolComponents.Count() = 0 Then
-      iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
+			iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
     End If
 
     ' Create an array of the component return types and operator ids.
@@ -2180,45 +1274,45 @@ ErrorTrap:
 
     For iLoop1 = 1 To mcolComponents.Count()
       ' Stop validating the expression if we already know its invalid.
-      If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-        Exit For
-      End If
+			If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+				Exit For
+			End If
 
       With mcolComponents.Item(iLoop1)
         ' If the current component is an operator then read the operator id into the array.
         'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If .ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          aiDummyValues(1, iLoop1) = .Component.OperatorID
+				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					aiDummyValues(1, iLoop1) = .Component.OperatorID
 
-          ' Remember the min and max operator precedence levels for later.
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          iMinOperatorPrecedence = IIf((iMinOperatorPrecedence > .Component.Precedence) Or (iMinOperatorPrecedence = -1), .Component.Precedence, iMinOperatorPrecedence)
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          iMaxOperatorPrecedence = IIf((iMaxOperatorPrecedence < .Component.Precedence) Or (iMaxOperatorPrecedence = -1), .Component.Precedence, iMaxOperatorPrecedence)
-        Else
-          aiDummyValues(1, iLoop1) = -1
-        End If
+					' Remember the min and max operator precedence levels for later.
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					iMinOperatorPrecedence = IIf((iMinOperatorPrecedence > .Component.Precedence) Or (iMinOperatorPrecedence = -1), .Component.Precedence, iMinOperatorPrecedence)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					iMaxOperatorPrecedence = IIf((iMaxOperatorPrecedence < .Component.Precedence) Or (iMaxOperatorPrecedence = -1), .Component.Precedence, iMaxOperatorPrecedence)
+				Else
+					aiDummyValues(1, iLoop1) = -1
+				End If
 
         'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If .ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION Then
-          ' Validate the function.
-          ' NB. This also determines the function's return type if not already known.
-          'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          iValidationCode = .Component.ValidateFunction
-          If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-            'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If .Component.BadComponent Is Nothing Then
-              mobjBadComponent = mcolComponents.Item(iLoop1)
-            Else
-              'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mobjBadComponent = .Component.BadComponent
-            End If
-            Exit For
-          End If
-        End If
+				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_FUNCTION Then
+					' Validate the function.
+					' NB. This also determines the function's return type if not already known.
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					iValidationCode = .Component.ValidateFunction
+					If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If .Component.BadComponent Is Nothing Then
+							mobjBadComponent = mcolComponents.Item(iLoop1)
+						Else
+							'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mobjBadComponent = .Component.BadComponent
+						End If
+						Exit For
+					End If
+				End If
 
         ' Read the component return type into the array.
         'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -2230,319 +1324,316 @@ ErrorTrap:
     ' Evaluate operators in the correct order of precedence.
     For iLoop1 = iMinOperatorPrecedence To iMaxOperatorPrecedence
       ' Stop validating the expression if we already know it's invalid.
-      If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-        Exit For
-      End If
+			If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+				Exit For
+			End If
 
       For iLoop2 = 1 To mcolComponents.Count()
         ' Stop validating the expression if we already know it's invalid.
-        If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-          Exit For
-        End If
+				If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+					Exit For
+				End If
 
         With mcolComponents.Item(iLoop2)
           'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          If .ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
-            'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If .Component.Precedence = iLoop1 Then
-              ' Check that the operator has the correct parameter types.
-              ' Read the dummy value that follows the current operator.
-              iParameter1Index = 0
-              iParameter2Index = 0
-              For iLoop3 = iLoop2 + 1 To UBound(aiDummyValues, 2)
-                ' If an operator follows the operator then the expression is invalid.
-                If aiDummyValues(1, iLoop3) > 0 Then
-                  mobjBadComponent = mcolComponents.Item(iLoop2)
-                  iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
-                  Exit For
-                End If
+					If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If .Component.Precedence = iLoop1 Then
+							' Check that the operator has the correct parameter types.
+							' Read the dummy value that follows the current operator.
+							iParameter1Index = 0
+							iParameter2Index = 0
+							For iLoop3 = iLoop2 + 1 To UBound(aiDummyValues, 2)
+								' If an operator follows the operator then the expression is invalid.
+								If aiDummyValues(1, iLoop3) > 0 Then
+									mobjBadComponent = mcolComponents.Item(iLoop2)
+									iValidationCode = ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
+									Exit For
+								End If
 
-                ' Read the index of the parameter.
-                If aiDummyValues(2, iLoop3) > -1 Then
-                  iParameter1Index = iLoop3
-                  Exit For
-                End If
-              Next iLoop3
+								' Read the index of the parameter.
+								If aiDummyValues(2, iLoop3) > -1 Then
+									iParameter1Index = iLoop3
+									Exit For
+								End If
+							Next iLoop3
 
-              ' If a parameter has been found then read its dummy value.
-              ' Otherwise the expression is invalid.
-              If iParameter1Index = 0 Then
-                mobjBadComponent = mcolComponents.Item(iLoop2)
-                iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
-              End If
+							' If a parameter has been found then read its dummy value.
+							' Otherwise the expression is invalid.
+							If iParameter1Index = 0 Then
+								mobjBadComponent = mcolComponents.Item(iLoop2)
+								iValidationCode = ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
+							End If
 
-              ' Read a second parameter if required.
-              'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If (.Component.OperandCount = 2) And (iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS) Then
+							' Read a second parameter if required.
+							'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If (.Component.OperandCount = 2) And (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS) Then
 
-                iParameter2Index = iParameter1Index
+								iParameter2Index = iParameter1Index
 
-                ' Read the dummy value that precedes the current operator.
-                iParameter1Index = 0
-                For iLoop3 = iLoop2 - 1 To 1 Step -1
-                  ' If an operator follows the operator then the expression is invalid.
-                  If aiDummyValues(1, iLoop3) > 0 Then
-                    mobjBadComponent = mcolComponents.Item(iLoop2)
-                    iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
-                    Exit For
-                  End If
+								' Read the dummy value that precedes the current operator.
+								iParameter1Index = 0
+								For iLoop3 = iLoop2 - 1 To 1 Step -1
+									' If an operator follows the operator then the expression is invalid.
+									If aiDummyValues(1, iLoop3) > 0 Then
+										mobjBadComponent = mcolComponents.Item(iLoop2)
+										iValidationCode = ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
+										Exit For
+									End If
 
-                  ' Read the index of the parameter.
-                  If aiDummyValues(2, iLoop3) > -1 Then
-                    iParameter1Index = iLoop3
-                    Exit For
-                  End If
-                Next iLoop3
+									' Read the index of the parameter.
+									If aiDummyValues(2, iLoop3) > -1 Then
+										iParameter1Index = iLoop3
+										Exit For
+									End If
+								Next iLoop3
 
-                ' If a parameter has been found then read its dummy value.
-                ' Otherwise the expression is invalid.
-                If iParameter1Index = 0 Then
-                  mobjBadComponent = mcolComponents.Item(iLoop2)
-                  iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
-                End If
-              End If
+								' If a parameter has been found then read its dummy value.
+								' Otherwise the expression is invalid.
+								If iParameter1Index = 0 Then
+									mobjBadComponent = mcolComponents.Item(iLoop2)
+									iValidationCode = ExprValidationCodes.giEXPRVALIDATION_MISSINGOPERAND
+								End If
+							End If
 
-              ' Validate the operator by evaluating it with the dummy parmameters.
-              ' NB. This also determines the operator's return type if not already known.
-              ' Only try to evaluate the dummy operation if we still think
-              ' it is valid.
-              If iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-                'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If Not ValidateOperatorParameters(.Component.OperatorID, iOperatorReturnType, aiDummyValues(2, iParameter1Index), IIf(.Component.OperandCount = 2, aiDummyValues(2, iParameter2Index), modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)) Then
+							' Validate the operator by evaluating it with the dummy parmameters.
+							' NB. This also determines the operator's return type if not already known.
+							' Only try to evaluate the dummy operation if we still think
+							' it is valid.
+							If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If Not ValidateOperatorParameters(.Component.OperatorID, iOperatorReturnType, aiDummyValues(2, iParameter1Index), IIf(.Component.OperandCount = 2, aiDummyValues(2, iParameter2Index), modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)) Then
 
-                  iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
-                  mobjBadComponent = mcolComponents.Item(iLoop2)
-                Else
-                  ' Check that operators with logic parameters are valid.
-                  If (iBadLogicColumnIndex = 0) And (iParameter2Index > 0) Then
-                    'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    iParam1Type = mcolComponents.Item(iParameter1Index).ComponentType
-                    'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    iParam1ReturnType = mcolComponents.Item(iParameter1Index).ReturnType
-                    'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    iParam2Type = mcolComponents.Item(iParameter2Index).ComponentType
-                    'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    iParam2ReturnType = mcolComponents.Item(iParameter2Index).ReturnType
+									iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
+									mobjBadComponent = mcolComponents.Item(iLoop2)
+								Else
+									' Check that operators with logic parameters are valid.
+									If (iBadLogicColumnIndex = 0) And (iParameter2Index > 0) Then
+										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										iParam1Type = mcolComponents.Item(iParameter1Index).ComponentType
+										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										iParam1ReturnType = mcolComponents.Item(iParameter1Index).ReturnType
+										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										iParam2Type = mcolComponents.Item(iParameter2Index).ComponentType
+										'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										iParam2ReturnType = mcolComponents.Item(iParameter2Index).ReturnType
 
-                    If ((iParam1Type = modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam1ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)) And (((iParam2Type <> modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam2Type <> modExpression.ExpressionComponentTypes.giCOMPONENT_VALUE)) Or (iParam2ReturnType <> modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)) Then
+										If ((iParam1Type = ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam1ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)) And (((iParam2Type <> ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam2Type <> ExpressionComponentTypes.giCOMPONENT_VALUE)) Or (iParam2ReturnType <> ExpressionValueTypes.giEXPRVALUE_LOGIC)) Then
 
-                      iBadLogicColumnIndex = iParameter1Index
-                    End If
+											iBadLogicColumnIndex = iParameter1Index
+										End If
 
-                    If ((iParam2Type = modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam2ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)) And (((iParam1Type <> modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam1Type <> modExpression.ExpressionComponentTypes.giCOMPONENT_VALUE)) Or (iParam1ReturnType <> modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)) Then
+										If ((iParam2Type = ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam2ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)) And (((iParam1Type <> ExpressionComponentTypes.giCOMPONENT_FIELD) And (iParam1Type <> ExpressionComponentTypes.giCOMPONENT_VALUE)) Or (iParam1ReturnType <> ExpressionValueTypes.giEXPRVALUE_LOGIC)) Then
 
-                      iBadLogicColumnIndex = iParameter2Index
-                    End If
-                  End If
+											iBadLogicColumnIndex = iParameter2Index
+										End If
+									End If
 
-                  ' Update the array to reflect the evaluated operation.
-                  aiDummyValues(1, iLoop2) = -1
-                  aiDummyValues(2, iParameter1Index) = -1
-                  aiDummyValues(2, iParameter2Index) = -1
-                End If
-              End If
-            End If
-          End If
+									' Update the array to reflect the evaluated operation.
+									aiDummyValues(1, iLoop2) = -1
+									aiDummyValues(2, iParameter1Index) = -1
+									aiDummyValues(2, iParameter2Index) = -1
+								End If
+							End If
+						End If
+					End If
         End With
       Next iLoop2
     Next iLoop1
 
     ' Check the expression has valid syntax (ie. if the components have evaluated to a single value).
     ' Get the evaluated return type while we're at it.
-    If iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-      iEvaluatedReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+		If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+			iEvaluatedReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 
-      For iLoop1 = 1 To UBound(aiDummyValues, 2)
-        If aiDummyValues(2, iLoop1) > -1 Then
-          ' If the expression has more than one component after evaluating
-          ' all of the operators then the expression is invalid.
-          If iEvaluatedReturnType <> modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED Then
-            iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
-            Exit For
-          End If
+			For iLoop1 = 1 To UBound(aiDummyValues, 2)
+				If aiDummyValues(2, iLoop1) > -1 Then
+					' If the expression has more than one component after evaluating
+					' all of the operators then the expression is invalid.
+					If iEvaluatedReturnType <> ExpressionValueTypes.giEXPRVALUE_UNDEFINED Then
+						iValidationCode = ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
+						Exit For
+					End If
 
-          iEvaluatedReturnType = aiDummyValues(2, iLoop1)
-        End If
-      Next iLoop1
-    End If
+					iEvaluatedReturnType = aiDummyValues(2, iLoop1)
+				End If
+			Next iLoop1
+		End If
 
     ' Set the expression's return type if it is not already set.
-    If iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-      If (miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED) Or (miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_BYREF_UNDEFINED) Then
-        miReturnType = iEvaluatedReturnType
-      End If
-    End If
+		If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+			If (miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED) Or (miReturnType = ExpressionValueTypes.giEXPRVALUE_BYREF_UNDEFINED) Then
+				miReturnType = iEvaluatedReturnType
+			End If
+		End If
 
     ' Check the evaluated return type matches the pre-set return type.
-    If (iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And (iEvaluatedReturnType <> miReturnType) Then
-      iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
-    End If
+		If (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And (iEvaluatedReturnType <> miReturnType) Then
+			iValidationCode = ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
+		End If
 
     ' JPD20020419 Fault 3687
     ' Run the filter's SQL code to see if it is valid.
-    If (iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And pfTopLevel Then
-      iTempReturnType = miReturnType
-      iValidationCode = ValidateSQLCode()
-      miReturnType = iTempReturnType
-    End If
+		If (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And pfTopLevel Then
+			iTempReturnType = miReturnType
+			iValidationCode = ValidateSQLCode()
+			miReturnType = iTempReturnType
+		End If
 
-TidyUpAndExit:
-    ValidateExpression = iValidationCode
-    Exit Function
+		Return iValidationCode
 
 ErrorTrap:
-    iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
-    Resume TidyUpAndExit
+		Return ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
 
   End Function
 
-  Private Function ValidateSQLCode(Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As modExpression.ExprValidationCodes
-    ' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
-    On Error GoTo ErrorTrap
+	Private Function ValidateSQLCode(Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As ExprValidationCodes
+		' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
+		On Error GoTo ErrorTrap
 
 		Dim lngCalcViews(,) As Integer
-    Dim intCount As Short
-    Dim sSource As String
-    Dim sSPCode As String
-    Dim strJoinCode As String
-    Dim iValidationCode As modExpression.ExprValidationCodes
-    Dim sSQLCode As String
-    Dim lngOriginalExprID As Integer
-    Dim sOriginalSQLCode As String
+		Dim intCount As Short
+		Dim sSource As String
+		Dim sSPCode As String
+		Dim strJoinCode As String
+		Dim iValidationCode As ExprValidationCodes
+		Dim sSQLCode As String
+		Dim lngOriginalExprID As Integer
+		Dim sOriginalSQLCode As String
 		Dim alngSourceTables(,) As Integer
-    Dim sProcName As String
-    Dim avDummyPrompts(,) As Object
-    Dim intStart As Short
-    Dim intFound As Short
+		Dim sProcName As String
+		Dim avDummyPrompts(,) As Object
+		Dim intStart As Short
+		Dim intFound As Short
 
-    ReDim avDummyPrompts(1, 0)
+		ReDim avDummyPrompts(1, 0)
 
-    iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 
-    If ((Not ExprDeleted((Me.ExpressionID))) Or (mlngExpressionID = 0)) And ((miExpressionType = modExpression.ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
+		If ((Not ExprDeleted((Me.ExpressionID))) Or (mlngExpressionID = 0)) And ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
 
-      mfConstructed = True
+			mfConstructed = True
 
-      If ((miExpressionType = modExpression.ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER)) Then
-        If RuntimeFilterCode(sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
+			If ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER)) Then
+				If RuntimeFilterCode(sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
 
-          On Error GoTo SQLCodeErrorTrap
+					On Error GoTo SQLCodeErrorTrap
 
-          sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
+					sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
 
-          ' Create the test stored procedure to see if the filter expression is valid.
-          sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-          gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
+					' Create the test stored procedure to see if the filter expression is valid.
+					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
+					gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
 
-          datGeneral.DropUniqueSQLObject(sProcName, 4)
+					datGeneral.DropUniqueSQLObject(sProcName, 4)
 
-          On Error GoTo ErrorTrap
-        Else
-          iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
-        End If
-      End If
+					On Error GoTo ErrorTrap
+				Else
+					iValidationCode = ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
+				End If
+			End If
 
-      If (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION) Then
-        ReDim lngCalcViews(2, 0)
-        If RuntimeCalculationCode(lngCalcViews, sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
-          ' Add the required views to the JOIN code.
-          strJoinCode = vbNullString
-          For intCount = 1 To UBound(lngCalcViews, 2)
-            ' JPD20020513 Fault 3871 - Join parent tables as well as views.
-            If lngCalcViews(1, intCount) = 1 Then
-              sSource = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount)).RealSource
-            Else
-              sSource = gcoTablePrivileges.FindTableID(lngCalcViews(2, intCount)).RealSource
-            End If
+			If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Then
+				ReDim lngCalcViews(2, 0)
+				If RuntimeCalculationCode(lngCalcViews, sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
+					' Add the required views to the JOIN code.
+					strJoinCode = vbNullString
+					For intCount = 1 To UBound(lngCalcViews, 2)
+						' JPD20020513 Fault 3871 - Join parent tables as well as views.
+						If lngCalcViews(1, intCount) = 1 Then
+							sSource = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount)).RealSource
+						Else
+							sSource = gcoTablePrivileges.FindTableID(lngCalcViews(2, intCount)).RealSource
+						End If
 
-            strJoinCode = strJoinCode & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & msBaseTableName & ".ID = " & sSource & ".ID"
-          Next
+						strJoinCode = strJoinCode & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & msBaseTableName & ".ID = " & sSource & ".ID"
+					Next
 
-          sSQLCode = "SELECT " & sSQLCode & " FROM " & msBaseTableName & strJoinCode
+					sSQLCode = "SELECT " & sSQLCode & " FROM " & msBaseTableName & strJoinCode
 
-          On Error GoTo SQLCodeErrorTrap
+					On Error GoTo SQLCodeErrorTrap
 
-          sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
+					sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
 
-          ' Create the test stored procedure to see if the filter expression is valid.
-          sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-          gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
+					' Create the test stored procedure to see if the filter expression is valid.
+					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
+					gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
 
-          ' Drop the test stored procedure.
-          datGeneral.DropUniqueSQLObject(sProcName, 4)
+					' Drop the test stored procedure.
+					datGeneral.DropUniqueSQLObject(sProcName, 4)
 
-          On Error GoTo ErrorTrap
-        Else
-          iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
-        End If
-      End If
+					On Error GoTo ErrorTrap
+				Else
+					iValidationCode = ExprValidationCodes.giEXPRVALIDATION_FILTEREVALUATION
+				End If
+			End If
 
-      If iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
-        ' Need to check if all calcs/filters that use this filter are still okay.
-        'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-        If (IsNothing(plngFixedExprID) And IsNothing(psFixedSQLCode)) Or ((plngFixedExprID = 0) And (psFixedSQLCode = "")) Then
-          lngOriginalExprID = mlngExpressionID
+			If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+				' Need to check if all calcs/filters that use this filter are still okay.
+				'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+				If (IsNothing(plngFixedExprID) And IsNothing(psFixedSQLCode)) Or ((plngFixedExprID = 0) And (psFixedSQLCode = "")) Then
+					lngOriginalExprID = mlngExpressionID
 
-          ' Create an array of the IDs of the tables/view referred to in the expression.
-          ' This is used for joining all of the tables/views used.
-          ' Column 1 = 0 if this row is for a table, 1 if it is for a view.
-          ' Column 2 = table/view ID.
-          ReDim alngSourceTables(2, 0)
+					' Create an array of the IDs of the tables/view referred to in the expression.
+					' This is used for joining all of the tables/views used.
+					' Column 1 = 0 if this row is for a table, 1 if it is for a view.
+					' Column 2 = table/view ID.
+					ReDim alngSourceTables(2, 0)
 
-          RuntimeCode(sSQLCode, alngSourceTables, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
-          sOriginalSQLCode = sSQLCode
-        Else
-          lngOriginalExprID = plngFixedExprID
-          sOriginalSQLCode = psFixedSQLCode
-        End If
+					RuntimeCode(sSQLCode, alngSourceTables, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
+					sOriginalSQLCode = sSQLCode
+				Else
+					lngOriginalExprID = plngFixedExprID
+					sOriginalSQLCode = psFixedSQLCode
+				End If
 
-        iValidationCode = ValidateAssociatedExpressionsSQLCode(lngOriginalExprID, sOriginalSQLCode)
-      End If
-    End If
+				iValidationCode = ValidateAssociatedExpressionsSQLCode(lngOriginalExprID, sOriginalSQLCode)
+			End If
+		End If
 
 TidyUpAndExit:
-    ValidateSQLCode = iValidationCode
-    Exit Function
+		ValidateSQLCode = iValidationCode
+		Exit Function
 
 SQLCodeErrorTrap:
-    'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-    If (IsNothing(plngFixedExprID) And IsNothing(psFixedSQLCode)) Or ((plngFixedExprID = 0) And (psFixedSQLCode = "")) Then
-      iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_SQLERROR
-    Else
-      iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_ASSOCSQLERROR
-    End If
-    msErrorMessage = Err.Description
+		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+		If (IsNothing(plngFixedExprID) And IsNothing(psFixedSQLCode)) Or ((plngFixedExprID = 0) And (psFixedSQLCode = "")) Then
+			iValidationCode = ExprValidationCodes.giEXPRVALIDATION_SQLERROR
+		Else
+			iValidationCode = ExprValidationCodes.giEXPRVALIDATION_ASSOCSQLERROR
+		End If
+		msErrorMessage = Err.Description
 
-    Do
-      intStart = intFound
-      intFound = InStr(intStart + 1, msErrorMessage, "]")
-    Loop While intFound > 0
+		Do
+			intStart = intFound
+			intFound = InStr(intStart + 1, msErrorMessage, "]")
+		Loop While intFound > 0
 
-    If intStart > 0 And intStart < Len(Trim(msErrorMessage)) Then
-      msErrorMessage = Trim(Mid(msErrorMessage, intStart + 1))
-    End If
+		If intStart > 0 And intStart < Len(Trim(msErrorMessage)) Then
+			msErrorMessage = Trim(Mid(msErrorMessage, intStart + 1))
+		End If
 
-    'UPGRADE_NOTE: Object mobjBadComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    mobjBadComponent = Nothing
-    Resume TidyUpAndExit
+		'UPGRADE_NOTE: Object mobjBadComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		mobjBadComponent = Nothing
+		Resume TidyUpAndExit
 
 ErrorTrap:
-    iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
-    Resume TidyUpAndExit
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
+		Resume TidyUpAndExit
 
-  End Function
+	End Function
 
 	Private Function ValidateAssociatedExpressionsSQLCode(ByRef plngFixedExpressionID As Integer, ByRef psFixedSQLCode As String) As modExpression.ExprValidationCodes
 		' Validate the SQL code for any expressions that use this expression.
 		' This picks up on errors such as too many nested levels of the CASE statement.
-		Dim iValidationCode As modExpression.ExprValidationCodes
+		Dim iValidationCode As ExprValidationCodes
 		Dim sSQL As String
 		Dim rsTemp As ADODB.Recordset
 		Dim objComp As clsExprComponent
 		Dim objExpr As clsExprExpression
 		
-		iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 		
 		' Do nothing if this is a new expression
 		If mlngExpressionID = 0 Then
@@ -2553,25 +1644,25 @@ ErrorTrap:
 		sSQL = "SELECT componentID" & " FROM ASRSysExprComponents" & " WHERE calculationID = " & mlngExpressionID & " OR filterID = " & mlngExpressionID & " OR (fieldSelectionFilter = " & mlngExpressionID & " AND type = " & CStr(modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) & ")"
 		rsTemp = datGeneral.GetRecords(sSQL)
 		With rsTemp
-			Do While (Not .EOF) And (iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
+			Do While (Not .EOF) And (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
 				objComp = New clsExprComponent
 				objComp.ComponentID = .Fields("ComponentID").Value
-				
+
 				objExpr = New clsExprExpression
 				objExpr.ExpressionID = objComp.RootExpressionID
 				objExpr.ConstructExpression()
 				iValidationCode = objExpr.ValidateSQLCode(plngFixedExpressionID, psFixedSQLCode)
-				If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+				If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
 					msErrorMessage = objExpr.ErrorMessage
 				End If
 				'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objExpr = Nothing
-				
+
 				'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objComp = Nothing
-				
+
 				.MoveNext()
-			Loop 
+			Loop
 			.Close()
 		End With
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -2603,8 +1694,8 @@ ErrorTrap:
 		
 		' Do nothing if the expression is already constructed.
 		If mfConstructed Then
-			If miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
-				miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+			If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
+				miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 			End If
 			
 			If mlngExpressionID > 0 Then
@@ -2625,13 +1716,13 @@ ErrorTrap:
 		Else
 
 			' Get the expression definition.
-			If miExpressionType = modExpression.ExpressionTypes.giEXPR_UTILRUNTIMEFILTER Then
+			If miExpressionType = ExpressionTypes.giEXPR_UTILRUNTIMEFILTER Then
 				' Utility runtime filters are not tied to a base table.
 				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " 0 AS tableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " '' AS tableName" & " FROM ASRSysExpressions" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
-				
-			ElseIf miExpressionType = modExpression.ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC Then 
+
+			ElseIf miExpressionType = ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC Then
 				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
-				
+
 			Else
 				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
 			End If
@@ -2650,8 +1741,8 @@ ErrorTrap:
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					miExpressionType = IIf(IsDbNull(.Fields("Type").Value), modExpression.ExpressionTypes.giEXPR_UNKNOWNTYPE, .Fields("Type").Value)
 					
-					If miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
-						miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+					If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
+						miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 					End If
 					
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -2812,15 +1903,8 @@ ErrorTrap:
 		
 		Dim fOK As Boolean
 
-		fOK = True
-		
-		' Construct the expression to print.
-		'UPGRADE_WARNING: Screen property Screen.MousePointer has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6BA9B8D2-2A32-4B6E-8D36-44949974A5B4"'
-		System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor
 		fOK = ConstructExpression
-		'UPGRADE_WARNING: Screen property Screen.MousePointer has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6BA9B8D2-2A32-4B6E-8D36-44949974A5B4"'
-		System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default
-		
+
 TidyUpAndExit: 
 		ValidateSelection = fOK
 		Exit Function
@@ -2889,7 +1973,7 @@ ErrorTrap:
 
 		If fOK Then
 			If pfApplyPermissions Then
-				fOK = (ValidateExpression(True) = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
+				fOK = (ValidateExpression(True) = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
 			End If
 		End If
 
@@ -2935,7 +2019,7 @@ ErrorTrap:
 			If pfApplyPermissions Then
 				' Get the 'realSource' of the table.
 				objTableView = gcoTablePrivileges.Item(msBaseTableName)
-				If objTableView.TableType = Declarations.TableTypes.tabChild Then
+				If objTableView.TableType = TableTypes.tabChild Then
 					sBaseTableSource = objTableView.RealSource
 				End If
 				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
