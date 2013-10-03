@@ -4651,7 +4651,7 @@ function menu_toolbarEnableItem(itemId, fNewSetting) {
 
 	if ($("#" + itemId).length == 0)
 	{
-		console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId);
+		//console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
 	}
 	
 	var currSrc = $("#" + itemId + " img:first").attr("src");
@@ -4690,7 +4690,7 @@ function menu_setVisibleMenuItem(itemId, fNewSetting) {
 		var sNewValue = "";
 
 		if ($("#" + itemId).length == 0) {
-			console.log('Wrong menu item ID in menu_setVisibleMenuItem: ' + itemId);
+			//console.log('Wrong menu item ID in menu_setVisibleMenuItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
 		}
 
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
