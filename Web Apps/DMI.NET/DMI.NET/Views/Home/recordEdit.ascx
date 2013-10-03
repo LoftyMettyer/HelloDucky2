@@ -363,6 +363,12 @@
 	    if ($("#ctlRecordEdit #changed").val() == "false") {
 		    $("#ctlRecordEdit #changed").val("true");
 		    menu_toolbarEnableItem("mnutoolSaveRecord", true);
+		    
+				//Prevent navigation (or timeout) if unsaved changes.
+		    window.onbeforeunload = function () {
+		    	return 'You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?';		    	
+		    };
+		    
 	    }
     }
 
@@ -810,4 +816,6 @@
     recordEdit_window_onload();
 	//must run after onload (which populates the screen)
     addActiveXHandlers();
+
+
 </script>

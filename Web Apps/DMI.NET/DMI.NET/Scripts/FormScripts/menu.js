@@ -365,6 +365,11 @@ function menu_abMainMenu_DataReady() {
 //}
 
 function menu_abMainMenu_Click(pTool) {
+	
+	//Reset the idle timeout.
+	window.clearTimeout(window.timeoutHandle);
+	window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+
 	//reject disabled icon clicks
 	if ($("#" + pTool).hasClass("disabled")) return false;
 	menu_MenuClick(pTool);	
@@ -1372,8 +1377,8 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
 		menu_toolbarEnableItem("mnutoolNewRecord", fMnutoolNewRecord);
-		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
-		menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
+						menu_setVisibleMenuItem("mnutoolCopyRecord", true);
+						menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);		
 		menu_toolbarEnableItem("mnutoolSaveRecord", ($("#ctlRecordEdit #changed").val() == "true"));
@@ -1385,8 +1390,8 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
 		menu_setVisibleMenuItem("mnutoolParentRecord", !menu_isSSIMode());
 		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
-		menu_setVisibleMenuItem("mnutoolBackRecord", false);
-		menu_toolbarEnableItem("mnutoolBackRecord", false);
+						menu_setVisibleMenuItem("mnutoolBackRecord", false);
+						menu_toolbarEnableItem("mnutoolBackRecord", false);
 		menu_setVisibletoolbarGroup("mnutoolNewRecord", true);
 
 		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
@@ -1440,7 +1445,7 @@ function menu_refreshMenu() {
 
 
 		
-		// Standard reports group
+						// Standard reports group
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				(frmMenuInfo.txtUserType.value == 0) &&

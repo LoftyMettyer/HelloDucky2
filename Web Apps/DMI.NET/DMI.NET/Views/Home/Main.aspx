@@ -147,6 +147,18 @@
 
 			}
 
+
+			//Timeout functionality
+			try {
+				 window.timeoutMs = (Number('<%=Session("TimeoutSecs")%>') * 1000);
+			}
+			catch (e) {
+				//default to 20 minutes.
+				window.timeoutMs = 1200000;
+			}
+			
+			window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+			
 		});
 
 		function refreshPollFrame() {
@@ -198,7 +210,7 @@
 		<div id="optiondataframe" data-framesource="optionData.asp" style="display: none"><%Html.RenderPartial("~/views/home/optiondata.ascx")%></div>
 	</div>
 
-	<div id="refresh" data-framesource="refresh.asp" style="display: none"><%Html.RenderPartial("~/views/home/refresh.ascx")%></div>
+	<div id="refresh" data-framesource="refresh.asp" style="display: none"></div>
 
 	<div id="pollframeset">
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
