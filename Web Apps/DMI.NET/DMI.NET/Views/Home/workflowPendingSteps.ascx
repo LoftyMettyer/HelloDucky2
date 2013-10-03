@@ -167,6 +167,7 @@
 <script type="text/javascript">
 	function refreshControls() {
 		var sSelectionList = jQuery("#PendingStepsTable").jqGrid('getGridParam', 'selarrrow');
+		sSelectionList = (sSelectionList == null ? '' : sSelectionList);
 		menu_toolbarEnableItem('mnutoolRunWFPendingStepsFind', (sSelectionList.length > 0));
 	}
 
