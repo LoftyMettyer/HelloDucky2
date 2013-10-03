@@ -284,7 +284,7 @@
 		},
 		localeDateFormat = function () {
 			//TODO - Get the proper regional settings
-				return "dd/MM/yyyy";
+				return "dd/mm/yyyy";
 		},
 				convertSqlDateToLocale = function (z) {
 			//TODO - Get the proper regional settings
