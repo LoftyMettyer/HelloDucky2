@@ -196,3 +196,5 @@ body.loading .modal {
 #officebar>ul>li {
 	display: none;
 }
+
+.ui-jqgrid .ui-jqgrid-btable { cursor : default; }
