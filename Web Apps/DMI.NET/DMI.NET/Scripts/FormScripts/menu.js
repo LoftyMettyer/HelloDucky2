@@ -4639,17 +4639,15 @@ function menu_sortULMenuItems(parentULID) {
 }
 
 function menu_enableMenuItem(itemId, fNewSetting) {
-
-	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-		//$("#" + itemId + " a:first").attr("disabled", "");
-		$("#" + itemId + " a:first").removeAttr("disabled");
-	} else {
-		$("#" + itemId + " a:first").attr("disabled", "disabled");
-		//$("#" + itemId + " a:first").css("color", "lightgray");
-		$("#" + itemId + " a:first").css("font-weight", "lighter");
-
-	}
-
+    if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+        $("#" + itemId + " a:first").removeAttr("disabled");
+    } else {
+        $("#" + itemId + " a:first").attr("disabled", "disabled");
+        $("#" + itemId + " a:first").css({
+            fontWeight: "lighter",
+            cursor: "default"
+        });
+    }
 }
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
