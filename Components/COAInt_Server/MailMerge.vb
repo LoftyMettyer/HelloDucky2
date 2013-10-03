@@ -1213,13 +1213,13 @@ LocalErr:
                 fOK = False
                 Exit Function
 
-              ElseIf IsCalcValid(.Fields("ColExpID")) <> vbNullString Then
-                'MH20011127
-                'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
-                '"Please re-visit your definition to remove the hidden calculations." & vbNewLine
-                mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
-                fOK = False
-                Exit Function
+							ElseIf IsCalcValid(.Fields("ColExpID").Value) <> vbNullString Then
+								'MH20011127
+								'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
+								'"Please re-visit your definition to remove the hidden calculations." & vbNewLine
+								mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
+								fOK = False
+								Exit Function
 
               Else
                 Call SQLAddCalculation(.Fields("ColExpID").Value, .Fields("Table").Value & .Fields("Name").Value)

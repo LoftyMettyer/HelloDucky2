@@ -795,28 +795,28 @@ LocalErr:
 		
 	End Function
 	
-	Private Function IsSelectionValid(ByRef varID As Object, ByRef strType As String) As String
-		
+	Private Function IsSelectionValid(ByVal varID As Object, ByRef strType As String) As String
+
 		Dim rsTemp As ADODB.Recordset
-		
+
 		IsSelectionValid = vbNullString
 		'UPGRADE_WARNING: Couldn't resolve default property of object varID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		If Val(varID) = 0 Then Exit Function
-		
+
 		rsTemp = GetSelectionAccess(varID, strType)
-		
+
 		If rsTemp.BOF And rsTemp.EOF Then
 			IsSelectionValid = "The " & strType & " used in this definition has been " & "deleted by another user"
-			
-		ElseIf LCase(Trim(rsTemp.Fields("Username").Value)) <> LCase(Trim(datGeneral.Username)) And rsTemp.Fields("Access").Value = "HD" Then 
+
+		ElseIf LCase(Trim(rsTemp.Fields("Username").Value)) <> LCase(Trim(datGeneral.Username)) And rsTemp.Fields("Access").Value = "HD" Then
 			'JPD 20040706 Fault 8781
-			If Not CurrentUserIsSysSecMgr Then
+			If Not CurrentUserIsSysSecMgr() Then
 				IsSelectionValid = "The " & strType & " used in this definition has been " & "hidden by another user"
 			End If
 		End If
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsTemp = Nothing
-		
+
 	End Function
 	
 	
@@ -837,7 +837,7 @@ LocalErr:
 	End Function
 	
 	
-	Public Function IsPicklistValid(ByRef varID As Object) As String
+	Public Function IsPicklistValid(ByVal varID As Object) As String
 		IsPicklistValid = IsSelectionValid(varID, "picklist")
 	End Function
 	
