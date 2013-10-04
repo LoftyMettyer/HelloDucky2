@@ -487,16 +487,16 @@
 							$("#toolbarEventLogFind").parent().hide();
 							$("#toolbarWFPendingStepsFind").parent().hide();
 							// Enable the buttons
-							menu_toolbarEnableItem("mnutoolNewUtilitiesFind", false);
-							menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", false);
-							menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", false);
-							menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
-							menu_toolbarEnableItem("mnutoolEditUtilitiesFind", false);
-							menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
-							menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", false);
-							menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
-							menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", false);
-							menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
+							menu_toolbarEnableItem("mnutoolNewUtilitiesFind", true);
+							menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+							menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", true);
+							menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+							menu_toolbarEnableItem("mnutoolEditUtilitiesFind", true);
+						  menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+							menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", true);
+							menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
+							menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", true);
+							menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
 							menu_toolbarEnableItem("mnutoolRunUtilitiesFind", true);
 
 							//only display the 'close' button for defsel when called from rec edit...
