@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <% 
 	Response.Expires = -1 
@@ -8,9 +9,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
-		<title>OpenHR Intranet</title>
+	<title>OpenHR Intranet</title>
 
 		<script type="text/javascript">
 				function defselproperties_window_onload() {
@@ -46,9 +55,9 @@
 							</td>
 					</tr>
 <%
-	Dim cmdDefPropRecords = CreateObject("ADODB.Command")
+	Dim cmdDefPropRecords As Command = New Command()
 cmdDefPropRecords.CommandText = "sp_ASRIntDefProperties"
-cmdDefPropRecords.CommandType = 4 ' Stored Procedure
+	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 
 	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
 
@@ -130,9 +139,9 @@ prmID.value = cleanNumeric(clng(Request("prop_id")))
 						<td rowspan=4>
 						<SELECT size=2 id=select1 name=select1 style="WIDTH: 300px; height:100%" class="combo">
 <%
-	cmdDefPropRecords = CreateObject("ADODB.Command")
-cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
-cmdDefPropRecords.CommandType = 4 ' Stored Procedure
+	cmdDefPropRecords = New Command()
+	cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
+	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 
 	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
 
@@ -179,11 +188,7 @@ end if
 				<tr height=10> 
 						<td colspan=4 align=right> 
 									<input type="button" name="cmdClose" value="Close" style="WIDTH: 80px" width="80"
-											onClick="self.close()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+											onClick="self.close()" />
 										</td>
 							<td width=20></td>
 				</tr>

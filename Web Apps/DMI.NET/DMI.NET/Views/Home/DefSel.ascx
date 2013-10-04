@@ -674,7 +674,7 @@
 				var frmDefSel = document.getElementById('frmDefSel');
 
 				var frmProp = document.getElementById('frmProp');
-				frmProp.prop_id.value = selectedRecordDetails("ID");
+				frmProp.prop_id.value = $("#DefSelRecords").getGridParam('selrow');
 				frmProp.prop_name.value = selectedRecordDetails("Name");
 				frmProp.utiltype.value = frmDefSel.utiltype.value;
 
