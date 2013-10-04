@@ -435,6 +435,23 @@
 					frmPopup.txtSelectedAccess.value = Access;
 					frmPopup.txtSelectedName.value = Name;
 				},
+				ondblClickRow: function (rowID)
+				{
+					//Get the values selected by the user...
+					var ID = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].ID;
+					var Name = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].Name;
+					var UserName = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].UserName;
+					var Access = $("#RecordSelectionHTMLTable").jqGrid('getGridParam').data[$("#RecordSelectionHTMLTable").jqGrid('getGridParam', 'selrow') - 1].Access;
+
+					// ... and set the form values accordingly
+					frmPopup.txtSelectedID.value = ID;
+					frmPopup.txtSelectedUserName.value = UserName;
+					frmPopup.txtSelectedAccess.value = Access;
+					frmPopup.txtSelectedName.value = Name;
+					
+					//Set the form and close the dialog
+					setForm();
+				},
 				rowNum: 1000,   //TODO set this to blocksize...
 				height: 320,
 				width: (screen.width) / 3 + 5,
