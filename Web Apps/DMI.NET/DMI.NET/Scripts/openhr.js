@@ -159,7 +159,7 @@
 					} catch (e) {
 						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
 						$("#errorDialogTitle").text(e.toString);
-						$("#errorDialogContentText").text(e.responseText);
+						$("#errorDialogContentText").html(e.responseText);
 						$("#errorDialog").dialog("open");
 					}
 					//clear the frame...
@@ -203,7 +203,7 @@
 					if (!(errorObj == "" || req.responseText == "")) {
 						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
 						$("#errorDialogTitle").text(errorObj);
-						$("#errorDialogContentText").text(req.responseText);
+						$("#errorDialogContentText").html(req.responseText);
 						$("#errorDialog").dialog("open");
 					}
 				}

@@ -651,16 +651,21 @@ header {
 	padding-left: 20px;
 }
 
-#errorDialog { height: 400px;}
+#errorDialog {
+	height: 700px;
+	width: 850px;
+}
 
 #errorDialogTitleContent {
 	position: relative;
-	height: 50px;
+	height: auto;
+	width: auto;
 }
 
 #errorDialogContent {
 	position: relative;
-	height: 400px;
+	height: auto;
+	width: auto;
 	overflow: auto;
 	margin-top: 20px;
 }
