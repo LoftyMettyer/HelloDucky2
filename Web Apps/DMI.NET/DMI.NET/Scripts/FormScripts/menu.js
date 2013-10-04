@@ -1269,7 +1269,7 @@ function menu_refreshMenu() {
 			fMailMergeEnabled = false;
 		}
 	}
-
+	
 	fCancelCourseVisible = false;
 	fCancelCourseEnabled = false;
 	fBookCourseVisible = false;
@@ -2141,8 +2141,12 @@ function menu_refreshMenu() {
 
 	//}
 
-
-	menu_enableMenu();
+	if (sCurrentWorkPage == "TBBULKBOOKING") {
+		menu_disableFindMenu();
+	} else {
+		menu_enableMenu();
+	}
+	
 }
 //	
 function menu_enableMenu() {
@@ -2182,28 +2186,26 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolDeleteRecord', false);
 
 		menu_toolbarEnableItem('mnutoolParentRecord', false);
-				menu_toolbarEnableItem('mnutoolBackRecord', false);
+		menu_toolbarEnableItem('mnutoolBackRecord', false);
 		menu_toolbarEnableItem('mnutoolFirstRecord', false);
 		menu_toolbarEnableItem('mnutoolPreviousRecord', false);
 		menu_toolbarEnableItem('mnutoolNextRecord', false);
 		menu_toolbarEnableItem('mnutoolLastRecord', false);
 
-				menu_toolbarEnableItem('mnutoolFindRecord', false);
-				menu_toolbarEnableItem('mnutoolQuickFindRecord', false);
-				menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
-				menu_toolbarEnableItem('mnutoolFilterRecord', false);
-				menu_toolbarEnableItem('mnutoolClearFilterRecord', false);
-				menu_toolbarEnableItem('mnutoolPrintRecord', false);
+		menu_toolbarEnableItem('mnutoolFindRecord', false);
+		menu_toolbarEnableItem('mnutoolQuickFindRecord', false);
+		menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
+		menu_toolbarEnableItem('mnutoolFilterRecord', false);
+		menu_toolbarEnableItem('mnutoolClearFilterRecord', false);
+		menu_toolbarEnableItem('mnutoolPrintRecord', false);
 
-				menu_toolbarEnableItem('mnutoolCalendarReportsRecord', false);
-				menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecord', false);
-				menu_toolbarEnableItem('mnutoolAbsenceCalendarRecord', false);
-				menu_toolbarEnableItem('mnutoolBradfordRecord', false);
+		menu_toolbarEnableItem('mnutoolCalendarReportsRecord', false);
+		menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecord', false);
+		menu_toolbarEnableItem('mnutoolAbsenceCalendarRecord', false);
+		menu_toolbarEnableItem('mnutoolBradfordRecord', false);
 
-				menu_toolbarEnableItem('mnutoolMailMergeRecord', false);
+		menu_toolbarEnableItem('mnutoolMailMergeRecord', false);
 	}
-	
-
 
 //	var iLoop;
 //	
@@ -2219,6 +2221,41 @@ function menu_disableMenu() {
 //	abMainMenu.ResetHooks();
 //	abMainMenu.Refresh();
 }
+
+
+function menu_disableFindMenu() {
+	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
+		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
+		$("#officebar").fadeOut("fast");
+	} else { //disable menu items on Record tab.
+		menu_toolbarEnableItem('mnutoolNewRecordFind', false);
+		menu_toolbarEnableItem('mnutoolEditRecordFind', false);
+		menu_toolbarEnableItem('mnutoolCopyRecordFind', false);
+		menu_toolbarEnableItem('mnutoolDeleteRecordFind', false);
+
+		menu_toolbarEnableItem('mnutoolParentRecordFind', false);
+		menu_toolbarEnableItem('mnutoolBackRecordFind', false);
+		menu_toolbarEnableItem('mnutoolFirstRecordFind', false);
+		menu_toolbarEnableItem('mnutoolPreviousRecordFind', false);
+		menu_toolbarEnableItem('mnutoolNextRecordFind', false);
+		menu_toolbarEnableItem('mnutoolLastRecordFind', false);
+
+		//menu_toolbarEnableItem('mnutoolFindRecordFind', false);
+		//menu_toolbarEnableItem('mnutoolQuickFindRecordFind', false);
+		menu_toolbarEnableItem('mnutoolChangeOrderRecordFind', false);
+		menu_toolbarEnableItem('mnutoolFilterRecordFind', false);
+		menu_toolbarEnableItem('mnutoolClearFilterRecordFind', false);
+		//menu_toolbarEnableItem('mnutoolPrintRecordFind', false);
+
+		//menu_toolbarEnableItem('mnutoolCalendarReportsRecordFind', false);
+		//menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecordFind', false);
+		//menu_toolbarEnableItem('mnutoolAbsenceCalendarRecordFind', false);
+		//menu_toolbarEnableItem('mnutoolBradfordRecordFind', false);
+
+		//menu_toolbarEnableItem('mnutoolMailMergeRecordFind', false);
+	}
+}
+
 
 function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	// Prompt the user to save changes if required.
