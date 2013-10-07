@@ -1354,6 +1354,11 @@ function menu_refreshMenu() {
 	fStdRptAbsenceBreakdownEnabled = ((fCanRunAbsenceBreakdown == true) && (fStdRptAbsenceBreakdownVisible));
 	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) && (fStdRptBradfordFactorVisible));
 
+	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Breakdown
+	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
+	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
+	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Toolbar Icon
+
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 		if (sCurrentWorkPage == "DEFAULT") {
@@ -1999,14 +2004,12 @@ function menu_refreshMenu() {
 	//		abMainMenu.Tools("mnutoolPasswordChange").enabled = false;
 	//<%
 	//	end if
-	//%>
+	//%>		
 
-		//HC: Seems redundant
-
-	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);
-	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);
-	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);
-	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);
+	menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownVisible);
+	menu_toolbarEnableItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownEnabled);
+	menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);
+	menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);
 	
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
