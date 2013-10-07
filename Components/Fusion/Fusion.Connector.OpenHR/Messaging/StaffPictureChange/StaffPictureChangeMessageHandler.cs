@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
 using Fusion.Connector.OpenHR.Database;
+using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Core;
 using log4net;
 using NServiceBus;
@@ -48,6 +49,31 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
 						if (staffId == null)
 						{
+							var dummyStaff = new Staff
+							{
+								surname = "** Unknown Fusion **",
+								forenames = "** From StaffPicture **",
+								email = message.PrimaryEntityRef.ToString()
+							};
+							var dummyStaffChange = new StaffChange(new Guid(message.PrimaryEntityRef.ToString()), dummyStaff);
+							var dummyStaffMessage = new StaffChangeMessage
+							{
+								Community = message.Community,
+								CreatedUtc = DateTime.Now,
+								EntityRef = message.PrimaryEntityRef,
+								Originator = message.Originator,
+								SchemaVersion = message.SchemaVersion,
+								Xml = dummyStaffChange.ToXml()
+							};
+
+							var handler = new StaffChangeMessageHandler
+							{
+								BusRefTranslator = BusRefTranslator,
+								MessageTracking = MessageTracking
+							};
+							handler.SaveToDB(dummyStaffChange, dummyStaffMessage);
+							Logger.InfoFormat("Inbound Created dummy staff record for staffref- {0}, pictureRef {1}", message.PrimaryEntityRef.ToString(), message.EntityRef.ToString());
+
 							this.Bus().HandleCurrentMessageLater();
 							return;
 						}

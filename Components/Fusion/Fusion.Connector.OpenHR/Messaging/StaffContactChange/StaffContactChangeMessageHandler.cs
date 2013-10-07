@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
 using Fusion.Connector.OpenHR.MessageComponents;
+using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Core;
 using Fusion.Messages.SocialCare;
 using NServiceBus;
@@ -41,10 +42,37 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Contact, contactRef);
             var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
 
+						Logger.InfoFormat("Inbound StaffContactChangeMessageHandler message staffref- {0}, contactRef {1}", message.PrimaryEntityRef.ToString(), message.EntityRef.ToString());
+
             var isNew = (localId == null);
 
 						if (staffId == null)
 						{
+							var dummyStaff = new Staff
+							{
+								surname = "** Unknown Fusion **",
+								forenames = "** From StaffContact **",
+								email = message.PrimaryEntityRef.ToString()
+							};
+							var dummyStaffChange = new StaffChange(new Guid(message.PrimaryEntityRef.ToString()), dummyStaff);
+							var dummyStaffMessage = new StaffChangeMessage
+							{
+								Community = message.Community,
+								CreatedUtc = DateTime.Now,
+								EntityRef = message.PrimaryEntityRef,
+								Originator = message.Originator,
+								SchemaVersion = message.SchemaVersion,
+								Xml = dummyStaffChange.ToXml()
+							};
+
+							var handler = new StaffChangeMessageHandler
+							{
+								BusRefTranslator = BusRefTranslator,
+								MessageTracking = MessageTracking
+							};
+							handler.SaveToDB(dummyStaffChange, dummyStaffMessage);
+							Logger.InfoFormat("Inbound Created dummy staff record for staffref- {0}, contactRef {1}", message.PrimaryEntityRef.ToString(), message.EntityRef.ToString());
+
 							this.Bus().HandleCurrentMessageLater();
 							return;
 						}

@@ -76,6 +76,12 @@ END'
 			[LastGeneratedXml] [varchar] (max) COLLATE Latin1_General_CI_AS NULL)
 	END
 
+	IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsDummyRecord' and Object_ID = OBJECT_ID(N'[fusion].[MessageTracking]'))
+	BEGIN
+		ALTER TABLE [fusion].[MessageTracking] ADD IsDummyRecord [bit]
+	END
+
+
 
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[MessageLog]') AND type in (N'U'))
 	BEGIN

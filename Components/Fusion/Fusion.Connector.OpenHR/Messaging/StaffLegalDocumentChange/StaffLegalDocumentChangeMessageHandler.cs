@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Dapper;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
+using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using Fusion.Core;
 using Fusion.Messages.SocialCare;
@@ -43,13 +44,41 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Document, docRef);
 	        var staffId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString()));
 
+					Logger.InfoFormat("Inbound StaffLegalDocumentChangeMessage message staffref- {0}, legalRef {1}", message.PrimaryEntityRef.ToString(), message.EntityRef.ToString());
+
             var isNew = (localId == null && document.data.recordStatus == RecordStatusStandard.Active);
 
 						if (staffId == null)
 						{
+							var dummyStaff = new Staff
+							{
+								surname = "** Unknown Fusion **",
+								forenames = "** From LegalDocument **",
+								email = message.PrimaryEntityRef.ToString()
+							};
+							var dummyStaffChange = new StaffChange(new Guid(message.PrimaryEntityRef.ToString()), dummyStaff);
+							var dummyStaffMessage = new StaffChangeMessage
+							{
+								Community = message.Community,
+								CreatedUtc = DateTime.Now,
+								EntityRef = message.PrimaryEntityRef,
+								Originator = message.Originator,
+								SchemaVersion = message.SchemaVersion,
+								Xml = dummyStaffChange.ToXml()
+							};
+
+							var handler = new StaffChangeMessageHandler
+							{
+								BusRefTranslator = BusRefTranslator,
+								MessageTracking = MessageTracking
+							};
+							handler.SaveToDB(dummyStaffChange, dummyStaffMessage);
+							Logger.InfoFormat("Inbound Created dummy staff record for staffef- {0}, legalRef {1}", message.PrimaryEntityRef.ToString(), message.EntityRef.ToString());
+
 							this.Bus().HandleCurrentMessageLater();
 							return;
 						}
+
 
             SqlParameter idParameter;
             using (var c = new SqlConnection(ConnectionString))
