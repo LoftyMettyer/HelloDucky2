@@ -5,9 +5,9 @@
 <html>
 <head>
 	<title>Event Log Selection - OpenHR Intranet</title>
-	<script src="/bundles/jQuery" type="text/javascript"></script>
-	<script src="/bundles/jQueryUI7" type="text/javascript"></script>
-	<script src="/bundles/OpenHR_General" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<link href="/Content/general_enclosed_foundicons.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
 	<link href="/Content/font-awesome.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
 	<link href="/Content/fonts/SSI80v194934/style.css?v=8.0.9.0" rel="stylesheet" />
