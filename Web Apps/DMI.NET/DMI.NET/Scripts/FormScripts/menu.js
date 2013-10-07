@@ -1357,7 +1357,8 @@ function menu_refreshMenu() {
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 		if (sCurrentWorkPage == "DEFAULT") {
-				showDefaultRibbon();
+			showDefaultRibbon();
+			$('#toolbarHome').click();
 		}
 		else { 
 	if (sCurrentWorkPage == "RECORDEDIT") {
