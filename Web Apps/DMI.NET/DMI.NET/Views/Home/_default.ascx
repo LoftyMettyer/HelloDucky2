@@ -42,21 +42,28 @@
 
 		Err.Clear()
 		cmdOutOfOffice.Execute()
+				
 		cmdOutOfOffice = Nothing
 
 		Session("reset") = 0
+		
+		' JIRA 3286 - reset the session variable, as we revisit this page as part of main.ascx refresh.
+		Session("action") = ""
+		
 	End If
 %>
 
 <script type="text/javascript">
-function default_window_onload() {
-	try {		
+	function default_window_onload() {		
+		try {			
 		// Do nothing if the menu controls are not yet instantiated.
 		if (OpenHR.getForm("menuframe", "frmWorkAreaInfo") != null) 
 			{
 			//window.parent.document.all.item("workframeset").cols = "*, 0";	
+			$("#workframe").attr("data-framesource", "DEFAULT");
+			
 			// Get menu.asp to refresh the menu.
-			//window.parent.frames("menuframe").refreshMenu();
+			//window.parent.frames("menuframe").refreshMenu();			
 			menu_refreshMenu();
 
 			if ("<%=Session("action")%>" == "WORKFLOWOUTOFOFFICE_CHECK")
