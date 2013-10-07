@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script type="text/javascript">
 
@@ -126,17 +127,16 @@
 	<%
 		On Error Resume Next
 		
-		Dim iRetryCount = 0
 		Dim sErrorDescription As String = ""
 		Dim sThousandColumns As String
 		
-		Dim cmdThousandFindColumns As ADODB.Command
+		Dim cmdThousandFindColumns As Command
 		Dim prmError As ADODB.Parameter
 		Dim prmTableID As ADODB.Parameter
 		Dim prmViewID As ADODB.Parameter
 		Dim prmOrderID As ADODB.Parameter
 		Dim prmThousandColumns As ADODB.Parameter
-		Dim cmdGetFindRecords As ADODB.Command
+		Dim cmdGetFindRecords As Command
 		Dim prmReqRecs As ADODB.Parameter
 		Dim prmIsFirstPage As ADODB.Parameter
 		Dim prmIsLastPage As ADODB.Parameter
@@ -149,7 +149,7 @@
 		Dim prmExcludedIDs As ADODB.Parameter
 		Dim prmColumnSize As ADODB.Parameter
 		Dim prmColumnDecimals As ADODB.Parameter
-		Dim rstFindRecords As ADODB.Recordset
+		Dim rstFindRecords As Recordset
 		Dim iCount As Integer
 		Dim sAddString As String
 		Dim sColDef As String
@@ -163,9 +163,9 @@
 
 			sThousandColumns = ""
 			
-			cmdThousandFindColumns = New ADODB.Command
+			cmdThousandFindColumns = New Command
 			cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-			cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+			cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
 			cmdThousandFindColumns.CommandTimeout = 180
 		
@@ -201,67 +201,67 @@
 			' Release the ADO command object.
 			cmdThousandFindColumns = Nothing
 
-			cmdGetFindRecords = New ADODB.Command
+			cmdGetFindRecords = New Command
 			cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
-			cmdGetFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+			cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 			cmdGetFindRecords.CommandTimeout = 180
 			
-			prmTableID = cmdGetFindRecords.CreateParameter("tableID", 3, 1)
+			prmTableID = cmdGetFindRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdGetFindRecords.Parameters.Append(prmTableID)
 			prmTableID.Value = CleanNumeric(Session("tableID"))
-
-			prmViewID = cmdGetFindRecords.CreateParameter("viewID", 3, 1)
+			
+			prmViewID = cmdGetFindRecords.CreateParameter("viewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdGetFindRecords.Parameters.Append(prmViewID)
 			prmViewID.Value = CleanNumeric(Session("viewID"))
 
-			prmOrderID = cmdGetFindRecords.CreateParameter("orderID", 3, 1)
+			prmOrderID = cmdGetFindRecords.CreateParameter("orderID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdGetFindRecords.Parameters.Append(prmOrderID)
 			prmOrderID.Value = CleanNumeric(Session("orderID"))
 
-			prmError = cmdGetFindRecords.CreateParameter("error", 11, 2) ' 11=bit, 2=output
+			prmError = cmdGetFindRecords.CreateParameter("error", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmError)
 
-			prmReqRecs = cmdGetFindRecords.CreateParameter("reqRecs", 3, 1)
+			prmReqRecs = cmdGetFindRecords.CreateParameter("reqRecs", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdGetFindRecords.Parameters.Append(prmReqRecs)
-			prmReqRecs.Value = CleanNumeric(Session("FindRecords"))
+			prmReqRecs.Value = 1000000 ' CleanNumeric(Session("FindRecords"))
 
-			prmIsFirstPage = cmdGetFindRecords.CreateParameter("isFirstPage", 11, 2) ' 11=bit, 2=output
+			prmIsFirstPage = cmdGetFindRecords.CreateParameter("isFirstPage", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmIsFirstPage)
 
-			prmIsLastPage = cmdGetFindRecords.CreateParameter("isLastPage", 11, 2) ' 11=bit, 2=output
+			prmIsLastPage = cmdGetFindRecords.CreateParameter("isLastPage", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmIsLastPage)
 
-			prmLocateValue = cmdGetFindRecords.CreateParameter("locateValue", 200, 1, 2147483646)
+			prmLocateValue = cmdGetFindRecords.CreateParameter("locateValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
 			cmdGetFindRecords.Parameters.Append(prmLocateValue)
 			prmLocateValue.Value = Session("locateValue")
 
-			prmColumnType = cmdGetFindRecords.CreateParameter("columnType", 3, 2)	' 3=integer, 2=output
+			prmColumnType = cmdGetFindRecords.CreateParameter("columnType", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmColumnType)
 
-			prmAction = cmdGetFindRecords.CreateParameter("action", 200, 1, 100)
+			prmAction = cmdGetFindRecords.CreateParameter("action", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 100)
 			cmdGetFindRecords.Parameters.Append(prmAction)
 			prmAction.Value = Session("pageAction")
 
-			prmTotalRecCount = cmdGetFindRecords.CreateParameter("totalRecCount", 3, 2)	' 3=integer, 2=output
+			prmTotalRecCount = cmdGetFindRecords.CreateParameter("totalRecCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmTotalRecCount)
 
-			prmFirstRecPos = cmdGetFindRecords.CreateParameter("firstRecPos", 3, 3)	' 3=integer, 3=input/output
+			prmFirstRecPos = cmdGetFindRecords.CreateParameter("firstRecPos", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInputOutput)
 			cmdGetFindRecords.Parameters.Append(prmFirstRecPos)
 			prmFirstRecPos.Value = CleanNumeric(Session("firstRecPos"))
 
-			prmCurrentRecCount = cmdGetFindRecords.CreateParameter("currentRecCount", 3, 1)	' 3=integer, 1=input
+			prmCurrentRecCount = cmdGetFindRecords.CreateParameter("currentRecCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdGetFindRecords.Parameters.Append(prmCurrentRecCount)
 			prmCurrentRecCount.Value = CleanNumeric(Session("currentRecCount"))
 
-			prmExcludedIDs = cmdGetFindRecords.CreateParameter("excludedIDs", 200, 1, 2147483646)	' 200=varchar, 1=input, 8000=size
+			prmExcludedIDs = cmdGetFindRecords.CreateParameter("excludedIDs", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
 			cmdGetFindRecords.Parameters.Append(prmExcludedIDs)
 			prmExcludedIDs.Value = Session("selectedIDs1")
 		
-			prmColumnSize = cmdGetFindRecords.CreateParameter("columnSize", 3, 2)	' 3=integer, 2=output
+			prmColumnSize = cmdGetFindRecords.CreateParameter("columnSize", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmColumnSize)
 
-			prmColumnDecimals = cmdGetFindRecords.CreateParameter("columnDecimals", 3, 2)	' 3=integer, 2=output
+			prmColumnDecimals = cmdGetFindRecords.CreateParameter("columnDecimals", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 			cmdGetFindRecords.Parameters.Append(prmColumnDecimals)
 
 			rstFindRecords = cmdGetFindRecords.Execute
@@ -346,7 +346,7 @@
 
 <script runat="server">
 
-	Function formatError(psErrMsg)
+	Function formatError(psErrMsg) As String
 		Dim iStart
 		Dim iFound
 	

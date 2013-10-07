@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
@@ -62,17 +63,6 @@
 		}
 		else {
 			setGridFont(ssOleDBGridSelRecords);
-
-			setMenuFont(abMainMenu);
-
-			abMainMenu.Attach();
-			abMainMenu.DataPath = "misc\\mainmenu.htm";
-			abMainMenu.RecalcLayout();
-
-			//            window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
-			//            window.parent.dialogTop =  new String((screen.height - (3 * screen.height / 4)) / 2) + "px";
-			//            window.parent.dialogWidth = new String((9 * screen.width / 10)) + "px";
-			//            window.parent.dialogHeight = new String((3 * screen.height / 4)) + "px";
 
 			txtTableID.value = frmUseful.txtTableID.value;
 			txtViewID.value = selectView.options[selectView.selectedIndex].value;
@@ -246,226 +236,6 @@
 		return selectView.options[selectView.selectedIndex].value;
 	}
 
-	function refreshMenu() {
-		var sTemp;
-
-		if (abMainMenu.Bands.Count() > 0) {
-			enableMenu();
-
-			var frmData = OpenHR.getForm("dataframe", "frmPicklistData");
-
-			for (i = 0; i < abMainMenu.tools.count() ; i++) {
-				abMainMenu.tools(i).visible = false;
-			}
-
-			abMainMenu.Bands("mnuMainMenu").visible = false;
-			abMainMenu.Bands("mnubandMainToolBar").visible = true;
-
-			// Enable the record editing options as necessary.
-			abMainMenu.tools("mnutoolFirstRecord").visible = true;
-			abMainMenu.tools("mnutoolFirstRecord").enabled = (frmData.txtIsFirstPage.value != "True");
-			abMainMenu.tools("mnutoolPreviousRecord").visible = true;
-			abMainMenu.tools("mnutoolPreviousRecord").enabled = (frmData.txtIsFirstPage.value != "True");
-			abMainMenu.tools("mnutoolNextRecord").visible = true;
-			abMainMenu.tools("mnutoolNextRecord").enabled = (frmData.txtIsLastPage.value != "True");
-			abMainMenu.tools("mnutoolLastRecord").visible = true;
-			abMainMenu.tools("mnutoolLastRecord").enabled = (frmData.txtIsLastPage.value != "True");
-
-			abMainMenu.tools("mnutoolLocateRecordsCaption").visible = true;
-			abMainMenu.tools("mnutoolLocateRecords").visible = (frmData.txtFirstColumnType.value != "-7");
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("True");
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
-			abMainMenu.tools("mnutoolLocateRecordsLogic").visible = (frmData.txtFirstColumnType.value == "-7");
-
-			sCaption = "";
-			if (frmData.txtRecordCount.value > 0) {
-				iStartPosition = new Number(frmData.txtFirstRecPos.value);
-				iEndPosition = new Number(frmData.txtRecordCount.value);
-				iEndPosition = iStartPosition - 1 + iEndPosition;
-				sCaption = "Records " +
-						iStartPosition +
-						" to " +
-						iEndPosition +
-						" of " +
-						frmData.txtTotalRecordCount.value;
-			}
-			else {
-
-				sCaption = "No Records";
-			}
-
-			abMainMenu.tools("mnutoolRecordPosition").visible = true;
-			abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
-
-			try {
-				abMainMenu.Attach();
-				abMainMenu.RecalcLayout();
-				abMainMenu.ResetHooks();
-				abMainMenu.Refresh();
-			}
-			catch (e) { }
-
-			// Adjust the frameset dimensions to suit the size of the menu.
-			/*lngMenuHeight = abMainMenu.Bands("mnubandMainToolBar").height;
-			sTemp = new String(lngMenuHeight);
-			if(frmUseful.txtIEVersion.value >= 5.5) 
-			{
-					window.parent.document.all.item("mainframeset").rows = "*, " + sTemp;
-			}
-			else 
-			{
-					window.parent.document.all.item("mainframeset").rows = "*, 0";
-			}*/
-		}
-	}
-
-	function reloadPage(psAction, psLocateValue) {
-		var sConvertedValue;
-		var sDecimalSeparator;
-		var sThousandSeparator;
-		var sPoint;
-		var iIndex;
-		var iTempSize;
-		var iTempDecimals;
-
-		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat(ASRIntranetFunctions.LocaleDecimalSeparator);
-		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
-
-		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(ASRIntranetFunctions.LocaleThousandSeparator);
-		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
-
-		sPoint = "\\.";
-		var rePoint = new RegExp(sPoint, "gi");
-
-		fValidLocateValue = true;
-
-		var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistData");
-		var getDataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
-
-		if (psAction == "LOCATE") {
-			// Check that the entered value is valid for the first order column type.
-			iDataType = dataForm.txtFirstColumnType.value;
-
-			if ((iDataType == 2) || (iDataType == 4)) {
-				// Numeric/Integer column.
-				// Ensure that the value entered is numeric.
-				if (psLocateValue.length == 0) {
-					psLocateValue = "0";
-				}
-
-				// Convert the value from locale to UK settings for use with the isNaN funtion.
-				sConvertedValue = new String(psLocateValue);
-				// Remove any thousand separators.
-				sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
-				psLocateValue = sConvertedValue;
-
-				// Convert any decimal separators to '.'.
-				if (ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
-					// Remove decimal points.
-					sConvertedValue = sConvertedValue.replace(rePoint, "A");
-					// replace the locale decimal marker with the decimal point.
-					sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
-				}
-
-				if (isNaN(sConvertedValue) == true) {
-					fValidLocateValue = false;
-					OpenHR.messageBox("Invalid numeric value entered.");
-				}
-				else {
-					psLocateValue = sConvertedValue;
-					iIndex = sConvertedValue.indexOf(".");
-					if (iDataType == 4) {
-						// Ensure that integer columns are compared with integer values.
-						if (iIndex >= 0) {
-							fValidLocateValue = false;
-							OpenHR.messageBox("Invalid integer value entered.");
-						}
-					}
-					else {
-						// Ensure numeric columns are compared with numeric values that do not exceed
-						// their defined size and decimals settings.
-						if (iIndex >= 0) {
-							iTempSize = iIndex;
-							iTempDecimals = sConvertedValue.length - iIndex - 1;
-						}
-						else {
-							iTempSize = sConvertedValue.length;
-							iTempDecimals = 0;
-						}
-
-						if ((sConvertedValue.substr(0, 1) == "+") ||
-								(sConvertedValue.substr(0, 1) == "-")) {
-							iTempSize = iTempSize - 1;
-						}
-
-						if (iTempSize > (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value)) {
-							fValidLocateValue = false;
-							OpenHR.messageBox("The value cannot have more than " + (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value) + " digit(s) to the left of the decimal separator.");
-						}
-						else {
-							if (iTempDecimals > dataForm.txtFirstColumnDecimals.value) {
-								fValidLocateValue = false;
-								OpenHR.messageBox("The value cannot have more than " + dataForm.txtFirstColumnDecimals.value + " decimal place(s).");
-							}
-						}
-					}
-				}
-			}
-			else {
-				if (iDataType == 11) {
-					// Date column.
-					// Ensure that the value entered is a date.
-					if (psLocateValue.length > 0) {
-						// Convert the date to SQL format (use this as a validation check).
-						// An empty string is returned if the date is invalid.
-						psLocateValue = convertLocaleDateToSQL(psLocateValue);
-						if (psLocateValue.length = 0) {
-							fValidLocateValue = false;
-							OpenHR.messageBox("Invalid date value entered.");
-						}
-					}
-				}
-			}
-		}
-
-		if (fValidLocateValue == true) {
-			disableMenu();
-
-			// Get the optionData.asp to get the link find records.
-			getDataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
-			getDataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
-			getDataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
-			getDataForm.txtFirstRecPos.value = dataForm.txtFirstRecPos.value;
-			getDataForm.txtCurrentRecCount.value = dataForm.txtRecordCount.value;
-			getDataForm.txtGotoLocateValue.value = psLocateValue;
-			getDataForm.txtPageAction.value = psAction;
-
-			picklist_refreshData();
-		}
-
-		// Clear the locate value from the menu.
-		abMainMenu.Tools("mnutoolLocateRecords").Text = "";
-	}
-
-	function disableMenu() {
-		for (iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count() ; iLoop++) {
-			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = false;
-		}
-
-		abMainMenu.RecalcLayout();
-		abMainMenu.ResetHooks();
-		abMainMenu.Refresh();
-	}
-
-	function enableMenu() {
-		for (iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count() ; iLoop++) {
-			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = true;
-		}
-	}
-
 	function convertLocaleDateToSQL(psDateString) {
 		/* Convert the given date string (in locale format) into 
 		SQL format (mm/dd/yyyy). */
@@ -616,107 +386,9 @@
 <script type="text/javascript">
 
 	function picklistSelection_addhandlers() {
-		OpenHR.addActiveXHandler("abMainMenu", "DataReady", abMainMenu_DataReady);
-		OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", abMainMenu_PreCustomizeMenu);
-		OpenHR.addActiveXHandler("abMainMenu", "Click", abMainMenu_Click);
-		OpenHR.addActiveXHandler("abMainMenu", "KeyDown", abMainMenu_KeyDown);
-		OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", abMainMenu_ComboSelChange);
-		OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", abMainMenu_PreSysMenu);
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", ssOleDBGridSelRecords_RowColChange);
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", ssOleDBGridSelRecords_DblClick);
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
-	}
-
-	function abMainMenu_DataReady() {
-
-		var sKey;
-		var sPath;
-		sKey = new String("tempmenufilepath_");
-		sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-		sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-		if (sPath == "") {
-			sPath = "c:\\";
-		}
-
-		if (sPath == "<NONE>") {
-			frmpicklistSelectionUseful.txtMenuSaved.value = 1;
-			abMainMenu.RecalcLayout();
-		}
-		else {
-			if (sPath.substr(sPath.length - 1, 1) != "\\") {
-				sPath = sPath.concat("\\");
-			}
-
-			sPath = sPath.concat("tempmenu.asp");
-			if ((abMainMenu.Bands.Count() > 0) && (frmpicklistSelectionUseful.txtMenuSaved.value == 0)) {
-				try {
-					abMainMenu.save(sPath, "");
-				}
-				catch (e) {
-					OpenHR.messageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared.");
-					sKey = new String("tempMenuFilePath_");
-					sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-					ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
-				}
-				frmpicklistSelectionUseful.txtMenuSaved.value = 1;
-			}
-			else {
-				if ((abMainMenu.Bands.Count() == 0) && (frmpicklistSelectionUseful.txtMenuSaved.value == 1)) {
-					abMainMenu.DataPath = sPath;
-					abMainMenu.RecalcLayout();
-					return;
-				}
-			}
-		}
-	}
-
-	function abMainMenu_PreCustomizeMenu(pfCancel) {
-		pfCancel = true;
-		OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
-	}
-
-	function abMainMenu_Click(pTool) {
-
-		switch (pTool.name) {
-			case "mnutoolFirstRecord":
-				reloadPage("MOVEFIRST", "");
-				break;
-			case "mnutoolPreviousRecord":
-				reloadPage("MOVEPREVIOUS", "");
-				break;
-			case "mnutoolNextRecord":
-				reloadPage("MOVENEXT", "");
-				break;
-			case "mnutoolLastRecord":
-				reloadPage("MOVELAST", "");
-				break;
-		}
-	}
-
-	function abMainMenu_KeyDown(piKeyCode, piShift) {
-		iIndex = abMainMenu.ActiveBand.CurrentTool;
-
-		if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
-			if (piKeyCode == 13) {
-				sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
-
-				reloadPage("LOCATE", sLocateValue);
-			}
-		}
-	}
-
-	function abMainMenu_ComboSelChange(pTool) {
-		if (pTool.Name == "mnutoolLocateRecordsLogic") {
-			sLocateValue = pTool.Text;
-
-			reloadPage("LOCATE", sLocateValue);
-		}
-	}
-
-	function abMainMenu_PreSysMenu(pBand) {
-		if (pBand.Name == "SysCustomize") {
-			pBand.Tools.RemoveAll();
-		}
 	}
 
 	function ssOleDBGridSelRecords_RowColChange() {
@@ -724,6 +396,7 @@
 	}
 
 	function ssOleDBGridSelRecords_DblClick() {
+
 		if (frmpicklistSelectionUseful.txtSelectionType.value != "ALL") {
 			makeSelection();
 		}
@@ -761,17 +434,6 @@
 <%
 	If (UCase(Session("selectionType")) <> UCase("picklist")) And (UCase(Session("selectionType")) <> UCase("filter")) Then
 %>
-
-<object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"
-	codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-	height="32"
-	id="abMainMenu"
-	name="abMainMenu"
-	style="LEFT: 0px; TOP: 0px; width: 100%"
-	viewastext>
-	<param name="_ExtentX" value="847">
-	<param name="_ExtentY" value="847">
-</object>
 
 <table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="95%">
 	<%
@@ -811,18 +473,18 @@
 						<td>
 							<%
 								Dim sErrorDescription As String
-								Dim cmdSelRecords As ADODB.Command
+								Dim cmdSelRecords As Command
 								Dim prmTableID As ADODB.Parameter
 								Dim prmUser As ADODB.Parameter
-								Dim rstSelRecords As ADODB.Recordset
+								Dim rstSelRecords As Recordset
 								Dim lngRowCount As Long
-								Dim cmdViewRecords As ADODB.Command
+								Dim cmdViewRecords As Command
 								Dim prmDfltOrderID As ADODB.Parameter
-								Dim rstViewRecords As ADODB.Recordset
+								Dim rstViewRecords As Recordset
 								Dim sFailureDescription As String
-								Dim cmdOrderRecords As ADODB.Command
+								Dim cmdOrderRecords As Command
 								Dim prmViewID As ADODB.Parameter
-								Dim rstOrderRecords As ADODB.Recordset
+								Dim rstOrderRecords As Recordset
 																		
 								Session("optionLinkViewID") = 0
 								Session("optionLinkOrderID") = 0
@@ -832,24 +494,24 @@
 								If (UCase(Session("selectionType")) = UCase("picklist")) Or _
 										(UCase(Session("selectionType")) = UCase("filter")) Then
 
-									cmdSelRecords = New ADODB.Command
-									cmdSelRecords.CommandType = 4
+									cmdSelRecords = New Command
+									cmdSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 									cmdSelRecords.ActiveConnection = Session("databaseConnection")
 
 									If UCase(Session("selectionType")) = UCase("picklist") Then
 										cmdSelRecords.CommandText = "spASRIntGetAvailablePicklists"
 
-										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)	' 3 = integer, 1 = input
 										cmdSelRecords.Parameters.Append(prmTableID)
 										prmTableID.Value = CleanNumeric(CLng(Session("selectionTableID")))
 			
-										prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 255)
+										prmUser = cmdSelRecords.CreateParameter("user", 200, ParameterDirectionEnum.adParamInput, 255)
 										cmdSelRecords.Parameters.Append(prmUser)
 										prmUser.Value = Session("username")
 									Else
 										cmdSelRecords.CommandText = "spASRIntGetAvailableFilters"
 
-										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)	' 3 = integer, 1 = input
 										cmdSelRecords.Parameters.Append(prmTableID)
 										prmTableID.Value = CleanNumeric(CLng(Session("selectionTableID")))
 			
@@ -1029,16 +691,16 @@
 														<%
 															If Len(sErrorDescription) = 0 Then
 																' Get the view records.
-																cmdViewRecords = New ADODB.Command
+																cmdViewRecords = New Command
 																cmdViewRecords.CommandText = "sp_ASRIntGetLinkViews"
-																cmdViewRecords.CommandType = 4 ' Stored Procedure
+																cmdViewRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																cmdViewRecords.ActiveConnection = Session("databaseConnection")
 
-																prmTableID = cmdViewRecords.CreateParameter("tableID", 3, 1)
+																prmTableID = cmdViewRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)
 																cmdViewRecords.Parameters.Append(prmTableID)
 																prmTableID.Value = CleanNumeric(Session("selectionTableID"))
 
-																prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, 2) ' 11=integer, 2=output
+																prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, ParameterDirectionEnum.adParamOutput)	' 11=integer, 2=output
 																cmdViewRecords.Parameters.Append(prmDfltOrderID)
 
 																Err.Clear()
@@ -1108,16 +770,16 @@
 														<%
 															If Len(sErrorDescription) = 0 Then
 																' Get the order records.
-																cmdOrderRecords = New ADODB.Command
+																cmdOrderRecords = New Command
 																cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-																cmdOrderRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+																cmdOrderRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
-																prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
+																prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)
 																cmdOrderRecords.Parameters.Append(prmTableID)
 																prmTableID.Value = CleanNumeric(Session("selectionTableID"))
 
-																prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
+																prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, ParameterDirectionEnum.adParamInput)
 																cmdOrderRecords.Parameters.Append(prmViewID)
 																prmViewID.Value = 0
 
