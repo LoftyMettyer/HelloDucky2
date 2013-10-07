@@ -110,7 +110,7 @@
 		strCrossTabName = CleanStringForJavaScript(Replace(objCrossTab.CrossTabName, "&", "&&"))
 
 		Response.Write("  colNames.push('');" & vbCrLf)
-		Response.Write("	colMode.push({ name: '' });" & vbCrLf)
+		Response.Write("	colMode.push({ name: '', classes: 'ui-state-default ui-widget-content ui-state-default ui-widget-header ui-state-default' });" & vbCrLf)
 		
 		For lngCount = 0 To objCrossTab.ColumnHeadingUbound(0)
 
@@ -119,7 +119,7 @@
 			headerCaption = CleanStringSpecialCharacters(headerCaption)
 
 			Response.Write("  colNames.push('" & headerCaption & "');" & vbCrLf)
-			Response.Write("	colMode.push({ name: '" & headerCaption & "' });" & vbCrLf)
+			Response.Write("	colMode.push({ name: '" & headerCaption & "', cellattr: function(rowId, value, rowObject, colModel, arrData) { return 'style=""text-align: right;""'; } });" & vbCrLf)
 			
 		Next
 
@@ -134,10 +134,9 @@
 			End If
 			
 			Response.Write("  colNames.push('" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "');" & vbCrLf)
-			Response.Write("	colMode.push({ name: '" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "' });" & vbCrLf)
+			Response.Write("	colMode.push({ name: '" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "', cellattr: function(rowId, value, rowObject, colModel, arrData) { return 'style=""text-align: right;""'; } });" & vbCrLf)
 
 		End If
-		
 	End If
 
 
@@ -180,7 +179,11 @@
 			Response.Write("  obj = {};" & vbCrLf)
 			objData = Split(objCrossTab.OutputArrayData(intCount), vbTab)
 			For intCount2 = 0 To UBound(objData)
-				Response.Write("  obj[colNames[" & intCount2 & "]] = '" & objData(intCount2) & "';" & vbCrLf)
+				If intCount2 = 0 Then	'The first column should be in bold
+					Response.Write("  obj[colNames[" & intCount2 & "]] = '<span style=""font-weight: bold;"">" & objData(intCount2).Replace("<", "&lt;").Replace(">", "&gt;") & "</span>';" & vbCrLf)
+				Else
+					Response.Write("  obj[colNames[" & intCount2 & "]] = '" & objData(intCount2).Replace("<", "&lt;").Replace(">", "&gt;") & "';" & vbCrLf)
+				End If
 			Next
 			Response.Write("  colData.push(obj);")
 		Next
@@ -574,7 +577,8 @@
 	Else
 		Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
 		Response.Write("    , rowNum:1000000")
-		Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {	" & vbCrLf)
+		Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {" & vbCrLf)
+		Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
 		Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
 		Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;" & vbCrLf)
 		Response.Write("	    		var txtValue = $('#ssOutputGrid')[0].rows[iRow].cells[iCol].textContent;" & vbCrLf)
