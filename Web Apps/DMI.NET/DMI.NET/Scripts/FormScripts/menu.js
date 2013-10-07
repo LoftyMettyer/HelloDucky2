@@ -369,6 +369,7 @@ function menu_abMainMenu_Click(pTool) {
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
 	window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+	window.onbeforeunload = null;
 
 	//reject disabled icon clicks
 	if ($("#" + pTool).hasClass("disabled")) return false;

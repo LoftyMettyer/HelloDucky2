@@ -362,16 +362,19 @@
     function enableSaveButton() {
 	    if ($("#ctlRecordEdit #changed").val() == "false") {
 		    $("#ctlRecordEdit #changed").val("true");
-		    menu_toolbarEnableItem("mnutoolSaveRecord", true);
-		    
-				//Prevent navigation (or timeout) if unsaved changes.
-		    window.onbeforeunload = function () {
-		    	return 'You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?';		    	
-		    };
-		    
+		    menu_toolbarEnableItem("mnutoolSaveRecord", true);		    	    
 	    }
     }
-
+    
+    function warning() {
+    	setTimeout(function () {
+    		//alert('thanks for staying!');
+    		window.clearTimeout(window.timeoutHandle);
+    		window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+    	}, 1000);
+    	return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
+    }
+    window.onbeforeunload = warning;
 
 
 </script>
