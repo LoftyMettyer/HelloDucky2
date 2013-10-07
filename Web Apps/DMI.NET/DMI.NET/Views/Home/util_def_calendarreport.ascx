@@ -1524,7 +1524,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 											<td>
 												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
-														<td valign="top" rowspan="2" width="25%" height="100%">
+														<td style="padding-right: 30px; vertical-align: top; width: 25%; height: 100%" rowspan="2">
 															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
 																	<td height="10" align="left" valign="top"><strong>Output Format :</strong>
@@ -1719,7 +1719,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																</tr>
 															</table>
 														</td>
-														<td valign="top" width="75%">
+														<td style="width: 75%">
 															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
 																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
