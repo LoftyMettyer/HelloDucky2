@@ -2,16 +2,29 @@
 
 Public Module svrCleanup
 
-  Function CleanString(psString)
-    Dim sCleaned
+	Function CleanStringForHTML(ByVal psString As String) As String
 
-    sCleaned = psString
-    '   sCleaned = replace(sCleaned, "<", "&lt;")
-    '   sCleaned = replace(sCleaned, ">", "&gt;")
-    sCleaned = Replace(sCleaned, "'", "''")
-    '	cleanString = "'" & sCleaned & "'"
-    CleanString = sCleaned
-  End Function
+		Dim sCleaned As String = psString
+
+		sCleaned = Replace(sCleaned, "'", "&apos;")
+		sCleaned = Replace(sCleaned, """", "&quot;")
+		sCleaned = Replace(sCleaned, "<", "&lt;")
+		sCleaned = Replace(sCleaned, ">", "&gt;")
+
+		Return sCleaned
+
+	End Function
+
+	Function CleanString(psString) As String
+		Dim sCleaned
+
+		sCleaned = psString
+		'   sCleaned = replace(sCleaned, "<", "&lt;")
+		'   sCleaned = replace(sCleaned, ">", "&gt;")
+		sCleaned = Replace(sCleaned, "'", "''")
+		'	cleanString = "'" & sCleaned & "'"
+		CleanString = sCleaned
+	End Function
 
   Function CleanNumeric(pNumber)
     Dim lngCleaned
@@ -57,27 +70,28 @@ Public Module svrCleanup
     CleanBoolean = lngCleaned
   End Function
 
-  Function CleanStringForJavaScript(psString)
-    Dim sCleaned
+	Function CleanStringForJavaScript(psString) As String
+		Dim sCleaned
 
-    sCleaned = psString
-    sCleaned = Replace(sCleaned, "\", "\\")
-    sCleaned = Replace(sCleaned, "'", "\'")
-    sCleaned = Replace(sCleaned, """", "\""")
+		sCleaned = psString
+		sCleaned = Replace(sCleaned, "\", "\\")
+		sCleaned = Replace(sCleaned, "'", "\'")
+		sCleaned = Replace(sCleaned, """", "\""")
 
-    CleanStringForJavaScript = sCleaned
-  End Function
+		CleanStringForJavaScript = sCleaned
+	End Function
 
-  Function CleanStringForJavaScript_NotDoubleQuotes(psString)
-    Dim sCleaned
+	Function CleanStringForJavaScript_NotDoubleQuotes(ByVal psString As String) As String
 
-    sCleaned = psString
-    sCleaned = Replace(sCleaned, "\", "\\")
-    sCleaned = Replace(sCleaned, "'", "\'")
-    sCleaned = Replace(sCleaned, "\""", """")
+		Dim sCleaned As String = psString
 
-    CleanStringForJavaScript_NotDoubleQuotes = sCleaned
-  End Function
+		sCleaned = Replace(sCleaned, "\", "\\")
+		sCleaned = Replace(sCleaned, "'", "\'")
+		sCleaned = Replace(sCleaned, "\""", """")
+
+		Return sCleaned
+
+	End Function
 
 	Function CleanStringSpecialCharacters(psString) As String
 		Dim sCleaned
@@ -87,7 +101,6 @@ Public Module svrCleanup
 		sCleaned = Replace(sCleaned, ">", "&gt;")
 		CleanStringSpecialCharacters = sCleaned
 	End Function
-
 
   Function FormatError(psErrMsg) As String
     Dim iStart
@@ -191,5 +204,8 @@ Public Module svrCleanup
     End With
 
   End Function
+
+
+
 
 End Module

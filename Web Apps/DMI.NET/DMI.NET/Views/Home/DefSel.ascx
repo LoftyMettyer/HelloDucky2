@@ -206,7 +206,7 @@
 				var frmDefSel = document.getElementById("frmDefSel");
 				var frmpermissions = document.getElementById("frmpermissions");
 
-				// Populate the textbox with the definitions description
+			// Populate the textbox with the definitions description
 				frmDefSel.txtDescription.value = selectedRecordDetails("description");
 
 				// Populate the hidden fields with the selected utils information       
@@ -1207,8 +1207,8 @@
 																										Response.Write("<td><input type='radio' id='sel' value='" & IDRowNumber & "'></td>")
 																										
 																										For iLoop = 0 To (rstDefSelRecords.Fields.Count - 1)
-																											If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then
-																												sAddString = Replace(Replace(CStr(rstDefSelRecords.Fields(iLoop).Value), "_", " "), Chr(34), "&quot;")									 
+																											If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then																											
+																												sAddString = CleanStringForHTML(rstDefSelRecords.Fields(iLoop).Value.ToString())
 																												Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.Fields(iLoop).Name & "' type='hidden' value='" & sAddString & "'></td>")
 																											End If
 																										Next
