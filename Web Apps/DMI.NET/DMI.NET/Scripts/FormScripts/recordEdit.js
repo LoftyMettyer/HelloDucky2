@@ -1281,15 +1281,16 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.backgroundColor = "transparent";
 			//fieldset.style.color = "Black";
 			fieldset.style.padding = "0px";
-
-			var legend = fieldset.appendChild(document.createElement('legend'));
-			legend.style.fontFamily = controlItemArray[11];
-			legend.style.fontSize = controlItemArray[12] + 'pt';
-			legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-			legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
-			legend.appendChild(document.createTextNode(controlItemArray[8]));
-
-			fieldset.setAttribute("data-control-key", key);
+		    
+		    if (controlItemArray[13] > 0) {
+		        var legend = fieldset.appendChild(document.createElement('legend'));
+		        legend.style.fontFamily = controlItemArray[11];
+		        legend.style.fontSize = controlItemArray[12] + 'pt';
+		        legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+		        legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
+		        legend.appendChild(document.createTextNode(controlItemArray[8]));
+		    }
+		    fieldset.setAttribute("data-control-key", key);
 
 			addControl(iPageNo, fieldset);
 
