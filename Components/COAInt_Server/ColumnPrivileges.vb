@@ -7,27 +7,9 @@ Friend Class CColumnPrivileges
 	Private mCol As Collection
 	Private msTag As String
 	
-	Public Function IsValid(ByRef pvIndexKey As Object) As Boolean
-		' Return TRUE if the given column exists in the collection.
-    'Dim Item As CColumnPrivilege
-		
-    'On Error GoTo err_IsValid
-		
-    'Item = mCol.Item(pvIndexKey)
-    '	IsValid = True
-		'UPGRADE_NOTE: Object Item may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    '		Item = Nothing
-
-
-    IsValid = mCol.Contains(pvIndexKey)
-
-
-    Exit Function
-
-err_IsValid:
-    IsValid = False
-
-  End Function
+	Public Function IsValid(ByVal pvIndexKey As Object) As Boolean
+		Return mCol.Contains(pvIndexKey)
+	End Function
 	
 	
 	
