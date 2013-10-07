@@ -41,7 +41,10 @@
 				autoOpen: true,
 				modal: true,
 				width: 750,
-				height: 600
+				height: 600,
+				close: function() {
+					CancelLookup();
+				}
 			});
 
 			// Set focus onto one of the form controls. 
