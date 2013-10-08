@@ -1282,7 +1282,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//fieldset.style.color = "Black";
 			fieldset.style.padding = "0px";
 		    
-		    if (controlItemArray[13] > 0) {
+		    if (controlItemArray[8].length > 0) {
 		        var legend = fieldset.appendChild(document.createElement('legend'));
 		        legend.style.fontFamily = controlItemArray[11];
 		        legend.style.fontSize = controlItemArray[12] + 'pt';
