@@ -291,6 +291,10 @@ input.textwarning
 	background-color: transparent;
 }
 
+input[disabled=""], input[disabled="disabled"] {
+	color: gray;
+}
+
 input.textinformation
 {
 	/*color:#333366;
