@@ -4183,35 +4183,45 @@ function menu_transferBooking() {
 function menu_cancelBooking() {
 	var lngRecordID;
 	var frmDataArea;
-	var iUserChoice;	
+	var iUserChoice;
 	lngRecordID = selectedRecordID();
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
-	
+
 	if (lngRecordID > 0) {
 		if ((frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
 			(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
-			iUserChoice = OpenHR.messageBox("Transfer the booking to the employee's waiting list ?", 35);
+			//iUserChoice = OpenHR.messageBox("Transfer the booking to the employee's waiting list ?", 35);
+			OpenHR.modalPrompt("Transfer the booking to the employee's waiting list ?", 35, '', menu_cancelBookingResponse);			
 		}
 		else {
-			iUserChoice = 7; // No
+			//iUserChoice = 7; // No
+			menu_cancelBookingResponse(7);
 		}
 
-		if (iUserChoice != 2) {
-			menu_disableMenu();
-								
-			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
-
-			frmDataArea.txtAction.value = "CANCELBOOKING";
-			frmDataArea.txtRecordID.value = lngRecordID;
-			frmDataArea.txtUserChoice.value = (iUserChoice != 7);
-
-			data_refreshData();
-		}
+		//function continues from popup to menu_cancelBookingResponse
 	}
 	else {
 		OpenHR.messageBox("You must select a booking to transfer.");
 	}
 }
+
+
+function menu_cancelBookingResponse(iUserChoice) {	
+	if (iUserChoice != 2) {
+		menu_disableMenu();
+		var frmDataArea;
+		var lngRecordID = selectedRecordID();
+
+		frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+
+		frmDataArea.txtAction.value = "CANCELBOOKING";
+		frmDataArea.txtRecordID.value = lngRecordID;
+		frmDataArea.txtUserChoice.value = (iUserChoice != 7);
+
+		data_refreshData();
+	}
+}
+
 
 function menu_bulkBooking() {
 	var lngRecordID;

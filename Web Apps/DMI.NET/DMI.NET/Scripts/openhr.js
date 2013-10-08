@@ -46,6 +46,31 @@
 
 
 		},
+		modalPrompt = function(prompt, buttons, title, followOnFunctionName) {
+			var dialogButtons = {
+				"Yes": function () {
+					$(this).dialog("close");
+					followOnFunctionName(6);
+				},
+				"No": function () {
+					$(this).dialog("close");
+					followOnFunctionName(7);
+				},
+				"Cancel": function () {
+					$(this).dialog("close");
+					followOnFunctionName(2);
+				}
+			};
+
+			//title
+			if (title.length == 0) title = 'OpenHR Intranet';
+
+			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
+			$('#dialog-confirm').dialog('option', 'title', title);
+			$('#dialog-confirm p').text(prompt);
+			$('#dialog-confirm').dialog('open');						
+
+		},
 		showInReportFrame = function (form, asyncFlag) {
 
 			var $form = $(form),
@@ -488,6 +513,7 @@
 	window.OpenHR = {
 		version: version,
 		messageBox: messageBox,
+		modalPrompt: modalPrompt,
 		showPopup: showPopup,
 		getFrame: getFrame,
 		getForm: getForm,
