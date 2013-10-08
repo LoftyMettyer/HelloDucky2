@@ -559,7 +559,7 @@
 												<td height="5" colspan="7"></td>
 										</tr>
 
-										<tr>
+										<tr style="visibility: hidden">
 												<td width="20"></td>
 												<td align="left" nowrap>Temporary Menu File Path :
 												</td>
