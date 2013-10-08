@@ -599,9 +599,11 @@
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
 				<i class='pageTitleIcon icon-arrow-left'></i>
 			</a>
-			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
-    ' Release the ADO command object.
-    cmdRecEditWindowTitle = Nothing%></span>
+			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">
+				<%
+					Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " "))
+				%>
+			</span>
 		</div>	
     
 <div id="ctlRecordEdit" style="margin:0 auto; " >
@@ -609,6 +611,13 @@
     </ul>
 		<input type="hidden" id="changed" value="false"/>
 </div>
+
+<%
+	'Save the page title in a hidden field for use in menu.js
+	Response.Write("<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & "'>" & vbCrLf)
+	'Release the ADO command object.
+	cmdRecEditWindowTitle = Nothing
+%>
 
 <%
     Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)

@@ -1506,6 +1506,10 @@ function menu_refreshMenu() {
 
 		if (frmData.txtRecordDescription.value.length > 0) {
 			sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
+			if ($('#RecordEdit_PageTitle')) {
+				var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm"); 
+				$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + frmData.txtRecordDescription.value);
+			}
 		}
 
 		menu_setVisibleMenuItem("mnutoolRecordPosition", !menu_isSSIMode());
