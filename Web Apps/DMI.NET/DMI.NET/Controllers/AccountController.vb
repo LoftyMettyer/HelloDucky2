@@ -1432,23 +1432,28 @@ Namespace Controllers
 					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 					Response.Cookies.Add(cookie)
 
-					Select Case Session("SelfServiceUserType")
-						Case 1		'IF DMI Multi
-							' Return RedirectToAction("Main", "Home")
-							ViewBag.SSIMode = False
-						Case 2		'IF DMI Single
-							' Return RedirectToAction("Main", "Home")
-							ViewBag.SSIMode = False
-						Case 3		'IF DMI Single And SSI
-							' Return RedirectToAction("LinksMain", "Home")
-							ViewBag.SSIMode = True
-						Case 4		'IF SSI Only
-							' Return RedirectToAction("LinksMain", "Home")
-							ViewBag.SSIMode = True
-						Case Else
-							Return RedirectToAction("login", "account")
-					End Select
-					
+					If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
+						' non-IE browsers don't get DMI access yet.
+						ViewBag.SSIMode = True
+					Else
+						Select Case Session("SelfServiceUserType")
+							Case 1		'IF DMI Multi
+								' Return RedirectToAction("Main", "Home")
+								ViewBag.SSIMode = False
+							Case 2		'IF DMI Single
+								' Return RedirectToAction("Main", "Home")
+								ViewBag.SSIMode = False
+							Case 3		'IF DMI Single And SSI
+								' Return RedirectToAction("LinksMain", "Home")
+								ViewBag.SSIMode = True
+							Case 4		'IF SSI Only
+								' Return RedirectToAction("LinksMain", "Home")
+								ViewBag.SSIMode = True
+							Case Else
+								Return RedirectToAction("login", "account")
+						End Select
+					End If
+
 					' always main.
 					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
 

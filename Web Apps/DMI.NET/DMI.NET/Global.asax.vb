@@ -100,6 +100,11 @@ Public Class MvcApplication
 		Session("ui-wireframe-theme") = ConfigurationManager.AppSettings("ui-wireframe-theme")
 		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
 
+		' Set browser compatibility
+		Session("DMIRequiresIE") = ConfigurationManager.AppSettings("DMIRequiresIE")
+		If Session("DMIRequiresIE") Is Nothing Or Len(Session("DMIRequiresIE")) <= 0 Then Session("DMIRequiresIE") = "true"
+		Session("DMIRequiresIE") = Session("DMIRequiresIE").ToString().ToUpper()
+
 		' Banner layout
 		' leftmost banner graphic
 		Dim customImageFileName As String = FindImageFileByName("customtopbar")

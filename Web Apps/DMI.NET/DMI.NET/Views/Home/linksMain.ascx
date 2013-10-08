@@ -88,6 +88,10 @@
 		$(document).ready(function () {
 
 			$("#fixedlinksframe").show();
+			
+			//Hide DMI button for non-IE browsers			
+			if(('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) $('#mnutoolFixedOpenHR').hide();
+
 			$("#toolbarHome").show();
 			$("#toolbarHome").click();
 
