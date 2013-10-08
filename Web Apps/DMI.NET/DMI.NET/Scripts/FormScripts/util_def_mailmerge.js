@@ -1994,9 +1994,9 @@ function ssOleDbGridSortOrderChange() {
 //grdAccess Handlers
 function grdAccessComboCloseUp() {
 		frmUseful.txtChanged.value = 1;
-		if (frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) and(frmDefinition.grdAccess.Columns("Access").Text.length > 0);
+		if (frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0 && frmDefinition.grdAccess.Columns("Access").Text.length > 0)
 		{
-			ForceAccess(window.grdAccess, AccessCode(frmDefinition.grdAccess.Columns("Access").Text));
+			ForceAccess(frmDefinition.grdAccess, AccessCode(frmDefinition.grdAccess.Columns("Access").Text));
 				frmDefinition.grdAccess.MoveFirst();
 				frmDefinition.grdAccess.Col = 1;
 		}
