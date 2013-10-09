@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Collections.ObjectModel
+Imports System.Collections.Generic
 
 Public Class Menu
 
@@ -37,7 +38,8 @@ Public Class Menu
 
 		Dim sSQL As String
 		Dim rsTableScreens As ADODB.Recordset
-		Dim HistoryScreens As New Collection(Of Structures.HistoryScreen)
+		Dim HistoryScreensCollection As New Collection(Of Structures.HistoryScreen)
+		Dim HistoryScreensList As New List(Of Structures.HistoryScreen)	'Used for sorting the menu items
 		Dim objHistory As Structures.HistoryScreen
 
 		sSQL = "SELECT ASRSysTables.tableName AS [childTableName]," & " childScreens.tableID AS [childTableID]," & " childScreens.screenID AS [childScreenID]," & " childScreens.name AS [childScreenName]," & " parentScreen.screenid AS [parentScreenID]" & " FROM ASRSysScreens parentScreen" & " INNER JOIN ASRSysHistoryScreens" & "   ON parentScreen.screenID = ASRSysHistoryScreens.parentScreenID" & " INNER JOIN ASRSysScreens childScreens" & "   ON ASRSysHistoryScreens.historyScreenID = childScreens.screenID" & " INNER JOIN ASRSysTables" & "   ON childScreens.tableID = ASRSysTables.tableID" & " WHERE childScreens.quickEntry = 0" & " ORDER BY parentScreen.screenid," & "   ASRSysTables.tableName DESC," & "   childScreens.Name DESC"
@@ -51,7 +53,7 @@ Public Class Menu
 				objHistory.childTableName = rsTableScreens.Fields("childTableName").Value
 				objHistory.childScreenID = rsTableScreens.Fields("childScreenID").Value
 				objHistory.childScreenName = Replace(rsTableScreens.Fields("childScreenName").Value, "&", "&&")
-				HistoryScreens.Add(objHistory)
+				HistoryScreensList.Add(objHistory)
 			End If
 
 			rsTableScreens.MoveNext()
@@ -59,10 +61,19 @@ Public Class Menu
 
 		rsTableScreens.Close()
 
-		Return HistoryScreens
+		'Sort the menu items; note that I'm sorting in descending order because the code that actually creates the menu adds the item in inverse order (don't ask me why),
+		'so the net effect is that the menu is sorted
+		HistoryScreensList.Sort(Function(item1 As Structures.HistoryScreen, item2 As Structures.HistoryScreen)
+																Return item1.childScreenName > item2.childScreenName
+															End Function)
+
+		For Each objHistory In HistoryScreensList
+			HistoryScreensCollection.Add(objHistory)
+		Next
+
+		Return HistoryScreensCollection
 
 	End Function
-
 	Public Function GetPrimaryTableMenu() As Object
 
 		On Error GoTo ErrorTrap
@@ -336,8 +347,8 @@ ErrorTrap:
 			" OR (ASRSysScreens.quickEntry = 0))" & _
 			" ORDER BY ASRSysTables.tableName DESC", gsUserGroup, Trim(Str(TableTypes.tabLookup)))
 
-			rsTableScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			Do While Not rsTableScreens.EOF
+		rsTableScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		Do While Not rsTableScreens.EOF
 			If rsTableScreens.Fields("Result").Value = 0 Then
 				objTableScreen = New Structures.TableScreen
 				objTableScreen.TableID = rsTableScreens.Fields("TableID").Value
