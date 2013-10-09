@@ -852,10 +852,13 @@ function menu_MenuClick(sTool) {
 		
 		// Calendar Reports  (from record menu)
 	if (sToolName == "mnutoolCalendarReportsRecord") {
-			if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
-					menu_loadDefSelPage(17, 0, 0, false);
-			}
-			return;
+			//if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
+			//		menu_loadDefSelPage(17, 0, 0, false);
+		//}
+
+		menu_loadRecordDefSelPage(17, 0, 0, true);
+
+		return false;
 	}
 	
 		// Individual Absence Breakdown (from record menu)
@@ -877,8 +880,9 @@ function menu_MenuClick(sTool) {
 
 		// Mail Merge  (from record menu)
 	if (sToolName == "mnutoolMailMergeRecord") {
-			menu_loadDefSelPage(9, 0, 0, false);
-			return;
+		//menu_loadDefSelPage(9, 0, 0, false);
+		menu_loadRecordDefSelPage(9, 0, 0, true);
+		return false;		
 	}
 
 		// Course Booking
@@ -2022,7 +2026,7 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
 	menu_setVisibleMenuItem("mnutoolBookCourseRecord", fBookCourseVisible);
 	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
-    
+	
 	if (!fBookCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
     
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);

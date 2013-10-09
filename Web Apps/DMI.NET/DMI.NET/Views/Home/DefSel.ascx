@@ -83,11 +83,12 @@
 		End If
 	End If
 	Session("fromMenu") = 0
-
-	If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
+	
+	If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
 		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
 			Session("utilTableID") = Request.Form("txtTableID")
 		Else
+
 			If Len(Session("tableID")) > 0 Then
 				If CLng(Session("tableID")) > 0 Then
 					Session("utilTableID") = Session("tableID")
@@ -124,7 +125,7 @@
 	Session("tableID") = Session("utilTableID")
 	
 	If CStr(Session("singleRecordID")) <> "" Then
-		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
+		If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
 			If CStr(Session("optionDefSelRecordID")) <> "" Then
 				If Session("optionDefSelRecordID") > 0 Then
 					Session("singleRecordID") = Session("optionDefSelRecordID")
@@ -151,7 +152,7 @@
 	End If
 
 	If (Session("defseltype") <> 10) And (Session("defseltype") <> 11) And (Session("defseltype") <> 12) Then
-		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
+		If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
 			Session("utilTableID") = 0
 		End If
 	Else 'defseltype=10 or 11 or 12 (picklist, filter or calculation)
@@ -319,12 +320,8 @@
 
 				if (rowCount() > 0) {
 
-					<% if Session("utilid").ToString() > 0 then %>
-						$("#DefSelRecords").setSelection(<% =Session("utilid").ToString()%>);					
-					<% else %>
 						var firstid = $("#DefSelRecords").getDataIDs()[0];
 						$("#DefSelRecords").setSelection(firstid);
-					<% end If %>				
 					
 				}
 
