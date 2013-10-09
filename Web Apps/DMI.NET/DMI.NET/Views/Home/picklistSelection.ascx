@@ -59,7 +59,7 @@
 				ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
 			}
 
-			refreshControls();
+			picklistSelection_refreshControls();
 		}
 		else {
 			setGridFont(ssOleDBGridSelRecords);
@@ -75,7 +75,7 @@
 
 <script type="text/javascript">
 
-	function refreshControls() {
+	function picklistSelection_refreshControls() {
 		var fNoneSelected;
 
 		fNoneSelected = (ssOleDBGridSelRecords.SelBookmarks.Count == 0);
@@ -392,7 +392,7 @@
 	}
 
 	function ssOleDBGridSelRecords_RowColChange() {
-		refreshControls();
+		picklistSelection_refreshControls();
 	}
 
 	function ssOleDBGridSelRecords_DblClick() {
