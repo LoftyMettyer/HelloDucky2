@@ -553,13 +553,16 @@ function menu_MenuClick(sTool) {
 	// Cancel buttoons
 	if (sToolName == 'mnutoolCloseReportFind' || sToolName == 'mnutoolCloseUtilitiesFind') {
 		try {
-			$("#optionframe").hide();
-			$("#workframe").show();
-			$("#workframe").attr("data-framesource", "RECORDEDIT");
-			$("#toolbarRecord").show();
-			$("#toolbarRecord").click();
 
-			menu_refreshMenu();
+			setcancel();
+
+			//$("#optionframe").hide();
+			//$("#workframe").show();
+			//$("#workframe").attr("data-framesource", "RECORDEDIT");
+			//$("#toolbarRecord").show();
+			//$("#toolbarRecord").click();
+
+			//menu_refreshMenu();
 
 		} catch (e) {
 		} finally {
@@ -2424,17 +2427,19 @@ function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 	frmWorkArea.txtGotoScreenID.value = 0;
 	frmWorkArea.txtGotoDefSelType.value = piDefSelType;
 	frmWorkArea.txtGotoUtilID.value = piUtilID;
-	frmWorkArea.txtGotoPage.value = "defsel.asp";
+	frmWorkArea.txtGotoPage.value = "defsel";
 	
 	if (pfFromMenu == true) {
 		frmWorkArea.txtGotoFromMenu.value = 1;
+		OpenHR.submitForm(frmWorkArea, 'workframe');
 	}
 	else {
-		frmWorkArea.txtGotoFromMenu.value = 1;
+		frmWorkArea.txtGotoFromMenu.value = 0;
 		frmWorkArea.txtGotoOptionDefSelRecordID.value = $('#txtCurrentRecordID').val();
+		OpenHR.submitForm(frmWorkArea, 'optionframe');
 	}
 
-	OpenHR.submitForm(frmWorkArea);
+	
 }
 
 function menu_loadRecordEditPage(psToolName) {

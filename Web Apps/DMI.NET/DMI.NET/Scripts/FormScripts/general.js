@@ -1,12 +1,13 @@
 ﻿
 function closeclick() {
 	try {
-				$(".popup").dialog("close");
-				$("#optionframe").hide();
-				$("#workframeset").show();
-				$("#workframe").show();
-		}
-		catch (e) { }
+		$(".popup").dialog("close");
+
+		//$("#optionframe").hide();
+		//$("#workframeset").show();
+		//$("#workframe").show();
+	}
+	catch (e) { }
 }
 
 function disableAll() {

@@ -997,7 +997,7 @@ function cancelClick() {
 		var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
 		if (answer == 7) {
 			// No
-			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
 			
 			return (false);
 		}

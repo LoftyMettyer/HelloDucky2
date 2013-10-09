@@ -519,12 +519,15 @@
 
 	function CancelClick() {
 
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
+
 		if (frmPromptedValues.StandardReportPrompt.value == "True") {
 			if (frmPromptedValues.RunInOptionFrame.value == "True") {
 				var frmParent = window.dialogArguments.OpenHR.getForm("workframe", "frmRecordEditForm");
-
-				window.parent.document.all.item("workframeset").cols = "*, 0";
-				window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+				//window.parent.document.all.item("workframeset").cols = "*, 0";
+				//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+				$('#optionframe').hide();
+				$('#workframe').show();
 				window.dialogArguments.OpenHR.submitForm(frmParent, null, false);
 			}
 			else {

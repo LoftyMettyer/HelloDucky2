@@ -2190,18 +2190,18 @@
 		openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 	}
 
-	function cancelClick() {
+	function cancelClick() {		
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
 				
-				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
 				return (false);		    
 		}
 
 		answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Custom Reports");
 		if (answer == 7) {
 			// No
-				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
 				return (false);
 		}
 		if (answer == 6) {

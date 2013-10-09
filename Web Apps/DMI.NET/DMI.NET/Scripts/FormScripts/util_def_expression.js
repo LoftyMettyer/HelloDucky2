@@ -1471,14 +1471,14 @@ function okClick() {
 function cancelClick() {
 
 	if (definitionChanged() == false) {
-		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
+		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 		return false;
 	}
 
 	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
 	if (answer == 7) {
 		// No
-		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
+		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 		return (false);
 	}
 

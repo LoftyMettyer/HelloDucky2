@@ -24,27 +24,27 @@
         }
 
         //if (txtUtilType.value > 0) {
-        //	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, false);
+        //	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, true);
         //}
 
         if (sAction == "CROSSTABS") {
-            menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, false);
+            menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, true);
         }
 
         if (sAction == "CUSTOMREPORTS") {
-            menu_loadDefSelPage(2, txtUtilID.value, 0, false);
+            menu_loadDefSelPage(2, txtUtilID.value, 0, true);
         }
 
         if (sAction == "CALENDARREPORTS") {
-            menu_loadDefSelPage(17, txtUtilID.value, 0, false);
+            menu_loadDefSelPage(17, txtUtilID.value, 0, true);
         }
 
         if (sAction == "MAILMERGE") {
-            menu_loadDefSelPage(9, txtUtilID.value, 0, false);
+            menu_loadDefSelPage(9, txtUtilID.value, 0, true);
         }
 
         if (sAction == "WORKFLOW") {
-            menu_loadDefSelPage(25, txtUtilID.value, 0, false);
+            menu_loadDefSelPage(25, txtUtilID.value, 0, true);
         }
 
         if (sAction == "WORKFLOWPENDINGSTEPS") {
@@ -56,15 +56,15 @@
         }
 
         if (sAction == "PICKLISTS") {
-            menu_loadDefSelPage(10, txtUtilID.value, txtUtilTableID.value, false);
+            menu_loadDefSelPage(10, txtUtilID.value, txtUtilTableID.value, true);
         }
 
         if (sAction == "FILTERS") {
-            menu_loadDefSelPage(11, txtUtilID.value, txtUtilTableID.value, false);
+            menu_loadDefSelPage(11, txtUtilID.value, txtUtilTableID.value, true);
         }
 
         if (sAction == "CALCULATIONS") {
-            menu_loadDefSelPage(12, txtUtilID.value, txtUtilTableID.value, false);
+            menu_loadDefSelPage(12, txtUtilID.value, txtUtilTableID.value, true);
         }
 
         if (sAction == "DEFAULT") {
