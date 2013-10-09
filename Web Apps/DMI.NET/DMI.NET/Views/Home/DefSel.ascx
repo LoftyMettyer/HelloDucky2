@@ -5,6 +5,7 @@
 <%="" %>
 
 <%
+	Dim SelectedTableID As String = Request.Form("SelectedTableID")
 	Dim fGotId As Boolean
 	Dim sTemp As String
 	
@@ -83,7 +84,7 @@
 		End If
 	End If
 	Session("fromMenu") = 0
-	
+
 	If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
 		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
 			Session("utilTableID") = Request.Form("txtTableID")
@@ -1073,7 +1074,7 @@
 																				<td width="10">&nbsp;
 																				</td>
 																				<td width="175">
-																						<select id="selectTable" name="selectTable" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
+																						<select id="selectTable" name="selectTable" class="combo" style="height: 22px; width: 200px" onchange="javascript:$('#SelectedTableID').val(($('#selectTable').val()));" >
 																								<%
 																										On Error Resume Next
 	
@@ -1094,9 +1095,15 @@
 																												If (Len(sErrorDescription) = 0) Then
 																														Do While Not rstTableRecords.EOF
 																																Response.Write("						<OPTION value=" & rstTableRecords.Fields(0).Value)
+																												If SelectedTableID Is Nothing Or SelectedTableID = "" Then
 																																If rstTableRecords.Fields(0).Value = CLng(Session("utilTableID")) Then
 																																		Response.Write(" SELECTED")
 																																End If
+																												Else
+																													If rstTableRecords.Fields(0).Value = CLng(SelectedTableID) Then
+																														Response.Write(" SELECTED")
+																													End If
+																												End If
 
 																																Response.Write(">" & Replace(CStr(rstTableRecords.Fields(1).Value), "_", " ") & "</OPTION>" & vbCrLf)
 
@@ -1153,7 +1160,12 @@
 
 																										Dim prmTableId = cmdDefSelRecords.CreateParameter("tableID", 3, 1)
 																										cmdDefSelRecords.Parameters.Append(prmTableId)
-																										prmTableId.value = CleanNumeric(Session("utilTableID"))
+																								
+																								If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
+																									prmTableId.Value = CleanNumeric(Session("utilTableID"))
+																								Else
+																									prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
+																								End If
 
 																										Err.Clear()
 																										Dim rstDefSelRecords = cmdDefSelRecords.Execute
@@ -1427,6 +1439,7 @@
 		<form action="defsel" method="post" id="frmOnlyMine" name="frmOnlyMine" style="visibility: hidden; display: none">
 				<input type="hidden" id="OnlyMine" name="OnlyMine" value='<%=Session("OnlyMine")%>'>
 				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=Session("utilTableID")%>'>
+				<input type="hidden" id="SelectedTableID" name="SelectedTableID">
 		</form>
 
 		<form target="properties" action="defselproperties" method="post" id="frmProp" name="frmProp" style="visibility: hidden; display: none">
