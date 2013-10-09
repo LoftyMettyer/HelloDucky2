@@ -10,6 +10,7 @@
 <html>
 <head>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
@@ -21,26 +22,32 @@
 
 	<title>OpenHR Intranet</title>
 
-		<script type="text/javascript">
-				function defselproperties_window_onload() {
-						// Resize the popup.
-						var frmPopup = document.getElementById("frmPopup");
-						var iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-						if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
-								window.parent.dialogHeight = new String(screen.height) + "px";
-						}
-						else {
-								var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
-								iNewHeight = iNewHeight + iResizeBy;
-								window.parent.dialogHeight = new String(iNewHeight) + "px";
-						}
-				}
+	<script type="text/javascript">
+		function defselproperties_window_onload() {
 
-		</script>
+			$("input[type=submit], input[type=button], button")
+				.button();
+			$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+			$("input").removeClass("text");
+
+			// Resize the popup.
+			//var frmPopup = document.getElementById("frmPopup");
+			//var iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
+			//if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
+			//	window.parent.dialogHeight = new String(screen.height) + "px";
+			//}
+			//else {
+			//	var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
+			//	iNewHeight = iNewHeight + iResizeBy;
+			//	window.parent.dialogHeight = new String(iNewHeight) + "px";
+			//}
+		}
+
+	</script>
 
 </head>
 
-<body onload="onBlur=self.focus()" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
+<body leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 		<form name="frmPopup" id="frmPopup">
 				<table align=center class="outline" cellPadding=5 cellSpacing=0 height=100%> 
 		<tr>
@@ -56,18 +63,18 @@
 					</tr>
 <%
 	Dim cmdDefPropRecords As Command = New Command()
-cmdDefPropRecords.CommandText = "sp_ASRIntDefProperties"
+	cmdDefPropRecords.CommandText = "sp_ASRIntDefProperties"
 	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 
 	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
 
-	Dim prmType = cmdDefPropRecords.CreateParameter("type", 3, 1)
+	Dim prmType = cmdDefPropRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 	cmdDefPropRecords.Parameters.Append(prmType)
-prmType.value = cleanNumeric(clng(Request("utiltype")))
+	prmType.Value = CleanNumeric(CLng(Request("utiltype")))
 
-	Dim prmID = cmdDefPropRecords.CreateParameter("id", 3, 1)
+	Dim prmID = cmdDefPropRecords.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 	cmdDefPropRecords.Parameters.Append(prmID)
-prmID.value = cleanNumeric(clng(Request("prop_id")))
+	prmID.Value = CleanNumeric(CLng(Request("prop_id")))
 
 	Err.Clear()
 	Dim rsDefProp = cmdDefPropRecords.Execute()
@@ -137,7 +144,7 @@ prmID.value = cleanNumeric(clng(Request("prop_id")))
 						<td nowrap valign=top>Current Usage :</td>
 					<td width=20 rowspan=4></td>
 						<td rowspan=4>
-						<SELECT size=2 id=select1 name=select1 style="WIDTH: 300px; height:100%" class="combo">
+						<select size=2 id=select1 name=select1 style="WIDTH: 300px; height:100%" class="combo">
 <%
 	cmdDefPropRecords = New Command()
 	cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
@@ -145,11 +152,11 @@ prmID.value = cleanNumeric(clng(Request("prop_id")))
 
 	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
 
-	prmType = cmdDefPropRecords.CreateParameter("type", 3, 1)
+	prmType = cmdDefPropRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 	cmdDefPropRecords.Parameters.Append(prmType)
 prmType.value = cleanNumeric(clng(Request("utiltype")))
 
-	prmID = cmdDefPropRecords.CreateParameter("id", 3, 1)
+	prmID = cmdDefPropRecords.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 	cmdDefPropRecords.Parameters.Append(prmID)
 prmID.value = cleanNumeric(clng(Request("prop_id")))
 
@@ -157,13 +164,13 @@ prmID.value = cleanNumeric(clng(Request("prop_id")))
 	rsDefProp = cmdDefPropRecords.Execute
 
 if rsDefProp.BOF and rsDefProp.EOF then
-		Response.Write("<OPTION>&lt;None&gt;</OPTION>")
+		Response.Write("<option>&lt;None&gt;</option>")
 else
 	do while not rsDefProp.EOF
 			Dim sDescription As String = CStr(rsDefProp.Fields("description").Value)
 		sDescription = replace(sDescription, "<", "&lt;")
 		sDescription = replace(sDescription, ">", "&gt;")
-			Response.Write("<OPTION>" & sDescription & "</OPTION>")
+			Response.Write("<option>" & sDescription & "</option>")
 		rsDefProp.MoveNext
 	loop
 end if
@@ -171,7 +178,7 @@ end if
 	rsDefProp = Nothing
 	cmdDefPropRecords = Nothing
 %>
-						</SELECT>
+						</select>
 						</td>
 					<td width=20 rowspan=4></td>
 				</tr>
@@ -202,7 +209,7 @@ end if
 
 		</form>
 <script type="text/javascript">
-		window.onload = defselproperties_window_onload;
+		defselproperties_window_onload();
 </script>
 </body>
 </html>

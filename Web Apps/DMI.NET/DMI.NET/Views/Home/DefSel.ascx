@@ -682,7 +682,7 @@
 					"?prop_name=" + escape(frmProp.prop_name.value) +
 					"&prop_id=" + frmProp.prop_id.value +
 					"&utiltype=" + frmProp.utiltype.value;
-				openDialog(sUrl, 500, 230);
+				openDialog(sUrl, 600, 350);
 			}
 		}
 
