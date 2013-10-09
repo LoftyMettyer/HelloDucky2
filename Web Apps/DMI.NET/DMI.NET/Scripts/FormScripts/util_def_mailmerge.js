@@ -1515,7 +1515,6 @@ function columnSwap(pfSelect) {
 						frmGetDataForm.txtAction.value = "GETEXPRESSIONRETURNTYPES";
 						frmGetDataForm.txtParam1.value = sAddedCalcIDs;
 						window.data_refreshData();
-						OpenHR.getForm("dataframe", "");
 				}
 		}
 		grdFrom.Redraw = true;
