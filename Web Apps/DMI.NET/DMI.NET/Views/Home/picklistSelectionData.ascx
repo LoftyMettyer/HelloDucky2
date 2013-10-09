@@ -344,67 +344,6 @@
 	%>
 </form>
 
-<script runat="server">
-
-	Function formatError(psErrMsg) As String
-		Dim iStart
-		Dim iFound
-	
-		iFound = 0
-		Do
-			iStart = iFound
-			iFound = InStr(iStart + 1, psErrMsg, "]")
-		Loop While iFound > 0
-	
-		If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-			formatError = Trim(Mid(psErrMsg, iStart + 1))
-		Else
-			formatError = psErrMsg
-		End If
-	End Function
-
-	Function convertSQLDateToLocale(psDate)
-		Dim sLocaleFormat
-		Dim iIndex
-	
-		If Len(psDate) > 0 Then
-			sLocaleFormat = Session("LocaleDateFormat")
-		
-			iIndex = InStr(sLocaleFormat, "dd")
-			If iIndex > 0 Then
-				If Day(psDate) < 10 Then
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-							"0" & Day(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				Else
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-							Day(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				End If
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "mm")
-			If iIndex > 0 Then
-				If Month(psDate) < 10 Then
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-							"0" & Month(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				Else
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-							Month(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				End If
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "yyyy")
-			If iIndex > 0 Then
-				sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-						Year(psDate) & Mid(sLocaleFormat, iIndex + 4)
-			End If
-
-			convertSQLDateToLocale = sLocaleFormat
-		Else
-			convertSQLDateToLocale = ""
-		End If
-	End Function
-</script>
-
 <script type="text/javascript">
 	picklistSelectionData_window_onload();
 </script>
