@@ -2022,7 +2022,9 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
 	menu_setVisibleMenuItem("mnutoolBookCourseRecord", fBookCourseVisible);
 	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
-	
+    
+	if (!fBookCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
+    
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
 	menu_setVisibleMenuItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListVisible);
