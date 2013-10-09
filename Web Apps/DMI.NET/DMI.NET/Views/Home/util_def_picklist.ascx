@@ -75,7 +75,7 @@
 
 		button_disable(frmDefinition.cmdAdd, fAddDisabled);
 		button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
-		button_disable(frmDefinition.cmdFilteredAdd, true);
+		button_disable(frmDefinition.cmdFilteredAdd, fFilteredAddDisabled);
 		button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 		button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 
@@ -376,18 +376,7 @@
 		return false;
 	}
 
-	function openDialog(pDestination, pWidth, pHeight) {
-		dlgwinprops = "center:yes;" +
-				"dialogHeight:" + pHeight + "px;" +
-				"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-				"resizable:yes;" +
-				"scroll:yes;" +
-				"status:no;";
-		window.showModalDialog(pDestination, self, dlgwinprops);
-		//window.open(pDestination);
 
-	}
 
 	function validate() {
 		// Check name has been entered.
