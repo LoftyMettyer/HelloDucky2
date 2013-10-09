@@ -315,7 +315,7 @@
 			//TODO - Get the proper regional settings
 			var convertDate = Date.parseExact(z, "M/d/yyyy");
 			if (convertDate != null) {
-						return convertDate.format(OpenHR.LocaleDateFormat());
+						return convertDate.toString(OpenHR.LocaleDateFormat());
 			} else {
 				return "";
 			}

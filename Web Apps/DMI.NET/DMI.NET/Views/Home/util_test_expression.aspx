@@ -335,36 +335,3 @@ Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 <script type="text/javascript">
 		util_test_expression_onload();
 </script>
-
-<script runat="server" language="vb">
-
-		Function convertLocaleDateToSQL(psDate)
-				Dim sLocaleFormat As String
-				Dim sSQLFormat As String
-				Dim iIndex As Integer
-	
-				If Len(psDate) > 0 Then
-						sLocaleFormat = Session("LocaleDateFormat")
-		
-						iIndex = InStr(sLocaleFormat, "mm")
-						If iIndex > 0 Then
-								sSQLFormat = Mid(psDate, iIndex, 2) & "/"
-						End If
-
-						iIndex = InStr(sLocaleFormat, "dd")
-						If iIndex > 0 Then
-								sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
-						End If
-
-						iIndex = InStr(sLocaleFormat, "yyyy")
-						If iIndex > 0 Then
-								sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
-						End If
-
-						convertLocaleDateToSQL = sSQLFormat
-				Else
-						convertLocaleDateToSQL = ""
-				End If
-		End Function
-
-</script>

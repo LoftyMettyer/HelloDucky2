@@ -156,7 +156,7 @@
 				if ((fOK == true) && (piDataType == 4)) {
 						// Date column.
 						// Ensure that the value entered is a date.
-						sValue = pctlPrompt.value;
+						var sValue = pctlPrompt.value;
 			
 						if (sValue.length == 0) {
 								fOK = false;
@@ -164,7 +164,7 @@
 						else {
 								// Convert the date to SQL format (use this as a validation check).
 								// An empty string is returned if the date is invalid.
-								sValue = convertLocaleDateToSQL(sValue);
+								sValue = OpenHR.convertLocaleDateToSQL(sValue);
 								if (sValue.length == 0) {
 										fOK = false;
 								}
@@ -308,154 +308,6 @@
 				return fOK;
 		}
 
-		function convertLocaleDateToSQL(psDateString)
-		{ 
-				/* Convert the given date string (in locale format) into 
-				SQL format (mm/dd/yyyy). */
-				var sDateFormat;
-				var iDays;
-				var iMonths;
-				var iYears;
-				var sDays;
-				var sMonths;
-				var sYears;
-				var iValuePos;
-				var sTempValue;
-				var sValue;
-				var iLoop;
-		
-				sDateFormat = OpenHR.LocaleDateFormat;
-
-				sDays="";
-				sMonths="";
-				sYears="";
-				iValuePos = 0;
-
-				// Trim leading spaces.
-				sTempValue = psDateString.substr(iValuePos,1);
-				while (sTempValue.charAt(0) == " ") 
-				{
-						iValuePos = iValuePos + 1;		
-						sTempValue = psDateString.substr(iValuePos,1);
-				}
-
-				for (iLoop=0; iLoop<sDateFormat.length; iLoop++)  {
-						if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'D') && (sDays.length==0)){
-								sDays = psDateString.substr(iValuePos,1);
-								iValuePos = iValuePos + 1;
-								sTempValue = psDateString.substr(iValuePos,1);
-
-								if (isNaN(sTempValue) == false) {
-										sDays = sDays.concat(sTempValue);			
-								}
-								iValuePos = iValuePos + 1;		
-						}
-
-						if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'M') && (sMonths.length==0)){
-								sMonths = psDateString.substr(iValuePos,1);
-								iValuePos = iValuePos + 1;
-								sTempValue = psDateString.substr(iValuePos,1);
-
-								if (isNaN(sTempValue) == false) {
-										sMonths = sMonths.concat(sTempValue);			
-								}
-								iValuePos = iValuePos + 1;
-						}
-
-						if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'Y') && (sYears.length==0)){
-								sYears = psDateString.substr(iValuePos,1);
-								iValuePos = iValuePos + 1;
-								sTempValue = psDateString.substr(iValuePos,1);
-
-								if (isNaN(sTempValue) == false) {
-										sYears = sYears.concat(sTempValue);			
-								}
-								iValuePos = iValuePos + 1;
-								sTempValue = psDateString.substr(iValuePos,1);
-
-								if (isNaN(sTempValue) == false) {
-										sYears = sYears.concat(sTempValue);			
-								}
-								iValuePos = iValuePos + 1;
-								sTempValue = psDateString.substr(iValuePos,1);
-
-								if (isNaN(sTempValue) == false) {
-										sYears = sYears.concat(sTempValue);			
-								}
-								iValuePos = iValuePos + 1;
-						}
-
-						// Skip non-numerics
-						sTempValue = psDateString.substr(iValuePos,1);
-						while (isNaN(sTempValue) == true) {
-								iValuePos = iValuePos + 1;		
-								sTempValue = psDateString.substr(iValuePos,1);
-						}
-				}
-
-				while (sDays.length < 2) {
-						sTempValue = "0";
-						sDays = sTempValue.concat(sDays);
-				}
-
-				while (sMonths.length < 2) {
-						sTempValue = "0";
-						sMonths = sTempValue.concat(sMonths);
-				}
-
-				while (sYears.length < 2) {
-						sTempValue = "0";
-						sYears = sTempValue.concat(sYears);
-				}
-
-				if (sYears.length == 2) {
-						iValue = parseInt(sYears);
-						if (iValue < 30) {
-								sTempValue = "20";
-						}
-						else {
-								sTempValue = "19";
-						}
-		
-						sYears = sTempValue.concat(sYears);
-				}
-
-				while (sYears.length < 4) {
-						sTempValue = "0";
-						sYears = sTempValue.concat(sYears);
-				}
-
-				sTempValue = sMonths.concat("/");
-				sTempValue = sTempValue.concat(sDays);
-				sTempValue = sTempValue.concat("/");
-				sTempValue = sTempValue.concat(sYears);
-	
-				sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
-
-				iYears = parseInt(sYears);
-	
-				while (sMonths.substr(0, 1) == "0") {
-						sMonths = sMonths.substr(1);
-				}
-				iMonths = parseInt(sMonths);
-	
-				while (sDays.substr(0, 1) == "0") {
-						sDays = sDays.substr(1);
-				}
-				iDays = parseInt(sDays);
-
-				var newDateObj = new Date(iYears, iMonths - 1, iDays);
-
-				if ((newDateObj.getDate() != iDays) || 
-						(newDateObj.getMonth() + 1 != iMonths) || 
-						(newDateObj.getFullYear() != iYears)) {
-						return "";
-				}
-				else {
-						return sTempValue;
-				}
-		}
-
 		function checkboxClick(piPromptID) {
 			var sSource = "prompt_3_" + piPromptID;
 			var sDest = "promptChk_" + piPromptID;
@@ -503,7 +355,7 @@
 	Dim sValueCharacter As String
 	Dim dblValueNumeric As Double
 	Dim fValueLogic As Boolean
-	Dim dtValueDate
+	Dim dtValueDate As String
 	Dim iPromptDateType As Integer
 	Dim iCharIndex As Integer
 	Dim iParameterIndex As Integer
@@ -1206,36 +1058,6 @@
 		convertDateToSQLDate = sResult
 	End Function
 
-	Function convertSQLDateToLocale(psDate As String) As String
-		Dim sLocaleFormat As String
-		Dim iIndex As Integer
-	
-		If Len(psDate) > 0 Then
-			sLocaleFormat = Session("LocaleDateFormat")
-		
-			iIndex = InStr(sLocaleFormat, "dd")
-			If iIndex > 0 Then
-				sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-					Mid(psDate, 4, 2) & Mid(sLocaleFormat, iIndex + 2)
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "mm")
-			If iIndex > 0 Then
-				sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-					Left(psDate, 2) & Mid(sLocaleFormat, iIndex + 2)
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "yyyy")
-			If iIndex > 0 Then
-				sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-					Mid(psDate, 7, 4) & Mid(sLocaleFormat, iIndex + 4)
-			End If
-
-			convertSQLDateToLocale = sLocaleFormat
-		Else
-			convertSQLDateToLocale = ""
-		End If
-	End Function
 
 	Function convertSQLDateToLocale2(psDate As String) As String
 		Dim sLocaleFormat As String

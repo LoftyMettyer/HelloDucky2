@@ -77,79 +77,79 @@ ErrorTrap:
 
   End Function
 
-  Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
+	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
 
-    ' Purpose : This function calls the individual functions that
-    '           generate the components of the main SQL string.
-    On Error GoTo ErrorTrap
+		' Purpose : This function calls the individual functions that
+		'           generate the components of the main SQL string.
+		On Error GoTo ErrorTrap
 
-    Dim fOK As Boolean
-    Dim iLoop As Short
-    Dim iDataType As Short
-    Dim lngComponentID As Integer
+		Dim fOK As Boolean
+		Dim iLoop As Short
+		Dim iDataType As Short
+		Dim lngComponentID As Integer
 
-    fOK = True
+		fOK = True
 
-    ReDim mvarPrompts(1, 0)
+		ReDim mvarPrompts(1, 0)
 
-    If IsArray(pavPromptedValues) Then
-      ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
+		If IsArray(pavPromptedValues) Then
+			ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
 
-      For iLoop = 0 To UBound(pavPromptedValues, 2)
+			For iLoop = 0 To UBound(pavPromptedValues, 2)
 
-        ' Get the prompt data type.
-        'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
-          'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 11))
-          'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
+				' Get the prompt data type.
+				'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 11))
+					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
 
-          'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mvarPrompts(0, iLoop) = lngComponentID
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarPrompts(0, iLoop) = lngComponentID
 
-          ' NB. Locale to server conversions are done on the client.
-          Select Case iDataType
-            Case 2
-              ' Numeric.
-              'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
-            Case 3
-              ' Logic.
-              'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
-            Case 4
-              ' Date.
-              ' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
-              ' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
-              ' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
-              ' THINGS UP.
-              'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
-              'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
-            Case Else
-              'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
-          End Select
-        Else
-          'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mvarPrompts(0, iLoop) = 0
-        End If
-      Next iLoop
-    End If
+					' NB. Locale to server conversions are done on the client.
+					Select Case iDataType
+						Case 2
+							' Numeric.
+							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
+						Case 3
+							' Logic.
+							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
+						Case 4
+							' Date.
+							' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
+							' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
+							' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
+							' THINGS UP.
+							'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
+							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
+						Case Else
+							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
+					End Select
+				Else
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarPrompts(0, iLoop) = 0
+				End If
+			Next iLoop
+		End If
 
-    SetPromptedValues = fOK
+		SetPromptedValues = fOK
 
-    Exit Function
+		Exit Function
 
 ErrorTrap:
-    SetPromptedValues = False
+		SetPromptedValues = False
 
-  End Function
+	End Function
 
   Public Function SaveExpression(ByRef psName As String, ByRef psUserName As String, ByRef psAccess As String, ByRef psDescription As String) As Boolean
 
@@ -714,59 +714,52 @@ ErrorTrap:
 		Return mobjBaseExpr.ValidityMessage(piValidityCode)
 	End Function
 
-  Public Sub UDFFilterCode(ByRef pbCreate As Boolean)
+	Public Sub UDFFilterCode(ByRef pbCreate As Boolean)
 
-    Dim iCount As Short
-    Dim strDropCode As String
-    Dim strFunctionName As String
-    Dim sUDFCode As String
-    Dim clsData As clsDataAccess
-    Dim msErrorMessage As String
-    Dim varUDFs() As String
-    Dim iStart As Short
-    Dim iEnd As Short
-    Dim strFunctionNumber As String
+		Dim iCount As Short
+		Dim strDropCode As String
+		Dim strFunctionName As String
+		Dim sUDFCode As String
+		Dim varUDFs() As String
+		Dim iStart As Short
+		Dim iEnd As Short
+		Dim strFunctionNumber As String
 
-    Const FUNCTIONPREFIX As String = "udf_ASRSys_"
+		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
+		ReDim varUDFs(0)
 
-    ReDim varUDFs(0)
+		Try
 
-    On Error GoTo ExecuteSQL_ERROR
+			' Create the UDFs
+			mobjBaseExpr.UDFFilterCode(varUDFs, pbCreate)
 
-    ' Create the UDFs
-		mobjBaseExpr.UDFFilterCode(varUDFs, pbCreate)
+			For iCount = 0 To varUDFs.Length - 1
 
-    clsData = New clsDataAccess
+				If Not varUDFs(iCount) Is Nothing Then
+					iStart = InStr(varUDFs(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
+					iEnd = InStr(1, Mid(varUDFs(iCount), 1, 1000), "(@Pers")
+					strFunctionNumber = Mid(varUDFs(iCount), iStart, iEnd - iStart)
+					strFunctionName = FUNCTIONPREFIX & strFunctionNumber
 
-		For iCount = LBound(varUDFs) To UBound(varUDFs)
+					'Drop existing function (could exist if the expression is used more than once in a report)
+					strDropCode = "IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "') AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
 
-			'JPD 20060110 Fault 10509
-			'strFunctionName = Mid(varUDFs(iCount), 17, 15)
-			iStart = InStr(varUDFs(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-			iEnd = InStr(1, Mid(varUDFs(iCount), 1, 1000), "(@Pers")
-			strFunctionNumber = Mid(varUDFs(iCount), iStart, iEnd - iStart)
-			strFunctionName = FUNCTIONPREFIX & strFunctionNumber
+					gADOCon.Execute(strDropCode)
 
-			'Drop existing function (could exist if the expression is used more than once in a report)
-			strDropCode = "IF EXISTS" & " (SELECT * FROM sysobjects WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+					' Create the new function
+					If pbCreate Then
+						sUDFCode = varUDFs(iCount)
 
-			gADOCon.Execute(strDropCode)
+						gADOCon.Execute(sUDFCode)
+					End If
+				End If
+			Next iCount
 
-			' Create the new function
-			If pbCreate Then
-				sUDFCode = varUDFs(iCount)
+		Catch ex As Exception
+			Throw
 
-				gADOCon.Execute(sUDFCode)
-			End If
+		End Try
 
-		Next iCount
-
-
-    Exit Sub
-
-ExecuteSQL_ERROR:
-    msErrorMessage = "Error whilst creating user defined functions." & vbNewLine & Err.Description
-
-  End Sub
+	End Sub
 
 End Class
