@@ -84,6 +84,10 @@ Namespace App_Start
 			bundles.Add(New ScriptBundle("~/bundles/utilities_mailmerge").Include(
 				"~/Scripts/FormScripts/util_def_mailmerge.js"))
 
+			' Picklists
+			bundles.Add(New ScriptBundle("~/bundles/utilities_picklists").Include(
+				"~/Scripts/FormScripts/util_def_picklist.js"))
+
 			' Record Editing
 			bundles.Add(New ScriptBundle("~/bundles/recordedit").Include(
 				"~/Scripts/jquery/jquery.jqGrid.src.js",
