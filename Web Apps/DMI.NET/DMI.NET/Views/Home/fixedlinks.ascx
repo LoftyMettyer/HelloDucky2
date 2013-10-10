@@ -311,7 +311,7 @@
 								<a href="#" rel="table" title="New Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 									<i class="icon-plus"></i>
-									<h6>Add</h6>
+									<h6>New</h6>
 								</a>
 							</div>
 							<div id="mnutoolCopyRecord" class="button">
