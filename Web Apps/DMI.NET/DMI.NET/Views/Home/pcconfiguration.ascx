@@ -59,6 +59,8 @@
 				frmConfiguration.txtDocuments.focus();
 
 				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+				menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
+			;
 				// $('#mnutoolSaveAdminConfig').click('okClick()');
 
 				$('#btnDiv2OK').hide();
@@ -441,7 +443,7 @@
 												</td>
 												<td width="20"></td>
 												<td align="left">
-														<input id="txtOLEServer" name="txtOLEServer" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
+														<input id="txtOLEServer" name="txtOLEServer" class="text" style="height: 22px; width: 200px">
 												</td>
 												<td width="20" style="display: none;">
 														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLEServer" name="btnOLEServer"
@@ -461,42 +463,9 @@
 												</td>
 												<td width="20"></td>
 										</tr>
-
 										<tr>
 												<td height="5" colspan="7"></td>
 										</tr>
-
-										<tr>
-												<td width="20"></td>
-												<td align="left" nowrap>OLE Path (Local) :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtOLELocal" name="txtOLELocal" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLELocal" name="btnOLELocal"
-																onclick="selectPath('OLELOCAL')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearOLELocal" name="btnClearOLELocal"
-																onclick="clearPath('OLELOCAL')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-
-										<tr>
-												<td height="5" colspan="7"></td>
-										</tr>
-
 										<tr>
 												<td width="20"></td>
 												<td align="left" nowrap>Photograph Path (non-linked) :
@@ -555,9 +524,36 @@
 												<td width="20"></td>
 										</tr>
 
-										<tr>
+<%--										<tr>
 												<td height="5" colspan="7"></td>
-										</tr>
+										</tr>--%>
+										
+									<tr style="visibility: hidden;border-collapse: collapse">
+										<td width="20"></td>
+										<td align="left" nowrap>OLE Path (Local) :
+										</td>
+										<td width="20"></td>
+										<td align="left">
+											<input id="txtOLELocal" name="txtOLELocal" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
+										</td>
+										<td width="20" style="display: none;">
+											<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLELocal" name="btnOLELocal"
+												onclick="selectPath('OLELOCAL')"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+										<td width="20">
+											<input type="button" class="btn" value="Clear" id="btnClearOLELocal" name="btnClearOLELocal"
+												onclick="clearPath('OLELOCAL')"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+										<td width="20"></td>
+									</tr>
 
 										<tr style="visibility: hidden">
 												<td width="20"></td>
