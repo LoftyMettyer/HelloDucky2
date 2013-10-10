@@ -376,27 +376,6 @@
 					iNewHeight,
 					bdyMain = document.getElementById("bdyMain");
 
-			// Resize the popup.
-			//iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
-			//if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-			//	window.dialogWidth = new String(screen.width) + "px";
-			//}
-			//else {
-			//	iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-			//	iNewWidth = iNewWidth + iResizeBy;
-			//	window.dialogWidth = new String(iNewWidth) + "px";
-			//}
-
-			//iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-			//if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-			//	window.dialogHeight = new String(screen.height) + "px";
-			//}
-			//else {
-			//	iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-			//	iNewHeight = iNewHeight + iResizeBy;
-			//	window.dialogHeight = new String(iNewHeight) + "px";
-			//}
-			
 			//jQuery styling
 			$(function () {
 				$("input[type=submit], input[type=button], button")
@@ -460,6 +439,28 @@
 			
 			//Select the first row
 			$("#RecordSelectionHTMLTable").jqGrid('setSelection', 1);
+
+			// Resize the popup.
+			iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
+			if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+				window.dialogWidth = new String(screen.width) + "px";
+			}
+			else {
+				iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
+				iNewWidth = iNewWidth + iResizeBy;
+				window.dialogWidth = new String(iNewWidth) + "px";
+			}
+
+			iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
+			if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+				window.dialogHeight = new String(screen.height) + "px";
+			}
+			else {
+				iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
+				iNewHeight = iNewHeight + iResizeBy;
+				window.dialogHeight = new String(iNewHeight) + "px";
+			}
+			
 		}
 	</script>
 	

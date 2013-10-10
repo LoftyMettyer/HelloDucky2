@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <%
 		Session("selectionType") = Request("selectionType")
@@ -13,18 +14,36 @@
 <head runat="server">
 		<title>OpenHR Intranet</title>
 
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
-		<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0" VIEWASTEXT>
-			<param NAME="LPKPath" VALUE="lpks/main.lpk">
-		</object>
+	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0">
+		<param name="LPKPath" value="lpks/main.lpk">
+	</object>
 
-		<script type="text/javascript">
+	<script type="text/javascript">
 
 				function fieldRec_window_onload() {
 						
-						fOK = true;
+						var fOK = true;
+
+						$("input[type=submit], input[type=button], button")
+							.button();
+						$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("input").removeClass("text");
+
+						$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("select").removeClass("text");
+
 
 						cmdCancel.focus();
 	
@@ -59,9 +78,8 @@
 						}
 				}
 
-				function refreshControls()
-				{
-						button_disable(cmdOK, (ssOleDBGridSelRecords.SelBookmarks.Count == 0));
+				function refreshControls() {
+					button_disable(cmdOK, (ssOleDBGridSelRecords.SelBookmarks.Count == 0));
 				}
 
 				function setForm()
@@ -233,11 +251,10 @@
 						}
 				
 				}
-</script>
+	</script>
 	 
-		
-
 </head>
+
 <body id=bdyMain >
 		
 		<table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
@@ -261,32 +278,30 @@
 					<td style="width: 20px;"></td>
 					<td style="height: 350px">
 						<%
-							Dim cmdSelRecords
-							Dim prmTableID
-							Dim prmUser
-							Dim rstSelRecords
+							Dim cmdSelRecords As Command
+							Dim prmTableID As ADODB.Parameter
+							Dim prmUser As ADODB.Parameter
+							Dim rstSelRecords As Recordset
 							Dim lngRowCount As Long
 		
-							cmdSelRecords = Server.CreateObject("ADODB.Command")
-							cmdSelRecords.CommandType = 4
+							cmdSelRecords = New Command
+							cmdSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 							cmdSelRecords.ActiveConnection = Session("databaseConnection")
 
 							If UCase(Session("selectionType")) = UCase("order") Then
 								cmdSelRecords.CommandText = "spASRIntGetAvailableOrdersInfo"
-								cmdSelRecords.CommandType = 4
 				
-								prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+								prmTableID = cmdSelRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 								cmdSelRecords.Parameters.Append(prmTableID)
 								prmTableID.value = CLng(CleanNumeric(Session("selectionTableID")))
 							Else
 								cmdSelRecords.CommandText = "spASRIntGetAvailableFiltersInfo"
-								cmdSelRecords.CommandType = 4
 
-								prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
+								prmTableID = cmdSelRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 								cmdSelRecords.Parameters.Append(prmTableID)
 								prmTableID.value = CLng(CleanNumeric(Session("selectionTableID")))
 			
-								prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 8000)	' 200 = varchar, 1 = input, 8000=size
+								prmUser = cmdSelRecords.CreateParameter("user", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 								cmdSelRecords.Parameters.Append(prmUser)
 								prmUser.value = CStr(Session("username"))
 							End If
@@ -463,29 +478,17 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdOK type=button value=OK name=cmdOK class="btn" style="WIDTH: 80px" width="80"
-											onclick="makeSelection()" 
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="makeSelection()" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdnone type=button value=None name=cmdnone class="btn" style="WIDTH: 80px" width="80"
-											onclick="clearSelection()" 
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="clearSelection()" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdCancel type=button value=Cancel name=cmdCancel class="btn" style="WIDTH: 80px" width="80"
-											onclick="self.close()" 
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="self.close()" />
 								</TD>
 							</TR>
 						</TABLE>

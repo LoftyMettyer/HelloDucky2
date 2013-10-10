@@ -1,17 +1,41 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-		<title>OpenHR Intranet</title>
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+	<title>OpenHR Intranet</title>
+
+	<%--External script resources--%>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+
+
 </head>
 
 <script type="text/javascript">
-		window.onload = function () {
+	function util_customreportChilds_onload () {
 		
 				self.focus();
+
+				$("input[type=submit], input[type=button], button")
+					.button();
+				$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("input").removeClass("text");
+
+				$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("select").removeClass("text");
+
 
 				var iResizeBy, iNewWidth, iNewHeight, iNewLeft, iNewTop, frmPopup = document.getElementById("frmPopup");
 
@@ -585,9 +609,7 @@
 								</TD>
 								<TD width=30>
 									<input id="cmdChildFilter" name="cmdChildFilter" style="width: 100%" type="button" value="..." class="btn" 
-										 onclick="selectRecordOption('child', 'filter')" onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}" onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										 onclick="selectRecordOption('child', 'filter')" />
 								</TD>
 							</TR>
 						</table>
@@ -610,11 +632,7 @@
 								</TD>
 								<TD width=30>
 									<input id=cmdChildOrder name=cmdChildOrder style="WIDTH: 100%" type=button value="..." class="btn"
-											onclick="selectRecordOrder();"  
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="selectRecordOrder();" />
 								</TD>
 							</TR>
 						</table>
@@ -638,19 +656,11 @@
 								</TD>
 								<TD width=15>
 									<input style="WIDTH: 100%" type="button" value="+" id="cmdChildRecordsUp" name="cmdChildRecordsUp" class="btn"
-											onclick="spinRecords(true);setRecordsNumeric();showAllRecords();"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="spinRecords(true);setRecordsNumeric();showAllRecords();" />
 								</TD>
 								<TD width=15>
 									<input style="WIDTH: 100%" type="button" value="-" id="cmdChildRecordsDown" name="cmdChildRecordsDown"  class="btn"
-											onclick="spinRecords(false);setRecordsNumeric();showAllRecords();"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="spinRecords(false);setRecordsNumeric();showAllRecords();" />
 								</TD>
 								<TD width=5>&nbsp;</TD>
 								<TD width=100>
@@ -673,16 +683,12 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<input id="cmdOK" type="button" value="OK" name="cmdOK" style="width: 80px" width="80"
-										class="btn" onclick="setForm()" onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}" onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										class="btn" onclick="setForm()" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="width: 80px"
-										width="80" class="btn" onclick="self.close();" onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}" onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										width="80" class="btn" onclick="self.close();" />
 								</TD>
 							</tr>
 						</table>
@@ -721,6 +727,10 @@
 		<input type="hidden" id="childHidden" name="childHidden" value=""/>
 		<input type="hidden" id="calcsHiddenCount" name="calcsHiddenCount" value="0"/>
 	</form>
-
+	
 </body>
 </html>
+
+<script type="text/javascript">
+	util_customreportChilds_onload();
+</script>
