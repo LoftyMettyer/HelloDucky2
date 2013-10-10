@@ -3913,6 +3913,18 @@ function menu_loadSelectOrderFilter(psType) {
 	if (psType == "ORDER") {
 		sSaveChangesTag = "SELECTORDER";
 		sOptionPage = "orderselect";
+
+		//Disable some ribbon items
+		menu_toolbarEnableItem("mnutoolFilterRecordFind", false);
+		$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
+		$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
+		menu_toolbarEnableItem("mnutoolLastRecordFind", false);
+		menu_toolbarEnableItem("mnutoolNextRecordFind", false);
+		menu_toolbarEnableItem("mnutoolChangeOrderRecordFind", false);
+		menu_toolbarEnableItem("mnutoolNewRecordFind", false);
+		menu_toolbarEnableItem("mnutoolCopyRecordFind", false);
+		menu_toolbarEnableItem("mnutoolEditRecordFind", false);
+		menu_toolbarEnableItem("mnutoolDeleteRecordFind", false);
 	}
 	else {
 		sSaveChangesTag = "SELECTFILTER";
