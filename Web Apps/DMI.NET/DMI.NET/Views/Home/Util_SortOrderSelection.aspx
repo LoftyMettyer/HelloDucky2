@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
 
@@ -9,14 +10,30 @@
 <head>
 	<title>OpenHR Intranet</title>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 </head>
-
-<body id="bdyMain" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 
 	<script type="text/javascript">
 
-		window.onload = function () {
+		function util_SortOrderSelection_onload() {
+
+			$("input[type=submit], input[type=button], button")
+				.button();
+			$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+			$("input").removeClass("text");
+
+			$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+			$("select").removeClass("text");
+
 
 			var iResizeBy, iNewWidth, iNewHeight, iNewLeft, iNewTop;
 			var frmPopup = document.getElementById("frmPopup");
@@ -25,22 +42,20 @@
 			iResizeBy = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
 			if (frmPopup.offsetParent.offsetWidth + iResizeBy > screen.width) {
 				window.dialogWidth = new String(screen.width) + "px";
-			}
-			else {
+			} else {
 				iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
 				iNewWidth = iNewWidth + iResizeBy;
 				window.dialogWidth = new String(iNewWidth) + "px";
 			}
 
-		<% If (Session("utiltype") = 2) Then%>
+			<% If (Session("utiltype") = 2) Then%>
 			checkColumnOptions(false);
-		<%End If%>
+			<%End If%>
 
 			iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
 			if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
 				window.dialogHeight = new String(screen.height) + "px";
-			}
-			else {
+			} else {
 				iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
 				iNewHeight = iNewHeight + iResizeBy;
 				window.dialogHeight = new String(iNewHeight) + "px";
@@ -51,11 +66,7 @@
 
 			window.dialogLeft = new String(iNewLeft) + "px";
 			window.dialogTop = new String(iNewTop) + "px";
-		}
-
-	</script>
-
-	<script type="text/javascript">
+		};
 
 		function selectedColumnParameter(psDefnString, psParameter) {
 			var iCharIndex;
@@ -168,7 +179,6 @@
 			return '';
 		}
 
-
 		function checkColumnOptions(pbFromCheckBox) {
 
 			var frmPopup = document.getElementById("frmPopup");
@@ -217,7 +227,7 @@
 	</script>
 
 	<%
-		Response.Write("<script>" & vbCrLf)
+		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 		Response.Write("function setForm()" & vbCrLf)
 		Response.Write("	{" & vbCrLf)
 		Response.Write("	var frmPopup = document.getElementById('frmPopup');" & vbCrLf)
@@ -330,31 +340,33 @@
 
 	%>
 
+	<body>
+<div>
 	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();">
-		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="95%">
+		<table align="center" class="outline">
 			<tr>
 				<td>
-					<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
+					<table class="invisible" width="100%">
 						<tr height="10">
 							<td height="10" colspan="5" align="center">
 								<%
 									' Get the order records.
-									Dim cmdSortOrder = CreateObject("ADODB.Command")
-									cmdSortOrder.CommandType = 4
+									Dim cmdSortOrder As Command = New Command
+									cmdSortOrder.CommandType = CommandTypeEnum.adCmdStoredProc
 									cmdSortOrder.ActiveConnection = Session("databaseConnection")
 									cmdSortOrder.CommandText = "spASRIntGetSortOrderColumns"
 
-									Dim prmIncluded = cmdSortOrder.CreateParameter("included", 200, 1, 8000) ' 200 = varchar, 1 = input, 8000=size
+									Dim prmIncluded = cmdSortOrder.CreateParameter("included", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 									cmdSortOrder.Parameters.Append(prmIncluded)
 									prmIncluded.value = Request("txtSortInclude")
 
-									Dim prmExcluded = cmdSortOrder.CreateParameter("excluded", 200, 1, 8000) ' 200 = varchar, 1 = input, 8000=size
+									Dim prmExcluded = cmdSortOrder.CreateParameter("excluded", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 									cmdSortOrder.Parameters.Append(prmExcluded)
 									prmExcluded.value = Request("txtSortExclude")
 
 									Dim rstSortOrder = cmdSortOrder.Execute
 	
-									If rstSortOrder.eof Then
+									If rstSortOrder.EOF Then
 										
 										
 								%>
@@ -372,11 +384,7 @@
 						<tr>
 							<td colspan="5" height="10" align="center">
 								<input type="button" class="btn" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose"
-									onclick="self.close();"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="self.close();" />
 							</td>
 						</tr>
 						<tr>
@@ -394,8 +402,8 @@
 	%>
 
 	<h3>Select Column</h3>
-	</td>
-					</tr>
+					<table>
+					
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td nowrap>Column :</td>
@@ -414,11 +422,11 @@
 
 							If (Session("utiltype") = 2) Then
 							%>
-							<select id="cboColumn" name="cboColumn" style="WIDTH: 100%" class="combo" onchange="checkColumnOptions();">
+							<select id="cboColumn" name="cboColumn" class="combo" onchange="checkColumnOptions();">
 								<%
 								Else
 								%>
-								<select id="cboColumn" name="cboColumn" style="WIDTH: 100%" class="combo">
+								<select id="cboColumn" name="cboColumn" class="combo">
 									<%
 									End If
 
@@ -436,6 +444,7 @@
 									Loop
 									%>
 								</select>
+							</select>
 						</td>
 						<td width="20">&nbsp;</td>
 					</tr>
@@ -455,15 +464,10 @@
 					End If
 				End If
 %>
-				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-				onfocus="try{radio_onFocus(this);}catch(e){}"
-				onblur="try{radio_onBlur(this);}catch(e){}" />
+ />
 			<label tabindex="-1"
 				for="optAscending"
-				class="radio"
-				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+				class="radio">
 				Ascending</label>
 			<input type="radio" id="optDescending" name="optOrder" value="radiobutton"
 				<%
@@ -472,20 +476,15 @@
 						Response.Write(" checked ")
 					End If
 				End If
-%>
-				onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-				onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-				onfocus="try{radio_onFocus(this);}catch(e){}"
-				onblur="try{radio_onBlur(this);}catch(e){}" />
+%> />
 			<label tabindex="-1"
 				for="optDescending"
-				class="radio"
-				onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-				onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
-				Descending</label>
+				class="radio">Descending</label>
 		</td>
 		<td width="20">&nbsp;</td>
 	</tr>
+	
+	
 	<tr height="10">
 		<td colspan="4"></td>
 	</tr>
@@ -568,35 +567,27 @@
 	</tr>
 	<tr>
 		<td colspan="4">
-			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+			<table width="100%" class="invisible">
 				<tr>
 					<td>&nbsp;</td>
 					<td width="10">
-						<input id="cmdOK" type="button" class="btn" value="OK" name="cmdOK" style="WIDTH: 80px" width="80" onclick="setForm()"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
+						<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="OK" name="cmdOK" style="width: 80px" onclick="setForm();" />
 					</td>
 					<td width="10">&nbsp;</td>
-					<td width="10">
-						<input id="cmdCancel" type="button" class="btn" value="Cancel" name="cmdCancel" style="WIDTH: 80px" width="80" onclick="self.close();"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
+					<td width="10">					
+						<input id="cmdCancel" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Cancel" name="cmdCancel" style="width: 80px" onclick="self.close();" />
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
+
 	</table>
-				</td>
-	</tr>
-</table>
-</form>
+
+	</div>
 </body>
 </html>
+
+<script type="text/javascript">
+	util_SortOrderSelection_onload();
+</script>

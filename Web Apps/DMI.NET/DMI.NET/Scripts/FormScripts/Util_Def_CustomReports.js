@@ -2190,7 +2190,7 @@
 		openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 	}
 
-	function cancelClick() {		
+	function cancelClick() {
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
 				
@@ -3735,7 +3735,7 @@
 												"&txtSortPOC=" + escape(frmSortOrder.txtSortPOC.value) +
 													"&txtSortVOC=" + escape(frmSortOrder.txtSortVOC.value) +
 														"&txtSortSRV=" + escape(frmSortOrder.txtSortSRV.value);
-				openDialog(sURL, 600, 275, "yes", "yes");
+				openDialog(sURL, 600, 275, "no", "no");
 
 				frmUseful.txtChanged.value = 1;
 			}

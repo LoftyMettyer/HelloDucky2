@@ -1944,7 +1944,7 @@ function sortAdd() {
 				"&txtSortColumnID=" + escape(frmSortOrder.txtSortColumnID.value) +
 				"&txtSortColumnName=" + escape(frmSortOrder.txtSortColumnName.value) +
 				"&txtSortOrder=" + escape(frmSortOrder.txtSortOrder.value);
-			openDialog(sURL, 600, 275, "yes", "yes");
+			openDialog(sURL, 600, 275, "no", "no");
 
 			frmUseful.txtChanged.value = 1;
 		}
