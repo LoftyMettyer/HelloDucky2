@@ -362,7 +362,8 @@
     function enableSaveButton() {
 	    if ($("#ctlRecordEdit #changed").val() == "false") {
 		    $("#ctlRecordEdit #changed").val("true");
-		    menu_toolbarEnableItem("mnutoolSaveRecord", true);		    	    
+		    menu_toolbarEnableItem("mnutoolSaveRecord", true);
+		    window.onbeforeunload = warning;
 	    }
     }
     
@@ -374,7 +375,7 @@
     	}, 1000);
     	return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
     }
-    window.onbeforeunload = warning;
+    
 
 
 </script>
