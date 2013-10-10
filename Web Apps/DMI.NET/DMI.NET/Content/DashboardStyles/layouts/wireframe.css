@@ -41,10 +41,18 @@ div.officetab li div.button .disabled {
 
 .hypertextlinks 
 {
-	height: 100%;
+	position: fixed;
+	left: 0;
+	width: 220px;
+	top: 170px;
+	bottom: 50px;
+	overflow: auto;
+
+
+	/*height: 100%;
 	width: 250px;
 	overflow: auto;
-	float: left;
+	float: left;*/
 	}			
 
 .hypertextlinkseparator

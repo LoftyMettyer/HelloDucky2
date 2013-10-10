@@ -79,11 +79,18 @@ body
 
 .hypertextlinks 
 {
-	height: 100%;
+	position: fixed;
+	left: 0;
+	width: 220px;
+	top: 170px;
+	bottom: 50px;
+	overflow: auto;
+	
+	/*height: 100%;
 	width: 220px;
 	overflow: auto;
 	float: left;
-	border: 2px solid rgb(191, 219, 255);
+	border: 2px solid rgb(191, 219, 255);*/
 	}			
 
 .hypertextlinkseparator

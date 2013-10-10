@@ -500,7 +500,7 @@
 
 							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
-								<a href="#"><%: navlink.Text %></a>
+								<a href="#" title="<%: navlink.Text %>"><%: navlink.Text %></a>
 								<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
 							</li>
 							<%iRowNum += 1%>
