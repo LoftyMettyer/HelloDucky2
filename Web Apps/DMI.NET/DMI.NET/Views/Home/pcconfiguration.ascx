@@ -69,7 +69,15 @@
 				$("#toolbarAdminConfig").parent().show();
 				$("#toolbarAdminConfig").click();
 
+				$('input[name^="txt"]').on("change", function () { enableSaveButton(); });
+
+
 		}
+
+		function enableSaveButton() {
+			if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
+		}
+
 
 		function clearPath(psKey) {
 				if (psKey == "DOCUMENTS") {
@@ -308,6 +316,7 @@
 		}
 
 		function definitionChanged() {
+			
 				// Compare the network file location values with the original values.
 				if (frmConfiguration.txtDocuments.value != frmOriginalConfiguration.txtDocumentsPath.value) {
 						return true;
