@@ -1019,10 +1019,13 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			addControl(iPageNo, selector);
 
-			//var option = document.createElement('option');
-			//option.value = '0';
-			//option.appendChild(document.createTextNode(''));
-			//selector.appendChild(option);
+			if (controlItemArray[22] == 0) {
+				//Add empty option for dropdown lists
+				var option = document.createElement('option');
+				option.value = '0';
+				option.appendChild(document.createTextNode(''));
+				selector.appendChild(option);
+			}
 
 			break;
 
