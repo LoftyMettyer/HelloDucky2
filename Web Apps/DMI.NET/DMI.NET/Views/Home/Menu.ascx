@@ -283,7 +283,7 @@
 
 	Response.Write("  if (fDone == false) {" & vbCrLf)
 	Response.Write("      $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)		' hack!
-	Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
+	Response.Write("	  $('#mnutoolHistory').hide();" & vbCrLf)
 	Response.Write("      $('#mnutoolDatabase').click();")
 	Response.Write("  }" & vbCrLf)
 	Response.Write("  else {" & vbCrLf)
