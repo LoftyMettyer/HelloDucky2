@@ -222,7 +222,7 @@ Namespace Controllers
 				If Err.Number <> 0 Then
 					Session("ErrorTitle") = "Login Page"
 					Session("ErrorText") =
-					 "You could not login to the OpenHR database because of the following error:<p>COAInt_Server.DLL has not been registered on the IIS server.  Please contact support." & vbCrLf &
+					 "You could not login to the OpenHR database because of the following reason:<p>COAInt_Server.DLL has not been registered on the IIS server.  Please contact support." & vbCrLf &
 					 "error: " & Err.Number.ToString & ": " & Err.Description
 					Return RedirectToAction("Loginerror")
 				End If
@@ -279,7 +279,7 @@ Namespace Controllers
 			cmdHit.Execute()
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
-				Dim sErrorText = "You could not login to the OpenHR database because of the following error:<p>"
+				Dim sErrorText = "You could not login to the OpenHR database because of the following reason:<p>"
 
 				If (Err.Number = -2147217900) _
 				 And (UCase(Left(FormatError(Err.Description), 31)) = "COULD NOT FIND STORED PROCEDURE") Then
@@ -442,7 +442,7 @@ Namespace Controllers
 						"Please ask the System Administrator to update the database in the System Manager.")
 					Return RedirectToAction("Loginerror")
 				Else
-					Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 					 FormatError(Err.Description)
 				End If
 				Return RedirectToAction("Loginerror")
@@ -454,7 +454,7 @@ Namespace Controllers
 
 			If cmdLoginCheck.Parameters("SuccessFlag").Value = 0 Then
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 				 cmdLoginCheck.Parameters("ErrorMessage").Value
 				Return RedirectToAction("Loginerror")
 			ElseIf cmdLoginCheck.Parameters("SuccessFlag").Value = 2 Then
@@ -523,7 +523,7 @@ Namespace Controllers
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page - Audit Access"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 				 FormatError(Err.Description)
 				Return RedirectToAction("Loginerror")
 			End If
@@ -544,7 +544,7 @@ Namespace Controllers
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 				 FormatError(Err.Description)
 				Return RedirectToAction("Loginerror")
 			End If
@@ -569,7 +569,7 @@ Namespace Controllers
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 				 FormatError(Err.Description)
 				Return RedirectToAction("Loginerror")
 			End If
@@ -697,7 +697,7 @@ Namespace Controllers
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 				 FormatError(Err.Description)
 				Return RedirectToAction("Loginerror")
 			End If
@@ -1274,14 +1274,14 @@ Namespace Controllers
 
 									Session("ErrorTitle") = "Login Page"
 									Session("ErrorText") =
-									 "You could not login to the OpenHR database because of the following error:" & sErrorDescription & "<p>" & vbCrLf
+									 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
 									Return RedirectToAction("Loginerror")
 								End If
 							End If
 						Else
 							Session("ErrorTitle") = "Login Page"
 							Session("ErrorText") =
-							 "You could not login to the OpenHR database because of the following error:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+							 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
 							Return RedirectToAction("Loginerror")
 						End If
 
@@ -1378,7 +1378,7 @@ Namespace Controllers
 						Else
 							Session("ErrorTitle") = "Login Page"
 							Session("ErrorText") =
-							 "You could not login to the OpenHR database because of the following error:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+							 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
 							Return RedirectToAction("Loginerror")
 						End If
 
