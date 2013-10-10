@@ -643,14 +643,18 @@
 			button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
 					(frmpermissions.grantdelete.value == 0) ||
 					(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
-
+			
 			if (((frmpermissions.grantedit.value == 0) &&
 							(frmpermissions.grantview.value == 1)) ||
 					(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
-					frmDefSel.cmdEdit.value = "View";
+				frmDefSel.cmdEdit.value = "View";
+				$('#mnutoolEditReportFind h6').text('View');
+				$('#mnutoolEditReportFind a').attr('title', 'View');
 			}
 			else {
-					frmDefSel.cmdEdit.value = "Edit";
+				frmDefSel.cmdEdit.value = "Edit";
+				$('#mnutoolEditReportFind h6').text('Edit');
+				$('#mnutoolEditReportFind a').attr('title', 'Edit');
 			}
 
 			button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
