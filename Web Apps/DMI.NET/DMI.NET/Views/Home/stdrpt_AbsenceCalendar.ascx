@@ -16,19 +16,16 @@
 				}
 
 				if (fOK == true) {
-
-						// Set focus onto one of the form controls. 
-						cmdOK.focus();
-
+					// Set focus onto one of the form controls. 
+					// cmdOK.focus(); NHRD This line was erroring
+					$("#cmdOK").focus(); //This is the back button on the Absence Calendar
+					
 						// Get menu.asp to refresh the menu.
 						menu_refreshMenu();
-
 						refreshDateSpecifics();
-
 						// Expand the option frame and hide the work frame.
 						$("#workframe").hide();
 						$("#optionframe").show();
-
 				}
 
 				// Disable the menu
