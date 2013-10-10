@@ -82,11 +82,12 @@ function refreshControls() {
 }
 
 function submitDefinition() {
-
+	
 	if (validate() == false) { menu_refreshMenu(); return; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
 	// first populate the validate fields
+	var frmValidate = document.getElementById("frmValidate");
 	frmValidate.validatePass.value = 1;
 	frmValidate.validateName.value = frmDefinition.txtName.value;
 	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
@@ -410,6 +411,8 @@ function createNew(pPopup) {
 
 function populateSendForm() {
 	var i;
+
+	var frmSend = document.getElementById("frmSend");
 
 	// Copy all the header information to frmSend
 	frmSend.txtSend_ID.value = frmUseful.txtUtilID.value;
