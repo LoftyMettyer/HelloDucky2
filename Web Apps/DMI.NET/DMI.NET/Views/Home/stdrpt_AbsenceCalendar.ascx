@@ -153,8 +153,15 @@
 		}
 
 		// Prints the screen
-		function PrintGrid() {
-				window.print();
+		function PrintGrid() {			
+			var headstr = "<html><head><title></title></head><body>";
+			var footstr = "</body>";
+			var newstr = document.all.item('optionframe').innerHTML;
+			var oldstr = document.body.innerHTML;
+			document.body.innerHTML = headstr + newstr + footstr;
+			window.print();
+			document.body.innerHTML = oldstr;
+			return false;
 		}
 
 </script>
@@ -293,13 +300,13 @@ if objAbsenceCalendar.ReportFailed = false then
 										<TR>
 										<!-- OK/Print Buttons -->
 										<td colspan=2 align=right>
-<%--				            <input id="cmdPrint" name="cmdPrint" type="button" value="Print" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
+				            <input id="cmdPrint" name="cmdPrint" type="button" value="Print" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
 												onclick="PrintGrid()" 
 																onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 																onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																onfocus="try{button_onFocus(this);}catch(e){}"
 																onblur="try{button_onBlur(this);}catch(e){}" />
-														&nbsp; --%>
+														&nbsp; 
 										<input id="cmdOK" name="cmdOK" type="button" value="Back" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
 												onclick="absence_calendar_OKClick()" 
 																onmouseover="try{button_onMouseOver(this);}catch(e){}" 
