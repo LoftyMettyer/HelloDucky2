@@ -600,26 +600,6 @@ function menu_MenuClick(sTool) {
 			}
 	}
 
-
-	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
-	if (sToolName == 'mnutoolSaveReport') {
-		try {
-			$("#cmdOK").click();
-		} catch (e) {
-		} finally {
-			return false;
-		}
-	}
-
-	if (sToolName == 'mnutoolCancelReport') {
-		try {
-			$("#cmdCancel").click();
-		} catch (e) {
-		} finally {
-			return false;
-		}
-	}
-
 	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
 	if (sToolName == 'mnutoolSaveReport') {
 		try {

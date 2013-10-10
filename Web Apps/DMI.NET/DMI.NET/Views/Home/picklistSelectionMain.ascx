@@ -53,6 +53,9 @@
 
 	$('.popup').bind('dialogclose', function (event) {
 		closeclick();
+		$("#optionframe").hide();
+		$("#workframeset").show();
+		$("#workframe").show();
 	});
 
 

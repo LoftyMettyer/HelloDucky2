@@ -105,7 +105,7 @@ function submitDefinition() {
 }
 
 function addClick() {
-
+	
 	var vBM;
 
 	/* Get the current selected delegate IDs. */
@@ -236,14 +236,14 @@ function removeAllClick() {
 function cancelClick() {
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
-		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
+		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 		return (false);
 	}
 
 	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
 	if (answer == 7) {
 		// No
-		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
+		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 		return (false);
 	}
 	if (answer == 6) {
