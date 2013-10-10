@@ -1127,7 +1127,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				legend.style.fontFamily = controlItemArray[11];
 				legend.style.fontSize = controlItemArray[12] + 'pt';
 				legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-				legend.appendChild(document.createTextNode(controlItemArray[8]));
+				legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
 			}
 
 			if (!fControlEnabled) fieldset.disabled = true;
@@ -1281,14 +1281,13 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.backgroundColor = "transparent";
 			//fieldset.style.color = "Black";
 			fieldset.style.padding = "0px";
-		    
 		    if (controlItemArray[8].length > 0) {
 		        var legend = fieldset.appendChild(document.createElement('legend'));
 		        legend.style.fontFamily = controlItemArray[11];
 		        legend.style.fontSize = controlItemArray[12] + 'pt';
 		        legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
 		        legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
-		        legend.appendChild(document.createTextNode(controlItemArray[8]));
+		        legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
 		    }
 		    fieldset.setAttribute("data-control-key", key);
 
