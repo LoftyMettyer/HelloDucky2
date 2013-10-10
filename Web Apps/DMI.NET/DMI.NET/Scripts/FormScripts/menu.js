@@ -1598,7 +1598,7 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 					(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE"))));
 			menu_setVisibleMenuItem("mnutoolCopyRecordFind", true);
-			menu_toolbarEnableItem("mnutoolCopyRecordFind", true);
+			menu_toolbarEnableItem("mnutoolCopyRecordFind", (lngRecordID > 0));
 			menu_setVisibleMenuItem("mnutoolEditRecordFind", true);
 			menu_toolbarEnableItem("mnutoolEditRecordFind", (lngRecordID > 0));
 			menu_setVisibleMenuItem("mnutoolDeleteRecordFind", true);
