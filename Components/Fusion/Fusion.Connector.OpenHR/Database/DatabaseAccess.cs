@@ -155,6 +155,7 @@ namespace Fusion.Connector.OpenHR.Database
                 {
                     su.reference = su.reference == "" ? null : su.reference;
                     su.outcome = su.outcome == "" ? null : su.outcome;
+										su.nameSpecified = true;
                     su.trainingStartSpecified = true;
                     su.trainingEndSpecified = true;
                     su.validFromSpecified = true;
@@ -163,10 +164,10 @@ namespace Fusion.Connector.OpenHR.Database
 
 										if (su.isRecordInactive == true)
 										{
-											su.name = "** Deleted **";
+											su.nameSpecified = false;
 										}
 
-                    return su;
+	                return su;
                 }
             }
             return null;

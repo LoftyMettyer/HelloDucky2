@@ -11,7 +11,7 @@
 							<xs:element name="staffSkill">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="name">
+										<xs:element name="name" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
