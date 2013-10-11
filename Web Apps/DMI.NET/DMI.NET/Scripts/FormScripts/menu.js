@@ -441,8 +441,8 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
-	if ((sToolName == "mnutoolPasswordChange") || (sToolName=="mnutoolNewUser")) {
-		$("#toolbarHome").click(); //Show the home toolbar
+	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
+		showDefaultRibbon();
 	}
 
 	//------------------------DEFSEL----------------------------//
