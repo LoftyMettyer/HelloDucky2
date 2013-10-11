@@ -1903,16 +1903,16 @@ Namespace Controllers
 							' Inserting.
 
 							' The required stored procedure exists, so run it.
-							Dim cmdInsertRecord = CreateObject("ADODB.Command")
+							Dim cmdInsertRecord As Command = New Command
 							cmdInsertRecord.CommandText = "spASRIntInsertNewRecord"
-							cmdInsertRecord.CommandType = 4	' Stored procedure
+							cmdInsertRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 							cmdInsertRecord.CommandTimeout = 180
 							cmdInsertRecord.ActiveConnection = Session("databaseConnection")
 
-							Dim prmNewID = cmdInsertRecord.CreateParameter("newID", 3, 2)
+							Dim prmNewID = cmdInsertRecord.CreateParameter("newID", DataTypeEnum.adInteger, ParameterDirection.Output)
 							cmdInsertRecord.Parameters.Append(prmNewID)
 
-							Dim prmInsertSQL = cmdInsertRecord.CreateParameter("insertSQL", 201, 1, 2147483646)
+							Dim prmInsertSQL = cmdInsertRecord.CreateParameter("insertSQL", DataTypeEnum.adLongVarChar, ParameterDirection.Input, 2147483646)
 							cmdInsertRecord.Parameters.Append(prmInsertSQL)
 							prmInsertSQL.value = sInsertUpdateDef
 
@@ -1993,13 +1993,13 @@ Namespace Controllers
 
 
 							'MH20001017 Immediate email stuff to go in v1.9.0
-							Dim cmdInsertRecord2 = CreateObject("ADODB.Command")
+							Dim cmdInsertRecord2 As Command = New Command
 							cmdInsertRecord2.CommandText = "spASREmailImmediate"
-							cmdInsertRecord2.CommandType = 4		' Stored procedure
+							cmdInsertRecord2.CommandType = CommandTypeEnum.adCmdStoredProc
 							cmdInsertRecord2.CommandTimeout = 180
 							cmdInsertRecord2.ActiveConnection = Session("databaseConnection")
 
-							Dim prmInsertSQL2 = cmdInsertRecord2.CreateParameter("Username", 200, 1, 255)		' 200=varchar, 1=input, 255=size
+							Dim prmInsertSQL2 = cmdInsertRecord2.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 							cmdInsertRecord2.Parameters.Append(prmInsertSQL2)
 							prmInsertSQL2.value = Session("Username")
 
@@ -2010,32 +2010,32 @@ Namespace Controllers
 							' Updating.
 
 							' The required stored procedure exists, so run it.
-							Dim cmdUpdateRecord = CreateObject("ADODB.Command")
+							Dim cmdUpdateRecord As Command = New Command
 							cmdUpdateRecord.CommandText = "spASRIntUpdateRecord"
-							cmdUpdateRecord.CommandType = 4	' Stored procedure
+							cmdUpdateRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 							cmdUpdateRecord.CommandTimeout = 180
 							cmdUpdateRecord.ActiveConnection = Session("databaseConnection")
 
-							Dim prmResultCode = cmdUpdateRecord.CreateParameter("resultCode", 3, 2)	' 3=integer, 2=output
+							Dim prmResultCode = cmdUpdateRecord.CreateParameter("resultCode", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 							cmdUpdateRecord.Parameters.Append(prmResultCode)
 
-							Dim prmUpdateSQL = cmdUpdateRecord.CreateParameter("updateSQL", 201, 1, 2147483646)
+							Dim prmUpdateSQL = cmdUpdateRecord.CreateParameter("updateSQL", DataTypeEnum.adLongVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
 							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
 							prmUpdateSQL.value = sInsertUpdateDef
 
-							Dim prmTableID = cmdUpdateRecord.CreateParameter("tableID", 3, 1)
+							Dim prmTableID = cmdUpdateRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmTableID)
 							prmTableID.value = CLng(CleanNumeric(lngTableID))
 
-							Dim prmRealSource = cmdUpdateRecord.CreateParameter("realSource", 200, 1, 255)
+							Dim prmRealSource = cmdUpdateRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
 							cmdUpdateRecord.Parameters.Append(prmRealSource)
 							prmRealSource.value = sRealSource
 
-							Dim prmID = cmdUpdateRecord.CreateParameter("id", 3, 1)	' 3=integer, 1=input
+							Dim prmID = cmdUpdateRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmID)
 							prmID.value = CleanNumeric(lngRecordID)
 
-							Dim prmTimestamp = cmdUpdateRecord.CreateParameter("timestamp", 3, 1)	' 3=integer, 1=input
+							Dim prmTimestamp = cmdUpdateRecord.CreateParameter("timestamp", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmTimestamp)
 							prmTimestamp.value = CleanNumeric(iTimestamp)
 
@@ -2115,14 +2115,13 @@ Namespace Controllers
 							Loop
 							cmdUpdateRecord = Nothing
 
-							'MH20001017 Immediate email stuff to go in v1.9.0
-							cmdUpdateRecord = CreateObject("ADODB.Command")
+							cmdUpdateRecord = New Command
 							cmdUpdateRecord.CommandText = "spASREmailImmediate"
-							cmdUpdateRecord.CommandType = 4	' Stored procedure
+							cmdUpdateRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 							cmdUpdateRecord.CommandTimeout = 180
 							cmdUpdateRecord.ActiveConnection = Session("databaseConnection")
 
-							prmUpdateSQL = cmdUpdateRecord.CreateParameter("Username", 200, 1, 255)	' 200=varchar, 1=input, 255=size
+							prmUpdateSQL = cmdUpdateRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
 							prmUpdateSQL.value = Session("Username")
 
@@ -2136,23 +2135,23 @@ Namespace Controllers
 				' Deleting.
 
 				' The required stored procedure exists, so run it.
-				Dim cmdDeleteRecord = CreateObject("ADODB.Command")
+				Dim cmdDeleteRecord As Command = New Command
 				cmdDeleteRecord.CommandText = "sp_ASRDeleteRecord"
-				cmdDeleteRecord.CommandType = 4	' Stored procedure
+				cmdDeleteRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 				cmdDeleteRecord.ActiveConnection = Session("databaseConnection")
 
-				Dim prmResultCode = cmdDeleteRecord.CreateParameter("resultCode", 3, 2)
+				Dim prmResultCode = cmdDeleteRecord.CreateParameter("resultCode", DataTypeEnum.adInteger, ParameterDirection.Output)
 				cmdDeleteRecord.Parameters.Append(prmResultCode)
 
-				Dim prmTableID = cmdDeleteRecord.CreateParameter("tableID", 3, 1)
+				Dim prmTableID = cmdDeleteRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirection.Input)
 				cmdDeleteRecord.Parameters.Append(prmTableID)
 				prmTableID.value = CLng(CleanNumeric(lngTableID))
 
-				Dim prmRealSource = cmdDeleteRecord.CreateParameter("realSource", 200, 1, 8000)
+				Dim prmRealSource = cmdDeleteRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirection.Input, 8000)
 				cmdDeleteRecord.Parameters.Append(prmRealSource)
 				prmRealSource.value = CleanString(sRealSource)
 
-				Dim prmID = cmdDeleteRecord.CreateParameter("id", 3, 1)
+				Dim prmID = cmdDeleteRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirection.Input)
 				cmdDeleteRecord.Parameters.Append(prmID)
 				prmID.value = CleanNumeric(lngRecordID)
 
@@ -2221,13 +2220,13 @@ Namespace Controllers
 				cmdDeleteRecord = Nothing
 
 				'MH20100609
-				Dim cmdInsertRecord = CreateObject("ADODB.Command")
+				Dim cmdInsertRecord As Command = New Command
 				cmdInsertRecord.CommandText = "spASREmailImmediate"
-				cmdInsertRecord.CommandType = 4	' Stored procedure
+				cmdInsertRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 				cmdInsertRecord.CommandTimeout = 180
 				cmdInsertRecord.ActiveConnection = Session("databaseConnection")
 
-				Dim prmInsertSQL = cmdInsertRecord.CreateParameter("Username", 200, 1, 255)	' 200=varchar, 1=input, 255=size
+				Dim prmInsertSQL = cmdInsertRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 				cmdInsertRecord.Parameters.Append(prmInsertSQL)
 				prmInsertSQL.value = Session("Username")
 

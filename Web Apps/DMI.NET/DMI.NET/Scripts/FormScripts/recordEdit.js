@@ -339,15 +339,6 @@ function insertUpdateDef() {
 						asColumnsToAdd[3] = $(objControl).is(":checked") ? "1" : "0";
 					}
 
-					else if (objScreenControl.ControlType == 2) {
-
-						//	Character field from a combo (CHAR type column). Save the text from the combo.
-						asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
-						//	'JPD 20051121 Fault 10583
-						//	'asColumns(4, iNextIndex) = objControl.Text
-						asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
-					}
-
 					else if (objScreenControl.ControlType == 2) { //&& (objScreenControl.ColumnType == 1))
 						// objControl Is COAInt_Lookup Then
 						//	Lookup field from a combo (unknown type column). Get the column type and save the appropraite value from the combo.
