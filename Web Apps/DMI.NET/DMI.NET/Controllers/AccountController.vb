@@ -159,17 +159,17 @@ Namespace Controllers
 			'On Error Resume Next
 
 			'Dim sReferringPage
-			Dim sUserName
-			Dim sPassword
-			Dim sDatabaseName
-			Dim sServerName
-			Dim sLocaleDateFormat
-			Dim sLocaleDateSeparator
-			Dim sLocaleDecimalSeparator
-			Dim sLocaleThousandSeparator
-			Dim fForcePasswordChange
-			Dim sConnectString
-			Dim bWindowsAuthentication
+			Dim sUserName As String
+			Dim sPassword As String
+			Dim sDatabaseName As String
+			Dim sServerName As String
+			Dim sLocaleDateFormat As String
+			Dim sLocaleDateSeparator As String
+			Dim sLocaleDecimalSeparator As String
+			Dim sLocaleThousandSeparator As String
+			Dim fForcePasswordChange As Boolean
+			Dim sConnectString As String
+			Dim bWindowsAuthentication As String
 
 			fForcePasswordChange = False
 			Session("ConvertedDesktopColour") = "#f9f7fb"
@@ -217,7 +217,7 @@ Namespace Controllers
 
 			' Check if the server DLL is registered.
 			Try
-				Dim objMenu = New Menu
+
 			Catch ex As Exception
 				If Err.Number <> 0 Then
 					Session("ErrorTitle") = "Login Page"
@@ -228,7 +228,7 @@ Namespace Controllers
 				End If
 			End Try
 
-			Dim objSettings = New Global.HR.Intranet.Server.clsSettings
+			Dim objSettings = New HR.Intranet.Server.clsSettings
 			sConnectString = objSettings.GetSQLProviderString.ToString() & "Data Source=" & sServerName & ";Initial Catalog=" &
 			 sDatabaseName & ";Application Name=OpenHR Intranet;DataTypeCompatibility=80;MARS Connection=True;"
 			objSettings = Nothing
@@ -260,8 +260,7 @@ Namespace Controllers
 
 				If Err.Number <> 0 Then
 					Session("ErrorTitle") = "Login Page"
-					Session("ErrorText") =
-					 "The system could not log you on. Make sure your details are correct, then retype your password."
+					Session("ErrorText") = "The system could not log you on. Make sure your details are correct, then retype your password."
 					Return RedirectToAction("Loginerror")
 				End If
 			End Try
@@ -738,7 +737,7 @@ Namespace Controllers
 
 			Dim sTempPath As String, sBGImage As String = "", intBGPos As Short = 2, strRepeat As String, strBGPos As String
 
-			Dim objUtilities = New Global.HR.Intranet.Server.Utilities
+			Dim objUtilities = New HR.Intranet.Server.Utilities
 			objUtilities.Connection = Session("databaseConnection")
 
 
