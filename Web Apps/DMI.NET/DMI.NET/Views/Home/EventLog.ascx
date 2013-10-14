@@ -412,7 +412,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 600, 220);
+		openDialog(sURL, 500, 220);
 	}
 
 	function EventLog_purgeEvent() {
@@ -569,8 +569,8 @@
 				"dialogHeight:" + pHeight + "px;" +
 				"dialogWidth:" + pWidth + "px;" +
 				"help:no;" +
-				"resizable:yes;" +
-				"scroll:yes;" +
+				"resizable:no;" +
+				"scroll:no;" +
 				"status:no;";
 		window.showModalDialog(pDestination, self, dlgwinprops);
 	}

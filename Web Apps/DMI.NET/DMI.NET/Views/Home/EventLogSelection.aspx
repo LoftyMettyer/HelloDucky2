@@ -29,30 +29,6 @@
 <body>
 	<script type="text/javascript">
 
-		function eventlogselection_window_onload() {
-
-			self.focus();
-
-			// Resize the grid to show all prompted values.
-			iResizeBy = frmEventSelection.offsetParent.scrollWidth - frmEventSelection.offsetParent.clientWidth;
-			if (frmEventSelection.offsetParent.offsetWidth + iResizeBy > screen.width) {
-				window.dialogWidth = new String(screen.width) + "px";
-			} else {
-				iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-				iNewWidth = iNewWidth + iResizeBy;
-				window.dialogWidth = new String(iNewWidth) + "px";
-			}
-
-			iResizeBy = frmEventSelection.offsetParent.scrollHeight - frmEventSelection.offsetParent.clientHeight;
-			if (frmEventSelection.offsetParent.offsetHeight + iResizeBy > screen.height) {
-				window.dialogHeight = new String(screen.height) + "px";
-			} else {
-				iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-				iNewHeight = iNewHeight + iResizeBy;
-				window.dialogHeight = new String(iNewHeight) + "px";
-			}
-		}
-
 		function cancelClick() {
 			self.close();
 		}
@@ -125,31 +101,20 @@
 							<td>
 								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
 									<tr height="30">
-										<td>
-											<img src="<%: Url.LatestContent("~/Content/images/Question.gif")%>" width="38" height="39" alt="">
-										</td>
-										<td colspan="3">You have opted to delete entries from the Event Log.
-									<br>
-											Please make a selection from the options below : 
+										<td colspan="4">Please the select the entries you wish to delete from the options below : 
 										</td>
 									</tr>
 									<tr height="15">
 										<td></td>
 										<td width="8"></td>
 										<td>
-											<input id="optSelection1" name="optSelection" type="radio" checked
-												onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-												onfocus="try{radio_onFocus(this);}catch(e){}"
-												onblur="try{radio_onBlur(this);}catch(e){}" />
+											<input id="optSelection1" name="optSelection" type="radio" checked>
 										</td>
 										<td>
 											<label
 												tabindex="-1"
 												for="optSelection1"
-												class="radio"
-												onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
+												class="radio"/>
 											Only the currently highlighted row(s)
 										</td>
 									</tr>
@@ -157,19 +122,13 @@
 										<td></td>
 										<td width="8"></td>
 										<td>
-											<input id="optSelection2" name="optSelection" type="radio"
-												onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-												onfocus="try{radio_onFocus(this);}catch(e){}"
-												onblur="try{radio_onBlur(this);}catch(e){}" />
+											<input id="optSelection2" name="optSelection" type="radio">
 										</td>
 										<td>
 											<label
 												tabindex="-1"
 												for="optSelection2"
-												class="radio"
-												onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
+												class="radio" />
 											All entries currently displayed
 										</td>
 									</tr>
@@ -177,19 +136,13 @@
 										<td></td>
 										<td width="8"></td>
 										<td>
-											<input id="optSelection3" name="optSelection" type="radio"
-												onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-												onfocus="try{radio_onFocus(this);}catch(e){}"
-												onblur="try{radio_onBlur(this);}catch(e){}" />
+											<input id="optSelection3" name="optSelection" type="radio">
 										</td>
 										<td nowrap>
 											<label
 												tabindex="-1"
 												for="optSelection3"
-												class="radio"
-												onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}" />
+												class="radio"/>
 											All entries (that the current user has permission to see)
 										</td>
 									</tr>
@@ -203,19 +156,11 @@
 													<td></td>
 													<td width="5">
 														<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="deleteClick();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="deleteClick();">
 													</td>
 													<td width="5">
 														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="cancelClick();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="cancelClick();">
 													</td>
 													<td></td>
 												</tr>
@@ -231,10 +176,6 @@
 			</tr>
 		</table>
 	</form>
-
-	<script type="text/javascript">
-		eventlogselection_window_onload();
-	</script>
 
 </body>
 </html>
