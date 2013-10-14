@@ -94,7 +94,8 @@ Namespace App_Start
 				"~/Scripts/FormScripts/find.js",
 				"~/Scripts/FormScripts/optionData.js",
 				"~/Scripts/FormScripts/recordEdit.js",
-				"~/Scripts/autoNumeric-1.9.15.js"))
+				"~/Scripts/autoNumeric-1.9.15.js",
+				"~/Scripts/jquery.limit-1.2.source.js"))
 
 #If DEBUG Then
 

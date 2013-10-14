@@ -1242,6 +1242,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textbox.setAttribute("data-columnID", columnID);
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
+			if (controlItemArray[25] > 0) { //Use a jQuery plugin to limit number of characters that can be input
+				$(textbox).limit(controlItemArray[25].toString());
+			}
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
 
