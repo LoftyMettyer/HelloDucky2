@@ -343,13 +343,16 @@ function insertUpdateDef() {
 						// objControl Is COAInt_Lookup Then
 						//	Lookup field from a combo (unknown type column). Get the column type and save the appropraite value from the combo.
 						switch (objScreenControl.DataType) {
-							case 12, -1:
+
+							case 12:
+							case -1:
 								asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
 								//	JPD 20051121 Fault 10583
 								//	asColumns(4, iNextIndex) = objControl.Text
 								asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
 								break;
-							case 2, 4:
+							case 4:
+							case 2:
 								if ($(objControl).val(), length > 0) {
 									asColumnsToAdd[1] = $(objControl).val();
 									//	'TM20070328 - Fault 12053
@@ -576,7 +579,8 @@ function ConvertData(pvData, pDataType) {
 				//sqlBoolean
 				vReturnData = Boolean(pvData);
 				break;
-			case 12, -1:
+			case -1:
+			case 12:
 				//sqlVarChar, sqlLongVarChar
 				vReturnData = (pvData).replace(/~+$/, ''); //rtrim function
 				if (vReturnData.length == 0) {
