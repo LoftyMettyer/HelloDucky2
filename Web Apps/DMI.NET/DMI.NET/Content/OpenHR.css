@@ -473,7 +473,7 @@ table.calendarcell
 	font-style: normal;
 }
 
-.FixedLinksLeft li { cursor: pointer;}
+.FixedLinksLeft li { cursor: default; }
 
 /*.FixedLinksLeft h6 
 {
