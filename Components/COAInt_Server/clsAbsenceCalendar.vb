@@ -26,7 +26,6 @@ Public Class AbsenceCalendar
   Private mstrHexColour_OptionBoxes As String
 
   Private mstrBlankSpace As String
-  Private mstrAbsenceHighlightImage As String
 
   Private mdAbsStartDate As Date
   Private mstrAbsStartSession As String
@@ -297,7 +296,6 @@ Public Class AbsenceCalendar
     ReDim mavWorkingPatternChanges(1, 0)
 
     mstrHexColour_OptionBoxes = "ThreeDFace"
-    mstrAbsenceHighlightImage = "images/stdrpt_AbsenceCalendar_arrow.bmp"
 
     ' A blank cell
     mstrBlankSpace = "<TD HEIGHT=" & CELLSIZE & " WIDTH=" & CELLSIZE & ">&nbsp;</TD>"
@@ -720,7 +718,7 @@ errLoadColourKey:
     Dim bSecondColumn As Boolean
 
     Dim strHTML As String
-    Dim strHTML_KeyType As Object
+		Dim strHTML_KeyType As String
 
     strHTML = vbNullString
 
@@ -747,36 +745,21 @@ errLoadColourKey:
       strKeyCaption = mastrAbsenceTypes(intCounter, 3)
 
       ' Generate HTML code for this key
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = vbNullString
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "<TABLE class='invisible' cellPadding=0 cellSpacing=2>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & " <TR>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   <TD width=" & CELLSIZE & ">" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   </TD>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   <TD style='font-size: " & IIf(Len(strKeyCaption) < 2, "8", "6") & "pt;' ID=KEY_" & intCounter & " NAME=KEY_" & intCounter & " class='bordered' height=" & CELLSIZE & " width=" & CELLSIZE & " align=center valign=middle NOWRAP bgColor=""" & strKeyColour & """>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & IIf(Trim(strKeyCaption) = vbNullString, "&nbsp", strKeyCaption) & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   </TD>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   <TD>&nbsp;" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & strKeyText & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "   </TD>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "</TR>" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "</TABLE>" & vbNewLine
+			strHTML_KeyType = "<TABLE class='invisible' cellPadding=0 cellSpacing=2>" & vbNewLine _
+			& " <TR>" & vbNewLine _
+			& "   <TD width=" & CELLSIZE & ">" & vbNewLine _
+			& "   </TD>" & vbNewLine _
+			& "   <TD style='font-size: " & IIf(Len(strKeyCaption) < 2, "8", "6") & "pt;' ID=KEY_" & intCounter & " NAME=KEY_" & intCounter & " class='bordered' height=" & CELLSIZE & " width=" & CELLSIZE & " align=center valign=middle NOWRAP bgColor=""" & strKeyColour & """>" & vbNewLine _
+			& IIf(Trim(strKeyCaption) = vbNullString, "&nbsp", strKeyCaption) & vbNewLine _
+			& "   </TD>" & vbNewLine _
+			& "   <TD>&nbsp;" & vbNewLine _
+			& strKeyText & vbNewLine _
+			& "   </TD>" & vbNewLine _
+			& "</TR>" & vbNewLine _
+			& "</TABLE>" & vbNewLine
 
       ' Add current key to key table
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML = strHTML & strHTML_KeyType
+			strHTML = strHTML & strHTML_KeyType
 
     Next intCounter
 
@@ -923,7 +906,8 @@ errLoadColourKey:
     Dim prstPersonnelData As ADODB.Recordset
 
     ' Botch as we have a lot of rubbish code that does not handle nulls at all.
-    mdLeavingDate = DateTime.FromOADate(0)
+		mdStartDate = DateTime.FromOADate(0)
+		mdLeavingDate = DateTime.FromOADate(0)
 
     If Not mblnFailReport Then
       sSQL = vbNullString
@@ -1060,30 +1044,27 @@ PersonnelERROR:
 
     ' Region Info
     If Not mblnDisableRegions Then
-      strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine
-      strHtml = strHtml & "   <TD nowrap>&nbsp;Region :</TD>" & vbNewLine
-      strHtml = strHtml & "   <TD>" & mstrRegion & "</TD>" & vbNewLine
-      strHtml = strHtml & "</TR>" & vbNewLine
+			strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine _
+				& "   <TD nowrap>&nbsp;Region :</TD>" & vbNewLine _
+				& "   <TD>" & mstrRegion & "</TD>" & vbNewLine _
+				& "</TR>" & vbNewLine
     End If
 
     ' Start Date Info
-    strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine
-    strHtml = strHtml & "   <TD nowrap>&nbsp;Start Date :</TD>" & vbNewLine
-    strHtml = strHtml & "   <TD>" & IIf(mdStartDate = DateTime.FromOADate(0), "&lt;None&gt;", VB6.Format(mdStartDate, mstrClientDateFormat)) & "</TD>" & vbNewLine
-    strHtml = strHtml & "</TR>" & vbNewLine
+		strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine _
+			& "   <TD nowrap>&nbsp;Start Date :</TD>" & vbNewLine _
+			& "   <TD>" & IIf(mdStartDate = DateTime.FromOADate(0), "&lt;None&gt;", VB6.Format(mdStartDate, mstrClientDateFormat)) & "</TD>" & vbNewLine _
+			& "</TR>" & vbNewLine
 
     ' Leaving Date Info
-    strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine
-    strHtml = strHtml & "   <TD nowrap>&nbsp;Leaving Date :</TD>" & vbNewLine
-    strHtml = strHtml & "   <TD>" & IIf(mdLeavingDate = DateTime.FromOADate(0), "&lt;None&gt;", VB6.Format(mdLeavingDate, mstrClientDateFormat)) & "</TD>" & vbNewLine
-    strHtml = strHtml & "</TR>" & vbNewLine
+		strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine _
+			& "   <TD nowrap>&nbsp;Leaving Date :</TD>" & vbNewLine _
+			& "   <TD>" & IIf(mdLeavingDate = DateTime.FromOADate(0), "&lt;None&gt;", VB6.Format(mdLeavingDate, mstrClientDateFormat)) & "</TD>" & vbNewLine _
+			& "</TR>" & vbNewLine
 
     If Not mblnDisableWPs Then
       ' Working Pattern Info
-      strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & ">" & vbNewLine
-      strHtml = strHtml & "   <TD nowrap>&nbsp;Working Pattern :</TD>" & vbNewLine
-      strHtml = strHtml & "   <TD>" & HTML_WorkingPattern(mstrWorkingPattern) & "</TD>" & vbNewLine
-      strHtml = strHtml & "</TR>" & vbNewLine
+			strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & "><TD nowrap>&nbsp;Working Pattern :</TD><TD>" & HTML_WorkingPattern(mstrWorkingPattern) & "</TD></TR>" & vbNewLine
     End If
 
     Return strHtml
@@ -1692,184 +1673,184 @@ Error_FillCalBoxes:
 
     If Not mblnDisableRegions Then
       ' If we are using historic region, find the region change dates
-      If modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtHistoricRegion Then
+			If grtRegionType = RegionType.rtHistoricRegion Then
 
-        ' Get the first region for this employee within this calendar year
-        rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				' Get the first region for this employee within this calendar year
+				rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
 
-        ' Was there a region at the start of the calendar
-        If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
-          strRegionAtCurrentDate = ""
-        Else
-          strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
-          bNewRegionFound = True
-        End If
+				' Was there a region at the start of the calendar
+				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+					strRegionAtCurrentDate = ""
+				Else
+					strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
+					bNewRegionFound = True
+				End If
 
-        ' Get the second region for this employee within this calendar year
-        rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+				' Get the second region for this employee within this calendar year
+				rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
-        ' Was there a region at the start of the calendar
-        If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
-          dtmNextChangeDate = CDate("31/12/9999")
-        Else
-          dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
-        End If
-
-
-        For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
-
-          ' Get the date of the current index
-          dtmCurrentDate = GetCalDay(intCount)
-
-          ' Only refer to the region table if the current date is a region change date
-          If (dtmCurrentDate >= dtmNextChangeDate) And (dtmCurrentDate <> CDate("31/12/9999")) Then
+				' Was there a region at the start of the calendar
+				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+					dtmNextChangeDate = CDate("31/12/9999")
+				Else
+					dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
+				End If
 
 
-            'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
-            ' Find the employees region for this date
-            rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+				For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
 
-            If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+					' Get the date of the current index
+					dtmCurrentDate = GetCalDay(intCount)
 
-              ' No regions found for this user
-              dtmNextChangeDate = CDate("31/12/9999")
+					' Only refer to the region table if the current date is a region change date
+					If (dtmCurrentDate >= dtmNextChangeDate) And (dtmCurrentDate <> CDate("31/12/9999")) Then
 
-            Else
 
-              strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
-              bNewRegionFound = True
+						'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
+						' Find the employees region for this date
+						rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
-              ' Now get the next change date
-              rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Fields("Date").Value, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
-              If rstBankHolRegion.EOF Then
-                dtmNextChangeDate = CDate("31/12/9999")
-              Else
-                dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
-              End If
+						If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
 
-            End If
+							' No regions found for this user
+							dtmNextChangeDate = CDate("31/12/9999")
 
-          End If
+						Else
 
-          ' Define the region for this period
-          'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
-          'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+							strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
+							bNewRegionFound = True
 
-          ' If current region has changed
-          If bNewRegionFound Then
+							' Now get the next change date
+							rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Fields("Date").Value, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+							If rstBankHolRegion.EOF Then
+								dtmNextChangeDate = CDate("31/12/9999")
+							Else
+								dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
+							End If
 
-            If gfBankHolidaysEnabled Then
+						End If
 
-              ' Get bank holidays for this region
-              ' DONE
-              sSQL = vbNullString
-              sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
-              sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
+					End If
 
-              sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
-              sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
-              sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
-              For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-                '<REGIONAL CODE>
-                'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
-                  'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-                  'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
-                End If
-              Next lngCount
-              sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
+					' Define the region for this period
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
 
-              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
-              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
-              sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
-              rstBankHolRegion = datGeneral.GetRecords(sSQL)
+					' If current region has changed
+					If bNewRegionFound Then
 
-              ' Cycle through the recordset checking for the current day
-              If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
+						If gfBankHolidaysEnabled Then
 
-                rstBankHolRegion.MoveFirst()
-                Do Until rstBankHolRegion.EOF
-                  intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
+							' Get bank holidays for this region
+							' DONE
+							sSQL = vbNullString
+							sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
+							sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
 
-                  'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  mavAbsences(intTemp, 3) = True
-                  'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  mavAbsences(intTemp + 1, 3) = True
+							sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
+							sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
+							sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
+							For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
+								'<REGIONAL CODE>
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+								End If
+							Next lngCount
+							sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
 
-                  rstBankHolRegion.MoveNext()
-                Loop
-              End If
+							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
+							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
+							sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
+							rstBankHolRegion = datGeneral.GetRecords(sSQL)
 
-            End If
+							' Cycle through the recordset checking for the current day
+							If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
 
-            ' Flag this region has had it's bank holidays drawn
-            bNewRegionFound = False
+								rstBankHolRegion.MoveFirst()
+								Do Until rstBankHolRegion.EOF
+									intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
 
-          End If
+									'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									mavAbsences(intTemp, 3) = True
+									'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									mavAbsences(intTemp + 1, 3) = True
 
-        Next intCount
+									rstBankHolRegion.MoveNext()
+								Loop
+							End If
 
-      Else
+						End If
 
-        If gfBankHolidaysEnabled Then
+						' Flag this region has had it's bank holidays drawn
+						bNewRegionFound = False
 
-          ' We are using a static region so just use the employees current region
-          strRegionAtCurrentDate = mstrRegion
-          ' DONE
-          sSQL = vbNullString
-          sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
-          sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
-          sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
-          sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
-          sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
-          For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-            '<REGIONAL CODE>
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
-            End If
-          Next lngCount
-          sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
-          sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC" & vbNewLine
+					End If
 
-          rstBankHolRegion = datGeneral.GetRecords(sSQL)
+				Next intCount
 
-          ' Cycle through the recordset checking for the current day
-          If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
-            rstBankHolRegion.MoveFirst()
-            Do Until rstBankHolRegion.EOF
+			Else
 
-              intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
+				If gfBankHolidaysEnabled Then
 
-              'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mavAbsences(intTemp, 3) = True
-              'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mavAbsences(intTemp + 1, 3) = True
+					' We are using a static region so just use the employees current region
+					strRegionAtCurrentDate = mstrRegion
+					' DONE
+					sSQL = vbNullString
+					sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
+					sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
+					sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
+					sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
+					sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
+					For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
+						'<REGIONAL CODE>
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						End If
+					Next lngCount
+					sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
+					sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC" & vbNewLine
 
-              rstBankHolRegion.MoveNext()
-            Loop
-          End If
+					rstBankHolRegion = datGeneral.GetRecords(sSQL)
 
-          ' Define the region for this period
-          For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
+					' Cycle through the recordset checking for the current day
+					If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
+						rstBankHolRegion.MoveFirst()
+						Do Until rstBankHolRegion.EOF
 
-            'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
-            'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+							intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
 
-          Next intCount
+							'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mavAbsences(intTemp, 3) = True
+							'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							mavAbsences(intTemp + 1, 3) = True
 
-        End If
+							rstBankHolRegion.MoveNext()
+						Loop
+					End If
 
-      End If
+					' Define the region for this period
+					For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
+
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+
+					Next intCount
+
+				End If
+
+			End If
     End If 'Not mblnDisableRegions
 
   End Sub
