@@ -3,16 +3,13 @@
 <script type="text/javascript">
     function confirmok_window_onload() {
         $("#workframe").attr("data-framesource", "CONFIRMOK");
-    }
-
-    function confirmok_okClick() {
 
         if (txtReloadMenu.value == 1) {
             window.parent.location.href = "main";
             return;
         }
 
-        sAction = txtReaction.value;
+        var sAction = txtReaction.value;
 
         if (sAction == "LOGOFF") {
             menu_logoffIntranet();
@@ -135,51 +132,6 @@
 
 </script>
 
-
-<table align="center" class="outline" cellpadding="5" cellspacing="0">
-    <tr>
-        <td>
-            <table class="invisible" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td colspan="3" height="10"></td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" align="center">
-                        <h3><%= session("confirmtitle")%></h3>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="20" height="10"></td>
-                    <td>
-                        <%=session("confirmtext")%>
-                    </td>
-                    <td width="20"></td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" height="20"></td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" height="10" align="center">
-                        <input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-                            onclick="confirmok_okClick()"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" height="10"></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
 <%
         Response.Write("<INPUT type='hidden' id=txtFollowPage name=txtFollowPage value=" & Session("followpage") & ">")
         Response.Write("<INPUT type='hidden' id=txtReaction name=txtReaction value=""" & Session("reaction") & """>")
@@ -200,5 +152,4 @@
 
 <script type="text/javascript">
 	confirmok_window_onload();
-	confirmok_okClick();
 </script>

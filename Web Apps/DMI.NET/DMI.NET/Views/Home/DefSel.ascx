@@ -55,23 +55,23 @@
 			cmdDefSelOnlyMine.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
 
-			Dim prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+			Dim prmSection = cmdDefSelOnlyMine.CreateParameter("section", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 			cmdDefSelOnlyMine.Parameters.Append(prmSection)
 			prmSection.value = "defsel"
 
-			Dim prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+			Dim prmKey = cmdDefSelOnlyMine.CreateParameter("key", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 			cmdDefSelOnlyMine.Parameters.Append(prmKey)
 			prmKey.value = sTemp
 
-			Dim prmDefault = cmdDefSelOnlyMine.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+			Dim prmDefault = cmdDefSelOnlyMine.CreateParameter("default", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 			cmdDefSelOnlyMine.Parameters.Append(prmDefault)
 			prmDefault.value = "0"
 
-			Dim prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+			Dim prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
 			cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
 			prmUserSetting.value = 1
 
-			Dim prmResult = cmdDefSelOnlyMine.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+			Dim prmResult = cmdDefSelOnlyMine.CreateParameter("result", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 			cmdDefSelOnlyMine.Parameters.Append(prmResult)
 
 			Err.Clear()
@@ -265,12 +265,6 @@
 		function defsel_window_onload() {
 		
 				var frmDefSel = document.getElementById('frmDefSel');
-				//if (frmDefSel.txtSingleRecordID.value > 0) {
-				//	// Expand the option frame and hide the work frame.
-				//	menu_disableMenu();
-				//} else {
-				//	refreshControls();
-				//}
 			
 					// Expand the option frame and hide the work frame.
 				if (frmDefSel.txtSingleRecordID.value > 0) {
@@ -321,9 +315,15 @@
 
 				if (rowCount() > 0) {
 
-						var firstid = $("#DefSelRecords").getDataIDs()[0];
-						$("#DefSelRecords").setSelection(firstid);
-					
+					var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+					var gotoID;
+
+					if (fFromMenu == true) {
+						gotoID = $("#lastSelectedID")[0].value;						
+					} else {
+						gotoID = $("#DefSelRecords").getDataIDs()[0];
+					}
+					$("#DefSelRecords").setSelection(gotoID);
 				}
 
 		}
@@ -1154,15 +1154,15 @@
 																								cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																										cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
-																										Dim prmType = cmdDefSelRecords.CreateParameter("type", 3, 1)
+																								Dim prmType = cmdDefSelRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																										cmdDefSelRecords.Parameters.Append(prmType)
 																										prmType.value = CleanNumeric(Session("defseltype"))
 
-																										Dim prmOnlyMine = cmdDefSelRecords.CreateParameter("onlymine", 11, 1)
+																								Dim prmOnlyMine = cmdDefSelRecords.CreateParameter("onlymine", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
 																										cmdDefSelRecords.Parameters.Append(prmOnlyMine)
 																										prmOnlyMine.value = CleanBoolean(Session("OnlyMine")) ' 0 '1
 
-																										Dim prmTableId = cmdDefSelRecords.CreateParameter("tableID", 3, 1)
+																								Dim prmTableId = cmdDefSelRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																										cmdDefSelRecords.Parameters.Append(prmTableId)
 																								
 																								If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
@@ -1454,6 +1454,8 @@
 
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
 	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
+	
+	<input type="hidden" id="lastSelectedID" name="lastSelectedID" value='<%=Session("utilid")%>'>
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
