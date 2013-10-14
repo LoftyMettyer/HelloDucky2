@@ -120,6 +120,7 @@
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 
 	<%--licence manager reference for activeX--%>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -130,6 +131,7 @@
 
 
 	<script type="text/javascript">
+
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
 		
 		document.title = 'OpenHR 8.0';
@@ -190,7 +192,7 @@
 			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-					$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
+				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
 				$('body').addClass('DMI');
 			}
 			else {
@@ -209,35 +211,35 @@
 					$("link[id=DMIthemeLink]").attr({ href: "" });
 				
 				switch (window.currentLayout) {
-									case "winkit":
-										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-										$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-										$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-											break;
-										case "wireframe":
-											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
-											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
-											break;
-										case "tiles":
-											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-											break;
-									}
+				case "winkit":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					break;
+				case "wireframe":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
+					$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
+					break;
+				case "tiles":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					break;
+				}
 
-					switch (window.currentTheme) {
-							case "red":
-									$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-									break;
-										case "blue":
-												$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-												break;
-										case "white":
-												$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-										default:
-												break;
-								}
+				switch (window.currentTheme) {
+				case "red":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+					break;
+				case "blue":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+					break;
+				case "white":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+				default:
+					break;
+				}
 
 			}
 			
@@ -290,61 +292,61 @@
 		window.currentLayout = "<%=currentLayout %>";
 		function changeTheme(newThemeName) {
 			switch (newThemeName) {
-				case "theme-Red":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-					break;
-				case "theme-Blue":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+			case "theme-Red":
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+				break;
+			case "theme-Blue":
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
 				break;
 			case "theme-White":
 				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
 			default:
 				break;
-		}
-	}
-
-	//set up ROOT variable for use in external JS files.
-	window.ROOT = '<%= Url.Content("~/") %>';
-
-	function loadPartialView(action, controller, targetDiv, params) {
-		if (action.toUpperCase() == "LINKSMAIN") {
-			showDefaultRibbon();
-			
-			//reset recordID Session variable
-			$.post("ResetSessionVars");
-
-			if (window.currentLayout == 'tiles') {
-				$('#workframe').fadeOut('slow');
-				$('.DashContent').hide();
-				$('#SSILinksFrame').show();
-				$('.DashContent').fadeIn('slow');
-				$("#toolbarHome").show();
-				$("#toolbarHome").click();
-			} else {
-				$('#workframe').hide();
-				$('.DashContent').hide();
-				$('#SSILinksFrame').show();
-				$('.DashContent').show();
-				$("#toolbarHome").show();
-				$("#toolbarHome").click();
 			}
-		} else {
-			$.ajax({
-				url: window.ROOT + controller + "/" + action,
-				data: { psScreenInfo: params },
-				dataType: 'html',
-				type: "POST",
-				success: function(html) {
-					try {
+		}
+
+		//set up ROOT variable for use in external JS files.
+		window.ROOT = '<%= Url.Content("~/") %>';
+
+		function loadPartialView(action, controller, targetDiv, params) {
+			if (action.toUpperCase() == "LINKSMAIN") {
+				showDefaultRibbon();
+			
+				//reset recordID Session variable
+				$.post("ResetSessionVars");
+
+				if (window.currentLayout == 'tiles') {
+					$('#workframe').fadeOut('slow');
+					$('.DashContent').hide();
+					$('#SSILinksFrame').show();
+					$('.DashContent').fadeIn('slow');
+					$("#toolbarHome").show();
+					$("#toolbarHome").click();
+				} else {
+					$('#workframe').hide();
+					$('.DashContent').hide();
+					$('#SSILinksFrame').show();
+					$('.DashContent').show();
+					$("#toolbarHome").show();
+					$("#toolbarHome").click();
+				}
+			} else {
+				$.ajax({
+					url: window.ROOT + controller + "/" + action,
+					data: { psScreenInfo: params },
+					dataType: 'html',
+					type: "POST",
+					success: function(html) {
+						try {
 						
-						if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
-							//Leaving Dashboard
+							if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
+								//Leaving Dashboard
 								$('.DashContent').fadeOut('slow');
 								$("#" + targetDiv).css('top', '-9999px');
 								$('#' + targetDiv).show();
 								$("#" + targetDiv).html('');
 								$("#" + targetDiv).html(html);
-							//jquery Styling...
+								//jquery Styling...
 							
 								$(function () {
 									$("input[type=submit], input[type=button], button")
@@ -363,38 +365,40 @@
 								//$('#' + targetDiv).hide();
 								//setTimeout("$('#workframe').hide();$('#workframe').css('top', '0px');$('#workframe').fadeIn('slow')", 1500);								
 								setTimeout("$('#workframe').hide();$('#workframe').css('top', '0px');$('#workframe').fadeIn('slow')", 1500);
-							$('#SSILinksFrame').fadeOut('slow');
-						} else {
+								$('#SSILinksFrame').fadeOut('slow');
+							} else {
 								$("#" + targetDiv).html('');
 								$("#" + targetDiv).html(html);						
 							}
 						
 
 
-						var breadcrumb = $(".pageTitle").text();
-						if (action.toUpperCase() == 'LINKSMAIN') {
-							//$(".RecordDescription a:nth-child(n+2)").remove();
-						} else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
-							//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+							var breadcrumb = $(".pageTitle").text();
+							if (action.toUpperCase() == 'LINKSMAIN') {
+								//$(".RecordDescription a:nth-child(n+2)").remove();
+							} else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
+								//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
+							}
+						} catch(e) {
+							$("#errorDialogTitle").text(e.toString);
+							$("#errorDialogContentText").html(e.responseText);
+							$("#errorDialog").dialog("open");
 						}
-					} catch(e) {
-						$("#errorDialogTitle").text(e.toString);
-						$("#errorDialogContentText").html(e.responseText);
+					},
+					error: function(req, status, errorObj) {
+						//TODO: remove this popup. Used for debugging only.
+						//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
+						$("#errorDialogTitle").text(errorObj);
+						$("#errorDialogContentText").html(req.responseText);
 						$("#errorDialog").dialog("open");
 					}
-				},
-				error: function(req, status, errorObj) {
-					//TODO: remove this popup. Used for debugging only.
-					//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
-					$("#errorDialogTitle").text(errorObj);
-					$("#errorDialogContentText").html(req.responseText);
-					$("#errorDialog").dialog("open");
-				}
-			});
+				});
+			}
 		}
-	}
 
 	</script>
+
+	
 </head>
 <body class="ui-widget absolutefull">
 

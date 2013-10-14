@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-<%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <!DOCTYPE html>
 <html>
@@ -24,14 +24,8 @@
   </style>
 </head>
 
-<body>
-	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-		id="Microsoft_Licensed_Class_Manager_1_0"
-		viewastext>
-		<param name="LPKPath" value="lpks/main.lpk">
-	</object>
-
 	<script type="text/javascript">
+
 		function eventlogpurge_window_onload() {
 
 			self.focus();
@@ -56,11 +50,7 @@
 			}
 
 			refreshControls();
-		}
-		
-	</script>
-
-	<script type="text/javascript" id="scptGeneralFunctions">
+		}	
 
 	function okClick() {
 
@@ -212,28 +202,28 @@
 	}
 	</script>
 
+	<body>
 	<form id="frmEventPurge" name="frmEventPurge">
 		<%
-			Dim rsPurgeInfo
-			Dim sSQL
-			Dim iPeriod
-			Dim cmdPurgeInfo
+			Dim rsPurgeInfo As Recordset
+			Dim iPeriod As Integer
+			Dim cmdPurgeInfo As Command
 	
-			cmdPurgeInfo = CreateObject("ADODB.Command")
+			cmdPurgeInfo = New Command
 			cmdPurgeInfo.CommandText = "spASRIntGetEventLogPurgeDetails"
-			cmdPurgeInfo.CommandType = 4
+			cmdPurgeInfo.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdPurgeInfo.ActiveConnection = Session("databaseConnection")
 
 			Err.Clear()
 			rsPurgeInfo = cmdPurgeInfo.Execute
 	
 			If rsPurgeInfo.BOF And rsPurgeInfo.EOF Then
-				Response.Write("<INPUT type=hidden name=txtPurge id=txtPurge value=0>" & vbCrLf)
-				Response.Write("<INPUT type=hidden name=txtPeriodIndex id=txtPeriodIndex>" & vbCrLf)
-				Response.Write("<INPUT type=hidden name=txtFrequency id=txtFrequency>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtPurge id=txtPurge value=0>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtPeriodIndex id=txtPeriodIndex>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtFrequency id=txtFrequency>" & vbCrLf)
 			Else
-				Response.Write("<INPUT type=hidden name=txtPurge id=txtPurge value=1>" & vbCrLf)
-				Response.Write("<INPUT type=hidden name=txtFrequency id=txtFrequency value=" & rsPurgeInfo.Fields("Frequency").Value & ">" & vbCrLf)
+				Response.Write("<input type=hidden name=txtPurge id=txtPurge value=1>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtFrequency id=txtFrequency value=" & rsPurgeInfo.Fields("Frequency").Value & ">" & vbCrLf)
 		
 				Select Case UCase(rsPurgeInfo.Fields("Period").value)
 					Case "DD" : iPeriod = 0
@@ -243,7 +233,7 @@
 					Case Else : iPeriod = 0
 				End Select
 		
-				Response.Write("<INPUT type=hidden name=txtPeriodIndex id=txtPeriodIndex value=" & iPeriod & ">" & vbCrLf)
+				Response.Write("<input type=hidden name=txtPeriodIndex id=txtPeriodIndex value=" & iPeriod & ">" & vbCrLf)
 			End If
 	
 			rsPurgeInfo.close()
@@ -275,19 +265,13 @@
 										<td style="width: 8px"></td>
 										<td>
 											<input id="optNoPurge" name="optSelection" type="radio"
-												onclick="frmEventPurge.txtPurge.value=0;refreshControls();"
-												onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-												onfocus="try{radio_onFocus(this);}catch(e){}"
-												onblur="try{radio_onBlur(this);}catch(e){}" />
+												onclick="frmEventPurge.txtPurge.value=0;refreshControls();" />
 										</td>
 										<td colspan="6" style="text-align: left">
 											<label
 												tabindex="-1"
 												for="optNoPurge"
-												class="radio"
-												onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+												class="radio">
 											Do not automatically purge the Event Log
 										</label>
 										</td>
@@ -299,19 +283,13 @@
 										<td style="width: 8px"></td>
 										<td>
 											<input id="optPurge" name="optSelection" type="radio"
-												onclick="frmEventPurge.txtPurge.value=1;refreshControls();"
-												onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-												onfocus="try{radio_onFocus(this);}catch(e){}"
-												onblur="try{radio_onBlur(this);}catch(e){}" />
+												onclick="frmEventPurge.txtPurge.value=1;refreshControls();" />
 										</td>
 										<td style="text-align: left; white-space: nowrap">
 											<label
 												tabindex="-1"
 												for="optPurge"
-												class="radio"
-												onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-												onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+												class="radio">
 											Purge Event Log entries older than : 
 											</label>
 										</td>
@@ -323,19 +301,11 @@
 										<td style="width:5px"></td>
 										<td style="width: 15px">
 											<input style="WIDTH: 15px" type="button" value="+" id="cmdPeriodUp" name="cmdPeriodUp" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-												onclick="spinRecords(true);setRecordsNumeric();"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="spinRecords(true);setRecordsNumeric();" />
 										</td>
 										<td style="width: 15px">
 											<input style="WIDTH: 15px" type="button" value="-" id="cmdPeriodDown" name="cmdPeriodDown" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-												onclick="spinRecords(false);setRecordsNumeric();"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="spinRecords(false);setRecordsNumeric();"/>
 										</td>
 										<td style="width: 10px">&nbsp;</td>
 										<td>
@@ -356,19 +326,11 @@
 												<tr>
 													<td style="width: 10px">
 														<input id="cmdOK" type="button" value="OK" name="cmdOk" style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="okClick();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="okClick();"/>
 													</td>
 													<td style="width: 5px">
 														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel"  style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="cancelClick();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="cancelClick();"/>
 													</td>
 												</tr>
 											</table>
@@ -383,13 +345,9 @@
 		</table>
 	</form>
 
+</body>
+</html>
 
 	<script type="text/javascript">
 		eventlogpurge_window_onload();
 	</script>
-
-	<p>
-		&nbsp;</p>
-
-</body>
-</html>

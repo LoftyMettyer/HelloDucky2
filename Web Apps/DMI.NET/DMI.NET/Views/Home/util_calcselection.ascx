@@ -3,10 +3,10 @@
 <%@ Import Namespace="System.Diagnostics" %>
 
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function util_calcselection_window_onload() {

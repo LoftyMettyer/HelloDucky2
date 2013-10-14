@@ -12,6 +12,7 @@
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/utilities_calendarreports")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<title>OpenHR Intranet</title>
 </head>

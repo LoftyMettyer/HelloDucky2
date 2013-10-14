@@ -856,7 +856,6 @@
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\ui.jqgrid.css" />
-    <Content Include="Include\exprmenu.htm" />
     <Content Include="Pictures\ProfilePhotos\dAvery.jpg" />
     <Content Include="Pictures\ProfilePhotos\mWORTHING.jpg" />
     <Content Include="Scripts\FormScripts\recordEdit.js" />
@@ -907,8 +906,6 @@
     <Content Include="Content\Menu\subnode.png" />
     <Content Include="Content\OpenHR.css" />
     <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
-    <Content Include="Include\ctl_SetFont.txt" />
-    <Content Include="Include\gotoWork.txt" />
     <Content Include="Scripts\FormScripts\menu.js" />
     <Content Include="Scripts\jquery\jquery.flip.js" />
     <Content Include="Scripts\jquery\jsTree\jquery.jstree.js" />

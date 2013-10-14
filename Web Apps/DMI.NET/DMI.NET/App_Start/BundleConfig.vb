@@ -47,7 +47,6 @@ Namespace App_Start
 				"~/Scripts/clientDLL.js",
 				"~/Scripts/FormScripts/general.js",
 				"~/Scripts/FormScripts/menu.js",
-				"~/Scripts/ctl_SetFont.js",
 				"~/Scripts/ctl_SetStyles.js"))
 
 			' Custom Reports
@@ -96,6 +95,10 @@ Namespace App_Start
 				"~/Scripts/FormScripts/recordEdit.js",
 				"~/Scripts/autoNumeric-1.9.15.js",
 				"~/Scripts/jquery.limit-1.2.source.js"))
+
+			'ActiveX bundle (no minify)
+			bundles.Add(New Bundle("~/bundles/OpenHR_ActiveX").Include(
+				"~/Scripts/ctl_SetFont.js"))
 
 #If DEBUG Then
 
