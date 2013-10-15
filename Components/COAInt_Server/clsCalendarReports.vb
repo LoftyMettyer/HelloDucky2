@@ -10,9 +10,6 @@ Public Class CalendarReport
   Private mstrSQLSelect_BankHolDesc As String
 
   Private mstrSQLSelect_PersonnelStaticRegion As String
-  Private mstrSQLSelect_PersonnelHRegion As String
-  Private mstrSQLSelect_PersonnelHDate As String
-  Private mstrSQLSelect_PersonnelStaticWP As String
 
   Private mvarTableViews(,) As Object
 
@@ -37,17 +34,14 @@ Public Class CalendarReport
   Private mblnOrderByCreated As Boolean
   Private mlngBaseDescriptionType As Integer
 
-  Private mblnRegions As Boolean
-  Private mblnWorkingPatterns As Boolean
-  Private mblnStaticReg As Boolean
+	Private mblnStaticReg As Boolean
   Private mblnStaticWP As Boolean
 
   'Variables to store definition (report level variables)
   Private mstrCalendarReportsName As String
   Private mlngCalendarReportsBaseTable As Integer
   Private mstrCalendarReportsBaseTableName As String
-  Private mlngCalendarReportsAllRecords As Integer
-  Private mlngCalendarReportsPickListID As Integer
+	Private mlngCalendarReportsPickListID As Integer
   Private mlngCalendarReportsFilterID As Integer
   Private mlngDescription1 As Integer
   Private mstrDescription1 As String
@@ -68,8 +62,7 @@ Public Class CalendarReport
 
   Private mlngRegion As Integer
   Private mstrRegion As String
-  Private mstrRegionColumnRealSource As String
-  Private mblnGroupByDescription As Boolean
+	Private mblnGroupByDescription As Boolean
 
   Private mlngStartDateExpr As Integer
   Private mdtStartDate As Date
@@ -166,7 +159,6 @@ Public Class CalendarReport
   Private mcolHistoricWorkingPatterns As Collection
 
   Private mcolBaseDescIndex As Collection
-  'Private mcolDateControlEvents As Collection
 
   Private mblnPersonnelBase As Boolean
 
@@ -191,15 +183,13 @@ Public Class CalendarReport
   Private mstrEventStartSession_Output As String
   Private mdtEventEndDate_Output As Date
   Private mstrEventEndSession_Output As String
-  Private mstrDuration_Output As String
-  Private mstrEventLegend_Output As String
+	Private mstrEventLegend_Output As String
 
   Private mlngMonth_Output As Integer
   Private mlngYear_Output As Integer
 
   Private mintCurrentBaseIndex_Output As Short
-  Private mstrBaseRecDesc_Output As String
-  Private mintBaseRecordCount_Output As Integer
+	Private mintBaseRecordCount_Output As Integer
 
   Private mcolBaseDescIndex_Output As Collection
 
@@ -233,18 +223,13 @@ Public Class CalendarReport
 
   'default output colours
   Private mlngBC_Data As Integer
-  Private mlngFC_Data As Integer
-  Private mlngBC_Heading As Integer
-  Private mlngFC_Heading As Integer
-  Private mlngColor_Weekend As Integer
+	Private mlngColor_Weekend As Integer
   Private mlngColor_Disabled As Integer
   Private mlngColor_RangeDisabled As Integer
 
   Private mavCareerRanges(,) As Object
 
   Private Const DAY_CONTROL_COUNT As Short = 37
-
-  Private mintLegendCount As Short
 
   Private mintType_BaseDesc1 As Short
   Private mintType_BaseDesc2 As Short
@@ -254,18 +239,14 @@ Public Class CalendarReport
 
   Private mlngMergePageArrayIndex As Integer
   Private mlngStylePageArrayIndex As Integer
-
-  'TM01042004 Fault 8428
-  Private mblnCheckingRegionColumn As Boolean
-  Private mblnCheckingDescColumn As Boolean
+	Private mblnCheckingDescColumn As Boolean
 
   Private Function SQLDateConvertToLocale(ByRef pstrTableColumn As String) As String
 
     'Takes the Column value and Returns a string with the SQL Code to format the
     'SQL date value into the known locale.
 
-    Dim strSQL As String
-    Dim strDateFormat As String
+		Dim strDateFormat As String
 
     Dim blnDateComplete As Boolean
     Dim blnMonthDone As Boolean
@@ -865,12 +846,7 @@ Public Class CalendarReport
 TidyUpAndExit:
     Exit Function
 
-CreateTempTable_ERROR:
-    CreateTempTable = False
-    mstrErrorString = "Error whilst creating Temporary Table." & vbNewLine & Err.Description
-    GoTo TidyUpAndExit
-
-  End Function
+	End Function
 
   Public Function ConvertEventDescription(ByVal plngColumnID As Integer, ByVal pvarValue As Object) As String
 
@@ -887,13 +863,13 @@ CreateTempTable_ERROR:
         'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         strTempEventDesc = Format(pvarValue, strFormat)
 
-      ElseIf datGeneral.GetColumnDataType(plngColumnID) = Declarations.SQLDataType.sqlBoolean Then
-        'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        strTempEventDesc = pvarValue
+			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
+				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				strTempEventDesc = pvarValue
 
-      ElseIf datGeneral.GetColumnDataType(plngColumnID) = Declarations.SQLDataType.sqlDate Then
-        'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
+			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
 
       Else
         'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -995,12 +971,7 @@ CreateTempTable_ERROR:
 TidyUpAndExit:
     Exit Function
 
-ErrorTrap:
-    InsertIntoTempTable = False
-    mstrErrorString = "Error inserting into the temporary table"
-    GoTo TidyUpAndExit
-
-  End Function
+	End Function
 
   Private Function AddToArray_Columns(ByRef pstrRowToAdd As String) As Boolean
 
@@ -1164,14 +1135,8 @@ AddError:
 
     fOK = True
 
-    '  DebugMSG "Started @ " & Now(), True
-
     mlngBC_Data = 13434879
-    mlngFC_Data = 0
-    mlngBC_Heading = 13395456
-    mlngFC_Heading = 16777215
-
-    mlngColor_Weekend = 12632256
+		mlngColor_Weekend = 12632256
     mlngColor_RangeDisabled = 9868950
     mlngColor_Disabled = 8421504
 
@@ -1276,8 +1241,7 @@ ErrorTrap:
     Dim strFormat As String
 
     intDateCount = 0
-    mstrBaseRecDesc_Output = vbNullString
-    mintBaseRecordCount_Output = 0
+		mintBaseRecordCount_Output = 0
     mstrBaseRecDesc = vbNullString
     mintCurrentBaseIndex_Output = 0
     blnNewBaseRecord = True
@@ -1639,117 +1603,117 @@ ErrorTrap:
     strWorkingPattern = "              " 'empty working pattern
     intWeekDay = CStr(Weekday(pdtDate, FirstDayOfWeek.Sunday))
 
-    If mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
+		If mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
-      'Historic Working Pattern
+			'Historic Working Pattern
 
-      colWorkingPatterns = mcolHistoricWorkingPatterns.Item(CStr(plngBaseID))
-      For Each objWorkingPattern In colWorkingPatterns.Collection
-        With objWorkingPattern
+			colWorkingPatterns = mcolHistoricWorkingPatterns.Item(CStr(plngBaseID))
+			For Each objWorkingPattern In colWorkingPatterns.Collection
+				With objWorkingPattern
 
-          'TM02072004 Fault 8851 - Force the working pattern length to be 14 characters!
-          If Len(.WorkingPattern) < WORKINGPATTERN_LENGTH Then
-            .WorkingPattern = .WorkingPattern & New String(" ", WORKINGPATTERN_LENGTH - Len(.WorkingPattern))
-          ElseIf Len(.WorkingPattern) > WORKINGPATTERN_LENGTH Then
-            .WorkingPattern = Left(.WorkingPattern, WORKINGPATTERN_LENGTH)
-          End If
+					'TM02072004 Fault 8851 - Force the working pattern length to be 14 characters!
+					If Len(.WorkingPattern) < WORKINGPATTERN_LENGTH Then
+						.WorkingPattern = .WorkingPattern & New String(" ", WORKINGPATTERN_LENGTH - Len(.WorkingPattern))
+					ElseIf Len(.WorkingPattern) > WORKINGPATTERN_LENGTH Then
+						.WorkingPattern = Left(.WorkingPattern, WORKINGPATTERN_LENGTH)
+					End If
 
-          If (.EndDateName <> vbNullString) Then
-            If (pdtDate >= CDate(.StartDateName)) And (pdtDate < CDate(.EndDateName)) Then
-              Select Case UCase(pstrSession)
-                Case "AM"
-                  If Mid(.WorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = False
-                    GoTo TidyUpAndExit
-                  Else
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = True
-                    GoTo TidyUpAndExit
-                  End If
-                Case "PM"
-                  If Mid(.WorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = False
-                    GoTo TidyUpAndExit
-                  Else
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = True
-                    GoTo TidyUpAndExit
-                  End If
-              End Select
-            End If
-          Else
-            If (pdtDate >= CDate(.StartDateName)) Then
-              Select Case UCase(pstrSession)
-                Case "AM"
-                  If Mid(.WorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = False
-                    GoTo TidyUpAndExit
-                  Else
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = True
-                    GoTo TidyUpAndExit
-                  End If
-                Case "PM"
-                  If Mid(.WorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = False
-                    GoTo TidyUpAndExit
-                  Else
-                    pstrWorkingPattern = .WorkingPattern
-                    IsWorkingDay = True
-                    GoTo TidyUpAndExit
-                  End If
-              End Select
-            End If
-          End If
-        End With
-      Next objWorkingPattern
+					If (.EndDateName <> vbNullString) Then
+						If (pdtDate >= CDate(.StartDateName)) And (pdtDate < CDate(.EndDateName)) Then
+							Select Case UCase(pstrSession)
+								Case "AM"
+									If Mid(.WorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = False
+										GoTo TidyUpAndExit
+									Else
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = True
+										GoTo TidyUpAndExit
+									End If
+								Case "PM"
+									If Mid(.WorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = False
+										GoTo TidyUpAndExit
+									Else
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = True
+										GoTo TidyUpAndExit
+									End If
+							End Select
+						End If
+					Else
+						If (pdtDate >= CDate(.StartDateName)) Then
+							Select Case UCase(pstrSession)
+								Case "AM"
+									If Mid(.WorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = False
+										GoTo TidyUpAndExit
+									Else
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = True
+										GoTo TidyUpAndExit
+									End If
+								Case "PM"
+									If Mid(.WorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = False
+										GoTo TidyUpAndExit
+									Else
+										pstrWorkingPattern = .WorkingPattern
+										IsWorkingDay = True
+										GoTo TidyUpAndExit
+									End If
+							End Select
+						End If
+					End If
+				End With
+			Next objWorkingPattern
 
-    ElseIf mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
+		ElseIf mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
 
-      'Static Working Pattern
+			'Static Working Pattern
 
-      colWorkingPatterns = mcolStaticWorkingPatterns.Item(CStr(plngBaseID))
-      For Each objWorkingPattern In colWorkingPatterns.Collection
-        With objWorkingPattern
+			colWorkingPatterns = mcolStaticWorkingPatterns.Item(CStr(plngBaseID))
+			For Each objWorkingPattern In colWorkingPatterns.Collection
+				With objWorkingPattern
 
-          'TM02072004 Fault 8851 - Force the working pattern length to be 14 characters!
-          If Len(.WorkingPattern) < WORKINGPATTERN_LENGTH Then
-            .WorkingPattern = .WorkingPattern & New String(" ", WORKINGPATTERN_LENGTH - Len(.WorkingPattern))
-          ElseIf Len(.WorkingPattern) > WORKINGPATTERN_LENGTH Then
-            .WorkingPattern = Left(.WorkingPattern, WORKINGPATTERN_LENGTH)
-          End If
+					'TM02072004 Fault 8851 - Force the working pattern length to be 14 characters!
+					If Len(.WorkingPattern) < WORKINGPATTERN_LENGTH Then
+						.WorkingPattern = .WorkingPattern & New String(" ", WORKINGPATTERN_LENGTH - Len(.WorkingPattern))
+					ElseIf Len(.WorkingPattern) > WORKINGPATTERN_LENGTH Then
+						.WorkingPattern = Left(.WorkingPattern, WORKINGPATTERN_LENGTH)
+					End If
 
-          strWorkingPattern = .WorkingPattern
+					strWorkingPattern = .WorkingPattern
 
-          Select Case UCase(pstrSession)
-            Case "AM"
-              If Mid(strWorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
-                pstrWorkingPattern = strWorkingPattern
-                IsWorkingDay = False
-                GoTo TidyUpAndExit
-              Else
-                pstrWorkingPattern = strWorkingPattern
-                IsWorkingDay = True
-                GoTo TidyUpAndExit
-              End If
-            Case "PM"
-              If Mid(strWorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
-                pstrWorkingPattern = strWorkingPattern
-                IsWorkingDay = False
-                GoTo TidyUpAndExit
-              Else
-                pstrWorkingPattern = strWorkingPattern
-                IsWorkingDay = True
-                GoTo TidyUpAndExit
-              End If
-          End Select
-        End With
-      Next objWorkingPattern
-    End If
+					Select Case UCase(pstrSession)
+						Case "AM"
+							If Mid(strWorkingPattern, (CDbl(intWeekDay) * 2) - 1, 1) = " " Then
+								pstrWorkingPattern = strWorkingPattern
+								IsWorkingDay = False
+								GoTo TidyUpAndExit
+							Else
+								pstrWorkingPattern = strWorkingPattern
+								IsWorkingDay = True
+								GoTo TidyUpAndExit
+							End If
+						Case "PM"
+							If Mid(strWorkingPattern, CDbl(intWeekDay) * 2, 1) = " " Then
+								pstrWorkingPattern = strWorkingPattern
+								IsWorkingDay = False
+								GoTo TidyUpAndExit
+							Else
+								pstrWorkingPattern = strWorkingPattern
+								IsWorkingDay = True
+								GoTo TidyUpAndExit
+							End If
+					End Select
+				End With
+			Next objWorkingPattern
+		End If
 
     pstrWorkingPattern = "              "
     IsWorkingDay = False
@@ -1861,11 +1825,7 @@ ErrorTrap:
     Dim lngCurrentBaseID As Integer
     Dim intBaseRecordIndex As Short
 
-    Dim fOK As Boolean
-
-    Dim sSQL As String
-
-    fOK = True
+		Dim fOK As Boolean = True
 
     With mrsCalendarReportsOutput
 
@@ -1913,9 +1873,7 @@ ErrorTrap:
           mstrEventEndSession_Output = UCase(.Fields("EndSession").Value.ToString())
         End If
 
-        mstrDuration_Output = .Fields("Duration").Value
-
-        '****************************************************************************
+				'****************************************************************************
 
         ' If the event start date is after the event end date, ignore the record
         If (mdtEventStartDate_Output > mdtEventEndDate_Output) Then
@@ -2298,8 +2256,6 @@ ErrorTrap:
 
     ReDim mavLegend(3, 0)
 
-    mintLegendCount = 0
-
     intColourMax = UBound(mavAvailableColours, 2)
 
     With mrsCalendarReportsOutput
@@ -2356,11 +2312,9 @@ ErrorTrap:
           mavLegend(3, intNewIndex) = "&HFFFFFF"
         End If
 
-        mintLegendCount = UBound(mavLegend, 2)
-
-      Else
-        Load_Legend = False
-        GoTo TidyUpAndExit
+			Else
+				Load_Legend = False
+				GoTo TidyUpAndExit
 
       End If
     End With
@@ -3075,12 +3029,7 @@ ErrorTrap:
 
     End If
 
-    'TM01042004 Fault 8428
-    If mblnCheckingRegionColumn = True Then
-      mstrRegionColumnRealSource = mstrRealSource
-    End If
-
-    mlngEventViewColumn = 0
+		mlngEventViewColumn = 0
 
     '  strSQLRef = strTable & "." & strColumn
     CheckColumnPermissions = True
@@ -3593,10 +3542,6 @@ TidyUpAndExit:
     rsMultiple = Nothing
     Exit Function
 
-ErrorTrap:
-    MultipleCheck = False
-    GoTo TidyUpAndExit
-
   End Function
 
   Public Function GetCalendarReportDefinition() As Boolean
@@ -3609,20 +3554,14 @@ ErrorTrap:
     Dim rsTemp As ADODB.Recordset
 
     Dim sSQL As String
-    Dim sTable As String
-    Dim sColumn As String
-    Dim sDateInterval As String
-
-    Dim i As Short
+		Dim sDateInterval As String
 
     Dim rsIDs As ADODB.Recordset
     Dim blnOK As Boolean
 
-    Dim intExprReturnType As Short
+		mstrSQLIDs = vbNullString
 
-    mstrSQLIDs = vbNullString
-
-    sSQL = "SELECT * FROM ASRSYSCalendarReports " & "WHERE ID = " & CStr(mlngCalendarReportID) & " "
+		sSQL = "SELECT * FROM ASRSYSCalendarReports WHERE ID = " & CStr(mlngCalendarReportID) & " "
 
     rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
@@ -3638,11 +3577,11 @@ ErrorTrap:
       End If
 
       'JPD 20040729 Fault 8972 & Fault 8990
-      If LCase(.Fields("Username").Value.ToString()) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
-        GetCalendarReportDefinition = False
-        mstrErrorString = "Report has been made hidden by another user."
-        Exit Function
-      End If
+			If LCase(.Fields("Username").Value.ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
+				GetCalendarReportDefinition = False
+				mstrErrorString = "Report has been made hidden by another user."
+				Exit Function
+			End If
 
       mstrCalendarReportsName = .Fields("Name").Value
       mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
@@ -3667,16 +3606,14 @@ ErrorTrap:
         GoTo TidyUpAndExit
       End If
 
-
-      mlngCalendarReportsAllRecords = .Fields("AllRecords").Value
-      mlngCalendarReportsPickListID = .Fields("picklist").Value
+			mlngCalendarReportsPickListID = .Fields("picklist").Value
       mlngCalendarReportsFilterID = .Fields("Filter").Value
 
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
       mlngDescription1 = IIf(IsDBNull(.Fields("Description1").Value), 0, .Fields("Description1").Value)
       If mlngDescription1 > 0 Then
         mstrDescription1 = datGeneral.GetColumnName(.Fields("Description1").Value)
-        mblnDesc1IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = Declarations.SQLDataType.sqlDate)
+				mblnDesc1IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
       Else
         mstrDescription1 = vbNullString
         mblnDesc1IsDate = False
@@ -3686,7 +3623,7 @@ ErrorTrap:
       mlngDescription2 = IIf(IsDBNull(.Fields("Description2").Value), 0, .Fields("Description2").Value)
       If mlngDescription2 > 0 Then
         mstrDescription2 = datGeneral.GetColumnName(.Fields("Description2").Value)
-        mblnDesc2IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = Declarations.SQLDataType.sqlDate)
+				mblnDesc2IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
       Else
         mstrDescription2 = vbNullString
         mblnDesc2IsDate = False
@@ -3717,10 +3654,10 @@ ErrorTrap:
       If mlngRegion > 0 Then
         mstrRegion = datGeneral.GetColumnName(.Fields("Region").Value)
 
-      ElseIf (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtStaticRegion) Then
+			ElseIf (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (grtRegionType = RegionType.rtStaticRegion) Then
 
-        mlngRegion = glngBHolRegionID
-        mstrRegion = gsBHolRegionColumnName
+				mlngRegion = glngBHolRegionID
+				mstrRegion = gsBHolRegionColumnName
 
       Else
         mstrRegion = vbNullString
@@ -3971,68 +3908,62 @@ Error_Trap:
     blnRegionEnabled = False
     blnWorkingPatternEnabled = False
 
-    If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
+		If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
 
-      blnRegionEnabled = CheckPermission_RegionInfo()
-    End If
+			blnRegionEnabled = CheckPermission_RegionInfo()
+		End If
 
     If blnRegionEnabled Then
-      If fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
+			If fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
 
-        'get historical bank holidays
-        'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        fOK = Get_HistoricBankHolidays()
+				'get historical bank holidays
+				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				fOK = Get_HistoricBankHolidays()
 
-        If fOK Then mblnRegions = True
+			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
 
-      ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
+				'get static bank holidays collection
+				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				fOK = Get_StaticBankHolidays()
 
-        'get static bank holidays collection
-        'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        fOK = Get_StaticBankHolidays()
+				If fOK Then
+					mblnStaticReg = True
+				End If
 
-        If fOK Then
-          mblnRegions = True
-          mblnStaticReg = True
-        End If
+			Else
+				mblnDisableRegions = True
 
-      Else
-        mblnDisableRegions = True
-
-      End If
+			End If
     End If
 
 
 
-    If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
+		If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
 
-      blnWorkingPatternEnabled = CheckPermission_WPInfo()
-    End If
+			blnWorkingPatternEnabled = CheckPermission_WPInfo()
+		End If
 
     If blnWorkingPatternEnabled Then
-      If fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
+			If fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
-        'get historical working patterns
-        'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        fOK = Get_HistoricWorkingPatterns()
+				'get historical working patterns
+				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				fOK = Get_HistoricWorkingPatterns()
 
-        If fOK Then mblnWorkingPatterns = True
+			ElseIf fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
 
-      ElseIf fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
+				'get static working patterns
+				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				fOK = Get_StaticWorkingPatterns()
 
-        'get static working patterns
-        'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        fOK = Get_StaticWorkingPatterns()
+				If fOK Then
+					mblnStaticWP = True
+				End If
 
-        If fOK Then
-          mblnWorkingPatterns = True
-          mblnStaticWP = True
-        End If
+			Else
+				mblnDisableWPs = True
 
-      Else
-        mblnDisableWPs = True
-
-      End If
+			End If
     End If
 
     Initialise_WP_Region = True
@@ -5051,8 +4982,7 @@ ErrorTrap:
         '///////////////////////////////////////////////
         '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
         If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionColumnName, strTableColumn) Then
-          mstrSQLSelect_PersonnelHRegion = strTableColumn
-          strTableColumn = vbNullString
+					strTableColumn = vbNullString
         Else
           GoTo DisableRegions
         End If
@@ -5064,8 +4994,7 @@ ErrorTrap:
         '///////////////////////////////////////////////
         '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
         If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionDateColumnName, strTableColumn) Then
-          mstrSQLSelect_PersonnelHDate = strTableColumn
-          strTableColumn = vbNullString
+					strTableColumn = vbNullString
         Else
           GoTo DisableRegions
         End If
@@ -5082,11 +5011,7 @@ TidyUpAndExit:
 
 DisableRegions:
     mblnDisableRegions = True
-    '  ShowBankHolidays = False
-    '  IncludeBankHolidays = False
-    '  mblnShowBankHols = False
-    mblnRegions = False
-    CheckPermission_RegionInfo = False
+		CheckPermission_RegionInfo = False
     GoTo TidyUpAndExit
 
   End Function
@@ -5295,8 +5220,7 @@ DisableRegions:
       '///////////////////////////////////////////////
       '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
       If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelWorkingPatternColumnName, strTableColumn) Then
-        mstrSQLSelect_PersonnelStaticWP = strTableColumn
-        strTableColumn = vbNullString
+				strTableColumn = vbNullString
       Else
         GoTo DisableWPs
       End If
@@ -5339,8 +5263,7 @@ TidyUpAndExit:
 DisableWPs:
     mblnDisableWPs = True
     IncludeWorkingDaysOnly = False
-    mblnWorkingPatterns = False
-    CheckPermission_WPInfo = False
+		CheckPermission_WPInfo = False
     GoTo TidyUpAndExit
 
   End Function
@@ -5583,14 +5506,9 @@ TidyUpAndExit:
     Dim strColList As String
     Dim strBaseColList As String
 
-    Dim strLookupTableName As String
-    Dim strLookupColumnName As String
-    Dim strLookupCodeName As String
-    Dim strEventType As String
-    Dim strLegendSQL As String
+		Dim strLegendSQL As String
     Dim strTableColumn As String
-    Dim strRegionSQL As String
-    Dim lngTempTableID As Integer
+		Dim lngTempTableID As Integer
     Dim strTempTableName As String
     Dim strTempColumnName As String
 
@@ -5980,8 +5898,7 @@ TidyUpAndExit:
 
     'Add the static region column if required.
     If mlngRegion > 0 Then
-      'TM01042004 Fault 8428
-      mblnCheckingRegionColumn = True
+
       If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrRegion, strTableColumn) Then
         strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Region', " & vbNewLine
         strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Region', " & vbNewLine
@@ -5995,8 +5912,7 @@ TidyUpAndExit:
         '      GenerateSQLSelect = False
         '      GoTo TidyUpAndExit
       End If
-      'TM01042004 Fault 8428
-      mblnCheckingRegionColumn = False
+
     Else
       strColList = strColList & "NULL AS 'Region', "
       strBaseColList = strBaseColList & "NULL AS 'Region', "
@@ -6095,21 +6011,11 @@ GenerateSQLSelect_ERROR:
     'relevent views are added to the mlngTableViews() array which in turn
     'are used to create the join part of the query.
 
-    Dim lngTempTableID As Integer
-    Dim strTempTableName As String
-    Dim strTempColumnName As String
-    Dim blnColumnOK As Boolean
-    Dim blnFound As Boolean
-    Dim blnNoSelect As Boolean
-    Dim iLoop1 As Short
-    Dim intLoop As Short
-    Dim strColumnCode As String
-    Dim strSource As String
-    Dim intNextIndex As Short
+		Dim blnFound As Boolean
+		Dim iLoop1 As Short
+		Dim intNextIndex As Short
     Dim blnOK As Boolean
-    Dim strTable As String
-    Dim strColumn As String
-    Dim sCalcCode As String
+		Dim sCalcCode As String
     Dim alngSourceTables(,) As Integer
     Dim objCalcExpr As clsExprExpression
 
@@ -6121,7 +6027,7 @@ GenerateSQLSelect_ERROR:
     ' Column 2 = table/view ID.
     ReDim alngSourceTables(2, 0)
     objCalcExpr = New clsExprExpression
-    blnOK = objCalcExpr.Initialise(plngBaseTableID, plngExprID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+		blnOK = objCalcExpr.Initialise(plngBaseTableID, plngExprID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
     If blnOK Then
       blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
 
@@ -6202,25 +6108,11 @@ GenerateSQLSelect_ERROR:
   End Function
 
   Private Function GenerateSQLFrom() As Boolean
-    Dim iLoop As Short
-    Dim pobjTableView As CTablePrivilege
 
-    pobjTableView = New CTablePrivilege
-
-    mstrSQLFrom = "FROM " & mstrBaseTableRealSource & vbNewLine
+		mstrSQLFrom = "FROM " & mstrBaseTableRealSource & vbNewLine
     mstrSQLBaseData = mstrSQLBaseData & " FROM " & mstrBaseTableRealSource & vbNewLine
 
     GenerateSQLFrom = True
-
-TidyUpAndExit:
-    'UPGRADE_NOTE: Object pobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    pobjTableView = Nothing
-    Exit Function
-
-GenerateSQLFrom_ERROR:
-    GenerateSQLFrom = False
-    mstrErrorString = "Error in GenerateSQLFrom." & vbNewLine & Err.Description
-    GoTo TidyUpAndExit
 
   End Function
 
@@ -6235,12 +6127,10 @@ GenerateSQLFrom_ERROR:
 
     Dim sChildJoinCode As String
     Dim strFilterIDs As String
-    Dim sChildJoin As String
 
     Dim blnOK As Boolean
 
-    Dim i As Short
-    Dim intLoop As Short
+		Dim intLoop As Short
 
     Dim bViewContains_StartColumn As Boolean
     Dim bViewContains_EndColumn As Boolean
@@ -6384,12 +6274,9 @@ GenerateSQLJoin_ERROR:
 
     On Error GoTo GenerateSQLWhere_ERROR
 
-    Dim objExpr As clsExprExpression
-    Dim rsTemp As New ADODB.Recordset
+		Dim rsTemp As New ADODB.Recordset
     Dim objEvent As clsCalendarEvent
-
-    Dim strPickListIDs As String
-    Dim strFilterIDs As String
+		Dim strFilterIDs As String
 
     Dim blnOK As Boolean
 
@@ -6574,8 +6461,7 @@ GenerateSQLOrderBy_ERROR:
     mstrCalendarReportsName = vbNullString
     mlngCalendarReportsBaseTable = 0
     mstrCalendarReportsBaseTableName = vbNullString
-    mlngCalendarReportsAllRecords = 0
-    mlngCalendarReportsPickListID = 0
+		mlngCalendarReportsPickListID = 0
     mlngCalendarReportsFilterID = 0
 
     mlngDescription1 = 0
@@ -6669,8 +6555,7 @@ ClearUp_ERROR:
 
   Public Function IsRecordSelectionValid() As Boolean
 
-    Dim i As Short
-    Dim lngFilterID As Integer
+		Dim lngFilterID As Integer
     Dim objEvent As clsCalendarEvent
 		Dim iResult As RecordSelectionValidityCodes
     Dim fCurrentUserIsSysSecMgr As Boolean
