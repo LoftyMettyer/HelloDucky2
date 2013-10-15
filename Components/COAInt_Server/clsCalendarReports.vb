@@ -834,7 +834,7 @@ Public Class CalendarReport
     mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCalendarReport", 3)
 
     strSQL = vbNullString
-    strSQL = strSQL & "CREATE TABLE [" & mstrTempTableName & "] ("
+		strSQL = strSQL & "CREATE TABLE [" & mstrTempTableName & "] ("
     strSQL = strSQL & mstrSQLCreateTable
     strSQL = strSQL & ")"
 
@@ -2465,22 +2465,8 @@ ErrorTrap:
     Dim intDefinedColourStyle As Short
 
     Dim strColour As String
-    Dim intThisStartCount As Short
-    Dim intThisEndCount As Short
-    Dim intNextStartCount As Short
-    Dim intNext2StartCount As Short
-    Dim intIndexModulus As Short
-    Dim intCurrentStartCount As Short
-    Dim intCurrentEndCount As Short
-    Dim intBaseCount As Short
-
-    Dim strSession As String
-
-    Dim blnNextHasEvent As Boolean
-    Dim blnNext2HasEvent As Boolean
-    Dim blnPrevHasEvent As Boolean
-
-    Dim intSessionCount As Short
+		Dim intBaseCount As Short
+		Dim intSessionCount As Short
 
     Dim varTempArray As Object
 
@@ -2499,9 +2485,6 @@ ErrorTrap:
     If mintBaseRecordCount_Output < 1 Then
       Exit Function
     End If
-
-    'UPGRADE_WARNING: Screen property Screen.MousePointer has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6BA9B8D2-2A32-4B6E-8D36-44949974A5B4"'
-    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor
 
     blnIncBankHoliday = mblnIncludeBankHolidays
     blnIncWorkingDays = mblnIncludeWorkingDaysOnly
@@ -2696,46 +2679,28 @@ ErrorTrap:
               strCaption = vbNullString
             End If
 
-            '          If ((Not blnShowCaption) Or (Not blnShowCaptions)) Then
-            '            strCaption = vbNullString
-            '          Else
-            '            strCaption = varTempArray(7, intCount)
-            '          End If
+						If intSessionCount = 1 Then
 
-            If intSessionCount = 1 Then
+							If blnHasEvent Or ((blnIsBankHoliday) And (blnShadeBankHolidays)) Then
+								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								AddToArray_Styles("" & vbTab & CStr(CInt((intCount + 1) / 2)) & vbTab & CStr(CInt(intBaseCount * 2)) & vbTab & CStr(CInt((intCount + 1) / 2)) & vbTab & CStr(CInt(intBaseCount * 2)) & vbTab & CStr(CInt(varTempArray(8, intCount))) & vbTab & CStr(CInt(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
-              If blnHasEvent Or ((blnIsBankHoliday) And (blnShadeBankHolidays)) Then
-                '              mobjOutput.AddStyle "", CLng((intCount + 1) / 2), CLng(intBaseCount * 2), _
-                ''                                    CLng((intCount + 1) / 2), CLng(intBaseCount * 2), _
-                ''                                    CLng(varTempArray(8, intCount)), CLng(varTempArray(9, intCount)), False, False, True
-                '              DebugMSG "Adding style for " & Format(dtConvertedDate, CALREP_DATEFORMAT) & "..." & "" & vbTab & CStr(CLng((intCount + 1) / 2)) & vbTab & CStr(CLng(intBaseCount * 2)) _
-                ''                                & vbTab & CStr(CLng((intCount + 1) / 2)) & vbTab & CStr(CLng(intBaseCount * 2)) _
-                ''                                & vbTab & CStr(CLng(varTempArray(8, intCount))) & vbTab & CStr(CLng(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true"
-                'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                AddToArray_Styles("" & vbTab & CStr(CInt((intCount + 1) / 2)) & vbTab & CStr(CInt(intBaseCount * 2)) & vbTab & CStr(CInt((intCount + 1) / 2)) & vbTab & CStr(CInt(intBaseCount * 2)) & vbTab & CStr(CInt(varTempArray(8, intCount))) & vbTab & CStr(CInt(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true")
+							End If
 
-              End If
+							AddToArray_Data(CShort(intBaseCount * 2), CShort((intCount + 1) / 2), strCaption)
 
-              AddToArray_Data(CShort(intBaseCount * 2), CShort((intCount + 1) / 2), strCaption)
+						ElseIf intSessionCount = 2 Then
 
-            ElseIf intSessionCount = 2 Then
+							If blnHasEvent Or ((blnIsBankHoliday) And (blnShadeBankHolidays)) Then
+								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								AddToArray_Styles("" & vbTab & CStr(CInt(intCount / 2)) & vbTab & CStr(CInt((intBaseCount * 2) + 1)) & vbTab & CStr(CInt(intCount / 2)) & vbTab & CStr(CInt((intBaseCount * 2) + 1)) & vbTab & CStr(CInt(varTempArray(8, intCount))) & vbTab & CStr(CInt(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true")
+							End If
 
-              If blnHasEvent Or ((blnIsBankHoliday) And (blnShadeBankHolidays)) Then
-                '              mobjOutput.AddStyle "", CLng(intCount / 2), CLng((intBaseCount * 2) + 1), _
-                ''                                    CLng(intCount / 2), CLng((intBaseCount * 2) + 1), _
-                ''                                    CLng(varTempArray(8, intCount)), CLng(varTempArray(9, intCount)), False, False, True
-                '              DebugMSG "Adding style for " & Format(dtConvertedDate, CALREP_DATEFORMAT) & "..." & "" & vbTab & CStr(CLng(intCount / 2)) & vbTab & CStr(CLng((intBaseCount * 2) + 1)) _
-                ''                                & vbTab & CStr(CLng(intCount / 2)) & vbTab & CStr(CLng((intBaseCount * 2) + 1)) _
-                ''                                & vbTab & CStr(CLng(varTempArray(8, intCount))) & vbTab & CStr(CLng(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true"
-                'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                AddToArray_Styles("" & vbTab & CStr(CInt(intCount / 2)) & vbTab & CStr(CInt((intBaseCount * 2) + 1)) & vbTab & CStr(CInt(intCount / 2)) & vbTab & CStr(CInt((intBaseCount * 2) + 1)) & vbTab & CStr(CInt(varTempArray(8, intCount))) & vbTab & CStr(CInt(varTempArray(9, intCount))) & vbTab & "false" & vbTab & "false" & vbTab & "true")
-              End If
+							AddToArray_Data(CShort((intBaseCount * 2) + 1), CShort(intCount / 2), strCaption)
 
-              AddToArray_Data(CShort((intBaseCount * 2) + 1), CShort(intCount / 2), strCaption)
+							intSessionCount = 0
 
-              intSessionCount = 0
-
-            End If
+						End If
           Else
             If intSessionCount = 2 Then
               intSessionCount = 0
@@ -2755,8 +2720,6 @@ TidyUpAndExit:
     Exit Function
 
 ErrorTrap:
-    '  DebugMSG "********** ERROR **************"
-    '  DebugMSG Err.Number & " " & Err.Description
 
     OutputArray_RefreshDateSpecifics = False
     GoTo TidyUpAndExit
@@ -2771,8 +2734,7 @@ ErrorTrap:
     Dim lngMonth_CR As Integer
     Dim lngYear_CR As Integer
 
-    Dim blnDateComplete As Boolean
-    Dim blnMonthDone As Boolean
+		Dim blnMonthDone As Boolean
     Dim blnDayDone As Boolean
     Dim blnYearDone As Boolean
 
@@ -2791,8 +2753,7 @@ ErrorTrap:
 
     strDateSeparator = CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator
 
-    blnDateComplete = False
-    blnMonthDone = False
+		blnMonthDone = False
     blnDayDone = False
     blnYearDone = False
 
@@ -2820,8 +2781,7 @@ ErrorTrap:
       End If
 
       If blnDayDone And blnMonthDone And blnYearDone Then
-        blnDateComplete = True
-        Exit For
+				Exit For
       End If
 
     Next i
@@ -2893,9 +2853,9 @@ ErrorTrap:
 
     If blnColumnOK Then
 
-      If mobjColumnPrivileges.Item(strTempColumnName).DataType = Declarations.SQLDataType.sqlDate Then
-        bDateColumn = True
-      End If
+			If mobjColumnPrivileges.Item(strTempColumnName).DataType = SQLDataType.sqlDate Then
+				bDateColumn = True
+			End If
 
       ' this column can be read direct from the tbl/view or from a parent table
       strTable = mstrRealSource
@@ -3072,7 +3032,7 @@ ErrorTrap:
     Dim intTemp As Short
 
     ' Get columns defined as a SortOrder and load into array
-    sSQL = "SELECT * FROM ASRSysCalendarReportOrder WHERE " & "CalendarReportID = " & mlngCalendarReportID & " " & "ORDER BY [OrderSequence]"
+		sSQL = "SELECT * FROM ASRSysCalendarReportOrder WHERE CalendarReportID = " & mlngCalendarReportID & " ORDER BY [OrderSequence]"
 
     rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
 
@@ -3991,7 +3951,6 @@ Error_Trap:
 		Dim avCareerRanges(,) As String
 		Dim intNextIndex As Short
 
-		Dim blnNewBaseRecord As Boolean
 		Dim lngBaseRecordID As Integer
 
 		Dim intCount As Short
@@ -4020,7 +3979,6 @@ Error_Trap:
 		rsCC = datGeneral.GetRecords(strSQLCC)
 
 		lngBaseRecordID = -1
-		blnNewBaseRecord = False
 
 		'******************************************************************************
 		'Create an array containing the ranges of career change period
@@ -4034,7 +3992,6 @@ Error_Trap:
 
 					If lngBaseRecordID <> .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value Then
 						lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
-						blnNewBaseRecord = True
 						dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
 
 						avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
@@ -4058,7 +4015,6 @@ Error_Trap:
 
 					End If
 
-					blnNewBaseRecord = False
 					.MoveNext()
 				Loop
 
@@ -4073,7 +4029,6 @@ Error_Trap:
 		'******************************************************************************
 
 		lngBaseRecordID = -1
-		blnNewBaseRecord = False
 
 		'##############################################################################
 		'populate form WP string with form data
@@ -4097,7 +4052,6 @@ Error_Trap:
 				colWorkingPatterns = New clsCalendarEvents
 
 				lngBaseRecordID = CInt(avCareerRanges(0, intCount))
-				blnNewBaseRecord = True
 				intRecordWP = 0
 				mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<INPUT NAME=txtWPCOUNT_" & lngBaseRecordID & " ID=txtWPCOUNT_" & lngBaseRecordID & " VALUE=""" & avCareerRanges(4, intCount) & """>" & vbNewLine
 			End If
@@ -4119,7 +4073,6 @@ Error_Trap:
 				colWorkingPatterns = Nothing
 			End If
 
-			blnNewBaseRecord = False
 		Next intCount
 
 		mstrWPFormString = mstrWPFormString & "</FORM>" & vbNewLine & vbNewLine
@@ -5291,9 +5244,8 @@ DisableWPs:
     Dim sTempDesc2Name As String
 
     ' Get the column information from the Details table, in order
-    sSQL = "SELECT * FROM AsrSysCalendarReportEvents WHERE " & "CalendarReportID = " & CStr(mlngCalendarReportID) & " ORDER BY Name ASC "
-
-    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT * FROM AsrSysCalendarReportEvents WHERE CalendarReportID = " & CStr(mlngCalendarReportID) & " ORDER BY Name ASC "
+		rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
     With rsTemp
       If .BOF And .EOF Then

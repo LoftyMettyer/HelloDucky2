@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports ADODB
 
 Friend Class clsGeneral
 
@@ -99,11 +100,11 @@ Friend Class clsGeneral
   Public Function EnableUDFFunctions() As Boolean
 
     Dim sSQL As String
-    Dim rsUser As ADODB.Recordset
+		Dim rsUser As Recordset
 
     sSQL = "exec master..xp_msver"
 
-    rsUser = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsUser = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     rsUser.MoveNext()
 
     Select Case Val(rsUser.Fields(3).Value)
@@ -126,13 +127,12 @@ Friend Class clsGeneral
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
 		Dim fOK As Boolean
-		Dim objExpr As clsExprExpression
+		Dim objExpr As clsExprExpression = New clsExprExpression
 
 		fOK = True
 
-		objExpr = New clsExprExpression
 		With objExpr
-			.Initialise(0, plngFilterID, modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER, modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
+			.Initialise(0, plngFilterID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
 			.UDFFilterCode(pastrUDFs, True, True)
 		End With
 		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -147,56 +147,49 @@ ErrorTrap:
 	End Function
 
 
-  Public Function GetRecordsInTransaction(ByRef sSQL As String) As ADODB.Recordset
-    ' Return the required STATIC/read-only recordset.
-    ' This is useful when getting a recordset in the middle of a transaction.
-    ' An error occurs when getting more than one forward-only, read-only recordset in the middle
-    ' of a transaction.
-    GetRecordsInTransaction = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+	Public Function GetRecordsInTransaction(ByRef sSQL As String) As Recordset
+		' Return the required STATIC/read-only recordset.
+		' This is useful when getting a recordset in the middle of a transaction.
+		' An error occurs when getting more than one forward-only, read-only recordset in the middle
+		' of a transaction.
+		GetRecordsInTransaction = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
-  End Function
+	End Function
 
 
   Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
     ' Return a string describing the record IDs from the given table
     ' that satisfy the given criteria.
     Dim fOK As Boolean
-    Dim objExpr As clsExprExpression
+		Dim objExpr As clsExprExpression = New clsExprExpression
 
-    'UPGRADE_WARNING: Screen property Screen.MousePointer has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6BA9B8D2-2A32-4B6E-8D36-44949974A5B4"'
-    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor
+		With objExpr
+			' Initialise the filter expression object.
+			fOK = .Initialise(0, plngExprID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
 
-    objExpr = New clsExprExpression
-    With objExpr
-      ' Initialise the filter expression object.
-      fOK = .Initialise(0, plngExprID, modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER, modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
+			If fOK Then
+				fOK = objExpr.RuntimeFilterCode(psIDSQL, True, False, paPrompts)
+			End If
 
-      If fOK Then
-        fOK = objExpr.RuntimeFilterCode(psIDSQL, True, False, paPrompts)
-      End If
-
-    End With
+		End With
     'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     objExpr = Nothing
-
-    'UPGRADE_WARNING: Screen property Screen.MousePointer has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6BA9B8D2-2A32-4B6E-8D36-44949974A5B4"'
-    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default
 
     FilteredIDs = fOK
 
   End Function
 
-  Public Function GetOrderDefinition(ByRef plngOrderID As Integer) As ADODB.Recordset
-    ' Return a recordset of the order items (both Find Window and Sort Order columns)
-    ' for the given order.
-    Dim sSQL As String
-    Dim rsInfo As ADODB.Recordset
+	Public Function GetOrderDefinition(ByRef plngOrderID As Integer) As Recordset
+		' Return a recordset of the order items (both Find Window and Sort Order columns)
+		' for the given order.
+		Dim sSQL As String
+		Dim rsInfo As Recordset
 
-    sSQL = "EXEC sp_ASRGetOrderDefinition " & plngOrderID
-    rsInfo = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-    GetOrderDefinition = rsInfo
+		sSQL = "EXEC sp_ASRGetOrderDefinition " & plngOrderID
+		rsInfo = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		GetOrderDefinition = rsInfo
 
-  End Function
+	End Function
 
 
   Public Property Username() As String
@@ -211,30 +204,30 @@ ErrorTrap:
     End Set
   End Property
 
-  Public Function GetAllTables() As ADODB.Recordset
-    ' Return a recordset of the user-defined tables.
-    Dim sSQL As String
-    Dim rsTables As ADODB.Recordset
+	Public Function GetAllTables() As Recordset
+		' Return a recordset of the user-defined tables.
+		Dim sSQL As String
+		Dim rsTables As Recordset
 
-    sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID" & " FROM ASRSysTables"
+		sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID FROM ASRSysTables"
 
-    rsTables = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTables = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 		Return rsTables
 
-  End Function
+	End Function
 
   Public Sub GetColumnPermissions(ByRef pobjColumnPrivileges As CColumnPrivileges)
   End Sub
 
-  Public Function GetAllViews() As ADODB.Recordset
-    Dim sSQL As String
-    Dim rsViews As ADODB.Recordset
+	Public Function GetAllViews() As Recordset
+		Dim sSQL As String
+		Dim rsViews As Recordset
 
-    sSQL = "SELECT ASRSysViews.viewID, ASRSysViews.viewName, ASRSysTables.tableID," & " ASRSysTables.tableName, ASRSysTables.tableType, ASRSysTables.defaultOrderID, ASRSysTables.recordDescExprID" & " FROM ASRSysViews" & " INNER JOIN ASRSysTables ON ASRSysViews.viewTableID = ASRSysTables.tableID"
-    rsViews = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-    GetAllViews = rsViews
+		sSQL = "SELECT ASRSysViews.viewID, ASRSysViews.viewName, ASRSysTables.tableID, ASRSysTables.tableName, ASRSysTables.tableType, ASRSysTables.defaultOrderID, ASRSysTables.recordDescExprID FROM ASRSysViews INNER JOIN ASRSysTables ON ASRSysViews.viewTableID = ASRSysTables.tableID"
+		rsViews = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		GetAllViews = rsViews
 
-  End Function
+	End Function
 
   'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
   Private Sub Class_Initialize_Renamed()
@@ -251,7 +244,7 @@ ErrorTrap:
   Public Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
 
     Dim objExpr As clsExprExpression
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim strSQL As String
     Dim fOK As Boolean
 		Dim lngViews(,) As Integer
@@ -264,7 +257,7 @@ ErrorTrap:
     objExpr = New clsExprExpression
     With objExpr
       ' Initialise the filter expression object.
-      fOK = .Initialise(0, lngExprID, modExpression.ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+			fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 
       If fOK Then
         fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, True, False, pvarPrompts)
@@ -291,15 +284,14 @@ LocalErr:
 
   Public Function GetActualLogin() As String
 
-    Dim sSQL As String
-    Dim cmdLoginInfo As New ADODB.Command
-    Dim prmActutalLogin As New ADODB.Parameter
+		Dim cmdLoginInfo As New Command
+		Dim prmActutalLogin As Parameter
 
     cmdLoginInfo.CommandText = "spASRIntGetActualLogin"
     cmdLoginInfo.CommandType = 4
     cmdLoginInfo.let_ActiveConnection(gADOCon)
 
-    prmActutalLogin = cmdLoginInfo.CreateParameter("ActualLogin", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
+		prmActutalLogin = cmdLoginInfo.CreateParameter("ActualLogin", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
     cmdLoginInfo.Parameters.Append(prmActutalLogin)
 
     cmdLoginInfo.ActiveConnection.Errors.Clear()
@@ -316,23 +308,22 @@ LocalErr:
 
   Public Function GetActualUserDetails() As String
 
-    Dim sSQL As String
-    Dim cmdUserInfo As New ADODB.Command
-    Dim prmActualUser As New ADODB.Parameter
-    Dim prmActualUserGroup As New ADODB.Parameter
-    Dim prmActualUserGroupID As New ADODB.Parameter
+		Dim cmdUserInfo As New Command
+		Dim prmActualUser As Parameter
+		Dim prmActualUserGroup As Parameter
+		Dim prmActualUserGroupID As Parameter
 
     cmdUserInfo.CommandText = "spASRIntGetActualUserDetails"
     cmdUserInfo.CommandType = 4
     cmdUserInfo.let_ActiveConnection(gADOCon)
 
-    prmActualUser = cmdUserInfo.CreateParameter("psUsername", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
+		prmActualUser = cmdUserInfo.CreateParameter("psUsername", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
     cmdUserInfo.Parameters.Append(prmActualUser)
 
-    prmActualUserGroup = cmdUserInfo.CreateParameter("psUserGroup", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
+		prmActualUserGroup = cmdUserInfo.CreateParameter("psUserGroup", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
     cmdUserInfo.Parameters.Append(prmActualUserGroup)
 
-    prmActualUserGroupID = cmdUserInfo.CreateParameter("piUserGroupID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamOutput)
+		prmActualUserGroupID = cmdUserInfo.CreateParameter("piUserGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
     cmdUserInfo.Parameters.Append(prmActualUserGroupID)
 
     cmdUserInfo.ActiveConnection.Errors.Clear()
@@ -356,15 +347,12 @@ LocalErr:
   Public Function GetUserDetails() As String
 
     Dim sSQL As String
-    Dim rsUser As ADODB.Recordset
+		Dim rsUser As Recordset
 
     sSQL = "exec sp_helpuser '" & Replace(gsActualLogin, "'", "''") & "'"
 
-    rsUser = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-    'MH20031107 Fault 5627
-    'If rsUser!GroupName = "db_owner" Then
-    '  rsUser.MoveNext
-    'End If
+		rsUser = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
     Do While rsUser.Fields("GroupName").Value = "db_owner" Or LCase(Left(rsUser.Fields("GroupName").Value, 6)) = "asrsys"
       rsUser.MoveNext()
     Loop
@@ -376,39 +364,39 @@ LocalErr:
 
   End Function
 
-  Public Function GetRecords(ByRef sSQL As String) As ADODB.Recordset
-    ' Return the required forward-only/read-only recordset.
-    '  Set GetRecords = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+	Public Function GetRecords(ByRef sSQL As String) As Recordset
+		' Return the required forward-only/read-only recordset.
+		'  Set GetRecords = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
-    ' JPD - Changed cursor-type to static.
-    ' The SQL Server ODBC driver uses a special cursor when the cursor is
-    ' forward-only, read-only, and the ODBC rowset size is one.
-    ' The cursor is called a "firehose" cursor because it is the fastest way to retrieve the data.
-    ' Unfortunately, a side affect of the cursor is that it only permits one active recordset per connection.
-    ' To get around this we'll try using a STATIC cursor.
-    GetRecords = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		' JPD - Changed cursor-type to static.
+		' The SQL Server ODBC driver uses a special cursor when the cursor is
+		' forward-only, read-only, and the ODBC rowset size is one.
+		' The cursor is called a "firehose" cursor because it is the fastest way to retrieve the data.
+		' Unfortunately, a side affect of the cursor is that it only permits one active recordset per connection.
+		' To get around this we'll try using a STATIC cursor.
+		GetRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
-  End Function
+	End Function
 
 
-  Public Function GetReadOnlyRecords(ByRef sSQL As String) As ADODB.Recordset
-    ' Return the required dynamic/read-only recordset.
-    '  Set GetReadOnlyRecords = datData.OpenRecordset(sSQL, adOpenDynamic, adLockReadOnly)
+	Public Function GetReadOnlyRecords(ByRef sSQL As String) As Recordset
+		' Return the required dynamic/read-only recordset.
+		'  Set GetReadOnlyRecords = datData.OpenRecordset(sSQL, adOpenDynamic, adLockReadOnly)
 
-    ' JPD 7/6/00 Changed the cursor type from dynamic to static.
-    ' A dynamic/read-only recordset opened with a sql select statement that includes the 'distinct' parameter,
-    ' and returns a single record will automatically be set to be a forwardonly/read-only (firehose) recordet.
-    GetReadOnlyRecords = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		' JPD 7/6/00 Changed the cursor type from dynamic to static.
+		' A dynamic/read-only recordset opened with a sql select statement that includes the 'distinct' parameter,
+		' and returns a single record will automatically be set to be a forwardonly/read-only (firehose) recordet.
+		GetReadOnlyRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
-  End Function
+	End Function
 
   Public Function GetTableName(ByVal plngTableID As Integer) As String
-    Dim rsTable As ADODB.Recordset
+		Dim rsTable As Recordset
     Dim sSQL As String
 
-    sSQL = "SELECT tableName " & " FROM ASRSysTables " & " WHERE tableID=" & plngTableID
+		sSQL = "SELECT tableName FROM ASRSysTables WHERE tableID=" & plngTableID
 
-    rsTable = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+		rsTable = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsTable
       If Not (.BOF And .EOF) Then
         GetTableName = Trim(.Fields(0).Value)
@@ -425,12 +413,12 @@ LocalErr:
   End Function
 
   Public Function GetFilterName(ByVal lFilterID As Integer) As String
-    Dim rsFilter As ADODB.Recordset
+		Dim rsFilter As Recordset
     Dim sSQL As String
 
-    sSQL = "SELECT name " & "FROM ASRSysExpressions " & "WHERE ExprID=" & lFilterID
+		sSQL = "SELECT name FROM ASRSysExpressions WHERE ExprID=" & lFilterID
 
-    rsFilter = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+		rsFilter = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
     With rsFilter
       If Not (.BOF And .EOF) Then
         GetFilterName = Trim(.Fields(0).Value)
@@ -445,12 +433,12 @@ LocalErr:
 
   End Function
   Public Function GetPicklistName(ByVal lPicklistID As Integer) As String
-    Dim rsPicklist As ADODB.Recordset
+		Dim rsPicklist As Recordset
     Dim sSQL As String
 
-    sSQL = "SELECT Name " & "FROM ASRSysPicklistName " & "WHERE PicklistID=" & lPicklistID
+		sSQL = "SELECT Name FROM ASRSysPicklistName WHERE PicklistID=" & lPicklistID
 
-    rsPicklist = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+		rsPicklist = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
     With rsPicklist
       If Not (.BOF And .EOF) Then
         GetPicklistName = Trim(.Fields(0).Value)
@@ -470,9 +458,9 @@ LocalErr:
     Dim rsTable As ADODB.Recordset
     Dim sSQL As String
 
-    sSQL = "SELECT recordDescExprID " & "FROM ASRSysTables " & "WHERE TableID=" & TableID
+		sSQL = "SELECT recordDescExprID FROM ASRSysTables WHERE TableID=" & TableID
 
-    rsTable = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+		rsTable = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
     With rsTable
       If Not (.BOF And .EOF) Then
         GetRecDescExprID = .Fields(0).Value
@@ -490,10 +478,10 @@ LocalErr:
   Public Function GetDataType(ByRef lTableID As Integer, ByRef lColumnID As Integer) As Integer
 
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
     sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID & " And tableID = " & lTableID
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       GetDataType = rsData.Fields(0).Value
@@ -508,10 +496,10 @@ LocalErr:
   Public Function GetColumnTable(ByRef plngColumnID As Integer) As Integer
     ' Return the table id of the given column.
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
-    sSQL = "SELECT tableID" & " FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT tableID FROM ASRSysColumns WHERE columnID = " & Trim(Str(plngColumnID))
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       GetColumnTable = rsData.Fields("TableID").Value
@@ -528,10 +516,10 @@ LocalErr:
   Public Function GetDefaultOrder(ByRef plngTableID As Integer) As Integer
     ' Return the default order ID for the given table.
     Dim sSQL As String
-    Dim rsInfo As ADODB.Recordset
+		Dim rsInfo As Recordset
 
-    sSQL = "SELECT defaultOrderID" & " FROM ASRSysTables" & " WHERE tableID = " & Trim(Str(plngTableID))
-    rsInfo = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT defaultOrderID FROM ASRSysTables WHERE tableID = " & Trim(Str(plngTableID))
+		rsInfo = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     If Not (rsInfo.BOF And rsInfo.EOF) Then
       GetDefaultOrder = rsInfo.Fields(0).Value
     Else
@@ -543,22 +531,22 @@ LocalErr:
 
   End Function
 
-  Public Function GetOrder(ByVal lOrderID As Integer) As ADODB.Recordset
+	Public Function GetOrder(ByVal lOrderID As Integer) As Recordset
 
-    Dim sSQL As String
-    Dim rsOrder As ADODB.Recordset
+		Dim sSQL As String
+		Dim rsOrder As Recordset
 
-    sSQL = "SELECT * " & "FROM ASRSysOrders " & "WHERE OrderID=" & lOrderID
-    rsOrder = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT * FROM ASRSysOrders WHERE OrderID=" & lOrderID
+		rsOrder = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
-    GetOrder = rsOrder
+		GetOrder = rsOrder
 
-  End Function
+	End Function
 
   Public Function GetColumnName(ByVal plngColumnID As Integer) As String
     ' Return the name of the given column.
     Dim sSQL As String
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 
     If plngColumnID = 0 Then
       GetColumnName = ""
@@ -568,7 +556,7 @@ LocalErr:
     End If
 
     sSQL = "SELECT columnName FROM ASRSysColumns WHERE columnID = " & plngColumnID
-    rsTemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     GetColumnName = rsTemp.Fields(0).Value
     rsTemp.Close()
     'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -579,10 +567,10 @@ LocalErr:
   Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
     ' Return the value of the given module parameter.
     Dim sSQL As String
-    Dim rsModule As ADODB.Recordset
+		Dim rsModule As Recordset
 
-    sSQL = "SELECT parameterValue" & " FROM ASRSysModuleSetup" & " WHERE moduleKey = '" & psModuleKey & "'" & " AND parameterKey = '" & psParameterKey & "'"
-    rsModule = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT parameterValue FROM ASRSysModuleSetup WHERE moduleKey = '" & psModuleKey & "' AND parameterKey = '" & psParameterKey & "'"
+		rsModule = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not (rsModule.BOF And rsModule.EOF) Then
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -605,23 +593,23 @@ LocalErr:
     'TM20020530 Fault 3756 - function altered as the sp needs to insert a record into a table
     'before returning a value, so collect the returned parameter rather than a recordset.
 
-    Dim cmdUniqObj As New ADODB.Command
-    Dim pmADO As ADODB.Parameter
+		Dim cmdUniqObj As New Command
+		Dim pmADO As Parameter
 
     With cmdUniqObj
       .CommandText = "sp_ASRUniqueObjectName"
-      .CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+			.CommandType = CommandTypeEnum.adCmdStoredProc
       .CommandTimeout = 0
       .ActiveConnection = gADOCon
 
-      pmADO = .CreateParameter("UniqueObjectName", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 255)
+			pmADO = .CreateParameter("UniqueObjectName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 255)
       .Parameters.Append(pmADO)
 
-      pmADO = .CreateParameter("Prefix", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamInput, 255)
+			pmADO = .CreateParameter("Prefix", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
       .Parameters.Append(pmADO)
       pmADO.Value = strPrefix
 
-      pmADO = .CreateParameter("Type", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+			pmADO = .CreateParameter("Type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
       .Parameters.Append(pmADO)
       pmADO.Value = intType
 
@@ -644,21 +632,21 @@ LocalErr:
 
     On Error GoTo ErrorTrap
 
-    Dim cmdUniqObj As New ADODB.Command
-    Dim pmADO As ADODB.Parameter
+		Dim cmdUniqObj As New Command
+		Dim pmADO As Parameter
 
     If Len(sSQLObjectName) > 0 Then
       With cmdUniqObj
         .CommandText = "sp_ASRDropUniqueObject"
-        .CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+				.CommandType = CommandTypeEnum.adCmdStoredProc
         .CommandTimeout = 0
         .ActiveConnection = gADOCon
 
-        pmADO = .CreateParameter("UniqueObjectName", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamInput, 255)
+				pmADO = .CreateParameter("UniqueObjectName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
         .Parameters.Append(pmADO)
         pmADO.Value = sSQLObjectName
 
-        pmADO = .CreateParameter("Type", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+				pmADO = .CreateParameter("Type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
         .Parameters.Append(pmADO)
         pmADO.Value = iType
 
@@ -686,10 +674,10 @@ ErrorTrap:
 
     ' Returns whether the column uses 1000 separators...
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
-    sSQL = "SELECT Use1000Separator FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT Use1000Separator FROM ASRSysColumns WHERE columnID = " & Trim(Str(plngColumnID))
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -708,10 +696,10 @@ ErrorTrap:
   Public Function GetDecimalsSize(ByVal plngColumnID As Integer) As Short
 
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
     sSQL = "SELECT Decimals FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -728,12 +716,12 @@ ErrorTrap:
 
   Public Function IsAChildOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
 
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim strSQL As String
 
     strSQL = "SELECT * FROM ASRSysRelations WHERE ParentID = " & lBaseTableID & " AND ChildID = " & lTestTableID
 
-    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If rsTemp.BOF And rsTemp.EOF Then
       IsAChildOf = False
@@ -748,12 +736,12 @@ ErrorTrap:
 
   Public Function IsAParentOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
 
-    Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
     Dim strSQL As String
 
     strSQL = "SELECT * FROM ASRSysRelations WHERE ChildID = " & lBaseTableID & " AND ParentID = " & lTestTableID
 
-    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsTemp = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If rsTemp.BOF And rsTemp.EOF Then
       IsAParentOf = False
@@ -769,25 +757,25 @@ ErrorTrap:
   Public Function DateColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
 
     'MH20000705
-    Dim objCalcExpr As New clsExprExpression
+		Dim objCalcExpr As clsExprExpression
 
     DateColumn = False
 
 
     Select Case strType
       Case "C" 'Column
-        DateColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlDate)
+				DateColumn = (GetDataType(lngTableID, lngColumnID) = SQLDataType.sqlDate)
 
       Case Else 'Calculation
 
         ' RH 29/05/01 - This was commented out. Removed the comments to hopefully fix 2214.
 
         objCalcExpr = New clsExprExpression
-        objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
         objCalcExpr.ConstructExpression()
         objCalcExpr.ValidateExpression(True)
 
-        DateColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE)
+				DateColumn = (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_DATE)
         'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
         objCalcExpr = Nothing
 
@@ -798,10 +786,10 @@ ErrorTrap:
   Public Function GetColumnDataType(ByVal lColumnID As Integer) As Integer
 
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
     sSQL = "Select datatype From ASRSysColumns Where columnid = " & lColumnID
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       GetColumnDataType = rsData.Fields(0).Value
@@ -816,25 +804,23 @@ ErrorTrap:
   Public Function BitColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
 
     'RH20000713
-    Dim objCalcExpr As New clsExprExpression
+		Dim objCalcExpr As clsExprExpression
 
-    BitColumn = False
+		Select Case strType
+			Case "C" 'Column
+				BitColumn = (GetDataType(lngTableID, lngColumnID) = SQLDataType.sqlBoolean)
 
-    Select Case strType
-      Case "C" 'Column
-        BitColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlBoolean)
+			Case Else	'Calculation
+				objCalcExpr = New clsExprExpression
+				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+				objCalcExpr.ConstructExpression()
+				objCalcExpr.ValidateExpression(True)
 
-      Case Else 'Calculation
-        objCalcExpr = New clsExprExpression
-        objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-        objCalcExpr.ConstructExpression()
-        objCalcExpr.ValidateExpression(True)
+				BitColumn = (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)
+				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				objCalcExpr = Nothing
 
-        BitColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
-        'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-        objCalcExpr = Nothing
-
-    End Select
+		End Select
 
   End Function
 
@@ -842,10 +828,10 @@ ErrorTrap:
 
     ' Return the table id of the given column.
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
-    sSQL = "SELECT tableName" & " FROM ASRSysColumns " & " JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID" & " WHERE columnID = " & Trim(Str(plngColumnID))
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = "SELECT tableName FROM ASRSysColumns JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID WHERE columnID = " & Trim(Str(plngColumnID))
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       GetColumnTableName = rsData.Fields("TableName").Value
@@ -862,10 +848,10 @@ ErrorTrap:
   Public Function IsPhotoDataType(ByVal lColumnID As Integer) As Boolean
 
     Dim sSQL As String
-    Dim rsData As ADODB.Recordset
+		Dim rsData As Recordset
 
     sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID
-    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not rsData.BOF And Not rsData.EOF Then
       IsPhotoDataType = IIf(rsData.Fields(0).Value = -4, False, True)
