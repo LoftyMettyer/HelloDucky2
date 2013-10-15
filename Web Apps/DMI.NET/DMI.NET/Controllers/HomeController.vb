@@ -1269,7 +1269,8 @@ Namespace Controllers
 						cmdGetPageTitle = Nothing
 					End If
 
-					sTitle = Server.UrlEncode(sTitle)
+					' sTitle = Server.UrlEncode(sTitle)
+					ViewBag.pageTitle = sTitle
 				End If
 
 				If (Len(sErrorDescription) = 0) Then
@@ -1347,9 +1348,59 @@ Namespace Controllers
 						sViewName = "single record"
 					End If
 				End If
+			Else
+
+				' Flag an error if there is no current table or view is specified.
+				If (Session("tableID") <= 0) And _
+				 (Session("viewID") <= 0) Then
+
+					Session("ErrorTitle") = "Find Page"
+					Session("ErrorText") = "No table or view specified."
+					Response.Redirect("FormError")
+				End If
+
+				' Flag an error if there is no current screen is specified.
+				If Session("screenID") <= 0 Then
+					Session("ErrorTitle") = "Find Page"
+					Session("ErrorText") = "No screen specified."
+					Response.Redirect("FormError")
+				End If
+
+				' Get the screen's default order if none is already specified.
+				If Session("orderID") <= 0 Then
+					Dim cmdScreenOrder = New ADODB.Command
+					cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
+					cmdScreenOrder.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+					cmdScreenOrder.ActiveConnection = Session("databaseConnection")
+
+					Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
+					cmdScreenOrder.Parameters.Append(prmOrderID)
+
+					Dim prmScreenID2 = cmdScreenOrder.CreateParameter("screenID", 3, 1)
+					cmdScreenOrder.Parameters.Append(prmScreenID2)
+					prmScreenID2.Value = CleanNumeric(Session("screenID"))
+
+					Err.Clear()
+					cmdScreenOrder.Execute()
+					If (Err.Number <> 0) Then
+						Session("ErrorTitle") = "Find Page"
+						Session("ErrorText") = "The default order for the screen could not be determined :<p>" & FormatError(Err.Description)
+						Response.Redirect("FormError")
+					Else
+						Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
+					End If
+					' Release the ADO command object.
+					cmdScreenOrder = Nothing
+				End If
+
+				' Enable response buffering as we may redirect the response further down this page.
+				Response.Buffer = True
+
+				ViewBag.pageTitle = ""
 			End If
 
 			Return View()
+
 		End Function
 
 		Function _default() As ActionResult
@@ -2485,14 +2536,238 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function LinksMain() As ActionResult
-			If Session("objButtonInfo") Is Nothing Or Session("objHypertextInfo") Is Nothing Or Session("objDropdownInfo") Is Nothing Then
-				Return RedirectToAction("Login", "Account")
+		<HttpPost()>
+		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
+			' Get dashboard items
+			Dim sParameters As String = psScreenInfo
+
+			If sParameters.Length > 0 Then
+
+				ResetSessionVars()
+
+				Session("SSILinkTableID") = CLng(Left(sParameters, InStr(1, sParameters, "!") - 1))
+				Session("SSILinkViewID") = CLng(Mid(sParameters, InStr(sParameters, "!") + 1, (InStr(sParameters, "_") - 1) - (InStr(sParameters, "!"))))
+
+				If Mid(sParameters, InStr(sParameters, "_") + 1) = "" Then
+					Session("TopLevelRecID") = 0
+				Else
+					Session("TopLevelRecID") = CLng(Mid(sParameters, InStr(sParameters, "_") + 1))
+				End If
+
 			End If
 
-			Dim objHypertextInfo As Collection = Session("objHypertextInfo")
-			Dim objButtonInfo As Collection = Session("objButtonInfo")
-			Dim objDropdownInfo As Collection = Session("objDropdownInfo")
+
+			If (CLng(Session("SSILinkTableID")) = CLng(Session("SingleRecordTableID"))) _
+	And (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID"))) Then
+
+				' Ripped from AcctController
+				Try
+					' grab some more info for the dashboard						
+					Dim sErrorDescription = ""
+
+					' Get the self-service record ID.
+					Dim cmdSSRecord = New ADODB.Command
+					cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
+					cmdSSRecord.CommandType = 4	' Stored Procedure
+					cmdSSRecord.ActiveConnection = Session("databaseConnection")
+
+					Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
+					cmdSSRecord.Parameters.Append(prmRecordID)
+
+					Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
+					cmdSSRecord.Parameters.Append(prmRecordCount)
+
+					Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
+					cmdSSRecord.Parameters.Append(prmViewID)
+					prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
+
+					cmdSSRecord.Execute()
+
+					If (Err.Number <> 0) Then
+						sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
+					End If
+
+					If Len(sErrorDescription) = 0 Then
+						If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
+							' Only one record.
+							Session("TopLevelRecID") = CLng(cmdSSRecord.Parameters("@piRecordID").Value)
+						Else
+							If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
+								' No personnel record. 
+								Session("TopLevelRecID") = 0
+							Else
+								' More than one personnel record.
+								sErrorDescription = "You have access to more than one record in the defined Single-record view."
+
+								Session("ErrorTitle") = "Login Page"
+								Session("ErrorText") =
+								 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
+								Return RedirectToAction("Loginerror", "Account")
+							End If
+						End If
+					Else
+						Session("ErrorTitle") = "Login Page"
+						Session("ErrorText") =
+						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+						Return RedirectToAction("Loginerror", "Account")
+					End If
+
+					cmdSSRecord = Nothing
+
+
+					' Get the record description.
+					Dim sRecDesc = ""
+					Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
+
+					cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
+					cmdGetRecordDesc.CommandType = 4 ' Stored procedure
+					cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmTableID)
+					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
+
+					prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmRecordID)
+					prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
+
+					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmParentTableID)
+					prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
+
+					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
+					cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
+					prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
+
+					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+					cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
+
+					Const DEADLOCK_ERRORNUMBER = -2147467259
+					Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
+					Const DEADLOCK_MESSAGEEND =
+					 ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
+					Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
+					Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
+
+					Dim sErrMsg As String = ""
+					Dim fOK = True
+					Dim fDeadlock = True
+					Dim iRetryCount = 0
+					Dim iRETRIES = 0
+
+
+					Do While fDeadlock
+						fDeadlock = False
+
+						cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+
+						cmdGetRecordDesc.Execute()
+
+						If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
+							For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
+								sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+
+								If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And
+								 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And
+								 (UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or
+									((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And
+								 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
+									' The error is for a deadlock.
+									' Sorry about having to use the err.description to trap the error but the err.number
+									' is not specific and MSDN suggests using the err.description.
+									If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
+										iRetryCount = iRetryCount + 1
+										fDeadlock = True
+									Else
+										If Len(sErrorDescription) > 0 Then
+											sErrorDescription = sErrorDescription & vbCrLf
+										End If
+										sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
+										fOK = False
+									End If
+								Else
+									sErrorDescription = sErrorDescription & vbCrLf &
+										FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+									fOK = False
+								End If
+							Next
+
+							cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+
+							If Not fOK Then
+								sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
+							End If
+						End If
+					Loop
+
+					If Len(sErrorDescription) = 0 Then
+						Session("recdesc") = cmdGetRecordDesc.Parameters("recordDesc").Value
+					Else
+						Session("ErrorTitle") = "Login Page"
+						Session("ErrorText") =
+						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+						Return RedirectToAction("Loginerror", "Account")
+					End If
+
+					cmdGetRecordDesc = Nothing
+
+
+					' Are we displaying the Workflow Out of Office Hyperlink for this view?
+					Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
+					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
+					Dim fShowOOOHyperlink As Boolean = False
+
+					Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
+					cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
+					cmdShowOOOLink.CommandType = 4 ' Stored procedure
+					cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
+					cmdShowOOOLink.Parameters.Append(prmTableID2)
+					prmTableID2.Value = lngSSILinkTableID
+
+					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
+					cmdShowOOOLink.Parameters.Append(prmViewID2)
+					prmViewID2.Value = lngSSILinkViewID
+
+					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
+					cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
+
+					Err.Clear()
+					cmdShowOOOLink.Execute()
+
+					If (Err.Number() <> 0) Then
+						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
+					Else
+						fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
+					End If
+
+					Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
+					cmdShowOOOLink = Nothing
+
+				Catch ex As Exception
+					' TODO: SHow an error message
+				End Try
+				' End Ripped
+			End If
+
+
+			Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
+			objNavigation.Connection = Session("databaseConnection")
+			objNavigation.ClearLinks()
+
+			objNavigation.SSITableID = Session("SSILinkTableID")
+			objNavigation.SSIViewID = Session("SSILinkViewID")
+			objNavigation.LoadLinks()
+			objNavigation.LoadNavigationLinks()
+
+			Dim objHypertextInfo As Collection = objNavigation.GetLinks(0)
+			Dim objButtonInfo As Collection = objNavigation.GetLinks(1)
+			Dim objDropdownInfo As Collection = objNavigation.GetLinks(2)
+
+			'Session("objHypertextInfo") = objHypertextInfo
+			'Session("objButtonInfo") = objButtonInfo
+			'Session("objDropdownInfo") = objDropdownInfo
 
 			Dim lstButtonInfo = (From collectionItem As Object In objHypertextInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages)).ToList()
 			lstButtonInfo.AddRange(From collectionItem As Object In objButtonInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages))
@@ -2500,8 +2775,9 @@ Namespace Controllers
 
 			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = lstButtonInfo, .NumberOfLinks = objDropdownInfo.Count}
 
-			Session("SSILinkTableID") = Session("SingleRecordTableID")
-			Session("SSILinkViewID") = Session("SingleRecordViewID")
+			'Session("SSILinkTableID") = Session("SingleRecordTableID")
+			'Session("SSILinkViewID") = Session("SingleRecordViewID")
+
 
 			Return View(viewModel)
 		End Function
@@ -3743,7 +4019,44 @@ Namespace Controllers
 
 #End Region
 
-		Function recordEdit() As ActionResult
+		Function recordEdit(Optional sParameters As String = "") As ActionResult
+
+			If Len(sParameters) > 0 Then
+				' SSI Mode
+
+				Dim lngTopLevelRecordID As Int32
+				Dim sTableName As String
+				Dim sViewName As String
+				Dim lngRecID As Int32
+
+				' Response.Write "#<FONT COLOR='Red'><B>session(linkID) = " & session("linkID") & "</B></FONT>#<BR>"
+				' Response.Write "#<FONT COLOR='Red'><B>sParameters = " & sParameters & "</B></FONT>#"
+
+				lngTopLevelRecordID = Session("TopLevelRecID")
+
+				If CLng(Session("tableID")) = CLng(Session("SSILinkTableID")) Then
+					' Top Level table.
+					Session("recordID") = lngTopLevelRecordID
+					Session("parentTableID") = 0
+					Session("parentRecordID") = 0
+				Else
+					' Child table.
+					Session("viewID") = 0
+					Session("recordID") = lngRecID
+					Session("parentTableID") = Session("SSILinkTableID")
+					Session("parentRecordID") = lngTopLevelRecordID
+				End If
+
+				' Order not important.
+				Session("orderID") = 0
+
+
+
+
+			End If
+
+
+
 			Return PartialView()
 		End Function
 
@@ -3836,7 +4149,7 @@ Namespace Controllers
 					'TODO: error - no parent record in the current view.          
 				End If
 				If CleanNumeric(Session("startMode")) <> 3 Then
-					Return View("recordEdit")
+					Return RedirectToAction("recordEdit", New With {.sParameters = sParameters})
 				Else
 					Return RedirectToAction("Find", New With {.sParameters = "LOAD_0_0_"})
 				End If
@@ -5657,6 +5970,7 @@ Namespace Controllers
 		<HttpPost()>
 		Public Sub ResetSessionVars()
 			Session("recordID") = ""
+			Session("linkType") = ""
 		End Sub
 
 	End Class

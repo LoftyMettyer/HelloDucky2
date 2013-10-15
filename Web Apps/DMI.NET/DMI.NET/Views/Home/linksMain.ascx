@@ -92,12 +92,14 @@
 			//Hide DMI button for non-IE browsers			
 			if(('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) $('#mnutoolFixedOpenHR').hide();
 
+			showDefaultRibbon();
 			$("#toolbarHome").show();
 			$("#toolbarHome").click();
 
+
 			$("#workframe").attr("data-framesource", "linksmain");
 			$('#workframe').css('height', '100%');
-			$('#SSILinksFrame').css('height', '100%');
+			//$('#SSILinksFrame').css('height', '100%');
 
 			refreshPendingWorkflowTiles();
 
@@ -261,8 +263,14 @@
 				if ((pfNewWindow == 1) || (isEMail(psURL) == 0)) {
 					window.open(psURL);
 				} else {
-					loadPartialView(psURL, 'home', 'workframe', '');
+					try {
+						var aParameters = psURL.split('?');
+						loadPartialView(psURL, 'home', 'workframe', aParameters[1]);
 				}
+					catch (e) {
+						alert('error in link');
+			}
+		}
 			}
 		}
 
@@ -426,14 +434,14 @@
 				</li>
 			</ul>	
 			</div>
-
+			<%fFirstSeparator = True%>
 			<div class="hypertextlinks">
 				<%Dim tileCount = 1%>
 				<%For Each navlink In Model.NavigationLinks%>
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>			
 				<%--Dim sTileColourClass = "absColour3"--%>			
 				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
-				<%If navlink.Element_Type = 1 Then		' separator%>
+				<%If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then		' separator%>
 				<%iRowNum = 1%>
 				<%iColNum = 1%>
 				<%If fFirstSeparator Then%>
@@ -459,8 +467,8 @@
 							<% iColNum += 1%>
 							<%iRowNum = 1%>
 							<script type="text/javascript">
-								$("#hypertextlinkseparatorframe<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
-								$("#hypertextlinkseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
 							<%End If%>
 							<%
@@ -507,7 +515,59 @@
 							<%End If%>
 							<%End If%>
 							<%tileCount += 1%>
+							<%Next
+								
+							
+								
+								Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
+								objNavigation.Connection = Session("databaseConnection")
+								' Get the navigation hypertext links.
+								Dim iFindPage As Int16 = 0
+								'If sWorkPage = "FIND" Then
+								'	iFindPage = 1
+								'Else
+								'	iFindPage = 0
+								'End If
+								Dim objNavigationHyperlinkInfo = objNavigation.GetNavigationLinks(0, CBool(iFindPage))
+								Dim sText As String
+								Dim sDestination As String
+								
+								For iCount = 1 To objNavigationHyperlinkInfo.Count									
+									sText = Html.Encode(objNavigationHyperlinkInfo(iCount).text1)
+		
+									If objNavigationHyperlinkInfo(iCount).linkToFind = 0 Then
+										sDestination = "linksMain?" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
+			
+										If objNavigationHyperlinkInfo(iCount).singleRecord = 1 Then
+											sDestination = sDestination & "_0"
+										Else
+											sDestination = sDestination & "_" & CStr(Session("TopLevelRecID"))
+										End If
+									Else
+										sDestination = "recordEditMain?multifind_0_" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
+									End If
+								%>
+							
+							<%If iRowNum > iMaxRows Then%>
+							<% iColNum += 1%>
+							<%iRowNum = 1%>
+							<script type="text/javascript">
+								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+							</script>
+							<%End If%>
+							
+
+								<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+								data-sizex="1" data-sizey="1" onclick="goHyperlink('<%=sDestination%>', 0)">
+								<a href="#"><%=sText%></a>
+								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
+							</li>
+							<%iRowNum += 1%>
+							<%tileCount += 1%>
 							<%Next%>
+							
+
 							<%If Not fFirstSeparator Then		' close off the hypertext group%>
 						</ul>
 					</div>
@@ -515,6 +575,10 @@
 			</ul>
 			<%End If%>
 		</div>
+
+
+		
+
 
 
 		<%fFirstSeparator = True%>

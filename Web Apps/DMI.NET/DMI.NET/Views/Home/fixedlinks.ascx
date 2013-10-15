@@ -193,6 +193,22 @@
 								</a>
 							</div>
 
+							<div id="mnutoolAccessLinksFind" class="button hidden">
+								<a href="#" rel="table" title="Access the links for the selected record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png")%>" alt="" />
+									<i class="icon-pencil"></i>
+									<h6>Access Links</h6>
+								</a>
+							</div>
+
+							<div id="mnutoolCancelLinksFind" class="button hidden">
+								<a href="#" rel="table" title="Return to links page">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
+									<i class="icon-close"></i>
+									<h6>Return to the<br/>links page</h6>
+								</a>
+							</div>
+
 							<div id="mnutoolFirstRecordFind" class="button">
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
@@ -1076,7 +1092,7 @@
 	<div class="FixedLinksRight" >
 		<div class="userpic" style="float: right;vertical-align: central;padding:0 10px 0 10px">
 			<img style="vertical-align: middle" src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />	
-		</div>
+	</div>
 		<div class="userdetails">
 		<div class="userid">
 			<%=Session("username")%>

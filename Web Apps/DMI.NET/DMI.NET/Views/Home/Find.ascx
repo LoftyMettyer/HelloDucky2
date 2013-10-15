@@ -4,55 +4,38 @@
 
 <script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
 
-<%
-	On Error Resume Next
+<script type="text/javascript">
 
-	' Flag an error if there is no current table or view is specified.
-	If (Session("tableID") <= 0) And _
-	 (Session("viewID") <= 0) Then
+	$(document).ready(function () {		
+		if ('<%=session("linktype")%>' == 'multifind') {
+			//for multifind (SSI views) show relevant buttons with applicable functions
+			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);
+			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
+			menu_setVisibleMenuItem("mnutoolCancelLinksFind", true);
+			
+			//redo the doubleclick function			
+			setTimeout('$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) {doEdit();}});', 200);
+
+		} else {
+			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", true);
+			menu_setVisibleMenuItem("mnutoolAccessLinksFind", false);
+			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
+		}
+	});
 	
-		Session("ErrorTitle") = "Find Page"
-		Session("ErrorText") = "No table or view specified."
-		Response.Redirect("FormError")
-	End If
-	
-	' Flag an error if there is no current screen is specified.
-	If Session("screenID") <= 0 Then
-		Session("ErrorTitle") = "Find Page"
-		Session("ErrorText") = "No screen specified."
-		Response.Redirect("FormError")
-	End If
-	
-	' Get the screen's default order if none is already specified.
-	If Session("orderID") <= 0 Then
-		Dim cmdScreenOrder = New ADODB.Command
-		cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
-		cmdScreenOrder.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdScreenOrder.ActiveConnection = Session("databaseConnection")
+	function doEdit() {
+		var sRecordID = selectedRecordID();
 
-		Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
-		cmdScreenOrder.Parameters.Append(prmOrderID)
+		if ("<%=session("linkType")%>" == "multifind") {
+				var sParams = "<%=session("TableID")%>!<%=session("ViewID")%>_";
+				sParams = sParams.concat(sRecordID);
+				loadPartialView('linksMain', 'Home', 'workframe', sParams);
+			}
+		}
 
-		Dim prmScreenID2 = cmdScreenOrder.CreateParameter("screenID", 3, 1)
-		cmdScreenOrder.Parameters.Append(prmScreenID2)
-		prmScreenID2.value = CleanNumeric(Session("screenID"))
 
-		Err.Clear()
-		cmdScreenOrder.Execute()
-		If (Err.Number <> 0) Then
-			Session("ErrorTitle") = "Find Page"
-			Session("ErrorText") = "The default order for the screen could not be determined :<p>" & formatError(Err.Description)
-			Response.Redirect("FormError")
-		Else
-			Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
-		End If
-		' Release the ADO command object.
-		cmdScreenOrder = Nothing
-	End If
+</script>
 
-	' Enable response buffering as we may redirect the response further down this page.
-	Response.Buffer = True
-%>
 
 <div id="divFindForm" <%=session("BodyTag")%>>
 	<form action="" class="absolutefull" method="POST" id="frmFindForm" name="frmFindForm">
@@ -62,43 +45,53 @@
 								On Error Resume Next
 	
 								Dim sErrorDescription As String = ""
-	
-								' Display the appropriate page title.
-								Dim cmdFindWindowTitle = New ADODB.Command
-								cmdFindWindowTitle.CommandText = "sp_ASRIntGetFindWindowInfo"
-								cmdFindWindowTitle.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-								cmdFindWindowTitle.ActiveConnection = Session("databaseConnection")
+								If ViewBag.pageTitle.ToString().Length = 0 Then
+									' DMI View.
+																	
+									' Display the appropriate page title.
+									Dim cmdFindWindowTitle = New ADODB.Command
+									cmdFindWindowTitle.CommandText = "sp_ASRIntGetFindWindowInfo"
+									cmdFindWindowTitle.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+									cmdFindWindowTitle.ActiveConnection = Session("databaseConnection")
 
-								Dim prmTitle = cmdFindWindowTitle.CreateParameter("title", 200, 2, 100)
-								cmdFindWindowTitle.Parameters.Append(prmTitle)
+									Dim prmTitle = cmdFindWindowTitle.CreateParameter("title", 200, 2, 100)
+									cmdFindWindowTitle.Parameters.Append(prmTitle)
 
-								Dim prmQuickEntry = cmdFindWindowTitle.CreateParameter("quickEntry", 11, 2) ' 11=bit, 2=output
-								cmdFindWindowTitle.Parameters.Append(prmQuickEntry)
+									Dim prmQuickEntry = cmdFindWindowTitle.CreateParameter("quickEntry", 11, 2)	' 11=bit, 2=output
+									cmdFindWindowTitle.Parameters.Append(prmQuickEntry)
 
-								Dim prmScreenID = cmdFindWindowTitle.CreateParameter("screenID", 3, 1)
-								cmdFindWindowTitle.Parameters.Append(prmScreenID)
-								prmScreenID.value = CleanNumeric(Session("screenID"))
+									Dim prmScreenID = cmdFindWindowTitle.CreateParameter("screenID", 3, 1)
+									cmdFindWindowTitle.Parameters.Append(prmScreenID)
+									prmScreenID.Value = CleanNumeric(Session("screenID"))
 
-								Dim prmViewID = cmdFindWindowTitle.CreateParameter("viewID", 3, 1)
-								cmdFindWindowTitle.Parameters.Append(prmViewID)
-								prmViewID.value = CleanNumeric(Session("viewID"))
+									Dim prmViewID = cmdFindWindowTitle.CreateParameter("viewID", 3, 1)
+									cmdFindWindowTitle.Parameters.Append(prmViewID)
+									prmViewID.Value = CleanNumeric(Session("viewID"))
 
-								Err.Clear()
-								cmdFindWindowTitle.Execute()
-								If (Err.Number <> 0) Then
-									sErrorDescription = "The page title could not be created." & vbCrLf & formatError(Err.Description)
-								End If
+									Err.Clear()
+									cmdFindWindowTitle.Execute()
+									If (Err.Number <> 0) Then
+										sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(Err.Description)
+									End If
 
-								If Len(sErrorDescription) = 0 Then
+									If Len(sErrorDescription) = 0 Then
+										' Dim homelinkURL = Url.Action("Main", "Home", New With {.SSIMode = vbTrue})
+										Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
+										Response.Write(String.Format("<div class='pageTitleDiv'><a href='{0}' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a><span class='pageTitle'>Find - " & _
+																								 Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</span>" & vbCrLf, homelinkURL))
+										Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdFindWindowTitle.Parameters("quickEntry").Value & "></div>" & vbCrLf)
+									End If
+								
+									' Release the ADO command object.
+									cmdFindWindowTitle = Nothing
+								Else
+									' SSI View.
 									' Dim homelinkURL = Url.Action("Main", "Home", New With {.SSIMode = vbTrue})
 									Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
-									Response.Write(String.Format("<div class='pageTitleDiv'><a href='{0}' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a><span class='pageTitle'>Find - " & _
-																							 Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</span>" & vbCrLf, homelinkURL))
-									Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdFindWindowTitle.Parameters("quickEntry").Value & "></div>" & vbCrLf)
+									Response.Write(String.Format("<div class='pageTitleDiv'><a href='{0}' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a><span class='pageTitle'>" & _
+																							 ViewBag.pageTitle & "</span>" & vbCrLf, homelinkURL))
+									Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & ViewBag.pageTitle & "></div>" & vbCrLf)
 								End If
-								
-								' Release the ADO command object.
-								cmdFindWindowTitle = Nothing
 							%>
 						</div>
 					<div id="findGridRow" style="height: <%If Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
@@ -184,7 +177,7 @@
 									cmdFindRecords.Parameters.Append(prmTableID)
 									prmTableID.value = CleanNumeric(Session("tableID"))
 
-									prmViewID = cmdFindRecords.CreateParameter("viewID", 3, 1)
+									Dim prmViewID = cmdFindRecords.CreateParameter("viewID", 3, 1)
 									cmdFindRecords.Parameters.Append(prmViewID)
 									prmViewID.value = CleanNumeric(Session("viewID"))
 

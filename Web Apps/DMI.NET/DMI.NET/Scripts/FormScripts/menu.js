@@ -444,7 +444,7 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
 		showDefaultRibbon();
 	}
-
+	
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
@@ -571,6 +571,18 @@ function menu_MenuClick(sTool) {
 		} finally {
 			return false;
 		}
+	}
+
+
+	//-------------------------- SSI Links Buttons -----------------------//
+	if (sToolName == "mnutoolAccessLinksFind") {
+		doEdit();
+		return false;
+	}
+
+	if (sToolName == "mnutoolCancelLinksFind") {
+		doCancel();
+		return false;
 	}
 
 

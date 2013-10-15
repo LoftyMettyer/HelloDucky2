@@ -113,9 +113,11 @@
 				$.ajax({
 					url: 'linksMain',
 					dataType: 'html',
+					type: 'POST',
+					data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0' },
 					success: function (html) {
-						$("#workframe").hide();
-						$("#SSILinksFrame").html(html).show();
+						//$("#workframe").hide();
+						$("#workframe").html(html).show();
 						
 
 						//final resize of the dashboard - for tiles, ensure width is sufficient
@@ -124,7 +126,7 @@
 							var hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
 							var buttonwidth = Number($('.linkspagebutton').css('width').replace('px', ''));
 							if ((pwfswidth > 0) && (hlwidth > 0) && (buttonwidth > 0)) {
-								var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300;
+								var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300 + 300;								
 								requiredWidth += 'px';								
 								$('.tileContent').css('width', requiredWidth);
 							}

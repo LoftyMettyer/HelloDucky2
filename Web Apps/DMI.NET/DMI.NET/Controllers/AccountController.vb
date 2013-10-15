@@ -1171,31 +1171,6 @@ Namespace Controllers
 
 			cmdModuleInfo = Nothing
 
-			' Get dashboard items
-
-			Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
-			objNavigation.Connection = Session("databaseConnection")
-			objNavigation.ClearLinks()
-
-			objNavigation.SSITableID = Session("SingleRecordTableID")
-			objNavigation.SSIViewID = Session("SingleRecordViewID")
-			objNavigation.LoadLinks()
-			objNavigation.LoadNavigationLinks()
-
-			Dim objHypertextInfo As Collection = objNavigation.GetLinks(0)
-			Dim objButtonInfo As Collection = objNavigation.GetLinks(1)
-			Dim objDropdownInfo As Collection = objNavigation.GetLinks(2)
-
-
-			Session("objHypertextInfo") = objHypertextInfo
-			Session("objButtonInfo") = objButtonInfo
-			Session("objDropdownInfo") = objDropdownInfo
-
-			objNavigation = Nothing
-			objHypertextInfo = Nothing
-			objButtonInfo = Nothing
-			objDropdownInfo = Nothing
-
 			Session("EnableSQL2000Functions") = False
 
 			If Session("WinAuth") Then
@@ -1229,234 +1204,44 @@ Namespace Controllers
 					Return RedirectToAction("Main", "Home")
 				End If
 			Else
-				If isWidgetLogin Then
-					' call the widget function if applicable
-					'Dim str As String = ASRIntranetFunctions.GetDBValue(Session("databaseConnection"))
+
+
+
+				Dim cookie = New HttpCookie("Login")
+				cookie.Expires = DateTime.Now.AddYears(1)
+				cookie.HttpOnly = True
+				cookie("User") = Request.Form("txtUserNameCopy")
+				'dont save or retrieve these anymore HRPRO-3030 / 3031
+				'cookie("Database") = Request.Form("txtDatabase")
+				'cookie("Server") = Request.Form("txtServer")
+				cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
+				Response.Cookies.Add(cookie)
+
+				If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
+					' non-IE browsers don't get DMI access yet.
+					ViewBag.SSIMode = True
 				Else
-					Try
-						' grab some more info for the dashboard						
-						Dim sErrorDescription = ""
-
-						' Get the self-service record ID.
-						Dim cmdSSRecord = New ADODB.Command
-						cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
-						cmdSSRecord.CommandType = 4	' Stored Procedure
-						cmdSSRecord.ActiveConnection = Session("databaseConnection")
-
-						Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
-						cmdSSRecord.Parameters.Append(prmRecordID)
-
-						Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
-						cmdSSRecord.Parameters.Append(prmRecordCount)
-
-						prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
-						cmdSSRecord.Parameters.Append(prmViewID)
-						prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
-
-						cmdSSRecord.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
-						End If
-
-						If Len(sErrorDescription) = 0 Then
-							If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
-								' Only one record.
-								Session("TopLevelRecID") = CLng(cmdSSRecord.Parameters("@piRecordID").Value)
-							Else
-								If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
-									' No personnel record. 
-									Session("TopLevelRecID") = 0
-								Else
-									' More than one personnel record.
-									sErrorDescription = "You have access to more than one record in the defined Single-record view."
-
-									Session("ErrorTitle") = "Login Page"
-									Session("ErrorText") =
-									 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
-									Return RedirectToAction("Loginerror")
-								End If
-							End If
-						Else
-							Session("ErrorTitle") = "Login Page"
-							Session("ErrorText") =
-							 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-							Return RedirectToAction("Loginerror")
-						End If
-
-						cmdSSRecord = Nothing
-
-
-						' Get the record description.
-						Dim sRecDesc = ""
-						Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
-
-						cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-						cmdGetRecordDesc.CommandType = 4 ' Stored procedure
-						cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
-
-						prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmTableID)
-						prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
-
-						prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmRecordID)
-						prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
-
-						Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
-						cmdGetRecordDesc.Parameters.Append(prmParentTableID)
-						prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
-
-						Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
-						cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
-						prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
-
-						Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-						cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
-
-						Const DEADLOCK_ERRORNUMBER = -2147467259
-						Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
-						Const DEADLOCK_MESSAGEEND =
-						 ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
-						Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
-						Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
-
-						Dim sErrMsg As String = ""
-						Dim fOK = True
-						Dim fDeadlock = True
-						Dim iRetryCount = 0
-						Dim iRETRIES = 0
-
-
-						Do While fDeadlock
-							fDeadlock = False
-
-							cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-							cmdGetRecordDesc.Execute()
-
-							If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
-								For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-									sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-									If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And
-									 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And
-									 (UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or
-										((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And
-									 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-										' The error is for a deadlock.
-										' Sorry about having to use the err.description to trap the error but the err.number
-										' is not specific and MSDN suggests using the err.description.
-										If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
-											iRetryCount = iRetryCount + 1
-											fDeadlock = True
-										Else
-											If Len(sErrorDescription) > 0 Then
-												sErrorDescription = sErrorDescription & vbCrLf
-											End If
-											sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-											fOK = False
-										End If
-									Else
-										sErrorDescription = sErrorDescription & vbCrLf &
-											FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-										fOK = False
-									End If
-								Next
-
-								cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-								If Not fOK Then
-									sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
-								End If
-							End If
-						Loop
-
-						If Len(sErrorDescription) = 0 Then
-							Session("recdesc") = cmdGetRecordDesc.Parameters("recordDesc").Value
-						Else
-							Session("ErrorTitle") = "Login Page"
-							Session("ErrorText") =
-							 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-							Return RedirectToAction("Loginerror")
-						End If
-
-						cmdGetRecordDesc = Nothing
-
-
-						' Are we displaying the Workflow Out of Office Hyperlink for this view?
-						Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
-						Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
-						Dim fShowOOOHyperlink As Boolean = False
-
-						Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
-						cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
-						cmdShowOOOLink.CommandType = 4 ' Stored procedure
-						cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
-
-						Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
-						cmdShowOOOLink.Parameters.Append(prmTableID2)
-						prmTableID2.Value = lngSSILinkTableID
-
-						Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
-						cmdShowOOOLink.Parameters.Append(prmViewID2)
-						prmViewID2.Value = lngSSILinkViewID
-
-						Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
-						cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
-
-						Err.Clear()
-						cmdShowOOOLink.Execute()
-
-						If (Err.Number() <> 0) Then
-							sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
-						Else
-							fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
-						End If
-
-						Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-						cmdShowOOOLink = Nothing
-						
-					Catch ex As Exception
-						' TODO: SHow an error message
-					End Try
-
-					Dim cookie = New HttpCookie("Login")
-					cookie.Expires = DateTime.Now.AddYears(1)
-					cookie.HttpOnly = True
-					cookie("User") = Request.Form("txtUserNameCopy")
-					'dont save or retrieve these anymore HRPRO-3030 / 3031
-					'cookie("Database") = Request.Form("txtDatabase")
-					'cookie("Server") = Request.Form("txtServer")
-					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
-					Response.Cookies.Add(cookie)
-
-					If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
-						' non-IE browsers don't get DMI access yet.
-						ViewBag.SSIMode = True
-					Else
-						Select Case Session("SelfServiceUserType")
-							Case 1		'IF DMI Multi
-								' Return RedirectToAction("Main", "Home")
-								ViewBag.SSIMode = False
-							Case 2		'IF DMI Single
-								' Return RedirectToAction("Main", "Home")
-								ViewBag.SSIMode = False
-							Case 3		'IF DMI Single And SSI
-								' Return RedirectToAction("LinksMain", "Home")
-								ViewBag.SSIMode = True
-							Case 4		'IF SSI Only
-								' Return RedirectToAction("LinksMain", "Home")
-								ViewBag.SSIMode = True
-							Case Else
-								Return RedirectToAction("login", "account")
-						End Select
-					End If
-
-					' always main.
-					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
-
+					Select Case Session("SelfServiceUserType")
+						Case 1		'IF DMI Multi
+							' Return RedirectToAction("Main", "Home")
+							ViewBag.SSIMode = False
+						Case 2		'IF DMI Single
+							' Return RedirectToAction("Main", "Home")
+							ViewBag.SSIMode = False
+						Case 3		'IF DMI Single And SSI
+							' Return RedirectToAction("LinksMain", "Home")
+							ViewBag.SSIMode = True
+						Case 4		'IF SSI Only
+							' Return RedirectToAction("LinksMain", "Home")
+							ViewBag.SSIMode = True
+						Case Else
+							Return RedirectToAction("login", "account")
+					End Select
 				End If
+
+				' always main.
+				Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+
 			End If
 
 			Return RedirectToAction("login", "account")
