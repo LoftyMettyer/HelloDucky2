@@ -1075,8 +1075,8 @@
 	</div>
 	<div class="FixedLinksRight" >
 		<div class="userpic" style="float: right;vertical-align: central;padding:0 10px 0 10px">
-			<img src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />
-	</div>
+			<img style="vertical-align: middle" src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />	
+		</div>
 		<div class="userdetails">
 		<div class="userid">
 			<%=Session("username")%>
