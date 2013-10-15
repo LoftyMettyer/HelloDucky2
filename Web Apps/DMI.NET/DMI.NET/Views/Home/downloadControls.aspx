@@ -434,17 +434,6 @@
 		</object>
 
 
-		<!-- Calendar Reports Key control -->
-		<object
-			classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
-			codebase="cabs/COAInt_Client.cab#version=1,0,0,2"
-			id="ctlKey"
-			name="ctlKey"
-			style="WIDTH: 100%; visibility: hidden; display: none"
-			width="100%"
-			height="85%">
-		</object>
-
 		<!-- Intranet OLE Embedded control -->
 		<object
 			id="ASRIntOLE1"

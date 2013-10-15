@@ -3,16 +3,6 @@
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
 
-<object
-	classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
-	codebase="cabs/COAInt_CalRepKey.cab#version=1,0,0,2"
-	id="ctlKey"
-	name="ctlKey"
-	width="0"
-	height="0"
-	style="VISIBILITY: hidden; width: 0px; height: 0px">
-</object>
-
 <%
 	Dim icount As Integer
 	Dim fok As Boolean

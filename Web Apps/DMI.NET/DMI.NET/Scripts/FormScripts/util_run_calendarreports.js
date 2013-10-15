@@ -1,4 +1,6 @@
 ﻿
+var objCalendarKey = [];
+
 //
 //Taken from util_run_calendarrepoart_nav.ascx
 //
@@ -563,11 +565,8 @@ function refreshCalendar() {
 		return true;
 }
 
-function fillCalBoxes()
-{
+function fillCalBoxes() {
 	 
-		var frmKey =  OpenHR.getForm("calendarframe_key","frmKey");
-
 		//var docCalendar = window.parent.frames("calendarframe_calendar").document;
 		var frmCalendarData =OpenHR.getForm("dataframe","frmCalendarData");
 		//var docData = window.parent.frames("dataframe").document;
@@ -590,7 +589,7 @@ function fillCalBoxes()
 				{
 						INPUT_STRING = frmCalendarData.item(i).value;
 					strEventID = INPUT_STRING.substring(INPUT_STRING.indexOf("***") + 3, INPUT_STRING.indexOf("***", INPUT_STRING.indexOf("***") + 3));
-						lngColour = Number(frmKey.ctlKey.GetKeyColour(strEventID));
+					lngColour = Number(getColorForKey(strEventID));
 						intBaseRecordIndex = Number(INPUT_STRING.substring(0,INPUT_STRING.indexOf("***")));
 
 						sDetailControl = "EventDetail_" + elementName.substring(elementName.lastIndexOf("_")+1,elementName.length);
@@ -614,7 +613,6 @@ function refreshDateSpecifics()
 		var frmOptions = OpenHR.getForm("calendarframe_options","frmOptions");
 		var objBaseCTL;
 		var bIncBHols, bIncWorkDaysOnly, bShowBHols, bShowCaptions, bShowWeekends;
-		var frmKey = OpenHR.getForm("calendarframe_key","frmKey");
 	
 		bIncBHols = (frmOptions.chkIncludeBHols.checked == true);
 		bIncWorkDaysOnly = (frmOptions.chkIncludeWorkingDaysOnly.checked == true);
@@ -622,7 +620,7 @@ function refreshDateSpecifics()
 		bShowCaptions = (frmOptions.chkCaptions.checked == true);
 		bShowWeekends = (frmOptions.chkShadeWeekends.checked == true);
 
-		frmKey.ctlKey.CaptionsVisible = (bShowCaptions);
+		//frmKey.ctlKey.CaptionsVisible = (bShowCaptions);
 	
 		for (var i=1; i<=Number(frmCalendar.txtBaseCtlCount.value); i++) 
 		{
@@ -1109,40 +1107,60 @@ function util_run_calendarreport_calendar_window_onload() {
 //Taken from util_run_calendarreport_key.ascx
 //
 
-function populateKey() {
-		var strKey, strDescription, strCode;
-		var lngColour;
-		var strControlName = '';
+function addKeyToTable(strKey, strDescription, strCode, lngColour) {
+	
+	var objKey = document.getElementById("tblCalendarReportKey");
 
-		frmKey.ctlKey.Clear_Key();
+	var row = objKey.insertRow(objKey.rows.length);
+	var cell1 = row.insertCell(0);
+	var cell2 = row.insertCell(1);
+	cell1.innerHTML = strCode;
+	cell1.backgroundColor = lngColour;
+	cell1.bgColor = lngColour;
+	cell1.borderWidth = "1px";
+	cell1.borderColor = "black";
+	cell2.innerHTML = strDescription;
 
-		for (var i = 1; i <= frmKeyInfo.key_Count.value; i++) {
-				strControlName = 'key_ID' + i;
-				strKey = document.getElementById(strControlName).getAttribute('value');
-				strControlName = 'key_Name' + i;
-				strDescription = document.getElementById(strControlName).getAttribute('value');
-				strControlName = 'key_Code' + i;
-				strCode = document.getElementById(strControlName).getAttribute('value');
-				strControlName = 'key_Colour' + i;
-				lngColour = Number(document.getElementById(strControlName).getAttribute('value'));
-
-				frmKey.ctlKey.Add_Key(strKey, strDescription, strCode, lngColour);
-		}
-
-		frmKey.ctlKey.Sort();
-
-		if (frmKeyInfo.txtHasMultiple.value == '1') {
-				strKey = "EVENT_MULTIPLE";
-				strDescription = "Multiple Events";
-				strCode = ".";
-				lngColour = 16777215;
-
-				frmKey.ctlKey.Add_Key(strKey, strDescription, strCode, lngColour);
-		}
-
-		return true;
 }
 
+function getColorForKey(searchTerm) {
+	for (var i = 0, len = objCalendarKey.length; i < len; i++) {
+		if (objCalendarKey[i]["key"] === searchTerm) return i;
+	}
+	return -1;
+}
+
+
+function populateKey() {
+
+	var strKey, strDescription, strCode;
+	var lngColour;
+	var strControlName = '';
+
+	for (var i = 1; i <= frmKeyInfo.key_Count.value; i++) {
+		strControlName = 'key_ID' + i;
+		strKey = document.getElementById(strControlName).getAttribute('value');
+		strControlName = 'key_Name' + i;
+		strDescription = document.getElementById(strControlName).getAttribute('value');
+		strControlName = 'key_Code' + i;
+		strCode = document.getElementById(strControlName).getAttribute('value');
+		strControlName = 'key_Colour' + i;
+		lngColour = Number(document.getElementById(strControlName).getAttribute('value'));
+
+		addKeyToTable(strKey, strDescription, strCode, lngColour);
+		objCalendarKey.push({ key: strKey, color: lngColour });
+	}
+
+	if (frmKeyInfo.txtHasMultiple.value == '1') {
+		strKey = "EVENT_MULTIPLE";
+		strDescription = "Multiple Events";
+		strCode = ".";
+		lngColour = 16777215;
+		addKeyToTable(strKey, strDescription, strCode, lngColour);
+	}
+
+	return true;
+}
 
 
 //
