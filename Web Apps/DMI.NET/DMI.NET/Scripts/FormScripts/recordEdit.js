@@ -1344,8 +1344,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//TODO: Font size change - this control is fixed in size.
 			top = (Number(controlItemArray[4]) / 15);
 			left = (Number(controlItemArray[5]) / 15);
-			height = 58; //(Number((controlItemArray[6]) / 15) - 2);
-			width = 125; //(Number((controlItemArray[7]) / 15) - 2);
+			height = 47; //(Number((controlItemArray[6]) / 15) - 2);
+			width = 120; //(Number((controlItemArray[7]) / 15) - 2);
 			if (controlItemArray[19] == "0") {
 				//pictureborder?
 				borderCss = "border-style: none;";
@@ -1375,47 +1375,59 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.border = borderCss;
 
 			for (var i = 0; i < 7; i++) {
-				var offsetLeft = 26 + (i * 13);
-				var dayLabel = fieldset.appendChild(document.createElement("span"));
+				var offsetLeft = 19 + (i * 13);
+				var dayLink = fieldset.appendChild(document.createElement("a"));
 				switch (i) {
-					case 0:
-						dayLabel.textContent = "S";
-						break;
-					case 1:
-						dayLabel.textContent = "M";
-						break;
-					case 2:
-						dayLabel.textContent = "T";
-						break;
-					case 3:
-						dayLabel.textContent = "W";
-						break;
-					case 4:
-						dayLabel.textContent = "T";
-						break;
-					case 5:
-						dayLabel.textContent = "F";
-						break;
-					case 6:
-						dayLabel.textContent = "S";
-						break;
+				case 0:
+					dayLink.textContent = "S";
+					break;
+				case 1:
+					dayLink.textContent = "M";
+					break;
+				case 2:
+					dayLink.textContent = "T";
+					break;
+				case 3:
+					dayLink.textContent = "W";
+					break;
+				case 4:
+					dayLink.textContent = "T";
+					break;
+				case 5:
+					dayLink.textContent = "F";
+					break;
+				case 6:
+					dayLink.textContent = "S";
+					break;
 				}
 
-				//Day labels
-				dayLabel.style.fontFamily = controlItemArray[11];
-				dayLabel.style.fontSize = controlItemArray[12] + 'pt';
-				dayLabel.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-				dayLabel.style.position = "absolute";
-				dayLabel.style.top = "6px";
-				dayLabel.style.left = offsetLeft + 3 + "px";
+				//Day labels (they are in reality anchors ['a'])
+				dayLink.style.fontFamily = controlItemArray[11];
+				dayLink.style.fontSize = controlItemArray[12] + 'pt';
+				dayLink.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+				dayLink.style.position = "absolute";
+				dayLink.style.top = "0px";
+				dayLink.style.left = offsetLeft + 3 + "px";
+				dayLink.style.textDecoration = "none";
+				dayLink.style.cursor = "default";
+				$(dayLink).attr('href', '#');
+				$(dayLink).attr('data-checkboxes', controlID + "_" + ((i * 2) + 1) + "," + controlID + "_" + ((i * 2) + 2)); //Data attribute to hold associated checkboxes
 
-				//AM Boxes
+				//If the control is enabled, add an event on clicking the link to toggle its associated checkboxes
+				if (fControlEnabled) {
+					$(dayLink).click(function (ev1) {
+						ev1.preventDefault();
+						toggleCheckboxes(this);
+					});
+				}
+				
+			//AM Boxes
 				var amCheckbox = fieldset.appendChild(document.createElement("input"));
 				amCheckbox.type = "checkbox";
 				amCheckbox.id = controlID + "_" + ((i * 2) + 1);
 				amCheckbox.style.padding = "0px";
 				amCheckbox.style.position = "absolute";
-				amCheckbox.style.top = "22px";
+				amCheckbox.style.top = "12px";
 				amCheckbox.style.left = offsetLeft + "px";
 				if (!fControlEnabled) amCheckbox.disabled = true;
 
@@ -1425,36 +1437,71 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				pmCheckbox.id = controlID + "_" + ((i * 2) + 2);
 				pmCheckbox.style.padding = "0px";
 				pmCheckbox.style.position = "absolute";
-				pmCheckbox.style.top = "36px";
+				pmCheckbox.style.top = "26px";
 				pmCheckbox.style.left = offsetLeft + "px";
 				if (!fControlEnabled) pmCheckbox.disabled = true;
 			}
 
-			//AM/PM Labels
-			label = document.createElement("span");
-			label.textContent = "AM";
-			label.style.fontFamily = controlItemArray[11];
-			label.style.fontSize = controlItemArray[12] + 'pt';
-			label.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-			label.style.position = "absolute";
-			label.style.top = top + 22 + "px";
-			label.style.left = left + 4 + "px";
-			addControl(iPageNo, label);
+			var checkboxesToAssociate, j;
+			
+			//AM/PM Labels (they are in reality anchors ['a'])
+			var link = document.createElement("a");
+			link.textContent = "AM";
+			link.style.fontFamily = controlItemArray[11];
+			link.style.fontSize = controlItemArray[12] + 'pt';
+			link.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+			link.style.position = "relative";
+			link.style.top = "8px";
+			link.style.left = "4px";
+			link.style.textDecoration = "none";
+			link.style.cursor = "default";
+			$(link).attr('href', '#');
+			checkboxesToAssociate = "";
+			for (j = 1; j <= 13; j += 2) {
+				checkboxesToAssociate += controlID + "_" + j.toString() + ",";
+			}
+			$(link).attr('data-checkboxes', checkboxesToAssociate.substring(0, checkboxesToAssociate.length - 1)); //Data attribute to hold associated checkboxes
+		
+			//If the control is enabled, add an event on clicking the link to toggle its associated checkboxes
+			if (fControlEnabled) {
+				$(link).click(function (ev2) {
+					ev2.preventDefault();
+					toggleCheckboxes(this);
+				});
+			}
+			
+			fieldset.appendChild(link);
 
-			label = document.createElement("span");
-			label.textContent = "PM";
-			label.style.fontFamily = controlItemArray[11];
-			label.style.fontSize = controlItemArray[12] + 'pt';
-			label.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-			label.style.position = "absolute";
-			label.style.top = top + 36 + "px";
-			label.style.left = left + 4 + "px";
-			addControl(iPageNo, label);
+			link = document.createElement("a");
+			link.textContent = "PM";
+			link.style.fontFamily = controlItemArray[11];
+			link.style.fontSize = controlItemArray[12] + 'pt';
+			link.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+			link.style.position = "relative";
+			link.style.top = "21px";
+			link.style.left = "-12px";
+			link.style.textDecoration = "none";
+			link.style.cursor = "default";
+			$(link).attr('href', '#');
+			checkboxesToAssociate = "";
+			for (j = 2; j <= 14; j += 2)
+			{
+				checkboxesToAssociate += controlID + "_" + j.toString() + ",";
+			}
+			$(link).attr('data-checkboxes', checkboxesToAssociate.substring(0, checkboxesToAssociate.length - 1)); //Data attribute to hold associated checkboxes
+			
+			//If the control is enabled, add an event on clicking the link to toggle its associated checkboxes
+			if (fControlEnabled) {
+				$(link).click(function(ev3) {
+					ev3.preventDefault();
+					toggleCheckboxes(this);
+				});
+			}
+			
+			fieldset.appendChild(link);
 
 			//ADD FIELDSET AND ITS CONTENTS.
 			addControl(iPageNo, fieldset);
-
-
 			break;
 		case 8192: //2 ^ 13: //ctlLine
 			var line = document.createElement('div');
@@ -1587,6 +1634,19 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		default:
 			break;
 	}
+}
+
+function toggleCheckboxes(control) {
+	var checkboxes = $(control).attr('data-checkboxes').split(',');
+	//Loop over the checkboxes
+	$.each(checkboxes, function (k, v)
+	{
+		$('#' + v).attr('checked', !$('#' + v).attr('checked')); //Toggle the checkbox
+	});
+	
+	//Indicate that a control has changed and enable the Save button
+	$("#ctlRecordEdit #changed").val("true");
+	menu_toolbarEnableItem("mnutoolSaveRecord", true);
 }
 
 function addHTMLControlValues(controlValues) {
