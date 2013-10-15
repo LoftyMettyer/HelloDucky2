@@ -2073,7 +2073,7 @@ Namespace Controllers
 										ElseIf UCase(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description) = SQLMAILNOTSTARTEDMESSAGE Then
 											'"SQL Mail session is not started."
 											'Ignore this error
-										ElseIf cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).nativeerror = 3609 Then
+										ElseIf cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
 											' Ignore the follow on message that says "The transaction ended in the trigger."
 										Else
 											sErrorMsg = sErrorMsg & vbCrLf & _
@@ -2097,11 +2097,13 @@ Namespace Controllers
 										sAction = "SAVEERROR"
 									End If
 								Else
+									'The spASRIntUpdateRecord is not very clear about the meaning of the resultCode returned when editing a record,
+									'but JIRA 3387 indicates that the messages should be as they are now below
 									Select Case cmdUpdateRecord.Parameters("resultCode").Value
-										Case 1 ' Record changed by another user, and still in the current table/view.
-											sErrorMsg = "The record has been amended by another user and will be refreshed."
-										Case 2 ' Record changed by another user, and is no longer in the current table/view.
+										Case 1 ' Record changed by another user, and is no longer in the current table/view.
 											sErrorMsg = "The record has been amended by another user and is no longer in the current view."
+										Case 2 ' Record changed by another user, and still in the current table/view.
+											sErrorMsg = "The record has been amended by another user and will be refreshed."
 										Case 3 ' Record deleted by another user.
 											sErrorMsg = "The record has been deleted by another user."
 									End Select
