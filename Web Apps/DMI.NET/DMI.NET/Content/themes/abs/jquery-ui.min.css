@@ -2051,7 +2051,7 @@ body .ui-tooltip
 
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl
 {
-	/*border-top-left-radius: 5px;*/
+	border-top-left-radius: 5px;
 }
 
 .ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr
@@ -2066,7 +2066,7 @@ body .ui-tooltip
 
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br
 {
-	/*border-bottom-right-radius: 5px;*/
+	border-bottom-right-radius: 5px;
 }
 
 .ui-widget-overlay
