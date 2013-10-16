@@ -669,7 +669,7 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 		
-	if (sToolName == "mnutoolCopyRecordFind") {
+	if ((sToolName == "mnutoolCopyRecordFind") || (sToolName == "mnutoolCopyRecord")) {
 			menu_copyRecord();
 		return;
 	}
