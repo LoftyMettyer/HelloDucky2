@@ -21,39 +21,39 @@
 <%
 	on error resume next
 	
-		Dim sErrorDescription As String = ""
-		Dim fok As Boolean = True
-		Dim fNotCancelled As Boolean
+	Dim sErrorDescription As String = ""
+	Dim fok As Boolean = True
+	Dim fNotCancelled As Boolean
 	
-		Dim objCalendar As HR.Intranet.Server.CalendarReport
-		Dim rsEvents As Object
-		Dim lngCurrentBaseID As Long
-		Dim intBaseRecordIndex As Integer
-	dim dtEventStartDate
-	dim dtEventEndDate
-	dim strEventStartSession
-	dim strEventEndSession
-		Dim strEventToolTip
-	dim INPUT_VALUE 
-	dim EVENT_DETAIL
-		Dim strKeyCode As String
-		Dim intEventCounter As Integer
-		Dim intSessionStart As Integer
-		Dim intSessionEnd As Integer
-		Dim strEventID As String
+	Dim objCalendar As HR.Intranet.Server.CalendarReport
+	Dim rsEvents As Recordset
+	Dim lngCurrentBaseID As Long
+	Dim intBaseRecordIndex As Integer
+	Dim dtEventStartDate As Date
+	Dim dtEventEndDate As Date
+	Dim strEventStartSession As String
+	Dim strEventEndSession As String
+	Dim strEventToolTip As String
+	Dim INPUT_VALUE As String
+	Dim strEventDetail As String
+	Dim strKeyCode As String
+	Dim intEventCounter As Integer
+	Dim intSessionStart As Integer
+	Dim intSessionEnd As Integer
+	Dim strEventID As String
 	
-		Dim strEventDesc1Value_BD As String
-		Dim strEventDesc1ColumnName_BD As String
-		Dim strEventDesc2Value_BD As String
-		Dim strEventDesc2ColumnName_BD As String
-		Dim strBaseDescription_BD As String
+	Dim strEventDesc1Value_BD As String
+	Dim strEventDesc1ColumnName_BD As String
+	Dim strEventDesc2Value_BD As String
+	Dim strEventDesc2ColumnName_BD As String
+	Dim strBaseDescription_BD As String
 	
-		Dim lngMonth As Long
-		Dim lngYear As Long
-	dim dtMonth 
-	dim dtVisibleStartDate
-	dim dtVisibleEndDate
-		Dim mintDaysInMonth As Integer
+	Dim lngMonth As Long
+	Dim lngYear As Long
+	Dim dtMonth As Date
+	Dim dtVisibleStartDate As Date
+	Dim dtVisibleEndDate As Date
+	Dim mintDaysInMonth As Integer
 
 		Dim arrayDefinition
 		Dim arrayColumnsDefinition
@@ -130,30 +130,22 @@
 						strEventDesc2Value_BD = vbNullString
 					End If
 										
-									 
-					EVENT_DETAIL = vbNullString
-					EVENT_DETAIL = EVENT_DETAIL & .Fields("Name").value & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & ConvertSQLDateToLocale(.Fields("StartDate").value) & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & UCase(.Fields("StartSession").value) & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & ConvertSQLDateToLocale(.Fields("EndDate").value) & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & UCase(.Fields("EndSession").value) & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & FormatNumber(.Fields("Duration").value, 1, True) & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strKeyCode & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strEventDesc1ColumnName_BD & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strEventDesc1Value_BD & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strEventDesc2ColumnName_BD & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strEventDesc2Value_BD & vbTab
-					EVENT_DETAIL = EVENT_DETAIL & strBaseDescription_BD
+					strEventDetail = String.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}", vbTab _
+							, ConvertSQLDateToLocale(.Fields("StartDate").Value), .Fields("StartSession").Value.ToString().ToUpper() _
+							, ConvertSQLDateToLocale(.Fields("EndDate").Value), .Fields("EndSession").Value.ToString().ToUpper() _
+							, FormatNumber(.Fields("Duration").Value, 1, True), strKeyCode _
+							, strEventDesc1ColumnName_BD, strEventDesc1Value_BD, strEventDesc2ColumnName_BD, strEventDesc2Value_BD, strBaseDescription_BD)
+					
 					
 					INPUT_VALUE = vbNullString
 					
 					'****************************************************************************
-					dtEventStartDate = .Fields("StartDate").Value
+					dtEventStartDate = CDate(.Fields("StartDate").Value)
 		
 					If IsDBNull(.Fields("EndDate").Value) Then
 						dtEventEndDate = dtEventStartDate
 					Else
-						dtEventEndDate = .Fields("EndDate").Value
+						dtEventEndDate = CDate(.Fields("EndDate").Value)
 					End If
 	
 					If IsDBNull(.Fields("StartSession").Value) And IsDBNull(.Fields("EndSession").Value) Then
@@ -162,11 +154,11 @@
 					ElseIf IsDBNull(.Fields("EndSession").Value) Then
 						strEventEndSession = strEventStartSession
 					Else
-						strEventStartSession = UCase(.Fields("StartSession").Value)
-						strEventEndSession = UCase(.Fields("EndSession").Value)
+						strEventStartSession = .Fields("StartSession").Value.ToString().ToUpper()
+						strEventEndSession = .Fields("EndSession").Value.ToString().ToUpper()
 					End If
 
-					strEventToolTip = objCalendar.EventToolTipText(CDate(dtEventStartDate), CStr(strEventStartSession), CDate(dtEventEndDate), CStr(strEventEndSession))
+					strEventToolTip = objCalendar.EventToolTipText(dtEventStartDate, strEventStartSession, dtEventEndDate, strEventEndSession)
 		
 					'Force the Start & End Dates to be between the Report Start and End dates.
 					If dtEventStartDate < objCalendar.ReportStartDate Then
@@ -210,9 +202,8 @@
 						
 						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
 						
-						Response.Write("<INPUT type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-						
-						Response.Write("<INPUT type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(EVENT_DETAIL) & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
 						
 						' if the event starts in the currently viewed timespan, but ends after it then
 					ElseIf (dtEventStartDate >= dtVisibleStartDate) And (dtEventEndDate > dtVisibleEndDate) Then
@@ -236,9 +227,8 @@
 						
 						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
 						
-						Response.Write("<INPUT type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-
-						Response.Write("<INPUT type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(EVENT_DETAIL) & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
 	
 						' if the event is enclosed within viewed timespan, and months are equal then
 					ElseIf (dtEventStartDate >= dtVisibleStartDate) And (dtEventEndDate <= dtVisibleEndDate) And (Month(dtEventStartDate) = Month(dtEventEndDate)) Then
@@ -259,9 +249,8 @@
 						
 						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
 						
-						Response.Write("<INPUT type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-
-						Response.Write("<INPUT type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(EVENT_DETAIL) & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
 		 
 						' if the event starts before the the viewed timespan and ends after the viewed timespan then
 					ElseIf (dtEventStartDate < dtVisibleStartDate) And (dtEventEndDate > dtVisibleEndDate) Then
@@ -288,9 +277,8 @@
 						
 						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
 						
-						Response.Write("<INPUT type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-
-						Response.Write("<INPUT type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(EVENT_DETAIL) & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
 	
 					End If
 				
@@ -411,7 +399,7 @@ End If
 rstEmails = Nothing
 cmdEmailGroup = Nothing
 Else
-Response.Write("<INPUT type=hidden id=txtEmailGroupAddr name=txtEmailGroupAddr value=''>" & vbCrLf)
+Response.Write("<input type=hidden id=txtEmailGroupAddr name=txtEmailGroupAddr value=''>" & vbCrLf)
 End If
 
 If Not objCalendar Is Nothing Then
@@ -469,8 +457,8 @@ Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescrip
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 		<%
 				Dim sErrMsg As String = ""
-				Response.Write("	<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
-				Response.Write("	<INPUT type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
+			Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 		%>
 		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 		<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
