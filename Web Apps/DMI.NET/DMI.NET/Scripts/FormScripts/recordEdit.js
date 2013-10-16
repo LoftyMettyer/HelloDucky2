@@ -1230,7 +1230,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					textbox.isMultiLine = false;
 
 					if (controlItemArray[35].length > 0) {
-							//TODO: apply mask to control
+						$(textbox).mask(controlItemArray[35]); //One less TODO to do!
 					}
 				}
 
