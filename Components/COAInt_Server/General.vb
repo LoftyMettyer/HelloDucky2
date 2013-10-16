@@ -343,7 +343,6 @@ LocalErr:
 
   End Function
 
-
   Public Function GetUserDetails() As String
 
     Dim sSQL As String
@@ -418,7 +417,7 @@ LocalErr:
 
 		sSQL = "SELECT name FROM ASRSysExpressions WHERE ExprID=" & lFilterID
 
-		rsFilter = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
+		rsFilter = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsFilter
       If Not (.BOF And .EOF) Then
         GetFilterName = Trim(.Fields(0).Value)
@@ -431,14 +430,15 @@ LocalErr:
     'UPGRADE_NOTE: Object rsFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsFilter = Nothing
 
-  End Function
+	End Function
+
   Public Function GetPicklistName(ByVal lPicklistID As Integer) As String
 		Dim rsPicklist As Recordset
     Dim sSQL As String
 
 		sSQL = "SELECT Name FROM ASRSysPicklistName WHERE PicklistID=" & lPicklistID
 
-		rsPicklist = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
+		rsPicklist = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
     With rsPicklist
       If Not (.BOF And .EOF) Then
         GetPicklistName = Trim(.Fields(0).Value)
@@ -569,7 +569,7 @@ LocalErr:
     Dim sSQL As String
 		Dim rsModule As Recordset
 
-		sSQL = "SELECT parameterValue FROM ASRSysModuleSetup WHERE moduleKey = '" & psModuleKey & "' AND parameterKey = '" & psParameterKey & "'"
+		sSQL = String.Format("SELECT parameterValue FROM ASRSysModuleSetup WHERE moduleKey = '{0}' AND parameterKey = '{1}'", psModuleKey, psParameterKey)
 		rsModule = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     If Not (rsModule.BOF And rsModule.EOF) Then

@@ -557,8 +557,8 @@ Public Class CalendarReport
 		End Set
 	End Property
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
 
 			gADOCon = Value
 			SetupTablesCollection()
@@ -832,21 +832,18 @@ Public Class CalendarReport
 
 		Dim strSQL As String
 
-		mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCalendarReport", 3)
+		Try
+			mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCalendarReport", 3)
+			strSQL = String.Format("CREATE TABLE [{0}] ({1})", mstrTempTableName, mstrSQLCreateTable)
+			mclsData.ExecuteSql(strSQL)
+			mblnTempTableCreated = True
 
-		strSQL = vbNullString
-		strSQL = strSQL & "CREATE TABLE [" & mstrTempTableName & "] ("
-		strSQL = strSQL & mstrSQLCreateTable
-		strSQL = strSQL & ")"
+		Catch ex As Exception
+			Throw
 
-		mclsData.ExecuteSql(strSQL)
+		End Try
 
-		mblnTempTableCreated = True
-		CreateTempTable = True
-
-TidyUpAndExit:
-		Exit Function
-
+		Return True
 	End Function
 
 	Public Function ConvertEventDescription(ByVal plngColumnID As Integer, ByVal pvarValue As Object) As String
@@ -3246,13 +3243,13 @@ ErrorTrap:
 		On Error GoTo ExecuteSQL_ERROR
 
 		'  'get all the base & event data into a recordset
-		mstrSQL = "SELECT * FROM [" & mstrTempTableName & "] "
+		mstrSQL = String.Format("SELECT * FROM [{0}] ", mstrTempTableName)
 
 		'get the ORDER BY statement which applies to the entire UNIONed query.
 		GenerateSQLOrderBy()
 		mstrSQL = mstrSQL & mstrSQLOrderBy
 
-		mrsCalendarReportsOutput = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		mrsCalendarReportsOutput = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If mrsCalendarReportsOutput.BOF And mrsCalendarReportsOutput.EOF Then
 			ExecuteSql = False
@@ -3266,7 +3263,7 @@ ErrorTrap:
 		MultipleCheck()
 
 		'get only the base table info into a recordset
-		mrsCalendarBaseInfo = mclsData.OpenRecordset(mstrSQLBaseData, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		mrsCalendarBaseInfo = mclsData.OpenRecordset(mstrSQLBaseData, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If mrsCalendarBaseInfo.BOF And mrsCalendarBaseInfo.EOF Then
 			ExecuteSql = False
@@ -5203,9 +5200,7 @@ DisableWPs:
 		On Error GoTo Error_Trap
 
 		Dim sSQL As String
-		Dim intTemp As Short
-		Dim rsTemp As ADODB.Recordset
-		Dim lngTableID As Integer
+		Dim rsTemp As Recordset
 
 		Dim sTempTableName As String
 		Dim sTempStartDateName As String
@@ -5221,8 +5216,9 @@ DisableWPs:
 		Dim sTempDesc2Name As String
 
 		' Get the column information from the Details table, in order
-		sSQL = "SELECT * FROM AsrSysCalendarReportEvents WHERE CalendarReportID = " & CStr(mlngCalendarReportID) & " ORDER BY Name ASC "
-		rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		sSQL = String.Format("SELECT e.*, t.TableName FROM ASRSysCalendarReportEvents e INNER JOIN ASRSysTables t ON t.tableID = e.TableID" &
+				" WHERE CalendarReportID = {0} ORDER BY Name ASC", mlngCalendarReportID)
+		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		With rsTemp
 			If .BOF And .EOF Then
@@ -5234,8 +5230,7 @@ DisableWPs:
 			mcolEvents = New clsCalendarEvents
 
 			Do Until .EOF
-
-				sTempTableName = datGeneral.GetTableName(.Fields("TableID").Value)
+				sTempTableName = .Fields("TableName").Value
 
 				If .Fields("EventStartDateID").Value > 0 Then
 					sTempStartDateName = datGeneral.GetColumnName(.Fields("EventStartDateID").Value)
@@ -6007,7 +6002,6 @@ GenerateSQLSelect_ERROR:
 
 		Dim objTableView As CTablePrivilege
 		Dim objChildTable As CTablePrivilege
-		Dim rsTemp As ADODB.Recordset
 		Dim objEvent As clsCalendarEvent
 
 		Dim sChildJoinCode As String
@@ -6057,9 +6051,8 @@ GenerateSQLSelect_ERROR:
 					'add clause to SQL, so that only dates within the specified range are retrieved.
 					If (objEvent.StartDateID > 0) And (objEvent.EndDateID > 0) And bViewContains_StartColumn And bViewContains_EndColumn Then
 						'event is defined by start date and end date
-						mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine
-						mstrSQLJoin = mstrSQLJoin & ")" & vbNewLine
-						mstrSQLJoin = mstrSQLJoin & " AND (" & objTableView.RealSource & "." & objEvent.EndDateName & " >= " & objTableView.RealSource & "." & objEvent.StartDateName & ")" & vbNewLine
+						mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')))" & vbNewLine _
+								& " AND (" & objTableView.RealSource & "." & objEvent.EndDateName & " >= " & objTableView.RealSource & "." & objEvent.StartDateName & ")" & vbNewLine
 
 					ElseIf (objEvent.StartDateID > 0) And (objEvent.DurationID > 0) And bViewContains_StartColumn And bViewContains_DurationColumn Then
 						'event is defined by start date and duration
@@ -6109,9 +6102,8 @@ GenerateSQLSelect_ERROR:
 					'add clause to SQL, so that only dates within the specified range are retrieved.
 					If (objEvent.StartDateID > 0 And objEvent.EndDateID > 0) Then
 						'event is defined by start date and end date
-						sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine
-						sChildJoinCode = sChildJoinCode & ")" & vbNewLine
-						sChildJoinCode = sChildJoinCode & " AND (" & objChildTable.RealSource & "." & objEvent.EndDateName & " >= " & objChildTable.RealSource & "." & objEvent.StartDateName & ") "
+						sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')))" & vbNewLine _
+								& " AND (" & objChildTable.RealSource & "." & objEvent.EndDateName & " >= " & objChildTable.RealSource & "." & objEvent.StartDateName & ") "
 
 					ElseIf (objEvent.StartDateID > 0) And (objEvent.DurationID > 0) Then
 						'event is defined by start date and duration
@@ -6119,8 +6111,7 @@ GenerateSQLSelect_ERROR:
 
 					ElseIf objEvent.StartDateID > 0 And (objEvent.EndDateID < 1) And (objEvent.DurationID < 1) Then
 						'event is defined by just the start date - one off event with a range of one
-						sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine
-						sChildJoinCode = sChildJoinCode & ")" & vbNewLine
+						sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "')))" & vbNewLine
 
 					End If
 				End If
@@ -6129,7 +6120,6 @@ GenerateSQLSelect_ERROR:
 		Next intLoop
 
 		mstrSQLJoin = mstrSQLJoin & sChildJoinCode
-		'  mstrSQLBaseData = mstrSQLBaseData & mstrSQLJoin
 
 		GenerateSQLJoin = True
 
@@ -6139,8 +6129,7 @@ TidyUpAndExit:
 		objTableView = Nothing
 		'UPGRADE_NOTE: Object objChildTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objChildTable = Nothing
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
+
 		'UPGRADE_NOTE: Object objEvent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objEvent = Nothing
 		Exit Function
