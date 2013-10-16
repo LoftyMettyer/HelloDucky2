@@ -45,7 +45,14 @@
 
 <script type="text/javascript">
 
-		$(function () {               
+	function handleAjaxError(html) {
+		//handle error
+		OpenHR.messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
+
+		window.location.href = "<%=Url.Action("Login", "Account")%>";
+	}
+
+	$(function () {               
 
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
@@ -116,6 +123,16 @@
 					type: 'POST',
 					data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0' },
 					success: function (html) {
+						try {
+							var jsonResponse = $.parseJSON(html);
+							if (jsonResponse.ErrorMessage.length > 0) {
+								handleAjaxError(jsonResponse);
+								return false;
+							}
+						} catch(e) {
+						}
+
+
 						//$("#workframe").hide();
 						$("#workframe").html(html).show();
 						

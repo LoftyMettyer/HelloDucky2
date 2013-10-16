@@ -2602,14 +2602,18 @@ Namespace Controllers
 								Session("ErrorTitle") = "Login Page"
 								Session("ErrorText") =
 								 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
-								Return RedirectToAction("Loginerror", "Account")
+
+								Response.Redirect("FormError")
+
+								' Return RedirectToAction("Loginerror", "Account")
 							End If
 						End If
 					Else
 						Session("ErrorTitle") = "Login Page"
 						Session("ErrorText") =
 						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-						Return RedirectToAction("Loginerror", "Account")
+						Response.Redirect("FormError")
+						' Return RedirectToAction("Loginerror", "Account")
 					End If
 
 					cmdSSRecord = Nothing
@@ -2706,7 +2710,8 @@ Namespace Controllers
 						Session("ErrorTitle") = "Login Page"
 						Session("ErrorText") =
 						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-						Return RedirectToAction("Loginerror", "Account")
+						Response.Redirect("FormError")
+						'Return RedirectToAction("Loginerror", "Account")
 					End If
 
 					cmdGetRecordDesc = Nothing
