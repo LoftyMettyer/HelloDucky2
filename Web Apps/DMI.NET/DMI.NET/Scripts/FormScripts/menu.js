@@ -33,6 +33,15 @@
 		//apply tree control to divs within accordion
 		applyJSTree();
 
+	//Go To input box functionality
+	$("#txtLocateRecordFind").keypress(function(e) {
+		if (e.keyCode == 13) { //If ENTER was pressed...
+			//At this point, since we are handling the keypress event, the textbox doesn't contain the latest key pressed,
+			//so the function below will get the value and call the appropriate screen
+			ReloadPageWithFindTerm();
+		}
+	});
+
 	if ($("#txtErrorDescription").val().length > 0) {
 		//ASRIntranetFunctions.MessageBox(window.txtErrorDescription.value, 0, "OpenHR Intranet"); // 0 = vbOKonly
 		OpenHR.messageBox(window.txtErrorDescription.value, 0, "OpenHR Intranet"); // 0 = vbOKonly
@@ -82,6 +91,43 @@
 }
 
 
+function ReloadPageWithFindTerm() {
+	var sCurrentWorkPage = OpenHR.currentWorkPage();
+	var sLocateValue = $("#txtLocateRecordFind").val();
+	
+	if (sLocateValue == "") {
+		return false;
+	}
+
+	if (sCurrentWorkPage == "FIND")
+	{
+		menu_reloadFindPage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "LINKFIND")
+	{
+		menu_reloadLinkPage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "LOOKUPFIND")
+	{
+		menu_reloadLookupPage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND")
+	{
+		menu_reloadTransferCoursePage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "TBBOOKCOURSEFIND")
+	{
+		menu_reloadBookCoursePage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND")
+	{
+		menu_reloadTransferBookingPage("LOCATE", sLocateValue);
+	}
+	if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")
+	{
+		menu_reloadAddFromWaitingListPage("LOCATE", sLocateValue);
+	}
+}
 
 function menu_abMainMenu_DataReady() {
 	var iVisibleCount;
@@ -270,46 +316,6 @@ function menu_abMainMenu_DataReady() {
 //	ASRIntranetFunctions.MessageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu."); 
 //}
 
-//function menu_abMainMenu_KeyDown(piKeyCode, piShift) {
-//Triggered when users presses a key in a combo box or a textbox while the tool has the focus.  ie. locate record or search.
-//TODO RIBBON FUNCTIONALITY.
-
-//	var  iIndex;
-//	var sCurrentWorkPage;
-//	var sLocateValue;
-
-//	iIndex = abMainMenu.ActiveBand.CurrentTool;
-//	
-//	if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
-//		if (piKeyCode == 13) {
-//			sCurrentWorkPage = currentWorkPage();
-//			sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
-
-//			if (sCurrentWorkPage == "FIND") {
-//				reloadFindPage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "LINKFIND") {
-//				reloadLinkPage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "LOOKUPFIND") {
-//				reloadLookupPage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-//				reloadTransferCoursePage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "TBBOOKCOURSEFIND") {
-//				reloadBookCoursePage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
-//				reloadTransferBookingPage("LOCATE", sLocateValue);
-//			}
-//			if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
-//				reloadAddFromWaitingListPage("LOCATE", sLocateValue);
-//			}
-//		}
-//	}
-//}
-
 //function menu_abMainMenuComboSelChange(pTool) {
 
 //TODO - toolbar functionality
@@ -444,7 +450,7 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
 		showDefaultRibbon();
 	}
-	
+
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
@@ -3022,7 +3028,7 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 				if (psLocateValue.length > 0) {
 					// Convert the date to SQL format (use this as a validation check).
 					// An empty string is returned if the date is invalid.
-					psLocateValue = menu_convertLocaleDateToSQL(psLocateValue);
+					psLocateValue = OpenHR.convertLocaleDateToSQL(psLocateValue);
 
 					if (psLocateValue.length == 0) {
 						fValidLocateValue = false;

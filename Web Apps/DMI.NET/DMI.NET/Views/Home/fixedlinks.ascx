@@ -241,7 +241,7 @@
 						<li id="mnuSectionLocateRecordFind">
 							<div id="mnutoolLocateRecordFind" class="textboxlist">
 								<ul>
-									<li>Go To<input type="text" /></li>
+									<li>Go To<input type="text" id="txtLocateRecordFind" /></li>
 								</ul>
 							</div>
 						</li>
@@ -1092,7 +1092,7 @@
 	<div class="FixedLinksRight" >
 		<div class="userpic" style="float: right;vertical-align: central;padding:0 10px 0 10px">
 			<img style="vertical-align: middle" src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />	
-	</div>
+		</div>
 		<div class="userdetails">
 		<div class="userid">
 			<%=Session("username")%>
