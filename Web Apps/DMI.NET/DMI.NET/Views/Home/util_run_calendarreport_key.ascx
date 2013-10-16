@@ -131,6 +131,3 @@ Key :
 		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%Session("CalRepUtilID").ToString()%>'>
 	</form>
  
-<script type="text/javascript">
-    populateKey();
-</script>

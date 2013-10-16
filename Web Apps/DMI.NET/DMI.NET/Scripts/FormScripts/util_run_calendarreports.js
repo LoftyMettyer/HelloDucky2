@@ -508,10 +508,9 @@ function dateChange()
 	
 function refreshCalendar() {
 
-		if (frmUseful.txtCTLsPopulated.value != 1)
-		{
-				populateCTL_Collections();
-		}
+	if (frmUseful.txtCTLsPopulated.value != 1) {
+		populateCTL_Collections();
+	}
 
 		var frmCalendar = OpenHR.getForm("calendarframe_calendar","frmCalendar");
 		//var docCalendar = window.parent.frames("calendarframe_calendar").document;
@@ -566,11 +565,8 @@ function refreshCalendar() {
 }
 
 function fillCalBoxes() {
-	 
-		//var docCalendar = window.parent.frames("calendarframe_calendar").document;
+
 		var frmCalendarData =OpenHR.getForm("dataframe","frmCalendarData");
-		//var docData = window.parent.frames("dataframe").document;
-		var eventCollection = frmCalendarData.elements;
 		var objBaseCTL;
 		var vControlName;
 		var intBaseRecordIndex;
@@ -589,8 +585,9 @@ function fillCalBoxes() {
 				{
 						INPUT_STRING = frmCalendarData.item(i).value;
 					strEventID = INPUT_STRING.substring(INPUT_STRING.indexOf("***") + 3, INPUT_STRING.indexOf("***", INPUT_STRING.indexOf("***") + 3));
-					lngColour = Number(getColorForKey(strEventID));
-						intBaseRecordIndex = Number(INPUT_STRING.substring(0,INPUT_STRING.indexOf("***")));
+
+					lngColour = getColorForKey(strEventID);
+					intBaseRecordIndex = Number(INPUT_STRING.substring(0, INPUT_STRING.indexOf("***")));
 
 						sDetailControl = "EventDetail_" + elementName.substring(elementName.lastIndexOf("_")+1,elementName.length);
 						EVENT_DETAIL = document.getElementById(sDetailControl).value;
@@ -620,11 +617,9 @@ function refreshDateSpecifics()
 		bShowCaptions = (frmOptions.chkCaptions.checked == true);
 		bShowWeekends = (frmOptions.chkShadeWeekends.checked == true);
 
-		//frmKey.ctlKey.CaptionsVisible = (bShowCaptions);
-	
 		for (var i=1; i<=Number(frmCalendar.txtBaseCtlCount.value); i++) 
 		{
-				vControlName = 'ctlCalRec_' + i;
+				var vControlName = 'ctlCalRec_' + i;
 				objBaseCTL = document.getElementById(vControlName);
 		
 				//require for the event separator
@@ -1039,6 +1034,8 @@ function util_run_calendarreport_data_window_onload() {
 		return;
 	}
 
+	populateKey();
+	
 	if (frmCalendarData.txtCalendarMode.value == "LOADCALENDARREPORTDATA") {
 		fillCalBoxes();
 	}
@@ -1125,11 +1122,10 @@ function addKeyToTable(strKey, strDescription, strCode, lngColour) {
 
 function getColorForKey(searchTerm) {
 	for (var i = 0, len = objCalendarKey.length; i < len; i++) {
-		if (objCalendarKey[i]["key"] === searchTerm) return i;
+		if (objCalendarKey[i]["key"] === searchTerm) return objCalendarKey[i]["color"];
 	}
-	return -1;
+	return 0;
 }
-
 
 function populateKey() {
 
