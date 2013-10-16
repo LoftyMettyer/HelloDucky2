@@ -1511,7 +1511,7 @@ ErrorTrap:
 
 		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 
-		If ((Not ExprDeleted((Me.ExpressionID))) Or (mlngExpressionID = 0)) And ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
+		If ((Not ExprDeleted(ExpressionID)) Or (mlngExpressionID = 0)) And ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
 
 			mfConstructed = True
 

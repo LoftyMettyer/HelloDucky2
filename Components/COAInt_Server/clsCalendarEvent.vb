@@ -254,6 +254,11 @@ Friend Class clsCalendarEvent
 			mstrDesc1Name = Value
 		End Set
 	End Property
+
+	Public Description1_TableID As Integer
+	Public Description1_TableName As String
+	Public Description1_ColumnName As String
+
 	Public Property Description2ID() As Integer
 		Get
 			Description2ID = mlngDesc2ID
@@ -270,6 +275,11 @@ Friend Class clsCalendarEvent
 			mstrDesc2Name = Value
 		End Set
 	End Property
+
+	Public Description2_TableID As Integer
+	Public Description2_TableName As String
+	Public Description2_ColumnName As String
+
 	Public Property BaseDescription() As String
 		Get
 			BaseDescription = mstrBaseDescription

@@ -95,8 +95,8 @@ Public Class CalendarReport
 	Private mstrOutputFilename As String
 
 	'Recordset to store the final data from the temp table
-	Private mrsCalendarReportsOutput As ADODB.Recordset
-	Private mrsCalendarBaseInfo As ADODB.Recordset
+	Private mrsCalendarReportsOutput As Recordset
+	Private mrsCalendarBaseInfo As Recordset
 
 	Private mstrClientDateFormat As String
 	Private mstrLocalDecimalSeparator As String
@@ -704,15 +704,15 @@ Public Class CalendarReport
 		End Get
 	End Property
 
-	Public ReadOnly Property EventsRecordset() As ADODB.Recordset
+	Public ReadOnly Property EventsRecordset() As Recordset
 		Get
-			EventsRecordset = mrsCalendarReportsOutput
+			Return mrsCalendarReportsOutput
 		End Get
 	End Property
 
-	Public ReadOnly Property BaseRecordset() As ADODB.Recordset
+	Public ReadOnly Property BaseRecordset() As Recordset
 		Get
-			BaseRecordset = mrsCalendarBaseInfo
+			Return mrsCalendarBaseInfo
 		End Get
 	End Property
 
@@ -3012,25 +3012,25 @@ ErrorTrap:
 
 	End Function
 
+	' Get columns defined as a SortOrder and load into array
 	Public Function GetOrderArray() As Boolean
 
-		On Error GoTo Error_Trap
-
-		Dim rsTemp As ADODB.Recordset
-
+		Dim rsTemp As Recordset
 		Dim sSQL As String
+		Dim intTemp As Integer
 
-		Dim intTemp As Short
-
-		' Get columns defined as a SortOrder and load into array
-		sSQL = "SELECT * FROM ASRSysCalendarReportOrder WHERE CalendarReportID = " & mlngCalendarReportID & " ORDER BY [OrderSequence]"
-		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Try
+			sSQL = String.Format("SELECT o.ColumnID, o.OrderType, c.ColumnName FROM ASRSysCalendarReportOrder o" _
+					& " INNER JOIN ASRSysTables t ON t.tableID = o.TableID" _
+					& " INNER JOIN ASRSysColumns c ON c.ColumnID = o.ColumnID AND c.tableid = t.tableid" _
+					& " WHERE CalendarReportID = {0}" _
+					& " ORDER BY [OrderSequence]", mlngCalendarReportID)
+			rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		With rsTemp
 			If .BOF And .EOF Then
-				GetOrderArray = False
 				mstrErrorString = "No columns have been defined as a sort order for the specified Calendar Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				Exit Function
+				Return False
 			End If
 			Do Until .EOF
 				intTemp = UBound(mvarSortOrder, 2) + 1
@@ -3039,7 +3039,7 @@ ErrorTrap:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mvarSortOrder(0, intTemp) = .Fields("ColumnID").Value
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(1, intTemp) = datGeneral.GetColumnName(.Fields("ColumnID").Value)
+				mvarSortOrder(1, intTemp) = .Fields("ColumnName").Value
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mvarSortOrder(2, intTemp) = .Fields("OrderType").Value
 
@@ -3047,16 +3047,13 @@ ErrorTrap:
 			Loop
 		End With
 
-		GetOrderArray = True
+		Catch ex As Exception
+			mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & ex.Message
+			Return False
 
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		Exit Function
+		End Try
 
-Error_Trap:
-		GetOrderArray = False
-		mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
@@ -3506,7 +3503,7 @@ TidyUpAndExit:
 
 		mstrSQLIDs = vbNullString
 
-		sSQL = "SELECT * FROM ASRSYSCalendarReports WHERE ID = " & CStr(mlngCalendarReportID) & " "
+		sSQL = String.Format("SELECT * FROM ASRSYSCalendarReports WHERE ID = {0}", mlngCalendarReportID)
 		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		Dim pblnOK As Object
@@ -5335,15 +5332,14 @@ Error_Trap:
 
 	Public Function GenerateSQL() As Boolean
 
-		Dim fOK As Boolean
+		Dim fOK As Boolean = True
 		Dim objEvent As clsCalendarEvent
-		Dim rsLegendBreakdown As ADODB.Recordset
+		Dim rsLegendBreakdown As Recordset
 
 		Dim strSQL As String
 		Dim strDynamicKey As String
 		Dim strDynamicName As String
 
-		fOK = True
 		mintDynamicEventCount = 0
 
 		'loop through the events col and UNION the Event queries together
@@ -5357,11 +5353,8 @@ Error_Trap:
 					'Event is using a lookup table to find the calendar code for the event.
 					'Therefore use the unique types from the legend information.
 
-					strSQL = vbNullString
-					strSQL = "SELECT DISTINCT " & .LegendTableName & "." & .LegendColumnName & vbNewLine
-					strSQL = strSQL & " FROM " & .LegendTableName & vbNewLine
-
-					rsLegendBreakdown = datGeneral.GetRecords(strSQL)
+					strSQL = String.Format("SELECT DISTINCT {0} FROM {1}", .LegendColumnName, .LegendTableName)
+					rsLegendBreakdown = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 					If rsLegendBreakdown.BOF And rsLegendBreakdown.EOF Then
 						mstrErrorString = "The '" & .LegendTableName & "' event lookup table contains no records."
@@ -5369,45 +5362,35 @@ Error_Trap:
 						Exit Function
 					End If
 
-					rsLegendBreakdown.MoveFirst()
 					Do While Not rsLegendBreakdown.EOF
 						mintDynamicEventCount = mintDynamicEventCount + 1
 
 						strDynamicKey = "DYNAMICEVENT" & CStr(mintDynamicEventCount)
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						strDynamicName = Replace(IIf(IsDBNull(rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "", rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "'", "''")
-
 						mstrSQLDynamicLegendWhere = vbNullString
 
-						If fOK Then fOK = GenerateSQLEvent((objEvent.Key), strDynamicKey, strDynamicName)
+						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName)
 
 						If Not fOK Then
 							GenerateSQL = False
 							Exit Function
 						End If
 
-						'mstrSQL = mstrSQL & mstrSQLEvent & " UNION "
 						fOK = InsertIntoTempTable(mstrSQLEvent)
-
 						mstrSQLEvent = vbNullString
 
 						rsLegendBreakdown.MoveNext()
 					Loop
 					rsLegendBreakdown.Close()
-					'UPGRADE_NOTE: Object rsLegendBreakdown may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					rsLegendBreakdown = Nothing
 
 				Else
-					If fOK Then fOK = GenerateSQLEvent((objEvent.Key), vbNullString, vbNullString)
+					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString)
 
 					If Not fOK Then
-						GenerateSQL = False
-						Exit Function
+						Return False
 					End If
 
-					'mstrSQL = mstrSQL & mstrSQLEvent & " UNION "
 					If fOK Then fOK = InsertIntoTempTable(mstrSQLEvent)
-
 					mstrSQLEvent = vbNullString
 
 				End If
@@ -5415,14 +5398,7 @@ Error_Trap:
 
 		Next objEvent
 
-		'remove the last UNION command from the SQL string
-		'  mstrSQL = Left(mstrSQL, Len(mstrSQL) - 7)
-
-		GenerateSQL = fOK
-
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object objEvent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objEvent = Nothing
+		Return fOK
 
 	End Function
 
@@ -5507,7 +5483,7 @@ TidyUpAndExit:
 
 		'need to set the type of the expression column for the CREAT TABLE...statement.
 		Select Case mlngBaseDescriptionType
-			Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC, modExpression.ExpressionValueTypes.giEXPRVALUE_BYREF_NUMERIC
+			Case ExpressionValueTypes.giEXPRVALUE_NUMERIC, ExpressionValueTypes.giEXPRVALUE_BYREF_NUMERIC
 				mstrSQLCreateTable = mstrSQLCreateTable & "[DescriptionExpr] [float] NULL, "
 			Case Else
 				mstrSQLCreateTable = mstrSQLCreateTable & "[DescriptionExpr] [varchar] (MAX) NULL, "
@@ -5592,92 +5568,77 @@ TidyUpAndExit:
 					mstrSQLBaseStartSessionColumn = "'AM'"
 				End If
 
-				'      strColList = strColList & " DATEADD(dd, " & mstrSQLBaseDurationColumn & " - 1 , " & mstrSQLBaseStartDateColumn & ") AS 'EndDate', " & vbNewLine
-				strColList = strColList & "CASE " & vbNewLine
-				strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '1' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '2' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '3' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '4' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '5') THEN " & vbNewLine
+				strColList = strColList & "CASE " & vbNewLine _
+						& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '1' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '2' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '3' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '4' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '5') THEN " & vbNewLine _
+						& "         DATEADD(dd " & vbNewLine _
+						& "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine _
+						& "                           , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine _
+						& "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine _
+						& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9') " & vbNewLine _
+						& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine
 
-				strColList = strColList & "         DATEADD(dd " & vbNewLine
-				strColList = strColList & "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine
-				strColList = strColList & "                           , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine
-				strColList = strColList & "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine
+				strColList = strColList & "         DATEADD(dd " & vbNewLine _
+						& "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine _
+						& "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine _
+						& "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine _
+						& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine _
+						& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9') " & vbNewLine _
+						& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine _
+						& "           DATEADD(dd " & vbNewLine _
+						& "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine _
+						& "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 ) + 1) " & vbNewLine _
+						& "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine _
+						& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine _
+						& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine
 
-				strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9') " & vbNewLine
-				strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine
-
-				strColList = strColList & "         DATEADD(dd " & vbNewLine
-				strColList = strColList & "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine
-				strColList = strColList & "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine
-				strColList = strColList & "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine
-
-				strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine
-				strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9') " & vbNewLine
-				strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine
-
-				strColList = strColList & "           DATEADD(dd " & vbNewLine
-				strColList = strColList & "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine
-				strColList = strColList & "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 ) + 1) " & vbNewLine
-				strColList = strColList & "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine
-
-				strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine
-				strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine
-
-				strColList = strColList & "           DATEADD(dd " & vbNewLine
-				strColList = strColList & "                   , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine
-				strColList = strColList & "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 ) - 1) " & vbNewLine
-				strColList = strColList & "                   , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine
-
-				strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine
-				strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine
-
-				strColList = strColList & "           DATEADD(dd " & vbNewLine
-				strColList = strColList & "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine
-				strColList = strColList & "                               , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine
-				strColList = strColList & "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine
-
-				strColList = strColList & "END AS 'EndDate', " & vbNewLine
+				strColList = strColList & "           DATEADD(dd " & vbNewLine _
+						& "                   , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine _
+						& "                         , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 ) - 1) " & vbNewLine _
+						& "                   , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine _
+						& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine _
+						& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine _
+						& "           DATEADD(dd " & vbNewLine _
+						& "                 , CONVERT(integer,LEFT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))) " & vbNewLine _
+						& "                               , CHARINDEX('.',LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),10,1))))- 1 )) " & vbNewLine _
+						& "                 , " & mstrSQLBaseStartDateColumn & ") " & vbNewLine _
+						& "END AS 'EndDate', " & vbNewLine
 
 				If .EndSessionID > 0 Then
 					strColList = strColList & mstrSQLBaseEndSessionColumn & " AS 'EndSession', " & vbNewLine
 				Else
-					'        strColList = strColList & "'PM' AS 'EndSession'," & vbNewLine
 
-					strColList = strColList & "CASE"
-					strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '1' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '2' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '3' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '4' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '5') THEN " & vbNewLine
-					'    -- End Session = Start Session
-					strColList = strColList & "           " & mstrSQLBaseStartSessionColumn & " " & vbNewLine
+					strColList = strColList & "CASE" _
+							& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '1' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '2' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '3' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '4' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '5') THEN " & vbNewLine _
+							& "           " & mstrSQLBaseStartSessionColumn & " " & vbNewLine _
+							& "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine _
+							& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine _
+							& "           'PM'  " & vbNewLine
 
-					strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine
-					strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'AM') THEN " & vbNewLine
-					'    -- End Session = "PM"
-					strColList = strColList & "           'PM'  " & vbNewLine
-
-					strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9' " & vbNewLine
-					strColList = strColList & "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine
-					strColList = strColList & "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine
-					'    -- End Session = "AM"
-					strColList = strColList & "           'AM' " & vbNewLine
-
-					strColList = strColList & "END AS 'EndSession', " & vbNewLine
+					strColList = strColList & "      WHEN  (RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '6' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '7' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '8' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '9' " & vbNewLine _
+							& "        OR  RIGHT(LTRIM(RTRIM(STR(ROUND(" & mstrSQLBaseDurationColumn & ",1),28,1))),1) = '0') " & vbNewLine _
+							& "          AND (" & mstrSQLBaseStartSessionColumn & " = 'PM') THEN " & vbNewLine _
+							& "           'AM' " & vbNewLine _
+							& "END AS 'EndSession', " & vbNewLine
 				End If
 
 				strColList = strColList & mstrSQLBaseDurationColumn & " AS 'Duration', " & vbNewLine
@@ -5702,12 +5663,12 @@ TidyUpAndExit:
 					strTempEndSession = "'PM'"
 				End If
 
-				strColList = strColList & " CASE " & vbNewLine
-				strColList = strColList & " WHEN " & strTempStartSession & " = " & strTempEndSession & vbNewLine
-				strColList = strColList & "   THEN CONVERT(float,(DATEDIFF(dd, " & mstrSQLBaseStartDateColumn & ", " & mstrSQLBaseEndDateColumn & ") + 0.5)) " & vbNewLine
-				strColList = strColList & " ELSE " & vbNewLine
-				strColList = strColList & "   CONVERT(float,(DATEDIFF(dd, " & mstrSQLBaseStartDateColumn & ", " & mstrSQLBaseEndDateColumn & ") + 1)) " & vbNewLine
-				strColList = strColList & " END AS 'Duration'," & vbNewLine
+				strColList = strColList & " CASE " & vbNewLine _
+						& " WHEN " & strTempStartSession & " = " & strTempEndSession & vbNewLine _
+						& "   THEN CONVERT(float,(DATEDIFF(dd, " & mstrSQLBaseStartDateColumn & ", " & mstrSQLBaseEndDateColumn & ") + 0.5)) " & vbNewLine _
+						& " ELSE " & vbNewLine _
+						& "   CONVERT(float,(DATEDIFF(dd, " & mstrSQLBaseStartDateColumn & ", " & mstrSQLBaseEndDateColumn & ") + 1)) " & vbNewLine _
+						& " END AS 'Duration'," & vbNewLine
 			Else
 
 				If .StartSessionID > 0 Then
@@ -5719,30 +5680,31 @@ TidyUpAndExit:
 				strColList = strColList & mstrSQLBaseStartDateColumn & " AS 'EndDate', " & vbNewLine
 
 				If .StartSessionID > 0 Then
-					strColList = strColList & mstrSQLBaseStartSessionColumn & " AS 'EndSession'," & vbNewLine
-					strColList = strColList & " 0.5 AS 'Duration', " & vbNewLine
+					strColList = strColList & mstrSQLBaseStartSessionColumn & " AS 'EndSession'," & vbNewLine _
+							& " 0.5 AS 'Duration', " & vbNewLine
 				Else
-					strColList = strColList & "'PM' AS 'EndSession'," & vbNewLine
-					strColList = strColList & " 1 AS 'Duration', " & vbNewLine
+					strColList = strColList & "'PM' AS 'EndSession'," & vbNewLine _
+							& " 1 AS 'Duration', " & vbNewLine
 				End If
 
 			End If
-			mstrSQLCreateTable = mstrSQLCreateTable & "[StartSession] [varchar] (255) NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EndDate] [datetime] NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EndSession] [varchar] (255) NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[Duration] [float] NULL, "
+			mstrSQLCreateTable = mstrSQLCreateTable & "[StartSession] [varchar] (255) NULL, " _
+					& "[EndDate] [datetime] NULL, " _
+					& "[EndSession] [varchar] (255) NULL, " _
+					& "[Duration] [float] NULL, "
 			'****************************************************************************
 
 			If .Description1ID > 0 Then
-				lngTempTableID = datGeneral.GetColumnTable(.Description1ID)
-				strTempTableName = datGeneral.GetColumnTableName(.Description1ID)
-				strTempColumnName = datGeneral.GetColumnName(.Description1ID)
+				lngTempTableID = .Description1_TableID
+				strTempTableName = .Description1_TableName
+				strTempColumnName = .Description1_ColumnName
+
 				If CheckColumnPermissions(lngTempTableID, strTempTableName, strTempColumnName, strTableColumn) Then
-					strColList = strColList & .Description1ID & " AS 'EventDescription1ColumnID', " & vbNewLine
-					strColList = strColList & "'" & .Description1Name & "' AS 'EventDescription1Column', " & vbNewLine
+					strColList = strColList & .Description1ID & " AS 'EventDescription1ColumnID', " & vbNewLine _
+							& "'" & .Description1Name & "' AS 'EventDescription1Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If datGeneral.GetDataType(lngTempTableID, .Description1ID) = Declarations.SQLDataType.sqlBoolean Then
+					If datGeneral.GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription1', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription1', " & vbNewLine
@@ -5754,24 +5716,25 @@ TidyUpAndExit:
 					Exit Function
 				End If
 			Else
-				strColList = strColList & "NULL AS 'EventDescription1ColumnID', " & vbNewLine
-				strColList = strColList & "NULL AS 'EventDescription1Column', " & vbNewLine
-				strColList = strColList & "NULL AS 'EventDescription1', " & vbNewLine
+				strColList = strColList & "NULL AS 'EventDescription1ColumnID', " & vbNewLine _
+						& "NULL AS 'EventDescription1Column', " & vbNewLine _
+						& "NULL AS 'EventDescription1', " & vbNewLine
 			End If
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription1ColumnID] [int] NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription1Column] [varchar] (MAX) NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription1] [varchar] (MAX) NULL, "
+			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription1ColumnID] [int] NULL, " _
+					& "[EventDescription1Column] [varchar] (MAX) NULL, " _
+					& "[EventDescription1] [varchar] (MAX) NULL, "
 
 			If .Description2ID > 0 Then
-				lngTempTableID = datGeneral.GetColumnTable(.Description2ID)
-				strTempTableName = datGeneral.GetColumnTableName(.Description2ID)
-				strTempColumnName = datGeneral.GetColumnName(.Description2ID)
+				lngTempTableID = .Description2_TableID
+				strTempTableName = .Description2_TableName
+				strTempColumnName = .Description2_ColumnName
+
 				If CheckColumnPermissions(lngTempTableID, strTempTableName, strTempColumnName, strTableColumn) Then
-					strColList = strColList & .Description2ID & " AS 'EventDescription2ColumnID', " & vbNewLine
-					strColList = strColList & "'" & .Description2Name & "' AS 'EventDescription2Column', " & vbNewLine
+					strColList = strColList & .Description2ID & " AS 'EventDescription2ColumnID', " & vbNewLine _
+							& "'" & .Description2Name & "' AS 'EventDescription2Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If datGeneral.GetDataType(lngTempTableID, .Description2ID) = Declarations.SQLDataType.sqlBoolean Then
+					If datGeneral.GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription2', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription2', " & vbNewLine
@@ -5783,13 +5746,13 @@ TidyUpAndExit:
 					Exit Function
 				End If
 			Else
-				strColList = strColList & "NULL AS 'EventDescription2ColumnID', " & vbNewLine
-				strColList = strColList & "NULL AS 'EventDescription2Column', " & vbNewLine
-				strColList = strColList & "NULL AS 'EventDescription2', " & vbNewLine
+				strColList = strColList & "NULL AS 'EventDescription2ColumnID', " & vbNewLine _
+						& "NULL AS 'EventDescription2Column', " & vbNewLine _
+						& "NULL AS 'EventDescription2', " & vbNewLine
 			End If
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription2ColumnID] [int] NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription2Column] [varchar] (MAX) NULL, "
-			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription2] [varchar] (MAX) NULL, "
+			mstrSQLCreateTable = mstrSQLCreateTable & "[EventDescription2ColumnID] [int] NULL, " _
+					 & "[EventDescription2Column] [varchar] (MAX) NULL, " _
+					 & "[EventDescription2] [varchar] (MAX) NULL, "
 
 			If .LegendType = 1 Then
 				If CheckColumnPermissions(.LegendTableID, .LegendTableName, .LegendCodeName, strTableColumn) Then
@@ -5834,15 +5797,10 @@ TidyUpAndExit:
 			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrRegion, strTableColumn) Then
 				strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Region', " & vbNewLine
 				strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Region', " & vbNewLine
-				'TM01042004 Fault 8428
-				'      mstrRegionColumnRealSource = Left(strTableColumn, InStr(1, strTableColumn, ".") - 1)
 				strTableColumn = vbNullString
 			Else
-				'TM19112004 Fault 8942
 				strColList = strColList & "NULL AS 'Region', "
 				strBaseColList = strBaseColList & "NULL AS 'Region', "
-				'      GenerateSQLSelect = False
-				'      GoTo TidyUpAndExit
 			End If
 
 		Else
@@ -5870,8 +5828,6 @@ TidyUpAndExit:
 			Else
 				strColList = strColList & "NULL AS 'Working_Pattern', "
 				strBaseColList = strBaseColList & "NULL AS 'Working_Pattern', "
-				'      GenerateSQLSelect = False
-				'      GoTo TidyUpAndExit
 			End If
 		Else
 			strColList = strColList & "NULL AS 'Working_Pattern', "
@@ -5916,11 +5872,8 @@ TidyUpAndExit:
 		mstrSQLOrderList = Left(mstrSQLOrderList, Len(mstrSQLOrderList) - 1)
 
 		' Start off the select statement
-		mstrSQLSelect = "SELECT "
-		mstrSQLSelect = mstrSQLSelect & strColList
-
-		mstrSQLBaseData = "SELECT "
-		mstrSQLBaseData = mstrSQLBaseData & strBaseColList
+		mstrSQLSelect = "SELECT " & strColList
+		mstrSQLBaseData = "SELECT " & strBaseColList
 
 		GenerateSQLSelect = True
 
@@ -6044,7 +5997,7 @@ GenerateSQLSelect_ERROR:
 		mstrSQLFrom = "FROM " & mstrBaseTableRealSource & vbNewLine
 		mstrSQLBaseData = mstrSQLBaseData & " FROM " & mstrBaseTableRealSource & vbNewLine
 
-		GenerateSQLFrom = True
+		Return True
 
 	End Function
 

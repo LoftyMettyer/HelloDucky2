@@ -71,30 +71,39 @@ Friend Class clsCalendarEvents
       If Not IsNothing(plngLegendEventTypeID) Then .LegendEventTypeID = plngLegendEventTypeID
       'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
       If Not IsNothing(pstrLegendEventTypeName) Then .LegendEventTypeName = pstrLegendEventTypeName
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(plngDesc1ID) Then .Description1ID = plngDesc1ID
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrDesc1Name) Then .Description1Name = pstrDesc1Name
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(plngDesc2ID) Then .Description2ID = plngDesc2ID
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrDesc2Name) Then .Description2Name = pstrDesc2Name
 
-      '*************************************
-      'optional event data used for calendar report breakdown
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrBaseDescription) Then .BaseDescription = pstrBaseDescription
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrRegion) Then .Region = pstrRegion
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrWorkingPattern) Then .WorkingPattern = pstrWorkingPattern
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrDesc1Value) Then .Desc1Value = pstrDesc1Value
-      'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-      If Not IsNothing(pstrDesc2Value) Then .Desc2Value = pstrDesc2Value
-      '*************************************
+			If Not IsNothing(plngDesc1ID) Then
+				.Description1ID = plngDesc1ID
+				.Description1_TableID = datGeneral.GetColumnTable(plngDesc1ID)
+				.Description1_TableName = datGeneral.GetColumnTableName(plngDesc1ID)
+				.Description1_ColumnName = datGeneral.GetColumnName(plngDesc1ID)
+			End If
+			If Not IsNothing(pstrDesc1Name) Then .Description1Name = pstrDesc1Name
 
-    End With
+			If Not IsNothing(plngDesc2ID) Then
+				.Description2ID = plngDesc2ID
+				.Description2_TableID = datGeneral.GetColumnTable(plngDesc2ID)
+				.Description2_TableName = datGeneral.GetColumnTableName(plngDesc2ID)
+				.Description2_ColumnName = datGeneral.GetColumnName(plngDesc2ID)
+			End If
+
+			If Not IsNothing(pstrDesc2Name) Then .Description2Name = pstrDesc2Name
+
+			'*************************************
+			'optional event data used for calendar report breakdown
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If Not IsNothing(pstrBaseDescription) Then .BaseDescription = pstrBaseDescription
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If Not IsNothing(pstrRegion) Then .Region = pstrRegion
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If Not IsNothing(pstrWorkingPattern) Then .WorkingPattern = pstrWorkingPattern
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If Not IsNothing(pstrDesc1Value) Then .Desc1Value = pstrDesc1Value
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If Not IsNothing(pstrDesc2Value) Then .Desc2Value = pstrDesc2Value
+			'*************************************
+
+		End With
 
     mCol.Add(objNewMember, pstrKey)
 
