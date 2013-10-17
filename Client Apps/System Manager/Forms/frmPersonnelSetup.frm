@@ -4,7 +4,7 @@ Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmPersonnelSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Personnel"
-   ClientHeight    =   8340
+   ClientHeight    =   9000
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5880
@@ -23,19 +23,19 @@ Begin VB.Form frmPersonnelSetup
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   8340
+   ScaleHeight     =   9000
    ScaleWidth      =   5880
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
-      Height          =   7590
+      Height          =   8190
       Left            =   120
       TabIndex        =   0
       TabStop         =   0   'False
       Top             =   120
       Width           =   5670
       _ExtentX        =   10001
-      _ExtentY        =   13388
+      _ExtentY        =   14446
       _Version        =   393216
       Style           =   1
       TabHeight       =   520
@@ -49,14 +49,16 @@ Begin VB.Form frmPersonnelSetup
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraWorkingPattern"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraRegion"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(0)=   "fraPostAllocationTable"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraPostAllocationTable"
+      Tab(2).Control(1)=   "fraHierarchyTable"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
@@ -64,14 +66,14 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   1860
          Left            =   -74850
-         TabIndex        =   68
+         TabIndex        =   69
          Top             =   2400
          Width           =   5400
          Begin VB.ComboBox cboPostAllocationTable 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   32
+            TabIndex        =   33
             Top             =   300
             Width           =   2505
          End
@@ -79,7 +81,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   34
+            TabIndex        =   35
             Top             =   1350
             Width           =   2505
          End
@@ -87,7 +89,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   33
+            TabIndex        =   34
             Top             =   945
             Width           =   2505
          End
@@ -105,7 +107,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Post Allocation Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   38
+            TabIndex        =   39
             Top             =   360
             Width           =   2040
          End
@@ -115,7 +117,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "End Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   64
+            TabIndex        =   65
             Top             =   1410
             Width           =   1785
          End
@@ -125,7 +127,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Start Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   69
+            TabIndex        =   70
             Top             =   1005
             Width           =   1875
          End
@@ -135,14 +137,14 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   1860
          Left            =   -74850
-         TabIndex        =   63
+         TabIndex        =   64
          Top             =   400
          Width           =   5400
          Begin VB.ComboBox cboHierarchyTable 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   29
+            TabIndex        =   30
             Top             =   300
             Width           =   2505
          End
@@ -150,7 +152,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   30
+            TabIndex        =   31
             Top             =   945
             Width           =   2505
          End
@@ -158,7 +160,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   31
+            TabIndex        =   32
             Top             =   1350
             Width           =   2505
          End
@@ -176,7 +178,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Identifying Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   67
+            TabIndex        =   68
             Top             =   1005
             Width           =   1905
          End
@@ -186,7 +188,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Hierarchy Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   66
+            TabIndex        =   67
             Top             =   360
             Width           =   1680
          End
@@ -196,7 +198,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Reports To Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   65
+            TabIndex        =   66
             Top             =   1410
             Width           =   1920
          End
@@ -206,14 +208,14 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
-         TabIndex        =   54
+         TabIndex        =   55
          Top             =   3345
          Width           =   5400
          Begin VB.ComboBox cboWorkingPattern 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   24
+            TabIndex        =   25
             Top             =   705
             Width           =   2500
          End
@@ -221,7 +223,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Static Working Pattern"
             Height          =   255
             Left            =   150
-            TabIndex        =   23
+            TabIndex        =   24
             Top             =   360
             Value           =   -1  'True
             Width           =   2535
@@ -230,7 +232,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Historical Working Pattern"
             Height          =   255
             Left            =   150
-            TabIndex        =   25
+            TabIndex        =   26
             Top             =   1140
             Width           =   3045
          End
@@ -240,7 +242,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   26
+            TabIndex        =   27
             Top             =   1515
             Width           =   2500
          End
@@ -250,7 +252,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   27
+            TabIndex        =   28
             Top             =   1920
             Width           =   2500
          End
@@ -260,7 +262,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   28
+            TabIndex        =   29
             Top             =   2325
             Width           =   2500
          End
@@ -270,7 +272,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Working Pattern Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   58
+            TabIndex        =   59
             Top             =   1980
             Width           =   2340
          End
@@ -280,7 +282,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Effective Date Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   57
+            TabIndex        =   58
             Top             =   2385
             Width           =   2205
          End
@@ -290,7 +292,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Working Pattern Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   56
+            TabIndex        =   57
             Top             =   765
             Width           =   2250
          End
@@ -300,7 +302,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Table :"
             Height          =   195
             Left            =   435
-            TabIndex        =   55
+            TabIndex        =   56
             Top             =   1575
             Width           =   990
          End
@@ -310,7 +312,7 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
-         TabIndex        =   49
+         TabIndex        =   50
          Top             =   400
          Width           =   5400
          Begin VB.ComboBox cboRegionEffectiveDate 
@@ -319,7 +321,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   22
+            TabIndex        =   23
             Top             =   2325
             Width           =   2500
          End
@@ -329,7 +331,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   21
+            TabIndex        =   22
             Top             =   1920
             Width           =   2500
          End
@@ -339,7 +341,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   20
+            TabIndex        =   21
             Top             =   1515
             Width           =   2500
          End
@@ -347,7 +349,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Historical Region"
             Height          =   255
             Left            =   150
-            TabIndex        =   19
+            TabIndex        =   20
             Top             =   1140
             Width           =   1935
          End
@@ -355,7 +357,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Static Region"
             Height          =   255
             Left            =   150
-            TabIndex        =   17
+            TabIndex        =   18
             Top             =   360
             Value           =   -1  'True
             Width           =   1770
@@ -364,7 +366,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   18
+            TabIndex        =   19
             Top             =   705
             Width           =   2500
          End
@@ -374,7 +376,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Table :"
             Height          =   195
             Left            =   435
-            TabIndex        =   53
+            TabIndex        =   54
             Top             =   1575
             Width           =   945
          End
@@ -384,7 +386,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Region Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   52
+            TabIndex        =   53
             Top             =   765
             Width           =   1710
          End
@@ -394,7 +396,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Effective Date Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   51
+            TabIndex        =   52
             Top             =   2385
             Width           =   2160
          End
@@ -404,18 +406,28 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Region Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   50
+            TabIndex        =   51
             Top             =   1980
             Width           =   1620
          End
       End
       Begin VB.Frame fraTableDefinition 
          Caption         =   "Personnel Records :"
-         Height          =   7050
+         Height          =   7530
          Left            =   120
-         TabIndex        =   37
+         TabIndex        =   38
          Top             =   400
          Width           =   5400
+         Begin VB.ComboBox cboSSIPhotograph 
+            Height          =   315
+            ItemData        =   "frmPersonnelSetup.frx":0060
+            Left            =   2730
+            List            =   "frmPersonnelSetup.frx":0062
+            Style           =   2  'Dropdown List
+            TabIndex        =   13
+            Top             =   5325
+            Width           =   2505
+         End
          Begin VB.ComboBox cboSSIWelcome 
             Height          =   315
             Left            =   2730
@@ -437,24 +449,24 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   15
-            Top             =   6135
+            TabIndex        =   16
+            Top             =   6525
             Width           =   2505
          End
          Begin VB.ComboBox cboManagerStaffNo 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   14
-            Top             =   5730
+            TabIndex        =   15
+            Top             =   6120
             Width           =   2505
          End
          Begin VB.ComboBox cboGrade 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   13
-            Top             =   5325
+            TabIndex        =   14
+            Top             =   5715
             Width           =   2505
          End
          Begin VB.ComboBox cboLoginName 
@@ -534,8 +546,8 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   16
-            Top             =   6540
+            TabIndex        =   17
+            Top             =   6930
             Width           =   2505
          End
          Begin VB.ComboBox cboDateOfBirth 
@@ -554,12 +566,22 @@ Begin VB.Form frmPersonnelSetup
             _ExtentX        =   8811
             _ExtentY        =   53
          End
+         Begin VB.Label lblIntranetPhotograph 
+            BackStyle       =   0  'Transparent
+            Caption         =   "Self-service Photo :"
+            Height          =   225
+            Left            =   195
+            TabIndex        =   72
+            Top             =   5400
+            Width           =   1905
+            WordWrap        =   -1  'True
+         End
          Begin VB.Label lblIntranetWelcome 
             BackStyle       =   0  'Transparent
             Caption         =   "Self-service Welcome Column :"
             Height          =   450
             Left            =   195
-            TabIndex        =   70
+            TabIndex        =   71
             Top             =   4860
             Width           =   1905
             WordWrap        =   -1  'True
@@ -569,8 +591,8 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Job Title Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   62
-            Top             =   6195
+            TabIndex        =   63
+            Top             =   6585
             Width           =   2355
          End
          Begin VB.Label lblManagerStaffNo 
@@ -578,8 +600,8 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Manager Staff No. Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   61
-            Top             =   5790
+            TabIndex        =   62
+            Top             =   6180
             Width           =   2370
          End
          Begin VB.Label lblGradeColumn 
@@ -587,8 +609,8 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Grade Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   60
-            Top             =   5385
+            TabIndex        =   61
+            Top             =   5775
             Width           =   2190
          End
          Begin VB.Label lblLoginNameColumn 
@@ -596,7 +618,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Login Name Column(s) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   59
+            TabIndex        =   60
             Top             =   4200
             Width           =   2775
          End
@@ -605,7 +627,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Personnel Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   48
+            TabIndex        =   49
             Top             =   360
             Width           =   1575
          End
@@ -615,7 +637,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Staff No. Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   47
+            TabIndex        =   48
             Top             =   1005
             Width           =   2415
          End
@@ -625,7 +647,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Forename Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   46
+            TabIndex        =   47
             Top             =   1395
             Width           =   2475
          End
@@ -635,7 +657,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Start Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   45
+            TabIndex        =   46
             Top             =   2205
             Width           =   2505
          End
@@ -645,7 +667,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Surname Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   44
+            TabIndex        =   45
             Top             =   1800
             Width           =   2385
          End
@@ -655,7 +677,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Leaving Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   43
+            TabIndex        =   44
             Top             =   2595
             Width           =   2700
          End
@@ -665,7 +687,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Full / Part Time Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   42
+            TabIndex        =   43
             Top             =   3000
             Width           =   2820
          End
@@ -675,7 +697,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Department Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   41
+            TabIndex        =   42
             Top             =   3405
             Width           =   2610
          End
@@ -685,8 +707,8 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Work Email Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   40
-            Top             =   6585
+            TabIndex        =   41
+            Top             =   6975
             Width           =   1830
          End
          Begin VB.Label lblDateOfBirth 
@@ -695,7 +717,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Date of Birth Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   39
+            TabIndex        =   40
             Top             =   3795
             Width           =   2670
          End
@@ -706,8 +728,8 @@ Begin VB.Form frmPersonnelSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   3315
-      TabIndex        =   35
-      Top             =   7815
+      TabIndex        =   36
+      Top             =   8460
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -715,8 +737,8 @@ Begin VB.Form frmPersonnelSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   4575
-      TabIndex        =   36
-      Top             =   7815
+      TabIndex        =   37
+      Top             =   8460
       Width           =   1200
    End
 End
@@ -756,6 +778,7 @@ Private mvar_lngHWorkingPatternTableID As Long
 Private mvar_lngHWorkingPatternFieldID As Long
 Private mvar_lngHWorkingPatternDateID As Long
 Private mvar_lngSSIWelcomeID As Long
+Private mvar_lngSSIPhotographID As Long
 
 ' Hierarchy Tab
 Private mvar_lngHierarchyTableID As Long
@@ -1051,6 +1074,14 @@ Private Sub cboSSIWelcome_Click()
   Changed = True
 End Sub
 
+Private Sub cboSSIPhotograph_Click()
+
+  With cboSSIPhotograph
+    mvar_lngSSIPhotographID = .ItemData(.ListIndex)
+  End With
+  Changed = True
+End Sub
+
 Private Sub cboStartDate_Click()
 
   With cboStartDate
@@ -1186,6 +1217,7 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iManagerStaffNoListIndex As Integer
   Dim iJobTitleListIndex As Integer
   Dim iSSIWelcomeListIndex As Integer
+  Dim iSSIPhotographListIndex As Integer
   Dim objctl As Control
   
   iEmployeeNumberListIndex = 0
@@ -1345,6 +1377,17 @@ Private Sub RefreshPersonnelColumnControls()
               iManagerStaffNoListIndex = cboManagerStaffNo.NewIndex
             End If
           End If
+          
+          ' Photograph column combo for SSI
+          If !DataType = dtVARBINARY Or _
+                !DataType = dtLONGVARBINARY Then
+            cboSSIPhotograph.AddItem !ColumnName
+            cboSSIPhotograph.ItemData(cboSSIPhotograph.NewIndex) = !ColumnID
+            If !ColumnID = mvar_lngSSIPhotographID Then
+              iSSIPhotographListIndex = cboSSIPhotograph.NewIndex
+            End If
+          End If
+                
         End If
 
         .MoveNext
@@ -1368,6 +1411,7 @@ Private Sub RefreshPersonnelColumnControls()
   cboManagerStaffNo.ListIndex = iManagerStaffNoListIndex
   cboJobTitle.ListIndex = iJobTitleListIndex
   cboSSIWelcome.ListIndex = iSSIWelcomeListIndex
+  cboSSIPhotograph.ListIndex = iSSIPhotographListIndex
 
   RefreshLoginColumnControls
   
@@ -1636,7 +1680,7 @@ End Sub
 '
 '##################################################
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
  'AE20071119 Fault #12607
   'If ValidateSetup Then
@@ -2168,6 +2212,7 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME, gsPARAMETERTYPE_COLUMNID, mvar_lngForenameID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngSurnameID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SSIWELCOME, gsPARAMETERTYPE_COLUMNID, mvar_lngSSIWelcomeID
+  SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SSIPHOTOGRAPH, gsPARAMETERTYPE_COLUMNID, mvar_lngSSIPhotographID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngStartDateID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngLeavingDateID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FULLPARTTIME, gsPARAMETERTYPE_COLUMNID, mvar_lngFullPartTimeID
@@ -2399,6 +2444,7 @@ Private Sub ReadParameters()
   mvar_lngForenameID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME, 0)
   mvar_lngSurnameID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME, 0)
   mvar_lngSSIWelcomeID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SSIWELCOME, 0)
+  mvar_lngSSIPhotographID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SSIPHOTOGRAPH, 0)
   mvar_lngStartDateID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE, 0)
   mvar_lngLeavingDateID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE, 0)
   mvar_lngFullPartTimeID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FULLPARTTIME, 0)
