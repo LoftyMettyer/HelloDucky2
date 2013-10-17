@@ -185,7 +185,7 @@
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td>
-																				<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" style="width: 98%" class="text textdisabled">
+																				<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" style="width: 100%" class="text textdisabled">
 																			</td>
 																			<td width="30">
 																				<input id="cmdBasePicklist" name="cmdBasePicklist" style="width: 100%" type="button" value="..." class="btn"
@@ -217,7 +217,7 @@
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td>
-																				<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="width: 98%">
+																				<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="width: 100%">
 																			</td>
 																			<td width="30">
 																				<input id="cmdBaseFilter" name="cmdBaseFilter" style="width: 100%" type="button" value="..." class="btn"
@@ -732,7 +732,7 @@
 
 															<table style="width: 100%; height: 100%">
 																<tr>
-																	<td width="20">&nbsp;&nbsp;&nbsp;</td>
+																	<td style="width: 10px">&nbsp;</td>
 																	<td width="220px" valign="top">
 																		<table style="vertical-align: text-top" cellspacing="0" cellpadding="4" width="100%" height="200px">
 																			<tr style="height: 20px; font-weight: bold;">
@@ -795,7 +795,7 @@
 																						onfocus="try{radio_onFocus(this);}catch(e){}"
 																						onblur="try{radio_onBlur(this);}catch(e){}" />
 																				</td>
-																				<%--<td width="5">&nbsp;</td>--%>
+																				
 																				<td style="white-space: nowrap">
 																					<label tabindex="-1"
 																						for="optDestination2"
@@ -808,16 +808,14 @@
 																			</tr>
 																			<tr></tr>
 																		</table>
-																		<td style="width: 30px"></td>
+																		<td style="width: 10px"></td>
 																	<td valign="top">
 																		<table  style="padding: 4px; width: 100%; height: 200px; vertical-align: top;">
-
 																			<tr style="height: 20px; font-weight: bold;">
-																				<td colspan="4" style="text-align: left">Output Destinations :
+																				<td colspan="8" style="text-align: left">Output Destinations :
 																					<br>
 																				</td>
 																			</tr>
-
 																			<tr style="height: 20px; padding: 5px" name="row1" id="row1">
 																				<td style="width: 60px;white-space: nowrap">Engine :</td>
 																				<td style="width: 5px"></td>
@@ -828,9 +826,7 @@
 																					</select>
 																				</td>
 																			</tr>
-
 																			<tr style="width: 5px"></tr>
-
 																			<tr id="row4" name="row4" style="height: 20px; padding: 5px">
 																				<td style="white-space: nowrap" colspan="2">
 																					<input type="checkbox" id="chkOutputScreen" name="chkOutputScreen" tabindex="-1"
@@ -852,13 +848,11 @@
 																					</label>
 																				</td>
 																			</tr>
-
 																			<tr style="height: 20px; padding: 5px" name="row2" id="row2">
-
 																				<td nowrap></td>
 																				<td></td>
 																				<td style="width: 30px" colspan="3">
-																					<table  class="invisible" cellspacing="0" cellpadding="0">
+																					<table class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td width="20"></td>
 																							<td style="padding-right: 0; vertical-align: middle"></td>
@@ -869,83 +863,80 @@
 																			</tr>
 
 																			<tr style="height: 20px" name="row3" id="row3">
-																				<td nowrap colspan="6"></td>
+																				<td nowrap colspan="8"></td>
 																			</tr>
+																					
+																				<tr name="row5" id="row5" style="height: 20px; padding: 5px">
+																					<td style="white-space: nowrap;width:200px" colspan="3" >
+																						<input type="checkbox" id="chkOutputPrinter" name="chkOutputPrinter" tabindex="-1"
+																							onclick="chkOutputPrinter_Click(); changeTab4Control(); "
+																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						<label
+																							for="chkOutputPrinter"
+																							class="checkbox"
+																							tabindex="0"
+																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																							onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																							onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																							Send to printer</label>
+																					</td>
+																					<%--<td>&nbsp;</td>--%>
+																					<td class="text" style="white-space: nowrap; text-align: left;width: 120px;">Printer location : </td>
+																					<td style="width: 350px">
+																						<select
+																							style="width: 100%"
+																							id="cboPrinterName" name="cboPrinterName" class="combo"
+																							onchange="changeTab4Control()">
+																						</select>
+																					</td>
+																					<td style="width: 5px;">&nbsp;</td>
+																					<td style="width: 5px;">&nbsp;</td>
+																					<td style="width: 5px;">&nbsp;</td>
+																				</tr>
 
-																			<tr name="row5" id="row5" style="height: 20px; padding: 5px">
-																				<td nowrap>
-																					<input type="checkbox" id="chkOutputPrinter" name="chkOutputPrinter" tabindex="-1"
-																						onclick="chkOutputPrinter_Click(); changeTab4Control(); "
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																				<td style="width: 200px; white-space: nowrap">
-																					<label
-																						for="chkOutputPrinter"
-																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																						Send to printer
-																					</label>
-																				</td>
-																				<td class="text" style="width: 150px; white-space: nowrap">Printer location :</td>
-																				<td colspan="2">
-																					<select id="cboPrinterName" name="cboPrinterName" style="width: 330px" class="combo"
-																						onchange="changeTab4Control()">
-																					</select>
-																				</td>
-																			</tr>
-																			<tr name="row6" id="row6" style="height: 20px; padding: 5px">
-																				<td nowrap>
-																					<input type="checkbox" id="chkSave" name="chkSave" tabindex="-1"
-																						onclick="chkSave_Click(); changeTab4Control(); "
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																				<td style="width: 200px; white-space: nowrap">
-																					<label
-																						for="chkSave"
-																						class="checkbox"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																						Save to file
-																					</label>
-																				</td>
-																				<td class="text" style="width: 150px; white-space: nowrap">File name :</td>
-																				<td colspan="2">
-																					<table style="width: 100%; padding: 0" class="invisible" cellspacing="0">
-																						<tr>
-																							<td style="width: 20px">
-																								<input id="  " name="txtSaveFile" style="width: 325px" disabled="disabled" class="text textdisabled">
-																							</td>
-																							<td style="padding-right: 2px; padding-left: 2px;" >
-																								<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
-																									onclick="saveFile()"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
-																							</td>
-																							<td>
-																								<input type="button" value="Clear" id="cmdClearFile" name="cmdClearFile" class="btn"
-																									onclick="fileClear()"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
-																							</td>
-																						</tr>
-																					</table>
-																				</td>
-																			</tr>
+																				<tr name="row6" id="row6" style="height: 20px; padding: 5px">
+																					<td style="white-space: nowrap;width:200px" colspan="3">
+																						<input type="checkbox" id="chkSave" name="chkSave" tabindex="-1"
+																							onclick="chkSave_Click(); changeTab4Control(); "
+																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						<label
+																							for="chkSave"
+																							class="checkbox"
+																							tabindex="0"
+																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																							onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																							onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																							Save to file</label>
+																					</td>
+																					<td class="text" style="white-space: nowrap;width: 120px;text-align: left">File name :</td>
+																					<td style="width: 350px">
+																						<input style="width: 100%" id="  " name="txtSaveFile" disabled="disabled" class="text textdisabled">
+																					</td>
+																					<td>
+																						<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
+																							onclick="saveFile()"
+																							onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																							onfocus="try{button_onFocus(this);}catch(e){}"
+																							onblur="try{button_onBlur(this);}catch(e){}" />
+																					</td>
+																					<td>
+																						<input type="button" value="Clear" id="cmdClearFile" name="cmdClearFile" class="btn"
+																							onclick="fileClear()"
+																							onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																							onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																							onfocus="try{button_onFocus(this);}catch(e){}"
+																							onblur="try{button_onBlur(this);}catch(e){}" />
+																					</td>
+																					<td>&nbsp;</td>
+																				</tr>
 
-																			<%--<tr style="height: 20px" name="row7" id="row7">--%>
 																			<tr name="row7" id="row7" style="height: 20px; padding: 5px">
 																				<td style="width: 150px; white-space: nowrap">Email Address :</td>
 																				<td width="5px"></td>
@@ -955,8 +946,6 @@
 																					</select>
 																				</td>
 																			</tr>
-
-																			<%--<tr style="height: 20px" name="row8" id="row8">--%>
 																			<tr name="row8" id="row8" style="height: 20px; padding: 5px">
 																				<td style="width: 150px; white-space: nowrap">Subject :</td>
 																				<td width="5px"></td>
@@ -965,7 +954,6 @@
 																						onkeyup="changeTab4Control()">
 																				</td>
 																			</tr>
-
 																			<tr name="row9" id="row9" style="height: 20px; padding: 5px">
 																				<td nowrap colspan="3">
 																					<input type="checkbox" id="chkAttachment" name="chkAttachment" tabindex="-1"
@@ -995,9 +983,13 @@
 																				</td>
 																			</tr>
 																		</table>
+																		
+
+																		
 																	</td>
 																	
 																</tr>
+
 																<tr height="100%"></tr>
 															</table>
 														</td>

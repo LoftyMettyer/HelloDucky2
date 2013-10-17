@@ -1038,7 +1038,7 @@
 																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
 																		<br>
 																		<br>
-																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																		<table class="invisible" cellspacing="0" cellpadding="0" style="width: 100%; border:1px">
 																			<tr height="20">
 																				<td width="5">&nbsp</td>
 																				<td align="left" colspan="6" nowrap>
@@ -1046,16 +1046,17 @@
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkPreview"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="0">
-																						Preview on screen
-																					</label>
+																						Preview on screen</label>
 																				</td>
 																				<td width="5">&nbsp</td>
 																			</tr>
+
 																			<tr height="10">
 																				<td colspan="8"></td>
 																			</tr>
+
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" colspan="6" nowrap>
@@ -1063,159 +1064,175 @@
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkDestination0"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="0">
-																						Display output on screen 
-																					</label>
+																						Display output on screen</label>
 																				</td>
 																				<td></td>
 																			</tr>
+
 																			<tr height="10">
 																				<td colspan="8"></td>
 																			</tr>
+
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
-																						onclick="changeTab3Control();" />
+																						onclick="changeTab3Control();"
+																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkDestination1"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0">
+																						tabindex="0"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
 																						Send to printer 
 																					</label>
 																				</td>
-																				<td width="30" nowrap>&nbsp</td>
-																				<td align="left" nowrap>Printer location : 
-																				</td>
-																				<td width="15">&nbsp</td>
-																				<td colspan="2">
-																					<select id="cboPrinterName" name="cboPrinterName" width="100%" style="WIDTH: 400px" class="combo"
+																				<td width="30" nowrap>&nbsp;</td>
+																				<td style="width: 15%">&nbsp;</td>
+																				<td style="width: 25%; text-align: left; white-space: nowrap">Printer location : </td>
+																				<td style="width: 100%">
+																					<select id="cboPrinterName" name="cboPrinterName" class="combo"
+																						style="width: 100%"
 																						onchange="changeTab3Control()">
 																					</select>
 																				</td>
-																				<td></td>
+																				<td width="30" nowrap>&nbsp;</td>
+																				<td width="30" nowrap>&nbsp;</td>
 																			</tr>
-																			<tr height="10">
-																				<td colspan="8"></td>
-																			</tr>
-																			<tr height="20">
+
+																			<tr style="height: 20px">
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkDestination2"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="0">
-																						Save to file
+																						Save to file 
 																					</label>
 																				</td>
 																				<td></td>
-																				<td align="left" nowrap>File name :   
+																				<td></td>
+																				<td align="left" nowrap>File name : </td>
+																				<td>
+																					<input id="txtFilename" name="txtFilename"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" tabindex="-1">
+																				</td>
+																				<td style="padding-left: 2px;width: 25px">
+																					<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value='...' disabled="disabled"
+																						onclick="saveFile(); changeTab3Control();" />
 																				</td>
 																				<td></td>
-																				<td colspan="2">
-																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
-																						<tr>
-																							<td>
-																								<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" style="width: 100%">
-																							</td>
-																							<td width="25">
-																								<input id="cmdFilename" name="cmdFilename" style="WIDTH: 100%" type="button" class="btn" value="..."
-																									onclick="saveFile(); changeTab3Control();" />
-																							</td>
-
-																						</tr>
-																					</table>
-
-																				</td>
-
 																			</tr>
-																			<tr height="10">
-																				<td colspan="8"></td>
-																			</tr>
-																			<tr height="20">
-																				<td colspan="3"></td>
-																				<td align="left" nowrap>If existing file :</td>
+
+																			<tr style="height: 20px">
 																				<td></td>
-																				<td colspan="2" width="100%" nowrap>
-																					<select id="cboSaveExisting" name="cboSaveExisting" width="100%" style="WIDTH: 400px" class="combo"
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td style="white-space: nowrap;text-align: left">If existing file :</td>
+																				<td style="white-space: nowrap">
+																					<select id="cboSaveExisting" name="cboSaveExisting"
+																						style="width: 100%"
+																						class="combo"
 																						onchange="changeTab3Control()">
 																					</select>
 																				</td>
 																				<td></td>
-																			</tr>
-																			<tr height="10">
-																				<td colspan="8"></td>
-																			</tr>
-																			<tr height="20">
 																				<td></td>
-																				<td align="left" nowrap>
+																			</tr>
+
+																			<tr style="height: 20px">
+																				<td></td>
+																				<td style="white-space: nowrap;text-align: left">
 																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-																						onclick="changeTab3Control();" />
-																					<label
-																						for="chkDestination3"
-																						class="checkbox checkboxdisabled"
+																						onclick="changeTab3Control();"/>
+																					<label for="chkDestination3"
+																						class="checkbox"
 																						tabindex="0">
-																						Send as email 
+																						Send as email
 																					</label>
 																				</td>
 																				<td></td>
-																				<td align="left" nowrap>Email group : </td>
 																				<td></td>
-																				<td colspan="2">
-																					<table class="invisible" cellspacing="0" cellpadding="0" style="WIDTH: 400px">
-																						<tr>
-																							<td>
-																								<input id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
-																								<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
-																							</td>
-																							<td width="25">
-																								<input id="cmdEmailGroup" name="cmdEmailGroup" style="WIDTH: 100%" type="button" class="btn" value="..."
-																									onclick="selectEmailGroup(); changeTab3Control();" />
-																							</td>
-
-																						</tr>
-																					</table>
-
+																				<td style="white-space: nowrap;text-align: left">Email group :   </td>
+																				<td>
+																					<input id="txtEmailGroup" name="txtEmailGroup"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" tabindex="-1">
+																					<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden" 
+																						class="text textdisabled" disabled="disabled" tabindex="-1">
 																				</td>
-																			</tr>
-
-																			<tr height="10">
-																				<td colspan="8"></td>
-																			</tr>
-
-																			<tr height="20">
-																				<td colspan="3"></td>
-																				<td align="left" nowrap>Email subject :</td>
+																				<td style="padding-left: 2px;width: 25px">
+																					<input id="cmdEmailGroup" name="cmdEmailGroup" 
+																						type="button" 
+																						value='...' 
+																						disabled="disabled" 
+																						class="btn"
+																						onclick="selectEmailGroup(); changeTab3Control();"/>
+																				</td>
 																				<td></td>
-																				<td colspan="2" width="100%" nowrap>
-																					<input id="txtEmailSubject" disabled="disabled" class="text textdisabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 400px"
+																			</tr>
+
+																			<tr>
+																				<td style="width: 130px" colspan="1"></td>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td style="white-space: nowrap;">
+																					<label for="txtEmailAttachAs"
+																						tabindex="0"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" 
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" 
+																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" 
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Attach as : 
+																					</label>
+																				</td>
+																				<td>
+																					<input id="txtEmailAttachAs" maxlength="255"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" name="txtEmailAttachAs"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
+																				<td></td>
+																				<td></td>
+																			</tr>
+
+																			<tr>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td style="white-space: nowrap;">
+																					<label for="txtEmailSubject"
+																						tabindex="0"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Email subject :</label>
+																				</td>
+																				<td style="padding-top: 5px">
+																					<input id="txtEmailSubject"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject"
 																						onchange="frmUseful.txtChanged.value = 1;"
 																						onkeydown="frmUseful.txtChanged.value = 1;">
 																				</td>
 																				<td></td>
-																			</tr>
-
-																			<tr height="10">
-																				<td colspan="8"></td>
-																			</tr>
-
-																			<tr height="20">
-																				<td colspan="3"></td>
-																				<td align="left" nowrap>Attach as : </td>
 																				<td></td>
-																				<td colspan="2" width="100%" nowrap>
-																					<input id="txtEmailAttachAs" disabled="disabled" maxlength="255" class="text textdisabled" name="txtEmailAttachAs" style="WIDTH: 400px"
-																						onchange="frmUseful.txtChanged.value = 1;"
-																						onkeydown="frmUseful.txtChanged.value = 1;">
-																				</td>
-																				<td></td>
-																			</tr>
-
-																			<tr height="10">
-																				<td colspan="8"></td>
 																			</tr>
 																		</table>
 																	</td>

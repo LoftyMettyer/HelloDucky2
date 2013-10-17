@@ -816,7 +816,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
-																onclick="formatAbsenceClick(2);"/>
+																onclick="formatAbsenceClick(2);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
@@ -931,72 +931,64 @@
 									</table>
 								</td>
 								<td style="vertical-align: top; width: 75%">
-									<table  style="border-collapse: collapse; padding: 4px; width: 100%; height: 100%">
+									<table style="border-collapse: collapse; padding: 4px; width: 100%; height: 100%">
 										<tr style="height: 10px">
 											<td style="height: 10px; text-align: left; vertical-align: top;"><strong>Output Destination(s) :</strong>
 												<br>
 												<br>
-												<table  class="invisible" style="border-collapse: collapse; padding: 0px; width: 100%;">
+												<table class="invisible" style="border-collapse: collapse; padding: 0px; width: 100%;">
 													<tr style="height: 20px">
-														<td style="width: 5px">&nbsp;</td>
-														<td style="text-align: left; white-space: nowrap" colspan="6">
+														<td></td>
+														<td style="white-space: nowrap; text-align: left" colspan="6">
 															<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"/>
+																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkPreview"
-																class="checkbox checkboxdisabled"
+																class="checkbox"
 																tabindex="0">
 																Preview on screen
 															</label>
 														</td>
-														<td style="width: 5px">&nbsp;</td>
+														<td></td>
 													</tr>
-													<tr style="height: 10px">
-														<td colspan="8"></td>
-													</tr>
+
 													<tr style="height: 20px">
-														<td style="width: 5px">&nbsp;</td>
+														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap" colspan="6">
 															<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination0"
-																class="checkbox checkboxdisabled"
+																class="checkbox"
 																tabindex="0">
 																Display output on screen
 															</label>
 														</td>
 														<td style="width: 5px">&nbsp;</td>
 													</tr>
-													<tr style="height: 10px">
-														<td colspan="8"></td>
-													</tr>
+													
 													<tr style="height: 20px">
-														<td style="width: 5px">&nbsp;</td>
+														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
 															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"/>
+																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination1"
-																class="checkbox checkboxdisabled"
+																class="checkbox"
 																tabindex="0">
-																Send to printer -
+																Send to printer
 															</label>
 														</td>
 														<td style="width: 15px">&nbsp;</td>
-														
+														<td style="width: 20%"></td>
+														<td style="width: 5px"></td>
 														<td style="text-align: left; white-space: nowrap">Printer location : </td>
-														<td style="width: 5px"></td>
-														<td style="width: 5px"></td>
-														<td colspan="2">
+
+														<td >
 															<select id="cboPrinterName" name="cboPrinterName" class="combo" style="width: 100%;">
 															</select>
 														</td>
-														
-														
-													</tr>
-													<tr style="height: 10px">
-														<td colspan="8"></td>
+														<td></td>
 													</tr>
 
 													<tr style="height: 20px">
@@ -1008,49 +1000,42 @@
 																for="chkDestination2"
 																class="checkbox checkboxdisabled"
 																tabindex="0">
-																Save to file - 
+																Save to file
 															</label>
 														</td>
 														<td>&nbsp;</td>
+														<td style="width: 5px"></td>
+														<td style="width: 5px"></td>
 														<td style="text-align: left; white-space: nowrap">File name :</td>
-														<td style="width: 5px"></td>
-														<td style="width: 5px"></td>
 														<td style="width: 100%">
 															<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled"
-															style="width: 100%">
+																style="width: 100%">
 														</td>
-														<td style="width: 5px">
+														<td style="width: 5px;padding-left: 2px">
 															<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
 																onclick="saveFile();" />
 														</td>
 													</tr>
 
-												</table>
-											</td>
-											<td style="width: 5px">&nbsp;</td>
-										</tr>
-
-										<tr>
-											<td>
-												<table>
-													<tr>
+												<tr>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="white-space: nowrap">If existing file :</td>
-														<td colspan="2" style="width: 80%; text-align: right" >
+														<td style="width: 80%; text-align: right">
 															<select style="width: 100%" id="cboSaveExisting" name="cboSaveExisting" class="combo"></select>
 														</td>
+														<td></td>
 													</tr>
 
 													<tr>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
 															<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-																onclick="absenceBreakdownRefreshTab3Controls();"/>
-																<label
+																onclick="absenceBreakdownRefreshTab3Controls();" />
+															<label
 																for="chkDestination3"
 																class="checkbox checkboxdisabled"
 																tabindex="0">
@@ -1059,28 +1044,17 @@
 														</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td></td>
-														
+
 														<td></td>
 														<td>Email group :</td>
-														<td style="white-space: nowrap;width: 80%">
-															<input style="width: 99%;" id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled"> 
+														<td style="white-space: nowrap; width: 80%">
+															<input style="width: 100%;" id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled">
 															<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
 														</td>
-														<td>
+														<td style="width: 5px;padding-left: 2px">
 															<input id="cmdEmailGroup" name="cmdEmailGroup" class="btn" type="button" value="..."
 																onclick="selectEmailGroup();" />
 														</td>
-														
-													</tr>
-
-													<tr>
-														<td style="width: 5px">&nbsp;</td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td style="text-align: left; white-space: nowrap">Email subject :</td>
-														<td colspan="2"><input style="width: 100%" id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject"></td>
 													</tr>
 													
 													<tr>
@@ -1089,11 +1063,29 @@
 														<td></td>
 														<td></td>
 														<td></td>
-														<td style="text-align: left; white-space: nowrap">Attach as :</td>
-														<td colspan="2" ><input style="width: 100%" id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs"></td>
+														<td style="text-align: left; white-space: nowrap">Email subject :</td>
+														<td >
+															<input style="width: 100%" id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject">
+														</td>
+														<td></td>
 													</tr>
+													
+													<tr>
+														<td style="width: 5px;padding-top: 15px">&nbsp;</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td style="text-align: left; white-space: nowrap">Attach as :</td>
+														<td >
+															<input style="width: 100%" id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs">
+														</td>
+														<td></td>
+													</tr>
+
 												</table>
 											</td>
+											<td style="width: 5px">&nbsp;</td>
 										</tr>
 									</table>
 								</td>
