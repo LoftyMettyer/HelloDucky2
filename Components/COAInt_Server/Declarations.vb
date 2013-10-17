@@ -8,6 +8,7 @@ Module Declarations
   Public gADOCon As ADODB.Connection
 
   Public datGeneral As New clsGeneral
+	Public dataAccess As New clsDataAccess
 
   Public gsUsername As String
   Public gsActualLogin As String
@@ -24,6 +25,7 @@ Module Declarations
 	Public Relations As ICollection(Of Metadata.Relation)
 	Public ModuleSettings As ICollection(Of Metadata.ModuleSetting)
 	Public UserSettings As ICollection(Of Metadata.UserSetting)
+	Public Functions As ICollection(Of Metadata.Function)
 
   Public Enum GlobalType
     glAdd = 1

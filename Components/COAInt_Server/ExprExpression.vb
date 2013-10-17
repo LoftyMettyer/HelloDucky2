@@ -1,6 +1,7 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsExprExpression
@@ -66,7 +67,7 @@ Friend Class clsExprExpression
 			' Set the expression base table property.
 			If mlngBaseTableID <> Value Then
 				mlngBaseTableID = Value
-				msBaseTableName = Tables.GetTableById(mlngBaseTableID).Name
+				msBaseTableName = Tables.GetById(mlngBaseTableID).Name
 			End If
 		End Set
 	End Property
@@ -126,7 +127,7 @@ Friend Class clsExprExpression
 
 		End Set
 	End Property
-	
+
 	Public ReadOnly Property ErrorMessage() As String
 		Get
 			Return msErrorMessage
@@ -141,11 +142,9 @@ Friend Class clsExprExpression
 		End Set
 	End Property
 
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-
+			Return ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 		End Get
 	End Property
 
@@ -183,7 +182,6 @@ Friend Class clsExprExpression
 
 		End Get
 	End Property
-
 
 	Public Property Access() As String
 		Get
@@ -893,7 +891,7 @@ ErrorTrap:
 		Dim sRuntimeFilterSQL As String
 		Dim alngSourceTables(,) As Integer
 		Dim avRelatedTables(,) As Object
-		Dim rsInfo As ADODB.Recordset
+		Dim rsInfo As Recordset
 		Dim objTableView As CTablePrivilege
 
 		' Check if the 'validating' parameter is set.
@@ -918,7 +916,7 @@ ErrorTrap:
 				objTableView = Nothing
 			End If
 
-			sRuntimeFilterSQL = "SELECT DISTINCT " & sBaseTableSource & ".id" & vbNewLine & "FROM " & sBaseTableSource & " " & vbNewLine
+			sRuntimeFilterSQL = "SELECT DISTINCT " & sBaseTableSource & ".id FROM " & sBaseTableSource & " " & vbNewLine
 
 			' Create an array of the IDs of the tables/view referred to in the expression.
 			' This is used for joining all of the tables/views used.
@@ -938,8 +936,9 @@ ErrorTrap:
 			'            'child' if the expression's base table is the child of the other table
 			' Column 2 = ID of the other table
 			ReDim avRelatedTables(2, 0)
-			sSQL = "SELECT 'parent' AS relationship, childID AS tableID" & " FROM ASRSysRelations" & " WHERE parentID = " & Trim(Str(mlngBaseTableID)) & " UNION" & " SELECT 'child' AS relationship, parentID AS tableID" & " FROM ASRSysRelations" & " WHERE childID = " & Trim(Str(mlngBaseTableID))
-			rsInfo = datGeneral.GetRecords(sSQL)
+			sSQL = "SELECT 'parent' AS relationship, childID AS tableID FROM ASRSysRelations WHERE parentID = " & Trim(Str(mlngBaseTableID)) & " UNION SELECT 'child' AS relationship, parentID AS tableID FROM ASRSysRelations WHERE childID = " & Trim(Str(mlngBaseTableID))
+			rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 			With rsInfo
 				Do While Not .EOF
 					iNextIndex = UBound(avRelatedTables, 2) + 1
@@ -1571,7 +1570,7 @@ ErrorTrap:
 		' This picks up on errors such as too many nested levels of the CASE statement.
 		Dim iValidationCode As ExprValidationCodes
 		Dim sSQL As String
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 		Dim objComp As clsExprComponent
 		Dim objExpr As clsExprExpression
 
@@ -1583,8 +1582,10 @@ ErrorTrap:
 			Exit Function
 		End If
 
-		sSQL = "SELECT componentID" & " FROM ASRSysExprComponents" & " WHERE calculationID = " & mlngExpressionID & " OR filterID = " & mlngExpressionID & " OR (fieldSelectionFilter = " & mlngExpressionID & " AND type = " & CStr(modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD) & ")"
-		rsTemp = datGeneral.GetRecords(sSQL)
+		sSQL = String.Format("SELECT componentID FROM ASRSysExprComponents WHERE calculationID = {0} OR filterID = {0} OR (fieldSelectionFilter = {0} AND type = {1})" _
+			, mlngExpressionID, CStr(ExpressionComponentTypes.giCOMPONENT_FIELD))
+		rsTemp = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 		With rsTemp
 			Do While (Not .EOF) And (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
 				objComp = New clsExprComponent
@@ -1626,8 +1627,8 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim sSQL As String
 		Dim objComponent As clsExprComponent
-		Dim rsExpression As ADODB.Recordset
-		Dim rsComponents As ADODB.Recordset
+		Dim rsExpression As Recordset
+		Dim rsComponents As Recordset
 
 		fOK = True
 
@@ -1642,8 +1643,9 @@ ErrorTrap:
 
 			If mlngExpressionID > 0 Then
 				' Get the expression timestamp.
-				sSQL = sSQL & "SELECT CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp" & " FROM ASRSysExpressions" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
-				rsExpression = datGeneral.GetRecords(sSQL)
+				sSQL = String.Format("SELECT CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp FROM ASRSysExpressions WHERE exprID = {0}", mlngExpressionID)
+				rsExpression = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 				With rsExpression
 					fOK = Not (.EOF And .BOF)
 					If fOK Then
@@ -1660,16 +1662,23 @@ ErrorTrap:
 			' Get the expression definition.
 			If miExpressionType = ExpressionTypes.giEXPR_UTILRUNTIMEFILTER Then
 				' Utility runtime filters are not tied to a base table.
-				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " 0 AS tableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " '' AS tableName" & " FROM ASRSysExpressions" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+				sSQL = "SELECT name, 0 AS tableID, returnType, type, parentComponentID, Username," _
+					& " access, description, ViewInColour, CONVERT(integer, timestamp) AS intTimestamp, '' AS tableName FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngExpressionID))
 
 			ElseIf miExpressionType = ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC Then
-				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+				sSQL = "SELECT ASRSysExpressions.name, ASRSysExpressions.TableID, ASRSysExpressions.returnType, ASRSysExpressions.type, ASRSysExpressions.parentComponentID," _
+					& " ASRSysExpressions.Username, ASRSysExpressions.access, ASRSysExpressions.description, ASRSysExpressions.ViewInColour," _
+					& " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp, ASRSysTables.tableName FROM ASRSysExpressions" _
+					& " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID WHERE exprID = " & Trim(Str(mlngExpressionID))
 
 			Else
-				sSQL = sSQL & "SELECT ASRSysExpressions.name," & " ASRSysExpressions.TableID," & " ASRSysExpressions.returnType," & " ASRSysExpressions.type," & " ASRSysExpressions.parentComponentID," & " ASRSysExpressions.Username," & " ASRSysExpressions.access," & " ASRSysExpressions.description," & " ASRSysExpressions.ViewInColour," & " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp," & " ASRSysTables.tableName" & " FROM ASRSysExpressions" & " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+				sSQL = "SELECT ASRSysExpressions.name, ASRSysExpressions.TableID, ASRSysExpressions.returnType, ASRSysExpressions.type, ASRSysExpressions.parentComponentID," _
+					& " ASRSysExpressions.Username, ASRSysExpressions.access, ASRSysExpressions.description, ASRSysExpressions.ViewInColour," _
+					& " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp, ASRSysTables.tableName FROM ASRSysExpressions" _
+					& " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID WHERE exprID = " & Trim(Str(mlngExpressionID))
 			End If
 
-			rsExpression = datGeneral.GetRecords(sSQL)
+			rsExpression = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			With rsExpression
 				fOK = Not (.EOF And .BOF)
 				If fOK Then
@@ -1679,9 +1688,9 @@ ErrorTrap:
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					mlngBaseTableID = IIf(IsDBNull(.Fields("TableID").Value), 0, .Fields("TableID").Value)
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					miReturnType = IIf(IsDBNull(.Fields("ReturnType").Value), modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED, .Fields("ReturnType").Value)
+					miReturnType = IIf(IsDBNull(.Fields("ReturnType").Value), ExpressionValueTypes.giEXPRVALUE_UNDEFINED, .Fields("ReturnType").Value)
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					miExpressionType = IIf(IsDBNull(.Fields("Type").Value), modExpression.ExpressionTypes.giEXPR_UNKNOWNTYPE, .Fields("Type").Value)
+					miExpressionType = IIf(IsDBNull(.Fields("Type").Value), ExpressionTypes.giEXPR_UNKNOWNTYPE, .Fields("Type").Value)
 
 					If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
 						miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
@@ -1718,8 +1727,8 @@ ErrorTrap:
 				ClearComponents()
 
 				' Get the expression definition.
-				sSQL = "SELECT *" & " FROM ASRSysExprComponents" & " WHERE exprID = " & Trim(Str(mlngExpressionID)) & " ORDER BY componentID"
-				rsComponents = datGeneral.GetRecords(sSQL)
+				sSQL = String.Format("SELECT * FROM ASRSysExprComponents WHERE exprID = {0} ORDER BY componentID", mlngExpressionID)
+				rsComponents = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 				Do While (Not rsComponents.EOF) And fOK
 					' Instantiate a new component object.

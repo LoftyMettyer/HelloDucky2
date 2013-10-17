@@ -276,65 +276,51 @@ ErrorTrap:
 			On Error GoTo ErrorTrap
 			
 			Dim fOK As Boolean
-			Dim iType As modExpression.ExpressionValueTypes
-			Dim sSQL As String
-			Dim rsColumn As ADODB.Recordset
-			
+			Dim iType As ExpressionValueTypes
+
 			fOK = True
 			
 			' If the component returns the record count then
 			' the return type must be numeric; otherwise the
 			' return type is determined by the field type.
-			If miSelectionType = modExpression.FieldSelectionTypes.giSELECT_RECORDCOUNT Then
-				iType = modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+			If miSelectionType = FieldSelectionTypes.giSELECT_RECORDCOUNT Then
+				iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
 			Else
+
 				' Determine the field's type by creating an
 				' instance of the column class, and instructing
 				' it to read its own details (including type).
-				sSQL = "SELECT dataType" & " FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(mlngColumnID))
-				rsColumn = datGeneral.GetRecords(sSQL)
-				With rsColumn
-					
-					fOK = Not (.EOF And .BOF)
-					
-					If fOK Then
-						Select Case .Fields("DataType").Value
-							Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-								iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							Case SQLDataType.sqlDate
-								iType = ExpressionValueTypes.giEXPRVALUE_DATE
-							Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
-								iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
-							Case SQLDataType.sqlBoolean
-								iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
-							Case SQLDataType.sqlOle
-								iType = ExpressionValueTypes.giEXPRVALUE_OLE
-							Case SQLDataType.sqlVarBinary
-								iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
-							Case Else
-								fOK = False
-						End Select
-						
-						If fOK Then
-							If miFieldPassType = modExpression.FieldPassTypes.giPASSBY_REFERENCE Then
-								iType = iType + giEXPRVALUE_BYREF_OFFSET
-							End If
-						End If
+				Select Case Columns.GetById(mlngColumnID).DataType
+					Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+						iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
+					Case SQLDataType.sqlDate
+						iType = ExpressionValueTypes.giEXPRVALUE_DATE
+					Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
+						iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
+					Case SQLDataType.sqlBoolean
+						iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
+					Case SQLDataType.sqlOle
+						iType = ExpressionValueTypes.giEXPRVALUE_OLE
+					Case SQLDataType.sqlVarBinary
+						iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
+					Case Else
+						fOK = False
+				End Select
+
+				If fOK Then
+					If miFieldPassType = FieldPassTypes.giPASSBY_REFERENCE Then
+						iType = iType + giEXPRVALUE_BYREF_OFFSET
 					End If
-					
-					.Close()
-				End With
-				'UPGRADE_NOTE: Object rsColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsColumn = Nothing
+				End If
 			End If
-			
-TidyUpAndExit: 
-			If fOK Then
-				ReturnType = iType
-			Else
-				ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-			End If
-			Exit Property
+
+TidyUpAndExit:
+		If fOK Then
+			ReturnType = iType
+		Else
+			ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+		End If
+		Exit Property
 			
 ErrorTrap: 
 			fOK = False
@@ -343,20 +329,16 @@ ErrorTrap:
 		End Get
 	End Property
 	
-	
-	
-	
-	
 	Public Property SelectionOrderID() As Integer
 		Get
 			' Return the Selection Order property value.
 			SelectionOrderID = mlngSelOrderID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the Selection Order property value.
 			mlngSelOrderID = Value
-			
+
 		End Set
 	End Property
 	
@@ -451,7 +433,7 @@ ErrorTrap:
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Initialise properties.
-		miFieldPassType = modExpression.FieldPassTypes.giPASSBY_VALUE
+		miFieldPassType = FieldPassTypes.giPASSBY_VALUE
 		
 	End Sub
 	Public Sub New()
@@ -491,7 +473,7 @@ ErrorTrap:
 		sCode = ""
 		fOK = True
 
-		If (miFieldPassType = modExpression.FieldPassTypes.giPASSBY_REFERENCE) Then
+		If (miFieldPassType = FieldPassTypes.giPASSBY_REFERENCE) Then
 			sCode = Trim(Str(mlngColumnID))
 
 			' JDM - 26/02/04 - Fault 8152 - Add this field to list of tables needed to be joined
@@ -604,6 +586,7 @@ ErrorTrap:
 			Else
 
 				' Check if the table is a child or parent of the expression's base table.
+				'fParentField = datGeneral.IsAParentOf(mlngTableID, mobjBaseComponent.ParentExpression.BaseTableID)
 				sSQL = "SELECT *" & " FROM ASRSysRelations" & " WHERE parentID = " & Trim(Str(mlngTableID)) & " AND childID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID))
 				rsInfo = datGeneral.GetRecords(sSQL)
 				With rsInfo

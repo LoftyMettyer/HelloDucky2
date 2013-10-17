@@ -5,14 +5,8 @@ Imports HR.Intranet.Server.Metadata
 
 Friend Module Extensions
 
-
 	<Extension()>
-	Public Function GetTableById(Of T As Table)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
-		Return items.FirstOrDefault(Function(item) item.ID = id)
-	End Function
-
-	<Extension()>
-	Public Function GetColumnById(Of T As Column)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
+	Public Function GetById(Of T As Base)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 		Return items.FirstOrDefault(Function(item) item.ID = id)
 	End Function
 

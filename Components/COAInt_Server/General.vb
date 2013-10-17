@@ -375,7 +375,7 @@ LocalErr:
 	End Function
 
   Public Function GetTableName(ByVal plngTableID As Integer) As String
-		Return Tables.GetTableById(plngTableID).Name
+		Return Tables.GetById(plngTableID).Name
 	End Function
 
   Public Function GetFilterName(ByVal lFilterID As Integer) As String
@@ -443,15 +443,15 @@ LocalErr:
   End Function
 
 	Public Function GetDataType(ByRef lTableID As Integer, ByRef lngColumnID As Integer) As SQLDataType
-		Return Columns.GetColumnById(lngColumnID).DataType
+		Return Columns.GetById(lngColumnID).DataType
 	End Function
 
 	Public Function GetColumnTable(ByRef plngColumnID As Integer) As Integer
-		Return Columns.GetColumnById(plngColumnID).TableID
+		Return Columns.GetById(plngColumnID).TableID
 	End Function
 
 	Public Function GetDefaultOrder(ByRef plngTableID As Integer) As Integer
-		Return Tables.GetTableById(plngTableID).DefaultOrderID
+		Return Tables.GetById(plngTableID).DefaultOrderID
 	End Function
 
 	Public Function GetOrder(ByVal lOrderID As Integer) As Recordset
@@ -467,7 +467,11 @@ LocalErr:
 	End Function
 
 	Public Function GetColumnName(ByVal plngColumnID As Integer) As String
-		Return Columns.GetColumnById(plngColumnID).Name
+		If plngColumnID = 0 Then
+			Return ""
+		Else
+			Return Columns.GetById(plngColumnID).Name
+		End If
 	End Function
 
 	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
@@ -568,12 +572,12 @@ ErrorTrap:
   End Function
 
   Public Function DoesColumnUseSeparators(ByVal plngColumnID As Integer) As Boolean
-		Return Columns.GetColumnById(plngColumnID).Use1000Separator
+		Return Columns.GetById(plngColumnID).Use1000Separator
 	End Function
 
   ' Returns the amount of decimals that are specificed for a column
   Public Function GetDecimalsSize(ByVal plngColumnID As Integer) As Short
-		Return Columns.GetColumnById(plngColumnID).Decimals
+		Return Columns.GetById(plngColumnID).Decimals
 	End Function
 
   Public Function IsAChildOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
@@ -588,7 +592,7 @@ ErrorTrap:
 
     Select Case strType
       Case "C" 'Column
-				DateColumn = (Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlDate)
+				DateColumn = (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlDate)
 
       Case Else 'Calculation
 
@@ -607,7 +611,7 @@ ErrorTrap:
   End Function
 
 	Public Function GetColumnDataType(ByVal plngColumnID As Integer) As SQLDataType
-		Return Columns.GetColumnById(plngColumnID).DataType
+		Return Columns.GetById(plngColumnID).DataType
 	End Function
 
   Public Function BitColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
@@ -617,7 +621,7 @@ ErrorTrap:
 
 		Select Case strType
 			Case "C" 'Column
-				BitColumn = (Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlBoolean)
+				BitColumn = (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean)
 
 			Case Else	'Calculation
 				objCalcExpr = New clsExprExpression
@@ -632,11 +636,11 @@ ErrorTrap:
   End Function
 
   Public Function GetColumnTableName(ByVal plngColumnID As Integer) As String
-		Return Columns.GetColumnById(plngColumnID).TableName
+		Return Columns.GetById(plngColumnID).TableName
 	End Function
 
 	Public Function IsPhotoDataType(ByVal lngColumnID As Integer) As Boolean
-		Return Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlBoolean
+		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean
 	End Function
 
 	Friend Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
@@ -693,6 +697,7 @@ Public Sub PopulateMetadata()
 	Relations = New Collection(Of Relation)
 	ModuleSettings = New Collection(Of ModuleSetting)
 	UserSettings = New Collection(Of UserSetting)
+	Functions = New Collection(Of Metadata.Function)
 
 	Try
 
@@ -716,7 +721,7 @@ Public Sub PopulateMetadata()
 			Dim column As New Column
 			column.ID = rstData.Fields("columnid").Value.ToString
 			column.TableID = rstData.Fields("tableid").Value.ToString
-			column.TableName = Tables.GetTableById(column.TableID).Name
+			column.TableName = Tables.GetById(column.TableID).Name
 			column.Name = rstData.Fields("columnname").Value.ToString
 			column.DataType = rstData.Fields("datatype").Value.ToString
 			column.Use1000Separator = rstData.Fields("use1000separator").Value.ToString
@@ -758,6 +763,18 @@ Public Sub PopulateMetadata()
 			userSetting.Key = rstData.Fields("SettingKey").Value.ToString
 			userSetting.Value = rstData.Fields("SettingValue").Value.ToString
 			UserSettings.Add(userSetting)
+			rstData.MoveNext()
+		Loop
+
+
+		sSQL = "SELECT functionID, functionName, returnType FROM ASRSysFunctions"
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objFunction = New [Function]
+			objFunction.ID = rstData.Fields("functionID").Value.ToString
+			objFunction.FunctionName = rstData.Fields("functionName").Value.ToString
+			objFunction.ReturnType = rstData.Fields("returnType").Value.ToString
+			Functions.Add(objFunction)
 			rstData.MoveNext()
 		Loop
 

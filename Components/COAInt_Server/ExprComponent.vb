@@ -4,7 +4,7 @@ Friend Class clsExprComponent
 	
 	' Component definition variables.
 	Private mlngComponentID As Integer
-	Private miComponentType As modExpression.ExpressionComponentTypes
+	Private miComponentType As ExpressionComponentTypes
 	
 	' Class handling variables.
 	Private mobjParentExpression As clsExprExpression
@@ -51,14 +51,14 @@ ErrorTrap:
 			mbExpanded = Value
 			
 			Select Case Me.ComponentType
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
+				Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
 					'UPGRADE_WARNING: Couldn't resolve default property of object Me.Component.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Me.Component.ExpandedNode = Value
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+				Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 					'UPGRADE_WARNING: Couldn't resolve default property of object Me.Component.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Me.Component.ExpandedNode = Value
-					
+
 			End Select
 			
 		End Set
@@ -111,36 +111,36 @@ ErrorTrap:
 				' the given component type.
 				Select Case miComponentType
 					
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD
+					Case ExpressionComponentTypes.giCOMPONENT_FIELD
 						mvComponent = New clsExprField
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
+					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
 						mvComponent = New clsExprFunction
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_CALCULATION
+					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
 						mvComponent = New clsExprCalculation
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_VALUE
+					Case ExpressionComponentTypes.giCOMPONENT_VALUE
 						mvComponent = New clsExprValue
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR
+					Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
 						mvComponent = New clsExprOperator
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
+					Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
 						mvComponent = New clsExprTableLookup
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
+					Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
 						mvComponent = New clsExprPromptedValue
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
+					Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
 						' Not required.
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+					Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 						mvComponent = New clsExprExpression
 						
-					Case modExpression.ExpressionComponentTypes.giCOMPONENT_FILTER
+					Case ExpressionComponentTypes.giCOMPONENT_FILTER
 						mvComponent = New clsExprFilter
-						
+
 				End Select
 				
 				If Not mvComponent Is Nothing Then
@@ -278,15 +278,7 @@ ErrorTrap:
 		' Initialize the properties for a new expression.
 		InitializeComponent()
 		
-		'  ' Display the component definition form.
-		'  Set frmEdit = New frmExprComponent
-		'  With frmEdit
-		'    Set .Component = Me
-		'    .Show vbModal
-		'    fOK = Not .Cancelled
-		'  End With
-		'
-TidyUpAndExit: 
+TidyUpAndExit:
 		' Disassociate object variables.
 		'  Set frmEdit = Nothing
 		NewComponent = fOK
@@ -346,41 +338,13 @@ ErrorTrap:
 	End Function
 	
 	
-	Public Function ModifyComponent() As Boolean
-		' Edit the component.
-		'  On Error GoTo ErrorTrap
-		
-		'  Dim fOK As Boolean
-		'  Dim frmEdit As frmExprComponent
-		'
-		'  ' Display the component definition form.
-		'  Set frmEdit = New frmExprComponent
-		'  With frmEdit
-		'    Set .Component = Me
-		'    .Show vbModal
-		'    fOK = Not .Cancelled
-		'  End With
-		'
-		'TidyUpAndExit:
-		'  Set frmEdit = Nothing
-		'  ModifyComponent = fOK
-		'  Exit Function
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		
-	End Function
-	
-	
-	
 	Private Sub InitializeComponent()
 		' Initialize the properties for a new component.
 		mlngComponentID = 0
-		ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD
+		ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mvComponent.BaseComponent = Me
-		
+
 	End Sub
 	
 	Public Function ConstructComponent(ByRef prsComponents As ADODB.Recordset) As Boolean
@@ -396,7 +360,7 @@ ErrorTrap:
 		
 		With mvComponent
 			Select Case miComponentType
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD
+				Case ExpressionComponentTypes.giCOMPONENT_FIELD
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.TableID = prsComponents.Fields("fieldTableID").Value
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -412,50 +376,50 @@ ErrorTrap:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.SelectionFilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.SelectionFilterID = prsComponents.Fields("FieldSelectionFilter").Value
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
+				Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.FunctionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.FunctionID = prsComponents.Fields("FunctionID").Value
-					
+
 					' Allow user preference of how expression builder initially loads
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ExpandedNode = IIf(IsDbNull(prsComponents.Fields("ExpandedNode").Value), False, prsComponents.Fields("ExpandedNode").Value)
+					.ExpandedNode = IIf(IsDBNull(prsComponents.Fields("ExpandedNode").Value), False, prsComponents.Fields("ExpandedNode").Value)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Me.ExpandedNode = .ExpandedNode
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_CALCULATION
+				Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.CalculationID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.CalculationID = prsComponents.Fields("CalculationID").Value
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_VALUE
+				Case ExpressionComponentTypes.giCOMPONENT_VALUE
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.ReturnType = prsComponents.Fields("ValueType").Value
 					Select Case prsComponents.Fields("ValueType").Value
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-							
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_DATE
+
 							'MH20010201 Fault 1576
 							'.Value = IIf(IsNull(prsComponents!valueDate), Date, prsComponents!valueDate)
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							.Value = prsComponents.Fields("valueDate").Value
 					End Select
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR
+				Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.OperatorID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.OperatorID = prsComponents.Fields("OperatorID").Value
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
+				Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
 					' Do nothing as Table Value components are treated as Value components.
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.TableID = prsComponents.Fields("LookupTableID").Value
@@ -463,79 +427,79 @@ ErrorTrap:
 					.ColumnID = prsComponents.Fields("LookupColumnID").Value
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.ReturnType = prsComponents.Fields("ValueType").Value
-					
+
 					Select Case prsComponents.Fields("ValueType").Value
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDbNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+							.Value = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_DATE
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							.Value = prsComponents.Fields("valueDate").Value
 					End Select
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
+				Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Prompt. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.Prompt = IIf(IsDbNull(prsComponents.Fields("promptDescription").Value), "", prsComponents.Fields("promptDescription").Value)
+					.Prompt = IIf(IsDBNull(prsComponents.Fields("promptDescription").Value), "", prsComponents.Fields("promptDescription").Value)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ValueType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ValueType = IIf(IsDbNull(prsComponents.Fields("ValueType").Value), modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER, prsComponents.Fields("ValueType").Value)
+					.ValueType = IIf(IsDBNull(prsComponents.Fields("ValueType").Value), ExpressionValueTypes.giEXPRVALUE_CHARACTER, prsComponents.Fields("ValueType").Value)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnSize. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ReturnSize = IIf(IsDbNull(prsComponents.Fields("promptSize").Value), 1, prsComponents.Fields("promptSize").Value)
+					.ReturnSize = IIf(IsDBNull(prsComponents.Fields("promptSize").Value), 1, prsComponents.Fields("promptSize").Value)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnDecimals. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ReturnDecimals = IIf(IsDbNull(prsComponents.Fields("promptDecimals").Value), 0, prsComponents.Fields("promptDecimals").Value)
+					.ReturnDecimals = IIf(IsDBNull(prsComponents.Fields("promptDecimals").Value), 0, prsComponents.Fields("promptDecimals").Value)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ValueFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ValueFormat = IIf(IsDbNull(prsComponents.Fields("promptMask").Value), "", prsComponents.Fields("promptMask").Value)
-					
+					.ValueFormat = IIf(IsDBNull(prsComponents.Fields("promptMask").Value), "", prsComponents.Fields("promptMask").Value)
+
 					Select Case prsComponents.Fields("ValueType").Value
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDbNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDbNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDbNull(prsComponents.Fields("valueLogic").Value), False, prsComponents.Fields("valueLogic").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), False, prsComponents.Fields("valueLogic").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_DATE
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDbNull(prsComponents.Fields("valueDate").Value), Today, prsComponents.Fields("valueDate").Value)
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
+							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueDate").Value), Today, prsComponents.Fields("valueDate").Value)
+						Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDbNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
+							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
 					End Select
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.LookupColumn. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.LookupColumn = IIf(IsDbNull(prsComponents.Fields("fieldColumnID").Value), 0, prsComponents.Fields("fieldColumnID").Value)
+					.LookupColumn = IIf(IsDBNull(prsComponents.Fields("fieldColumnID").Value), 0, prsComponents.Fields("fieldColumnID").Value)
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
+				Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
 					' Not required.
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+				Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 					' Sub-expressions are handled via the Function component class.
 					
-				Case modExpression.ExpressionComponentTypes.giCOMPONENT_FILTER
+				Case ExpressionComponentTypes.giCOMPONENT_FILTER
 					' Load information for filters
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.FilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.FilterID = prsComponents.Fields("FilterID").Value
-					
+
 			End Select
 			
 		End With
@@ -549,6 +513,7 @@ ErrorTrap:
 		Resume TidyUpAndExit
 		
 	End Function
+
 	Public Function RootExpressionID() As Integer
 		' Return the id of the expression which contains this component.
 		' NB. We are not returning the id of the immediate parent expression;
@@ -562,7 +527,7 @@ ErrorTrap:
 		Dim objComp As clsExprComponent
 		Dim rsExpressions As ADODB.Recordset
 		
-		sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID" & " FROM ASRSysExpressions" & " JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID" & " WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
+		sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID FROM ASRSysExpressions JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
 		rsExpressions = datGeneral.GetRecords(sSQL)
 		With rsExpressions
 			fOK = Not (.EOF And .BOF)

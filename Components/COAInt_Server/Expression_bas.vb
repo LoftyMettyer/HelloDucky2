@@ -874,21 +874,16 @@ ErrorTrap:
 		' 'TM20010802 Fault 2617                                                        *
 		'********************************************************************************
 
-		Dim rsExpr As ADODB.Recordset
-		Dim rsExprComp As ADODB.Recordset
+		Dim rsExpr As Recordset
+		Dim rsExprComp As Recordset
 		Dim lngCalcFilterID As Integer
 		Dim bHasHiddenComp As Boolean
-		Dim sStartAccess As String
 		Dim sSQL As String
 
 		On Error GoTo ErrorTrap
 
-		'  sSQL = "SELECT * FROM ASRSysExpressions WHERE ExprID = " & lngExprID
-		'  Set rsExpr = datGeneral.GetRecords(sSQL)
-
 		sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & lngExprID
-		rsExprComp = datGeneral.GetRecords(sSQL)
-
+		rsExprComp = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 		bHasHiddenComp = False
 
 		With rsExprComp
@@ -944,7 +939,7 @@ ErrorTrap:
 
 					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
 						sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(.Fields("ComponentID").Value)
-						rsExpr = datGeneral.GetRecords(sSQL)
+						rsExpr = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 						Do Until rsExpr.EOF
 							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(rsExpr!ExprID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							If HasHiddenComponents(rsExpr.Fields("ExprID").Value) Or GetExprField(rsExpr.Fields("ExprID").Value, "Access") = ACCESS_HIDDEN Then
@@ -994,12 +989,11 @@ ErrorTrap:
 	Public Function GetPickListField(ByVal lngPicklistID As Integer, ByVal sField As String) As Object
 
 		Dim sSQL As String
-		Dim rsExpr As ADODB.Recordset
+		Dim rsExpr As Recordset
 
 		On Error GoTo ErrorTrap
 
 		sSQL = "SELECT * FROM ASRSysPickListName WHERE PickListID = " & lngPicklistID
-
 		rsExpr = datGeneral.GetRecords(sSQL)
 
 		With rsExpr
@@ -1026,9 +1020,8 @@ ErrorTrap:
 		'JPD 20040507 Fault 8600
 		On Error GoTo ErrorTrap
 
-		Dim rsExprComp As ADODB.Recordset
-		Dim rsExpr As ADODB.Recordset
-		Dim fHasExpr As Boolean
+		Dim rsExprComp As Recordset
+		Dim rsExpr As Recordset
 		Dim sSQL As String
 		Dim lngSubExprID As Integer
 

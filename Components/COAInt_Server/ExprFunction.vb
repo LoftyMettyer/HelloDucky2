@@ -1,8 +1,10 @@
 Option Strict Off
 Option Explicit On
+
+Imports ADODB
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprFunction
-	
+
 	' Component definition variables.
 	Private mlngFunctionID As Integer
 	Private msFunctionName As String
@@ -10,82 +12,82 @@ Friend Class clsExprFunction
 
 	' Definition for expanded/unexpanded status of the component
 	Private mbExpanded As Boolean
-	
+
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 	Private mcolParameters As Collection
 	Private mobjBadComponent As clsExprComponent
-	
-	
+
+
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		' Retrun TRUE if the current expression (or any of its sub expressions)
 		' contains the given expression. This ensures no cyclic expressions get created.
 		'JPD 20040507 Fault 8600
 		On Error GoTo ErrorTrap
-		
+
 		Dim objParameter As clsExprComponent
 		Dim objSubExpression As clsExprExpression
-		
+
 		ContainsExpression = False
-		
-		For	Each objParameter In mcolParameters
+
+		For Each objParameter In mcolParameters
 			objSubExpression = objParameter.Component
-			
+
 			ContainsExpression = objSubExpression.ContainsExpression(plngExprID)
-			
+
 			'UPGRADE_NOTE: Object objSubExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objSubExpression = Nothing
-			
+
 			If ContainsExpression Then
 				Exit For
 			End If
 		Next objParameter
 		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objParameter = Nothing
-		
-TidyUpAndExit: 
-		Exit Function
-		
-ErrorTrap: 
-		ContainsExpression = True
-		Resume TidyUpAndExit
-		
-	End Function
-	
-  Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-    Dim Printer As New Printer
-    ' Print the component definition to the printer object.
-    On Error GoTo ErrorTrap
-
-    Dim fOK As Boolean
-    Dim objParameter As clsExprComponent
-
-    fOK = True
-
-    ' Position the printing.
-    With Printer
-      .CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-      .CurrentY = .CurrentY + giPRINT_YSPACE
-      Printer.Print("Function : " & ComponentDescription)
-    End With
-
-    ' Print the function's parameter expressions.
-    For Each objParameter In mcolParameters
-      'UPGRADE_WARNING: Couldn't resolve default property of object objParameter.Component.PrintComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      objParameter.Component.PrintComponent(piLevel + 1)
-    Next objParameter
 
 TidyUpAndExit:
-    'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    objParameter = Nothing
-    PrintComponent = fOK
-    Exit Function
+		Exit Function
 
 ErrorTrap:
-    fOK = False
-    Resume TidyUpAndExit
+		ContainsExpression = True
+		Resume TidyUpAndExit
 
-  End Function
+	End Function
+
+	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
+		Dim Printer As New Printer
+		' Print the component definition to the printer object.
+		On Error GoTo ErrorTrap
+
+		Dim fOK As Boolean
+		Dim objParameter As clsExprComponent
+
+		fOK = True
+
+		' Position the printing.
+		With Printer
+			.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
+			.CurrentY = .CurrentY + giPRINT_YSPACE
+			Printer.Print("Function : " & ComponentDescription)
+		End With
+
+		' Print the function's parameter expressions.
+		For Each objParameter In mcolParameters
+			'UPGRADE_WARNING: Couldn't resolve default property of object objParameter.Component.PrintComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			objParameter.Component.PrintComponent(piLevel + 1)
+		Next objParameter
+
+TidyUpAndExit:
+		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		objParameter = Nothing
+		PrintComponent = fOK
+		Exit Function
+
+ErrorTrap:
+		fOK = False
+		Resume TidyUpAndExit
+
+	End Function
 
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
@@ -796,148 +798,148 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim sSQL As String
 		Dim objParameter As clsExprComponent
 		Dim objSubExpression As clsExprExpression
-		
+
 		fOK = True
-		
+
 		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, functionID, valueLogic, ExpandedNode)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION)) & "," & " " & Trim(Str(mlngFunctionID)) & "," & " 0," & IIf(mbExpanded, "1", "0") & ")"
-		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
-		
+		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+
 		' Write the function parameter expressions.
-		For	Each objParameter In mcolParameters
+		For Each objParameter In mcolParameters
 			objSubExpression = objParameter.Component
 			objSubExpression.ParentComponentID = mobjBaseComponent.ComponentID
 			objSubExpression.ExpressionID = 0
 			fOK = objSubExpression.WriteExpression
-			
+
 			'UPGRADE_NOTE: Object objSubExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objSubExpression = Nothing
-			
+
 			If Not fOK Then
 				Exit For
 			End If
 		Next objParameter
 		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objParameter = Nothing
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		WriteComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
-	
+
+
+
 	Public ReadOnly Property BadComponent() As clsExprComponent
 		Get
 			' Return the component last caused the function to fail its validity check.
 			BadComponent = mobjBadComponent
-			
+
 		End Get
 	End Property
-	
+
 	Public ReadOnly Property ReturnType() As Short
 		Get
 			' Return the function's return type.
 			ReturnType = miReturnType
-			
+
 		End Get
 	End Property
-	
+
 	Public ReadOnly Property ComponentType() As Short
 		Get
 			' Return the 'function' component type.
 			ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
-			
+
 		End Get
 	End Property
-	
-	
-	
+
+
+
 	Public Property BaseComponent() As clsExprComponent
 		Get
 			' Return the component's base component object.
 			BaseComponent = mobjBaseComponent
-			
+
 		End Get
 		Set(ByVal Value As clsExprComponent)
 			' Set the component's base component object property.
 			mobjBaseComponent = Value
-			
+
 		End Set
 	End Property
-	
-	
-	
+
+
+
 	Public Property FunctionID() As Integer
 		Get
 			' Return the function ID property.
 			FunctionID = mlngFunctionID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the function ID property.
 			mlngFunctionID = Value
-			
+
 			' Read the function definition from the database.
 			ReadFunction()
-			
+
 		End Set
 	End Property
 	Public ReadOnly Property ComponentDescription() As String
 		Get
 			' Return the Function description.
 			ComponentDescription = msFunctionName
-			
+
 		End Get
 	End Property
-	
-	
+
+
 	Public Property Parameters() As Collection
 		Get
 			' Return the parameter collection.
 			Parameters = mcolParameters
-			
+
 		End Get
 		Set(ByVal Value As Collection)
 			' Set the parameter collection.
 			mcolParameters = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property ExpandedNode() As Boolean
 		Get
 			'Return whether this node is expanded or not
 			ExpandedNode = mbExpanded
-			
+
 		End Get
 		Set(ByVal Value As Boolean)
 			'Set whether this component node is expanded or not
 			mbExpanded = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
 		' When editting a component we actually copy the component first
@@ -945,13 +947,13 @@ ErrorTrap:
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
 		Dim objFunctionCopy As New clsExprFunction
-		
+
 		' Copy the component's basic properties.
 		' ie. the function id, not its parameters, etc.
 		With objFunctionCopy
 			.FunctionID = mlngFunctionID
 		End With
-		
+
 		' JDM - 06/02/01 - Now copies it's children so that cut'n paste works
 		' Copy all the child components
 		Dim iCount As Short
@@ -960,25 +962,25 @@ ErrorTrap:
 			'        Set objParameter = New clsExprComponent
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters().CopyComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			objFunctionCopy.Parameters.Add((mcolParameters.Item(iCount).CopyComponent))
-			
+
 			'        objFunctionCopy.Parameters.Add (mcolParameters.Item(iCount))
 		Next iCount
 		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objParameter = Nothing
-		
-		
+
+
 		CopyComponent = objFunctionCopy
-		
+
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objFunctionCopy may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objFunctionCopy = Nothing
-		
+
 	End Function
-	
+
 	Public Function ValidateFunction() As Short
 		' Validate the function. Return a code describing the validity.
 		On Error GoTo BasicErrorTrap
-		
+
 		Dim iLoop As Short
 		Dim iValidationCode As modExpression.ExprValidationCodes
 		Dim iFunctionReturnType As modExpression.ExpressionValueTypes
@@ -987,50 +989,51 @@ ErrorTrap:
 		Dim aiDummyValues(6) As Short
 		Dim objSubExpression As clsExprExpression
 		Dim objParameter As clsExprComponent
-		
+
 		iLoop = 0
-		
+
 		' Initialise the validation code.
 		iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 		'UPGRADE_NOTE: Object mobjBadComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjBadComponent = Nothing
-		
+
 		' Validate the function parameter expressions.
-		For	Each objParameter In mcolParameters
+		For Each objParameter In mcolParameters
 			iLoop = iLoop + 1
-			
+
 			objSubExpression = objParameter.Component
 			With objSubExpression
 				' Validate the parameter expression.
 				' NB. Reset the sub-expression's return type to that defined by the parameter definition
 				' as it may be changeable. The evaluated return type will be determined when the
 				' sub-expression is validated.
-				sSQL = "SELECT parameterType FROM ASRSysFunctionParameters" & " WHERE functionID = " & Trim(Str(mlngFunctionID)) & " AND parameterIndex = " & Trim(Str(iLoop))
-				rsParameters = datGeneral.GetRecords(sSQL)
+				sSQL = "SELECT parameterType FROM ASRSysFunctionParameters WHERE functionID = " & Trim(Str(mlngFunctionID)) & " AND parameterIndex = " & Trim(Str(iLoop))
+				rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 				With rsParameters
 					If Not (.BOF And .EOF) Then
 						objSubExpression.ReturnType = .Fields("parameterType").Value
 					End If
-					
+
 					.Close()
 				End With
 				'UPGRADE_NOTE: Object rsParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsParameters = Nothing
-				
+
 				iValidationCode = .ValidateExpression(False)
-				
-				If iValidationCode <> modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+
+				If iValidationCode <> ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
 					' Interpret the parameter sub-expression validation code to reflect
 					' the fact that a function parameter was invalid.
 					Select Case iValidationCode
-						Case modExpression.ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
+						Case ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
 							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERNOCOMPONENTS
-						Case modExpression.ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
+						Case ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
 							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERSYNTAXERROR
-						Case modExpression.ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
+						Case ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
 							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
 					End Select
-					
+
 					If .BadComponent Is Nothing Then
 						mobjBadComponent = objParameter
 					Else
@@ -1038,24 +1041,24 @@ ErrorTrap:
 					End If
 					Exit For
 				End If
-				
+
 				' Write the given return type into the array.
 				aiDummyValues(iLoop) = .ReturnType
 			End With
 		Next objParameter
 		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objParameter = Nothing
-		
-		If iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+
+		If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
 			If Not ValidateFunctionParameters(mlngFunctionID, iFunctionReturnType, aiDummyValues(1), aiDummyValues(2), aiDummyValues(3), aiDummyValues(4), aiDummyValues(5), aiDummyValues(6)) Then
-				
-				iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
+
+				iValidationCode = ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
 			Else
 				miReturnType = iFunctionReturnType
 			End If
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objSubExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objSubExpression = Nothing
@@ -1063,105 +1066,70 @@ TidyUpAndExit:
 		rsParameters = Nothing
 		ValidateFunction = iValidationCode
 		Exit Function
-		
-BasicErrorTrap: 
-		iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
+
+BasicErrorTrap:
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+
+
 	Private Function ReadFunction() As Boolean
 		' Read the function definition from the database.
 		On Error GoTo ErrorTrap
-		
-		Dim fOK As Boolean
-		
-		' Read the function name, return type, etc.
-		fOK = ReadFunctionDetails
-		
-		If fOK Then
-			' Create the array of parameter components.
-			fOK = ReadParameterDefinition
-		End If
-		
-TidyUpAndExit: 
-		ReadFunction = False
-		Exit Function
-		
-ErrorTrap: 
-		fOK = False
-		Resume TidyUpAndExit
-		
-	End Function
-	
-	Private Function ReadFunctionDetails() As Boolean
-		' Read the function details (not parameter info) from the database.
-		On Error GoTo ErrorTrap
-		
-		Dim fOK As Boolean
-		Dim sSQL As String
-		Dim rsFunction As ADODB.Recordset
-		
-		msFunctionName = "<unknown>"
-		miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 
-		' Clear the parameter collection.
-		ClearParameters()
-		
-		' Get the function definition.
-		sSQL = "SELECT *" & " FROM ASRSysFunctions" & " WHERE functionID = " & Trim(Str(mlngFunctionID))
-		rsFunction = datGeneral.GetRecords(sSQL)
-		With rsFunction
-			fOK = Not (.EOF And .BOF)
-			
-			If fOK Then
-				msFunctionName = .Fields("functionName").Value
-				miReturnType = .Fields("ReturnType").Value
-      End If
-			
-			.Close()
-		End With
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object rsFunction may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsFunction = Nothing
-		ReadFunctionDetails = fOK
+		Dim fOK As Boolean
+
+		' Read the function name, return type, etc.
+		ReadFunctionDetails()
+		fOK = ReadParameterDefinition()
+
+TidyUpAndExit:
+		ReadFunction = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+
+	Private Sub ReadFunctionDetails()
+
+		Dim objFunction = Functions.GetById(mlngFunctionID)
+		msFunctionName = objFunction.Name
+		miReturnType = objFunction.ReturnType
+
+	End Sub
+
+
 	Private Function ReadParameterDefinition() As Boolean
 		' Read the function's paramter definition from the database,
 		' and create an array of components to represent the parameters.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim iIndex As Short
 		Dim sSQL As String
-		Dim rsParameters As ADODB.Recordset
+		Dim rsParameters As Recordset
 		Dim objNewParameter As clsExprComponent
-		
+
 		fOK = True
-		
+
 		' Clear the parameter collection.
 		ClearParameters()
-		
+
 		' Get the standard function parameter definitions.
-		sSQL = "SELECT *" & " FROM ASRSysFunctionParameters" & " WHERE functionID = " & Trim(Str(mlngFunctionID)) & " ORDER BY parameterIndex"
-		rsParameters = datGeneral.GetRecords(sSQL)
+		sSQL = String.Format("SELECT * FROM ASRSysFunctionParameters WHERE functionID = {0} ORDER BY parameterIndex", mlngFunctionID)
+		rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 		With rsParameters
 			Do While Not .EOF
 				' Instantiate a component in the array to represent the parameter.
 				mcolParameters.Add(New clsExprComponent)
 				With mcolParameters.Item(mcolParameters.Count())
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+					.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item(mcolParameters.Count).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.Component.Name = rsParameters.Fields("parameterName").Value
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1171,132 +1139,133 @@ ErrorTrap:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
 				End With
-				
+
 				.MoveNext()
-			Loop 
-			
+			Loop
+
 			.Close()
 		End With
-		
+
 		' Get the customised function parameter definitions if they exist.
 		If (mobjBaseComponent.ComponentID > 0) Then
-			
+
 			iIndex = 1
-			sSQL = "SELECT *" & " FROM ASRSysExpressions" & " WHERE parentComponentID = " & Trim(Str(mobjBaseComponent.ComponentID)) & " ORDER BY exprID"
-			rsParameters = datGeneral.GetRecords(sSQL)
+			sSQL = "SELECT * FROM ASRSysExpressions WHERE parentComponentID = " & Trim(Str(mobjBaseComponent.ComponentID)) & " ORDER BY exprID"
+			rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 			With rsParameters
 				Do While (Not .EOF) And fOK
-					
+
 					' Instantiate a new component object.
 					objNewParameter = New clsExprComponent
-					
+
 					' Construct the hierarchy of objects that define the parameter.
-					objNewParameter.ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+					objNewParameter.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
 					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					objNewParameter.Component.ExpressionID = .Fields("ExprID").Value
 					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.BaseTableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					objNewParameter.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
-					
+
 					' JDM - 06/11/2003 - Fault 7193 - Get field from database record not working
 					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					objNewParameter.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
-					
+
 					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ConstructExpression. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					fOK = objNewParameter.Component.ConstructExpression
-					
+
 					If fOK Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						objNewParameter.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
-						
+
 						' Reset the new expression's return type.
 						'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						objNewParameter.Component.ReturnType = mcolParameters.Item(iIndex).Component.ReturnType
-						
+
 						'JDM - 16/03/01 - Fault 1935 - Load previous view
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						objNewParameter.ExpandedNode = IIf(IsDbNull(.Fields("ExpandedNode").Value), False, .Fields("ExpandedNode").Value)
-						
+						objNewParameter.ExpandedNode = IIf(IsDBNull(.Fields("ExpandedNode").Value), False, .Fields("ExpandedNode").Value)
+
 						' Insert the new expression into the function's parameter array.
 						mcolParameters.Remove(iIndex)
 						If mcolParameters.Count() >= iIndex Then
-							mcolParameters.Add(objNewParameter,  , iIndex)
+							mcolParameters.Add(objNewParameter, , iIndex)
 						Else
 							mcolParameters.Add(objNewParameter)
 						End If
 					End If
-					
+
 					iIndex = iIndex + 1
 					'UPGRADE_NOTE: Object objNewParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objNewParameter = Nothing
-					
+
 					.MoveNext()
-				Loop 
+				Loop
 			End With
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsParameters = Nothing
 		ReadParameterDefinition = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		' Clear the parameter collection.
 		ClearParameters()
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
+
 	Public Sub ClearParameters()
 		' Clear the function's parameter collection.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
-		
+
 		' Remove all components from the collection.
 		Do While mcolParameters.Count() > 0
 			mcolParameters.Remove(1)
-		Loop 
+		Loop
 		'UPGRADE_NOTE: Object mcolParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolParameters = Nothing
-		
+
 		' Re-instantiate the collection.
 		mcolParameters = New Collection
 		Exit Sub
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
-		
+
 	End Sub
-	
-	
-	
+
+
+
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Create a new collection to hold the function's parameters.
 		mcolParameters = New Collection
-		
+
 	End Sub
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
 	End Sub
-	
-	
+
+
 	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Terminate_Renamed()
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object mcolParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolParameters = Nothing
-		
+
 	End Sub
 	Protected Overrides Sub Finalize()
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
 	End Sub
-	
+
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		Dim sParamCode1 As String

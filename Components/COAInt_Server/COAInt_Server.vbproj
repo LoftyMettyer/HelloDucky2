@@ -183,7 +183,9 @@
     </Compile>
     <Compile Include="MailMerge.vb" />
     <Compile Include="Menu.vb" />
+    <Compile Include="Metadata\Base.vb" />
     <Compile Include="Metadata\Column.vb" />
+    <Compile Include="Metadata\Function.vb" />
     <Compile Include="Metadata\ModuleSetting.vb" />
     <Compile Include="Metadata\Relation.vb" />
     <Compile Include="Metadata\UserSetting.vb" />
