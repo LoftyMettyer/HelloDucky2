@@ -2033,7 +2033,7 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
 	
 	if (!fBookCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
-		
+    
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
 	menu_setVisibleMenuItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListVisible);
@@ -4724,15 +4724,15 @@ function menu_sortULMenuItems(parentULID) {
 }
 
 function menu_enableMenuItem(itemId, fNewSetting) {
-		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-				$("#" + itemId + " a:first").removeAttr("disabled");
-		} else {
-				$("#" + itemId + " a:first").attr("disabled", "disabled");
-				$("#" + itemId + " a:first").css({
-						fontWeight: "lighter",
-						cursor: "default"
-				});
-		}
+    if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+        $("#" + itemId + " a:first").removeAttr("disabled");
+    } else {
+        $("#" + itemId + " a:first").attr("disabled", "disabled");
+        $("#" + itemId + " a:first").css({
+            fontWeight: "lighter",
+            cursor: "default"
+        });
+    }
 }
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
