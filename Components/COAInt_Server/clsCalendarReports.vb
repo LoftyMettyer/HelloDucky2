@@ -3305,22 +3305,16 @@ ExecuteSQL_ERROR:
 		Dim lngCurrentBaseID As Integer
 		Dim avDateRanges(,) As Object
 		Dim i As Short
-		Dim blnHasOverlap As Boolean
 		Dim intNewIndex As Short
 		Dim strFullDesc As String
 		Dim strCurrentDesc As String
-		Dim blnFirstCalendarRecord As Boolean
-
-		blnFirstCalendarRecord = True
+		Dim blnFirstCalendarRecord As Boolean = True
 
 		ReDim avDateRanges(6, 0)
 
-		sSQL = vbNullString
-		sSQL = sSQL & "SELECT [BaseID], [Description1], [Description2], [DescriptionExpr], [StartDate], [StartSession], [EndDate], [EndSession] " & vbNewLine
-		sSQL = sSQL & "FROM [" & gsUsername & "].[" & mstrTempTableName & "]" & vbNewLine
-		sSQL = sSQL & mstrSQLOrderBy
-
-		rsMultiple = datGeneral.GetReadOnlyRecords(sSQL)
+		sSQL = "SELECT [BaseID], [Description1], [Description2], [DescriptionExpr], [StartDate], [StartSession], [EndDate], [EndSession] " _
+			& "FROM [" & gsUsername & "].[" & mstrTempTableName & "] " & mstrSQLOrderBy & vbNewLine
+		rsMultiple = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If Not rsMultiple Is Nothing Then
 			With rsMultiple
@@ -4075,14 +4069,10 @@ ErrorTrap:
 
 		On Error GoTo ErrorTrap
 
-		If mblnDisableRegions Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			Get_HistoricBankHolidays = False
-			Exit Function
-		End If
+		If mblnDisableRegions Then Return False
 
-		Dim rsCC As ADODB.Recordset	'career change data for base records
-		Dim rsPersonnelBHols As ADODB.Recordset
+		Dim rsCC As Recordset	'career change data for base records
+		Dim rsPersonnelBHols As Recordset
 		Dim colBankHolidays As clsBankHolidays
 
 		Dim strSQLCC As String 'sql for retieving career change data
@@ -4096,10 +4086,8 @@ ErrorTrap:
 		Dim dtEndDate As Date
 
 		Dim intNextIndex As Short
-
 		Dim blnNewBaseRecord As Boolean
 		Dim lngBaseRecordID As Integer
-
 		Dim lng100Counter As Integer
 		Dim lngBaseRowCount As Integer
 		Dim lngMainBaseCounter As Integer
@@ -4118,28 +4106,23 @@ ErrorTrap:
 		intRecordBHol = 0
 		mstrBHolFormString = "<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine
 
-		strSQLCC = vbNullString
-		strSQLCC = strSQLCC & "SELECT " & vbNewLine
-		strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," & vbNewLine
-		strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & ", " & vbNewLine
-		strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & ", " & vbNewLine
-		strSQLCC = strSQLCC & "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHRegionTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHRegionDateColumnName & " IS NOT NULL) AS 'CareerChanges' " & vbNewLine
-		strSQLCC = strSQLCC & "FROM " & gsPersonnelHRegionTableRealSource & " " & vbNewLine
+		strSQLCC = "SELECT " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," _
+				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & ", _" _
+				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & ", " _
+				& "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHRegionTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHRegionDateColumnName & " IS NOT NULL) AS 'CareerChanges' " _
+				& " FROM " & gsPersonnelHRegionTableRealSource & " " & vbNewLine
 
 		If Len(Trim(mstrSQLIDs)) > 0 Then
-			strSQLCC = strSQLCC & "WHERE " & vbNewLine
-			strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine
-			strSQLCC = strSQLCC & " AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
+			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
+					& "     " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
+					& " AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
 		Else
-			strSQLCC = strSQLCC & "WHERE " & vbNewLine
-			strSQLCC = strSQLCC & "      " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
+			strSQLCC = strSQLCC & "WHERE " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
 		End If
 
-		strSQLCC = strSQLCC & "ORDER BY "
-		strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", "
-		strSQLCC = strSQLCC & "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " "
-
-		rsCC = datGeneral.GetRecords(strSQLCC)
+		strSQLCC = strSQLCC & "ORDER BY " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
+				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " "
+		rsCC = dataAccess.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		lngBaseRecordID = -1
 		blnNewBaseRecord = False
@@ -4161,7 +4144,6 @@ ErrorTrap:
 						lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
 						blnNewBaseRecord = True
 						lngBaseRowCount = lngBaseRowCount + 1
-						'          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "MM/dd/yyyy")
 						dtStartDate = .Fields(gsPersonnelHRegionDateColumnName).Value
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4287,25 +4269,23 @@ ErrorTrap:
 			intBHolCount = intBHolCount + 1
 
 			'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strSQLSelect = vbNewLine & "SELECT  '" & mavCareerRanges(0, intCount) & "' AS 'ID' , " & vbNewLine
-			strSQLSelect = strSQLSelect & "       " & mstrSQLSelect_RegInfoRegion & " AS 'Region', " & vbNewLine
-			strSQLSelect = strSQLSelect & "       " & mstrSQLSelect_BankHolDate & " , " & vbNewLine
-			strSQLSelect = strSQLSelect & "       " & mstrSQLSelect_BankHolDesc & " " & vbNewLine
-			strSQLSelect = strSQLSelect & "FROM " & gsBHolRegionTableName & " " & vbNewLine
+			strSQLSelect = vbNewLine & "SELECT  '" & mavCareerRanges(0, intCount) & "' AS 'ID' , " _
+			& "       " & mstrSQLSelect_RegInfoRegion & " AS 'Region', " _
+			& "       " & mstrSQLSelect_BankHolDate & " , " _
+			& "       " & mstrSQLSelect_BankHolDesc & " FROM " & gsBHolRegionTableName & " " & vbNewLine
 
 			For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 				'<REGIONAL CODE>
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLSelect = strSQLSelect & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLSelect = strSQLSelect & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					strSQLSelect = strSQLSelect & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine _
+							& "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			Next lngCount
 
-			strSQLSelect = strSQLSelect & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine
-			strSQLSelect = strSQLSelect & "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
+			strSQLSelect = strSQLSelect & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine _
+					& "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
 
 			If intBHolCount > 1 Then
 				strSQLDateRegion = strSQLDateRegion & " OR " & vbNewLine
@@ -4315,32 +4295,24 @@ ErrorTrap:
 			fFinalCareerChange = (intBHolCount = CShort(mavCareerRanges(4, intCount)))
 
 			If fFinalCareerChange Then
-				strSQLDateRegion = strSQLDateRegion & "( " & vbNewLine
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "')) " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & " AND " & vbNewLine
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLDateRegion = strSQLDateRegion & "(" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & ") " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & ") " & vbNewLine
+				strSQLDateRegion = strSQLDateRegion & "((" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "')) " & vbNewLine _
+						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND " & vbNewLine _
+						& "(" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine _
+						& ")) " & vbNewLine
 			Else
-				strSQLDateRegion = strSQLDateRegion & "( " & vbNewLine
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "') " & vbNewLine & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "MM/dd/yyyy") & "'))) " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLDateRegion = strSQLDateRegion & " AND (" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine
-				strSQLDateRegion = strSQLDateRegion & ") " & vbNewLine
+				strSQLDateRegion = strSQLDateRegion & "((" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "') " & vbNewLine & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "MM/dd/yyyy") & "'))) " & vbNewLine _
+						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND (" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "')) " & vbNewLine
 			End If
 
 			If fFinalCareerChange Then
-				strSQLAllBHols = strSQLAllBHols & strSQLSelect & vbNewLine
-				strSQLAllBHols = strSQLAllBHols & strSQLWhere & vbNewLine
-				strSQLAllBHols = strSQLAllBHols & strSQLDateRegion & vbNewLine
-				strSQLAllBHols = strSQLAllBHols & " UNION ALL "
+				strSQLAllBHols = strSQLAllBHols & strSQLSelect & vbNewLine _
+						& strSQLWhere & vbNewLine _
+						& strSQLDateRegion & vbNewLine _
+						& " UNION ALL "
 				strSQLWhere = vbNullString
 				strSQLDateRegion = vbNullString
 			End If
@@ -4353,11 +4325,7 @@ ErrorTrap:
 				strSQLOrder = " ORDER BY 'ID', 'Region' " & vbNewLine
 				strSQLAllBHols = strSQLAllBHols & strSQLOrder
 
-				'Open App.Path & "\calrep.txt" For Output As #1
-				'Print #1, strSQLAllBHols
-				'Close #1
-
-				rsPersonnelBHols = datGeneral.GetRecords(strSQLAllBHols)
+				rsPersonnelBHols = dataAccess.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 				lngBaseRecordID = -1
 				blnNewBaseRecord = False
@@ -4468,37 +4436,18 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		If mblnDisableRegions Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			Get_StaticBankHolidays = False
-			Exit Function
+			Return False
 		End If
 
-		Dim rsPersonnelBHols As ADODB.Recordset
+		Dim rsPersonnelBHols As Recordset
 		Dim colBankHolidays As clsBankHolidays
-
 		Dim strSQLAllBHols As String
-
-		Dim blnNewBaseRecord As Boolean
 		Dim lngBaseRecordID As Integer
-
-		Dim intCount As Short
 		Dim intBHolCount As Short
 		Dim lngCount As Integer
-		Dim lngView As Integer
-
 		Dim INPUT_STRING As String
 
-		strSQLAllBHols = vbNullString
-		strSQLAllBHols = strSQLAllBHols & "SELECT DISTINCT  [Base].ID, " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "                 [RegionInfo].Region, " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "                 [RegionInfo].Holiday_Date, " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "                 [RegionInfo].Description " & vbNewLine
-
-		'gsBHolTableRealSource
-		'gsBHolRegionTableName
-		strSQLAllBHols = strSQLAllBHols & "FROM (SELECT DISTINCT " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "             " & mstrCalendarReportsBaseTableName & ".ID AS 'ID', " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "             " & mstrSQLSelect_PersonnelStaticRegion & " AS 'Region' " & vbNewLine
+		strSQLAllBHols = "SELECT DISTINCT [Base].ID, [RegionInfo].Region, [RegionInfo].Holiday_Date, [RegionInfo].Description " & "FROM (SELECT DISTINCT " & mstrCalendarReportsBaseTableName & ".ID AS 'ID', " & mstrSQLSelect_PersonnelStaticRegion & " AS 'Region' " & vbNewLine
 
 		If mlngRegion > 0 Then
 			strSQLAllBHols = strSQLAllBHols & "      FROM " & mstrCalendarReportsBaseTableName & vbNewLine
@@ -4512,17 +4461,15 @@ ErrorTrap:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If mvarTableViews(0, lngCount) = mlngCalendarReportsBaseTable Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLAllBHols = strSQLAllBHols & "           ON  " & mstrCalendarReportsBaseTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine _
+							& "           ON  " & mstrCalendarReportsBaseTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			Else
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If mvarTableViews(0, lngCount) = mlngCalendarReportsBaseTable Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					strSQLAllBHols = strSQLAllBHols & "           ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine _
+							& "           ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			End If
 		Next lngCount
@@ -4531,48 +4478,33 @@ ErrorTrap:
 			strSQLAllBHols = strSQLAllBHols & "      WHERE " & mstrCalendarReportsBaseTableName & ".ID IN (" & mstrSQLIDs & ") " & vbNewLine
 		End If
 
-		strSQLAllBHols = strSQLAllBHols & "      ) AS [Base] " & vbNewLine
-
-		strSQLAllBHols = strSQLAllBHols & "   INNER JOIN " & vbNewLine
-
-		strSQLAllBHols = strSQLAllBHols & "   (SELECT DISTINCT " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "   " & gsBHolRegionTableName & ".ID AS 'ID', " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "   " & mstrSQLSelect_RegInfoRegion & " AS 'Region', " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "   " & mstrSQLSelect_BankHolDate & ", " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "   " & mstrSQLSelect_BankHolDesc & " " & vbNewLine
-
-		strSQLAllBHols = strSQLAllBHols & "      FROM " & gsBHolRegionTableName & vbNewLine
+		strSQLAllBHols = strSQLAllBHols & String.Format(" ) AS [Base] INNER JOIN (SELECT DISTINCT {0}.ID AS [ID], {1} AS [Region], {2}, {3} FROM {0}" _
+			, gsBHolRegionTableName, mstrSQLSelect_RegInfoRegion, mstrSQLSelect_BankHolDate, mstrSQLSelect_BankHolDesc)
 
 		For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 			'<REGIONAL CODE>
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLAllBHols = strSQLAllBHols & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+				strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & " ON " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 			End If
 		Next lngCount
 
-		strSQLAllBHols = strSQLAllBHols & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
+		strSQLAllBHols = strSQLAllBHols & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine _
+			& "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
 
 		If Len(Trim(mstrSQLIDs)) > 0 Then
-			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
-			strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
+			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+					& "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
 		Else
-			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
-			strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
+			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+					& "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
 		End If
 
-		strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "    ON [Base].Region = [RegionInfo].Region " & vbNewLine
-		strSQLAllBHols = strSQLAllBHols & "ORDER BY [Base].ID " & vbNewLine
-
-		rsPersonnelBHols = datGeneral.GetRecords(strSQLAllBHols)
+		strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] ON [Base].Region = [RegionInfo].Region ORDER BY [Base].ID "
+		rsPersonnelBHols = dataAccess.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		lngBaseRecordID = -1
-		blnNewBaseRecord = False
 
 		'##############################################################################
 		'populate collections with new data
@@ -4595,9 +4527,7 @@ ErrorTrap:
 							colBankHolidays = Nothing
 						End If
 						colBankHolidays = New clsBankHolidays
-
 						lngBaseRecordID = .Fields("ID").Value
-						blnNewBaseRecord = True
 
 					End If
 
@@ -4606,16 +4536,13 @@ ErrorTrap:
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					colBankHolidays.Add(IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value), IIf(IsDBNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value), IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", .Fields(gsBHolDateColumnName).Value))
 
-					INPUT_STRING = vbNullString
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
+					INPUT_STRING = IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
 					'        INPUT_STRING = INPUT_STRING & IIf(IsNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value) & "_"
 
 					mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHol_" & .Fields("ID").Value & "_" & intBHolCount & " ID=txtBHol_" & .Fields("ID").Value & "_" & intBHolCount & " VALUE=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
-
-					blnNewBaseRecord = False
 
 					.MoveNext()
 
