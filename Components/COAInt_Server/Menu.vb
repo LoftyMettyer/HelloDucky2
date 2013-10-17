@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.Enums
 
 Public Class Menu
 

@@ -19,19 +19,11 @@ Module Declarations
   Public gcolLinks As Collection
   Public gcolNavigationLinks As Collection
 
-
-  'SQL DatType
-  Public Enum SQLDataType
-    sqlUnknown = 0 ' ?
-    sqlOle = -4 ' OLE columns
-    sqlBoolean = -7 ' Logic columns
-    sqlNumeric = 2 ' Numeric columns
-    sqlInteger = 4 ' Integer columns
-    sqlDate = 11 ' Date columns
-    sqlVarChar = 12 ' Character columns
-    sqlVarBinary = -3 ' Photo columns
-    sqlLongVarChar = -1 ' Working Pattern columns
-  End Enum
+	Public Tables As ICollection(Of Metadata.Table)
+	Public Columns As ICollection(Of Metadata.Column)
+	Public Relations As ICollection(Of Metadata.Relation)
+	Public ModuleSettings As ICollection(Of Metadata.ModuleSetting)
+	Public UserSettings As ICollection(Of Metadata.UserSetting)
 
   Public Enum GlobalType
     glAdd = 1
@@ -50,13 +42,6 @@ Module Declarations
     edtDeselect = 2 ^ 15
     edtPrint = 2 ^ 16
     edtProperties = 2 ^ 17
-  End Enum
-
-  'Table type constants
-  Public Enum TableTypes
-    tabTopLevel = 1
-    tabChild = 2
-    tabLookup = 3
   End Enum
 
   'Control type constants

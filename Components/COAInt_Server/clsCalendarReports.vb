@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Globalization
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 Imports VB = Microsoft.VisualBasic
 Public Class CalendarReport
 
@@ -1136,7 +1137,7 @@ AddError:
 
 		mstrExcludedColours = CStr(mlngBC_Data)
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mlngBC_Data = GetUserSetting("output", "databackcolour", 13434879)
+		mlngBC_Data = datGeneral.GetUserSetting("output", "databackcolour", 13434879)
 		mstrExcludedColours = mstrExcludedColours & ", " & CStr(mlngBC_Data)
 
 		GetAvailableColours(mstrExcludedColours)

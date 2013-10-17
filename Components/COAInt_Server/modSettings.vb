@@ -43,37 +43,6 @@ Module modSettings
 
   End Function
 
-  Public Function GetUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
-
-    Dim datData As clsDataAccess
-    Dim rsTemp As ADODB.Recordset
-    Dim strSQL As String
-
-    datData = New clsDataAccess
-
-    strSQL = "SELECT SettingValue FROM ASRSysUserSettings " & " WHERE UserName = '" & Replace(LCase(gsUsername), "'", "''") & "'" & " AND Section = '" & Replace(LCase(strSection), "'", "''") & "'" & " AND SettingKey = '" & Replace(LCase(strKey), "'", "''") & "'"
-    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-    With rsTemp
-      If Not .BOF And Not .EOF Then
-        'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        GetUserSetting = rsTemp.Fields("SettingValue").Value
-      Else
-        'UPGRADE_WARNING: Couldn't resolve default property of object varDefault. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        GetUserSetting = varDefault
-      End If
-    End With
-
-    rsTemp.Close()
-
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
-    'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    datData = Nothing
-
-  End Function
-
   Public Function SaveSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varSetting As Object) As Boolean
 
     Dim datData As clsDataAccess

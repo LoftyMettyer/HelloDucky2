@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprField
 	
@@ -297,18 +299,18 @@ ErrorTrap:
 					
 					If fOK Then
 						Select Case .Fields("DataType").Value
-							Case Declarations.SQLDataType.sqlNumeric, Declarations.SQLDataType.sqlInteger
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							Case Declarations.SQLDataType.sqlDate
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-							Case Declarations.SQLDataType.sqlVarChar, Declarations.SQLDataType.sqlLongVarChar
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
-							Case Declarations.SQLDataType.sqlBoolean
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
-							Case Declarations.SQLDataType.sqlOle
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_OLE
-							Case Declarations.SQLDataType.sqlVarBinary
-								iType = modExpression.ExpressionValueTypes.giEXPRVALUE_PHOTO
+							Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+								iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
+							Case SQLDataType.sqlDate
+								iType = ExpressionValueTypes.giEXPRVALUE_DATE
+							Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
+								iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
+							Case SQLDataType.sqlBoolean
+								iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
+							Case SQLDataType.sqlOle
+								iType = ExpressionValueTypes.giEXPRVALUE_OLE
+							Case SQLDataType.sqlVarBinary
+								iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
 							Case Else
 								fOK = False
 						End Select
@@ -532,7 +534,7 @@ ErrorTrap:
 					If fColumnOK Then
 						sCode = objBaseTable.RealSource & "." & objBaseColumn.ColumnName
 					Else
-						fOK = (objBaseTable.TableType = Declarations.TableTypes.tabTopLevel)
+						fOK = (objBaseTable.TableType = TableTypes.tabTopLevel)
 
 						If fOK Then
 							fOK = False
@@ -659,7 +661,7 @@ ErrorTrap:
 								palngSourceTables(2, iNextIndex) = objBaseTable.TableID
 							End If
 						Else
-							fOK = (objBaseTable.TableType = Declarations.TableTypes.tabTopLevel)
+							fOK = (objBaseTable.TableType = TableTypes.tabTopLevel)
 
 							If fOK Then
 								' The column cannot be read from the table directly. Try the views on the table.
@@ -802,7 +804,7 @@ ErrorTrap:
 											End If
 										End If
 									Else
-										fOK = (objOrderTableView.TableType = Declarations.TableTypes.tabTopLevel)
+										fOK = (objOrderTableView.TableType = TableTypes.tabTopLevel)
 
 										If fOK Then
 											' The column cannot be read from the table directly. Try the views on the table.
@@ -953,7 +955,7 @@ ErrorTrap:
 
 										sOtherTableName = mobjBaseComponent.ParentExpression.BaseTableName
 										objTableView = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName)
-										If objTableView.TableType = Declarations.TableTypes.tabChild Then
+										If objTableView.TableType = TableTypes.tabChild Then
 											sOtherTableName = objTableView.RealSource
 										End If
 										'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -988,7 +990,7 @@ ErrorTrap:
 									If fOK Then
 										sOtherTableName = mobjBaseComponent.ParentExpression.BaseTableName
 										objTableView = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName)
-										If objTableView.TableType = Declarations.TableTypes.tabChild Then
+										If objTableView.TableType = TableTypes.tabChild Then
 											sOtherTableName = objTableView.RealSource
 										End If
 										'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1018,7 +1020,7 @@ ErrorTrap:
 									If fOK Then
 										sOtherTableName = mobjBaseComponent.ParentExpression.BaseTableName
 										objTableView = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName)
-										If objTableView.TableType = Declarations.TableTypes.tabChild Then
+										If objTableView.TableType = TableTypes.tabChild Then
 											sOtherTableName = objTableView.RealSource
 										End If
 										'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1100,7 +1102,7 @@ ErrorTrap:
 
 										sOtherTableName = mobjBaseComponent.ParentExpression.BaseTableName
 										objTableView = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName)
-										If objTableView.TableType = Declarations.TableTypes.tabChild Then
+										If objTableView.TableType = TableTypes.tabChild Then
 											sOtherTableName = objTableView.RealSource
 										End If
 										'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

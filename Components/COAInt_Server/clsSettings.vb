@@ -12,7 +12,7 @@ Public Class clsSettings
   Public Function GetUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
     'UPGRADE_WARNING: Couldn't resolve default property of object modSettings.GetUserSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    GetUserSetting = modSettings.GetUserSetting(strSection, strKey, varDefault)
+		GetUserSetting = datGeneral.GetUserSetting(strSection, strKey, varDefault)
   End Function
 
 

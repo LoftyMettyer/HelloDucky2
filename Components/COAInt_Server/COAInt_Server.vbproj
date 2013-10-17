@@ -139,6 +139,8 @@
     <Compile Include="Declarations.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enums\SQLDataType.vb" />
+    <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="ExprCalculation.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -181,6 +183,11 @@
     </Compile>
     <Compile Include="MailMerge.vb" />
     <Compile Include="Menu.vb" />
+    <Compile Include="Metadata\Column.vb" />
+    <Compile Include="Metadata\ModuleSetting.vb" />
+    <Compile Include="Metadata\Relation.vb" />
+    <Compile Include="Metadata\UserSetting.vb" />
+    <Compile Include="Metadata\Table.vb" />
     <Compile Include="modAbsenceSpecifics.vb">
       <SubType>Code</SubType>
     </Compile>

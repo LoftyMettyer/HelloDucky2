@@ -72,7 +72,7 @@ Friend Class clsCalendarEvents
       'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
       If Not IsNothing(pstrLegendEventTypeName) Then .LegendEventTypeName = pstrLegendEventTypeName
 
-			If Not IsNothing(plngDesc1ID) Then
+			If plngDesc1ID > 0 Then
 				.Description1ID = plngDesc1ID
 				.Description1_TableID = datGeneral.GetColumnTable(plngDesc1ID)
 				.Description1_TableName = datGeneral.GetColumnTableName(plngDesc1ID)
@@ -80,7 +80,7 @@ Friend Class clsCalendarEvents
 			End If
 			If Not IsNothing(pstrDesc1Name) Then .Description1Name = pstrDesc1Name
 
-			If Not IsNothing(plngDesc2ID) Then
+			If plngDesc2ID > 0 Then
 				.Description2ID = plngDesc2ID
 				.Description2_TableID = datGeneral.GetColumnTable(plngDesc2ID)
 				.Description2_TableName = datGeneral.GetColumnTableName(plngDesc2ID)

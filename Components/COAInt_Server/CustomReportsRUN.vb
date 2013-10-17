@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 
 Public Class Report
 

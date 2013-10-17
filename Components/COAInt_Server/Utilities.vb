@@ -194,6 +194,7 @@ ErrorTrap:
 	Public WriteOnly Property Connection() As Connection
 		Set(ByVal Value As Connection)
 			gADOCon = Value
+			SetupTablesCollection()
 		End Set
 	End Property
 

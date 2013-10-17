@@ -3,6 +3,9 @@ Option Explicit On
 
 Imports System.Globalization
 Imports ADODB
+Imports HR.Intranet.Server.Enums
+Imports System.Collections.ObjectModel
+Imports HR.Intranet.Server.Metadata
 
 Friend Class clsGeneral
 
@@ -146,7 +149,6 @@ ErrorTrap:
 
 	End Function
 
-
 	Public Function GetRecordsInTransaction(ByRef sSQL As String) As Recordset
 		' Return the required STATIC/read-only recordset.
 		' This is useful when getting a recordset in the middle of a transaction.
@@ -155,7 +157,6 @@ ErrorTrap:
 		GetRecordsInTransaction = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 	End Function
-
 
   Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
     ' Return a string describing the record IDs from the given table
@@ -191,7 +192,6 @@ ErrorTrap:
 
 	End Function
 
-
   Public Property Username() As String
     Get
       Username = gsUsername
@@ -203,21 +203,6 @@ ErrorTrap:
 
     End Set
   End Property
-
-	Public Function GetAllTables() As Recordset
-		' Return a recordset of the user-defined tables.
-		Dim sSQL As String
-		Dim rsTables As Recordset
-
-		sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID FROM ASRSysTables"
-
-		rsTables = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Return rsTables
-
-	End Function
-
-  Public Sub GetColumnPermissions(ByRef pobjColumnPrivileges As CColumnPrivileges)
-  End Sub
 
 	Public Function GetAllViews() As Recordset
 		Dim sSQL As String
@@ -235,7 +220,8 @@ ErrorTrap:
     datData = New clsDataAccess
     UI = New clsUI
 
-  End Sub
+	End Sub
+
   Public Sub New()
     MyBase.New()
     Class_Initialize_Renamed()
@@ -377,7 +363,6 @@ LocalErr:
 
 	End Function
 
-
 	Public Function GetReadOnlyRecords(ByRef sSQL As String) As Recordset
 		' Return the required dynamic/read-only recordset.
 		'  Set GetReadOnlyRecords = datData.OpenRecordset(sSQL, adOpenDynamic, adLockReadOnly)
@@ -390,26 +375,8 @@ LocalErr:
 	End Function
 
   Public Function GetTableName(ByVal plngTableID As Integer) As String
-		Dim rsTable As Recordset
-    Dim sSQL As String
-
-		sSQL = "SELECT tableName FROM ASRSysTables WHERE tableID=" & plngTableID
-
-		rsTable = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-    With rsTable
-      If Not (.BOF And .EOF) Then
-        GetTableName = Trim(.Fields(0).Value)
-      Else
-        GetTableName = vbNullString
-      End If
-
-      .Close()
-    End With
-
-    'UPGRADE_NOTE: Object rsTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTable = Nothing
-
-  End Function
+		Return Tables.GetTableById(plngTableID).Name
+	End Function
 
   Public Function GetFilterName(ByVal lFilterID As Integer) As String
 		Dim rsFilter As Recordset
@@ -455,7 +422,7 @@ LocalErr:
 
   Public Function GetRecDescExprID(ByVal TableID As Integer) As String
     ' JPD - Return the Record Description Expression ID for the given table.
-    Dim rsTable As ADODB.Recordset
+		Dim rsTable As Recordset
     Dim sSQL As String
 
 		sSQL = "SELECT recordDescExprID FROM ASRSysTables WHERE TableID=" & TableID
@@ -475,61 +442,17 @@ LocalErr:
 
   End Function
 
-  Public Function GetDataType(ByRef lTableID As Integer, ByRef lColumnID As Integer) As Integer
+	Public Function GetDataType(ByRef lTableID As Integer, ByRef lngColumnID As Integer) As SQLDataType
+		Return Columns.GetColumnById(lngColumnID).DataType
+	End Function
 
-    Dim sSQL As String
-		Dim rsData As Recordset
+	Public Function GetColumnTable(ByRef plngColumnID As Integer) As Integer
+		Return Columns.GetColumnById(plngColumnID).TableID
+	End Function
 
-    sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID & " And tableID = " & lTableID
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      GetDataType = rsData.Fields(0).Value
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
-
-  Public Function GetColumnTable(ByRef plngColumnID As Integer) As Integer
-    ' Return the table id of the given column.
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-		sSQL = "SELECT tableID FROM ASRSysColumns WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      GetColumnTable = rsData.Fields("TableID").Value
-    Else
-      GetColumnTable = 0
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
-
-  Public Function GetDefaultOrder(ByRef plngTableID As Integer) As Integer
-    ' Return the default order ID for the given table.
-    Dim sSQL As String
-		Dim rsInfo As Recordset
-
-		sSQL = "SELECT defaultOrderID FROM ASRSysTables WHERE tableID = " & Trim(Str(plngTableID))
-		rsInfo = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-    If Not (rsInfo.BOF And rsInfo.EOF) Then
-      GetDefaultOrder = rsInfo.Fields(0).Value
-    Else
-      GetDefaultOrder = 0
-    End If
-    rsInfo.Close()
-    'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsInfo = Nothing
-
-  End Function
+	Public Function GetDefaultOrder(ByRef plngTableID As Integer) As Integer
+		Return Tables.GetTableById(plngTableID).DefaultOrderID
+	End Function
 
 	Public Function GetOrder(ByVal lOrderID As Integer) As Recordset
 
@@ -543,50 +466,24 @@ LocalErr:
 
 	End Function
 
-  Public Function GetColumnName(ByVal plngColumnID As Integer) As String
-    ' Return the name of the given column.
-    Dim sSQL As String
-		Dim rsTemp As Recordset
+	Public Function GetColumnName(ByVal plngColumnID As Integer) As String
+		Return Columns.GetColumnById(plngColumnID).Name
+	End Function
 
-    If plngColumnID = 0 Then
-      GetColumnName = ""
-      'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      rsTemp = Nothing
-      Exit Function
-    End If
+	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+	End Function
+	
+	Public Function GetUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
+		Dim objData = UserSettings.GetUserSetting(strSection, strKey)
 
-    sSQL = "SELECT columnName FROM ASRSysColumns WHERE columnID = " & plngColumnID
-		rsTemp = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-    GetColumnName = rsTemp.Fields(0).Value
-    rsTemp.Close()
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
+		If objData Is Nothing Then
+			Return varDefault
+		Else
+			Return objData
+		End If
 
-  End Function
-
-  Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
-    ' Return the value of the given module parameter.
-    Dim sSQL As String
-		Dim rsModule As Recordset
-
-		sSQL = String.Format("SELECT parameterValue FROM ASRSysModuleSetup WHERE moduleKey = '{0}' AND parameterKey = '{1}'", psModuleKey, psParameterKey)
-		rsModule = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not (rsModule.BOF And rsModule.EOF) Then
-      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      If IsDBNull(rsModule.Fields("parameterValue").Value) Then
-        GetModuleParameter = vbNullString
-      Else
-        GetModuleParameter = rsModule.Fields("parameterValue").Value
-      End If
-    Else
-      GetModuleParameter = vbNullString
-    End If
-
-    'UPGRADE_NOTE: Object rsModule may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsModule = Nothing
-
-  End Function
+	End Function
 
   Public Function UniqueSQLObjectName(ByRef strPrefix As String, ByRef intType As Short) As String
 
@@ -671,105 +568,31 @@ ErrorTrap:
   End Function
 
   Public Function DoesColumnUseSeparators(ByVal plngColumnID As Integer) As Boolean
-
-    ' Returns whether the column uses 1000 separators...
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-		sSQL = "SELECT Use1000Separator FROM ASRSysColumns WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      DoesColumnUseSeparators = IIf(Not IsDBNull(rsData.Fields("Use1000Separator").Value), rsData.Fields("Use1000Separator").Value, False)
-    Else
-      DoesColumnUseSeparators = False
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
+		Return Columns.GetColumnById(plngColumnID).Use1000Separator
+	End Function
 
   ' Returns the amount of decimals that are specificed for a column
   Public Function GetDecimalsSize(ByVal plngColumnID As Integer) As Short
-
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-    sSQL = "SELECT Decimals FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      GetDecimalsSize = IIf(Not IsDBNull(rsData.Fields("Decimals").Value), rsData.Fields("Decimals").Value, 0)
-    Else
-      GetDecimalsSize = 0
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
+		Return Columns.GetColumnById(plngColumnID).Decimals
+	End Function
 
   Public Function IsAChildOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
-
-		Dim rsTemp As Recordset
-    Dim strSQL As String
-
-    strSQL = "SELECT * FROM ASRSysRelations WHERE ParentID = " & lBaseTableID & " AND ChildID = " & lTestTableID
-
-		rsTemp = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If rsTemp.BOF And rsTemp.EOF Then
-      IsAChildOf = False
-    Else
-      IsAChildOf = True
-    End If
-
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
-
-  End Function
+		Return Relations.IsRelation(lBaseTableID, lTestTableID)
+	End Function
 
   Public Function IsAParentOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
-
-		Dim rsTemp As Recordset
-    Dim strSQL As String
-
-    strSQL = "SELECT * FROM ASRSysRelations WHERE ChildID = " & lBaseTableID & " AND ParentID = " & lTestTableID
-
-		rsTemp = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If rsTemp.BOF And rsTemp.EOF Then
-      IsAParentOf = False
-    Else
-      IsAParentOf = True
-    End If
-
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
-
-  End Function
+		Return Relations.IsRelation(lTestTableID, lBaseTableID)
+	End Function
 
   Public Function DateColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
 
-    'MH20000705
-		Dim objCalcExpr As clsExprExpression
-
-    DateColumn = False
-
-
     Select Case strType
       Case "C" 'Column
-				DateColumn = (GetDataType(lngTableID, lngColumnID) = SQLDataType.sqlDate)
+				DateColumn = (Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlDate)
 
       Case Else 'Calculation
 
-        ' RH 29/05/01 - This was commented out. Removed the comments to hopefully fix 2214.
-
+				Dim objCalcExpr As clsExprExpression
         objCalcExpr = New clsExprExpression
 				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
         objCalcExpr.ConstructExpression()
@@ -783,23 +606,9 @@ ErrorTrap:
 
   End Function
 
-  Public Function GetColumnDataType(ByVal lColumnID As Integer) As Integer
-
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-    sSQL = "Select datatype From ASRSysColumns Where columnid = " & lColumnID
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      GetColumnDataType = rsData.Fields(0).Value
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
+	Public Function GetColumnDataType(ByVal plngColumnID As Integer) As SQLDataType
+		Return Columns.GetColumnById(plngColumnID).DataType
+	End Function
 
   Public Function BitColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
 
@@ -808,7 +617,7 @@ ErrorTrap:
 
 		Select Case strType
 			Case "C" 'Column
-				BitColumn = (GetDataType(lngTableID, lngColumnID) = SQLDataType.sqlBoolean)
+				BitColumn = (Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlBoolean)
 
 			Case Else	'Calculation
 				objCalcExpr = New clsExprExpression
@@ -817,52 +626,18 @@ ErrorTrap:
 				objCalcExpr.ValidateExpression(True)
 
 				BitColumn = (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)
-				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objCalcExpr = Nothing
 
 		End Select
 
   End Function
 
   Public Function GetColumnTableName(ByVal plngColumnID As Integer) As String
-
-    ' Return the table id of the given column.
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-		sSQL = "SELECT tableName FROM ASRSysColumns JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      GetColumnTableName = rsData.Fields("TableName").Value
-    Else
-      GetColumnTableName = ""
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
-  End Function
-
-  Public Function IsPhotoDataType(ByVal lColumnID As Integer) As Boolean
-
-    Dim sSQL As String
-		Dim rsData As Recordset
-
-    sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID
-		rsData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-    If Not rsData.BOF And Not rsData.EOF Then
-      IsPhotoDataType = IIf(rsData.Fields(0).Value = -4, False, True)
-    End If
-
-    rsData.Close()
-    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsData = Nothing
-
+		Return Columns.GetColumnById(plngColumnID).TableName
 	End Function
 
+	Public Function IsPhotoDataType(ByVal lngColumnID As Integer) As Boolean
+		Return Columns.GetColumnById(lngColumnID).DataType = SQLDataType.sqlBoolean
+	End Function
 
 	Friend Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
 
@@ -907,5 +682,92 @@ ErrorTrap:
 		Return True
 
 	End Function
+
+Public Sub PopulateMetadata()
+
+	Dim rstData As Recordset
+	Dim sSQL As String
+
+	Tables = New Collection(Of Table)
+	Columns = New Collection(Of Column)
+	Relations = New Collection(Of Relation)
+	ModuleSettings = New Collection(Of ModuleSetting)
+	UserSettings = New Collection(Of UserSetting)
+
+	Try
+
+		sSQL = "SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM ASRSysTables"
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim table As New Table
+			table.ID = CInt(rstData.Fields("TableID").Value.ToString)
+			table.TableType = rstData.Fields("TableType").Value.ToString
+			table.Name = rstData.Fields("TableName").Value.ToString
+			table.DefaultOrderID = rstData.Fields("DefaultOrderID").Value.ToString
+			table.RecordDescExprID = rstData.Fields("RecordDescExprID").Value.ToString
+			Tables.Add(table)
+			rstData.MoveNext()
+		Loop
+
+
+		sSQL = "SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM ASRSysColumns"
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim column As New Column
+			column.ID = rstData.Fields("columnid").Value.ToString
+			column.TableID = rstData.Fields("tableid").Value.ToString
+			column.TableName = Tables.GetTableById(column.TableID).Name
+			column.Name = rstData.Fields("columnname").Value.ToString
+			column.DataType = rstData.Fields("datatype").Value.ToString
+			column.Use1000Separator = rstData.Fields("use1000separator").Value.ToString
+			column.Size = rstData.Fields("size").Value.ToString
+			column.Decimals = rstData.Fields("decimals").Value.ToString
+			Columns.Add(column)
+			rstData.MoveNext()
+		Loop
+
+
+		sSQL = "SELECT ParentID, ChildID FROM ASRSysRelations"
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim relation As New Relation
+			relation.ParentID = rstData.Fields("parentid").Value.ToString
+			relation.ChildID = rstData.Fields("childid").Value.ToString
+			Relations.Add(relation)
+			rstData.MoveNext()
+		Loop
+
+		sSQL = "SELECT * FROM ASRSysModuleSetup"
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim moduleSetting As New ModuleSetting
+			moduleSetting.ModuleKey = rstData.Fields("ModuleKey").Value.ToString
+			moduleSetting.ParameterKey = rstData.Fields("ParameterKey").Value.ToString
+			moduleSetting.ParameterValue = rstData.Fields("ParameterValue").Value.ToString
+			moduleSetting.ParameterType = rstData.Fields("ParameterType").Value.ToString
+			ModuleSettings.Add(moduleSetting)
+			rstData.MoveNext()
+		Loop
+
+
+		sSQL = String.Format("SELECT * FROM ASRSysUserSettings WHERE Username = '{0}'", gsUsername)
+		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim userSetting As New UserSetting
+			userSetting.Section = rstData.Fields("Section").Value.ToString
+			userSetting.Key = rstData.Fields("SettingKey").Value.ToString
+			userSetting.Value = rstData.Fields("SettingValue").Value.ToString
+			UserSettings.Add(userSetting)
+			rstData.MoveNext()
+		Loop
+
+
+	Catch ex As Exception
+			Throw
+
+	End Try
+
+End Sub
+
 
 End Class
