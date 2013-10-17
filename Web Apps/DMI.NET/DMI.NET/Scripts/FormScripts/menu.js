@@ -1345,6 +1345,10 @@ function menu_refreshMenu() {
 
 	//$("#toolbarHome").click();
 
+	if (!menu_isSSIMode()) { //Layout button should only be visible in SSI mode
+		menu_setVisibleMenuItem("mnutoolFixedLayout", false);
+	}
+	
 	if(window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode());
 
 
