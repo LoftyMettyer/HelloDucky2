@@ -577,12 +577,12 @@ ErrorTrap:
 			fOK = (mlngExpressionID > 0)
 
 			If fOK Then
-				sSQL = "INSERT INTO ASRSysExpressions" & " (exprID, name, TableID, returnType, returnSize, returnDecimals, " & " type, parentComponentID, Username, access, description, ViewInColour, ExpandedNode)" & " VALUES(" & Trim(Str(mlngExpressionID)) & ", " & "'" & Replace(Trim(msExpressionName), "'", "''") & "', " & Trim(Str(mlngBaseTableID)) & ", " & IIf(miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & ", " & "0,0, " & Trim(Str(miExpressionType)) & ", " & Trim(Str(mlngParentComponentID)) & ", " & "'" & Replace(Trim(msOwner), "'", "''") & "', " & "'" & Trim(msAccess) & "', " & "'" & Replace(Trim(msDescription), "'", "'") & "', " & IIf(mbViewInColour, "1, ", "0, ") & IIf(mbExpandedNode, "1", "0") & ")"
+				sSQL = "INSERT INTO ASRSysExpressions" & " (exprID, name, TableID, returnType, returnSize, returnDecimals, " & " type, parentComponentID, Username, access, description, ViewInColour, ExpandedNode)" & " VALUES(" & Trim(Str(mlngExpressionID)) & ", " & "'" & Replace(Trim(msExpressionName), "'", "''") & "', " & Trim(Str(mlngBaseTableID)) & ", " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & ", " & "0,0, " & Trim(Str(miExpressionType)) & ", " & Trim(Str(mlngParentComponentID)) & ", " & "'" & Replace(Trim(msOwner), "'", "''") & "', " & "'" & Trim(msAccess) & "', " & "'" & Replace(Trim(msDescription), "'", "'") & "', " & IIf(mbViewInColour, "1, ", "0, ") & IIf(mbExpandedNode, "1", "0") & ")"
 				gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
 
 			End If
 		Else
-			sSQL = "UPDATE ASRSysExpressions" & " SET name = '" & Replace(Trim(msExpressionName), "'", "''") & "'," & " TableID = " & Trim(Str(mlngBaseTableID)) & "," & " returnType = " & IIf(miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & "," & " returnSize = 0," & " returnDecimals = 0," & " type = " & Trim(Str(miExpressionType)) & "," & " parentComponentID = " & Trim(Str(mlngParentComponentID)) & "," & " Username = '" & Replace(Trim(msOwner), "'", "''") & "'," & " access = '" & Trim(msAccess) & "'," & " description = '" & Replace(Trim(msDescription), "'", "''") & "', " & " ViewInColour = " & IIf(mbViewInColour, "1", "0") & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+			sSQL = "UPDATE ASRSysExpressions" & " SET name = '" & Replace(Trim(msExpressionName), "'", "''") & "'," & " TableID = " & Trim(Str(mlngBaseTableID)) & "," & " returnType = " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & "," & " returnSize = 0," & " returnDecimals = 0," & " type = " & Trim(Str(miExpressionType)) & "," & " parentComponentID = " & Trim(Str(mlngParentComponentID)) & "," & " Username = '" & Replace(Trim(msOwner), "'", "''") & "'," & " access = '" & Trim(msAccess) & "'," & " description = '" & Replace(Trim(msDescription), "'", "''") & "', " & " ViewInColour = " & IIf(mbViewInColour, "1", "0") & " WHERE exprID = " & Trim(Str(mlngExpressionID))
 
 			'" owner = '" & Trim(msOwner) & "'," & _
 			'
@@ -830,9 +830,9 @@ ErrorTrap:
 									avValues(2, iParameter1Index) = vbNullString
 								End If
 
-								If (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_LINKFILTER) Then
+								If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_LINKFILTER) Then
 									'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If (.Component.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC) And ((.Component.OperatorID <> 5) And (.Component.OperatorID <> 6) And (.Component.OperatorID <> 13)) Then
+									If (.Component.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC) And ((.Component.OperatorID <> 5) And (.Component.OperatorID <> 6) And (.Component.OperatorID <> 13)) Then
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 										avValues(2, iLoop2) = "(CASE WHEN (" & avValues(2, iLoop2) & ") THEN 1 ELSE 0 END)"
@@ -1061,11 +1061,11 @@ ErrorTrap:
 
 		If fOK Then
 			If pfApplyPermissions Then
-				fOK = (ValidateExpression(True) = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
+				fOK = (ValidateExpression(True) = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
 			End If
 		End If
 
-		If fOK And (miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC) Then
+		If fOK And (miReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC) Then
 			sRuntimeSQL = "convert(bit, " & sRuntimeSQL & ")"
 		End If
 
@@ -1344,7 +1344,7 @@ ErrorTrap:
 							If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If Not ValidateOperatorParameters(.Component.OperatorID, iOperatorReturnType, aiDummyValues(2, iParameter1Index), IIf(.Component.OperandCount = 2, aiDummyValues(2, iParameter2Index), modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)) Then
+								If Not ValidateOperatorParameters(.Component.OperatorID, iOperatorReturnType, aiDummyValues(2, iParameter1Index), IIf(.Component.OperandCount = 2, aiDummyValues(2, iParameter2Index), ExpressionValueTypes.giEXPRVALUE_UNDEFINED)) Then
 
 									iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
 									mobjBadComponent = mcolComponents.Item(iLoop2)

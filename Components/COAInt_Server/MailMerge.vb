@@ -1559,7 +1559,7 @@ LocalErr:
 
 		ReDim lngCalcViews(2, 0)
 		objCalcExpr = New clsExprExpression
-		fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+		fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 		If fOK Then
 			fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, True, False, mvarPrompts)
 

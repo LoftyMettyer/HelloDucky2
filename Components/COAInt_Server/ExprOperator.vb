@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprOperator
 
@@ -23,20 +24,7 @@ Friend Class clsExprOperator
 	Private mobjBaseComponent As clsExprComponent
 
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
-		' Retrun TRUE if the current expression (or any of its sub expressions)
-		' contains the given expression. This ensures no cyclic expressions get created.
-		'JPD 20040507 Fault 8600
-		On Error GoTo ErrorTrap
-
-		ContainsExpression = False
-
-TidyUpAndExit:
-		Exit Function
-
-ErrorTrap:
-		ContainsExpression = True
-		Resume TidyUpAndExit
-
+		Return False
 	End Function
 
 	Public ReadOnly Property SQLType() As String
@@ -176,7 +164,6 @@ ErrorTrap:
 		End Set
 	End Property
 
-
 	Public Property SQLFixedParam1() As String
 		Get
 			' Return the first fixed SQL parameter.
@@ -192,28 +179,24 @@ ErrorTrap:
 
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printer
-		' Print the component definition to the printer object.
-		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
+		Try
 
-		fOK = True
+			Dim Printer As New Printer
 
-		' Position the printing.
-		With Printer
-			.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			.CurrentY = .CurrentY + giPRINT_YSPACE
-			Printer.Print(ComponentDescription)
-		End With
+			' Position the printing.
+			With Printer
+				.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
+				.CurrentY = .CurrentY + giPRINT_YSPACE
+				Printer.Print(ComponentDescription)
+			End With
 
-TidyUpAndExit:
-		PrintComponent = fOK
-		Exit Function
+		Catch ex As Exception
+			Return False
 
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		End Try
+
+		Return True
 
 	End Function
 
@@ -226,7 +209,7 @@ ErrorTrap:
 
 		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, operatorID, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR)) & "," & " " & Trim(Str(mlngOperatorID)) & "," & " 0)"
+		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, operatorID, valueLogic) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & ", " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & ", " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_OPERATOR)) & ", " & Trim(Str(mlngOperatorID)) & ", 0)"
 		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
 
 TidyUpAndExit:
@@ -239,7 +222,6 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-
 
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
@@ -261,99 +243,36 @@ ErrorTrap:
 	End Function
 
 	Private Sub ReadOperator()
-		' Read the operator definition from the database.
-		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
-		Dim sSQL As String
-		Dim rsOperator As Recordset
+		Try
+			Dim objOperator = Operators.GetById(mlngOperatorID)
+			msOperatorName = objOperator.Name
+			miReturnType = objOperator.ReturnType
+			miPrecedence = objOperator.Precedence
+			miOperandCount = objOperator.OperandCount
+			msSPName = IIf(IsDBNull(objOperator.SPName), "", objOperator.SPName)
+			msSQLCode = objOperator.SQLCode
+			msSQLType = objOperator.SQLType
+			mfCheckDivideByZero = objOperator.CheckDivideByZero
+			msSQLFixedParam1 = objOperator.SQLFixedParam1
+			mbCastAsFloat = objOperator.CastAsFloat
 
-		' Set default values.
-		msOperatorName = "<unknown>"
-		miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-		miPrecedence = 1
-		miOperandCount = 0
-		msSPName = ""
-		msSQLCode = ""
-		msSQLType = ""
-		mfCheckDivideByZero = False
-		msSQLFixedParam1 = ""
-		mbCastAsFloat = False
+			mfUnknownParameterTypes = (objOperator.Parameters.Count = 0)
 
-		' Get the order definition.
-		sSQL = "SELECT * FROM ASRSysOperators WHERE operatorID = " & Trim(Str(mlngOperatorID))
-		rsOperator = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		With rsOperator
-			fOK = Not (.EOF And .BOF)
+		Catch ex As Exception
+			Throw
 
-			If fOK Then
-				msOperatorName = .Fields("Name").Value
-				miReturnType = .Fields("ReturnType").Value
-				miPrecedence = .Fields("Precedence").Value
-				miOperandCount = .Fields("OperandCount").Value
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				msSPName = IIf(IsDBNull(.Fields("SPName").Value), "", .Fields("SPName").Value)
-				msSQLCode = .Fields("SQLCode").Value
-				msSQLType = .Fields("SQLType").Value
-				mfCheckDivideByZero = .Fields("CheckDivideByZero").Value
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				msSQLFixedParam1 = IIf(IsDBNull(.Fields("SQLFixedParam1").Value), "", .Fields("SQLFixedParam1").Value)
-				mbCastAsFloat = .Fields("CastAsFloat").Value
-			End If
-
-			.Close()
-		End With
-
-		' Get the operator parameter info. from the database.
-		sSQL = "SELECT *" & " FROM ASRSysOperatorParameters" & " WHERE operatorID = " & Trim(Str(mlngOperatorID)) & " AND parameterType = " & Trim(Str(modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED))
-		rsOperator = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		With rsOperator
-			mfUnknownParameterTypes = Not (.EOF And .BOF)
-			.Close()
-		End With
-
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsOperator may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsOperator = Nothing
-		Exit Sub
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		End Try
 
 	End Sub
 
-
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		' Return the SQL code for the component.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
-		Dim sCode As String
-
-		fOK = True
-
-		sCode = msSQLCode
-
-TidyUpAndExit:
-		If fOK Then
-			psRuntimeCode = sCode
-		Else
-			psRuntimeCode = ""
-		End If
-
-		RuntimeCode = fOK
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
-
+		psRuntimeCode = msSQLCode
+		Return True
 	End Function
 
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-
 		Return True
-
 	End Function
+
 End Class

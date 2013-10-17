@@ -139,6 +139,7 @@
     <Compile Include="Declarations.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enums\ExpressionValueTypes.vb" />
     <Compile Include="Enums\SQLDataType.vb" />
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="ExprCalculation.vb">
@@ -187,6 +188,8 @@
     <Compile Include="Metadata\Column.vb" />
     <Compile Include="Metadata\Function.vb" />
     <Compile Include="Metadata\ModuleSetting.vb" />
+    <Compile Include="Metadata\Operator.vb" />
+    <Compile Include="Metadata\OperatorParameter.vb" />
     <Compile Include="Metadata\Relation.vb" />
     <Compile Include="Metadata\UserSetting.vb" />
     <Compile Include="Metadata\Table.vb" />

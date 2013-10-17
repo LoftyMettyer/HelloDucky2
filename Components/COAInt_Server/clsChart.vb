@@ -1,5 +1,8 @@
 Option Strict Off
 Option Explicit On
+
+Imports ADODB
+
 Public Class clsChart
 
 	Private mastrUDFsRequired() As String
@@ -25,14 +28,8 @@ Public Class clsChart
 	Private mstrSQL As String
 	Private mstrErrorString As String
 
-	' Recordset to store the final data from SQL
-	'Private mrstChartDataOutput As New adodb.Recordset
-
-	' Array holding the columns to sort the report by
-	Private mvarSortOrder() As Object
-
-
-	Public Function GetChartData(ByRef plngTableID As Object, ByRef plngColumnID As Object, ByRef plngFilterID As Object, ByRef piAggregateType As Object, ByRef piElementType As Object, ByRef plngSortOrderID As Object, ByRef piSortDirection As Object, ByRef plngChart_ColourID As Object) As Object
+	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As Long _
+	, ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
 
 		Dim fOK As Boolean
 		Dim strTableName As String
@@ -47,30 +44,20 @@ Public Class clsChart
 		Dim lngColourID As Integer
 		Dim strColourColumnName As String
 
-		Dim sSQL As String
-
 		fOK = True
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngTableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		lngTableID = CInt(plngTableID)
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		lngColumnID = CInt(plngColumnID)
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngFilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		lngFilterID = CInt(plngFilterID)
-		'UPGRADE_WARNING: Couldn't resolve default property of object piAggregateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		lngTableID = plngTableID
+		lngColumnID = plngColumnID
+		lngFilterID = plngFilterID
 		iAggregateType = CShort(piAggregateType)
-		'UPGRADE_WARNING: Couldn't resolve default property of object piElementType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		iElementType = CShort(piElementType)
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngSortOrderID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		lngSortOrderID = CInt(plngSortOrderID)
-		'UPGRADE_WARNING: Couldn't resolve default property of object piSortDirection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		lngSortOrderID = plngSortOrderID
 		iSortDirection = CShort(piSortDirection)
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngChart_ColourID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		lngColourID = CInt(plngChart_ColourID)
+		lngColourID = plngChart_ColourID
 
-		strTableName = datGeneral.GetTableName(CInt(lngTableID))
-		strColumnName = mclsGeneral.GetColumnName(CInt(lngColumnID))
-		strColourColumnName = mclsGeneral.GetColumnName(CInt(lngColourID))
+		strTableName = datGeneral.GetTableName(lngTableID)
+		strColumnName = mclsGeneral.GetColumnName(lngColumnID)
+		strColourColumnName = mclsGeneral.GetColumnName(lngColourID)
 
 		If fOK Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColumnID, strColumnName, False)
 		'UPGRADE_WARNING: Couldn't resolve default property of object piElementType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -82,19 +69,15 @@ Public Class clsChart
 		If fOK Then fOK = MergeSQLStrings(iAggregateType, iElementType)
 
 		If Not fOK Then	' Probably got a select permission denied - no column access, so default the data...
-			'UPGRADE_WARNING: Couldn't resolve default property of object piElementType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If piElementType = 4 Then
 				mstrSQL = "SELECT 'No Data' AS [Aggregate]"
 			Else
-				mstrSQL = "SELECT 'No Access' AS [COLUMN], 'No Access' AS [Aggregate], '" & Str(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White)) & "' AS [Colour]"
-				fOK = True
+				mstrSQL = "SELECT 'No Access' AS [COLUMN], 'No Access' AS [Aggregate], '" & Str(ColorTranslator.ToOle(Color.White)) & "' AS [Colour]"
 			End If
 		End If
 
 		' Execute the SQL and store in recordset
-		' Set mrstChartDataOutput = mclsData.OpenRecordset(sSQL, adOpenStatic, adLockReadOnly)
-
-		GetChartData = mclsData.OpenRecordset(mstrSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		Return mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 	End Function
 
@@ -107,21 +90,21 @@ Public Class clsChart
 
 		Select Case iAggregateType
 			Case 1 ' sum
-				pstrAggregate = "SUM(" & mstrSQLSelect & ") AS [Aggregate]"
+				pstrAggregate = "ISNULL(SUM(" & mstrSQLSelect & "),0) AS [Aggregate]"
 			Case 2 '  Average
-				pstrAggregate = "AVG(" & mstrSQLSelect & ") AS [Aggregate]"
+				pstrAggregate = "ISNULL(AVG(" & mstrSQLSelect & "),0) AS [Aggregate]"
 			Case 3 '  Minimum
-				pstrAggregate = "MIN(" & mstrSQLSelect & ") AS [Aggregate]"
+				pstrAggregate = "ISNULL(MIN(" & mstrSQLSelect & "),0) AS [Aggregate]"
 			Case 4 '  Maximum
-				pstrAggregate = "MAX(" & mstrSQLSelect & ") AS [Aggregate]"
+				pstrAggregate = "ISNULL(MAX(" & mstrSQLSelect & "),0) AS [Aggregate]"
 			Case Else	' unknown or not set - default to count
-				pstrAggregate = "COUNT(" & mstrSQLSelect & ") AS [Aggregate]"
+				pstrAggregate = "ISNULL(COUNT(" & mstrSQLSelect & "),0) AS [Aggregate]"
 		End Select
 
 		If iElementType = 4 Then
 			mstrSQL = "SELECT " & pstrAggregate & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere)
 		Else
-			mstrSQL = "SELECT " & mstrSQLSelect & " AS [COLUMN], " & pstrAggregate & IIf(mstrSQLSelectColour <> vbNullString, mstrSQLSelectColour & " AS [COLOUR] ", ", " & Str(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White)) & " AS [COLOUR] ") & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " GROUP BY " & mstrSQLSelect & mstrSQLSelectColour & mstrSQLOrderBy
+			mstrSQL = "SELECT " & mstrSQLSelect & " AS [COLUMN], " & pstrAggregate & IIf(mstrSQLSelectColour <> vbNullString, mstrSQLSelectColour & " AS [COLOUR] ", ", " & Str(ColorTranslator.ToOle(Color.White)) & " AS [COLOUR] ") & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " GROUP BY " & mstrSQLSelect & mstrSQLSelectColour & mstrSQLOrderBy
 		End If
 
 		MergeSQLStrings = True
@@ -343,26 +326,10 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-
 	Private Function GenerateSQLFrom(ByRef strTableName As String) As Boolean
 
-		Dim iLoop As Short
-		Dim pobjTableView As CTablePrivilege
-
-		pobjTableView = New CTablePrivilege
-
 		mstrSQLFrom = gcoTablePrivileges.Item(strTableName).RealSource
-
-		'UPGRADE_NOTE: Object pobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		pobjTableView = Nothing
-
-		GenerateSQLFrom = True
-		Exit Function
-
-GenerateSQLFrom_ERROR:
-
-		GenerateSQLFrom = False
-		mstrErrorString = "Error in GenerateSQLFrom." & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
@@ -612,13 +579,9 @@ GenerateSQLOrderBy_ERROR:
 
 		Dim pintLoop As Short
 		Dim pobjTableView As CTablePrivilege
-		Dim prstTemp As New ADODB.Recordset
-		Dim pstrPickListIDs As String
+		Dim prstTemp As New Recordset
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
-		Dim objExpr As clsExprExpression
-		Dim pstrParent1PickListIDs As String
-		Dim pstrParent2PickListIDs As String
 
 		pobjTableView = gcoTablePrivileges.FindTableID(lngTableID)
 		If pobjTableView.AllowSelect = False Then
@@ -681,8 +644,8 @@ GenerateSQLWhere_ERROR:
 
 	End Function
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
 			gADOCon = Value
 		End Set
 	End Property
@@ -734,29 +697,6 @@ GenerateSQLWhere_ERROR:
 			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
 		Next i
 	End Function
-
-	Private Function GetTableIDFromColumn(ByRef lngColumnID As Integer) As Integer
-
-		' Purpose : To return the table id for which the given column belongs
-
-		Dim rsInfo As ADODB.Recordset
-		Dim strSQL As String
-
-		strSQL = "SELECT ASRSysTables.TableID " & "FROM ASRSysColumns JOIN ASRSysTables " & "ON (ASRSysTables.TableID = ASRSysColumns.TableID) " & "WHERE ColumnID = " & CStr(lngColumnID)
-
-		rsInfo = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-		If rsInfo.BOF And rsInfo.EOF Then
-			GetTableIDFromColumn = 0
-		Else
-			GetTableIDFromColumn = rsInfo.Fields("TableID").Value
-		End If
-
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
-
-	End Function
-
 
 	Public Sub resetGlobals()
 

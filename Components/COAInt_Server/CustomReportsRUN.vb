@@ -5444,9 +5444,9 @@ GetBradfordReportDefinition_ERROR:
 					objExpr.ConstructExpression()
 
 					Select Case objExpr.ReturnType
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							mstrExcelFormats(intTemp) = "0.####"
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+						Case ExpressionValueTypes.giEXPRVALUE_DATE
 							mstrExcelFormats(intTemp) = DateFormat()
 						Case Else
 							mstrExcelFormats(intTemp) = "@"

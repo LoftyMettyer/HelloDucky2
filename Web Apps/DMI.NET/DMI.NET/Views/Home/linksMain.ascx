@@ -723,14 +723,34 @@
 								<%fWFDisplayPendingSteps = False%>
 
 
-							<%Case 4		' Database Value%>
+							<%Case 4		' Database Value
+																	
+									Dim sPrompt = navlink.Text
+									sText = ""
+									
+									' Create the reference to the DLL (Report Class)
+									Dim objChart = New HR.Intranet.Server.clsChart
+
+									' Pass required info to the DLL
+									objChart.Username = Session("username")
+									objChart.Connection = Session("databaseConnection")
+        
+									Err.Clear()
+									Dim mrstDBValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
+																															navlink.Chart_AggregateType, navlink.Element_Type, navlink.Chart_SortOrderID, _
+																															navlink.Chart_SortDirection, navlink.Chart_ColourID)
+
+									Do While Not mrstDBValueData.EOF
+										sText = mrstDBValueData.Fields(0).Value
+										mrstDBValueData.MoveNext()
+									Loop
+
+									
+									%>
 								<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 									data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
-										<p class="DBValue" id="DBV<%: navlink.id %>"><%=CInt(Math.Ceiling(Rnd() * 20))%>
-<%--											<img class="DBVSpinner" id="SpinnerDBV<%: navlink.id %>" src="<%: url.content("~/Content/images/spinner04.gif") %>"
-												alt="..." />--%>
-										</p>
+										<p class="DBValue" id="DBV<%: navlink.id %>"><%=sText%></p>
 									</div>
 									<a href="#">
 										<p class="DBValueCaption">
@@ -898,7 +918,7 @@
 
 <script type="text/javascript">
 	//Display Pending Workflow Steps if appropriate
-	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {		
+	if ('<%=fWFDisplayPendingSteps%>' == 'True') {		
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 </script>

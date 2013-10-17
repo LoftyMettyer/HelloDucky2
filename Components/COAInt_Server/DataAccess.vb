@@ -8,34 +8,32 @@ Friend Class clsDataAccess
 	Public Function OpenRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum _
 		, Optional ByVal iCursorLocation As CursorLocationEnum = CursorLocationEnum.adUseServer) As Recordset
 
-		On Error GoTo ErrorTrap
-
 		' Open a recordset from the given SQL query, with the given recordset properties.
 		Dim rsTemp As Recordset
 		Dim iOldCursorLocation As CursorLocationEnum
 
-		iOldCursorLocation = gADOCon.CursorLocation
+		Try
 
-		rsTemp = New Recordset
-		gADOCon.CursorLocation = iCursorLocation
+			iOldCursorLocation = gADOCon.CursorLocation
 
-		rsTemp.Open(sSQL, gADOCon, CursorType, LockType, CommandTypeEnum.adCmdText)
+			rsTemp = New Recordset
+			gADOCon.CursorLocation = iCursorLocation
 
-		gADOCon.CursorLocation = iOldCursorLocation
+			rsTemp.Open(sSQL, gADOCon, CursorType, LockType, CommandTypeEnum.adCmdText)
 
-		OpenRecordset = rsTemp
+		Catch ex As Exception
+			Return Nothing
 
-TidyUpAndExit:
-		If (iOldCursorLocation = CursorLocationEnum.adUseClient) Or (iOldCursorLocation = CursorLocationEnum.adUseServer) Then
-			gADOCon.CursorLocation = iOldCursorLocation
-		Else
-			gADOCon.CursorLocation = CursorLocationEnum.adUseServer
-		End If
+		Finally
+			If (iOldCursorLocation = CursorLocationEnum.adUseClient) Or (iOldCursorLocation = CursorLocationEnum.adUseServer) Then
+				gADOCon.CursorLocation = iOldCursorLocation
+			Else
+				gADOCon.CursorLocation = CursorLocationEnum.adUseServer
+			End If
 
-		Exit Function
+		End Try
 
-ErrorTrap:
-		GoTo TidyUpAndExit
+		Return rsTemp
 
 	End Function
 

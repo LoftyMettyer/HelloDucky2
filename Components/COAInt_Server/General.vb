@@ -698,6 +698,7 @@ Public Sub PopulateMetadata()
 	ModuleSettings = New Collection(Of ModuleSetting)
 	UserSettings = New Collection(Of UserSetting)
 	Functions = New Collection(Of Metadata.Function)
+	Operators = New Collection(Of Metadata.Operator)
 
 	Try
 
@@ -772,11 +773,54 @@ Public Sub PopulateMetadata()
 		Do While Not rstData.EOF
 			Dim objFunction = New [Function]
 			objFunction.ID = rstData.Fields("functionID").Value.ToString
-			objFunction.FunctionName = rstData.Fields("functionName").Value.ToString
+			objFunction.Name = rstData.Fields("functionName").Value.ToString
 			objFunction.ReturnType = rstData.Fields("returnType").Value.ToString
 			Functions.Add(objFunction)
 			rstData.MoveNext()
 		Loop
+
+		sSQL = "SELECT * FROM ASRSysOperators"
+		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objOperator = New [Operator]
+
+			objOperator.ID = rstData.Fields("OperatorID").Value.ToString
+			objOperator.Name = rstData.Fields("Name").Value.ToString
+			objOperator.ReturnType = rstData.Fields("returnType").Value.ToString
+			objOperator.Precedence = rstData.Fields("Precedence").Value.ToString
+			objOperator.OperandCount = rstData.Fields("OperandCount").Value.ToString
+			objOperator.SPName = rstData.Fields("SPName").Value.ToString
+			objOperator.SQLCode = rstData.Fields("SQLCode").Value.ToString
+			objOperator.SQLType = rstData.Fields("SQLType").Value.ToString
+			objOperator.CheckDivideByZero = rstData.Fields("CheckDivideByZero").Value.ToString
+			objOperator.SQLFixedParam1 = rstData.Fields("SQLFixedParam1").Value.ToString
+			objOperator.CastAsFloat = rstData.Fields("CastAsFloat").Value.ToString
+			objOperator.Parameters = New Collection(Of OperatorParameter)()
+			Operators.Add(objOperator)
+			rstData.MoveNext()
+		Loop
+
+		sSQL = "SELECT * FROM ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex"
+		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objParameter = New OperatorParameter
+			objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
+			Operators.GetById(rstData.Fields("operatorID").Value.ToString).Parameters.Add(objParameter)
+			rstData.MoveNext()
+		Loop
+
+
+		'sSQL = "SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex"
+		'rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		'Do While Not rstData.EOF
+		'	Dim objParameter = New [FunctionParameter]
+		'	objParameter.Name = rstData.Fields("ParameterName").Value.ToString
+		'	objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
+		'	Operators.GetById(rstData.Fields("functionID").Value.ToString).Parameters.Add(objParameter)
+		'	rstData.MoveNext()
+		'Loop
+
+
 
 
 	Catch ex As Exception

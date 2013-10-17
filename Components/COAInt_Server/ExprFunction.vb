@@ -2,13 +2,14 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprFunction
 
 	' Component definition variables.
 	Private mlngFunctionID As Integer
 	Private msFunctionName As String
-	Private miReturnType As modExpression.ExpressionValueTypes
+	Private miReturnType As ExpressionValueTypes
 
 	' Definition for expanded/unexpanded status of the component
 	Private mbExpanded As Boolean
@@ -216,11 +217,11 @@ ErrorTrap:
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters(1).ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Select Case mcolParameters.Item(1).ReturnType
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 							sCode = sCode & " OR ((" & sParamCode1 & ") = '')"
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
 					End Select
 
@@ -331,8 +332,9 @@ ErrorTrap:
 
 				Case 42	' Get field from database record.
 					' Get the column parameter definitions.
-					sSQL = "SELECT ASRSysColumns.columnID, ASRSysColumns.columnName, ASRSysTables.tableID, ASRSysTables.tableName" & " FROM ASRSysColumns" & " INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & " WHERE ASRSysColumns.columnID IN (" & sParamCode1 & ", " & sParamCode3 & ")"
-					rsInfo = datGeneral.GetRecords(sSQL)
+					sSQL = "SELECT ASRSysColumns.columnID, ASRSysColumns.columnName, ASRSysTables.tableID, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & " WHERE ASRSysColumns.columnID IN (" & sParamCode1 & ", " & sParamCode3 & ")"
+					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 					With rsInfo
 						Do While Not .EOF
 							If Trim(Str(.Fields("ColumnID").Value)) = sParamCode1 Then
@@ -559,9 +561,8 @@ ErrorTrap:
 					'*********** runtime code to go here *************
 
 					' Get the column parameter definitions.
-					sSQL = "SELECT ASRSysModuleSetup.*, ASRSysColumns.ColumnName, ASRSysTables.TableName" & " FROM ASRSysModuleSetup" & "     INNER JOIN ASRSysColumns ON ASRSysModuleSetup.ParameterValue = ASRSysColumns.ColumnID" & "     INNER JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID" & " WHERE ASRSysModuleSetup.ModuleKey = 'MODULE_CURRENCY'"
-
-					rsInfo = datGeneral.GetRecords(sSQL)
+					sSQL = "SELECT ASRSysModuleSetup.*, ASRSysColumns.ColumnName, ASRSysTables.TableName FROM ASRSysModuleSetup INNER JOIN ASRSysColumns ON ASRSysModuleSetup.ParameterValue = ASRSysColumns.ColumnID INNER JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID WHERE ASRSysModuleSetup.ModuleKey = 'MODULE_CURRENCY'"
+					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 					sSQL = vbNullString
 
 					With rsInfo
@@ -661,11 +662,11 @@ ErrorTrap:
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters(1).ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Select Case mcolParameters.Item(1).ReturnType
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 							sCode = sCode & " OR ((" & sParamCode1 & ") = '')"
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
-						Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 							sCode = sCode & " OR ((" & sParamCode1 & ") = 0)"
 					End Select
 
@@ -777,7 +778,7 @@ ErrorTrap:
 
 		If fOK Then
 			' We need to convert date values to varchars in the format 'mm/dd/yyyy'.
-			If miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE Then
+			If miReturnType = ExpressionValueTypes.giEXPRVALUE_DATE Then
 				sCode = "convert(" & vbNewLine & "datetime, " & vbNewLine & "convert(" & vbNewLine & "varchar(20), " & vbNewLine & sCode & "," & vbNewLine & "101)" & vbNewLine & ")"
 			End If
 		End If
@@ -982,10 +983,10 @@ ErrorTrap:
 		On Error GoTo BasicErrorTrap
 
 		Dim iLoop As Short
-		Dim iValidationCode As modExpression.ExprValidationCodes
-		Dim iFunctionReturnType As modExpression.ExpressionValueTypes
+		Dim iValidationCode As ExprValidationCodes
+		Dim iFunctionReturnType As ExpressionValueTypes
 		Dim sSQL As String
-		Dim rsParameters As ADODB.Recordset
+		Dim rsParameters As Recordset
 		Dim aiDummyValues(6) As Short
 		Dim objSubExpression As clsExprExpression
 		Dim objParameter As clsExprComponent
@@ -993,7 +994,7 @@ ErrorTrap:
 		iLoop = 0
 
 		' Initialise the validation code.
-		iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_NOERRORS
+		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS
 		'UPGRADE_NOTE: Object mobjBadComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjBadComponent = Nothing
 
@@ -1027,11 +1028,11 @@ ErrorTrap:
 					' the fact that a function parameter was invalid.
 					Select Case iValidationCode
 						Case ExprValidationCodes.giEXPRVALIDATION_NOCOMPONENTS
-							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERNOCOMPONENTS
+							iValidationCode = ExprValidationCodes.giEXPRVALIDATION_PARAMETERNOCOMPONENTS
 						Case ExprValidationCodes.giEXPRVALIDATION_SYNTAXERROR
-							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERSYNTAXERROR
+							iValidationCode = ExprValidationCodes.giEXPRVALIDATION_PARAMETERSYNTAXERROR
 						Case ExprValidationCodes.giEXPRVALIDATION_EXPRTYPEMISMATCH
-							iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
+							iValidationCode = ExprValidationCodes.giEXPRVALIDATION_PARAMETERTYPEMISMATCH
 					End Select
 
 					If .BadComponent Is Nothing Then

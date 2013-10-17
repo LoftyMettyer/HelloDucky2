@@ -1,109 +1,104 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprField
-	
+
 	' Component definition variables.
 	Private mlngTableID As Integer
 	Private mlngColumnID As Integer
 	Private miFieldPassType As Short
-	Private miSelectionType As modExpression.FieldSelectionTypes
+	Private miSelectionType As FieldSelectionTypes
 	Private mlngSelectionLine As Integer
 	Private mlngSelOrderID As Integer
 	Private mlngSelFilterID As Integer
-	
+
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
-	
+
 	Private mstrUDFRuntimeCode As String
-	
+
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		' Retrun TRUE if the current expression (or any of its sub expressions)
 		' contains the given expression. This ensures no cyclic expressions get created.
 		'JPD 20040507 Fault 8600
 		On Error GoTo ErrorTrap
-		
+
 		ContainsExpression = False
-		
+
 		If mlngSelFilterID > 0 Then
 			' Check if the calc component IS the one we're checking for.
 			ContainsExpression = (plngExprID = mlngSelFilterID)
-			
+
 			If Not ContainsExpression Then
 				' The calc component IS NOT the one we're checking for.
 				' Check if it contains the one we're looking for.
 				ContainsExpression = HasExpressionComponent(mlngSelFilterID, plngExprID)
 			End If
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		ContainsExpression = True
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
-	
-	
-	
-	
-	
+
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-    Dim Printer As New Printer
+		Dim Printer As New Printer
 
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
-		
+
 		fOK = True
-		
+
 		' Position the printing.
 		With Printer
 			.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
 			.CurrentY = .CurrentY + giPRINT_YSPACE
 			Printer.Print(ComponentDescription)
 		End With
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		PrintComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
+
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim sSQL As String
-		
+
 		fOK = True
-		
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type," & " fieldTableID, fieldColumnID, fieldPassBy, fieldSelectionRecord," & " fieldSelectionLine, fieldSelectionOrderID, fieldSelectionFilter, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD)) & "," & " " & Trim(Str(mlngTableID)) & "," & " " & Trim(Str(mlngColumnID)) & "," & " " & Trim(Str(miFieldPassType)) & "," & " " & Trim(Str(miSelectionType)) & "," & " " & Trim(Str(mlngSelectionLine)) & "," & " " & Trim(Str(mlngSelOrderID)) & "," & " " & Trim(Str(mlngSelFilterID)) & "," & " 0)"
-		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
-		
-TidyUpAndExit: 
+
+		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type," & " fieldTableID, fieldColumnID, fieldPassBy, fieldSelectionRecord," & " fieldSelectionLine, fieldSelectionOrderID, fieldSelectionFilter, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FIELD)) & "," & " " & Trim(Str(mlngTableID)) & "," & " " & Trim(Str(mlngColumnID)) & "," & " " & Trim(Str(miFieldPassType)) & "," & " " & Trim(Str(miSelectionType)) & "," & " " & Trim(Str(mlngSelectionLine)) & "," & " " & Trim(Str(mlngSelOrderID)) & "," & " " & Trim(Str(mlngSelFilterID)) & "," & " 0)"
+		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
+
+TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		WriteComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+
+
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
 		' When editting a component we actually copy the component first
@@ -111,7 +106,7 @@ ErrorTrap:
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
 		Dim objFieldCopy As New clsExprField
-		
+
 		' Copy the component's basic properties.
 		With objFieldCopy
 			.ColumnID = mlngColumnID
@@ -122,57 +117,57 @@ ErrorTrap:
 			.SelectionFilterID = mlngSelFilterID
 			.TableID = mlngTableID
 		End With
-		
+
 		CopyComponent = objFieldCopy
-		
+
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objFieldCopy may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objFieldCopy = Nothing
-		
+
 	End Function
-	
+
 	Public ReadOnly Property ComponentType() As Short
 		Get
 			' Return the component type.
-			ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_FIELD
-			
+			ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
+
 		End Get
 	End Property
-	
-	
-	
+
+
+
 	Public Property SelectionFilterID() As Integer
 		Get
 			' Return the Selection Filter property value.
 			SelectionFilterID = mlngSelFilterID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the Selection Filter property value.
 			mlngSelFilterID = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public ReadOnly Property ComponentDescription() As String
 		Get
 			' Return a description of the field component.
 			On Error GoTo ErrorTrap
-			
+
 			Dim fOK As Boolean
 			Dim fChildField As Boolean
 			Dim sSQL As String
 			Dim sTableName As String
 			Dim sColumnName As String
-      Dim sSelectionType As String = ""
-			Dim rsInfo As ADODB.Recordset
-			
+			Dim sSelectionType As String = ""
+			Dim rsInfo As Recordset
+
 			' Get the column and table name.
-			sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName" & " FROM ASRSysColumns" & " INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & " WHERE ASRSysColumns.columnID = " & Trim(Str(mlngColumnID))
-			rsInfo = datGeneral.GetRecords(sSQL)
+			sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID WHERE ASRSysColumns.columnID = " & Trim(Str(mlngColumnID))
+			rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			With rsInfo
 				fOK = Not (.EOF And .BOF)
-				
+
 				If fOK Then
 					sColumnName = .Fields("ColumnName").Value
 					sTableName = .Fields("TableName").Value
@@ -180,106 +175,108 @@ ErrorTrap:
 					sColumnName = "<unknown>"
 					sTableName = "<unknown>"
 				End If
-				
+
 				.Close()
 			End With
 			'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsInfo = Nothing
-			
+
 			If fOK Then
 				' Add the selection type description if required.
-				If (miFieldPassType = modExpression.FieldPassTypes.giPASSBY_VALUE) Then
+				If (miFieldPassType = FieldPassTypes.giPASSBY_VALUE) Then
 					' Only give the full description if the field is in a child table of the
 					' expression's parent table.
-					
-					sSQL = "SELECT *" & " FROM ASRSysRelations" & " WHERE parentID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & " AND childID = " & Trim(Str(mlngTableID))
-					rsInfo = datGeneral.GetRecords(sSQL)
+
+					sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & " AND childID = " & Trim(Str(mlngTableID))
+					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 					With rsInfo
 						fChildField = Not (.EOF And .BOF)
-						
+
 						.Close()
 					End With
 					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsInfo = Nothing
-					
+
 					If fChildField Then
 						Select Case miSelectionType
-							Case modExpression.FieldSelectionTypes.giSELECT_FIRSTRECORD
+							Case FieldSelectionTypes.giSELECT_FIRSTRECORD
 								sSelectionType = "(first record"
-							Case modExpression.FieldSelectionTypes.giSELECT_LASTRECORD
+							Case FieldSelectionTypes.giSELECT_LASTRECORD
 								sSelectionType = "(last record"
-							Case modExpression.FieldSelectionTypes.giSELECT_SPECIFICRECORD
+							Case FieldSelectionTypes.giSELECT_SPECIFICRECORD
 								sSelectionType = "(line " & Trim(Str(mlngSelectionLine))
-							Case modExpression.FieldSelectionTypes.giSELECT_RECORDTOTAL
+							Case FieldSelectionTypes.giSELECT_RECORDTOTAL
 								sSelectionType = "(total"
-							Case modExpression.FieldSelectionTypes.giSELECT_RECORDCOUNT
+							Case FieldSelectionTypes.giSELECT_RECORDCOUNT
 								sSelectionType = "(record count"
 							Case Else
 								sSelectionType = "(<unknown>"
 						End Select
-						
+
 						If mlngSelOrderID > 0 Then
 							' Get the order name.
-							sSQL = "SELECT name" & " FROM ASRSysOrders" & " WHERE orderID = " & Trim(Str(mlngSelOrderID))
-							rsInfo = datGeneral.GetRecords(sSQL)
+							sSQL = "SELECT name FROM ASRSysOrders WHERE orderID = " & Trim(Str(mlngSelOrderID))
+							rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+
 							With rsInfo
 								If Not (.BOF And .EOF) Then
 									sSelectionType = sSelectionType & ", order by '" & .Fields("Name").Value & "'"
 								End If
-								
+
 								.Close()
 							End With
 							'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							rsInfo = Nothing
 						End If
-						
+
 						If mlngSelFilterID > 0 Then
 							' Get the filter name.
-							sSQL = "SELECT name" & " FROM ASRSysExpressions" & " WHERE exprID = " & Trim(Str(mlngSelFilterID))
-							rsInfo = datGeneral.GetRecords(sSQL)
+							sSQL = "SELECT name FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngSelFilterID))
+							rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 							With rsInfo
 								If Not (.BOF And .EOF) Then
 									sSelectionType = sSelectionType & ", filter by '" & .Fields("Name").Value & "'"
 								End If
-								
+
 								.Close()
 							End With
 							'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							rsInfo = Nothing
 						End If
-						
+
 						sSelectionType = sSelectionType & ")"
 					End If
 				Else
 					sSelectionType = " (by reference)"
 				End If
 			End If
-			
-TidyUpAndExit: 
+
+TidyUpAndExit:
 			' Return the component description (to be displayed in the expression treeview).
 			ComponentDescription = sTableName & " : " & sColumnName & " " & sSelectionType
 			Exit Property
-			
-ErrorTrap: 
+
+ErrorTrap:
 			sTableName = "<unknown>"
 			sColumnName = "<unknown>"
 			sSelectionType = "<unknown>"
 			fOK = False
 			Resume TidyUpAndExit
-			
+
 		End Get
 	End Property
-	
+
 	Public ReadOnly Property ReturnType() As Short
 		Get
 			' Return the calculation's return type.
 			On Error GoTo ErrorTrap
-			
+
 			Dim fOK As Boolean
 			Dim iType As ExpressionValueTypes
 
 			fOK = True
-			
+
 			' If the component returns the record count then
 			' the return type must be numeric; otherwise the
 			' return type is determined by the field type.
@@ -321,14 +318,14 @@ TidyUpAndExit:
 			ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 		End If
 		Exit Property
-			
-ErrorTrap: 
+
+ErrorTrap:
 			fOK = False
 			Resume TidyUpAndExit
-			
+
 		End Get
 	End Property
-	
+
 	Public Property SelectionOrderID() As Integer
 		Get
 			' Return the Selection Order property value.
@@ -341,106 +338,100 @@ ErrorTrap:
 
 		End Set
 	End Property
-	
-	
+
+
 	Public Property SelectionType() As Short
 		Get
 			' Return the selection type.
 			SelectionType = miSelectionType
-			
+
 		End Get
 		Set(ByVal Value As Short)
-			' Set the selection type.
-			'  If mobjBaseComponent.ParentExpression.ExpressionType = giEXPR_STATICFILTER Then
-			'    miSelectionType = giSELECT_FIRSTRECORD
-			'  Else
 			miSelectionType = Value
-			'  End If
-			
 		End Set
 	End Property
-	
-	
+
+
 	Public Property SelectionLine() As Integer
 		Get
 			' Return the record slection line property.
 			SelectionLine = mlngSelectionLine
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the record slection line property.
 			mlngSelectionLine = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property FieldPassType() As Short
 		Get
 			' Return the field pass type property.
 			FieldPassType = miFieldPassType
-			
+
 		End Get
 		Set(ByVal Value As Short)
 			' Set the field pass type property.
 			miFieldPassType = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property ColumnID() As Integer
 		Get
 			' Return the column id property.
 			ColumnID = mlngColumnID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the column id property.
 			mlngColumnID = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property BaseComponent() As clsExprComponent
 		Get
 			' Return the component's base component object.
 			BaseComponent = mobjBaseComponent
-			
+
 		End Get
 		Set(ByVal Value As clsExprComponent)
 			' Set the component's base component object property.
 			mobjBaseComponent = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property TableID() As Integer
 		Get
 			' Return the table id property.
 			TableID = mlngTableID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the table id property.
 			mlngTableID = Value
-			
+
 		End Set
 	End Property
-	
+
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Initialise properties.
 		miFieldPassType = FieldPassTypes.giPASSBY_VALUE
-		
+
 	End Sub
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
 	End Sub
-	
+
 	Public Function GenerateCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, ByRef pfUDFCode As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		Dim fOK As Boolean
@@ -456,7 +447,7 @@ ErrorTrap:
 		Dim sOrderCode As String
 		Dim sFilterCode As String = ""
 		Dim sColumnCode As String = ""
-		Dim rsInfo As ADODB.Recordset
+		Dim rsInfo As Recordset
 		Dim asViews() As String
 		Dim avOrderJoinTables(,) As Object
 		Dim objFilterExpr As clsExprExpression
@@ -587,8 +578,8 @@ ErrorTrap:
 
 				' Check if the table is a child or parent of the expression's base table.
 				'fParentField = datGeneral.IsAParentOf(mlngTableID, mobjBaseComponent.ParentExpression.BaseTableID)
-				sSQL = "SELECT *" & " FROM ASRSysRelations" & " WHERE parentID = " & Trim(Str(mlngTableID)) & " AND childID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID))
-				rsInfo = datGeneral.GetRecords(sSQL)
+				sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mlngTableID)) & " AND childID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID))
+				rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 				With rsInfo
 					fParentField = Not (.EOF And .BOF)
 					.Close()
@@ -722,16 +713,15 @@ ErrorTrap:
 					sOrderCode = ""
 					ReDim avOrderJoinTables(2, 0)
 					If mlngSelOrderID > 0 Then
-						sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.columnID, ASRSysColumns.tableID, ASRSysTables.tableName, ASRSysOrderItems.ascending" & " FROM ASRSysOrderItems" & " JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID" & " JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & " WHERE orderID = " & Trim(Str(mlngSelOrderID)) & " AND type = 'O'" & " AND ASRSysColumns.columnID = ASRSysOrderItems.columnID" & " AND ASRSysColumns.tableID = ASRSysTables.tableID" & " ORDER BY sequence"
-
-						rsInfo = datGeneral.GetRecords(sSQL)
+						sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.columnID, ASRSysColumns.tableID, ASRSysTables.tableName, ASRSysOrderItems.ascending FROM ASRSysOrderItems JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID" & " JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & " WHERE orderID = " & Trim(Str(mlngSelOrderID)) & " AND type = 'O'" & " AND ASRSysColumns.columnID = ASRSysOrderItems.columnID" & " AND ASRSysColumns.tableID = ASRSysTables.tableID" & " ORDER BY sequence"
+						rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 						With rsInfo
 
 							Do While Not .EOF
 								If Not pfApplyPermissions Then
 									' Construct the order code. Remember that if we are selecting the last record,
 									' we must reverse the ASC/DESC options.
-									sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & .Fields("TableName").Value & "." & .Fields("ColumnName").Value & IIf(miSelectionType = modExpression.FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+									sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & .Fields("TableName").Value & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
 
 									If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID) Or pfUDFCode) Then
 
@@ -846,7 +836,7 @@ ErrorTrap:
 												Next iNextIndex
 
 												If Len(sColumnCode) > 0 Then
-													sColumnCode = sColumnCode & "ELSE NULL" & vbNewLine & "END" & IIf(miSelectionType = modExpression.FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+													sColumnCode = sColumnCode & "ELSE NULL" & vbNewLine & "END" & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
 
 													sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & sColumnCode
 												End If
@@ -889,7 +879,7 @@ ErrorTrap:
 
 					If fOK Then
 						Select Case miSelectionType
-							Case modExpression.FieldSelectionTypes.giSELECT_FIRSTRECORD, modExpression.FieldSelectionTypes.giSELECT_LASTRECORD
+							Case FieldSelectionTypes.giSELECT_FIRSTRECORD, FieldSelectionTypes.giSELECT_LASTRECORD
 								' First and Last record selection uses the same code here.
 								' The difference is made when creating the 'order by' code above.
 								If Not pfApplyPermissions Then
@@ -958,7 +948,7 @@ ErrorTrap:
 									End If
 								End If
 
-							Case modExpression.FieldSelectionTypes.giSELECT_RECORDCOUNT
+							Case FieldSelectionTypes.giSELECT_RECORDCOUNT
 								' No need to add the order code as it makes no differnt when selecting the record count.
 								If Not pfApplyPermissions Then
 									sCode = sCode & "SELECT COUNT(" & objBaseTable.TableName & ".id)" & vbNewLine & "FROM " & objBaseTable.TableName & vbNewLine & "WHERE " & mobjBaseComponent.ParentExpression.BaseTableName & ".id = " & objBaseTable.TableName & ".id_" & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & vbNewLine
@@ -988,7 +978,7 @@ ErrorTrap:
 									End If
 								End If
 
-							Case modExpression.FieldSelectionTypes.giSELECT_RECORDTOTAL
+							Case FieldSelectionTypes.giSELECT_RECORDTOTAL
 								' No need to add the order code as it makes no differnt when selecting the record total.
 								If Not pfApplyPermissions Then
 									sCode = sCode & "SELECT SUM(" & objBaseTable.TableName & "." & objBaseColumn.ColumnName & ")" & vbNewLine & "FROM " & objBaseTable.TableName & vbNewLine & "WHERE " & mobjBaseComponent.ParentExpression.BaseTableName & ".id = " & objBaseTable.TableName & ".id_" & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & vbNewLine
@@ -1018,20 +1008,20 @@ ErrorTrap:
 									End If
 								End If
 
-							Case modExpression.FieldSelectionTypes.giSELECT_SPECIFICRECORD
+							Case FieldSelectionTypes.giSELECT_SPECIFICRECORD
 								' Specific for runtime filters.
 
 								Select Case ReturnType
-									Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+									Case ExpressionValueTypes.giEXPRVALUE_DATE
 										strUDFReturnType = "datetime"
 
-									Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+									Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 										strUDFReturnType = "varchar(MAX)"
 
-									Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+									Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 										strUDFReturnType = "float"
 
-									Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+									Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 										strUDFReturnType = "bit"
 
 								End Select
@@ -1152,16 +1142,16 @@ ErrorTrap:
 			' If the return type is a date, then convert the datetime value
 			' to a varchar, and then back to a datetime. This gets rid of the time part
 			' of the datetime value, which may cause errors when comparing datetime values.
-			If ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE Then
+			If ReturnType = ExpressionValueTypes.giEXPRVALUE_DATE Then
 				sCode = "convert(" & vbNewLine & "datetime, " & vbNewLine & "convert(" & vbNewLine & "varchar(20), " & vbNewLine & sCode & "," & vbNewLine & "101)" & vbNewLine & ")"
 			End If
 
-			If ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC Then
+			If ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC Then
 				sCode = "convert(" & vbNewLine & "float, " & vbNewLine & sCode & vbNewLine & ")"
 			End If
 
 			' JDM - 19/12/01 - Fault 3299 - Problems concatenating strings
-			If ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER Then
+			If ReturnType = ExpressionValueTypes.giEXPRVALUE_CHARACTER Then
 				sCode = "IsNull((" & sCode & "),'')"
 			End If
 
@@ -1182,13 +1172,13 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-	
+
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		RuntimeCode = GenerateCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, False, plngFixedExprID, psFixedSQLCode)
 
 	End Function
-	
+
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		Dim strUDFCode As String = ""

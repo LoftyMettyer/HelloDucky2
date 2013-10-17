@@ -26,6 +26,7 @@ Module Declarations
 	Public ModuleSettings As ICollection(Of Metadata.ModuleSetting)
 	Public UserSettings As ICollection(Of Metadata.UserSetting)
 	Public Functions As ICollection(Of Metadata.Function)
+	Public Operators As ICollection(Of Metadata.Operator)
 
   Public Enum GlobalType
     glAdd = 1

@@ -2,8 +2,8 @@
 Option Explicit On
 
 Namespace Metadata
-	Public Class [Function]
+	Public Class OperatorParameter
 		Inherits Base
-			Public ReturnType As Integer
+			Public ParameterType As String
 	End Class
 End Namespace

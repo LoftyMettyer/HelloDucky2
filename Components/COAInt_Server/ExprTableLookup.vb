@@ -1,10 +1,12 @@
 Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprTableLookup
 	
 	' Component definition variables.
-	Private miType As modExpression.ExpressionValueTypes
+	Private miType As ExpressionValueTypes
 	Private mdblNumericValue As Double
 	Private msCharacterValue As String
 	Private mfLogicValue As Boolean
@@ -55,13 +57,13 @@ ErrorTrap:
 		sCode = ""
 
 		Select Case miType
-			Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+			Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 				sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
-			Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+			Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 				sCode = Trim(Str(mdblNumericValue))
-			Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+			Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 				sCode = IIf(mfLogicValue, "1", "0")
-			Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+			Case ExpressionValueTypes.giEXPRVALUE_DATE
 				'MH20010201 Fault 1576
 				'sCode = "convert(datetime, '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
 				'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -188,16 +190,16 @@ ErrorTrap:
 		Get
 			' Return the value property.
 			Select Case miType
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Value = msCharacterValue
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Value = mdblNumericValue
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Value = mfLogicValue
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					Value = mdtDateValue
@@ -210,16 +212,16 @@ ErrorTrap:
 		Set(ByVal Value As Object)
 			' Set the value property.
 			Select Case miType
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					msCharacterValue = Value
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdblNumericValue = Value
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mfLogicValue = Value
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdtDateValue = Value
@@ -232,20 +234,20 @@ ErrorTrap:
 		Get
 			' Return the component description.
 			Select Case miType
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_CHARACTER
+				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					ComponentDescription = Chr(34) & msCharacterValue & Chr(34)
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
+				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'MH20010130 Fault 1610
 					'ComponentDescription = Trim(Str(mdblNumericValue))
 					ComponentDescription = datGeneral.ConvertNumberForDisplay(CStr(mdblNumericValue))
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC
+				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					ComponentDescription = IIf(mfLogicValue, "True", "False")
-				Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
+				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'MH20010201 Fault 1576
 					'ComponentDescription = Format(mdtDateValue, "Long Date")
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					ComponentDescription = IIf(IsDbNull(mdtDateValue), "Empty Date", VB6.Format(mdtDateValue, "Long Date"))
+					ComponentDescription = IIf(IsDBNull(mdtDateValue), "Empty Date", VB6.Format(mdtDateValue, "Long Date"))
 				Case Else
 					ComponentDescription = ""
 			End Select
