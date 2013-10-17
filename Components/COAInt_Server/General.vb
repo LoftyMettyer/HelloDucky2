@@ -640,7 +640,7 @@ ErrorTrap:
 	End Function
 
 	Public Function IsPhotoDataType(ByVal lngColumnID As Integer) As Boolean
-		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean
+		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlOle
 	End Function
 
 	Friend Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
