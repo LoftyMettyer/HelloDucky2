@@ -135,10 +135,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
-		<table  >
+		<table>
 			<tr>
 				<td>
-					<table  width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 						<tr height="5">
 							<td colspan="3"></td>
 						</tr>
@@ -169,10 +169,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table  width="100%" height="80%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="80%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 													<tr>
 														<td colspan="10" height="5"></td>
 													</tr>
@@ -234,7 +234,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="20" nowrap></td>
 														<td width="10" valign="top">Records :</td>
 														<td width="40%" colspan="2">
-															<table  class="invisible" cellspacing="0" cellpadding="0" width="100%">
+															<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																<tr>
 																	<td width="5" nowrap>
 																		<input checked id="optRecordSelection1" name="optRecordSelection" type="radio"
@@ -337,7 +337,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 										</tr>
 									</table>
 
-									<table  id="DataSection">
+									<table id="DataSection">
 										<tr>
 											<td>
 												<table>
@@ -482,10 +482,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Second tab -->
 								<div id="div2" style="visibility: hidden; display: none">
-									<table  width="100%" height="100%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table  width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+												<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 													<tr>
 														<td colspan="3" height="5"></td>
 													</tr>
@@ -498,7 +498,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													<tr>
 														<td width="5">&nbsp;</td>
 														<td colspan="7">
-															<table  width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+															<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 																<tr>
 																	<td colspan="3" height="5"></td>
 																</tr>
@@ -855,18 +855,18 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Third tab -->
 								<div id="div3" style="visibility: hidden; display: none">
-									<table  width="100%" height="100%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table  width="100%" class="invisible" cellspacing="10" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
 														<td valign="top" rowspan="1" width="50%" height="100%">
-															<table   cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
 																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>Start Date :</strong>
 																		<br>
 																		<br>
-																		<table  class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																			<tr height="20">
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
@@ -944,7 +944,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td align="left" width="100%">
-																					<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td width="40">
 																								<input id="txtFreqStart" maxlength="4" name="txtFreqStart" style="WIDTH: 40px" width="40" value="0" class="text"
@@ -1011,7 +1011,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td align="left" width="100%">
-																					<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td>
 																								<input id="txtCustomStart" name="txtCustomStart" disabled="disabled" style="WIDTH: 100%" class="text textdisabled">
@@ -1038,12 +1038,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 															</table>
 														</td>
 														<td style="vertical-align: top; width:50%">
-															<table   style="padding: 2px; width:100%; height:100%">
+															<table style="padding: 2px; width:100%; height:100%">
 																<tr height="10">
 																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>End Date :</strong>
 																		<br>
 																		<br>
-																		<table  class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																			<tr height="20">
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
@@ -1121,7 +1121,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td align="left" width="100%">
-																					<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td width="40">
 																								<input id="txtFreqEnd" maxlength="4" name="txtFreqEnd" style="WIDTH: 40px" width="40" value="0" class="text"
@@ -1189,7 +1189,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td align="left" width="100%">
-																					<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																						<tr>
 																							<td>
 																								<input id="txtCustomEnd" name="txtCustomEnd" disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
@@ -1218,12 +1218,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													</tr>
 													<tr>
 														<td valign="top" width="100%" colspan="2">
-															<table   cellspacing="0" cellpadding="2" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="2" width="100%" height="100%">
 																<tr height="10">
 																	<td style="height:10px; text-align:  left; vertical-align:top"><strong>Default Display Options :</strong>
 																		<br>
 																		<br>
-																		<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+																		<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
@@ -1382,10 +1382,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 								<!-- Fourth tab -->
 								<div id="div4" style="visibility: hidden; display: none">
-									<table  width="100%" height="100%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%"  cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 													<tr>
 														<td colspan="5" height="5"></td>
 													</tr>
@@ -1519,18 +1519,18 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 								<!-- Fifth tab -->
 								<!-- OUTPUT OPTIONS -->
 								<div id="div5" style="visibility: hidden; display: none">
-									<table  width="100%" height="100%" cellspacing="0" cellpadding="5">
+									<table width="100%" height="100%" cellspacing="0" cellpadding="5">
 										<tr valign="top">
 											<td>
-												<table  width="100%" class="invisible" cellspacing="10" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="10" cellpadding="0">
 													<tr>
 														<td style="padding-right: 30px; vertical-align: top; width: 25%; height: 100%" rowspan="2">
-															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
 																	<td height="10" align="left" valign="top"><strong>Output Format :</strong>
 																		<br>
 																		<br>
-																		<table  class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																			<tr height="20">
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
@@ -1720,12 +1720,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 															</table>
 														</td>
 														<td style="width: 75%">
-															<table  cellspacing="0" cellpadding="4" width="100%" height="100%">
+															<table cellspacing="0" cellpadding="4" width="100%" height="100%">
 																<tr height="10">
 																	<td height="10" align="left" valign="top"><strong>Output Destination(s) :</strong>
 																		<br>
 																		<br>
-																		<table  class="invisible" cellspacing="0" cellpadding="0" width="100%">
+																		<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 																			<tr height="20">
 																				<td width="5">&nbsp;</td>
 																				<td align="left" colspan="6" nowrap>
@@ -1878,7 +1878,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-
 																					<label for="chkDestination3"
 																						class="checkbox checkboxdisabled"
 																						tabindex="0"
@@ -1910,36 +1909,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																			</tr>
 																			<tr>
-																				<td style="width: 130px" colspan="1"></td>
-																				<td></td>
-																				<td></td>
-																				<td></td>
-																				<td style="white-space: nowrap;">
-																					<label for="txtEmailAttachAs"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																						Attach as : 
-																					</label>
-																				</td>
-																				<td>
-																					<input id="txtEmailAttachAs" maxlength="255"
-																						style="width: 100%;"
-																						class="text textdisabled" disabled="disabled" name="txtEmailAttachAs"
-																						onchange="frmUseful.txtChanged.value = 1;"
-																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
-
-																				<td></td>
-																				<td></td>
-																			</tr>
-
-																			<tr>
 																				<td></td>
 																				<td></td>
 																				<td></td>
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailSubject"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1956,7 +1932,31 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td></td>
 																				<td></td>
-
+																			</tr>
+																			<tr>
+																				<td style="width: 130px" colspan="1"></td>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td style="white-space: nowrap;">
+																					<label for="txtEmailAttachAs"
+																						tabindex="-1"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" 
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" 
+																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" 
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Attach as : 
+																					</label>
+																				</td>
+																				<td style="padding-top: 5px">
+																					<input id="txtEmailAttachAs" maxlength="255"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" name="txtEmailAttachAs"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
+																				<td></td>
+																				<td></td>
 																			</tr>
 																		</table>
 																	</td>
@@ -1999,7 +1999,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 				<tr height="10">
 					<td width="10"></td>
 					<td>
-						<table  width="100%" class="invisible" cellspacing="0" cellpadding="0">
+						<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 							<tr>
 								<td>&nbsp;</td>
 								<td width="80">

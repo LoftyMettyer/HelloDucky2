@@ -984,7 +984,7 @@
 														<td style="width: 5px"></td>
 														<td style="text-align: left; white-space: nowrap">Printer location : </td>
 
-														<td >
+														<td>
 															<select id="cboPrinterName" name="cboPrinterName" class="combo" style="width: 100%;">
 															</select>
 														</td>
@@ -1064,7 +1064,7 @@
 														<td></td>
 														<td></td>
 														<td style="text-align: left; white-space: nowrap">Email subject :</td>
-														<td >
+														<td>
 															<input style="width: 100%" id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject">
 														</td>
 														<td></td>
@@ -1077,7 +1077,7 @@
 														<td></td>
 														<td></td>
 														<td style="text-align: left; white-space: nowrap">Attach as :</td>
-														<td >
+														<td>
 															<input style="width: 100%" id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs">
 														</td>
 														<td></td>

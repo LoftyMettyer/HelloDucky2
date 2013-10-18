@@ -973,7 +973,6 @@
 																					</label>
 																				</td>
 																			</tr>
-
 																			<tr style="height: 20px; padding: 5px" name="row10" id="row10">
 																				<td style="width: 150px; white-space: nowrap; text-align: left">Attach as :</td>
 																				<td style="width: 5px"></td>
@@ -983,13 +982,8 @@
 																				</td>
 																			</tr>
 																		</table>
-																		
-
-																		
 																	</td>
-																	
 																</tr>
-
 																<tr height="100%"></tr>
 															</table>
 														</td>

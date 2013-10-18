@@ -1182,7 +1182,31 @@
 																				</td>
 																				<td></td>
 																			</tr>
-
+																			<tr>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td></td>
+																				<td style="white-space: nowrap;">
+																					<label for="txtEmailSubject"
+																						tabindex="-1"
+																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Email subject :</label>
+																				</td>
+																				<td>
+																					<input id="txtEmailSubject"
+																						style="width: 100%;"
+																						class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject"
+																						onchange="frmUseful.txtChanged.value = 1;"
+																						onkeydown="frmUseful.txtChanged.value = 1;">
+																				</td>
+																				<td></td>
+																				<td></td>
+																			</tr>
 																			<tr>
 																				<td style="width: 130px" colspan="1"></td>
 																				<td></td>
@@ -1190,7 +1214,7 @@
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailAttachAs"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" 
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" 
@@ -1199,38 +1223,12 @@
 																						Attach as : 
 																					</label>
 																				</td>
-																				<td>
+																				<td style="padding-top: 5px">
 																					<input id="txtEmailAttachAs" maxlength="255"
 																						style="width: 100%;"
 																						class="text textdisabled" disabled="disabled" name="txtEmailAttachAs"
 																						onchange="frmUseful.txtChanged.value = 1;"
 																						onkeydown="frmUseful.txtChanged.value = 1;"></td>
-																				<td></td>
-																				<td></td>
-																			</tr>
-
-																			<tr>
-																				<td></td>
-																				<td></td>
-																				<td></td>
-																				<td></td>
-																				<td style="white-space: nowrap;">
-																					<label for="txtEmailSubject"
-																						tabindex="0"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																						Email subject :</label>
-																				</td>
-																				<td style="padding-top: 5px">
-																					<input id="txtEmailSubject"
-																						style="width: 100%;"
-																						class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject"
-																						onchange="frmUseful.txtChanged.value = 1;"
-																						onkeydown="frmUseful.txtChanged.value = 1;">
-																				</td>
 																				<td></td>
 																				<td></td>
 																			</tr>
