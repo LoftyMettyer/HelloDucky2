@@ -60,23 +60,33 @@ Public Class MvcApplication
 		End If
 
 		' Check what browser is being used.
-		sBrowserInfo = Request.ServerVariables("HTTP_USER_AGENT")
-		If InStr(sBrowserInfo, "MSIE") Then
-			' Microsoft browser.
-			sBrowserInfo = Mid(sBrowserInfo, InStr(sBrowserInfo, "MSIE") + 5)
+		Dim sBrowserName As String = Request.Browser.Browser
 
-			If InStr(sBrowserInfo, ".") > 0 Then
-				sBrowserInfo = Left(sBrowserInfo, InStr(sBrowserInfo, ".") + 1)
-			End If
-
-			iIEVersion = CDbl(sBrowserInfo)
+		If sBrowserName = "IE" Or sBrowserName = "InternetExplorer" Then
 			Session("MSBrowser") = True
-			Session("IEVersion") = iIEVersion
+			Session("IEVersion") = Request.Browser.MajorVersion()
 		Else
-			' Non Microsoft browser.
 			Session("MSBrowser") = False
 			Session("IEVersion") = 0
 		End If
+
+		'sBrowserInfo = Request.ServerVariables("HTTP_USER_AGENT")
+		'If InStr(sBrowserInfo, "MSIE") Then
+		'	' Microsoft browser.
+		'	sBrowserInfo = Mid(sBrowserInfo, InStr(sBrowserInfo, "MSIE") + 5)
+
+		'	If InStr(sBrowserInfo, ".") > 0 Then
+		'		sBrowserInfo = Left(sBrowserInfo, InStr(sBrowserInfo, ".") + 1)
+		'	End If
+
+		'	iIEVersion = CDbl(sBrowserInfo)
+		'	Session("MSBrowser") = True
+		'	Session("IEVersion") = iIEVersion
+		'Else
+		'	' Non Microsoft browser.
+		'	Session("MSBrowser") = False
+		'	Session("IEVersion") = 0
+		'End If
 
 
 		'TODO USE MAYBE OR MAYBE NOT WHO KNOWS???

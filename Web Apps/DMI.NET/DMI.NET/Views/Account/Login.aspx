@@ -70,24 +70,6 @@
 	'		Session.Contents.Remove(sessitem)
 	'	End If
 	'Next 
-	
-	' Check what browser is being used.
-	sBrowserInfo = Request.ServerVariables("HTTP_USER_AGENT")
-	if InStr(sBrowserInfo, "MSIE") then
-		' Microsoft browser.
-		sBrowserInfo = mid(sBrowserInfo, InStr(sBrowserInfo, "MSIE") + 5)
-
-		if inStr(sBrowserInfo, ".") > 0 then
-			sBrowserInfo = left(sBrowserInfo, instr(sBrowserInfo, ".") + 1)
-		end if
-
-		session("MSBrowser") = true
-		Session("IEVersion") = CDbl(sBrowserInfo)
-	else		
-		' Non Microsoft browser.
-		session("MSBrowser") = false
-		session("IEVersion") = 0
-	end if	
 
 	session("dfltTempMenuFilePath") = "<NONE>"
 
