@@ -816,7 +816,7 @@ ErrorTrap:
 
 		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, functionID, valueLogic, ExpandedNode)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION)) & "," & " " & Trim(Str(mlngFunctionID)) & "," & " 0," & IIf(mbExpanded, "1", "0") & ")"
+		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, functionID, valueLogic, ExpandedNode)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FUNCTION)) & "," & " " & Trim(Str(mlngFunctionID)) & "," & " 0," & IIf(mbExpanded, "1", "0") & ")"
 		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
 
 		' Write the function parameter expressions.
@@ -868,7 +868,7 @@ ErrorTrap:
 	Public ReadOnly Property ComponentType() As Short
 		Get
 			' Return the 'function' component type.
-			ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_FUNCTION
+			ComponentType = ExpressionComponentTypes.giCOMPONENT_FUNCTION
 
 		End Get
 	End Property

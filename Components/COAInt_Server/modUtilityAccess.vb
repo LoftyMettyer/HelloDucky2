@@ -1,31 +1,21 @@
 Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.Enums
+
 Module modUtilityAccess
-	
-	Public Enum RecordSelectionTypes
-		REC_SEL_ALL = 0
-		REC_SEL_PICKLIST = 1
-		REC_SEL_FILTER = 2
-	End Enum
-	
+
 	Public Const ACCESS_READWRITE As String = "RW"
 	Public Const ACCESS_READONLY As String = "RO"
 	Public Const ACCESS_HIDDEN As String = "HD"
 	Public Const ACCESS_UNKNOWN As String = ""
-	
+
 	Public Const ACCESSDESC_READWRITE As String = "Read / Write"
 	Public Const ACCESSDESC_READONLY As String = "Read Only"
 	Public Const ACCESSDESC_HIDDEN As String = "Hidden"
 	Public Const ACCESSDESC_UNKNOWN As String = "Unknown"
-	
-	Public Enum RecordSelectionValidityCodes
-		REC_SEL_VALID_OK = 0
-		REC_SEL_VALID_DELETED = 1
-		REC_SEL_VALID_HIDDENBYUSER = 2
-		REC_SEL_VALID_HIDDENBYOTHER = 3
-		REC_SEL_VALID_INVALID = 4
-	End Enum
-	
+
+
 	Public Function ValidateRecordSelection(ByRef piType As RecordSelectionTypes, ByRef plngID As Integer) As RecordSelectionValidityCodes
 		' Return an integer code representing the validity of the record selection (picklist or filter).
 		' Return 0 if the record selection is OK.
@@ -34,30 +24,30 @@ Module modUtilityAccess
 		' Return 3 if the record selection is hidden, and is NOT owned by the current user.
 		' Return 4 if the record selection is no longer valid.
 		On Error GoTo ErrorTrap
-		
+
 		Dim iResult As RecordSelectionValidityCodes
-		
+
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
-		
+
 		Select Case piType
 			Case RecordSelectionTypes.REC_SEL_PICKLIST
 				iResult = ValidatePicklist(plngID)
-				
+
 			Case RecordSelectionTypes.REC_SEL_FILTER
 				iResult = ValidateFilter(plngID)
 		End Select
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		ValidateRecordSelection = iResult
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+
+
 	Public Function ValidatePicklist(ByRef plngID As Integer) As RecordSelectionValidityCodes
 		' Return an integer code representing the validity of the picklist.
 		' Return 0 if the picklist is OK.
@@ -66,22 +56,22 @@ ErrorTrap:
 		' Return 3 if the picklist is hidden, and is NOT owned by the current user.
 		' Return 4 if the picklist is no longer valid.
 		On Error GoTo ErrorTrap
-		
+
 		Dim iResult As RecordSelectionValidityCodes
 		Dim rstemp As ADODB.Recordset
 		Dim sSQL As String
 		Dim datData As clsDataAccess
-		
+
 		sSQL = ""
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
-		
+
 		If plngID > 0 Then
 			datData = New clsDataAccess
-			
+
 			sSQL = "SELECT access, userName" & " FROM ASRSysPickListName" & " WHERE picklistID = " & CStr(plngID)
-			
+
 			rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			
+
 			If rstemp.BOF And rstemp.EOF Then
 				' Picklist no longer exists
 				iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
@@ -96,28 +86,28 @@ ErrorTrap:
 					End If
 				End If
 			End If
-			
+
 			rstemp.Close()
 			'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rstemp = Nothing
-			
+
 			'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			datData = Nothing
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		ValidatePicklist = iResult
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
-	
-	
+
+
+
+
 	Public Function ValidateFilter(ByRef plngID As Integer) As RecordSelectionValidityCodes
 		' Return an integer code representing the validity of the filter.
 		' Return 0 if the filter is OK.
@@ -126,23 +116,23 @@ ErrorTrap:
 		' Return 3 if the filter is hidden, and is NOT owned by the current user.
 		' Return 4 if the filter is no longer valid.
 		On Error GoTo ErrorTrap
-		
+
 		Dim iResult As RecordSelectionValidityCodes
 		Dim rstemp As ADODB.Recordset
 		Dim sSQL As String
 		Dim objExpr As clsExprExpression
 		Dim datData As clsDataAccess
-		
+
 		sSQL = ""
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
-		
+
 		If plngID > 0 Then
 			datData = New clsDataAccess
-			
+
 			sSQL = "SELECT access, userName" & " FROM ASRSysExpressions" & " WHERE exprID = " & CStr(plngID)
-			
+
 			rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			
+
 			If rstemp.BOF And rstemp.EOF Then
 				' Filter no longer exists
 				iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
@@ -172,109 +162,109 @@ ErrorTrap:
 					'        Set objExpr = Nothing
 				End If
 			End If
-			
+
 			rstemp.Close()
 			'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rstemp = Nothing
-			
+
 			'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			datData = Nothing
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		ValidateFilter = iResult
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+
+
 	Public Function CurrentUserIsSysSecMgr() As Boolean
 		Dim sSQL As String
 		Dim rsAccess As ADODB.Recordset
 		Dim datData As clsDataAccess
 		Dim fIsSysSecUser As Boolean
-		
+
 		sSQL = "SELECT count(*) AS [result]" & " FROM ASRSysGroupPermissions" & " INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "   AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "   OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & " WHERE ASRSysGroupPermissions.permitted = 1" & "   AND ASRSysGroupPermissions.groupname = '" & gsUserGroup & "'"
-		
+
 		datData = New clsDataAccess
 		rsAccess = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 		With rsAccess
 			fIsSysSecUser = (.Fields("Result").Value > 0)
-			
+
 			.Close()
 		End With
 		'UPGRADE_NOTE: Object rsAccess may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsAccess = Nothing
-		
+
 		'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		datData = Nothing
-		
+
 		CurrentUserIsSysSecMgr = fIsSysSecUser
-		
+
 	End Function
-	
-	
-  Public Function ValidateCalculation(ByVal plngID As Integer) As RecordSelectionValidityCodes
-    ' Return an integer code representing the validity of the Calculation.
-    ' Return 0 if the Calculation is OK.
-    ' Return 1 if the Calculation has been deleted by another user.
-    ' Return 2 if the Calculation is hidden, and is owned by the current user.
-    ' Return 3 if the Calculation is hidden, and is NOT owned by the current user.
-    ' Return 4 if the Calculation is no longer valid.
-    On Error GoTo ErrorTrap
 
-    Dim iResult As RecordSelectionValidityCodes
-    Dim rstemp As ADODB.Recordset
-    Dim sSQL As String
-    Dim datData As clsDataAccess
 
-    iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
+	Public Function ValidateCalculation(ByVal plngID As Integer) As RecordSelectionValidityCodes
+		' Return an integer code representing the validity of the Calculation.
+		' Return 0 if the Calculation is OK.
+		' Return 1 if the Calculation has been deleted by another user.
+		' Return 2 if the Calculation is hidden, and is owned by the current user.
+		' Return 3 if the Calculation is hidden, and is NOT owned by the current user.
+		' Return 4 if the Calculation is no longer valid.
+		On Error GoTo ErrorTrap
 
-    If plngID > 0 Then
-      datData = New clsDataAccess
+		Dim iResult As RecordSelectionValidityCodes
+		Dim rstemp As ADODB.Recordset
+		Dim sSQL As String
+		Dim datData As clsDataAccess
 
-      sSQL = "SELECT access, userName" & " FROM ASRSysExpressions" & " WHERE exprID = " & CStr(plngID)
+		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
 
-      rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		If plngID > 0 Then
+			datData = New clsDataAccess
 
-      If rstemp.BOF And rstemp.EOF Then
-        ' Filter no longer exists
-        iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
-      Else
-        If (rstemp.Fields("Access").Value = ACCESS_HIDDEN) Or HasHiddenComponents(CInt(plngID)) Then
-          If (LCase(Trim(rstemp.Fields("Username").Value)) = LCase(Trim(gsUsername))) Then
-            ' Calculation is hidden by the current user.
-            iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
-          Else
-            ' Calculation is hidden by another user.
-            iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
-          End If
-        End If
-      End If
+			sSQL = "SELECT access, userName" & " FROM ASRSysExpressions" & " WHERE exprID = " & CStr(plngID)
 
-      rstemp.Close()
-      'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      rstemp = Nothing
+			rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
-      'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      datData = Nothing
-    End If
+			If rstemp.BOF And rstemp.EOF Then
+				' Filter no longer exists
+				iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+			Else
+				If (rstemp.Fields("Access").Value = ACCESS_HIDDEN) Or HasHiddenComponents(CInt(plngID)) Then
+					If (LCase(Trim(rstemp.Fields("Username").Value)) = LCase(Trim(gsUsername))) Then
+						' Calculation is hidden by the current user.
+						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
+					Else
+						' Calculation is hidden by another user.
+						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+					End If
+				End If
+			End If
+
+			rstemp.Close()
+			'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			rstemp = Nothing
+
+			'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			datData = Nothing
+		End If
 
 TidyUpAndExit:
-    Return iResult
+		Return iResult
 
 ErrorTrap:
-    iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
-    Resume TidyUpAndExit
+		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+		Resume TidyUpAndExit
 
-  End Function
-	
-	
-	
+	End Function
+
+
+
 	Public Function AccessCode(ByRef psDescription As String) As String
 		' Return the descriptive string associated with the given Access code.
 		Select Case psDescription
@@ -287,9 +277,9 @@ ErrorTrap:
 			Case Else
 				AccessCode = ACCESS_UNKNOWN
 		End Select
-		
+
 	End Function
-	
+
 	Public Function AccessDescription(ByRef psCode As String) As String
 		' Return the descriptive string associated with the given Access code.
 		Select Case psCode
@@ -302,15 +292,15 @@ ErrorTrap:
 			Case Else
 				AccessDescription = ACCESSDESC_UNKNOWN
 		End Select
-		
+
 	End Function
-	
-	
-	Public Function CurrentUserAccess(ByRef piUtilityType As modUtilAccessLog.UtilityType, ByRef plngID As Integer) As String
+
+
+	Public Function CurrentUserAccess(ByRef piUtilityType As UtilityType, ByRef plngID As Integer) As String
 		' Return the access code (RW/RO/HD) of the current user's access
 		' on the given utility.
 		On Error GoTo ErrorTrap
-		
+
 		Dim sAccessCode As String
 		Dim sSQL As String
 		Dim sDefaultAccess As String
@@ -319,83 +309,83 @@ ErrorTrap:
 		Dim sTableName As String
 		Dim sAccessTableName As String
 		Dim sIDColumnName As String
-		
+
 		sTableName = ""
 		sAccessTableName = ""
-		
+
 		If plngID > 0 Then
 			sDefaultAccess = ACCESS_HIDDEN
 		Else
 			sDefaultAccess = ACCESS_HIDDEN
 		End If
-		
+
 		' Construct the SQL code to get the current user's access settings for the given utility.
 		' NB. System and Security Manager users automatically have Read/Write access.
 		Select Case piUtilityType
-			Case modUtilAccessLog.UtilityType.utlBatchJob
+			Case UtilityType.utlBatchJob
 				sTableName = "ASRSysBatchJobName"
 				sAccessTableName = "ASRSysBatchJobAccess"
 				sIDColumnName = "ID"
-				
-			Case modUtilAccessLog.UtilityType.utlCalendarReport
+
+			Case UtilityType.utlCalendarReport
 				sTableName = "ASRSysCalendarReports"
 				sAccessTableName = "ASRSysCalendarReportAccess"
 				sIDColumnName = "ID"
-				
-			Case modUtilAccessLog.UtilityType.utlCrossTab
+
+			Case UtilityType.utlCrossTab
 				sTableName = "ASRSysCrossTab"
 				sAccessTableName = "ASRSysCrossTabAccess"
 				sIDColumnName = "CrossTabID"
-				
-			Case modUtilAccessLog.UtilityType.utlCustomReport
+
+			Case UtilityType.utlCustomReport
 				sTableName = "ASRSysCustomReportsName"
 				sAccessTableName = "ASRSysCustomReportAccess"
 				sIDColumnName = "ID"
-				
-			Case modUtilAccessLog.UtilityType.utlDataTransfer
+
+			Case UtilityType.utlDataTransfer
 				sTableName = "ASRSysDataTransferName"
 				sAccessTableName = "ASRSysDataTransferAccess"
 				sIDColumnName = "DataTransferID"
-				
-			Case modUtilAccessLog.UtilityType.utlExport
+
+			Case UtilityType.utlExport
 				sTableName = "ASRSysExportName"
 				sAccessTableName = "ASRSysExportAccess"
 				sIDColumnName = "ID"
-				
-			Case modUtilAccessLog.UtilityType.UtlGlobalAdd, modUtilAccessLog.UtilityType.utlGlobalDelete, modUtilAccessLog.UtilityType.utlGlobalUpdate
+
+			Case UtilityType.UtlGlobalAdd, UtilityType.utlGlobalDelete, UtilityType.utlGlobalUpdate
 				sTableName = "ASRSysGlobalFunctions"
 				sAccessTableName = "ASRSysGlobalAccess"
 				sIDColumnName = "functionID"
-				
-			Case modUtilAccessLog.UtilityType.utlImport
+
+			Case UtilityType.utlImport
 				sTableName = "ASRSysImportName"
 				sAccessTableName = "ASRSysImportAccess"
 				sIDColumnName = "ID"
-				
-			Case modUtilAccessLog.UtilityType.utlLabel, modUtilAccessLog.UtilityType.utlMailMerge
+
+			Case UtilityType.utlLabel, UtilityType.utlMailMerge
 				sTableName = "ASRSysMailMergeName"
 				sAccessTableName = "ASRSysMailMergeAccess"
 				sIDColumnName = "mailMergeID"
-				
-			Case modUtilAccessLog.UtilityType.utlRecordProfile
+
+			Case UtilityType.utlRecordProfile
 				sTableName = "ASRSysRecordProfileName"
 				sAccessTableName = "ASRSysRecordProfileAccess"
 				sIDColumnName = "recordProfileID"
-				
-			Case modUtilAccessLog.UtilityType.utlMatchReport, modUtilAccessLog.UtilityType.utlSuccession, modUtilAccessLog.UtilityType.utlCareer
+
+			Case UtilityType.utlMatchReport, UtilityType.utlSuccession, UtilityType.utlCareer
 				sTableName = "ASRSysMatchReportName"
 				sAccessTableName = "ASRSysMatchReportAccess"
 				sIDColumnName = "matchReportID"
-				
+
 		End Select
-		
+
 		If Len(sAccessTableName) > 0 Then
 			sSQL = "SELECT" & "  CASE" & "    WHEN (SELECT count(*)" & "      FROM ASRSysGroupPermissions" & "      INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "        AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "        OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & "      INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "        AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & "      WHERE b.Name = ASRSysGroupPermissions.groupname" & "        AND ASRSysGroupPermissions.permitted = 1) > 0 THEN '" & ACCESS_READWRITE & "'" & "    WHEN " & sTableName & ".userName = system_user THEN '" & ACCESS_READWRITE & "'" & "    ELSE" & "      CASE" & "        WHEN " & sAccessTableName & ".access IS null THEN '" & sDefaultAccess & "'" & "        ELSE " & sAccessTableName & ".access" & "      END" & "  END AS Access" & " FROM sysusers b" & " INNER JOIN sysusers a ON b.uid = a.gid" & " LEFT OUTER JOIN " & sAccessTableName & " ON (b.name = " & sAccessTableName & ".groupName" & "   AND " & sAccessTableName & ".id = " & CStr(plngID) & ")" & " INNER JOIN " & sTableName & " ON " & sAccessTableName & ".ID = " & sTableName & "." & sIDColumnName & " WHERE b.name = '" & gsUserGroup & "'"
-			
+
 			'      " WHERE a.Name = current_user"
-			
+
 			datData = New clsDataAccess
-			
+
 			rsAccess = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 			With rsAccess
 				If .BOF And .EOF Then
@@ -403,24 +393,24 @@ ErrorTrap:
 				Else
 					sAccessCode = .Fields("Access").Value
 				End If
-				
+
 				.Close()
 			End With
 			'UPGRADE_NOTE: Object rsAccess may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsAccess = Nothing
-			
+
 			'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			datData = Nothing
 		Else
 			sAccessCode = ACCESS_UNKNOWN
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		CurrentUserAccess = sAccessCode
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		Resume TidyUpAndExit
-		
+
 	End Function
 End Module

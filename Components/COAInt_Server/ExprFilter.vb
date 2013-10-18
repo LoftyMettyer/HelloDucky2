@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprFilter
 
@@ -195,7 +196,7 @@ ErrorTrap:
 
 		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, FilterID, valueLogic) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_FILTER)) & "," & " " & Trim(Str(mlngFilterID)) & ", " & " 0)"
+		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, FilterID, valueLogic) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FILTER)) & "," & " " & Trim(Str(mlngFilterID)) & ", " & " 0)"
 		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
 
 TidyUpAndExit:

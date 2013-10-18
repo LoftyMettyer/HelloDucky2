@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Friend Class clsExprCalculation
 	
@@ -135,7 +137,7 @@ ErrorTrap:
 	Public ReadOnly Property ComponentType() As Short
 		Get
 			' Return the component type.
-			ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_CALCULATION
+			ComponentType = ExpressionComponentTypes.giCOMPONENT_CALCULATION
 			
 		End Get
 	End Property
@@ -221,7 +223,7 @@ ErrorTrap:
 		
 		fOK = True
 		
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, calculationID, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_CALCULATION)) & "," & " " & Trim(Str(mlngCalculationID)) & ", " & " 0)"
+		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, calculationID, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_CALCULATION)) & "," & " " & Trim(Str(mlngCalculationID)) & ", " & " 0)"
 		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
 		
 TidyUpAndExit: 

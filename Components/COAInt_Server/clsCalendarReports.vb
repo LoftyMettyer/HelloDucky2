@@ -3517,7 +3517,7 @@ TidyUpAndExit:
 			End If
 
 			mstrCalendarReportsName = .Fields("Name").Value
-			mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
+			mobjEventLog.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
 			mlngCalendarReportsBaseTable = .Fields("BaseTable").Value
 			mstrCalendarReportsBaseTableName = datGeneral.GetTableName(mlngCalendarReportsBaseTable)
 

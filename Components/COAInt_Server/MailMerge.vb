@@ -561,7 +561,7 @@ ErrorTrap:
 		If fOK Then fOK = CheckHiddenElements()
 		If fOK Then Call SQLGetMergeDefinition()
 
-		mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltMailMerge, mstrDefName)
+		mobjEventLog.AddHeader(EventLog_Type.eltMailMerge, mstrDefName)
 
 		If fOK Then Call SQLGetMergeColumns()
 		If fOK Then Call SQLCodeCreate()
@@ -579,7 +579,7 @@ ErrorTrap:
 	End Function
 
 	Public Function EventLogAddHeader() As Integer
-		mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltMailMerge, mstrDefName)
+		mobjEventLog.AddHeader(EventLog_Type.eltMailMerge, mstrDefName)
 		EventLogAddHeader = mobjEventLog.EventLogID
 	End Function
 
@@ -634,7 +634,7 @@ LocalErr:
 
 		With rsMailMergeDefinition
 
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
+			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
 				'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsMailMergeDefinition = Nothing
 				mstrStatusMessage = "This definition has been made hidden by another user."
@@ -716,7 +716,7 @@ LocalErr:
 		'
 
 		If fOK Then
-			Call UtilUpdateLastRun(modUtilAccessLog.UtilityType.utlMailMerge, mlngMailMergeID)
+			Call UtilUpdateLastRun(UtilityType.utlMailMerge, mlngMailMergeID)
 		End If
 
 TidyAndExit:
@@ -1950,32 +1950,32 @@ ErrorTrap:
 		Dim sSQL As String
 		Dim lCount As Integer
 		Dim rsTemp As ADODB.Recordset
-		Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
+		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 
 		fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr()
 
 		' Filter
 		If mlngDefFilterID > 0 Then
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, mlngDefFilterID)
+			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngDefFilterID)
 			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table filter used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 					mstrStatusMessage = "The base table filter used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 					If Not fCurrentUserIsSysSecMgr Then
 						mstrStatusMessage = "The base table filter used in this definition has been made hidden by another user."
 					End If
 			End Select
 		ElseIf mlngDefPickListID > 0 Then
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, mlngDefPickListID)
+			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngDefPickListID)
 			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table picklist used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 					mstrStatusMessage = "The base table picklist used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 					If Not fCurrentUserIsSysSecMgr Then
 						mstrStatusMessage = "The base table picklist used in this definition has been made hidden by another user."
 					End If
@@ -1993,11 +1993,11 @@ ErrorTrap:
 					Do Until .EOF
 						iResult = ValidateCalculation(.Fields("ColumnID").Value)
 						Select Case iResult
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 								mstrStatusMessage = "A calculation used in this definition has been deleted by another user."
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 								mstrStatusMessage = "A calculation used in this definition is invalid."
-							Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+							Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 								If Not fCurrentUserIsSysSecMgr Then
 									mstrStatusMessage = "A calculation used in this definition has been made hidden by another user."
 								End If

@@ -809,7 +809,7 @@ ExecuteSQL_ERROR:
 
 		GetCustomReportDefinition = True
 
-		mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltCustomReport, mstrCustomReportsName)
+		mobjEventLog.AddHeader(EventLog_Type.eltCustomReport, mstrCustomReportsName)
 
 TidyAndExit:
 
@@ -4490,7 +4490,7 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 		On Error GoTo ClearUp_ERROR
 
-		Call UtilUpdateLastRun(modUtilAccessLog.UtilityType.utlCustomReport, mlngCustomReportID)
+		Call UtilUpdateLastRun(UtilityType.utlCustomReport, mlngCustomReportID)
 
 		mlngCustomReportID = 0
 		mstrCustomReportsName = vbNullString
@@ -5166,7 +5166,7 @@ CalculateBradfordFactors_ERROR:
 		End If
 
 		GetBradfordReportDefinition = True
-		mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltStandardReport, "Bradford Factor")
+		mobjEventLog.AddHeader(EventLog_Type.eltStandardReport, "Bradford Factor")
 
 TidyAndExit:
 
@@ -5177,7 +5177,7 @@ GetBradfordReportDefinition_ERROR:
 		GetBradfordReportDefinition = False
 		mstrErrorString = "Error whilst reading the Bradford Factor Report definition !" & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Resume TidyAndExit
 
 	End Function

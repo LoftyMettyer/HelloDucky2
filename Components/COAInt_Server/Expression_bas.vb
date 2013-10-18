@@ -8,98 +8,16 @@ Module modExpression
 
 		Private mobjDataAccess As New clsDataAccess
 
-	' Expression Type constants
-	' NB. If you modify this enum, you'll need to do the same to the mathcing enums in:
-	'     System Manager - Application
-	'     Security Manager - modExpression
-	'     Data Manager - modExpression
-	Public Enum ExpressionTypes
-		giEXPR_UNKNOWNTYPE = 0
-		giEXPR_COLUMNCALCULATION = 1
-		giEXPR_GOTFOCUS = 2	' Not used.
-		giEXPR_RECORDVALIDATION = 3
-		giEXPR_DEFAULTVALUE = 4	' Not used.
-		giEXPR_STATICFILTER = 5
-		giEXPR_PAGEBREAK = 6 ' Not used.
-		giEXPR_ORDER = 7 ' Not used.
-		giEXPR_RECORDDESCRIPTION = 8
-		giEXPR_VIEWFILTER = 9
-		giEXPR_RUNTIMECALCULATION = 10
-		giEXPR_RUNTIMEFILTER = 11
-		giEXPR_EMAIL = 12	' System Manager Only
-		giEXPR_LINKFILTER = 13 ' System Manager Only
-		giEXPR_UTILRUNTIMEFILTER = 14	'Import filter
-		giEXPR_MATCHJOINEXPRESSION = 15
-		giEXPR_MATCHSCOREEXPRESSION = 16
-		giEXPR_MATCHWHEREEXPRESSION = 17
-		giEXPR_RECORDINDEPENDANTCALC = 18
-		giEXPR_OUTLOOKFOLDER = 19	'System Manager Only
-		giEXPR_OUTLOOKSUBJECT = 20 'System Manager Only
-		giEXPR_WORKFLOWCALCULATION = 21	'System Manager Only
-		giEXPR_WORKFLOWSTATICFILTER = 22 'System Manager Only
-		giEXPR_WORKFLOWRUNTIMEFILTER = 23	'System Manager Only
-	End Enum
-
-	Public Enum AccessCodes
-		giACCESS_READWRITE = 0
-		giAccess_READONLY = 1
-		giACCESS_HIDDEN = 2
-	End Enum
-
-	' Expression Value types
-	' NB. If you modify this enum, you'll need to do the same to the mathcing enums in:
-	'     System Manager - Application
-	'     Security Manager - modExpression
-	'     Data Manager - modExpression
-	Public Enum ExpressionComponentTypes
-		giCOMPONENT_FIELD = 1
-		giCOMPONENT_FUNCTION = 2
-		giCOMPONENT_CALCULATION = 3
-		giCOMPONENT_VALUE = 4
-		giCOMPONENT_OPERATOR = 5
-		giCOMPONENT_TABLEVALUE = 6
-		giCOMPONENT_PROMPTEDVALUE = 7
-		giCOMPONENT_CUSTOMCALC = 8 ' Not used.
-		giCOMPONENT_EXPRESSION = 9
-		giCOMPONENT_FILTER = 10
-		giCOMPONENT_WORKFLOWVALUE = 11
-		giCOMPONENT_WORKFLOWFIELD = 12
-	End Enum
-
-	Public Enum FieldSelectionTypes
-		giSELECT_FIRSTRECORD = 1
-		giSELECT_LASTRECORD = 2
-		giSELECT_SPECIFICRECORD = 3
-		giSELECT_RECORDTOTAL = 4
-		giSELECT_RECORDCOUNT = 5
-	End Enum
-
-	Public Enum FieldPassTypes
-		giPASSBY_VALUE = 1
-		giPASSBY_REFERENCE = 2
-	End Enum
+	'Public Enum AccessCodes
+	'	giACCESS_READWRITE = 0
+	'	giAccess_READONLY = 1
+	'	giACCESS_HIDDEN = 2
+	'End Enum
 
 	Public Const giPRINT_XINDENT As Short = 1000
 	Public Const giPRINT_YINDENT As Short = 1000
 	Public Const giPRINT_XSPACE As Short = 500
 	Public Const giPRINT_YSPACE As Short = 100
-
-	Public Enum ExprValidationCodes
-		giEXPRVALIDATION_NOERRORS = 0
-		giEXPRVALIDATION_MISSINGOPERAND = 1
-		giEXPRVALIDATION_SYNTAXERROR = 2
-		giEXPRVALIDATION_EXPRTYPEMISMATCH = 3
-		giEXPRVALIDATION_UNKNOWNERROR = 4
-		giEXPRVALIDATION_OPERANDTYPEMISMATCH = 5
-		giEXPRVALIDATION_PARAMETERTYPEMISMATCH = 6
-		giEXPRVALIDATION_NOCOMPONENTS = 7
-		giEXPRVALIDATION_PARAMETERSYNTAXERROR = 8
-		giEXPRVALIDATION_PARAMETERNOCOMPONENTS = 9
-		giEXPRVALIDATION_FILTEREVALUATION = 10
-		giEXPRVALIDATION_SQLERROR = 11 ' JPD20020419 Fault 3687
-		giEXPRVALIDATION_ASSOCSQLERROR = 12	' JPD20020419 Fault 3687
-		giEXPRVALIDATION_CYCLIC = 13 'JPD 20040507 Fault 8600
-	End Enum
 
 	Public Const giEXPRVALUE_BYREF_OFFSET As Short = 100
 
@@ -112,11 +30,11 @@ Module modExpression
 	Public Const gsDUMMY_BYREF_LOGIC As String = "-7" & vbTab & "0"
 	Public Const gsDUMMY_BYREF_DATE As String = "11" & vbTab & "1/1/1998"
 
-	' Order object constants.
-	Public Enum OrderTypes
-		giORDERTYPE_STATIC = 0
-		giORDERTYPE_DYNAMIC = 1
-	End Enum
+	'' Order object constants.
+	'Public Enum OrderTypes
+	'	giORDERTYPE_STATIC = 0
+	'	giORDERTYPE_DYNAMIC = 1
+	'End Enum
 
 	' Parameter Type constants.
 	Public Const gsPARAMETERTYPE_ORDERID As String = "PType_OrderID"

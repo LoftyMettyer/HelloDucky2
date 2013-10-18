@@ -653,7 +653,7 @@ ErrorTrap:
 			With mcolComponents.Item(iLoop1)
 				' If the current component is an operator then read the operator id into the array.
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If .ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
+				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object avValues(1, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					avValues(1, iLoop1) = .Component.OperatorID
@@ -687,7 +687,7 @@ ErrorTrap:
 				For iLoop2 = 1 To mcolComponents.Count()
 					With mcolComponents.Item(iLoop2)
 						'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If .ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
+						If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							If .Component.Precedence = iLoop1 Then
 								' Check that the operator has the correct parameter types.
@@ -830,7 +830,7 @@ ErrorTrap:
 									avValues(2, iParameter1Index) = vbNullString
 								End If
 
-								If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = modExpression.ExpressionTypes.giEXPR_LINKFILTER) Then
+								If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_LINKFILTER) Then
 									'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									If (.Component.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC) And ((.Component.OperatorID <> 5) And (.Component.OperatorID <> 6) And (.Component.OperatorID <> 13)) Then
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1346,7 +1346,7 @@ ErrorTrap:
 								'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								If Not ValidateOperatorParameters(.Component.OperatorID, iOperatorReturnType, aiDummyValues(2, iParameter1Index), IIf(.Component.OperandCount = 2, aiDummyValues(2, iParameter2Index), ExpressionValueTypes.giEXPRVALUE_UNDEFINED)) Then
 
-									iValidationCode = modExpression.ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
+									iValidationCode = ExprValidationCodes.giEXPRVALIDATION_OPERANDTYPEMISMATCH
 									mobjBadComponent = mcolComponents.Item(iLoop2)
 								Else
 									' Check that operators with logic parameters are valid.
@@ -1565,7 +1565,7 @@ ErrorTrap:
 
 	End Function
 
-	Private Function ValidateAssociatedExpressionsSQLCode(ByRef plngFixedExpressionID As Integer, ByRef psFixedSQLCode As String) As modExpression.ExprValidationCodes
+	Private Function ValidateAssociatedExpressionsSQLCode(ByRef plngFixedExpressionID As Integer, ByRef psFixedSQLCode As String) As ExprValidationCodes
 		' Validate the SQL code for any expressions that use this expression.
 		' This picks up on errors such as too many nested levels of the CASE statement.
 		Dim iValidationCode As ExprValidationCodes

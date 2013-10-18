@@ -180,7 +180,7 @@ ErrorTrap:
 	Public ReadOnly Property ComponentType() As Short
 		Get
 			' Return the component type.
-			ComponentType = modExpression.ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
+			ComponentType = ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
 			
 		End Get
 	End Property

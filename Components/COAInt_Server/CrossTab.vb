@@ -488,9 +488,9 @@ Public Class CrossTab
 
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
 		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-			mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltStandardReport, "Absence Breakdown")
+			mobjEventLog.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
 		Else
-			mobjEventLog.AddHeader(clsEventLog.EventLog_Type.eltCrossTab, mstrCrossTabName)
+			mobjEventLog.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
 		End If
 
 		EventLogAddHeader = mobjEventLog.EventLogID
@@ -630,7 +630,7 @@ ErrorTrap:
 
 		With rsCrossTabDefinition
 
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
 				'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsCrossTabDefinition = Nothing
 				mstrStatusMessage = "This definition has been made hidden by another user."
@@ -720,7 +720,7 @@ ErrorTrap:
 
 		End With
 
-		Call UtilUpdateLastRun(modUtilAccessLog.UtilityType.utlCrossTab, mlngCrossTabID)
+		Call UtilUpdateLastRun(UtilityType.utlCrossTab, mlngCrossTabID)
 
 TidyAndExit:
 		RetreiveDefinition = fOK
@@ -738,32 +738,32 @@ LocalErr:
 
 	Private Function IsRecordSelectionValid(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As Boolean
 
-		Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
+		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 
 		fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr()
 
 		' Filter
 		If lngFilterID > 0 Then
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
+			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
 			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table filter used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 					mstrStatusMessage = "The base table filter used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 					If Not fCurrentUserIsSysSecMgr Then
 						mstrStatusMessage = "The base table filter used in this definition has been made hidden by another user."
 					End If
 			End Select
 		ElseIf lngPicklistID > 0 Then
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, lngPicklistID)
+			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, lngPicklistID)
 			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table picklist used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
 					mstrStatusMessage = "The base table picklist used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+				Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
 					If Not fCurrentUserIsSysSecMgr Then
 						mstrStatusMessage = "The base table picklist used in this definition has been made hidden by another user."
 					End If
