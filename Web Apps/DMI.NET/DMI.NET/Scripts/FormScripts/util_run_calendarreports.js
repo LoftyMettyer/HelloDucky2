@@ -1133,6 +1133,9 @@ function populateKey() {
 	var lngColour;
 	var strControlName = '';
 
+	objCalendarKey = [];
+	$("#tblCalendarReportKey")[0].innerHTML = "";
+
 	for (var i = 1; i <= frmKeyInfo.key_Count.value; i++) {
 		strControlName = 'key_ID' + i;
 		strKey = document.getElementById(strControlName).getAttribute('value');
