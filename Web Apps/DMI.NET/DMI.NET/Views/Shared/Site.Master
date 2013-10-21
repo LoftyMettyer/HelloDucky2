@@ -424,7 +424,7 @@
 
 	<div id="footer-banner" class="footer-banner ui-widget ui-state-default">
 		<p id="footerbannerprogress" class="footer-banner-p-progress" runat="server"></p>
-		<p class="footer-banner-p-copyright"><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p>
+		<p class="footer-banner-p-copyright"><a href="http://www.advancedcomputersoftware.com" target="_blank">Copyright © Advanced Business Software and Solutions Ltd</a></p>
 	</div>
 </body>
 </html>
