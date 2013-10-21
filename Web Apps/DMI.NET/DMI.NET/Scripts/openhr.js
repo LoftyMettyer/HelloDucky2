@@ -170,7 +170,14 @@
 				data: data,
 				async: asyncFlag,
 				success: function (html) {
-
+					try {
+						var jsonResponse = $.parseJSON(html);
+						if (jsonResponse.ErrorMessage.length > 0) {
+							handleAjaxError(jsonResponse);
+							return false;
+						}
+					} catch (e) {
+					}
 					//console.log(html);
 
 					try {
