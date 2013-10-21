@@ -5679,6 +5679,8 @@ Namespace Controllers
 						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
 						.OLEModifiedDate = Request.Form("txtOLEModifiedDate")
 						.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+						Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
+
 						' .DeleteTempFile()
 					End With
 					Session("OLEObject") = objOLE
@@ -5726,7 +5728,7 @@ Namespace Controllers
 				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
 				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
 				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-				Session("optionFile") = Request.Form("txtGotoOptionFile")
+				Session("optionFile") = Request.Form("txtGotoOptionFile")				
 				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
 				'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
 				Session("optionAction") = sAction

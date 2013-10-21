@@ -24,6 +24,7 @@ Public Class Ole
 	Private _mbUseEncryption As Boolean
 	Private _mobjStream As ADODB.Stream
 	Private _mfileToEmbed As Byte()
+	Private _misPhoto As Boolean
 
 	' Do we use encryption?
 	Public WriteOnly Property UseEncryption() As Boolean
@@ -77,6 +78,18 @@ Public Class Ole
 
 		End Set
 	End Property
+
+
+	Public Property IsPhoto() As Boolean
+		Get
+			IsPhoto = _misPhoto
+		End Get
+		Set(value As Boolean)
+			_misPhoto = value
+		End Set
+	End Property
+
+
 
 	Public Property OLEType() As Short
 		Get
@@ -253,32 +266,13 @@ ErrorTrap:
 
 	Public Function GetPropertiesFromStream(ByRef plngRecordID As Object, ByRef plngColumnID As Object, ByRef pstrRealSource As String) As String
 
-		On Error GoTo ErrorTrap
-
-		Dim objDocumentStream As ADODB.Stream
 		Dim objStream As ADODB.Stream
 		Dim rsDocument As ADODB.Recordset
 		Dim objDummyConnection As ADODB.Connection
-
-		Dim strAccessibleFile As String
-		Dim bIsPhoto As Boolean
 		Dim strTempFile As String
-		Dim strProperties As String = ""
-		'Dim objTextStream As Scripting.TextStream
-
 		Dim sSQL As String
 		Dim strColumnName As String
 
-		'Dim iOleType As Short
-		'Dim strFileName As String
-		'Dim strPath As String
-		'Dim strUnc As String
-		'Dim strDocumentSize As String
-		'Dim strFileCreateDate As String
-		'Dim strFileModifyDate As String
-
-		' New record - thus no stream will exist
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		If plngRecordID = 0 Then
 			GetPropertiesFromStream = ""
 			Exit Function
@@ -289,117 +283,158 @@ ErrorTrap:
 		objStream.Type = ADODB.StreamTypeEnum.adTypeBinary
 
 		strTempFile = GetTmpFName()
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		bIsPhoto = datGeneral.IsPhotoDataType(CInt(plngColumnID))
+		_misPhoto = datGeneral.IsPhotoDataType(CInt(plngColumnID))
 
 		' Open a temporary connection string to stream the data
 		objDummyConnection = New ADODB.Connection
 		objDummyConnection.Open(_mstrDummyConnectionString)
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 
 		rsDocument = New ADODB.Recordset
 		rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 
-		With rsDocument
-			.MoveFirst()
+		Try
 
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
-				objStream.Write(rsDocument.Fields(strColumnName).Value)
-			Else
-				GetPropertiesFromStream = ""
-				GoTo TidyUpAndExit
-			End If
+			With rsDocument
+				.MoveFirst()
+				If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
+					objStream.Write(rsDocument.Fields(strColumnName).Value)
 
-			If objStream.Size > 0 Then
-				objStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
-				' objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
-				Dim objTextStream = File.OpenRead(strTempFile)
-				Dim b As Byte() = New Byte(400) {}
-				' strProperties = Trim(objTextStream.Read(400))				
-				Dim temp As New UTF8Encoding(True)
-				objTextStream.Read(b, 0, b.Length)
-				strProperties &= temp.GetString(b)
+					_miOLEType = Val(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 8, 2))	' Val(Mid(strProperties, 9, 2))
+					_mstrDisplayFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	'Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
+					_mstrFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	' Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
+					_mstrPath = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 80, 210))	'Trim(Mid(strProperties, 81, 210))
+					_mstrUnc = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 290, 60))	' Trim(Mid(strProperties, 291, 60))
+					_mstrDocumentSize = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 350, 10))	'Trim(Mid(strProperties, 351, 10))
+					_mstrFileCreateDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 360, 20))	'Trim(Mid(strProperties, 361, 20))
+					_mstrFileModifyDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 380, 20))	' Trim(Mid(strProperties, 381, 20))
 
-				_miOLEType = Val(Mid(strProperties, 9, 2))
-				_mstrDisplayFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-				_mstrFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-				_mstrPath = Trim(Mid(strProperties, 81, 210))
-				_mstrUnc = Trim(Mid(strProperties, 291, 60))
-				_mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
-				_mstrFileCreateDate = Trim(Mid(strProperties, 361, 20))
-				_mstrFileModifyDate = Trim(Mid(strProperties, 381, 20))
-				objTextStream.Close()
-
-				' Generate the properties display tag
-				If bIsPhoto Then
-					'If it's an embedded photo we'll need to generate it
-					If _miOLEType = 2 Then
-						'strAccessibleFile = mstrTempLocationPhysical & GetFileNameOnly(strFileName)
-						strAccessibleFile = _mstrTempLocationPhysical & VB6.Format(Today, "yymmdd") & Path.GetFileName(GetTmpFName)
-						objDocumentStream = New ADODB.Stream
-						objDocumentStream.Type = ADODB.StreamTypeEnum.adTypeBinary
-						objDocumentStream.Open()
-						objStream.Position = 400
-						objStream.CopyTo(objDocumentStream, objStream.Size - 400)
-						objDocumentStream.SaveToFile(strAccessibleFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
-						GetPropertiesFromStream = strAccessibleFile & "::EMBEDDED_OLE_DOCUMENT::"
-
-						ReDim Preserve _mastrOleFilesInThisSession(UBound(_mastrOleFilesInThisSession) + 1)
-						_mastrOleFilesInThisSession(UBound(_mastrOleFilesInThisSession)) = strAccessibleFile
-
-					Else
-						GetPropertiesFromStream = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::"
-					End If
 				Else
-					If _miOLEType = 2 Then
-						GetPropertiesFromStream = _mstrFileName & "::EMBEDDED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate
-					Else
-						GetPropertiesFromStream = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate
-					End If
-
+					GetPropertiesFromStream = ""
+					Exit Function
+				End If
+				
+				If _miOLEType = 2 Then
+					GetPropertiesFromStream = _mstrFileName & "::EMBEDDED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
+				Else
+					GetPropertiesFromStream = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 				End If
 
+			End With
+		Catch ex As Exception
+			GetPropertiesFromStream = ""
+			ProgramError("GetPropertiesFromStream", Err, Erl())
+
+		Finally
+			If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
+				rsDocument.Close()
 			End If
 
-			Kill(strTempFile)
+			If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
+				objDummyConnection.Close()
+			End If
 
-		End With
-
-TidyUpAndExit:
-		If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
-			rsDocument.Close()
-		End If
-
-		If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
-			objDummyConnection.Close()
-		End If
-
-		'		'UPGRADE_NOTE: Object objStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'		objStream = Nothing
-		'		'UPGRADE_NOTE: Object objDocumentStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'		objDocumentStream = Nothing
-		'		'UPGRADE_NOTE: Object objDummyConnection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'		objDummyConnection = Nothing
-		'		'UPGRADE_NOTE: Object rsDocument may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'		rsDocument = Nothing
-
-		Exit Function
-
-ErrorTrap:
-		GetPropertiesFromStream = ""
-		ProgramError("GetPropertiesFromStream", Err, Erl())
-		Resume TidyUpAndExit
-
-
+		End Try
 
 		Return GetPropertiesFromStream
+
 	End Function
+
+
+	Public Function ExtractPhotoToBase64(ByRef plngRecordID As Object, ByRef plngColumnID As Object, ByRef pstrRealSource As String) As String
+
+		Dim objStream As ADODB.Stream
+		Dim rsDocument As ADODB.Recordset
+		Dim objDummyConnection As ADODB.Connection
+		Dim strTempFile As String
+		Dim sSQL As String
+		Dim strColumnName As String
+
+		If plngRecordID = 0 Then
+			ExtractPhotoToBase64 = ""
+			Exit Function
+		End If
+
+		objStream = New ADODB.Stream
+		objStream.Open()
+		objStream.Type = ADODB.StreamTypeEnum.adTypeBinary
+
+		strTempFile = GetTmpFName()
+		Dim bIsPhoto = datGeneral.IsPhotoDataType(CInt(plngColumnID))
+
+		' Open a temporary connection string to stream the data
+		objDummyConnection = New ADODB.Connection
+		objDummyConnection.Open(_mstrDummyConnectionString)
+
+		strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
+		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
+
+		rsDocument = New ADODB.Recordset
+		rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+
+		Try
+
+			With rsDocument
+				.MoveFirst()
+				If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
+					objStream.Write(rsDocument.Fields(strColumnName).Value)
+
+					_miOLEType = Val(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 8, 2))	' Val(Mid(strProperties, 9, 2))
+					_mstrDisplayFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	'Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
+					_mstrFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	' Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
+					_mstrPath = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 80, 210))	'Trim(Mid(strProperties, 81, 210))
+					_mstrUnc = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 290, 60))	' Trim(Mid(strProperties, 291, 60))
+					_mstrDocumentSize = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 350, 10))	'Trim(Mid(strProperties, 351, 10))
+					_mstrFileCreateDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 360, 20))	'Trim(Mid(strProperties, 361, 20))
+					_mstrFileModifyDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 380, 20))	' Trim(Mid(strProperties, 381, 20))
+
+				Else
+					ExtractPhotoToBase64 = ""
+					Exit Function
+				End If
+
+				If _miOLEType = 2 Then					
+					'Dim base64String As String					
+					Dim abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
+					Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
+					Try
+
+						Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
+
+						ExtractPhotoToBase64 = System.Convert.ToBase64String(binaryData, 0, binaryData.Length)
+
+
+					Catch exp As System.ArgumentNullException
+						System.Console.WriteLine("Binary data array is null.")
+
+					End Try
+				Else
+					ExtractPhotoToBase64 = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate
+				End If
+
+			End With
+		Catch ex As Exception
+			ExtractPhotoToBase64 = ""
+			ProgramError("ExtractPhotoToBase64", Err, Erl())
+
+		Finally
+			If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
+				rsDocument.Close()
+			End If
+
+			If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
+				objDummyConnection.Close()
+			End If
+
+		End Try
+
+		Return ExtractPhotoToBase64
+
+	End Function
+
+
 
 	Public Property FileName() As String
 		Get

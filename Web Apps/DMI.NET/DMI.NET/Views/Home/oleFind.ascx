@@ -45,6 +45,11 @@
 			sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 			frmFindForm.txtOLELocalPath.value = sPath;
 
+			sKey = new String("photoPath_");
+			sKey = sKey.concat(frmMenu.txtDatabase.value);
+			sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+			frmFindForm.txtPicturePath.value = sPath;
+			
 			if (frmGotoOption.txtOLEType.value == 0) {
 				var messageText = "Please use your file browser to view local OLE documents.";
 				if (sPath.length > 0) messageText += "\n\nYour local OLE documents can be found at: \n" + sPath;
@@ -1249,9 +1254,10 @@
 		%>
 		<input type='hidden' id="txtOLEServerPath" name="txtOLEServerPath" value="">
 		<input type='hidden' id="txtOLELocalPath" name="txtOLELocalPath" value="">
+		<input type='hidden' id="txtPicturePath" name="txtPicturePath" value="">
 
 		<input type="hidden" id="txtOLEType" name="txtOLEType" value='<%=session("optionOLEType")%>'>
-		<input type="hidden" id="txtOLEFile" name="txtOLEFile" value="<%=strFullFileName%>">
+		<input type="hidden" id="txtOLEFile" name="txtOLEFile" value="<%=strJustFileName%>">
 		<input type="hidden" id="txtOLEFileUNCPath" name="txtOLEFileUNCPath" value="<%=strFileUncPath%>">
 		<input type="hidden" id="txtOLEJustFileName" name="txtOLEJustFileName" value="<%=strJustFileName%>">
 		<input type="hidden" id="txtOLEEncryption" name="txtOLEEncryption" value="<%=bEncryption%>">

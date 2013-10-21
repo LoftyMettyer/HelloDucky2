@@ -924,6 +924,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 	var borderCss;
 	var radioTop;
 	var button;
+	var image;
 	switch (Number(controlItemArray[3])) {
 		case 1: //checkbox
 			span = document.createElement('span');
@@ -1025,7 +1026,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			break;
 
 		case 4: //Image - NOT PHOTO!!!
-			var image = document.createElement('img');
+			image = document.createElement('img');
 			image.id = controlID;
 			applyLocation(image, controlItemArray, true);
 			image.style.border = "1px solid gray";
@@ -1296,7 +1297,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 1024: //ctlPhoto
-			var image = document.createElement('img');
+			image = document.createElement('img');
 			image.id = controlID;
 			applyLocation(image, controlItemArray, true);
 			image.style.border = "1px solid gray";
@@ -1304,6 +1305,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			image.setAttribute("data-columnID", columnID);
 			image.setAttribute('data-controlType', controlItemArray[3]);
 			image.setAttribute("data-control-key", key);
+			image.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);
+			image.setAttribute('data-maxEmbedSize', controlItemArray[57]);
 
 			if (!fControlEnabled) image.disabled = true;
 
@@ -1745,8 +1748,7 @@ function addHTMLControlValues(controlValues) {
 function recEdit_setData(columnID, value) {
 	
 	//Set the given column's value
-	//copied from recordDMI.ocx        
-
+	//copied from recordDMI.ocx        	
 	if (columnID.toUpperCase() == "TIMESTAMP") {
 		// The column is the timestamp column.
 		$("#txtRecEditTimeStamp").val(value);
@@ -1815,7 +1817,6 @@ function updateControl(lngColumnID, value) {
 		}
 
 		var controlType = Number(arrIDProps[2]);
-
 		if ($(this).is("textarea")) {
 			//was TDBText6Ctl.TDBText
 			$(this).val(value);
@@ -1919,17 +1920,19 @@ function updateControl(lngColumnID, value) {
 			}
 		}
 
-		if($(this).is("img")) {
+		if($(this).is("img")) {			
 
 			filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
 			var msPhotoPath = $('#frmRecordEditForm #txtPicturePath').val();
 			
-			if (value.indexOf('::LINKED_OLE_DOCUMENT') > 0) {
+			if (value.indexOf('::LINKED_OLE_DOCUMENT::') >= 0) {
+				if (filename == "") filename = '../Content/Images/anonymous.png';
 				$(this).attr('src', filename);
 				oleType = 3;
 			}
-			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT') > 0) {
-				$(this).attr('src', filename);
+			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT::') >= 0) {
+				//point source at hidden tag value.
+				$(this).attr('src', 'data:image/jpeg;base64, ' + $('#txtData_' + lngColumnID).attr('data-Img'));
 				oleType = 2;
 			} else {
 				if (value != "") {
@@ -1939,7 +1942,6 @@ function updateControl(lngColumnID, value) {
 					$(this).attr('src', '../Content/Images/anonymous.png');
 				}
 			}
-
 			
 			var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
 			var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');

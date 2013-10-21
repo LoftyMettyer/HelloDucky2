@@ -22,8 +22,7 @@
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmMenu != null) {
 			if (OpenHR.currentWorkPage() != "DEFAULT") {
-				fNoAction = true;
-
+				fNoAction = true;				
 					var div = document.getElementById("emptyoption_vars");
 					var txtAction = div.querySelector("#txtAction");
 					var txtFromDef = div.querySelector("#txtFromDef");
@@ -34,6 +33,7 @@
 					var txtColumnID = div.querySelector("#txtColumnID");
 					var txtValue = div.querySelector("#txtValue");
 					var txtFile = div.querySelector("#txtFile");
+					var txtFileValue = div.querySelector("#txtFileValue");
 					var txtResultCode = div.querySelector("#txtResultCode");
 					var txtPreReqFails = div.querySelector("#txtPreReqFails");
 					var txtUnAvailFails = div.querySelector("#txtUnAvailFails");
@@ -131,7 +131,7 @@
 
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
 					fNoAction = false;
-						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
 						recEdit_setData(txtColumnID.value, txtFile.value);
 						recEdit_ChangedOLEPhoto(txtColumnID.value, "");
 					
@@ -144,16 +144,17 @@
 
 				if (txtAction.value == "LINKOLE") {
 					fNoAction = false;
-						recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
+					if (txtFileValue.value.length > 0) {
+						// set the new photo value if applicable.
+						$('#txtData_' + txtColumnID.value).attr('data-Img', txtFileValue.value);
+					}
 						recEdit_setData(txtColumnID.value, txtFile.value);
-					//recEditControl.timestamp = <%=session("timestamp")%>;
 					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
 					//recEditControl.changed = true;
 					
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 					menu_refreshMenu();
-
 				}
 				
 
@@ -383,25 +384,26 @@
 
 
 <%
-		Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
-		Response.Write("</div>" & vbCrLf)
+	Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFileValue' name='txtFileValue' value='" & Replace(Session("optionFileValue"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("</div>" & vbCrLf)
 %>
 
 <form id="frmEmptyOption" name="frmEmptyOption">
