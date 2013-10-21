@@ -4,6 +4,7 @@ Option Explicit On
 Imports System.Globalization
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports System.Text
 Imports VB = Microsoft.VisualBasic
 Public Class CalendarReport
 
@@ -165,7 +166,7 @@ Public Class CalendarReport
 	Private mblnPersonnelBase As Boolean
 
 	Private mstrRegionFormString As String
-	Private mstrBHolFormString As String
+	Private mstrBHolFormString As Stringbuilder
 	Private mstrWPFormString As String
 
 	'****************************************************
@@ -3150,7 +3151,7 @@ ErrorTrap:
 
 		Write_Static_Historic_Forms = mstrWPFormString & vbNewLine & vbNewLine
 
-		Write_Static_Historic_Forms = Write_Static_Historic_Forms & mstrBHolFormString & vbNewLine & vbNewLine
+		Write_Static_Historic_Forms = Write_Static_Historic_Forms & mstrBHolFormString.ToString() & vbNewLine & vbNewLine
 
 		Write_Static_Historic_Forms = Write_Static_Historic_Forms & mstrRegionFormString & vbNewLine & vbNewLine
 
@@ -4104,10 +4105,11 @@ ErrorTrap:
 		Dim intRecordBHol As Short
 
 		intRecordBHol = 0
-		mstrBHolFormString = "<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine
+		mstrBHolFormString = New StringBuilder()
+		mstrBHolFormString.Append("<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine)
 
 		strSQLCC = "SELECT " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," _
-				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & ", _" _
+				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & ", " _
 				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & ", " _
 				& "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHRegionTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHRegionDateColumnName & " IS NOT NULL) AS 'CareerChanges' " _
 				& " FROM " & gsPersonnelHRegionTableRealSource & " " & vbNewLine
@@ -4359,23 +4361,22 @@ ErrorTrap:
 
 							intRecordBHol = intRecordBHol + 1
 
-							INPUT_STRING = vbNullString
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
+							INPUT_STRING = IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
 
-							mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHol_" & lngBaseRecordID & "_" & intRecordBHol & " ID=txtBHol_" & lngBaseRecordID & "_" & intRecordBHol & " VALUE=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
+							 mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", lngBaseRecordID, intRecordBHol, Replace(INPUT_STRING, """", "&quot;")))
 
 							.MoveNext()
 
 							If Not .EOF Then
 								If lngBaseRecordID <> CInt(.Fields("ID").Value) Then
-									mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>" & vbNewLine & vbNewLine
+									mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
 									intRecordBHol = 0
 								End If
 							Else
-								mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>" & vbNewLine & vbNewLine
+								mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
 								intRecordBHol = 0
 							End If
 
@@ -4410,10 +4411,9 @@ ErrorTrap:
 
 		Next intCount
 
-		mstrBHolFormString = mstrBHolFormString & "</FORM>" & vbNewLine & vbNewLine
+		mstrBHolFormString.Append("</FORM>")
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		Get_HistoricBankHolidays = True
+		Return True
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsCC may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -4513,7 +4513,8 @@ ErrorTrap:
 			INPUT_STRING = vbNullString
 			intBHolCount = 0
 
-			mstrBHolFormString = "<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine
+			mstrBHolFormString = New StringBuilder
+			mstrBHolFormString.Append("<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">")
 
 			If Not (.BOF And .EOF) Then
 
@@ -4542,17 +4543,17 @@ ErrorTrap:
 					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
 					'        INPUT_STRING = INPUT_STRING & IIf(IsNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value) & "_"
 
-					mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHol_" & .Fields("ID").Value & "_" & intBHolCount & " ID=txtBHol_" & .Fields("ID").Value & "_" & intBHolCount & " VALUE=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
+					mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", .Fields("ID").Value, intBHolCount, Replace(INPUT_STRING, """", "&quot;")))
 
 					.MoveNext()
 
 					If Not .EOF Then
 						If lngBaseRecordID <> CInt(.Fields("ID").Value) Then
-							mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>" & vbNewLine
+							mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
 							intBHolCount = 0
 						End If
 					Else
-						mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>" & vbNewLine
+						mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
 						intBHolCount = 0
 					End If
 
@@ -4565,11 +4566,11 @@ ErrorTrap:
 				Loop
 
 			Else
-				mstrBHolFormString = mstrBHolFormString & vbTab & "<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>" & vbNewLine
+				mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
 
 			End If
 
-			mstrBHolFormString = mstrBHolFormString & "</FORM>" & vbNewLine & vbNewLine
+			mstrBHolFormString.Append("</FORM>")
 
 		End With
 		'##############################################################################
