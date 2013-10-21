@@ -17,7 +17,11 @@ Friend Module Extensions
 
 	<Extension()>
 	Public Function GetSetting(Of T As ModuleSetting)(ByVal items As ICollection(Of T), ByVal moduleKey As String, ByVal parameterKey As String) As T
-		Return items.FirstOrDefault(Function(item) item.ModuleKey = moduleKey And item.ParameterKey = parameterKey)
+
+		Dim objSetting As ModuleSetting = items.FirstOrDefault(Function(item) item.ModuleKey = moduleKey And item.ParameterKey = parameterKey)
+		If objSetting Is Nothing Then Return New ModuleSetting
+		Return objSetting
+
 	End Function
 
 	<Extension()>
