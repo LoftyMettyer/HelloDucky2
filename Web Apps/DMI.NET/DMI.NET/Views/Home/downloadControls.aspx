@@ -444,17 +444,6 @@
 			viewastext>
 		</object>
 
-		<!-- Calendar Reports Dates control -->
-		<object
-			classid="CLSID:41021C13-8D42-4364-8388-9506F0755AE3"
-			codebase="cabs/COAInt_Client.cab#version=1,0,0,2"
-			id="ctlDates"
-			name="ctlDates"
-			style="WIDTH: 100%"
-			width="100%"
-			viewastext>
-		</object>
-
 
 		<!-- Record Edit control -->
 		<object
@@ -816,21 +805,6 @@
 		return;
 	}
 
-	/* Test the Calendar Report Dates control */
-	try 
-	{
-		temp = ctlDates.ClientDateFormat;
-		if (typeof(temp) == "undefined")
-		{
-			throw e;
-		}
-	}
-	catch(e) 
-	{
-		sMessage = "Error downloading 'Calendar Report Dates control'.";
-		setStatus(2,sMessage);
-		return;
-	}
 
 	/* Test the Embedded OLE control */
 	try 

@@ -506,6 +506,48 @@ function dateChange()
 		frmUseful.txtChangingDate.value = 0;
 }
 	
+	function refreshCalendarDate() {
+
+		var i;
+		var objCell;
+		var tempMonth = frmNav.cboMonth.options[frmNav.cboMonth.selectedIndex].value;
+		var tempYear = frmNav.txtYear.value;
+
+		var objDates = $("#ctlDates2")[0];
+		objDates.innerHTML = "";
+		var row = objDates.insertRow(0);
+		objCell = row.insertCell(0);
+		objCell.className = "calendar_day_caption";
+
+		var startDate = new Date(tempYear, tempMonth - 1, 1);
+
+		var daysInMonth = startDate.getDaysInMonth();
+		
+		for (i = 1; i < startDate.getDay(); i++) {
+			objCell = row.insertCell(i);
+			objCell.className = "calendar_day_nonactive";
+			objCell.innerHTML = "";
+		}
+
+		var objDay = new Date(tempYear, tempMonth - 1, 1);
+		for (i = startDate.getDay(); i < startDate.getDay() + daysInMonth + 1; i++) {
+			objCell = row.insertCell(i);
+			objCell.className = "calendar_day_active";
+			objCell.innerHTML = Date.CultureInfo.dayNames[objDay.getDay()].charAt(0).concat("<br/>", objDay.getDate().toString());
+			objDay.addDays(1);
+		}
+
+		for (i = startDate.getDay() + daysInMonth; i < 39; i++) {
+			objCell = row.insertCell(i);
+			objCell.className = "calendar_day_nonactive";
+			objCell.innerHTML = "";
+		}
+
+		frmDate.txtDaysInMonth.value = daysInMonth;
+
+
+	}
+
 function refreshCalendar() {
 
 	if (frmUseful.txtCTLsPopulated.value != 1) {
@@ -528,13 +570,8 @@ function refreshCalendar() {
 		var strReportEnd = new String(frmDate.txtReportEndDate.value);
 		var strClientDateFormat = new String(frmDate.txtClientDateFormat.value);
 		var strClientDateSeparator = new String(frmDate.txtClientDateSeparator.value);
-	
-		frmNav.ctlDates.ClientDateFormat = strClientDateFormat;
-		frmNav.ctlDates.ReportStartDate = strReportStart;
-		frmNav.ctlDates.ReportEndDate = strReportEnd;
-	
-		frmNav.ctlDates.SetDate(tempMonth,tempYear);
-		frmDate.txtDaysInMonth.value = frmNav.ctlDates.CurrentDaysInMonth;
+
+	refreshCalendarDate();
 
 		for (var i=1; i<=Number(frmCalendar.txtBaseCtlCount.value); i++) 
 		{
