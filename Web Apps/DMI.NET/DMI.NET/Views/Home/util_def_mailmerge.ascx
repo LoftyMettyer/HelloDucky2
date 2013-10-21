@@ -810,7 +810,7 @@
 																		</table>
 																		<td style="width: 10px"></td>
 																	<td valign="top">
-																		<table  style="padding: 4px; width: 100%; height: 200px; vertical-align: top;">
+																		<table  style="width: 100%; height: 200px; vertical-align: top;">
 																			<tr style="height: 20px; font-weight: bold;">
 																				<td colspan="8" style="text-align: left">Output Destinations :
 																					<br>
