@@ -114,6 +114,7 @@
     <Compile Include="clsCalendarEvents.vb" />
     <Compile Include="clsCalendarReports.vb" />
     <Compile Include="clsChart.vb" />
+    <Compile Include="clsCrypt.vb" />
     <Compile Include="clsDiary.vb" />
     <Compile Include="clsEventLog.vb">
       <SubType>Code</SubType>
@@ -121,6 +122,7 @@
     <Compile Include="clsNavigationLink.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />
+    <Compile Include="clsResetPassword.vb" />
     <Compile Include="clsSettings.vb" />
     <Compile Include="clsTodaysAbsence.vb" />
     <Compile Include="ColumnPrivilege.vb">

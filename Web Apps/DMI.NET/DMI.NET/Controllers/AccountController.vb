@@ -1,4 +1,5 @@
 ﻿'Imports ADODB
+Imports System.Web.Configuration
 
 Namespace Controllers
 	Public Class AccountController
@@ -1457,6 +1458,82 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		Function ForgotPassword() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+		Function ForgotPassword_Submit(value As FormCollection) As ActionResult
+			Dim protocol As String = "http"
+			Dim domainName As String
+			Dim websiteURL As String
+			Dim sMessage As String
+
+			' run the sp's through the object
+			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
+
+			objResetPwd.Database = WebConfigurationManager.AppSettings("LoginPage:Database")
+			objResetPwd.ServerName = WebConfigurationManager.AppSettings("LoginPage:Server")
+			objResetPwd.Username = Request.Form("txtUserName")
+
+			' Force password change only if there are no other users logged in with the same name.
+			If Request.ServerVariables("HTTPS").ToLower <> "off" Then protocol = "https"
+			domainName = Request.ServerVariables("HTTP_HOST")
+
+			websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account")	'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!
+			sMessage = objResetPwd.GenerateLinkAndEmail(websiteURL, Now())
+
+			ViewData("RedirectToURLMessage") = "Go back"
+			ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
+
+			If Err.Number = 0 Then
+				objResetPwd = Nothing
+
+				' handle response from server...
+				If Trim(sMessage) = "" Then
+					' if OK...
+					ViewData("Message") = "An e-mail has been sent to you. When you receive it, follow the directions in the email to reset your password."
+					ViewData("RedirectToURLMessage") = "Login page"
+					ViewData("RedirectToURL") = Url.Action("Login", "Account")
+				Else
+					' failure message from dll...
+					ViewData("Message") = "You can not reset your password at this time.<br/><br/>" & sMessage
+				End If
+			Else
+				ViewData("Message") = "You cannot reset your password at this time. <br/><br/>Intranet specifics have not been configured. <br/><br/>Please contact your system administrator."
+			End If
+
+			Return View()
+		End Function
+
+		Function ResetPassword() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+		Function ResetPassword_Submit(value As FormCollection) As ActionResult
+			Dim Password As String = Request.Form("txtPassword1")
+			Dim QueryString As String = Request.Form("txtQueryString")
+			Dim Message As String
+			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
+
+			objResetPwd.Database = WebConfigurationManager.AppSettings("LoginPage:Database")
+			objResetPwd.ServerName = WebConfigurationManager.AppSettings("LoginPage:Server")
+
+			' Force password change only if there are no other users logged in with the same name.
+			Message = objResetPwd.ResetPassword(QueryString, Password)
+			objResetPwd = Nothing
+
+			If UCase(Message) = UCase("Password changed successfully") Then
+				' if OK...
+				ViewData("Message") = "Your password has been reset successfully."
+			Else
+				' failure message from dll...	    
+				ViewData("Message") = "You could not change your password at this time.<br/><br/>" & Message
+			End If
+
+			Return View()
+		End Function
 	End Class
 
 	Public Class JsonData_DBValue

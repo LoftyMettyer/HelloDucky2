@@ -70,8 +70,8 @@
 	'		Session.Contents.Remove(sessitem)
 	'	End If
 	'Next 
-
-	session("dfltTempMenuFilePath") = "<NONE>"
+	
+	Session("dfltTempMenuFilePath") = "<NONE>"
 
 	If (Len(Session("Version")) > 0) Then
 
@@ -355,19 +355,16 @@
 
 </script>
 
-<div style="scroll:auto" class="COAwallpapered ui-widget-content" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0" class="ui-widget">
+<div class="COAwallpapered ui-widget-content ui-widget">
 		
 <%	Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
-<table class="ui-dialog-titlebar ui-widget-header" width="100%" border="0" cellspacing="0" cellpadding="0" height="40">
+<table class="ui-dialog-titlebar ui-widget-header" style="margin: 0 auto; width: 1px;">
 	<tr> 
 		<td>
 			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
 				<tr style="height:40px"> 
 					<td align=right>
-						<img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();"
-						onmouseover="this.style.cursor='pointer'; this.style.color='<%=session("Config-hypertextlinktext-highlightcolour")%>';" 
-													 onmouseout="this.style.color=''" 
-						onclick="HelpAbout();">			      
+						<img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();" />
 					</td>
 				</tr>
 			</table>
@@ -431,7 +428,7 @@ Else
 				<td width=15></td>" & vbcrlf
 			</tr>
 <%
-		else
+Else
 %>
 				<tr style="height: 10px">
 				<td style="height: 15px"></td>
@@ -458,7 +455,7 @@ Else
 
 							<tr class="" >
 <%
-			if Request.ServerVariables("LOGON_USER") <> "" then
+	If Request.ServerVariables("LOGON_USER") <> "" Then
 %>			
 								<td style="font-weight: bold;text-align: left;" colspan="3" >
 										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
@@ -478,13 +475,13 @@ Else
 								<td></td>
 								<td></td>
 <%
-			else
+Else
 %>
 								<td class="" colspan="3" >
 										<input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
 								</td>
 <%
-			end if 
+End If
 %>
 								 </tr>
 
@@ -554,7 +551,11 @@ End If
 				<td colSpan=5></td>
 			</tr>   	
 			<tr height=10>
-				<td colSpan=5></td>
+				<td width="15"></td>
+				<td colSpan=2>
+					<p style="text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+				</td>
+				<td width="15"></td>
 			</tr>
 		</table>
 

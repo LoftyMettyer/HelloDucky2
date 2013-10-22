@@ -1066,10 +1066,14 @@
     <Content Include="Scripts\jquery\jquery.menu.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Account\About.ascx" />
+    <Content Include="Views\Account\ForgotPassword_Submit.aspx" />
+    <Content Include="Views\Account\ResetPassword.aspx" />
+    <Content Include="Views\Account\ForgotPassword.aspx" />
     <Content Include="Views\Account\Loginerror.aspx" />
     <Content Include="Views\Account\ForcedPasswordChange.aspx" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\Loginmessage.aspx" />
+    <Content Include="Views\Account\ResetPassword_Submit.aspx" />
     <Content Include="Views\Home\CheckForUsage.ascx" />
     <Content Include="Views\Home\configuration.ascx" />
     <Content Include="Views\Home\confirmok.ascx" />
