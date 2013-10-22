@@ -2187,6 +2187,7 @@
 															"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
 																"&validateUtilID=" + frmValidate.validateUtilID.value +
 																	"&destination=util_validate_customreports";
+		
 		openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 	}
 
@@ -3735,7 +3736,8 @@
 												"&txtSortPOC=" + escape(frmSortOrder.txtSortPOC.value) +
 													"&txtSortVOC=" + escape(frmSortOrder.txtSortVOC.value) +
 														"&txtSortSRV=" + escape(frmSortOrder.txtSortSRV.value);
-				openDialog(sURL, 600, 275, "no", "no");
+				//openDialog(sURL, 600, 275, "no", "no");
+				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
 
 				frmUseful.txtChanged.value = 1;
 			}

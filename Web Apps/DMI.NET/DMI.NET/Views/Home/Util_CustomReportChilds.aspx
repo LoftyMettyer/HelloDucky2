@@ -313,7 +313,8 @@
 						"?selectionType=" + escape(frmRecOrder.selectionType.value) +
 						"&txtTableID=" + escape(frmRecOrder.txtTableID.value) +
 						"&selectedID=" + escape(frmRecOrder.selectedID.value);
-				openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+				//openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 30, "no", "no");
 		}
 
 		function selectRecordOption(psTable, psType) {
@@ -354,7 +355,8 @@
 						"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
 						"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value) +
 						"&recSelDefType=" + escape(frmRecordSelection.recSelDefType.value);
-				openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+				//openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "no", "no");
+				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 		}
 
 		function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
