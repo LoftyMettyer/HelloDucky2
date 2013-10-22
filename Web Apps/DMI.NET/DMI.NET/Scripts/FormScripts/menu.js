@@ -446,9 +446,19 @@ function menu_MenuClick(sTool) {
 	if (sToolName == "mnutoolFixedAbout") { // This already has an href target defined in fixedlinks. No action here
 		return false;
 	}
+	
+    if (sToolName == "mnutoolFixedPasswordChange") {
+        if (menu_isSSIMode()) {
+            relocateURL('PasswordChange');
+            return false;
+        } else {
+            sToolName = 'mnutoolPasswordChange';
+        }
+    }
 
-	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
-		showDefaultRibbon();
+    if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
+	    showDefaultRibbon();
+	    //return false;
 	}
 
 	//------------------------DEFSEL----------------------------//
@@ -591,7 +601,7 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
-
+	
 //--------------------------PENDING WORKFLOW STEPS-------------------------------//
 		// 'RUN'
 	if (sToolName == 'mnutoolRunWFPendingStepsFind') {

@@ -755,6 +755,7 @@ Namespace Controllers
 			Dim sReferringPage = ""
 			Dim fSubmitPasswordChange = ""
 			Dim sErrorText = ""
+			Dim fRedirectToSSI As Boolean
 
 			If True Then
 				fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
@@ -779,11 +780,17 @@ Namespace Controllers
 					Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
 					cmdCheckUserSessions = Nothing
 
+					' variables to help select which main screen we return to after change or cancel
+					fRedirectToSSI = CleanBoolean(Request.Form("txtRedirectToSSI"))
+					Dim sMainRedirect = IIf(fRedirectToSSI, "Main?SSIMode=True", "main")
+					
 					If iUserSessionCount < 2 Then
 						' Read the Password details from the Password form.
 						Dim sCurrentPassword = Request.Form("txtCurrentPassword")
 						Dim sNewPassword = Request.Form("txtPassword1")
 
+
+						
 						' Attempt to change the password on the SQL Server.
 						Dim cmdChangePassword = CreateObject("ADODB.Command")
 						cmdChangePassword.CommandText = "sp_password"
@@ -815,7 +822,7 @@ Namespace Controllers
 						If Err.Number <> 0 Then
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 							' Return RedirectToAction("error", "home")
 						Else
@@ -830,7 +837,7 @@ Namespace Controllers
 							If Err.Number <> 0 Then
 								Session("ErrorTitle") = "Change Password Page"
 								Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-								Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+								Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 								Return Json(data1, JsonRequestBehavior.AllowGet)
 								' Return RedirectToAction("error", "Account")
 							End If
@@ -857,7 +864,7 @@ Namespace Controllers
 								If Err.Number <> 0 Then
 									Session("ErrorTitle") = "Change Password Page"
 									Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-									Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+									Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 									Return Json(data1, JsonRequestBehavior.AllowGet)
 									' Return RedirectToAction("error", "Account")
 								End If
@@ -892,8 +899,8 @@ Namespace Controllers
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "Password changed successfully."
-
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "main"}
+							
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 							' Return RedirectToAction("message", "Account")
 						End If
@@ -5728,7 +5735,7 @@ Namespace Controllers
 				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
 				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
 				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-				Session("optionFile") = Request.Form("txtGotoOptionFile")				
+				Session("optionFile") = Request.Form("txtGotoOptionFile")
 				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
 				'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
 				Session("optionAction") = sAction

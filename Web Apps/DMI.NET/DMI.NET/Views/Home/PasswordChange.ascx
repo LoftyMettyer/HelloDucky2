@@ -12,15 +12,12 @@
 
 		if (sErrMsg.length > 0) {
 			fOK = false;
-			//window.parent.frames("menuframe").OpenHR.messageBox(sErrMsg);
 			OpenHR.messageBox(sErrMsg);
-
 			window.parent.location.replace("login");
 		}
 
 		if (fOK == true) {
 			// Get menu to refresh the menu.
-			//window.parent.frames("menuframe").refreshMenu();
 			menu_refreshMenu();
 
 			if (frmPasswordChangeForm.txtUserSessionCount.value < 2) {
@@ -36,13 +33,16 @@
 		var sNewPassword2;
 		var fChangeOK;
 		var sErrorMessage;
-
+		var fRedirectToSSI = menu_isSSIMode();
+		
 		var frmPasswordChangeForm = OpenHR.getForm("workframe", "frmPasswordChangeForm");
 
 		fChangeOK = true;
 		sCurrentPassword = frmPasswordChangeForm.txtCurrentPassword.value.toLowerCase();
 		sNewPassword1 = frmPasswordChangeForm.txtPassword1.value.toLowerCase();
 		sNewPassword2 = frmPasswordChangeForm.txtPassword2.value.toLowerCase();
+		frmPasswordChangeForm.txtRedirectToSSI.value = fRedirectToSSI.toString();
+	
 
 		/* Check that the two new passwords are the same. */
 		if (sNewPassword1 != sNewPassword2) {
@@ -77,15 +77,19 @@
 		/* If everything is okay, submit the password change. */
 		if (fChangeOK) {
 			OpenHR.submitForm(frmPasswordChangeForm);
-
-		}
+			}
 	}
 
 	/* Return to the default page. */
 	function cancelClick() {
-		window.location = "main";
+		if (menu_isSSIMode()) {
+			window.location = "Main?SSIMode=True";
+		} else {
+			window.location = "main";
+		}
 	}
 </script>
+
 
 <!--Client script to handle the screen events.-->
 
@@ -123,7 +127,7 @@
 			
 							Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
 							cmdCheckUserSessions = Nothing
-
+							
 							Response.Write("<INPUT type='hidden' id=txtUserSessionCount name=txtUserSessionCount value=" & iUserSessionCount & ">")
 			
 							If iUserSessionCount < 2 Then
@@ -133,6 +137,7 @@
 							<td align="left" nowrap>Current Password :</td>
 							<td width="20"></td>
 							<td align="left">
+								<input id="txtRedirectToSSI" name="txtRedirectToSSI" type="hidden">
 								<input id="txtCurrentPassword" name="txtCurrentPassword" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
 							</td>
 							<td width="20"></td>
@@ -208,40 +213,37 @@
 			</td>
 			<td width="20"></td>
 		</tr>
+		<table>
+			<tr>
+				<td colspan="5" height="20"></td>
+			</tr>
 
-		<tr>
-			<td colspan="5" height="20"></td>
-		</tr>
-
-		<tr>
-			<td colspan="5" height="10" align="center">
-				<input type="button" value="Cancel" name="btnCancel" class="btn" style="WIDTH: 80px" width="80" id="Button1"
-					onclick="cancelClick()"
-					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-					onfocus="try{button_onFocus(this);}catch(e){}"
-					onblur="try{button_onBlur(this);}catch(e){}" />
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="5" height="10"></td>
-		</tr>
-
-		</table>
+			<tr>
+				<td colspan="5" style="height: 10px; text-align: center">
+					<input type="button" value="Cancel" name="btnCancel" class="btn" style="WIDTH: 80px" width="80" id="Button1"
+						onclick="cancelClick()"
+						onmouseover="try{button_onMouseOver(this);}catch(e){}"
+						onmouseout="try{button_onMouseOut(this);}catch(e){}"
+						onfocus="try{button_onFocus(this);}catch(e){}"
+						onblur="try{button_onBlur(this);}catch(e){}" />
 				</td>
-		</tr>
-</table>
+			</tr>
+			<tr>
+				<td colspan="5" height="10"></td>
+			</tr>
+		</table>
 
-				<%
-				End If
-				%>
+		<%
+		End If
+		%>
 	</form>
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+</div>
+
+<div>
+		<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 	</form>
-
 </div>
 <%
 	On Error Resume Next
