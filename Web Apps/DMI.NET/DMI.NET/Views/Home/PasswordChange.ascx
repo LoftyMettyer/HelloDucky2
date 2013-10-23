@@ -213,7 +213,7 @@
 			</td>
 			<td width="20"></td>
 		</tr>
-		<table>
+		<table align="center">
 			<tr>
 				<td colspan="5" height="20"></td>
 			</tr>
