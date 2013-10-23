@@ -1324,10 +1324,11 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		case 2048: //ctlCommand
 			button = document.createElement('input');
 			button.type = "button";
-			button.id = controlID;
+		    button.id = controlID;
 			button.value = controlItemArray[8];
 			applyLocation(button, controlItemArray, true);
-			button.style.padding = "0px";
+			button.style.whiteSpace = "normal";
+		    button.style.padding = "0px";
 			button.setAttribute("data-columnID", columnID);
 			button.setAttribute('data-controlType', controlItemArray[3]);
 			button.setAttribute("data-control-key", key);
