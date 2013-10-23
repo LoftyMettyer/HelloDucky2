@@ -1284,7 +1284,8 @@ function selectRecordOption(psTable, psType)
 				"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
 				"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value) +
 				"&recSelDefType=" + escape(frmRecordSelection.recSelDefType.value);
-		openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
+		//openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 
 		frmUseful.txtChanged.value = 1;
 		refreshTab1Controls();
