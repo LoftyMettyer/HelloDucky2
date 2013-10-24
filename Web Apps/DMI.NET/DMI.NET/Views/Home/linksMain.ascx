@@ -922,7 +922,6 @@
 <script type="text/javascript">
 	//Display Pending Workflow Steps if appropriate
 	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {
-		alert("doh");
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 </script>
