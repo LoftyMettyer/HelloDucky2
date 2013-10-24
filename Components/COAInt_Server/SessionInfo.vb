@@ -35,6 +35,14 @@ Public Class SessionInfo
 		Return Declarations.Permissions.GetByKey(sKey)
 	End Function
 
+	Public Function GetUserSetting(ByVal Section As String, ByVal Key As String, ByVal DefaultValue As Object) As Object
+
+		Dim objSetting As UserSetting = UserSettings.GetUserSetting(Section, Key)
+
+		If objSetting Is Nothing Then Return DefaultValue
+		Return objSetting.Value
+
+	End Function
 
 Public Sub Initialise()
 	Tables = Nothing

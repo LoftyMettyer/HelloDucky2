@@ -7,86 +7,59 @@
 
 <%
 	Dim SelectedTableID As String = Request.Form("SelectedTableID")
-Dim fGotId As Boolean
-Dim sTemp As String
+	Dim fGotId As Boolean
+	Dim sTemp As String
 
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
-
 	
-Session("objCalendar" & Session("UtilID")) = Nothing
+	Session("objCalendar" & Session("UtilID")) = Nothing
 	
-If Not String.IsNullOrEmpty(Request.Form("OnlyMine")) Then
-Session("OnlyMine") = Request.Form("OnlyMine")
-Else
-If Session("fromMenu") = 1 Then
-' Read the defSel 'only mine' setting from the database.
-sTemp = "onlymine "
-Select Case Session("defseltype")
-Case 0
-sTemp = sTemp & "BatchJobs"
-Case 1
-sTemp = sTemp & "CrossTabs"
-Case 2
-sTemp = sTemp & "CustomReports"
-Case 3
-sTemp = sTemp & "DataTransfer"
-Case 4
-sTemp = sTemp & "Export"
-Case 5
-sTemp = sTemp & "GlobalAdd"
-Case 6
-sTemp = sTemp & "GlobalDelete"
-Case 7
-sTemp = sTemp & "GlobalUpdate"
-Case 8
-sTemp = sTemp & "Import"
-Case 9
-sTemp = sTemp & "MailMerge"
-Case 10
-sTemp = sTemp & "Picklists"
-Case 11
-sTemp = sTemp & "Filters"
-Case 12
-sTemp = sTemp & "Calculations"
-Case 17
-sTemp = sTemp & "CalendarReports"
-Case 25
-sTemp = sTemp & "Workflow"
-End Select
-					
-Dim cmdDefSelOnlyMine As New Command
-cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
-cmdDefSelOnlyMine.CommandType = CommandTypeEnum.adCmdStoredProc
-cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
+	If Not String.IsNullOrEmpty(Request.Form("OnlyMine")) Then
+		Session("OnlyMine") = Request.Form("OnlyMine")
+	Else
+		If Session("fromMenu") = 1 Then
+			' Read the defSel 'only mine' setting from the database.
+			sTemp = "onlymine "
+			Select Case Session("defseltype")
+				Case 0
+					sTemp = sTemp & "BatchJobs"
+				Case 1
+					sTemp = sTemp & "CrossTabs"
+				Case 2
+					sTemp = sTemp & "CustomReports"
+				Case 3
+					sTemp = sTemp & "DataTransfer"
+				Case 4
+					sTemp = sTemp & "Export"
+				Case 5
+					sTemp = sTemp & "GlobalAdd"
+				Case 6
+					sTemp = sTemp & "GlobalDelete"
+				Case 7
+					sTemp = sTemp & "GlobalUpdate"
+				Case 8
+					sTemp = sTemp & "Import"
+				Case 9
+					sTemp = sTemp & "MailMerge"
+				Case 10
+					sTemp = sTemp & "Picklists"
+				Case 11
+					sTemp = sTemp & "Filters"
+				Case 12
+					sTemp = sTemp & "Calculations"
+				Case 17
+					sTemp = sTemp & "CalendarReports"
+				Case 25
+					sTemp = sTemp & "Workflow"
+			End Select
 
-Dim prmSection = cmdDefSelOnlyMine.CreateParameter("section", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-cmdDefSelOnlyMine.Parameters.Append(prmSection)
-prmSection.value = "defsel"
-
-Dim prmKey = cmdDefSelOnlyMine.CreateParameter("key", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-cmdDefSelOnlyMine.Parameters.Append(prmKey)
-prmKey.value = sTemp
-
-Dim prmDefault = cmdDefSelOnlyMine.CreateParameter("default", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-cmdDefSelOnlyMine.Parameters.Append(prmDefault)
-prmDefault.value = "0"
-
-Dim prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
-cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
-prmUserSetting.value = 1
-
-Dim prmResult = cmdDefSelOnlyMine.CreateParameter("result", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-cmdDefSelOnlyMine.Parameters.Append(prmResult)
-
-Err.Clear()
-cmdDefSelOnlyMine.Execute()
-Session("OnlyMine") = (CLng(cmdDefSelOnlyMine.Parameters("result").Value) = 1)
-
-cmdDefSelOnlyMine = Nothing
-Else
-If CStr(Session("OnlyMine")) = "" Then Session("OnlyMine") = False
-End If
-End If
+			Session("OnlyMine") = (CLng(objSession.GetUserSetting("defsel", sTemp, "0")) = 1)
+	
+		Else
+			If CStr(Session("OnlyMine")) = "" Then Session("OnlyMine") = False
+		End If
+	End If
+	
 Session("fromMenu") = 0
 
 If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
