@@ -166,7 +166,6 @@
 <script type="text/javascript">
 
 	function HelpAbout() {
-		<%-- window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>"; --%>
 		$("#About").dialog( "open" );
 	}
 
@@ -263,11 +262,9 @@
 			keynum = e.which;
 		}
 
-		if (keynum == 13) {
-			// 13 = enter key
+		if (keynum == 13) { // 13 = enter key
 			SubmitLoginDetails();			
 		}
-
 	}
 
 	function toggleDetails() {
@@ -357,8 +354,8 @@
 
 <div class="COAwallpapered ui-widget-content ui-widget">
 		
-<%	Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
-<table class="ui-dialog-titlebar ui-widget-header" style="margin: 0 auto; width: 1px;">
+<%Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
+<table class="ui-dialog-titlebar ui-widget-header" style="margin: 0 auto; width: 100%">
 	<tr> 
 		<td>
 			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">

@@ -5,6 +5,14 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+	
+<img width="32" height="32" src="/openhr/Content/images/help32.png" onclick="HelpAbout();" style="float: right; margin-top: 52px; margin-right: -13px;" alt="">
+
+<script type="text/javascript">
+	function HelpAbout() {
+		$("#About").dialog( "open" );
+	}
+</script>
 
 <div <%=Session("BodyTag")%> style="width: 98%; position: absolute; top: 170px;">
 		<table style="margin: 0 auto; width: 1px;">
@@ -26,5 +34,9 @@
 			</tr>
 		</table>
 	</div>
+	
+	<style>
+	header { height: 48px; width: 99.9%; z-index: -1; }
+</style>
 
 </asp:Content>

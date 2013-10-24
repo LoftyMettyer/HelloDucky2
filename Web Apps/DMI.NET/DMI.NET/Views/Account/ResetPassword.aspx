@@ -55,6 +55,27 @@
 		frmResetPasswordForm.txtPassword1.focus();
 	}
 
+	function HelpAbout() {
+			$("#About").dialog( "open" );
+	}
+	
+	function CheckKeyPressed(e) {
+		var keynum;
+
+		if (window.event) // IE8 and earlier
+		{
+			keynum = e.keyCode;
+		}
+		else if (e.which) // IE9/Firefox/Chrome/Opera/Safari
+		{
+			keynum = e.which;
+		}
+
+		if (keynum == 13) { // 13 = enter key
+			SubmitPasswordDetails();			
+		}
+	}
+	
 	/* Validate the password change, and change the user's password
 	on the SQL database if everything is okay. */
 	function SubmitPasswordDetails()
@@ -87,6 +108,8 @@
 	}
 </script>
 
+<img width="32" height="32" src="/openhr/Content/images/help32.png" onclick="HelpAbout();" style="float: right; margin-top: 52px; margin-right: -13px;" alt="">
+
 <div <%=Session("BodyTag")%> style="width: 98%; position: absolute; top: 170px;">
 	<%Html.BeginForm("ResetPassword_Submit", "Account", FormMethod.Post, New With {.id = "frmResetPasswordForm"})%>
 		<table style="margin: 0 auto; width: 1px;">
@@ -111,14 +134,14 @@
 			<tr> 
 				<td style="text-align:center">
 					<label for="txtPassword1" style="float: left">New Password : </label>
-					<input type="password" name="txtPassword1" id="txtPassword1" style="width: 180px; float: right;" value="" class="text" />
+					<input type="password" name="txtPassword1" id="txtPassword1" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
 			
 			<tr> 
 				<td style="text-align:center">
 					<label for="txtPassword2" style="float: left">Confirm New Password : </label>
-					<input  type="password" name="txtPassword2" id="txtPassword2" style="width: 180px; float: right;" value="" class="text" />
+					<input  type="password" name="txtPassword2" id="txtPassword2" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
 						
@@ -144,6 +167,10 @@
 	<%Html.EndForm()%>
 </div>
 
+<style>
+	header { height: 48px; width: 99.9%; z-index: -1; }
+</style>
+
 <%If String.IsNullOrEmpty(sUserName) Then%>
 		<script type="text/javascript">
 			alert("Unfortunately the link you've clicked is no longer valid. Please click OK to return to the main page and start again.");
@@ -153,5 +180,14 @@
 		
 <script type="text/javascript">
 	window_Onload();
+	
+	//Prevent the form from being submitted (without being checked) when the user presses Enter
+	$('#frmforgotPasswordForm').bind("keypress", function(e) {
+		var code = e.keyCode || e.which; 
+		if (code == 13) {               
+			e.preventDefault();
+			return false;
+		}
+	});
 </script>
 </asp:Content>

@@ -6,6 +6,14 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
+<script type="text/javascript">
+	function HelpAbout() {
+		$("#About").dialog( "open" );
+	}
+</script>
+
+<img width="32" height="32" src="/openhr/Content/images/help32.png" onclick="HelpAbout();" style="float: right; margin-top: 52px; margin-right: -13px;" alt="">
+
 <div <%=Session("BodyTag")%> style="width: 98%; position: absolute; top: 170px;">
 		<table style="margin: 0 auto; width: 1px;">
 			<tr> 
@@ -20,11 +28,15 @@
 						<%=ViewData("Message")%>
 					</p>
 					<p style="text-align: center;">
-							<input type="button" value="Login page" onclick="window.location='<%=ViewData("RedirectToURL")%>	'" style="width: auto;" />
+							<input type="button" value="Login page" onclick="window.location='<%=Url.Action("Login", "Account")%>'" style="width: auto;" />
 					</p>
 				</td>
 			</tr>
 		</table>
 	</div>
+	
+<style>
+	header {height: 48px; width: 99.9%; z-index: -1; }
+</style>
 
 </asp:Content>
