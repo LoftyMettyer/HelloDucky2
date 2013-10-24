@@ -208,6 +208,7 @@
     <Compile Include="Metadata\ModuleSetting.vb" />
     <Compile Include="Metadata\Operator.vb" />
     <Compile Include="Metadata\OperatorParameter.vb" />
+    <Compile Include="Metadata\Permission.vb" />
     <Compile Include="Metadata\Relation.vb" />
     <Compile Include="Metadata\UserSetting.vb" />
     <Compile Include="Metadata\Table.vb" />
@@ -235,6 +236,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OLE2.vb" />
+    <Compile Include="SessionInfo.vb" />
     <Compile Include="Structures\HistoryScreen.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\TableScreen.vb" />

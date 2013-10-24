@@ -9,22 +9,17 @@ Module modPermissions
   Public Sub SetupTablesCollection()
         ' Read the list of tables the current user has permission to see.
         Dim fSysSecManager As Boolean
-				Dim lngRoleID As Integer
-        Dim lngChildViewID As Integer
-        Dim sSQL As String
+				Dim sSQL As String
         Dim sRealSourceList As String
         Dim sTableViewName As String
         Dim rsInfo As ADODB.Recordset
-        Dim rsTables As ADODB.Recordset
-        Dim rsViews As ADODB.Recordset
+				Dim rsViews As ADODB.Recordset
         Dim rsPermissions As ADODB.Recordset
         Dim objTableView As CTablePrivilege
         Dim objColumnPrivileges As CColumnPrivileges
         Dim avChildViews(,) As Object
         Dim lngNextIndex As Integer
-        'Dim sRoleName As String
-        Dim iTemp As Short
-        Dim avTablePermissions(,) As Object
+				Dim avTablePermissions(,) As Object
         Dim iLoop2 As Short
         Dim sTableName As String
         Dim sLastTableView As String
@@ -63,11 +58,8 @@ Module modPermissions
 				' Column 3 - 0=OR, 1=AND
 				ReDim avChildViews(3, 0)
 
-				'sSQL = "SELECT ASRSysChildViews2.childViewID, ASRSysTables.tableName, ASRSysChildViews2.type" & _
-				'" FROM ASRSysChildViews2" & _
-				'" INNER JOIN ASRSysTables ON ASRSysChildViews2.tableID = ASRSysTables.tableID" & _
-				'" WHERE ASRSysChildViews2.role = '" & Replace(sRoleName, "'", "''") & "'"
-				sSQL = "SELECT ASRSysChildViews2.childViewID, ASRSysTables.tableName, ASRSysChildViews2.type" & " FROM ASRSysChildViews2" & " INNER JOIN ASRSysTables ON ASRSysChildViews2.tableID = ASRSysTables.tableID" & " WHERE ASRSysChildViews2.role = '" & Replace(gsUserGroup, "'", "''") & "'"
+				sSQL = "SELECT ASRSysChildViews2.childViewID, ASRSysTables.tableName, ASRSysChildViews2.type FROM ASRSysChildViews2 INNER JOIN ASRSysTables ON ASRSysChildViews2.tableID = ASRSysTables.tableID" _
+					& " WHERE ASRSysChildViews2.role = '" & Replace(gsUserGroup, "'", "''") & "'"
 
 				rsInfo = New ADODB.Recordset
 				rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
@@ -155,7 +147,7 @@ Module modPermissions
 								objTableView.AllowInsert = True
 						Next
 
-						sSQL = "SELECT tableid, childViewID" & " FROM ASRSysChildViews2" & " WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
+						sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
 						rsInfo = New ADODB.Recordset
 						rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 
@@ -217,9 +209,6 @@ Module modPermissions
 
 								If UCase(Left(sTableName, 8)) = "ASRSYSCV" Then
 										' Determine which table the child view is for.
-										iTemp = InStr(sTableName, "#")
-										lngChildViewID = Val(Mid(sTableName, 9, iTemp - 9))
-
 										objTableView = gcoTablePrivileges.FindTableID(lngBaseTableId)
 
 								Else
@@ -300,23 +289,13 @@ Module modPermissions
 
 						' If the current user is not a system/security manager then read the column permissions from SQL.
 						If Not fSysSecManager Then
-								' Get the SQL group id of the current user.
-								' JPD20020809 Fault 3901
-								sSQL = "SELECT gid" & " FROM sysusers" & " WHERE name = '" & Replace(gsUserGroup, "'", "''") & "'"
-								'" WHERE name = current_user"
+
+								sSQL = "SELECT sysobjects.name AS tableViewName, syscolumns.name AS columnName, p.action, CASE p.protectType WHEN 205 THEN 1 WHEN 204 THEN 1 ELSE 0 END AS permission" _
+									& " FROM #SysProtects p INNER JOIN sysobjects ON p.id = sysobjects.id INNER JOIN syscolumns ON p.id = syscolumns.id WHERE (p.action = 193 or p.action = 197)" _
+									& " AND syscolumns.name <> 'timestamp' AND sysobjects.name in (" & sRealSourceList & ") AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0" _
+									& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0) OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0" _
+									& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0)) ORDER BY tableViewName"
 								rsInfo = New ADODB.Recordset
-								rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
-								If Not (rsInfo.BOF And rsInfo.EOF) Then
-										lngRoleID = rsInfo.Fields("gid").Value
-								End If
-
-								rsInfo.Close()
-								'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								rsInfo = Nothing
-
-								sSQL = "SELECT sysobjects.name AS tableViewName," & " syscolumns.name AS columnName," & " p.action," & " CASE p.protectType" & "   WHEN 205 THEN 1" & "   WHEN 204 THEN 1" & "   ELSE 0" & " END AS permission" & " FROM #SysProtects p" & " INNER JOIN sysobjects ON p.id = sysobjects.id" & " INNER JOIN syscolumns ON p.id = syscolumns.id" & " WHERE (p.action = 193 or p.action = 197)" & " AND syscolumns.name <> 'timestamp'" & " AND sysobjects.name in (" & sRealSourceList & ")" & " AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0" & " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)" & " OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0" & " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))" & " ORDER BY tableViewName"
-								rsInfo = New ADODB.Recordset
-
 								rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 
 								sLastTableView = ""

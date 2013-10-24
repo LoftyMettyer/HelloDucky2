@@ -64,4 +64,19 @@ Friend Module Extensions
 		Return items.FirstOrDefault(Function(baseItem) baseItem.RealSource = name)
 	End Function
 
+' end of don't know what its doing!
+
+
+		<Extension()>
+	Friend Function GetByKey(Of T As Permission)(ByVal items As ICollection(Of T), ByVal key As String) As Boolean
+
+		Dim objPermission = Permissions.FirstOrDefault(Function(baseItem) (baseItem.Key = key))
+		If objPermission Is Nothing Then
+			Return False
+		End If
+
+		Return objPermission.IsPermitted
+
+	End Function
+
 End Module

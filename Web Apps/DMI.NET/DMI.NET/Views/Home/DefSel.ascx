@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%="" %>
 
@@ -8,6 +9,9 @@
 	Dim SelectedTableID As String = Request.Form("SelectedTableID")
 Dim fGotId As Boolean
 Dim sTemp As String
+
+	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+
 	
 Session("objCalendar" & Session("UtilID")) = Nothing
 	
@@ -395,80 +399,91 @@ function disableNonDefselTabs() {
 
 	function refreshControls() {			
 		                           			//show the Defsel-Find menu block.
-//$("#mnuSectionUtilities").show();
-frmDefSel = document.getElementById('frmDefSel');
+		//$("#mnuSectionUtilities").show();
+		frmDefSel = document.getElementById('frmDefSel');
 
-disableNonDefselTabs();
+		disableNonDefselTabs();
 
-//reset utilities tab
-menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
-var fFromMenu;
-var fHasRows = (rowCount() > 0);
-			
+		//reset utilities tab
+		menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+		menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+		menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+		menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
+		menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
+		menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
+		var fFromMenu;
+		var fHasRows = (rowCount() > 0);
+
+
+		var IsNewPermitted = ($("#grantnew")[0].value > 0);
+		var IsEditPermitted = ($("#grantedit")[0].value > 0);
+		var IsViewPermitted = ($("#grantview")[0].value > 0);
+		var IsDeletePermitted = ($("#grantdelete")[0].value > 0);
+		var IsRunPermitted = ($("#grantrun")[0].value > 0);
+
+
+
+
 switch ('<%=Session("defseltype")%>') {
-						case '0':  // "BatchJobs"
-break;
-case '1':  // "CrossTabs"
-// Hide the remaining tabs
-$("#toolbarUtilitiesFind").parent().hide();
-$("#toolbarToolsFind").parent().hide();
-$("#toolbarEventLogFind").parent().hide();
-$("#toolbarWFPendingStepsFind").parent().hide();
-// Enable the buttons
-menu_toolbarEnableItem("mnutoolNewReportFind", true);
-menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows);
-//only display the 'close' button for defsel when called from rec edit...
+	case '0':  // "BatchJobs"
+		break;
+	case '1':  // "CrossTabs"
+		// Hide the remaining tabs
+		$("#toolbarUtilitiesFind").parent().hide();
+		$("#toolbarToolsFind").parent().hide();
+		$("#toolbarEventLogFind").parent().hide();
+		$("#toolbarWFPendingStepsFind").parent().hide();
+		// Enable the buttons
+		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
+		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
+		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
+		//only display the 'close' button for defsel when called from rec edit...
 
-if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-	menu_toolbarEnableItem('mnutoolCloseReportFind', true);
-							}
-else {
-menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
-								}
-// Show and select the tab
-$("#toolbarReportFind").parent().show();
-$("#toolbarReportFind").click();
-break;
-case '2':  // "CustomReports"
-// Hide the remaining tabs
-$("#toolbarUtilitiesFind").parent().hide();
-$("#toolbarToolsFind").parent().hide();
-$("#toolbarEventLogFind").parent().hide();
-$("#toolbarWFPendingStepsFind").parent().hide();
-// Enable the buttons
-menu_toolbarEnableItem("mnutoolNewReportFind", true);
-menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows);
-//only display the 'close' button for defsel when called from rec edit...
-if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-	menu_toolbarEnableItem('mnutoolCloseReportFind', true);
-							}
-else {
-menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+		if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+		}
+		else {
+			menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+		}
+		// Show and select the tab
+		$("#toolbarReportFind").parent().show();
+		$("#toolbarReportFind").click();
+		break;
+	case '2':  // "CustomReports"
+
+		// Hide the remaining tabs
+		$("#toolbarUtilitiesFind").parent().hide();
+		$("#toolbarToolsFind").parent().hide();
+		$("#toolbarEventLogFind").parent().hide();
+		$("#toolbarWFPendingStepsFind").parent().hide();
+		// Enable the buttons
+		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
+		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
+		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
+		//only display the 'close' button for defsel when called from rec edit...
+		if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+		}
+		else {
+			menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
 								}
 // Show and select the tab
 $("#toolbarReportFind").parent().show();
@@ -495,13 +510,13 @@ $("#toolbarWFPendingStepsFind").parent().hide();
 
 // Enable the buttons
 fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-menu_toolbarEnableItem("mnutoolNewUtilitiesFind", true);
+menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted);
 menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows);
+menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted);
 menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows);
+menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted));
 menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows);
+menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted);
 menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", fFromMenu);
 menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows);
 menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", fFromMenu);
@@ -523,10 +538,10 @@ $("#toolbarReportFind").parent().hide();
 $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
-menu_toolbarEnableItem("mnutoolNewToolsFind", true);
-menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
-menu_toolbarEnableItem("mnutoolEditToolsFind", true);
-menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
+menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
+menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
 menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
 menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
@@ -541,10 +556,10 @@ $("#toolbarReportFind").parent().hide();
 $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
-menu_toolbarEnableItem("mnutoolNewToolsFind", true);
-menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
-menu_toolbarEnableItem("mnutoolEditToolsFind", true);
-menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
+menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
+menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
 menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
 menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
@@ -559,10 +574,10 @@ $("#toolbarReportFind").parent().hide();
 $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
-menu_toolbarEnableItem("mnutoolNewToolsFind", true);
-menu_toolbarEnableItem("mnutoolCopyToolsFind", true);
-menu_toolbarEnableItem("mnutoolEditToolsFind", true);
-menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
+menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
+menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
 menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
 menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
@@ -578,18 +593,18 @@ $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
 fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-menu_toolbarEnableItem("mnutoolNewReportFind", true);
+menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
 menu_setVisibleMenuItem("mnutoolNewReportFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows);
+menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
 menu_setVisibleMenuItem("mnutoolCopyReportFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows);
+menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
 menu_setVisibleMenuItem("mnutoolEditReportFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows);
+menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
 menu_setVisibleMenuItem("mnutoolDeleteReportFind", fFromMenu);
 menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
 menu_setVisibleMenuItem("mnutoolPropertiesReportFind", fFromMenu);
 
-menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows);
+menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
 //only display the 'close' button for defsel when called from rec edit...
 menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
 	menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
@@ -605,7 +620,7 @@ $("#toolbarReportFind").parent().hide();
 $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
-menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", IsNewPermitted);
 menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
@@ -892,138 +907,53 @@ function showproperties() {
 
 <form id=frmpermissions name=frmpermissions style="visibility:hidden;display:none">
 <%
-	Dim cmdDefSelAccess As New Command
-	cmdDefSelAccess.CommandText = "sp_ASRIntGetSystemPermissions"
-	cmdDefSelAccess.CommandType = CommandTypeEnum.adCmdStoredProc
-	cmdDefSelAccess.ActiveConnection = Session("databaseConnection")
-
-	Err.Clear()
-	Dim rstDefSelAccess = cmdDefSelAccess.Execute
 	
-	Dim fNewGranted = 0
-	Dim fEditGranted = 0
-	Dim fDeleteGranted = 0
-	Dim fRunGranted = 0
-	Dim fViewGranted = 0
-
-	'MH20011008 We should probably change this so that we pass
-	'over the category key and get back a smaller recordset
-
-	do until rstdefselaccess.eof
-		if session("defseltype") = 1 then
-			if rstdefselaccess.fields(0).value = "CROSSTABS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CROSSTABS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CROSSTABS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CROSSTABS_RUN" then
-				fRunGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CROSSTABS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-
-		if session("defseltype") = 2 then
-			if rstdefselaccess.fields(0).value = "CUSTOMREPORTS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CUSTOMREPORTS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CUSTOMREPORTS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CUSTOMREPORTS_RUN" then
-				fRunGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CUSTOMREPORTS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-
-		if session("defseltype") = 9 then
-			if rstdefselaccess.fields(0).value = "MAILMERGE_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "MAILMERGE_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "MAILMERGE_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "MAILMERGE_RUN" then
-				fRunGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "MAILMERGE_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-
-		if session("defseltype") = 10 then
-			if rstdefselaccess.fields(0).value = "PICKLISTS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "PICKLISTS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "PICKLISTS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "PICKLISTS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-
-		if session("defseltype") = 11 then
-			if rstdefselaccess.fields(0).value = "FILTERS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "FILTERS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "FILTERS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "FILTERS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
+	Dim fNewGranted As Boolean
+	Dim fEditGranted As Boolean
+	Dim fDeleteGranted As Boolean
+	Dim fRunGranted As Boolean
+	Dim fViewGranted As Boolean
 	
-		if session("defseltype") = 12 then
-			if rstdefselaccess.fields(0).value = "CALCULATIONS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALCULATIONS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALCULATIONS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALCULATIONS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-		
-		if session("defseltype") = 17 then
-			if rstdefselaccess.fields(0).value = "CALENDARREPORTS_NEW" then
-				fNewGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALENDARREPORTS_EDIT" then
-				fEditGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALENDARREPORTS_DELETE" then
-				fDeleteGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALENDARREPORTS_RUN" then
-				fRunGranted = CInt(rstDefSelAccess.fields(1).value)
-			elseif rstdefselaccess.fields(0).value = "CALENDARREPORTS_VIEW" then
-				fViewGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-		
-		if session("defseltype") = 25 then
-			fNewGranted = 0
-			fEditGranted = 0
-			fDeleteGranted = 0
-			fViewGranted = 0
-
-			if rstdefselaccess.fields(0).value = "WORKFLOW_RUN" then
-				fRunGranted = CInt(rstDefSelAccess.fields(1).value)
-			end if
-		end if
-
-		rstdefselaccess.movenext
-	loop
+	Dim strKeyPrefix As String = ""
 	
-	rstDefSelAccess = Nothing
-	cmdDefSelAccess = Nothing
+	Select Case Session("defseltype")
+		Case "1"
+			strKeyPrefix = "CROSSTABS"
+
+		Case "2"
+			strKeyPrefix = "CUSTOMREPORTS"
+				
+		Case "9"
+			strKeyPrefix = "MAILMERGE"
+				
+		Case "10"
+			strKeyPrefix = "PICKLISTS"
+				
+		Case "11"
+			strKeyPrefix = "FILTERS"
+
+		Case "12"
+			strKeyPrefix = "CALCULATIONS"
+				
+		Case "17"
+			strKeyPrefix = "CALENDARREPORTS"
+
+		Case "25"
+			strKeyPrefix = "WORKFLOW"
+				
+	End Select
+
+	fNewGranted = objSession.IsPermissionGranted(strKeyPrefix & "_NEW")
+	fEditGranted = objSession.IsPermissionGranted(strKeyPrefix & "_EDIT")
+	fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix & "_DELETE")
+	fRunGranted = objSession.IsPermissionGranted(strKeyPrefix & "_RUN")
+	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix & "_VIEW")
 	
-	Response.Write("<INPUT type=hidden id=grantnew name=grantnew value = " & fNewGranted & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=grantedit name=grantedit value = " & fEditGranted & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=grantdelete name=grantdelete value = " & fDeleteGranted & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=grantrun name=grantrun value = " & fRunGranted & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=grantview name=grantview value = " & fViewGranted & ">" & vbCrLf)
+	Response.Write("<input type=hidden id=""grantnew"" name=""grantnew"" value = " & IIf(fNewGranted, 1, 0) & ">" & vbCrLf)
+	Response.Write("<input type=hidden id=""grantedit"" name=""grantedit"" value = " & IIf(fEditGranted, 1, 0) & ">" & vbCrLf)
+	Response.Write("<input type=hidden id=""grantdelete"" name=""grantdelete"" value = " & IIf(fDeleteGranted, 1, 0) & ">" & vbCrLf)
+	Response.Write("<input type=hidden id=""grantrun"" name=""grantrun"" value = " & IIf(fRunGranted, 1, 0) & ">" & vbCrLf)
+	Response.Write("<input type=hidden id=""grantview"" name=""grantview"" value = " & IIf(fViewGranted, 1, 0) & ">" & vbCrLf)
 %>
 </form>
 

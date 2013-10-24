@@ -698,6 +698,7 @@ Public Sub PopulateMetadata()
 	UserSettings = New Collection(Of UserSetting)
 	Functions = New Collection(Of Metadata.Function)
 	Operators = New Collection(Of Metadata.Operator)
+	Permissions = New Collection(Of Permission)
 
 	Try
 
@@ -819,6 +820,16 @@ Public Sub PopulateMetadata()
 		'	rstData.MoveNext()
 		'Loop
 
+
+		sSQL = "EXEC sp_ASRIntGetSystemPermissions"
+		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objItem = New Permission
+			objItem.Key = rstData.Fields("key").Value.ToString
+			objItem.IsPermitted = rstData.Fields("permitted").Value.ToString
+			Permissions.Add(objItem)
+			rstData.MoveNext()
+		Loop
 
 
 

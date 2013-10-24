@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.Metadata
 
 Module Declarations
 
@@ -20,12 +21,14 @@ Module Declarations
   Public gcolLinks As Collection
   Public gcolNavigationLinks As Collection
 
-	Public Tables As ICollection(Of Metadata.Table)
-	Public Columns As ICollection(Of Metadata.Column)
-	Public Relations As ICollection(Of Metadata.Relation)
-	Public ModuleSettings As ICollection(Of Metadata.ModuleSetting)
-	Public UserSettings As ICollection(Of Metadata.UserSetting)
+	Public Tables As ICollection(Of Table)
+	Public Columns As ICollection(Of Column)
+	Public Relations As ICollection(Of Relation)
+	Public ModuleSettings As ICollection(Of ModuleSetting)
+	Public UserSettings As ICollection(Of UserSetting)
 	Public Functions As ICollection(Of Metadata.Function)
 	Public Operators As ICollection(Of Metadata.Operator)
+
+	Public Permissions As ICollection(Of Permission)
 
 End Module

@@ -297,7 +297,10 @@ Namespace Controllers
 
 			Session("databaseConnection") = conX
 
-
+			' Track session specific data
+			Dim objServerSession As New HR.Intranet.Server.SessionInfo
+			objServerSession.Initialise()
+			Session("sessionContext") = objServerSession
 
 			' Successful login.
 			' Get the desktop colour.
