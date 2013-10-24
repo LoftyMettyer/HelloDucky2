@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Collections.ObjectModel" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
 	On Error Resume Next
@@ -18,6 +19,8 @@
 	Dim sToolCaption As String
 	Dim sToolID As String
 	
+	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+
 	sErrorDescription = ""
 	
 	objMenu = New HR.Intranet.Server.Menu()
@@ -333,92 +336,40 @@
 		Err.Clear()
 		cmdMisc.Execute()
 		
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").Value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_BA ID=txtCFG_BA VALUE='" & cmdMisc.Parameters("param2").Value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_LD ID=txtCFG_LD VALUE='" & cmdMisc.Parameters("param3").Value & "'>" & vbCrLf)
-		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_RT ID=txtCFG_RT VALUE='" & cmdMisc.Parameters("param4").Value & "'>" & vbCrLf)
+		Response.Write("<input TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").Value & "'>" & vbCrLf)
+		Response.Write("<input TYPE=Hidden NAME=txtCFG_BA ID=txtCFG_BA VALUE='" & cmdMisc.Parameters("param2").Value & "'>" & vbCrLf)
+		Response.Write("<input TYPE=Hidden NAME=txtCFG_LD ID=txtCFG_LD VALUE='" & cmdMisc.Parameters("param3").Value & "'>" & vbCrLf)
+		Response.Write("<input TYPE=Hidden NAME=txtCFG_RT ID=txtCFG_RT VALUE='" & cmdMisc.Parameters("param4").Value & "'>" & vbCrLf)
 	End If
 		
 	' ------------------------------------------------------------------------------
 	' Check what permissions the user has.
 	' ------------------------------------------------------------------------------
-	Dim fCustomReportsGranted = False
-	Dim fCrossTabsGranted = False
-	Dim fCalendarReportsGranted = False
-	Dim fMailMergeGranted = False
-	Dim fWorkflowGranted = False
-	Dim fCalculationsGranted = False
-	Dim fFiltersGranted = False
-	Dim fPicklistsGranted = False
-	Dim fNewUserGranted = False
-
-	If Len(sErrorDescription) = 0 Then
-		Dim cmdSystemPermissions = New ADODB.Command
-		cmdSystemPermissions.CommandText = "sp_ASRIntGetSystemPermissions"
-		cmdSystemPermissions.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdSystemPermissions.ActiveConnection = Session("databaseConnection")
-		cmdSystemPermissions.CommandTimeout = 300
-
-		Err.Clear()
-				
-		Dim rstSystemPermissions = cmdSystemPermissions.Execute
+	Dim iCustomReportsGranted As Integer = 0
+	Dim iCrossTabsGranted As Integer = 0
+	Dim iCalendarReportsGranted As Integer = 0
+	Dim iMailMergeGranted As Integer = 0
+	Dim iWorkflowGranted As Integer = 0
+	Dim iCalculationsGranted As Integer = 0
+	Dim iFiltersGranted As Integer = 0
+	Dim iPicklistsGranted As Integer = 0
+	Dim iNewUserGranted As Integer = 0
 		
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The system permissions could not be read." & vbCrLf & FormatError(Err.Description)
-		End If
-		
-		If Len(sErrorDescription) = 0 Then
-			Do While Not rstSystemPermissions.EOF
-				Response.Write("<INPUT type='hidden' id=txtSysPerm_" & Replace(rstSystemPermissions.Fields("KEY").Value, " ", "_") & " name=txtSysPerm_" & Replace(rstSystemPermissions.Fields("KEY").Value, " ", "_") & " value=""" & rstSystemPermissions.Fields("PERMITTED").Value & """>" & vbCrLf)
+	For Each objPermission In objSession.Permissions
 
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 13) = "CUSTOMREPORTS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fCustomReportsGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "CROSSTABS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fCrossTabsGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 15) = "CALENDARREPORTS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fCalendarReportsGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "MAILMERGE") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fMailMergeGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 12) = "WORKFLOW_RUN") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fWorkflowGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 12) = "CALCULATIONS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fCalculationsGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 7) = "FILTERS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fFiltersGranted = True
-				End If
-				If (Left(rstSystemPermissions.Fields("KEY").Value, 9) = "PICKLISTS") And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fPicklistsGranted = True
-				End If
-				If ((rstSystemPermissions.Fields("KEY").Value = "MODULEACCESS_SYSTEMMANAGER") Or _
-					(rstSystemPermissions.Fields("KEY").Value = "MODULEACCESS_SECURITYMANAGER")) And _
-				 (rstSystemPermissions.Fields("PERMITTED").Value = 1) Then
-					fNewUserGranted = True
-				End If
-
-				rstSystemPermissions.MoveNext()
-			Loop
-
-			' Release the ADO recordset and command objects.
-			rstSystemPermissions.Close()
-		End If
+		Response.Write("<input type='hidden' id=txtSysPerm_" & Replace(objPermission.Key, " ", "_") & " name=txtSysPerm_" & Replace(objPermission.Key, " ", "_") & " value=""" & IIf(objPermission.IsPermitted, "1", "0") & """>" & vbCrLf)
+		If Left(objPermission.Key, 13) = "CUSTOMREPORTS" And objPermission.IsPermitted Then iCustomReportsGranted = 1
+		If Left(objPermission.Key, 9) = "CROSSTABS" And objPermission.IsPermitted Then iCrossTabsGranted = 1
+		If Left(objPermission.Key, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
+		If Left(objPermission.Key, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
+		If objPermission.Key = "WORKFLOW_RUN" And objPermission.IsPermitted Then iWorkflowGranted = 1
+		If Left(objPermission.Key, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
+		If Left(objPermission.Key, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
+		If Left(objPermission.Key, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
+		If (objPermission.Key = "MODULEACCESS_SYSTEMMANAGER" Or objPermission.Key = "MODULEACCESS_SECURITYMANAGER") And objPermission.IsPermitted Then iNewUserGranted = 1
+			
+	Next
 	
-		rstSystemPermissions = Nothing
-		cmdSystemPermissions = Nothing
-	End If
 
 	Dim iAbsenceEnabled = 0
 	If Len(sErrorDescription) = 0 Then
@@ -445,18 +396,18 @@
 		cmdAbsenceModule = Nothing
 	End If
 
-	Response.Write("<INPUT type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & iAbsenceEnabled & ">")
-	Response.Write("<INPUT type='hidden' id=txtCustomReportsGranted name=txtCustomReportsGranted value=""" & fCustomReportsGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtCrossTabsGranted name=txtCrossTabsGranted value=""" & fCrossTabsGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtCalendarReportsGranted name=txtCalendarReportsGranted value=""" & fCalendarReportsGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtMailMergeGranted name=txtMailMergeGranted value=""" & fMailMergeGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtWorkflowGranted name=txtWorkflowGranted value=""" & fWorkflowGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtCalculationsGranted name=txtCalculationsGranted value=""" & fCalculationsGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtFiltersGranted name=txtFiltersGranted value=""" & fFiltersGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtPicklistsGranted name=txtPicklistsGranted value=""" & fPicklistsGranted & """>")
-	Response.Write("<INPUT type='hidden' id=txtNewUserGranted name=txtNewUserGranted value=""" & fNewUserGranted & """>")
+	Response.Write("<input type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & iAbsenceEnabled & ">")
+	Response.Write("<input type='hidden' id=txtCustomReportsGranted name=txtCustomReportsGranted value=" & iCustomReportsGranted & ">")
+	Response.Write("<input type='hidden' id=txtCrossTabsGranted name=txtCrossTabsGranted value=" & iCrossTabsGranted & ">")
+	Response.Write("<input type='hidden' id=txtCalendarReportsGranted name=txtCalendarReportsGranted value=" & iCalendarReportsGranted & ">")
+	Response.Write("<input type='hidden' id=txtMailMergeGranted name=txtMailMergeGranted value=" & iMailMergeGranted & ">")
+	Response.Write("<input type='hidden' id=txtWorkflowGranted name=txtWorkflowGranted value=" & iWorkflowGranted & ">")
+	Response.Write("<input type='hidden' id=txtCalculationsGranted name=txtCalculationsGranted value=" & iCalculationsGranted & ">")
+	Response.Write("<input type='hidden' id=txtFiltersGranted name=txtFiltersGranted value=" & iFiltersGranted & ">")
+	Response.Write("<input type='hidden' id=txtPicklistsGranted name=txtPicklistsGranted value=" & iPicklistsGranted & ">")
+	Response.Write("<input type='hidden' id=txtNewUserGranted name=txtNewUserGranted value=" & iNewUserGranted & ">")
 
-	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 
 <div id="contextmenu" class="accordion" style="display: none;">

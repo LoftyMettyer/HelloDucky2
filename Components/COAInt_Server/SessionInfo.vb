@@ -25,14 +25,14 @@ Public Class SessionInfo
 	'Public UserSettings As ICollection(Of Metadata.UserSetting)
 	'Public Functions As ICollection(Of Metadata.Function)
 	'Public Operators As ICollection(Of Metadata.Operator)
-	'Public ReadOnly Property Permissions() As ICollection(Of Permission)
-	'	Get
-	'		Return Declarations.Permissions
-	'	End Get
-	'End Property
+	Public ReadOnly Property Permissions() As ICollection(Of Permission)
+		Get
+			Return Declarations.Permissions
+		End Get
+	End Property
 
 	Public Function IsPermissionGranted(ByVal sKey As String) As Boolean
-		Return Permissions.GetByKey(sKey)
+		Return Declarations.Permissions.GetByKey(sKey)
 	End Function
 
 

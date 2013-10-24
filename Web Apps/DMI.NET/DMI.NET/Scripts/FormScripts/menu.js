@@ -2088,10 +2088,11 @@ function menu_refreshMenu() {
 	//		abMainMenu.Tools("mnutoolCalendarReports").enabled = (txtCalendarReportsGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolMailMerge").enabled = (txtMailMergeGranted.value == "True");
 	//HC: Seems redundant
-	//menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
-	//menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
-	//menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
-	//menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
+	//JDM: - Oh no its not!!!
+	menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
+	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
+	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
+	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
 	//abMainMenu.Tools("mnutoolWorkflow").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
 	//abMainMenu.Tools("mnutoolWorkflow").enabled = (txtWorkflowGranted.value == "True");
 	//		abMainMenu.Tools("mnutoolWorkflowPopup").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
@@ -2103,7 +2104,7 @@ function menu_refreshMenu() {
 		//		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
 		//		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
 		//		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
-
+		
 	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
 
 	menu_setVisibleMenuItem("mnutoolWorkflow", frmMenuInfo.txtWFEnabled.value);
