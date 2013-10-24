@@ -153,13 +153,11 @@ Private Enum enum_RowType
 	Total = 3
 End Enum
 
-
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
 			Return mblnReportHasSummaryInfo Or mbIsBradfordIndexReport
 		End Get
 	End Property
-
 
 	Public WriteOnly Property SingleRecordID() As Integer
 		Set(ByVal Value As Integer)
@@ -230,7 +228,7 @@ End Enum
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			End If
 
 		End Set
@@ -249,9 +247,9 @@ End Enum
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsCancelled)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsCancelled)
 			Else
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			End If
 
 		End Set
@@ -599,7 +597,7 @@ End Enum
 ErrorTrap:
 		mstrErrorString = "Error setting prompted values." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		SetPromptedValues = False
 
 	End Function
@@ -660,7 +658,7 @@ ErrorTrap:
 
 		mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
 
-		mstrSQLSelect = mstrSQLSelect & " INTO " & "[" & mstrTempTableName & "]"
+		mstrSQLSelect = mstrSQLSelect & " INTO [" & mstrTempTableName & "]"
 
 		AddTempTableToSQL = True
 		Exit Function
@@ -670,7 +668,7 @@ AddTempTableToSQL_ERROR:
 		AddTempTableToSQL = False
 		mstrErrorString = "Error retrieving unique temp table name." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -689,7 +687,7 @@ MergeSQLStrings_ERROR:
 		MergeSQLStrings = False
 		mstrErrorString = "Error merging SQL string components." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -707,7 +705,7 @@ ExecuteSQL_ERROR:
 		ExecuteSql = False
 		mstrErrorString = "Error executing SQL statement." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -823,7 +821,7 @@ GetCustomReportDefinition_ERROR:
 		GetCustomReportDefinition = False
 		mstrErrorString = "Error reading the Custom Report definition !" & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Resume TidyAndExit
 
 	End Function
@@ -1262,7 +1260,7 @@ GetDetailsRecordsets_ERROR:
 		GetDetailsRecordsets = False
 		mstrErrorString = "Error retrieving the details recordsets'." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1675,7 +1673,7 @@ GenerateSQLSelect_ERROR:
 		GenerateSQLSelect = False
 		mstrErrorString = "Error generating SQL Select statement." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1842,7 +1840,7 @@ Error_Trap:
 				mstrErrorString = "No records meet selection criteria"
 				CreateMutipleChildTempTable = False
 				mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 				mblnNoRecords = True
 
 				sMCTempTable = vbNullString
@@ -2125,7 +2123,7 @@ Error_Trap:
 		Next i
 
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2323,7 +2321,7 @@ GenerateSQLJoin_ERROR:
 		GenerateSQLJoin = False
 		mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2496,7 +2494,7 @@ DoChildOrderString_ERROR:
 		mstrErrorString = "Error while generating child order string" & vbNewLine & Err.Description
 		DoChildOrderString = ""
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2683,7 +2681,7 @@ GenerateSQLWhere_ERROR:
 		GenerateSQLWhere = False
 		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2906,7 +2904,7 @@ GenerateSQLOrderBy_ERROR:
 		GenerateSQLOrderBy = False
 		mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2992,7 +2990,7 @@ GenerateSQLOrderBy_ERROR:
 			CheckRecordSet = False
 			mstrErrorString = "No records meet selection criteria"
 			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
-			mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			mblnNoRecords = True
 			Exit Function
 		End If
@@ -3002,7 +3000,7 @@ GenerateSQLOrderBy_ERROR:
 				CheckRecordSet = False
 				mstrErrorString = "Report contains more than " & mlngColumnLimit & " columns. It is not possible to run this report via the intranet."
 				mobjEventLog.AddDetailEntry("Failed. " & mstrErrorString)
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 				mblnNoRecords = False
 				Exit Function
 			End If
@@ -3016,7 +3014,7 @@ CheckRecordSet_ERROR:
 		mstrErrorString = "Error while checking returned recordset." & vbNewLine & "(" & Err.Description & ")"
 		CheckRecordSet = False
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -3521,7 +3519,7 @@ LoadRecords_ERROR:
 
 		mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Number & " - " & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Return False
 
 	End Function
@@ -5121,7 +5119,7 @@ CalculateBradfordFactors_ERROR:
 		If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
 			mstrErrorString = "The report end date is before the report start date."
 			mobjEventLog.AddDetailEntry(mstrErrorString)
-			mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			GetBradfordReportDefinition = False
 			Exit Function
 		End If

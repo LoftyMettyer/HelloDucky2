@@ -141,6 +141,8 @@
     <Compile Include="Declarations.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enums\ControlTypes.vb" />
+    <Compile Include="Enums\CrossTabType.vb" />
     <Compile Include="Enums\ExprValidationCodes.vb" />
     <Compile Include="Enums\FieldPassTypes.vb" />
     <Compile Include="Enums\EventLog_Status.vb" />
@@ -149,11 +151,15 @@
     <Compile Include="Enums\ExpressionTypes.vb" />
     <Compile Include="Enums\ExpressionValueTypes.vb" />
     <Compile Include="Enums\FieldSelectionTypes.vb" />
+    <Compile Include="Enums\NavigationLinkType.vb" />
+    <Compile Include="Enums\OutputFormats.vb" />
     <Compile Include="Enums\RecordSelectionTypes.vb" />
     <Compile Include="Enums\RecordSelectionValidityCodes.vb" />
+    <Compile Include="Enums\RegionType.vb" />
     <Compile Include="Enums\SQLDataType.vb" />
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
+    <Compile Include="Enums\WorkingPatternType.vb" />
     <Compile Include="ExprCalculation.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -236,9 +242,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TablePrivileges.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities.vb" />

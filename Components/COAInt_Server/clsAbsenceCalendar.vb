@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports HR.Intranet.Server.Enums
 Imports VB = Microsoft.VisualBasic
 Public Class AbsenceCalendar
 
@@ -981,29 +982,29 @@ errLoadColourKey:
 
     If Not mblnDisableWPs Then
       ' Get the employees current working pattern
-      If modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern Then
-        ' Its a static working pattern, get it from personnel
-        sSQL = vbNullString
-        sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
-        sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
-        For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-          '<Personnel CODE>
-          'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-            'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
-          End If
-        Next lngCount
-        sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-        prstPersonnelData = datGeneral.GetRecords(sSQL)
+			If modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern Then
+				' Its a static working pattern, get it from personnel
+				sSQL = vbNullString
+				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
+				sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
+				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
+					'<Personnel CODE>
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					End If
+				Next lngCount
+				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+				prstPersonnelData = datGeneral.GetRecords(sSQL)
 
-      Else
-        ' Its a historic working pattern, so get topmost from the history
-        prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
-                                                  & Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
-      End If
+			Else
+				' Its a historic working pattern, so get topmost from the history
+				prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+			End If
 
       If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
         mstrWorkingPattern = prstPersonnelData.Fields("WP").Value

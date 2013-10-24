@@ -10,18 +10,6 @@ Module modPersonnelSpecifics
 	Public grtRegionType As RegionType
 	Public gwptWorkingPatternType As WorkingPatternType
 
-	Public Enum RegionType
-		rtNotDefined = 0
-		rtStaticRegion = 1
-		rtHistoricRegion = 2
-	End Enum
-
-	Public Enum WorkingPatternType
-		wptnotDefined = 0
-		wptStaticWPattern = 1
-		wptHistoricWPattern = 2
-	End Enum
-
 
 	' Module constants.
 	Public Const gsMODULEKEY_PERSONNEL As String = "MODULE_PERSONNEL"

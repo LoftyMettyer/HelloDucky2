@@ -5,17 +5,6 @@ Imports HR.Intranet.Server.Enums
 
 Public Class clsEventLog
 
-
-
-	Public Enum EventLog_Status
-		elsPending = 0
-		elsCancelled = 1
-		elsFailed = 2
-		elsSuccessful = 3
-		elsSkipped = 4
-		elsError = 5
-	End Enum
-
 	Private mclsData As New clsDataAccess
 	Private mlngEventLogID As Integer
 	Private mstrBatchName As String = ""

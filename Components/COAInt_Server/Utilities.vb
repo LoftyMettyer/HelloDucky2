@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 
 Public Class Utilities
 
@@ -236,7 +237,8 @@ ErrorTrap:
 
     ReDim avPictures(2, 0)
 
-    sSQL = "SELECT DISTINCT ASRSysControls.pictureID, ASRSysPictures.name" & " FROM ASRSysControls" & " INNER JOIN ASRSysPictures ON ASRSysControls.pictureID = ASRSysPictures.pictureID" & " WHERE screenID = " & Trim(Str(plngScreenID)) & " AND controlType = " & Trim(Str(Declarations.ControlTypes.ctlImage))
+		sSQL = "SELECT DISTINCT ASRSysControls.pictureID, ASRSysPictures.name FROM ASRSysControls INNER JOIN ASRSysPictures ON ASRSysControls.pictureID = ASRSysPictures.pictureID" & _
+			" WHERE screenID = " & Trim(Str(plngScreenID)) & " AND controlType = " & Trim(Str(ControlTypes.ctlImage))
 		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
     With rsTemp

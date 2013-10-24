@@ -8,12 +8,6 @@ Module modExpression
 
 		Private mobjDataAccess As New clsDataAccess
 
-	'Public Enum AccessCodes
-	'	giACCESS_READWRITE = 0
-	'	giAccess_READONLY = 1
-	'	giACCESS_HIDDEN = 2
-	'End Enum
-
 	Public Const giPRINT_XINDENT As Short = 1000
 	Public Const giPRINT_YINDENT As Short = 1000
 	Public Const giPRINT_XSPACE As Short = 500
@@ -29,12 +23,6 @@ Module modExpression
 	Public Const gsDUMMY_BYREF_NUMERIC As String = "2" & vbTab & "1"
 	Public Const gsDUMMY_BYREF_LOGIC As String = "-7" & vbTab & "0"
 	Public Const gsDUMMY_BYREF_DATE As String = "11" & vbTab & "1/1/1998"
-
-	'' Order object constants.
-	'Public Enum OrderTypes
-	'	giORDERTYPE_STATIC = 0
-	'	giORDERTYPE_DYNAMIC = 1
-	'End Enum
 
 	' Parameter Type constants.
 	Public Const gsPARAMETERTYPE_ORDERID As String = "PType_OrderID"

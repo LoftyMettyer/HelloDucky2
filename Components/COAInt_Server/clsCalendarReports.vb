@@ -332,9 +332,9 @@ Public Class CalendarReport
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsCancelled)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsCancelled)
 			Else
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			End If
 
 		End Set
@@ -345,7 +345,7 @@ Public Class CalendarReport
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			End If
 
 		End Set
@@ -3127,7 +3127,7 @@ ErrorTrap:
 ErrorTrap:
 		mstrErrorString = "Error setting prompted values." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		SetPromptedValues = False
 
 	End Function
@@ -3257,7 +3257,7 @@ ErrorTrap:
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
-			mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			mobjEventLog.AddDetailEntry(mstrErrorString)
 			Exit Function
 		End If
@@ -3271,7 +3271,7 @@ ErrorTrap:
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
-			mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			mobjEventLog.AddDetailEntry(mstrErrorString)
 			Exit Function
 		End If
@@ -3742,7 +3742,7 @@ TidyUpAndExit:
 				rsIDs = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 				If rsIDs.BOF And rsIDs.EOF Then
-					mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 					mobjEventLog.AddDetailEntry(mstrErrorString)
 					mstrErrorString = "The selected picklist contains no records."
 					GetCalendarReportDefinition = False
@@ -3774,7 +3774,7 @@ TidyUpAndExit:
 					If rsIDs.BOF And rsIDs.EOF Then
 						GetCalendarReportDefinition = False
 						mstrErrorString = "The base table filter returned no records."
-						mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+						mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 						mobjEventLog.AddDetailEntry(mstrErrorString)
 						mblnNoRecords = True
 						GoTo TidyUpAndExit
@@ -3793,7 +3793,7 @@ TidyUpAndExit:
 				Else
 					' Permission denied on something in the filter.
 					mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCalendarReportsFilterID) & "' filter."
-					mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 					mobjEventLog.AddDetailEntry(mstrErrorString)
 					GetCalendarReportDefinition = False
 					GoTo TidyUpAndExit
@@ -3842,19 +3842,19 @@ Error_Trap:
 		blnRegionEnabled = False
 		blnWorkingPatternEnabled = False
 
-		If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
+		If (fOK And mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
 
 			blnRegionEnabled = CheckPermission_RegionInfo()
 		End If
 
 		If blnRegionEnabled Then
-			If fOK And mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
+			If fOK And mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
 
 				'get historical bank holidays
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_HistoricBankHolidays()
 
-			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
+			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
 
 				'get static bank holidays collection
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3872,19 +3872,19 @@ Error_Trap:
 
 
 
-		If (fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
+		If (fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
 
 			blnWorkingPatternEnabled = CheckPermission_WPInfo()
 		End If
 
 		If blnWorkingPatternEnabled Then
-			If fOK And mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
+			If fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
 				'get historical working patterns
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_HistoricWorkingPatterns()
 
-			ElseIf fOK And (mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
+			ElseIf fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
 
 				'get static working patterns
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -5744,7 +5744,7 @@ Error_Trap:
 		mstrSQLCreateTable = mstrSQLCreateTable & "[?ID_" & mstrCalendarReportsBaseTableName & "] [varchar] (255) NULL, "
 
 		'Add the static Working Pattern column if required.
-		If (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (modPersonnelSpecifics.gwptWorkingPatternType = modPersonnelSpecifics.WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
+		If (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
 			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, gsPersonnelWorkingPatternColumnName, strTableColumn) Then
 				strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Working_Pattern', " & vbNewLine
 				strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Working_Pattern', " & vbNewLine

@@ -22,15 +22,11 @@ Private mobjGeneral As New clsGeneral
 		Return mobjGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
 	End Function
 	
-	'UPGRADE_WARNING: Sub Main in a DLL won't get called. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A90BF69E-29C2-4F6F-9E44-92CFC7FAA399"'
-	Public Sub Main()
-		
-		'Instantiate User Interface class
-		UI = New clsUI
-		
-		' Are we in debug mode
-		ASRDEVELOPMENT = Not vbCompiled
-		
+	Public Sub Initialise()
+
+
+
+
 	End Sub
 	
 	Public Function vbCompiled() As Boolean

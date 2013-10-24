@@ -20,7 +20,7 @@ Public Class CrossTab
 	Private mstrStatusMessage As String
 	Private mblnUserCancelled As Boolean
 
-	Private mlngCrossTabType As Declarations.CrossTabType
+	Private mlngCrossTabType As CrossTabType
 	Private mstrTempTableName As String
 	Private mcmdUpdateRecDescs As ADODB.Command
 
@@ -249,7 +249,7 @@ Public Class CrossTab
 
 			strOutput = mstrCrossTabName
 
-			If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 				strOutput = strOutput & " (" & ConvertSQLDateToLocale(mstrReportStartDate) & " -> " & ConvertSQLDateToLocale(mstrReportEndDate) & ")"
 			End If
 
@@ -315,7 +315,7 @@ Public Class CrossTab
 	Public ReadOnly Property HorizontalColumnName() As String
 		Get
 
-			If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 				HorizontalColumnName = "Day"
 			Else
 				HorizontalColumnName = Replace(mstrColName(HOR), "_", " ")
@@ -345,11 +345,10 @@ Public Class CrossTab
 	' What type of cross tab are we running as
 	Public ReadOnly Property CrossTabType() As Integer
 		Get
-			CrossTabType = mlngCrossTabType
+			Return mlngCrossTabType
 		End Get
 	End Property
-
-
+	
 	Public ReadOnly Property OutputPreview() As Boolean
 		Get
 			OutputPreview = mblnOutputPreview
@@ -487,7 +486,7 @@ Public Class CrossTab
 	Public Function EventLogAddHeader() As Integer
 
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 			mobjEventLog.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
 		Else
 			mobjEventLog.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
@@ -615,7 +614,7 @@ ErrorTrap:
 		ReDim mastrUDFsRequired(0)
 
 		' Define this cross tab as a normal one
-		mlngCrossTabType = Declarations.CrossTabType.cttNormal
+		mlngCrossTabType = Enums.CrossTabType.cttNormal
 
 		strSQL = "SELECT ASRSysCrossTab.*, " & "'TableName' = ASRSysTables.TableName, " & "'RecordDescExprID' = ASRSysTables.RecordDescExprID, " & "'IntersectionColName' = ASRSysColumns.ColumnName, " & "'IntersectionDecimals' = ASRSysColumns.Decimals " & "FROM ASRSysCrossTab " & "JOIN ASRSysTables ON ASRSysCrossTab.TableID = ASRSysTables.TableID " & "LEFT OUTER JOIN ASRSysColumns ON ASRSysCrossTab.IntersectionColID = ASRSysColumns.ColumnID " & "WHERE CrossTabID = " & CStr(mlngCrossTabID)
 
@@ -665,7 +664,7 @@ ErrorTrap:
 			mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
 			mstrOutputFilename = .Fields("OutputFilename").Value
 
-			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 			mlngColID(HOR) = .Fields("HorizontalColID").Value
 			mdblMin(HOR) = Val(.Fields("HorizontalStart").Value)
@@ -909,8 +908,8 @@ LocalErr:
 		End If
 
 		'MH20020321 Remmed out for INT
-		If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
-			If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
+		If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
+			If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
 				lngMax = lngMax + 2
 				ReDim Preserve strColumn(2, lngMax)
 
@@ -921,7 +920,7 @@ LocalErr:
 				strColumn(2, lngMax) = "LeavingDate"
 			End If
 
-			If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 				lngMax = lngMax + 7
 				ReDim Preserve strColumn(2, lngMax)
 
@@ -978,7 +977,7 @@ LocalErr:
 			mstrStatusMessage = "No records meet selection criteria"
 			mblnNoRecords = True
 			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
-			mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsSuccessful)
+			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			fOK = False
 		End If
 
@@ -1061,7 +1060,7 @@ LocalErr:
 
 				If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
 
-					If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+					If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
 					Else
 						strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
@@ -1172,11 +1171,11 @@ LocalErr:
 			End If
 		Next
 
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
+		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
 			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
 		End If
 
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
 
 		End If
@@ -1259,7 +1258,7 @@ LocalErr:
 			End If
 
 			' Don't put in empty clauses if we're running an absence breakdown
-			If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
+			If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
 				strHeading(lngCount) = "<Empty>"
@@ -1267,7 +1266,7 @@ LocalErr:
 				lngCount = lngCount + 1
 			End If
 
-			If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And strColumnName = "Hor" Then
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And strColumnName = "Hor" Then
 				strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & ",Day_Number, DisplayOrder" & " FROM " & mstrTempTableName & " ORDER BY DisplayOrder"
 			Else
 				strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & " FROM " & mstrTempTableName & " ORDER BY 1"
@@ -1745,7 +1744,7 @@ LocalErr:
 		iAverageColumn = lngNumCols - 1
 
 		' JDM - 22/06/01 - Fault 2476 - Display totals instead
-		If mlngCrossTabType <> Declarations.CrossTabType.cttAbsenceBreakdown Then
+		If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
 			lngTYPE = mlngType
 		Else
 			lngTYPE = TYPETOTAL
@@ -1762,7 +1761,7 @@ LocalErr:
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mstrOutput(lngRow + 1) = Trim(mvarHeadings(VER)(lngRow)) & strDelim & mstrOutput(lngRow + 1)
 		Next
-		mstrOutput(lngNumRows + 2) = IIf(mlngCrossTabType = Declarations.CrossTabType.cttNormal, mstrType(mlngType), "Total") & strDelim & mstrOutput(lngNumRows + 2)
+		mstrOutput(lngNumRows + 2) = IIf(mlngCrossTabType = Enums.CrossTabType.cttNormal, mstrType(mlngType), "Total") & strDelim & mstrOutput(lngNumRows + 2)
 
 		If mblnShowAllPagesTogether Then
 
@@ -1807,7 +1806,7 @@ LocalErr:
 				Next
 
 				' JDM - 10/09/2003 - Fault 7048 - Make the average column not total up.
-				If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And lngCol = iAverageColumn Then
+				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And lngCol = iAverageColumn Then
 					sngAverage = mdblHorTotal(lngCol - 1, lngSinglePage, TYPETOTAL) / mdblHorTotal(lngCol, lngSinglePage, TYPECOUNT)
 					mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(sngAverage) & IIf(lngCol <> lngNumCols, strDelim, "")
 				Else
@@ -1817,7 +1816,7 @@ LocalErr:
 			Next
 
 			'Add the last column details (Vertical totals)
-			If mlngCrossTabType = Declarations.CrossTabType.cttNormal Then
+			If mlngCrossTabType = Enums.CrossTabType.cttNormal Then
 				mstrOutput(0) = mstrOutput(0) & strDelim & mstrType(mlngType)
 				For lngRow = 0 To lngNumRows
 					mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
@@ -1845,17 +1844,17 @@ LocalErr:
 
 		If dblCellValue <> 0 Or mblnSuppressZeros = False Then
 
-			If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
+			If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
 
 				' 1000 seperators
-				If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 					strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
 				Else
 					strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
 
 					If lngHOR = 2 Then
 						strMask = New String("#", 20) & "0.00%"
-					ElseIf lngHOR = 0 And mlngCrossTabType = Declarations.CrossTabType.cttTurnover Then
+					ElseIf lngHOR = 0 And mlngCrossTabType = Enums.CrossTabType.cttTurnover Then
 						strMask = New String("#", 20) & "0.0"
 					End If
 				End If
@@ -1968,7 +1967,7 @@ LocalErr:
 				strOutput = .Fields("RecDesc").Value
 
 				' Build output string for absence breakdown
-				If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 
 					strOutput = strOutput & vbTab
 
@@ -2222,7 +2221,7 @@ LocalErr:
 		ReadAbsenceParameters()
 
 		' Define this cross tab as an absence breakdown
-		mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown
+		mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown
 
 		' Initialse the ok variable
 		fOK = True
@@ -2397,9 +2396,9 @@ LocalErr:
 		Dim lngRow As Integer
 
 
-		strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(mblnPageBreak, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(mblnIntersection, ", Ins as 'Intersection'", vbNullString) & IIf(mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & mstrTempTableName
+		strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(mblnPageBreak, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(mblnIntersection, ", Ins as 'Intersection'", vbNullString) & IIf(mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & mstrTempTableName
 
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 			strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
 
 		ElseIf mblnPageBreak Then

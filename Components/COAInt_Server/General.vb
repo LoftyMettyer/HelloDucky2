@@ -218,7 +218,6 @@ ErrorTrap:
 	Private Sub Class_Initialize_Renamed()
 
 		datData = New clsDataAccess
-		UI = New clsUI
 
 	End Sub
 
