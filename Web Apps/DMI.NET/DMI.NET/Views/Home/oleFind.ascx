@@ -362,7 +362,6 @@
 	$('#frmFindForm').submit(function (e) {
 		var fOK;
 		fOK = true;
-
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
 		// Fault 3503
@@ -406,11 +405,11 @@
 			if (fOK == true) {
 				$("#optionframe").dialog("destroy");
 
-				frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEJustFileName.value;
+				//frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEJustFileName.value;
 				if (frmGotoOption.txtOLEType.value == 3) {
-					frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtGotoOptionFile.value + "::LINKED_OLE_DOCUMENT::";
+					frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEFile.value + "::LINKED_OLE_DOCUMENT::";
 				} else {
-					frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtGotoOptionFile.value + "::EMBEDDED_OLE_DOCUMENT::";
+					frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEJustFileName.value + "::EMBEDDED_OLE_DOCUMENT::";
 				}
 
 				frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
@@ -1241,7 +1240,12 @@
 				bEncryption = (objOLE.OLEType = 2)
 				Session("optionOLEType") = objOLE.OLEType
 				strFullFileName = objOLE.FileName
-				strJustFileName = objOLE.DisplayFilename
+				If objOLE.OLEType = 3 Then
+					strJustFileName = objOLE.Filename
+				Else
+					strJustFileName = objOLE.DisplayFilename
+				End If
+				
 				strFileUncPath = objOLE.UNCAndPath
 				strFileSize = objOLE.DocumentSize
 				strDateModified = objOLE.DocumentModifyDate

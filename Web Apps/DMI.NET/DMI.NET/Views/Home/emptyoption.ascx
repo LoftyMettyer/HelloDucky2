@@ -145,18 +145,18 @@
 				if (txtAction.value == "LINKOLE") {
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
-					if (txtFileValue.value.length > 0) {
+					if (txtFileValue.value.length > 0) {						
 						// set the new photo value if applicable.
 						$('#txtData_' + txtColumnID.value).attr('data-Img', txtFileValue.value);
 					}
-						recEdit_setData(txtColumnID.value, txtFile.value);
+
+					recEdit_setData(txtColumnID.value, txtFile.value);
+
 					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
-					//recEditControl.changed = true;
-					
-					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-					menu_refreshMenu();
-				}
-				
+						$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+						menu_refreshMenu();
+					}
+
 
 				if ((txtAction.value == "SELECTTRANSFERCOURSE") ||
 						(txtAction.value == "SELECTBOOKCOURSE_2") ||

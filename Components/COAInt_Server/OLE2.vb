@@ -23,7 +23,6 @@ Public Class Ole
 	Private _mstrDummyConnectionString As String
 	Private _mbUseEncryption As Boolean
 	Private _mobjStream As ADODB.Stream
-	Private _mfileToEmbed As Byte()
 	Private _misPhoto As Boolean
 
 	' Do we use encryption?
@@ -173,9 +172,6 @@ Public Class Ole
 				_mobjStream.Type = ADODB.StreamTypeEnum.adTypeBinary
 			End If
 
-			abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
-			Dim fFileOK = (abtImage.GetLength(0) > 0)
-
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
 				_mobjStream.Write(rsDocument.Fields(strColumnName).Value)
@@ -187,7 +183,11 @@ Public Class Ole
 			End If
 
 			If _mobjStream.Size > 0 Then
+				abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
+				Dim fFileOK = (abtImage.GetLength(0) > 0)
+
 				strTempFile = GetTmpFName()
+
 				_mobjStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
 
 				'objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
@@ -222,7 +222,7 @@ Public Class Ole
 					' TODO: content stream to client - no holding area.
 					' mstrFileName = GenerateDocumentFromStream
 				Else
-					_mstrFileName = _mstrUnc & _mstrPath & "\" & _mstrFileName
+					_mstrFileName = _mstrPath & "\" & _mstrFileName
 				End If
 
 			End If
@@ -319,7 +319,7 @@ ErrorTrap:
 				If _miOLEType = 2 Then
 					GetPropertiesFromStream = _mstrFileName & "::EMBEDDED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 				Else
-					GetPropertiesFromStream = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
+					GetPropertiesFromStream = _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 				End If
 
 			End With
@@ -525,6 +525,7 @@ ErrorTrap:
 		Dim strEmbedFileName As String
 		Dim bUpdateField As Boolean
 		Dim test As Boolean
+		Dim mfileToEmbed As Byte()
 
 		bOK = True
 		bUpdateField = False
@@ -546,13 +547,15 @@ ErrorTrap:
 
 			Dim utf8 As Encoding = Encoding.UTF8
 			Dim header As Byte() = utf8.GetBytes(sb.ToString())
-			ReDim _mfileToEmbed((header.Length + buffer.Length) - 1)
 
-			header.CopyTo(_mfileToEmbed, 0)
+			ReDim mfileToEmbed((header.Length) - 1)
+
+			header.CopyTo(mfileToEmbed, 0)
 
 			' If embedded file tack onto the end of the stream
 			If _miOLEType = 2 Then	' Embedded
-				buffer.CopyTo(_mfileToEmbed, header.Length)
+				ReDim Preserve mfileToEmbed((header.Length + buffer.Length) - 1)
+				buffer.CopyTo(mfileToEmbed, header.Length)
 			End If
 
 			' Flag the update to occur
@@ -577,8 +580,8 @@ ErrorTrap:
 			.Parameters.Append(pmADO)
 
 			If _mstrFileName <> "" Then
-				If _mfileToEmbed.Length > 0 Then
-					pmADO.Value = _mfileToEmbed
+				If mfileToEmbed.Length > 0 Then
+					pmADO.Value = mfileToEmbed
 				Else
 					pmADO.Value = System.DBNull.Value
 				End If

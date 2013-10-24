@@ -5739,7 +5739,11 @@ Namespace Controllers
 						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
 						.OLEModifiedDate = Request.Form("txtOLEModifiedDate")
 						.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
-						Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
+						If .OLEType = 2 Then
+							Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
+						Else
+							Session("optionFileValue") = .FileName
+						End If
 
 						' .DeleteTempFile()
 					End With
