@@ -63,12 +63,13 @@ namespace Fusion.Connector.OpenHR.Database
 						if (su != null)
 						{
 							su.costCenter = su.costCenter == "" ? null : su.costCenter;
+
 							su.effectiveToSpecified = true;
-							su.costCenterSpecified = true;
+							su.costCenterSpecified = su.costCenter != null;
 
 							if (su.isRecordInactive == true)
 							{
-								su.contractName = "** Deleted **";
+								su.costCenterSpecified = false;
 								su.maximumHoursPerWeek = 0;
 								su.contractedHoursPerWeek = 0;
 								su.primarySite = "** Deleted **";

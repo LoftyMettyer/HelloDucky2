@@ -31,7 +31,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 				[XmlIgnoreAttribute]
 				public bool? isRecordInactive { get; set; }
 
-				[XmlElementAttribute(IsNullable = true)]
+				[XmlElementAttribute(IsNullable = false)]
 				public string costCenter { get; set; }
 
 				[XmlIgnoreAttribute()]
