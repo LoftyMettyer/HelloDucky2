@@ -491,14 +491,14 @@ table.calendarcell
 
 .DashHeader {position: absolute; top: 0px; height: 126px;left: 70px; right: 0px;}
 
-.RecordDescription 
+.ViewDescription 
 {
 	/*width: 100%;*/
 	padding-left: 10px;
 	/*padding-bottom: 5px;*/
 	}
 	
-	.RecordDescription img 
+	.ViewDescription img 
 	{
 		width: 48px;
 		height: 48px;
@@ -507,7 +507,7 @@ table.calendarcell
 		margin-left: 5px;
 	}
 	
-	.RecordDescription p
+	.ViewDescription p
 	{		
 		margin: 0px;
 		font-size: xx-large;

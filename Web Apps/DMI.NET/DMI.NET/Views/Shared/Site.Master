@@ -363,15 +363,6 @@
 								}
 							}
 						}
-
-
-
-						var breadcrumb = $(".pageTitle").text();
-						if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
-							//$(".RecordDescription a:nth-child(n+2)").remove();
-						} else if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
-							//$(".RecordDescription p").append("<a href='#'>: " + breadcrumb + "</a>");
-						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);
 						$("#errorDialogContentText").html(e.responseText);

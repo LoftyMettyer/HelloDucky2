@@ -68,8 +68,8 @@
 
 </script>
 <div id="fixedlinks">
-	<div class="RecordDescription">
-		<p><a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" title="Home"><%=Session("recdesc")%></a></p>
+	<div class="ViewDescription">
+		<p></p>
 	</div>
 	<div class="FixedLinksLeft">
 		<div id="officebar" class="officebar ui-widget-header ui-widget-content">

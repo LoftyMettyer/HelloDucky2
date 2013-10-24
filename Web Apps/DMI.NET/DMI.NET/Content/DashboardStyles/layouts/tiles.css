@@ -311,17 +311,16 @@ li {list-style: none;}
 
 /* === Fixed Links === */
 
-.RecDescPhoto, .RecordDescription { display: none;}
+.RecDescPhoto { display: none;}
 
-.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
-	color: white;
-	text-decoration: none;
+.ViewDescription {
+	display: block;
+	position: fixed;
+	bottom: 5px;
+	left: 320px;
+	font-weight: normal;
 }
-.RecordDescription a:hover {
-	/*border-bottom: 2px solid orange;*/
-	border-bottom: 2px solid white;
 
-}
 
 .FixedLinksLeft, #fixedlinks {
 	position: fixed;	

@@ -15,16 +15,24 @@ body
 	top: 170px;
 }
 
-.RecDescPhoto, .RecordDescription {
+.RecDescPhoto {
 	display: none;
 }
 
-.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
-	color: white;
-	text-decoration: none;
+.ViewDescription {
+	display: block;
+	background-color: transparent;
+	position: fixed;
+	z-index: 99;
+	right: 0;
+	top: 120px;
+	margin-right: 15px;
+	font-weight: normal;
 }
-.RecordDescription a:hover {
-	border-bottom: 2px solid orange;
+
+.ViewDescription p {
+	font-size: large;
+	color: white;
 }
 
 #fixedlinks {

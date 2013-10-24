@@ -103,7 +103,6 @@
 
 			refreshPendingWorkflowTiles();
 
-
 			if (window.currentLayout == "tiles") {
 				setupTiles();
 			} else {
@@ -123,7 +122,6 @@
 				});
 			}
 
-
 			if (window.currentLayout == "wireframe") {
 				//set up the classes 
 
@@ -139,7 +137,7 @@
 				$('.buttonlinkcontent>ul').removeClass('ui-corner-all').addClass('ui-corner-bottom');
 
 				$('.DashContent').addClass("ui-widget ui-widget-content");
-				//$('.RecordDescription').addClass('ui-widget ui-widget-content');
+				//$('.ViewDescription').addClass('ui-widget ui-widget-content');
 			}
 
 
@@ -176,7 +174,12 @@
 					$(ulelement).addClass('cols2');
 				}
 
-			});		
+			});
+			
+
+			//display view details
+			$('.ViewDescription p').text('<%=Session("ViewDescription")%>');
+
 		});
 
 		function setupTiles() {
@@ -377,7 +380,7 @@
 
 	Err.Clear()
 	Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
-	  
+		
 	If (Err.Number <> 0) Then		
 	' Workflow not licensed or configured. Go to default page.
 	_WorkflowGood = False
@@ -532,7 +535,7 @@
 								Dim sText As String
 								Dim sDestination As String
 								
-								For iCount = 1 To objNavigationHyperlinkInfo.Count									
+								For iCount = 1 To objNavigationHyperlinkInfo.Count
 									sText = Html.Encode(objNavigationHyperlinkInfo(iCount).text1)
 		
 									If objNavigationHyperlinkInfo(iCount).linkToFind = 0 Then
@@ -546,19 +549,19 @@
 									Else
 										sDestination = "recordEditMain?multifind_0_" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
 									End If
-								%>
-							
+							%>
+
 							<%If iRowNum > iMaxRows Then%>
-							<% iColNum += 1%>
+							<%	iColNum += 1%>
 							<%iRowNum = 1%>
 							<script type="text/javascript">
 								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
 								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
 							<%End If%>
-							
 
-								<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+
+							<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="goHyperlink('<%=sDestination%>', 0)">
 								<a href="#"><%=sText%></a>
 								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
@@ -566,7 +569,7 @@
 							<%iRowNum += 1%>
 							<%tileCount += 1%>
 							<%Next%>
-							
+
 
 							<%If Not fFirstSeparator Then		' close off the hypertext group%>
 						</ul>
@@ -734,7 +737,7 @@
 									' Pass required info to the DLL
 									objChart.Username = Session("username")
 									objChart.Connection = Session("databaseConnection")
-        
+				
 									Err.Clear()
 									Dim mrstDBValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
 																															navlink.Chart_AggregateType, navlink.Element_Type, navlink.Chart_SortOrderID, _
@@ -918,7 +921,8 @@
 
 <script type="text/javascript">
 	//Display Pending Workflow Steps if appropriate
-	if ('<%=fWFDisplayPendingSteps%>' == 'True') {		
+	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {
+		alert("doh");
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 </script>

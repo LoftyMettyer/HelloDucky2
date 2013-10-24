@@ -2626,7 +2626,53 @@ Namespace Controllers
 					cmdSSRecord = Nothing
 
 
+					' Are we displaying the Workflow Out of Office Hyperlink for this view?
+					Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
+					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
+					Dim fShowOOOHyperlink As Boolean = False
+
+					Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
+					cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
+					cmdShowOOOLink.CommandType = 4 ' Stored procedure
+					cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
+					cmdShowOOOLink.Parameters.Append(prmTableID2)
+					prmTableID2.Value = lngSSILinkTableID
+
+					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
+					cmdShowOOOLink.Parameters.Append(prmViewID2)
+					prmViewID2.Value = lngSSILinkViewID
+
+					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
+					cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
+
+					Err.Clear()
+					cmdShowOOOLink.Execute()
+
+					If (Err.Number() <> 0) Then
+						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
+					Else
+						fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
+					End If
+
+					Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
+					cmdShowOOOLink = Nothing
+
+				Catch ex As Exception
+					' TODO: SHow an error message
+				End Try
+				' End Ripped
+			End If
+
+
+			' For SSI, subordinate views
+			If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) Then
+
+				Try
+
 					' Get the record description.
+					Dim sErrorDescription As String = ""
 					Dim sRecDesc = ""
 					Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
 
@@ -2638,7 +2684,7 @@ Namespace Controllers
 					cmdGetRecordDesc.Parameters.Append(prmTableID)
 					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
 
-					prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
+					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
 					cmdGetRecordDesc.Parameters.Append(prmRecordID)
 					prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
 
@@ -2665,8 +2711,8 @@ Namespace Controllers
 					Dim fDeadlock = True
 					Dim iRetryCount = 0
 					Dim iRETRIES = 0
-
-
+					Dim sViewDescription As String = ""
+					
 					Do While fDeadlock
 						fDeadlock = False
 
@@ -2712,7 +2758,7 @@ Namespace Controllers
 					Loop
 
 					If Len(sErrorDescription) = 0 Then
-						Session("recdesc") = cmdGetRecordDesc.Parameters("recordDesc").Value
+						sViewDescription = cmdGetRecordDesc.Parameters("recordDesc").Value
 					Else
 						Session("ErrorTitle") = "Login Page"
 						Session("ErrorText") =
@@ -2724,43 +2770,50 @@ Namespace Controllers
 					cmdGetRecordDesc = Nothing
 
 
-					' Are we displaying the Workflow Out of Office Hyperlink for this view?
-					Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
-					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
-					Dim fShowOOOHyperlink As Boolean = False
+					' get the view name, and append it.
+					Dim sViewName As String
+					sViewName = ""
+					Dim cmdSSRecord = New ADODB.Command
 
-					Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
-					cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
-					cmdShowOOOLink.CommandType = 4 ' Stored procedure
-					cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
+					cmdSSRecord.CommandText = "SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID")
+					cmdSSRecord.ActiveConnection = Session("databaseConnection")
 
-					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
-					cmdShowOOOLink.Parameters.Append(prmTableID2)
-					prmTableID2.Value = lngSSILinkTableID
+					Dim objRs = cmdSSRecord.Execute()
 
-					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
-					cmdShowOOOLink.Parameters.Append(prmViewID2)
-					prmViewID2.Value = lngSSILinkViewID
+					Do While Not objRs.EOF
+						sViewName = CType(objRs.Fields(0).Value, String)						
+						objRs.MoveNext()
+					Loop
+					
+					cmdSSRecord = Nothing
+					
+					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & " view - " & sViewDescription
+					
+					Session("ViewDescription") = sViewDescription
 
-					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
-					cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
 
-					Err.Clear()
-					cmdShowOOOLink.Execute()
+					'cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
+					'cmdSSRecord.CommandType = 4	' Stored Procedure
+					'cmdSSRecord.ActiveConnection = Session("databaseConnection")
 
-					If (Err.Number() <> 0) Then
-						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
-					Else
-						fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
-					End If
+					'Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
+					'cmdSSRecord.Parameters.Append(prmRecordID)
 
-					Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-					cmdShowOOOLink = Nothing
+					'Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
+					'cmdSSRecord.Parameters.Append(prmRecordCount)
+
+					'Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
+					'cmdSSRecord.Parameters.Append(prmViewID)
+					'prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
+
+					'cmdSSRecord.Execute()
+
+
 
 				Catch ex As Exception
-					' TODO: SHow an error message
+
 				End Try
-				' End Ripped
+
 			End If
 
 
@@ -5985,6 +6038,7 @@ Namespace Controllers
 		Public Sub ResetSessionVars()
 			Session("recordID") = ""
 			Session("linkType") = ""
+			Session("ViewDescription") = ""
 		End Sub
 
 	End Class
