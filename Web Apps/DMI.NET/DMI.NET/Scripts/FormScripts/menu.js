@@ -2305,7 +2305,11 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 		(sCurrentPage == "LINKFIND") ||
 		(sCurrentPage == "TBTRANSFERCOURSEFIND")) {
 
-		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+	if (psAction != "COPY") { //Don't remove the colour picker container if we are copying a record
+		$('.sp-container').remove();
+	}
+	
+	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		//if (frmRecEdit.ctlRecordEdit.changed == true) {
 		if($("#ctlRecordEdit #changed").val() == "true") {
 			// Expand the work frame and hide the option frame.

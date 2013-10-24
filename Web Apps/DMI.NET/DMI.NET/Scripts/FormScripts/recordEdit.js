@@ -454,12 +454,10 @@ function insertUpdateDef() {
 						//	asColumns(4, iNextIndex) = Replace(objControl.Value, vbTab, " ")
 					}
 
-					else if (objScreenControl.ControlType == Math.pow(2, 15)) {
-						fDoControl = false;
-						//TODO: Colour picker...
-						//TypeOf objControl Is COA_ColourSelector Then
-						//	asColumns(2, iNextIndex) = Val(objControl.BackColor)
-						//	asColumns(4, iNextIndex) = Val(objControl.BackColor)
+					else if (objScreenControl.ControlType == Math.pow(2, 15)) { // 32768 - ctlColourPicker
+						fDoControl = true;
+						asColumnsToAdd[1] = objControl.val();
+						asColumnsToAdd[3] = objControl.val();
 					}
 
 					else if (objScreenControl.ControlType == 2048) {						
@@ -1631,9 +1629,28 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//TODO: Nav control always .disabled = false.
 			//if (tabIndex > 0) checkbox.tabindex = tabIndex;
 			break;
-		case 2 ^ 15: //ctlColourPicker
-			//TODO: .disabled = (!fControlEnabled);
-			//if(tabIndex > 0) checkbox.tabindex = tabIndex;
+		case Math.pow(2, 15): // 32768 - ctlColourPicker
+			//The color picker plugin takes an input box, hides it and creates some divs to show the color picker;
+			//so we need two input boxes: one that will contain the color itself and another one to be used by the plugin
+			var textboxColorPickerPlugin; //To be used by the plugin
+			textboxColorPickerPlugin = document.createElement('input');
+			textboxColorPickerPlugin.type = "text";
+			textboxColorPickerPlugin.className = "colorPicker";
+			addControl(iPageNo, textboxColorPickerPlugin);
+			
+			var textboxColorPicker; //To contain the value that will be saved
+			textboxColorPicker = document.createElement('input');
+			textboxColorPicker.type = "text";
+			textboxColorPicker.id = controlID;
+			textboxColorPicker.value = controlItemArray[24];
+			textboxColorPicker.style.display = "none";
+			textboxColorPicker.className = "colorPicker";
+			textboxColorPicker.setAttribute("data-columnID", columnID);
+			textboxColorPicker.setAttribute('data-controlType', controlItemArray[3]);
+			textboxColorPicker.setAttribute("data-control-tag", key);
+			addControl(iPageNo, textboxColorPicker);
+			
+			//Note: the plugin is hooked up to the control in the updateControl function
 			break;
 		default:
 			break;
@@ -1839,6 +1856,19 @@ function updateControl(lngColumnID, value) {
 						} else {
 							$(this).val(OpenHR.ConvertSQLDateToLocale(value));
 						}
+					} else if ($(this).hasClass("colorPicker")) { //Color picker
+						var thisID = $(this).attr("id"); //We need the ID for the plugin
+					
+						$('.colorPicker').spectrum('destroy');
+						//Hook up the plugin to the control
+						$(".colorPicker").spectrum({
+							color: "#" + Number(value).toString(16),
+							className: "colorPicker",
+							cancelText: "", //Hide the Cancel button
+							change: function(color) {
+								$("#" + thisID).val(parseInt(color.toHex(), 16)).change();
+							}
+						});
 					} else {
 						$(this).val(value);
 					}

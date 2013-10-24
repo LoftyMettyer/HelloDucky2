@@ -94,7 +94,8 @@ Namespace App_Start
 				"~/Scripts/FormScripts/optionData.js",
 				"~/Scripts/FormScripts/recordEdit.js",
 				"~/Scripts/autoNumeric-1.9.15.js",
-				"~/Scripts/jquery.limit-1.2.source.js"))
+				"~/Scripts/jquery.limit-1.2.source.js",
+				"~/Scripts/ColorPicker/spectrum.js"))
 
 			'ActiveX bundle (no minify)
 			bundles.Add(New Bundle("~/bundles/OpenHR_ActiveX").Include(

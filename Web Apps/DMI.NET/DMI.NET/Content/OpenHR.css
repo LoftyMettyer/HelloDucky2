@@ -722,3 +722,11 @@ header {
 	font-size: small;
 	margin-top: -1px;
 }
+
+/* Color picker */
+.colorPicker {
+  height: 10px;
+  left: 175px;
+  position: absolute;
+  top: 190px;
+}

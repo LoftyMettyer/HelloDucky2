@@ -191,6 +191,7 @@
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
+    <Content Include="Content\spectrum.css" />
     <Content Include="Content\table.css" />
     <Content Include="Content\themes\activeX\images\animated-overlay.gif" />
     <Content Include="Content\themes\activeX\images\ui-bg_diagonals-small_50_262626_40x40.png" />
@@ -635,6 +636,7 @@
     <Content Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml.user" />
     <Content Include="Pictures\Logo.ico" />
     <Content Include="Scripts\ClientDLL.js" />
+    <Content Include="Scripts\ColorPicker\spectrum.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />
     <Content Include="misc\mainmenu.htm" />
