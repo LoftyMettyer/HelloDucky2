@@ -356,13 +356,19 @@
 
 
 <script type="text/javascript">
-		function configuration_window_onload() {
+    function configuration_window_onload() {
+        
 
 				$("#workframe").attr("data-framesource", "CONFIGURATION");
 
 //        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
 				showDefaultRibbon();
+
+				var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+
+                // Get menu to refresh the menu.
+				menu_refreshMenu();
 
 				// Load the original values into tab 1.
 				setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
@@ -403,19 +409,30 @@
 				//frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
 				display_Configuration_Page(1);
-
+			
 				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+				menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
 			  // $('#mnutoolSaveAdminConfig').click('okClick()');
 
 				$("#toolbarAdminConfig").parent().show();
 				$("#toolbarAdminConfig").click();
-		}
+				$('input[name^="txt"]').on("change", function () { enableSaveButton(); });
+				$('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
+				$('input[name^="chk"]').on("change", function () { enableSaveButton(); });
+		
+
+    }
+
+    function enableSaveButton() {
+        if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
+    }
 </script>
 
 
 <script type="text/javascript">
 
-		function display_Configuration_Page(piPageNumber) {
+    
+    function display_Configuration_Page(piPageNumber) {
 
 				if (piPageNumber == 1) {
 						div1.style.visibility = "visible";
