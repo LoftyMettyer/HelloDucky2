@@ -299,6 +299,7 @@ Namespace Controllers
 
 			' Track session specific data
 			Dim objServerSession As New HR.Intranet.Server.SessionInfo
+			objServerSession.Username = sUserName
 			objServerSession.Initialise()
 			Session("sessionContext") = objServerSession
 
