@@ -419,12 +419,13 @@
 
 	<div id="" class="DashContent" style="display: block;">
 		<div class="tileContent">
-		<%Dim fFirstSeparator = True%>
-		<%Const iMaxRows As Integer = 4%>
-		<%Dim iRowNum = 1%>
-		<%Dim iColNum = 1%>
-		<%Dim iSeparatorNum = 0%>
-			<%Dim sOnclick As String = ""%>
+		<%Dim fFirstSeparator = True
+			Const iMaxRows As Integer = 4
+			Dim iRowNum = 1
+			Dim iColNum = 1
+			Dim iSeparatorNum = 0
+			Dim sOnclick As String = ""
+			Dim sText As String = ""%>
 			
 			<div class="pendingworkflowlinks">
 			<ul class="pendingworkflowsframe cols2">
@@ -439,27 +440,37 @@
 			</div>
 			<%fFirstSeparator = True%>
 			<div class="hypertextlinks">
-				<%Dim tileCount = 1%>
-				<%For Each navlink In Model.NavigationLinks%>
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>			
-				<%--Dim sTileColourClass = "absColour3"--%>			
-				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
-				<%If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then		' separator%>
-				<%iRowNum = 1%>
-				<%iColNum = 1%>
-				<%If fFirstSeparator Then%>
-				<%fFirstSeparator = False%>
-				<%Else%>
+				<%Dim tileCount = 1
+					For Each navlink In Model.NavigationLinks
+						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
+					If navlink.LinkType = 0 Then	 ' hypertext link
+						If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then		' separator
+							iRowNum = 1
+							iColNum = 1
+							If fFirstSeparator Then
+								fFirstSeparator = False
+										Else%>
 				</ul>
 			</div>
 			</li> </ul>
-			<%End If%>
-			<%iSeparatorNum += 1%>
+			<%End If
+				iSeparatorNum += 1
+				
+				If navlink.Text.Length > 0 Then
+					sText = Html.Encode(navlink.Text)
+					sText = sText.Replace("--", "")
+					sText = sText.Replace("'", """")
+				Else
+					sText = ""
+				End If
+				
+				%>
+			
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
 					<div class="wrapupcontainer">
 						<div class="wrapuptext">
-							<p class="hypertextlinkseparator"><%: Replace(navlink.Text, "--", "")%></p>
+							<p class="hypertextlinkseparator"><%=sText%></p>
 						</div>
 					</div>					
 					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
@@ -532,7 +543,7 @@
 								'	iFindPage = 0
 								'End If
 								Dim objNavigationHyperlinkInfo = objNavigation.GetNavigationLinks(0, CBool(iFindPage))
-								Dim sText As String
+								
 								Dim sDestination As String
 								
 								For iCount = 1 To objNavigationHyperlinkInfo.Count
@@ -921,7 +932,7 @@
 
 <script type="text/javascript">
 	//Display Pending Workflow Steps if appropriate
-	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {
+	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0) && ('<%=Session("ViewDescription")%>' == '')) {
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 </script>

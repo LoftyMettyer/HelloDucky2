@@ -168,6 +168,15 @@ width:12em; */
 .cols2 { width: 280px;}
 .cols3 { width: 420px;}
 .cols4 { width: 560px;}
+.cols5 { width: 700px;}
+.cols6 { width: 840px;}
+.cols7 { width: 980px;}
+.cols8 { width: 1120px;}
+.cols9 { width: 1260px;}
+.cols10 { width: 1400px;}
+.cols11 { width: 1540px;}
+.cols12 { width: 1680px;}
+
 
 .gridster {
 	margin: 0px auto; transition:opacity 0.6s;  opacity: 0.8; -webkit-transition: opacity .6s; -moz-transition: opacity .6s; -o-transition: opacity .6s;
