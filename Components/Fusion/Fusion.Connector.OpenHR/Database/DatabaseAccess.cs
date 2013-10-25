@@ -69,6 +69,7 @@ namespace Fusion.Connector.OpenHR.Database
 
 							if (su.isRecordInactive == true)
 							{
+								su.contractName = "** Deleted **";
 								su.costCenterSpecified = false;
 								su.maximumHoursPerWeek = 0;
 								su.contractedHoursPerWeek = 0;
