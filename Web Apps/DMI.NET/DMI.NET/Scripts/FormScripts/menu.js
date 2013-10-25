@@ -1694,6 +1694,8 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value)));
 					menu_setVisibleMenuItem("mnutoolClearFilterRecordFind", true);
 					menu_toolbarEnableItem("mnutoolClearFilterRecordFind", (frmFind.txtFilterDef.value.length > 0));
+					$('#mnutoolLocateRecordFind').removeClass('disabled'); //Can't use menu_toolbarEnableItem to enable this because that function relies on an img being inside the div and this div doesn't have one
+					$('#mnutoolLocateRecordFind input').removeAttr('disabled'); //Enable text box
 			}
 
 
