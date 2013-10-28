@@ -235,6 +235,10 @@ body
 	padding-right: 10px;
 }
 
+.DBValue {
+	line-height: 2;
+}
+
 .DBVSpinner 
 {
 	height: 16px;

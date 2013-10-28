@@ -3,6 +3,7 @@
 <% Response.Expires = -1 %>
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -819,7 +820,45 @@
 
 
 							<%Case 4		' Database Value
-																	
+									
+									' DBValue Formatting options...
+									Dim fUseFormatting = navlink.UseFormatting
+									
+									Dim iFormatting_DecimalPlaces = CleanNumeric(navlink.Formatting_DecimalPlaces)
+									Dim fFormatting_Use1000Separator = navlink.Formatting_Use1000Separator
+									Dim sFormatting_Prefix = Html.Encode(navlink.Formatting_Prefix)
+									Dim sFormatting_Suffix = Html.Encode(navlink.Formatting_Suffix)
+		
+									' DBValue Conditional Formatting options...
+									Dim fUseConditionalFormatting = navlink.UseConditionalFormatting
+
+									Dim sCFOperator(2), sCFValue(2), sCFStyle(2), sCFColour(2)
+									
+									sCFOperator(0) = navlink.ConditionalFormatting_Operator_1
+									sCFOperator(1) = navlink.ConditionalFormatting_Operator_2
+									sCFOperator(2) = navlink.ConditionalFormatting_Operator_3
+		
+									sCFValue(0) = navlink.ConditionalFormatting_Value_1
+									sCFValue(1) = navlink.ConditionalFormatting_Value_2
+									sCFValue(2) = navlink.ConditionalFormatting_Value_3
+		
+									sCFStyle(0) = navlink.ConditionalFormatting_Style_1
+									sCFStyle(1) = navlink.ConditionalFormatting_Style_2
+									sCFStyle(2) = navlink.ConditionalFormatting_Style_3
+		
+									sCFColour(0) = navlink.ConditionalFormatting_Colour_1
+									sCFColour(1) = navlink.ConditionalFormatting_Colour_2
+									sCFColour(2) = navlink.ConditionalFormatting_Colour_3
+
+									' Set the conditional formatting defaults
+									Dim sCFForeColor = "" + Session("Config-linkspagebuttontext-colour")
+									Dim sCFFontBold = "" + Session("Config-linkspagebuttontext-bold")
+									Dim sCFFontItalic = "" + Session("Config-linkspagebuttontext-italic")
+									Dim sCFVisible = True
+		
+									Dim fFormattingApplies = True   																		
+									
+									Dim sErrorDescription = ""
 									Dim sPrompt = navlink.Text
 									sText = ""
 									
@@ -827,31 +866,120 @@
 									Dim objChart = New HR.Intranet.Server.clsChart
 
 									' Pass required info to the DLL
-									objChart.Username = Session("username")
-									objChart.Connection = Session("databaseConnection")
+									objChart.Username = CType(Session("username"), String)
+									objChart.Connection = CType(Session("databaseConnection"), Connection)
 				
 									Err.Clear()
-									Dim mrstDBValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
+									Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
 																															navlink.Chart_AggregateType, navlink.Element_Type, navlink.Chart_SortOrderID, _
 																															navlink.Chart_SortDirection, navlink.Chart_ColourID)
 
-									Do While Not mrstDBValueData.EOF
-										sText = mrstDBValueData.Fields(0).Value
-										mrstDBValueData.MoveNext()
-									Loop
+									If Err.Number <> 0 Then
+										sErrorDescription = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+									End If
+									
+									If Len(sErrorDescription) = 0 Then
+										If Not (mrstDbValueData.EOF And mrstDbValueData.BOF) Then
+											Do While Not mrstDbValueData.EOF
+												sText = CType(mrstDbValueData.Fields(0).Value, String)
+												mrstDbValueData.MoveNext()
+											Loop
+											Dim fDoFormatting As Boolean
+											
+											If fUseConditionalFormatting = True Then
+												For jnCount = 0 To 2
+													fDoFormatting = False
+													If sCFValue(jnCount) <> vbNullString Then
+														Select Case sCFOperator(jnCount)
+															Case "is equal to"
+																If CType(sText, Int32) = CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+															Case "is not equal to"
+																If CType(sText, Int32) <> CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+															Case "is less than or equal to"
+																If CType(sText, Int32) <= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+															Case "is greater than or equal to"
+																If CType(sText, Int32) >= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+															Case "is less than"
+																If CType(sText, Int32) < CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+															Case "is greater than"
+																If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True																														
+														End Select
+														
+														If fDoFormatting Then
+															sCFForeColor = sCFColour(jnCount)
+															Select Case sCFStyle(jnCount)
+																Case "Bold"
+																	sCFFontBold = "font-weight:bold"
+																Case "Italic"
+																	sCFFontItalic = "font-style:italic"
+																Case "Bold & Italic"
+																	sCFFontItalic = "font-weight:bold;font-style:italic"
+																Case "Hidden"
+																	sCFVisible = False
+																Case "Normal"
+																	fFormattingApplies = True
+																Case Else
+																	fFormattingApplies = False
+															End Select
+															Exit For
+														End If
+													End If
+												Next
+											Else
+												fFormattingApplies = False
+											End If
+
+
+										Else	 ' no results - return zero
+											sText = "No Data"
+										End If
+										mrstDbValueData.Close()
+									End If
 
 									
-									%>
-								<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-									data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
-									<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
-										<p class="DBValue" id="DBV<%: navlink.id %>"><%=sText%></p>
-									</div>
-									<a href="#">
-										<p class="DBValueCaption">
-											<%: navlink.Text %></p>
-									</a>
-								</li>
+									If sText <> "No Data" And sCFVisible = True Then
+									
+										If fFormattingApplies Then
+							%>
+							<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
+								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
+									<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
+											<%If fUseFormatting = True Then%>
+										 <%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%>
+										<%Else%>
+										<%: sText %>
+										<%end if %>
+									</p>
+								</div>
+								<a href="#">
+									<p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">										
+										<%: navlink.Text %>
+									</p>
+								</a>
+							</li>
+
+							<%Else%>
+							<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
+								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
+									<p class="DBValue" id="DBV<%: navlink.id %>">
+											<%If fUseFormatting = True Then%>
+										 <%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%>
+										<%Else%>
+										<%: sText %>
+										<%end if %>
+									</p>
+								</div>
+								<a href="#">
+									<p class="DBValueCaption">
+										<%: navlink.Text %>
+									</p>
+								</a>
+							</li>
+							<%End If
+								End If%>
+
 								<script type="text/javascript">									//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
