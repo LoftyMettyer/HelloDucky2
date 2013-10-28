@@ -240,10 +240,10 @@
 		}
 
 		//NPG20082901 Fault 12873
-		function isEMail(psURL) {
+		function isEMail(psURL) {			
 			var pblnIsEMail, psSearchString;
-			psSearchString = /mailto/;
-			pblnIsEMail = psURL.search(psSearchString);
+			psSearchString = 'mailto';
+			pblnIsEMail = psURL.search(psSearchString);			
 			return (pblnIsEMail);
 		}
 
@@ -258,12 +258,16 @@
 
 		function relocateURL(psURL, pfNewWindow) {
 			if (!dragged) {
-				// Submit the refresh.asp to keep the session alive
+								// Submit the refresh.asp to keep the session alive
 
 				refreshSession();
 
 				//NPG20081102 Fault 12873
-				if ((pfNewWindow == 1) || (isEMail(psURL) == 0)) {
+				if (isEMail(psURL) == 0) {
+					window.location.href = psURL;
+					return false;
+				}
+				if (pfNewWindow == 1) {
 					window.open(psURL);
 				} else {
 					try {
@@ -278,8 +282,9 @@
 		}
 
 
-		function goHyperlink(psURL, pfNewWindow) {
-			try {
+		function goURL(psURL, pfNewWindow, pfExternal) {
+			try {				
+				pfNewWindow = (pfExternal==true?1:0);
 				//if (txtHypertextLinksEnabled.value != 0) {
 				relocateURL(psURL, pfNewWindow);
 				//}
@@ -425,7 +430,14 @@
 			Dim iColNum = 1
 			Dim iSeparatorNum = 0
 			Dim sOnclick As String = ""
-			Dim sText As String = ""%>
+			Dim sText As String = ""
+			Dim sURL As String = ""
+			Dim classIcon As String = ""
+			Dim sNewWindow As String = ""
+			Dim sAppFilePath As String = ""
+			Dim sAppParameters As String = ""
+			
+			%>
 			
 			<div class="pendingworkflowlinks">
 			<ul class="pendingworkflowsframe cols2">
@@ -486,14 +498,19 @@
 							</script>
 							<%End If%>
 							<%
-								Dim classIcon As String = ""								
-								Dim sNewWindow As String = ""
+								classIcon = ""
+								sNewWindow = ""
 								
 								Select Case navlink.Element_Type%>
 							<%Case 0
-									Dim sURL = Html.Encode(navlink.URL).Replace("'", "\'")
-									Dim sAppFilePath = navlink.AppFilePath.Replace("\", "\\")
-									Dim sAppParameters = navlink.AppParameters.Replace("\", "\\")
+									sURL = NullSafeString(navlink.URL).Replace("'", "\'")
+									sURL = sURL.Replace("&", "&amp;")
+									sURL = sURL.Replace("""", "&quot;")
+									sURL = sURL.Replace(">", "&gt;")
+									sURL = sURL.Replace("<", "&lt;")
+									
+									sAppFilePath = navlink.AppFilePath.Replace("\", "\\")
+									sAppParameters = navlink.AppParameters.Replace("\", "\\")
 								
 									classIcon = "icon-external-link"
 									If navlink.AppFilePath.Length > 0 Then
@@ -506,7 +523,7 @@
 											sNewWindow = "0"
 										End If
 			
-										sOnclick = "goHyperlink('" & sURL & "', " & sNewWindow & ")"
+										sOnclick = "goURL('" & sURL & "', " & sNewWindow & ", true)"
 										' sCheckKeyPressed = "CheckKeyPressed('HYPERLINK', '" & sURL & "', " & sNewWindow & ",'')"
 									Else
 										Dim sUtilityType = Convert.ToString(navlink.UtilityType)
@@ -573,7 +590,7 @@
 
 
 							<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
-								data-sizex="1" data-sizey="1" onclick="goHyperlink('<%=sDestination%>', 0)">
+								data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
 								<a href="#"><%=sText%></a>
 								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
 							</li>
@@ -599,7 +616,11 @@
 		<div class="linkspagebutton">
 			<div class="ButtonLinkColumn">
 								<%sOnclick = ""
-									Dim sLinkKey As String = ""%>
+									Dim sLinkKey As String = ""
+									sAppFilePath = ""
+									sAppParameters = ""
+									sNewWindow = "0"									
+									%>
 				<%For Each navlink In Model.NavigationLinks%>
 				
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
@@ -607,18 +628,41 @@
 
 				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
 								<%
-										If navlink.UtilityID > 0 Then
-												Dim sUtilityType = CStr(navlink.UtilityType)
-												Dim sUtilityID = CStr(navlink.UtilityID)
-												Dim sUtilityBaseTable = CStr(navlink.BaseTable)
-												
-										sOnclick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
+									If navlink.AppFilePath.Length > 0 Then
+										sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
+										sAppParameters = NullSafeString(navlink.AppParameters).Replace("\", "\\")
+										' TODO: apps???
+										sOnclick = "//goApp('" & sAppFilePath & "', '" & sAppParameters & "')"
+										' sCheckKeyPressed = "CheckKeyPressed('APP', '" & sAppFilePath & "', 0, '" & sAppParameters & "')"
+			
+									ElseIf NullSafeString(navlink.URL).Length > 0 Then
+										sURL = NullSafeString(navlink.URL)
+										sURL = sURL.Replace("&", "&amp;")
+										sURL = sURL.Replace("""", "&quot;")
+										sURL = sURL.Replace(">", "&gt;")
+										sURL = sURL.Replace("<", "&lt;")
+
+										If navlink.NewWindow = True Then
+											sNewWindow = "1"
 										Else
-										sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
-												
-												sOnclick = "goScreen('" & sLinkKey & "')"
+											sNewWindow = "0"
 										End If
-										
+			
+										sOnclick = "goURL('" & sURL & "', " & sNewWindow & ", true)"
+										' sCheckKeyPressed = "CheckKeyPressed('URL', '" & sURL & "', " & sNewWindow & ", '')"
+									Else
+										If navlink.UtilityID > 0 Then
+											Dim sUtilityType = CStr(navlink.UtilityType)
+											Dim sUtilityID = CStr(navlink.UtilityID)
+											Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+												
+											sOnclick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
+										Else
+											sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
+												
+											sOnclick = "goScreen('" & sLinkKey & "')"
+										End If
+									End If
 										%>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
