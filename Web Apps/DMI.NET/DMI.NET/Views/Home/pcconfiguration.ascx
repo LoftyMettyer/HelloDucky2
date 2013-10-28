@@ -8,6 +8,8 @@
 				$("#workframe").attr("data-framesource", "PCCONFIGURATION");
 				var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
+				showDefaultRibbon();
+
 				// Get menu to refresh the menu.
 				menu_refreshMenu();
 
