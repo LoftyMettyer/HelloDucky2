@@ -774,9 +774,9 @@
 				</li>
 
 								<%-- Report NewEditCopy --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Report</a>
+								<li class="ui-state-default ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Definition</a>
 					<ul>
-						<li id="mnuSectionNewEditCopyReport"><span>Report</span>
+						<li id="mnuSectionNewEditCopyReport"><span>Definition</span>
 							<div id="mnutoolSaveReport" class="button">
 								<a href="#" rel="table" title="Save">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
@@ -796,7 +796,7 @@
 				</li>
 
 								<%-- Report Run --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarReportRun" href="#" rel="Report_Run">Report</a>
+								<li class="ui-state-default ui-corner-top"><a id="toolbarReportRun" href="#" rel="Report_Run">Definition</a>
 					<ul>
 						<li id="mnuSectionRunReport"><span>Output</span>
 							<div id="mnutoolOutputReport" class="button">
