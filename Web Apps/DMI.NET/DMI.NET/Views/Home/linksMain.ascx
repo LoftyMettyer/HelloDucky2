@@ -450,6 +450,9 @@
 				</li>
 			</ul>	
 			</div>
+			
+			
+
 			<%fFirstSeparator = True%>
 			<div class="hypertextlinks">
 				<%Dim tileCount = 1
@@ -578,7 +581,40 @@
 										sDestination = "recordEditMain?multifind_0_" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
 									End If
 							%>
+							<%			If fFirstSeparator Then		' add a separator
+									iRowNum = 1
+									iColNum = 1
+									If fFirstSeparator Then
+										fFirstSeparator = False
+									Else%>
+						</ul>
+					</div>
+				</li>
+			</ul>
+			<%End If
+				iSeparatorNum += 1
+				
+				'If sText.Length > 0 Then
+				'	sText = Html.Encode(sText)
+				'	sText = sText.Replace("--", "")
+				'	sText = sText.Replace("'", """")
+				'Else
+				'sText = ""
+				'End If
+				
+			%>
 
+			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
+				<li class="hypertextlink-displaytype">
+					<div class="wrapupcontainer">
+						<div class="wrapuptext">
+							<p class="hypertextlinkseparator">Fixed Links</p>
+						</div>
+					</div>
+					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
+
+						<ul>
+							<%end if%>
 							<%If iRowNum > iMaxRows Then%>
 							<%	iColNum += 1%>
 							<%iRowNum = 1%>
@@ -595,6 +631,7 @@
 								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
 							</li>
 							<%iRowNum += 1%>
+							
 							<%tileCount += 1%>
 							<%Next%>
 
