@@ -87,7 +87,7 @@
 	<PARAM NAME="SplitterPos" VALUE="0">
 	<PARAM NAME="SplitterVisible" VALUE="0">
 	<PARAM NAME="Columns.Count" VALUE="3">
-	<PARAM NAME="Columns(0).Width" VALUE="6200">
+	<PARAM NAME="Columns(0).Width" VALUE="5200">
 	<PARAM NAME="Columns(0).Visible" VALUE="1">
 	<PARAM NAME="Columns(0).Columns.Count" VALUE="1">
 	<PARAM NAME="Columns(0).Caption" VALUE="User Group">

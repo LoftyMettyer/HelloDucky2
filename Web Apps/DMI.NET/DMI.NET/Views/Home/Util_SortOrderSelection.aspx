@@ -23,9 +23,7 @@
 </head>
 
 	<script type="text/javascript">
-
 		function util_SortOrderSelection_onload() {
-
 			$("input[type=submit], input[type=button], button")
 				.button();
 			$("input").addClass("ui-widget ui-widget-content ui-corner-all");
@@ -33,7 +31,6 @@
 
 			$("select").addClass("ui-widget ui-widget-content ui-corner-all");
 			$("select").removeClass("text");
-
 
 			var iResizeBy, iNewWidth, iNewHeight, iNewLeft, iNewTop;
 			var frmPopup = document.getElementById("frmPopup");
@@ -223,7 +220,6 @@
 				}
 			}
 		}
-
 	</script>
 
 	<%
@@ -337,253 +333,248 @@
 
 		Response.Write("	}" & vbCrLf)
 		Response.Write("</script>" & vbCrLf)
-
 	%>
 
-	<body>
-<div>
-	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();">
-		<table align="center" class="outline">
-			<tr>
-				<td>
-					<table class="invisible" width="100%">
-						<tr height="10">
-							<td height="10" colspan="5" align="center">
-								<%
-									' Get the order records.
-									Dim cmdSortOrder As Command = New Command
-									cmdSortOrder.CommandType = CommandTypeEnum.adCmdStoredProc
-									cmdSortOrder.ActiveConnection = Session("databaseConnection")
-									cmdSortOrder.CommandText = "spASRIntGetSortOrderColumns"
+<body>
+	<div>
+		<form id="frmPopup" name="frmPopup" onsubmit="return setForm();">
+			<table align="center" class="outline">
+				<tr>
+					<td>
+						<table class="invisible" width="100%">
+							<tr height="10">
+								<td height="10" colspan="5" align="center">
+									<%
+										' Get the order records.
+										Dim cmdSortOrder As Command = New Command
+										cmdSortOrder.CommandType = CommandTypeEnum.adCmdStoredProc
+										cmdSortOrder.ActiveConnection = Session("databaseConnection")
+										cmdSortOrder.CommandText = "spASRIntGetSortOrderColumns"
 
-									Dim prmIncluded = cmdSortOrder.CreateParameter("included", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-									cmdSortOrder.Parameters.Append(prmIncluded)
-									prmIncluded.value = Request("txtSortInclude")
+										Dim prmIncluded = cmdSortOrder.CreateParameter("included", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+										cmdSortOrder.Parameters.Append(prmIncluded)
+										prmIncluded.Value = Request("txtSortInclude")
 
-									Dim prmExcluded = cmdSortOrder.CreateParameter("excluded", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-									cmdSortOrder.Parameters.Append(prmExcluded)
-									prmExcluded.value = Request("txtSortExclude")
+										Dim prmExcluded = cmdSortOrder.CreateParameter("excluded", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
+										cmdSortOrder.Parameters.Append(prmExcluded)
+										prmExcluded.Value = Request("txtSortExclude")
 
-									Dim rstSortOrder = cmdSortOrder.Execute
+										Dim rstSortOrder = cmdSortOrder.Execute
 	
-									If rstSortOrder.EOF Then
-										
-										
-								%>
-								<h3>Warning</h3>
+										If rstSortOrder.EOF Then
+									%>
+									<h3>Warning</h3>
+								</td>
+							</tr>
+							<tr>
+								<td width="20" height="10"></td>
+								<td colspan="3" style="text-align: center">There are no non-calculated columns to add!</td>
+								<td width="20"></td>
+							</tr>
+							<tr>
+								<td colspan="5" height="10">&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="5" height="10" align="center">
+									<input type="button" class="btn" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose"
+										onclick="self.close();" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="5" height="10"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		<%
+			Response.End()
+		End If
+		%>
+
+		<h3>Select Column</h3>
+		<table>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Column :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<%
+						If Request("txtSortEditing") = "false" Then
+					%>
+					<input type="hidden" disabled id="txtEditing" name="txtEditing" value="false" />
+					<%
+					Else
+					%>
+					<input type="hidden" disabled id="txtEditing" name="txtEditing" value="true" />
+					<%
+					End If
+
+					If (Session("utiltype") = 2) Then
+					%>
+					<select id="cboColumn" name="cboColumn" class="combo" onchange="checkColumnOptions();">
+						<%
+						Else
+						%>
+						<select id="cboColumn" name="cboColumn" class="combo">
+							<%
+							End If
+
+							Do Until rstSortOrder.EOF
+								If Not InStr(Request("txtSortExclude"), rstSortOrder.Fields("columnID").Value) Then
+									Response.Write("<option value=" & Chr(34) & rstSortOrder.Fields("columnID").Value & Chr(34))
+									If Request("txtSortEditing") = "true" Then
+										If (rstSortOrder.Fields("columnID").Value = CLng(Request("txtSortColumnID"))) Then
+											Response.Write(" selected")
+										End If
+									End If
+									Response.Write(">" & rstSortOrder.Fields("columnName").Value & "</option>" & vbCrLf)
+								End If
+								rstSortOrder.MoveNext()
+							Loop
+							%>
+						</select>
+					</select>
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<tr height="10">
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Order :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<input type="radio" checked id="optAscending" name="optOrder" value="radiobutton"
+						<%
+						If (Request("txtSortEditing") = "true") Then
+							If (Request("txtSortOrder") = "Asc") Then
+								Response.Write(" checked ")
+							End If
+						End If
+%> />
+					<label tabindex="-1"
+						for="optAscending"
+						class="radio">
+						Ascending</label>
+					<input type="radio" id="optDescending" name="optOrder" value="radiobutton"
+						<%
+						If (Request("txtSortEditing") = "true") Then
+							If (Request("txtSortOrder") = "Desc") Then
+								Response.Write(" checked ")
+							End If
+						End If
+%> />
+					<label tabindex="-1"
+						for="optDescending"
+						class="radio">
+						Descending</label>
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<tr height="10">
+				<td colspan="4"></td>
+			</tr>
+			<%
+				If Session("utiltype") = 2 Then
+			%>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Break on Change :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<input type="checkbox" id="chkBOC" name="chkBOC" value="checkbox"
+						<%
+						If Request("txtSortBOC") = "-1" And (Request("txtSortEditing") = "true") Then
+							Response.Write(" checked " & vbCrLf)
+						End If%>
+						onclick="checkColumnOptions(true);" />
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<tr height="10">
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Page on Change :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<input type="checkbox" id="chkPOC" name="chkPOC" value="checkbox"
+						<%
+						If Request("txtSortPOC") = "-1" And (Request("txtSortEditing") = "true") Then
+							Response.Write(" checked " & vbCrLf)
+						End If
+%>
+						onclick="checkColumnOptions(true);" />
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<tr height="10">
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Value on Change :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<input type="checkbox" id="chkVOC" name="chkVOC" value="checkbox"
+						<%
+						If Request("txtSortVOC") = "-1" And (Request("txtSortEditing") = "true") Then
+							Response.Write(" checked " & vbCrLf)
+						End If
+%>>
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<tr height="10">
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td nowrap>Suppress Repeated Values :</td>
+				<td width="20">&nbsp;</td>
+				<td>
+					<input type="checkbox" id="chkSRV" name="chkSRV" value="checkbox"
+						<%
+						If Request("txtSortSRV") = "-1" And (Request("txtSortEditing") = "true") Then
+							Response.Write(" checked " & vbCrLf)
+						End If
+%>
+						onclick='checkColumnOptions(true);'>
+				</td>
+				<td width="20">&nbsp;</td>
+			</tr>
+			<%
+			End If
+			%>
+			<tr height="20">
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<table width="100%" class="invisible">
+						<tr>
+							<td>&nbsp;</td>
+							<td width="10">
+								<input id="cmdOK" type="button"
+									class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+									value="OK" name="cmdOK" style="width: 80px" onclick="setForm();" />
 							</td>
-						</tr>
-						<tr>
-							<td width="20" height="10"></td>
-							<td colspan="3" style="text-align: center">There are no non-calculated columns to add!</td>
-							<td width="20"></td>
-						</tr>
-						<tr>
-							<td colspan="5" height="10">&nbsp;</td>
-						</tr>
-						<tr>
-							<td colspan="5" height="10" align="center">
-								<input type="button" class="btn" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose"
-									onclick="self.close();" />
+							<td width="10">&nbsp;</td>
+							<td width="10">
+								<input id="cmdCancel" type="button"
+									class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+									value="Cancel" name="cmdCancel" style="width: 80px" onclick="self.close();" />
 							</td>
-						</tr>
-						<tr>
-							<td colspan="5" height="10"></td>
 						</tr>
 					</table>
 				</td>
 			</tr>
 		</table>
-	</form>
-
-	<%
-		Response.End()
-	End If
-	%>
-
-	<h3>Select Column</h3>
-					<table>
-					
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td nowrap>Column :</td>
-						<td width="20">&nbsp;</td>
-						<td>
-							<%
-								If Request("txtSortEditing") = "false" Then
-							%>
-							<input type="hidden" disabled id="txtEditing" name="txtEditing" value="false" />
-							<%
-							Else
-							%>
-							<input type="hidden" disabled id="txtEditing" name="txtEditing" value="true" />
-							<%
-							End If
-
-							If (Session("utiltype") = 2) Then
-							%>
-							<select id="cboColumn" name="cboColumn" class="combo" onchange="checkColumnOptions();">
-								<%
-								Else
-								%>
-								<select id="cboColumn" name="cboColumn" class="combo">
-									<%
-									End If
-
-									Do Until rstSortOrder.eof
-										If Not InStr(Request("txtSortExclude"), rstSortOrder.fields("columnID").value) Then
-											Response.Write("<option value=" & Chr(34) & rstSortOrder.fields("columnID").value & Chr(34))
-											If Request("txtSortEditing") = "true" Then
-												If (rstSortOrder.fields("columnID").value = CLng(Request("txtSortColumnID"))) Then
-													Response.Write(" selected")
-												End If
-											End If
-											Response.Write(">" & rstSortOrder.fields("columnName").value & "</option>" & vbCrLf)
-										End If
-										rstSortOrder.movenext()
-									Loop
-									%>
-								</select>
-							</select>
-						</td>
-						<td width="20">&nbsp;</td>
-					</tr>
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td nowrap>Order :</td>
-		<td width="20">&nbsp;</td>
-		<td>
-			<input type="radio" checked id="optAscending" name="optOrder" value="radiobutton"
-				<%
-				If (Request("txtSortEditing") = "true") Then
-					If (Request("txtSortOrder") = "Asc") Then
-						Response.Write(" checked ")
-					End If
-				End If
-%>
- />
-			<label tabindex="-1"
-				for="optAscending"
-				class="radio">
-				Ascending</label>
-			<input type="radio" id="optDescending" name="optOrder" value="radiobutton"
-				<%
-				If (Request("txtSortEditing") = "true") Then
-					If (Request("txtSortOrder") = "Desc") Then
-						Response.Write(" checked ")
-					End If
-				End If
-%> />
-			<label tabindex="-1"
-				for="optDescending"
-				class="radio">Descending</label>
-		</td>
-		<td width="20">&nbsp;</td>
-	</tr>
-	
-	
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
-	<%
-		If Session("utiltype") = 2 Then
-	%>
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td nowrap>Break on Change :</td>
-		<td width="20">&nbsp;</td>
-		<td>
-			<input type="checkbox" id="chkBOC" name="chkBOC" value="checkbox"
-				<%
-				If Request("txtSortBOC") = "-1" And (Request("txtSortEditing") = "true") Then
-					Response.Write(" checked " & vbCrLf)
-				End If
-%>
-				onclick="checkColumnOptions(true);" />
-		</td>
-		<td width="20">&nbsp;</td>
-	</tr>
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td nowrap>Page on Change :</td>
-		<td width="20">&nbsp;</td>
-		<td>
-			<input type="checkbox" id="chkPOC" name="chkPOC" value="checkbox"
-				<%
-				If Request("txtSortPOC") = "-1" And (Request("txtSortEditing") = "true") Then
-					Response.Write(" checked " & vbCrLf)
-				End If
-%>
-				onclick="checkColumnOptions(true);" />
-		</td>
-		<td width="20">&nbsp;</td>
-	</tr>
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td nowrap>Value on Change :</td>
-		<td width="20">&nbsp;</td>
-		<td>
-			<input type="checkbox" id="chkVOC" name="chkVOC" value="checkbox"
-				<%
-				If Request("txtSortVOC") = "-1" And (Request("txtSortEditing") = "true") Then
-					Response.Write(" checked " & vbCrLf)
-				End If
-%>>
-		</td>
-		<td width="20">&nbsp;</td>
-	</tr>
-	<tr height="10">
-		<td colspan="4"></td>
-	</tr>
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td nowrap>Suppress Repeated Values :</td>
-		<td width="20">&nbsp;</td>
-		<td>
-			<input type="checkbox" id="chkSRV" name="chkSRV" value="checkbox"
-				<%
-				If Request("txtSortSRV") = "-1" And (Request("txtSortEditing") = "true") Then
-					Response.Write(" checked " & vbCrLf)
-				End If
-%>
-				onclick='checkColumnOptions(true);'>
-		</td>
-		<td width="20">&nbsp;</td>
-	</tr>
-	<%
-	End If
-	%>
-	<tr height="20">
-		<td colspan="4"></td>
-	</tr>
-	<tr>
-		<td colspan="4">
-			<table width="100%" class="invisible">
-				<tr>
-					<td>&nbsp;</td>
-					<td width="10">
-						<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="OK" name="cmdOK" style="width: 80px" onclick="setForm();" />
-					</td>
-					<td width="10">&nbsp;</td>
-					<td width="10">					
-						<input id="cmdCancel" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Cancel" name="cmdCancel" style="width: 80px" onclick="self.close();" />
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-
-	</table>
-
 	</div>
 </body>
 </html>

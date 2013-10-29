@@ -65,7 +65,8 @@ function selectRecordOptionCalDef(psTable, psType) {
 			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
 			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
 			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
-	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+	//openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+	openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 30, "no", "no");
 
 	frmUseful.txtChanged.value = 1;
 	refreshTab1Controls();
@@ -109,7 +110,9 @@ function eventAdd() {
 			"&eventDesc2ID=" + escape(frmEvent.eventDesc2ID.value) +
 			"&eventDesc2=" + escape(frmEvent.eventDesc2.value) +
 			"&relationNames=" + escape(frmEvent.relationNames.value);
-		openDialogCalEvent(sURL, 650, 500, "yes", "yes");
+		//openDialogCalEvent(sURL, 650, 500, "no", "no");
+		openDialog(sURL, (screen.width) / 3.4, (screen.height) / 1.4, "no", "no");
+		
 		frmUseful.txtChanged.value = 1;
 	} else {
 		var sMessage = "";

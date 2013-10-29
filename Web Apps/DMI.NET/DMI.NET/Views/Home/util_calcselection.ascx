@@ -2,11 +2,22 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Diagnostics" %>
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<head>
+	<title>OpenHR Intranet</title>
+	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="Link1" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+</head>
 
-<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function util_calcselection_window_onload() {
@@ -404,7 +415,10 @@
 								<tr>
 									<td>&nbsp;</td>
 									<td width="10">
-										<input id="cmdok" type="button" value="OK" name="cmdok" style="WIDTH: 80px" width="80" class="btn"
+										
+										<input id="cmdok" type="button" value="OK" name="cmdok" 
+											style="WIDTH: 80px" 
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 											onclick="setForm();"
 											onmouseover="try{button_onMouseOver(this);}catch(e){}"
 											onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -413,7 +427,9 @@
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
-										<input id="cmdnone" type="button" value="None" name="cmdnone" style="WIDTH: 80px" width="80" class="btn"
+										<input id="cmdnone" type="button" value="None" name="cmdnone" 
+											style="WIDTH: 80px" 
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 											onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();"
 											onmouseover="try{button_onMouseOver(this);}catch(e){}"
 											onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -422,7 +438,9 @@
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
-										<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" style="WIDTH: 80px" width="80" class="btn"
+										<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
+											style="WIDTH: 80px" 
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 											onclick="self.close();"
 											onmouseover="try{button_onMouseOver(this);}catch(e){}"
 											onmouseout="try{button_onMouseOut(this);}catch(e){}"

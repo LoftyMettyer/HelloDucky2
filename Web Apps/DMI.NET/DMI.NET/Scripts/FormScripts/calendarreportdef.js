@@ -24,6 +24,7 @@ var sSortDefn;
 function util_def_calendarreport_window_onload() {
 	var fOK;
 	fOK = true;
+    //$('table').attr("border", "black solid 1px");
 	var sErrMsg = frmUseful.txtErrorDescription.value;
 	if (sErrMsg.length > 0) {
 		fOK = false;
@@ -892,8 +893,7 @@ function refreshTab4Controls() {
 function refreshTab5Controls() {
 	var i;
 	var iCount;
-
-	var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+    var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 	with (frmDefinition) {
 		if (optOutputFormat0.checked == true)		//Data Only
 		{
@@ -1055,7 +1055,7 @@ function refreshTab5Controls() {
 			//enable-disable save options
 			checkbox_disable(chkDestination2, (fViewing == true));
 			if (chkDestination2.checked == true) {
-				populateSaveExisting();
+			    populateSaveExisting();
 				combo_disable(cboSaveExisting, (fViewing == true));
 			} else {
 				cboSaveExisting.length = 0;
@@ -1401,7 +1401,8 @@ function selectCalc(psCalcType, bRecordIndepend) {
 		"&calcSelCurrentID=" + escape(frmCalcSelection.calcSelCurrentID.value) +
 		"&recSelDefOwner=" + escape(frmCalcSelection.recSelDefOwner.value) +
 		"&destination=util_calcSelection";
-	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+	openDialog(sURL, (screen.width) / 3, (screen.height) / 2 + 40, "no", "no");
+
 
 	frmUseful.txtChanged.value = 1;
 	refreshTab1Controls();
@@ -1414,7 +1415,7 @@ function selectEmailGroup() {
 
 	sURL = "util_emailSelection" +
 		"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+	openDialog(sURL, ((screen.width) / 3), (screen.height) / 3 - 20, "no", "no");
 }
 
 function eventFilterString() {
@@ -1816,7 +1817,7 @@ function eventEdit() {
 		"&eventDesc2ID=" + escape(frmEventDetails.eventDesc2ID.value) +
 		"&eventDesc2=" + escape(frmEventDetails.eventDesc2.value) +
 		"&relationNames=" + escape(frmEventDetails.relationNames.value);
-	openDialog(sURL, 650, 500, "yes", "yes");
+	openDialog(sURL, (screen.width) / 3, (screen.height) / 1.4,"no", "no");
 	frmUseful.txtChanged.value = 1;
 	refreshTab2Controls();
 }
@@ -1944,7 +1945,8 @@ function sortAdd() {
 				"&txtSortColumnID=" + escape(frmSortOrder.txtSortColumnID.value) +
 				"&txtSortColumnName=" + escape(frmSortOrder.txtSortColumnName.value) +
 				"&txtSortOrder=" + escape(frmSortOrder.txtSortOrder.value);
-			openDialog(sURL, 600, 275, "no", "no");
+			//openDialog(sURL, 600, 275, "no", "no");
+			openDialog(sURL, (screen.width) / 3, (screen.height) / 4.5, "no", "no");
 
 			frmUseful.txtChanged.value = 1;
 		}
@@ -1997,7 +1999,8 @@ function sortEdit() {
 		"&txtSortColumnName=" + escape(frmSortOrder.txtSortColumnName.value) +
 		"&txtSortOrder=" + escape(frmSortOrder.txtSortOrder.value);
 
-	openDialog(sURL, 500, 275, "yes", "yes");
+	//openDialog(sURL, 500, 275, "yes", "yes");
+	openDialog(sURL, (screen.width) / 3, (screen.height) / 4.5, "no", "no");
 
 	frmUseful.txtChanged.value = 1;
 	refreshTab4Controls();

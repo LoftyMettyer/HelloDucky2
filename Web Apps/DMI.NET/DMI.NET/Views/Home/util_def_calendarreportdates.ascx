@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
-		
+
 		var frmPopup = document.getElementById("frmPopup");
 		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
 		frmPopup.txtLoading.value = 1;
@@ -42,6 +42,7 @@
 		populateEventColumns();
 
 		frmPopup.txtLoading.value = 0;
+		//$('table').attr("border", "black solid 1px");
 	}
 
 
@@ -270,13 +271,13 @@
 		//var frmTab = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmTables");
 		//var frmDef = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
 		//var frmEvent = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmEventDetails");
-		
+
 		var frmTab = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmTables");
 		var frmDef = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmDefinition");
 		var frmEvent = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmEventDetails");
 
 		var frmPopup = document.getElementById("frmPopup");
-		var sRelationString = frmEvent.relationNames.value;		
+		var sRelationString = frmEvent.relationNames.value;
 
 		var iRelationID;
 		var sTableName;
@@ -327,7 +328,7 @@
 
 				bAdded = false;
 			}
-		}		
+		}
 	}
 
 	function populateEventColumns() {
@@ -382,7 +383,8 @@
 			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
 			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
 			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
-		openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2.1, "no", "no");
+
 		eventChanged();
 	}
 
@@ -462,473 +464,373 @@
 
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 	<form id="frmPopup" name="frmPopup" onsubmit=" return setForm(); ">
-		<table align="center" width="100%" height="100%" class="outline" cellpadding="0" cellspacing="0">
-			<tr>
-				<td>
-					<table align="center" width="100%" height="100%" class="invisible" cellpadding="4" cellspacing="0">
-						<tr height="5">
-							<td align="center" colspan="2" height="10">
-								Select Event Information
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" width="50%">
-								<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
-									<tr height="10">
-										<td height="10" colspan="5" align="left" valign="top">Event :
-											<br>
-											<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap width="100">Name :</td>
-													<td width="5"></td>
-													<td>
-														<input id="txtEventName" name="txtEventName" class="text textdisabled" style="WIDTH: 100%" disabled="disabled"
-														       onkeypress=" eventChanged(); "
-														       onkeydown=" eventChanged(); "
-														       onchange=" eventChanged(); ">
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="5"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap width="100">Event Table :</td>
-													<td width="5"></td>
-													<td>
-														<select id="cboEventTable" name="cboEventTable" class="combo combodisabled" disabled="disabled" style="WIDTH: 100%"
-														        onchange=" changeEventTable(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="5"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap width="100">Filter :</td>
-													<td width="5"></td>
-													<td>
-														<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-															<tr>
-																<td>
-																	<input id="txtEventFilter" name="txtEventFilter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
-																	<input type="hidden" id="txtEventFilterID" name="txtEventFilterID" class="text textdisabled" disabled="disabled" style="WIDTH: 100%"
-																	       onchange=" eventChanged(); ">
-																</td>
-																<td width="25">
-																	<input id="cmdEventFilter" name="cmdEventFilter" disabled="disabled" class="btn btndisabled" style="WIDTH: 100%" type="button" value="..."
-																	       onclick=" selectRecordOptionDates('event', 'filter') "
-																	       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-																	       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-																	       onfocus=" try {button_onFocus(this);} catch(e) {} "
-																	       onblur=" try {button_onBlur(this);} catch(e) {} " />
-																</td>
-															</tr>
-														</table>
-													</td>
-													<td width="5"></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td valign="top" rowspan="2" width="50%">
-								<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
-									<tr height="10">
-										<td height="10" colspan="5" align="left" valign="top">Key :
-											<br>
-											<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="1">
-														<input type="radio" name="optKey" id="optCharacter" disabled="disabled"
-														       onclick=" refreshLegendControls(); eventChanged(); "
-														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
-														       onblur=" try {radio_onBlur(this);} catch(e) {} " />&nbsp;
-													</td>
-													<td nowrap colspan="1">
-														<label
-															tabindex="-1"
-															for="optCharacter"
-															class="radio radiodisabled"
-															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
-															Character</label>
-													</td>
-													<td width="5"></td>
-													<td nowrap width="100%">
-														<input id="txtCharacter" maxlength="2" name="txtCharacter" class="text textdisabled" disabled="disabled" style="WIDTH: 60px"
-														       onkeypress=" eventChanged(); "
-														       onkeydown=" eventChanged(); "
-														       onchange=" eventChanged(); ">
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="1">
-														<input type="radio" name="optKey" id="optLegendLookup" disabled="disabled"
-														       onclick=" refreshLegendControls(); eventChanged(); "
-														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
-														       onblur=" try {radio_onBlur(this);} catch(e) {} " />
-													</td>
-													<td nowrap width="100" colspan="3">
-														<label
-															tabindex="-1"
-															for="optLegendLookup"
-															class="radio radiodisabled"
-															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
-															Lookup Table</label>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td>&nbsp</td>
-													<td width="100" nowrap>Event Type : 
-													</td>
-													<td width="5"></td>
-													<td>
-														<select id="cboEventType" name="cboEventType" disabled="disabled" width="100%" style="WIDTH: 100%" class="combo combodisabled"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="4">
-														<hr>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap></td>
-													<td width="100" nowrap>Table :
-													</td>
-													<td width="5"></td>
-													<td>
-														<select id="cboLegendTable" name="cboLegendTable" disabled="disabled" class="combo combodisabled" style="WIDTH: 100%"
-														        onchange=" changeLegendTable(); ">
-															
-															<%
-																Dim sErrorDescription = ""
+		<div style="width: 95%; padding: 20px">
+			<table class="outline"
+				style="border-spacing: 0; border-collapse: collapse; width: 97%; height: 100%" id="Event End">
+				<tr style="font-size: x-large">
+					<td style="text-align: center" colspan="6">Select Event Information</td>
+				</tr>
+				<tr style="font-weight: bold">
+					<td colspan="6">Event</td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td nowrap width="100">Name :</td>
+					<td width="5"></td>
+					<td style="width: 99.5%">
+						<input id="txtEventName" name="txtEventName" class="text textdisabled" style="width: 99%" disabled="disabled"
+							onkeypress=" eventChanged(); "
+							onkeydown=" eventChanged(); "
+							onchange=" eventChanged(); ">
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td nowrap width="100">Event Table :</td>
+					<td width="5"></td>
+					<td>
+						<select id="cboEventTable" name="cboEventTable" class="combo combodisabled" disabled="disabled" style="width: 100%"
+							onchange=" changeEventTable(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td nowrap width="100">Filter :</td>
+					<td width="5"></td>
+					<td>
+						<input id="txtEventFilter" name="txtEventFilter" class="text textdisabled" disabled="disabled" style="width: 100%">
+						<input type="hidden" id="txtEventFilterID" name="txtEventFilterID" class="text textdisabled" disabled="disabled" style="width: 100%"
+							onchange=" eventChanged(); ">
+					</td>
+					<td width="25">
+						<input id="cmdEventFilter" name="cmdEventFilter" disabled="disabled" class="btn " style="width: 100%" type="button" value="..."
+							onclick=" selectRecordOptionDates('event', 'filter') "
+							onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {button_onFocus(this);} catch(e) {} "
+							onblur=" try {button_onBlur(this);} catch(e) {} " />
+					</td>
+				</tr>
+				<tr style="font-weight: bold; padding-top: 20px">
+					<td style="padding-top: 20px" colspan="6">Event Start</td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td style="width: 20px"></td>
+					<td style="white-space: nowrap">Date :</td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboStartDate" name="cboStartDate" class="combo combodisabled"
+							style="width: 100%"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td style="width: 20px"></td>
+					<td style="white-space: nowrap">Session :</td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboStartSession" name="cboStartSession" class="combo combodisabled"
+							style="width: 100%"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr style="font-weight: bold">
+					<td colspan="6">Event End</td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td colspan="1">
+						<input type="radio" name="optEnd" id="optEndDate"
+							onclick=" refreshEventControls(); eventChanged(); "
+							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {radio_onFocus(this);} catch(e) {} "
+							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+					</td>
+					<td style="white-space: nowrap; padding-left: 2px">
+						<label tabindex="-1"
+							for="optEndDate"
+							class="radio"
+							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							End</label>
+					</td>
+					<td width="5" colspan="2"></td>
+					<td></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td style="white-space: nowrap; padding-left: 2px">Date : </td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboEndDate" name="cboEndDate" style="width: 100%" class="combo combodisabled"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td style="white-space: nowrap; padding-left: 2px">Session : </td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboEndSession" name="cboEndSession" style="width: 100%" class="combo combodisabled"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td colspan="1">
+						<input type="radio" name="optEnd" id="optDuration"
+							onclick=" refreshEventControls(); "
+							onchange=" eventChanged(); "
+							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {radio_onFocus(this);} catch(e) {} "
+							onblur=" try {radio_onBlur(this);} catch(e) {} "></td>
+					<td style="white-space: nowrap; padding-left: 2px">
+						<label
+							tabindex="-1"
+							for="optDuration"
+							class="radio"
+							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							Duration</label>
+					</td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboDuration" name="cboDuration"
+							style="width: 100%"
+							class="combo combodisabled"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td>
+						<input type="radio" name="optEnd" id="optNoEnd"
+							onclick=" refreshEventControls(); eventChanged(); "
+							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {radio_onFocus(this);} catch(e) {} "
+							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+					</td>
+					<td style="white-space: nowrap; padding-left: 2px">
+						<label
+							tabindex="-1"
+							for="optNoEnd"
+							class="radio"
+							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							None</label>
+					</td>
+					<td width="5" colspan="2"></td>
+					<td></td>
+				</tr>
+				<tr style="font-weight: bold; padding-top: 20px">
+					<td style="padding-top: 20px" colspan="6">Key</td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td colspan="1">
+						<input type="radio" name="optKey" id="optCharacter" disabled="disabled"
+							onclick=" refreshLegendControls(); eventChanged(); "
+							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {radio_onFocus(this);} catch(e) {} "
+							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+					</td>
+					<td nowrap colspan="1">
+						<label
+							tabindex="-1"
+							for="optCharacter"
+							class="radio radiodisabled"
+							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							Character</label>
+					</td>
+					<td width="5"></td>
+					<td nowrap>
+						<input id="txtCharacter" maxlength="2" name="txtCharacter" class="text textdisabled" disabled="disabled" style="width: 30px"
+							onkeypress=" eventChanged(); "
+							onkeydown=" eventChanged(); "
+							onchange=" eventChanged(); ">
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td colspan="1">
+						<input type="radio" name="optKey" id="optLegendLookup" disabled="disabled"
+							onclick=" refreshLegendControls(); eventChanged(); "
+							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+							onfocus=" try {radio_onFocus(this);} catch(e) {} "
+							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+					</td>
+					<td style="width: 100%; white-space: nowrap" colspan="3">
+						<label
+							tabindex="-1"
+							for="optLegendLookup"
+							class="radio radiodisabled"
+							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							Lookup Table</label>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td>&nbsp;</td>
+					<td width="100" nowrap>Event Type :
+					</td>
+					<td width="5"></td>
+					<td>
+						<select id="cboEventType" name="cboEventType" disabled="disabled" width="100%" style="width: 100%" class="combo combodisabled"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td nowrap></td>
+					<td width="100" nowrap>Table :
+					</td>
+					<td width="5"></td>
+					<td>
+						<select id="cboLegendTable" name="cboLegendTable" disabled="disabled" class="combo combodisabled" style="width: 100%"
+							onchange=" changeLegendTable(); ">
 
-																' Get the lookup table records.
-																Dim cmdLookupTables = CreateObject("ADODB.Command")
-																cmdLookupTables.CommandText = "spASRIntGetLookupTables"
-																cmdLookupTables.CommandType = 4	' Stored Procedure
-																cmdLookupTables.ActiveConnection = Session("databaseConnection")
+							<%
+								Dim sErrorDescription = ""
 
-																Err.Clear()
-																Dim rstLookupTablesInfo = cmdLookupTables.Execute
+								' Get the lookup table records.
+								Dim cmdLookupTables = CreateObject("ADODB.Command")
+								cmdLookupTables.CommandText = "spASRIntGetLookupTables"
+								cmdLookupTables.CommandType = 4	' Stored Procedure
+								cmdLookupTables.ActiveConnection = Session("databaseConnection")
 
-																If (Err.Number <> 0) Then
-																	sErrorDescription = "The lookup tables information could not be retrieved." & vbCrLf &
-																	                    FormatError(Err.Description)
-																End If
+								Err.Clear()
+								Dim rstLookupTablesInfo = cmdLookupTables.Execute
 
-																If Len(sErrorDescription) = 0 Then
-																	Dim iCount = 0
-																	Do While Not rstLookupTablesInfo.EOF
-																		Response.Write(
-																			"<OPTION value='" & rstLookupTablesInfo.fields("tableID").value & "'>" &
-																			rstLookupTablesInfo.fields("tableName").value & vbCrLf)
-																		rstLookupTablesInfo.MoveNext()
-																	Loop
+								If (Err.Number <> 0) Then
+									sErrorDescription = "The lookup tables information could not be retrieved." & vbCrLf &
+									FormatError(Err.Description)
+								End If
 
-																	' Release the ADO recordset object.
-																	rstLookupTablesInfo.close()
-																	rstLookupTablesInfo = Nothing
-																End If
+								If Len(sErrorDescription) = 0 Then
+									Do While Not rstLookupTablesInfo.EOF
+										Response.Write(
+										"<OPTION value='" & rstLookupTablesInfo.fields("tableID").value & "'>" &
+										rstLookupTablesInfo.fields("tableName").value & vbCrLf)
+										rstLookupTablesInfo.MoveNext()
+									Loop
 
-																' Release the ADO command object.
-																cmdLookupTables = Nothing
-%>
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap></td>
-													<td width="100" nowrap>Column :								
-													</td>
-													<td width="5"></td>
-													<td>
-														<select id="cboLegendColumn" name="cboLegendColumn" width="100%" style="WIDTH: 100%" class="combo"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td></td>
-													<td width="100" nowrap>Code : 
-													</td>
-													<td width="5"></td>
-													<td>
-														<select id="cboLegendCode" name="cboLegendCode" width="100%" style="WIDTH: 100%" class="combo"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" width="50%">
-								<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
-									<tr height="5">
-										<td height="5" colspan="5" align="left" valign="top">Event Start :
-											<br>
-											<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap width="100">Start Date :</td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboStartDate" name="cboStartDate" class="combo combodisabled" style="WIDTH: 100%"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="5"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td nowrap width="100">Start Session :</td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboStartSession" name="cboStartSession" class="combo combodisabled" style="WIDTH: 100%"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" width="50%" rowspan="2">
-								<table class="outline" cellspacing="0" cellpadding="4" width="100%" height="100%">
-									<tr height="10">
-										<td height="10" colspan="5" rowspan="2" align="left" valign="top">Event End :
-											<br>
-											<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="1">
-														<input type="radio" name="optEnd" id="optNoEnd"
-														       onclick=" refreshEventControls(); eventChanged(); "
-														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
-														       onblur=" try {radio_onBlur(this);} catch(e) {} " />&nbsp;
-													</td>
-													<td nowrap colspan="3">
-														<label
-															tabindex="-1"
-															for="optNoEnd"
-															class="radio"
-															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
-															None</label>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="1">
-														<input type="radio" name="optEnd" id="optEndDate"
-														       onclick=" refreshEventControls(); eventChanged(); "
-														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
-														       onblur=" try {radio_onBlur(this);} catch(e) {} " />
-													</td>
-													<td nowrap colspan="3">
-														<label tabindex="-1"
-														       for="optEndDate"
-														       class="radio"
-														       onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
-															End</label>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td width="5"></td>
-													<td nowrap width="65">Date : </td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboEndDate" name="cboEndDate" style="WIDTH: 100%" class="combo combodisabled"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td width="5"></td>
-													<td nowrap width="65">Session : </td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboEndSession" name="cboEndSession" style="WIDTH: 100%" class="combo combodisabled"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="6"></td>
-												</tr>
-												<tr height="5">
-													<td width="5"></td>
-													<td colspan="1">
-														<input type="radio" name="optEnd" id="optDuration"
-														       onclick=" refreshEventControls(); "
-														       onchange=" eventChanged(); "
-														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
-														       onblur=" try {radio_onBlur(this);} catch(e) {} "></td>
-													<td nowrap width="65">
-														<label
-															tabindex="-1"
-															for="optDuration"
-															class="radio"
-															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
-															Duration</label>
-													</td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboDuration" name="cboDuration" style="WIDTH: 100%" class="combo combodisabled"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td valign="top">
-								<table class="outline" cellspacing="0" cellpadding="4" width="100%">
-									<tr height="10">
-										<td height="10" colspan="5" align="left">Event Description :
-											<br>
-											<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-												<tr height="10">
-													<td width="5"></td>
-													<td nowrap width="100">Description 1 : </td>
-													<td width="5">&nbsp</td>
-													<td>
-														<select disabled="disabled" id="cboEventDesc1" name="cboEventDesc1" width="100%" class="combo combodisabled" style="WIDTH: 100%"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-												<tr height="5">
-													<td colspan="5"></td>
-												</tr>
-												<tr height="10">
-													<td width="5"></td>
-													<td nowrap width="100">Description 2 : </td>
-													<td width="5"></td>
-													<td>
-														<select disabled="disabled" id="cboEventDesc2" name="cboEventDesc2" width="100%" class="combo combodisabled" style="WIDTH: 100%"
-														        onchange=" eventChanged(); ">
-														</select>
-													</td>
-													<td width="5"></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td valign="bottom" align="right">
-								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
-										<td>&nbsp;</td>
-										<td width="10">
-											<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
-											       onclick=" setForm() "
-											       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-											       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-											       onfocus=" try {button_onFocus(this);} catch(e) {} "
-											       onblur=" try {button_onBlur(this);} catch(e) {} "/>
-										</td>
-										<td width="10">&nbsp;</td>
-										<td width="10">
-											<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" class="btn" style="WIDTH: 80px" width="80"
-												onclick="self.close();"
-												onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-												onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-												onfocus=" try {button_onFocus(this);} catch(e) {} "
-												onblur=" try {button_onBlur(this);} catch(e) {} " />
-											<%--onclick=" cancelClick(); "--%>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr height="5">
-							<td colspan="5"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+									' Release the ADO recordset object.
+									rstLookupTablesInfo.close()
+									rstLookupTablesInfo = Nothing
+								End If
+
+								' Release the ADO command object.
+								cmdLookupTables = Nothing
+							%>
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td nowrap></td>
+					<td width="100" nowrap>Column :
+					</td>
+					<td width="5"></td>
+					<td>
+						<select id="cboLegendColumn" name="cboLegendColumn" width="100%" style="width: 100%" class="combo"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="5">
+					<td width="5"></td>
+					<td></td>
+					<td width="100" nowrap>Code :
+					</td>
+					<td width="5"></td>
+					<td>
+						<select id="cboLegendCode" name="cboLegendCode" width="100%" style="width: 100%" class="combo"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td style="padding-top: 20px" colspan="6">Event Description</td>
+				</tr>
+				<tr height="10">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td nowrap width="100">Description 1 : </td>
+					<td width="5">&nbsp;</td>
+					<td>
+						<select disabled="disabled" id="cboEventDesc1" name="cboEventDesc1" width="100%" class="combo combodisabled" style="width: 100%"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+				<tr height="10">
+					<td width="5"></td>
+					<td width="5"></td>
+					<td nowrap width="100">Description 2 : </td>
+					<td width="5"></td>
+					<td>
+						<select disabled="disabled" id="cboEventDesc2" name="cboEventDesc2" width="100%" class="combo combodisabled" style="width: 100%"
+							onchange=" eventChanged(); ">
+						</select>
+					</td>
+					<td width="5"></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="Buttons" class="invisible" style="width: 100%; text-align: center">
+			<input id="cmdOK" type="button" value="OK" name="cmdOK"
+				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+				style="width: 80px"
+				onclick=" setForm() "
+				onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+				onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+				onfocus=" try {button_onFocus(this);} catch(e) {} "
+				onblur=" try {button_onBlur(this);} catch(e) {} " />
+			<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel"
+				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+				style="width: 80px"
+				onclick="self.close();"
+				onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+				onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+				onfocus=" try {button_onFocus(this);} catch(e) {} "
+				onblur=" try {button_onBlur(this);} catch(e) {} " />
+		</div>
 
 		<input type="hidden" id="txtLookupColumnsLoaded" name="txtLookupColumnsLoaded">
 		<input type="hidden" id="txtEventColumnsLoaded" name="txtEventColumnsLoaded">
@@ -951,7 +853,6 @@
 	<form id="frmSelectionAccess" name="frmSelectionAccess" style="visibility: hidden; display: none">
 		<input type="hidden" id="baseHidden" name="baseHidden" value='N'>
 	</form>
-
 </div>
 
 <script type="text/javascript">

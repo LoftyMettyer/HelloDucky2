@@ -68,17 +68,22 @@
 <html>
 <head>
 	<title>OpenHR Intranet</title>
-	<%--Base stylesheets--%>
-	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	<%--ThemeRoller stylesheet--%>
-	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<%--External script resources--%>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	
+
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+
+	<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 </head>
@@ -109,17 +114,23 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td width="10">
-				<input id="cmdok" type="button" value="OK" name="cmdok" style="width: 80px" class="btn"
+				<input id="cmdok" type="button" value="OK" name="cmdok" 
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
 					onclick="setForm();" />
 			</td>
 			<td width="10">&nbsp;</td>
 			<td width="10">
-				<input id="cmdnone" type="button" value="None" name="cmdnone" style="width: 80px" class="btn"
+				<input id="cmdnone" type="button" value="None" name="cmdnone" 
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
 					onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
 			</td>
 			<td width="10">&nbsp;</td>
 			<td width="10">
-				<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" style="width: 80px" class="btn"
+				<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
 					onclick="self.close();" />
 			</td>
 		</tr>

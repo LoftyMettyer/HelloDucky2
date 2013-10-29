@@ -619,7 +619,7 @@ function selectEmailGroup()
 
 		sURL = "util_emailSelection" +
 				"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-		openDialog(sURL, (screen.width)/3,(screen.height)/2, "yes", "yes");
+		openDialog(sURL, (screen.width)/3,(screen.height)/3.5, "no", "no");
 }
 
 function changeBaseTable() 

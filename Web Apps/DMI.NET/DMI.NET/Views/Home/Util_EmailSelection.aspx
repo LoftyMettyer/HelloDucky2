@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-
-<%--<script type="text/javascript" src="/dmi-net/Scripts/jquery/jquery.jqGrid.src.js" ></script>--%>
+<%@ Import Namespace="DMI.NET" %>
 
 <script runat="server">
 	Private Function GetEmailSelection() As String
@@ -52,23 +51,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 	<title>OpenHR Intranet</title>
-	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/Site.css?v=8.0.8.0")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/themes/Redmond/jquery-ui.min.css?v=8.0.8.0") %>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
-
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.Content("~/Content/Site.css?v=8.0.8.0")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.Content("~/Content/themes/Redmond/jquery-ui.min.css?v=8.0.8.0") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.Content("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
 	<script type="text/javascript">
 		window.onload = function () {
 			var iResizeBy, iNewWidth, iNewHeight;
 
 			// Resize the popup.
-			iResizeBy = (bdyMain.scrollWidth - bdyMain.clientWidth) + 100;
+			iResizeBy = (bdyMain.scrollWidth - bdyMain.clientWidth);
 			if (bdyMain.offsetWidth + iResizeBy > screen.width) {
 				window.dialogWidth = new String(screen.width) + "px";
 			} else {
@@ -132,16 +136,24 @@
 								<tr>
 									<td>&nbsp;</td>
 									<td width="10">
-										<input id="cmdok" type="button" class="btn" value="OK" name="cmdok" style="width: 80px;" />
+										<input id="cmdok" type="button" value="OK" name="cmdok" 
+											style="width: 80px"
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+										/>
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
-										<input id="cmdnone" type="button" class="btn" value="None" name="cmdnone" style="width: 80px;"
+										<input id="cmdnone" type="button" value="None" name="cmdnone"
+											style="width: 80px"
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
 											onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
-										<input id="cmdcancel" type="button" class="btn" value="Cancel" name="cmdcancel" style="width: 80px;" onclick="self.close();" />
+										<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
+											style="width: 80px"
+											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+											onclick="self.close();" />
 									</td>
 								</tr>
 							</table>
