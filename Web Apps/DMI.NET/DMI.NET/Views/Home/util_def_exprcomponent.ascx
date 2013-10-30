@@ -870,12 +870,12 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td height="10">
-														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="-1"
+														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="0"
 															onclick="calculationAndFilter_refresh();"/>
 														<label
 															for="chkOwnersCalcs"
 															class="checkbox"
-															tabindex="0"
+															tabindex="-1"
 															onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
 															Only show calculations where owner is '<% =session("Username") %>'
 														</label>
@@ -1084,12 +1084,12 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td height="10">
-														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="-1"
+														<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="0"
 															onclick="calculationAndFilter_refresh();"/>
 														<label
 															for="chkOwnersFilters"
 															class="checkbox"
-															tabindex="0">
+															tabindex="-1">
 															Only show filters where owner is '<% =session("Username") %>'
 														</label>
 													</td>

@@ -356,7 +356,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td></td>
 														<td></td>
 														<td style="white-space: nowrap">
-															<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="0"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
 																onclick="changeTab1Control();">
@@ -365,7 +365,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																name="lblPrintFilterHeader"
 																for="chkPrintFilterHeader"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
+																tabindex="-1"
 																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -418,14 +418,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														</td>
 														<td></td>
 														<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
-															<input valign="center" name="chkGroupByDesc" id="Checkbox1" type="checkbox" disabled="disabled" tabindex="-1"
+															<input valign="center" name="chkGroupByDesc" id="Checkbox1" type="checkbox" disabled="disabled" tabindex="0"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
 																onclick="changeTab1Control(); refreshTab3Controls();" />
 																<label
 																for="chkGroupByDesc"
 																class="checkbox checkboxdisabled"
-																tabindex="0"
+																tabindex="-1"
 																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1230,14 +1230,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1254,14 +1254,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1278,14 +1278,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkShadeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1302,14 +1302,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkCaptions" id="chkCaptions" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkCaptions" id="chkCaptions" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkCaptions"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1326,14 +1326,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkShadeWeekends"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1350,14 +1350,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr>
 																				<td width="5">&nbsp;</td>
 																				<td>
-																					<input name="chkStartOnCurrentMonth" id="chkStartOnCurrentMonth" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkStartOnCurrentMonth" id="chkStartOnCurrentMonth" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab3Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkStartOnCurrentMonth"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1732,14 +1732,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr height="20">
 																				<td width="5">&nbsp;</td>
 																				<td align="left" colspan="6" nowrap>
-																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkPreview"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1758,14 +1758,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" colspan="6" nowrap>
-																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkDestination0"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1784,14 +1784,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" nowrap>
-																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkDestination1"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1820,14 +1820,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr style="height: 20px">
 																				<td></td>
 																				<td align="left" nowrap>
-																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkDestination2"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1877,13 +1877,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" nowrap>
-																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label for="chkDestination3"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"

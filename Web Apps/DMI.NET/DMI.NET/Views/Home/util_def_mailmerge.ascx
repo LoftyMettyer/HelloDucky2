@@ -672,14 +672,14 @@
 														<td></td>
 														<td></td>
 														<td nowrap>
-															<input type="checkbox" id="chkPause" name="chkPause" tabindex="-1"
+															<input type="checkbox" id="chkPause" name="chkPause" tabindex="0"
 																onclick="changeTab4Control()"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 															<label
 																for="chkPause"
 																class="checkbox"
-																tabindex="0"
+																tabindex="-1"
 																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -702,14 +702,14 @@
 														<td></td>
 														<td></td>
 														<td nowrap>
-															<input type="checkbox" id="chkSuppressBlanks" name="chkSuppressBlanks" tabindex="-1"
+															<input type="checkbox" id="chkSuppressBlanks" name="chkSuppressBlanks" tabindex="0"
 																onclick="changeTab4Control()"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																<label
 																	for="chkSuppressBlanks"
 																	class="checkbox"
-																	tabindex="0"
+																	tabindex="-1"
 																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																	onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																	onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -829,7 +829,7 @@
 																			<tr style="width: 5px"></tr>
 																			<tr id="row4" name="row4" style="height: 20px; padding: 5px">
 																				<td style="white-space: nowrap" colspan="2">
-																					<input type="checkbox" id="chkOutputScreen" name="chkOutputScreen" tabindex="-1"
+																					<input type="checkbox" id="chkOutputScreen" name="chkOutputScreen" tabindex="0"
 																						onclick="changeTab4Control()"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -838,7 +838,7 @@
 																					<label
 																						for="chkOutputScreen"
 																						class="checkbox"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -868,14 +868,14 @@
 																					
 																				<tr name="row5" id="row5" style="height: 20px; padding: 5px">
 																					<td style="white-space: nowrap;width:200px" colspan="3" >
-																						<input type="checkbox" id="chkOutputPrinter" name="chkOutputPrinter" tabindex="-1"
+																						<input type="checkbox" id="chkOutputPrinter" name="chkOutputPrinter" tabindex="0"
 																							onclick="chkOutputPrinter_Click(); changeTab4Control(); "
 																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																						<label
 																							for="chkOutputPrinter"
 																							class="checkbox"
-																							tabindex="0"
+																							tabindex="-1"
 																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -899,14 +899,14 @@
 
 																				<tr name="row6" id="row6" style="height: 20px; padding: 5px">
 																					<td style="white-space: nowrap;width:200px" colspan="3">
-																						<input type="checkbox" id="chkSave" name="chkSave" tabindex="-1"
+																						<input type="checkbox" id="chkSave" name="chkSave" tabindex="0"
 																							onclick="chkSave_Click(); changeTab4Control(); "
 																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																						<label
 																							for="chkSave"
 																							class="checkbox"
-																							tabindex="0"
+																							tabindex="-1"
 																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -956,14 +956,14 @@
 																			</tr>
 																			<tr name="row9" id="row9" style="height: 20px; padding: 5px">
 																				<td nowrap colspan="3">
-																					<input type="checkbox" id="chkAttachment" name="chkAttachment" tabindex="-1"
+																					<input type="checkbox" id="chkAttachment" name="chkAttachment" tabindex="0"
 																						onclick="chkAttachment_Click(); changeTab4Control(); "
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkAttachment"
 																						class="checkbox"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"

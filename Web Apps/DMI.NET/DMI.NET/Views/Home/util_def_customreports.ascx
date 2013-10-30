@@ -223,14 +223,14 @@
 																</tr>
 																<tr>
 																	<td colspan="6" nowrap>
-																		<input name="chkPrintFilter" id="chkPrintFilter" type="checkbox" disabled="disabled" tabindex="-1"
+																		<input name="chkPrintFilter" id="chkPrintFilter" type="checkbox" disabled="disabled" tabindex="0"
 																			onclick="changeTab1Control();" />
 																		<label
 																			id="lblPrintFilter"
 																			name="lblPrintFilter"
 																			for="chkPrintFilter"
 																			class="checkbox checkboxdisabled"
-																			tabindex="0">
+																			tabindex="-1">
 																			Display filter or picklist title in the report header</label>
 																	</td>
 																</tr>
@@ -727,32 +727,32 @@
 															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 																<tr>
 																	<td width="33%" align="left" nowrap>
-																		<input type="checkbox" name="chkColAverage" id="chkColAverage" tabindex="-1"
+																		<input type="checkbox" name="chkColAverage" id="chkColAverage" tabindex="0"
 																			onclick="setAggregate(0)" />
 																		<label
 																			for="chkColAverage"
 																			class="checkbox"
-																			tabindex="0">
+																			tabindex="-1">
 																			Average
 																		</label>
 																	</td>
 																	<td width="33%" align="left" nowrap>
-																		<input type="checkbox" name="chkColCount" id="chkColCount" tabindex="-1"
+																		<input type="checkbox" name="chkColCount" id="chkColCount" tabindex="0"
 																			onclick="setAggregate(1)" />
 																		<label
 																			for="chkColCount"
 																			class="checkbox"
-																			tabindex="0">
+																			tabindex="-1">
 																			Count 
 																		</label>
 																	</td>
 																	<td width="33%" align="left" nowrap>
-																		<input type="checkbox" name="chkColTotal" id="chkColTotal" tabindex="-1"
+																		<input type="checkbox" name="chkColTotal" id="chkColTotal" tabindex="0"
 																			onclick="setAggregate(2)" />
 																		<label
 																			for="chkColTotal"
 																			class="checkbox"
-																			tabindex="0">
+																			tabindex="-1">
 																			Total 
 																		</label>
 																	</td>
@@ -762,22 +762,22 @@
 																</tr>
 																<tr>
 																	<td width="33%" align="left" nowrap>
-																		<input type="checkbox" name="chkColHidden" id="chkColHidden" tabindex="-1"
+																		<input type="checkbox" name="chkColHidden" id="chkColHidden" tabindex="1"
 																			onclick="setAggregate(3);" />
 																		<label
 																			for="chkColHidden"
 																			class="checkbox"
-																			tabindex="0">
+																			tabindex="-1">
 																			Hidden
 																		</label>
 																	</td>
 																	<td colspan="2" align="left" nowrap>
-																		<input type="checkbox" name="chkColGroup" id="chkColGroup" tabindex="-1"
+																		<input type="checkbox" name="chkColGroup" id="chkColGroup" tabindex="0"
 																			onclick="setAggregate(4)" />
 																		<label
 																			for="chkColGroup"
 																			class="checkbox"
-																			tabindex="0">
+																			tabindex="-1">
 																			Group With Next 
 																		</label>
 																	</td>
@@ -985,12 +985,12 @@
 																			<tr height="20">
 																				<td width="5">&nbsp</td>
 																				<td align="left">
-																					<input type="checkbox" id="chkSummary" name="chkSummary" tabindex="-1"
+																					<input type="checkbox" id="chkSummary" name="chkSummary" tabindex="0"
 																						onclick="changeTab5Control()" />
 																					<label
 																						for="chkSummary"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Summary report</label>
 																				</td>
 																				<td width="5">&nbsp</td>
@@ -1001,12 +1001,12 @@
 																			<tr height="20">
 																				<td width="5">&nbsp</td>
 																				<td align="left">
-																					<input type="checkbox" id="chkIgnoreZeros" name="chkIgnoreZeros" tabindex="-1"
+																					<input type="checkbox" id="chkIgnoreZeros" name="chkIgnoreZeros" tabindex="0"
 																						onclick="changeTab5Control()" />
 																					<label
 																						for="chkIgnoreZeros"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Ignore zeros when calculating aggregates</label>
 																				</td>
 																				<td width="5">&nbsp</td>
@@ -1169,12 +1169,12 @@
 																			<tr height="20">
 																				<td width="5">&nbsp</td>
 																				<td align="left" colspan="6" nowrap>
-																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkPreview"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Preview on screen</label>
 																				</td>
 																				<td width="5">&nbsp</td>
@@ -1187,12 +1187,12 @@
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" colspan="6" nowrap>
-																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination0"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Display output on screen</label>
 																				</td>
 																				<td></td>
@@ -1205,14 +1205,14 @@
 																			<tr height="20">
 																				<td></td>
 																				<td align="left" nowrap>
-																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"
 																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
 																					<label
 																						for="chkDestination1"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0"
+																						tabindex="-1"
 																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -1237,12 +1237,12 @@
 																			<tr style="height: 20px">
 																				<td></td>
 																				<td align="left" nowrap>
-																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination2"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Save to file 
 																					</label>
 																				</td>
@@ -1281,11 +1281,11 @@
 																			<tr style="height: 20px">
 																				<td></td>
 																				<td style="white-space: nowrap;text-align: left">
-																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
+																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="changeTab5Control();"/>
 																					<label for="chkDestination3"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Send as email
 																					</label>
 																				</td>

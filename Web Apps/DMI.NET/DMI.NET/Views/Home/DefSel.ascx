@@ -1318,9 +1318,9 @@ function showproperties() {
 																		Response.Write(" style=""visibility:hidden""")
 																End If
 %>>
-																<input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" tabindex="-1" id="checkbox" name="checkbox" value="checkbox"
+																<input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" tabindex="0" id="checkbox" name="checkbox" value="checkbox"
 																		onclick="ToggleCheck();" />
-																<label for="checkbox" class="checkbox" tabindex="0" onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
+																<label for="checkbox" class="checkbox" tabindex="-1" onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
 																		Only show definitions where owner is '<%=Session("Username")%>'
 																</label>
 														</td>

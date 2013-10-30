@@ -420,11 +420,11 @@
 													<tr>
 														<td>
 															<input id="chkAbsenceType_<%=iCount%>" name="chkAbsenceType_<%=iCount%>" 
-																type="checkbox" tagname="<%=aAbsenceTypes(iCount)%>" tabindex="-1"/>
+																type="checkbox" tagname="<%=aAbsenceTypes(iCount)%>" tabindex="0"/>
 															<label
 																for="chkAbsenceType_<%=iCount%>"
 																class="checkbox"
-																tabindex="0">
+																tabindex="-1">
 																<%=aAbsenceTypes(iCount)%>
 															</label>
 														</td>
@@ -511,7 +511,7 @@
 																			<input id="optFilter" name="optFilter" type="radio"
 																				onclick="changeRecordOptions('filter')" />
 																			<label
-																				tabindex="-1"
+																				tabindex="-1" 
 																				for="optFilter"
 																				class="radio">
 																				Filter
@@ -527,11 +527,11 @@
 																	</tr>
 																	<tr>
 																		<td style="white-space: nowrap;" colspan="3">
-																			<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="-1" />
+																			<input id="chkPrintInReportHeader" name="chkPrintInReportHeader" type="checkbox" tabindex="0" />
 																			<label
 																				for="chkPrintInReportHeader"
 																				class="checkbox"
-																				tabindex="0">
+																				tabindex="-1">
 																				Display filter or picklist title in the report header
 																			</label>
 																		</td>
@@ -572,57 +572,57 @@
 									<tr style="height: 10px"></tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="-1" />
+											<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="0" />
 											<label
 												for="chkSRV"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Suppress Repeated Personnel Details
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowDurations" name="chkShowDurations" tabindex="-1">
+											<input type="checkbox" id="chkShowDurations" name="chkShowDurations" tabindex="0">
 											<label
 												for="chkShowDurations"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Show Duration Totals
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowInstances" name="chkShowInstances" tabindex="-1" />
+											<input type="checkbox" id="chkShowInstances" name="chkShowInstances" tabindex="0" />
 											<label
 												for="chkShowInstances"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Show Instances Count
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowFormula" name="chkShowFormula" tabindex="-1" />
+											<input type="checkbox" id="chkShowFormula" name="chkShowFormula" tabindex="0" />
 											<label
 												for="chkShowFormula"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Show Bradford Factor Formula
 											</label>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" id="chkShowAbsenceDetails" name="chkAbsenceDetails" tabindex="-1"
+											<input type="checkbox" id="chkShowAbsenceDetails" name="chkAbsenceDetails" tabindex="0"
 												onclick="absenceBreakdownRefreshTab2Controls();"
 												onchange="absenceBreakdownRefreshTab2Controls();" />
 											<label
 												for="chkShowAbsenceDetails"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Show Absence Details
 											</label>
 										</td>
@@ -640,22 +640,22 @@
 										<tr style="height: 10px"></tr>
 										<tr>
 											<td>
-												<input type="checkbox" id="chkOmitBeforeStart" name="chkOmitBeforeStart" tabindex="-1"/>
+												<input type="checkbox" id="chkOmitBeforeStart" name="chkOmitBeforeStart" tabindex="0"/>
 												<label
 													for="chkOmitBeforeStart"
 													class="checkbox"
-													tabindex="0">
+													tabindex="-1">
 													Omit absences starting before the report start date
 												</label>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<input type="checkbox" id="chkOmitAfterEnd" name="chkOmitAfterEnd" tabindex="-1" />
+												<input type="checkbox" id="chkOmitAfterEnd" name="chkOmitAfterEnd" tabindex="0" />
 												<label
 													for="chkOmitAfterEnd"
 													class="checkbox"
-													tabindex="0">
+													tabindex="-1">
 													Omit absences ending after the report end date
 												</label>
 											</td>
@@ -665,13 +665,13 @@
 												<table class="invisible" style="border-collapse: collapse; padding: 0px">
 													<tr>
 														<td>
-															<input type="checkbox" id="chkMinimumBradfordFactor" name="chkMinimumBradfordFactor" tabindex="-1"
+															<input type="checkbox" id="chkMinimumBradfordFactor" name="chkMinimumBradfordFactor" tabindex="0"
 																onclick="absenceBreakdownRefreshTab2Controls();"
 																onchange="absenceBreakdownRefreshTab2Controls();" />
 															<label
 																for="chkMinimumBradfordFactor"
 																class="checkbox"
-																tabindex="0">
+																tabindex="-1">
 																Minimum Bradford Factor
 															</label>
 															&nbsp;
@@ -706,11 +706,11 @@
 												%>
 											</select>
 
-											<input type="checkbox" id="chkOrderBy1Asc" name="chkOrderBy1Asc" tabindex="-1" />
+											<input type="checkbox" id="chkOrderBy1Asc" name="chkOrderBy1Asc" tabindex="0" />
 											<label
 												for="chkOrderBy1Asc"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Ascending
 											</label>
 										</td>
@@ -728,11 +728,11 @@
 													Next
 												%>
 											</select>
-											<input type="checkbox" id="chkOrderBy2Asc" name="chkOrderBy2Asc" tabindex="-1" />
+											<input type="checkbox" id="chkOrderBy2Asc" name="chkOrderBy2Asc" tabindex="0" />
 											<label
 												for="chkOrderBy2Asc"
 												class="checkbox"
-												tabindex="0">
+												tabindex="-1">
 												Ascending
 											</label>
 										</td>
@@ -940,12 +940,12 @@
 													<tr style="height: 20px">
 														<td></td>
 														<td style="white-space: nowrap; text-align: left" colspan="6">
-															<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkPreview"
 																class="checkbox"
-																tabindex="0">
+																tabindex="-1">
 																Preview on screen
 															</label>
 														</td>
@@ -955,12 +955,12 @@
 													<tr style="height: 20px">
 														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap" colspan="6">
-															<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination0"
 																class="checkbox"
-																tabindex="0">
+																tabindex="-1">
 																Display output on screen
 															</label>
 														</td>
@@ -970,12 +970,12 @@
 													<tr style="height: 20px">
 														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
-															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination1"
 																class="checkbox"
-																tabindex="0">
+																tabindex="-1">
 																Send to printer
 															</label>
 														</td>
@@ -994,12 +994,12 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap; width: 150px">
-															<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination2"
 																class="checkbox checkboxdisabled"
-																tabindex="0">
+																tabindex="-1">
 																Save to file
 															</label>
 														</td>
@@ -1033,12 +1033,12 @@
 													<tr>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap">
-															<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
+															<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="absenceBreakdownRefreshTab3Controls();" />
 															<label
 																for="chkDestination3"
 																class="checkbox checkboxdisabled"
-																tabindex="0">
+																tabindex="-1">
 																Send as email
 															</label>
 														</td>

@@ -954,12 +954,12 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left colspan=6 nowrap>
-																		<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="-1" 
+																		<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="0" 
 																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination0"
 																					class="checkbox"
-																					tabindex=0>
+																					tabindex="-1">
 																			
 																		Display output on screen 
 																		</label>
@@ -972,12 +972,12 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>																	
-																		<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="-1" 
+																		<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="0" 
 																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination1"
 																					class="checkbox"
-																					tabindex=0>																		
+																					tabindex="-1">																		
 																		Send to printer 
 																		</label>																		
 																		</td>
@@ -999,12 +999,12 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
-																		<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="-1" 
+																		<input name=chkDestination2 id=chkDestination2 type=checkbox disabled="disabled" tabindex="0" 
 																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination2"
 																					class="checkbox"
-																					tabindex=0 >																			
+																					tabindex="-1" >																			
 																		Save to file 
 																		</label>																		
 																		</td>
@@ -1056,12 +1056,12 @@
 																	<tr height=20>
 																		<td width=5>&nbsp</td>
 																		<td align=left nowrap>
-																		<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="-1" 
+																		<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="0" 
 																									onClick="outputOptionsRefreshControls();"/>
 																		<label 
 																					for="chkDestination3"
 																					class="checkbox"
-																					tabindex=0>
+																					tabindex="-1">
 																			
 																		Send as email
 																		</label>																		

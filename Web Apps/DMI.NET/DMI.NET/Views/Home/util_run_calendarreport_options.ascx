@@ -20,30 +20,30 @@
 
 																						If objCalendar.IncludeBankHolidays_Enabled And objCalendar.IncludeBankHolidays Then
 																				%>
-																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" checked tabindex="-1"
+																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" checked tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="0"/>
+																						tabindex="-1"/>
 																				<%
 																				ElseIf objCalendar.IncludeBankHolidays_Enabled And objCalendar.IncludeBankHolidays = False Then
 																				%>
-																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" tabindex="-1"
+																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				Else
 																				%>
-																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="-1"
+																				<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				End If
 																				%>
@@ -58,30 +58,30 @@
 																				<%
 																						If objCalendar.IncludeWorkingDaysOnly_Enabled And objCalendar.IncludeWorkingDaysOnly Then
 																				%>
-																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" checked tabindex="-1"
+																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" checked tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				ElseIf objCalendar.IncludeWorkingDaysOnly_Enabled And objCalendar.IncludeWorkingDaysOnly = False Then
 																				%>
-																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" tabindex="-1"
+																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				Else
 																				%>
-																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="-1"
+																				<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				End If
 																				%>
@@ -97,30 +97,30 @@
 																						If objCalendar.ShowBankHolidays_Enabled And objCalendar.ShowBankHolidays Then
 																				%>
 
-																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" checked tabindex="-1"
+																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" checked tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				ElseIf objCalendar.ShowBankHolidays_Enabled And objCalendar.ShowBankHolidays = False Then
 																				%>
-																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" tabindex="-1"
+																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				Else
 																				%>
-																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="-1"
+																				<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<label
 																						for="chkShadeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="0" />
+																						tabindex="-1" />
 																				<%
 																				End If
 																				%>
@@ -135,12 +135,12 @@
 																				<%
 																						If objCalendar.ShowCaptions Then
 																				%>
-																				<input name="chkCaptions" id="chkCaptions" type="checkbox" checked tabindex="-1"
+																				<input name="chkCaptions" id="chkCaptions" type="checkbox" checked tabindex="0"
 																						onclick="refreshInfo();" />
 																				<%
 																				Else
 																				%>
-																				<input name="chkCaptions" id="chkCaptions" type="checkbox" tabindex="-1"
+																				<input name="chkCaptions" id="chkCaptions" type="checkbox" tabindex="0"
 																						onclick="refreshInfo();" />
 																				<%
 																				End If
@@ -148,7 +148,7 @@
 																				<label
 																						for="chkCaptions"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Show Calendar Captions 
 																				</label>
 																		</td>
@@ -160,13 +160,13 @@
 																				<%
 																						If objCalendar.ShowWeekends Then
 																				%>
-																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" checked tabindex="-1"
+																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" checked tabindex="0"
 																						onclick="refreshInfo();" />
 
 																				<%
 																				Else
 																				%>
-																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" tabindex="-1"
+																				<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" tabindex="0"
 																						onclick="refreshInfo();" />
 
 																				<%
@@ -177,7 +177,7 @@
 																				<label
 																						for="chkShadeWeekends"
 																						class="checkbox"
-																						tabindex="0">
+																						tabindex="-1">
 																						Show Weekends 
 																				</label>
 																		</td>

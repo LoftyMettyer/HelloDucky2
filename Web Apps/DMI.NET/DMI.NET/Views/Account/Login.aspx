@@ -455,7 +455,7 @@ Else
 	If Request.ServerVariables("LOGON_USER") <> "" Then
 %>			
 								<td style="font-weight: bold;text-align: left;" colspan="3" >
-										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
+										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="0"
 												onclick="ToggleWindowsAuthentication()"/> 
 										<label 
 												for="chkWindowsAuthentication"
