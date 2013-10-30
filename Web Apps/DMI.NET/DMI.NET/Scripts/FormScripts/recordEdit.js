@@ -1264,7 +1264,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			span.style.fontFamily = controlItemArray[11];
 			span.style.fontSize = controlItemArray[12] + 'pt';
 			span.textContent = controlItemArray[8];
-
+			span.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
 			span.setAttribute("data-control-key", key);
 
 			//replaces the SetControlLevel function in recordDMI.ocx.
@@ -1343,22 +1343,18 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			
 
 		case 4096: //ctlWorking Pattern
-			//TODO: Font size change - this control is fixed in size.
+			//TODO - android browser/tablet adjustment
+			var fontSize = Number(controlItemArray[12]);
 			top = (Number(controlItemArray[4]) / 15);
 			left = (Number(controlItemArray[5]) / 15);
-			height = 47; //(Number((controlItemArray[6]) / 15) - 2);
-			width = 120; //(Number((controlItemArray[7]) / 15) - 2);
+			height = (Number((controlItemArray[6]) / 15) - 2);
+			width = (Number((controlItemArray[7]) / 15) - 2);
 			if (controlItemArray[19] == "0") {
-				//pictureborder?
 				borderCss = "border-style: none;";
 			} else {
 				borderCss = "border: 1px solid #999;";
 				width -= 2;
-				height -= 2;
-
-				//TODO ??  fontadjustment?
-
-				//TODO - android browser/tablet adjustment
+				height -= 2;		
 			}
 
 			fieldset = document.createElement("fieldset");
@@ -1376,84 +1372,103 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.padding = "0px";
 			fieldset.style.border = borderCss;
 
-			for (var i = 0; i < 7; i++) {
-				var offsetLeft = 19 + (i * 13);
-				var dayLink = fieldset.appendChild(document.createElement("a"));
+			var offsetLeft;
+
+			var table = fieldset.appendChild(document.createElement("table"));
+			var tr = table.appendChild(document.createElement("tr"));
+
+			for (i = 0; i <= 7; i++) {
+				offsetLeft = (width / 10) * (i + 1);
+				var td = tr.appendChild(document.createElement("td"));
+				td.style.textAlign = "center";
+				var dayLink = td.appendChild(document.createElement("a"));
 				switch (i) {
 				case 0:
-					dayLink.textContent = "S";
+					dayLink.textContent = " ";
 					break;
 				case 1:
-					dayLink.textContent = "M";
+					dayLink.textContent = "S";
 					break;
 				case 2:
-					dayLink.textContent = "T";
+					dayLink.textContent = "M";
 					break;
 				case 3:
-					dayLink.textContent = "W";
-					break;
-				case 4:
 					dayLink.textContent = "T";
 					break;
+				case 4:
+					dayLink.textContent = "W";
+					break;
 				case 5:
-					dayLink.textContent = "F";
+					dayLink.textContent = "T";
 					break;
 				case 6:
+					dayLink.textContent = "F";
+					break;
+				case 7:
 					dayLink.textContent = "S";
 					break;
 				}
 
 				//Day labels (they are in reality anchors ['a'])
 				dayLink.style.fontFamily = controlItemArray[11];
-				dayLink.style.fontSize = controlItemArray[12] + 'pt';
+				dayLink.style.fontSize = fontSize + "pt";
 				dayLink.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+				dayLink.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
 				dayLink.style.position = "absolute";
 				dayLink.style.top = "0px";
-				dayLink.style.left = offsetLeft + 3 + "px";
+				dayLink.style.left = offsetLeft + "px";
 				dayLink.style.textDecoration = "none";
 				dayLink.style.cursor = "default";
+				dayLink.style.textAlign = "center";
+				dayLink.style.width = "1em";
+				dayLink.style.minWidth = "13px";
 				$(dayLink).attr('href', '#');
 				$(dayLink).attr('data-checkboxes', controlID + "_" + ((i * 2) + 1) + "," + controlID + "_" + ((i * 2) + 2)); //Data attribute to hold associated checkboxes
 
 				//If the control is enabled, add an event on clicking the link to toggle its associated checkboxes
 				if (fControlEnabled) {
-					$(dayLink).click(function (ev1) {
+					$(dayLink).click(function(ev1) {
 						ev1.preventDefault();
 						toggleCheckboxes(this);
 					});
 				}
-				
-			//AM Boxes
-				var amCheckbox = fieldset.appendChild(document.createElement("input"));
-				amCheckbox.type = "checkbox";
-				amCheckbox.id = controlID + "_" + ((i * 2) + 1);
-				amCheckbox.style.padding = "0px";
-				amCheckbox.style.position = "absolute";
-				amCheckbox.style.top = "12px";
-				amCheckbox.style.left = offsetLeft + "px";
-				if (!fControlEnabled) amCheckbox.disabled = true;
+			}
+			
+			for (i = 0; i <= 7; i++) {
+				if (i > 0) {
+					offsetLeft = (width / 10) * (i + 1);
+					//AM Boxes
+					var amCheckbox = fieldset.appendChild(document.createElement("input"));
+					amCheckbox.type = "checkbox";
+					amCheckbox.id = controlID + "_" + ((i * 2) + 1);
+					amCheckbox.style.padding = "0px";
+					amCheckbox.style.position = "absolute";
+					amCheckbox.style.top = fontSize * 12 / 8 + "px";
+					amCheckbox.style.left = offsetLeft + "px";
+					if (!fControlEnabled) amCheckbox.disabled = true;
 
-				//PM Boxes
-				var pmCheckbox = fieldset.appendChild(document.createElement("input"));
-				pmCheckbox.type = "checkbox";
-				pmCheckbox.id = controlID + "_" + ((i * 2) + 2);
-				pmCheckbox.style.padding = "0px";
-				pmCheckbox.style.position = "absolute";
-				pmCheckbox.style.top = "26px";
-				pmCheckbox.style.left = offsetLeft + "px";
-				if (!fControlEnabled) pmCheckbox.disabled = true;
+					//PM Boxes
+					var pmCheckbox = fieldset.appendChild(document.createElement("input"));
+					pmCheckbox.type = "checkbox";
+					pmCheckbox.id = controlID + "_" + ((i * 2) + 2);
+					pmCheckbox.style.padding = "0px";
+					pmCheckbox.style.position = "absolute";
+					pmCheckbox.style.top = fontSize * 26 / 8 - 2 + "px";
+					pmCheckbox.style.left = offsetLeft + "px";
+					if (!fControlEnabled) pmCheckbox.disabled = true;
+				}
 			}
 
 			var checkboxesToAssociate, j;
 			
-			//AM/PM Labels (they are in reality anchors ['a'])
+			//AM label (it's actually an anchor ['a'])
 			var link = document.createElement("a");
 			link.textContent = "AM";
 			link.style.fontFamily = controlItemArray[11];
-			link.style.fontSize = controlItemArray[12] + 'pt';
+			link.style.fontSize = fontSize + 'pt';
 			link.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-			link.style.position = "relative";
-			link.style.top = "8px";
+			link.style.position = "absolute";
+			link.style.top = fontSize + 5 + "px";
 			link.style.left = "4px";
 			link.style.textDecoration = "none";
 			link.style.cursor = "default";
@@ -1471,17 +1486,18 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					toggleCheckboxes(this);
 				});
 			}
-			
+
 			fieldset.appendChild(link);
 
+			//PM label (it's actually an anchor ['a'])
 			link = document.createElement("a");
 			link.textContent = "PM";
 			link.style.fontFamily = controlItemArray[11];
-			link.style.fontSize = controlItemArray[12] + 'pt';
+			link.style.fontSize = fontSize + 'pt';
 			link.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-			link.style.position = "relative";
-			link.style.top = "21px";
-			link.style.left = "-12px";
+			link.style.position = "absolute";
+			link.style.top = fontSize * 21 / 8 + 5 + "px";
+			link.style.left = "4px";
 			link.style.textDecoration = "none";
 			link.style.cursor = "default";
 			$(link).attr('href', '#');
@@ -1499,7 +1515,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					toggleCheckboxes(this);
 				});
 			}
-			
+
 			fieldset.appendChild(link);
 
 			//ADD FIELDSET AND ITS CONTENTS.
@@ -1655,6 +1671,34 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		default:
 			break;
 	}
+}
+
+//Function below nicked from http://bytes.com/topic/javascript/insights/636088-function-convert-decimal-color-number-into-html-hex-color-string
+function decimalColorToHTMLcolor(number) {
+	//converts to a integer
+	var intnumber = number - 0;
+
+	// isolate the colors - really not necessary
+	var red, green, blue;
+
+	// needed since toString does not zero fill on left
+	var template = "#000000";
+
+	// in the MS Windows world RGB colors are 0xBBGGRR because of the way Intel chips store bytes
+	red = (intnumber & 0x0000ff) << 16;
+	green = intnumber & 0x00ff00;
+	blue = (intnumber & 0xff0000) >>> 16;
+
+	// mask out each color and reverse the order
+	intnumber = red | green | blue;
+
+	// toString converts a number to a hexstring
+	var HTMLcolor = intnumber.toString(16);
+
+	//template adds # for standard HTML #RRGGBB
+	HTMLcolor = template.substring(0, 7 - HTMLcolor.length) + HTMLcolor;
+
+	return HTMLcolor;
 }
 
 function toggleCheckboxes(control) {
