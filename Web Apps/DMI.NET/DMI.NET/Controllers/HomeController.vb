@@ -3128,10 +3128,10 @@ Namespace Controllers
 											filterID As Long,
 											aggregateType As Long,
 											elementType As Long,
-											tableID2 As Long,
-											columnID2 As Long,
-											tableID3 As Long,
-											columnID3 As Long,
+											tableID_2 As Long,
+											columnID_2 As Long,
+											tableID_3 As Long,
+											columnID_3 As Long,
 											sortOrderID As Long,
 											sortDirection As Long,
 											colourID As Long) As FileContentResult
@@ -3147,7 +3147,7 @@ Namespace Controllers
 			objChart.Username = CType(Session("username"), String)
 			objChart.Connection = CType(Session("databaseConnection"), Connection)
 
-			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID2, columnID2, tableID3, columnID3, sortOrderID, sortDirection, ColourID)
+			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID_2, columnID_2, tableID_3, columnID_3, sortOrderID, sortDirection, colourID)
 
 			If Err.Number <> 0 Then
 				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
