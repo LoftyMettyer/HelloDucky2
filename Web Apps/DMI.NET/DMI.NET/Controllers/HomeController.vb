@@ -1,8 +1,10 @@
 ﻿Imports System.Web.Mvc
+Imports System.Web.UI.DataVisualization.Charting
 Imports System.IO
 Imports System.Web
 Imports System.Web.Services.Description
 Imports ADODB
+Imports System.Drawing
 Imports HR.Intranet.Server
 Imports System.Web.Script.Serialization
 
@@ -2937,6 +2939,373 @@ Namespace Controllers
 
 		End Sub
 
+		Function GetChart(showLegend As Boolean,
+											dottedGrid As Boolean,
+											showValues As Boolean,
+											stack As Boolean,
+											showPercent As Boolean,
+											chartType As Long,
+											tableID As Long,
+											columnID As Long,
+											filterID As Long,
+											aggregateType As Long,
+											elementType As Long,
+											sortOrderID As Long,
+											sortDirection As Long,
+											colourID As Long) As FileContentResult
+
+			Err.Clear()
+
+			Dim mrstChartData As Recordset
+			Dim sErrorDescription As String
+
+			Dim objChart = New HR.Intranet.Server.clsChart
+
+			' Pass required info to the DLL
+			objChart.Username = CType(Session("username"), String)
+			objChart.Connection = CType(Session("databaseConnection"), Connection)
+
+			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, sortOrderID, sortDirection, ColourID)
+
+			If Err.Number <> 0 Then
+				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+			Else
+				sErrorDescription = ""
+			End If
+
+			If Not mrstChartData Is Nothing Then
+				If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+			End If
+
+			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
+
+				If Not (mrstChartData.EOF And mrstChartData.BOF) Then
+					mrstChartData.MoveFirst()
+					If mrstChartData.Fields(0).Value <> "No Access" Then
+						If mrstChartData.Fields(0).Value <> "No Data" Then
+
+							Dim chart1 As New Chart()
+
+							chart1.BackColor = ColorTranslator.FromHtml("#D3DFF0")
+							chart1.Width = Unit.Pixel(412)
+							chart1.Height = Unit.Pixel(296)
+							chart1.BorderlineDashStyle = BorderStyle.Solid
+							chart1.BackGradientStyle = GradientStyle.TopBottom
+							chart1.BorderWidth = 2
+							chart1.BorderColor = Color.FromArgb(255, 26, 59, 105)
+							chart1.Palette = ChartColorPalette.BrightPastel
+
+							' Set Legend's visual attributes
+							If showLegend = True Then
+								chart1.Legends.Add("Default")
+								chart1.Legends("Default").Enabled = True
+								chart1.Legends("Default").BackColor = Color.Transparent
+								chart1.Legends("Default").ShadowOffset = 2
+							End If
+
+							' Border appearance
+							chart1.BorderSkin.SkinStyle = BorderSkinStyle.Emboss
+
+							chart1.ChartAreas.Add("ChartArea1")
+
+							chart1.ChartAreas("ChartArea1").BackColor = ColorTranslator.FromHtml("#D3DFF0")
+							chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
+							chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
+							chart1.ChartAreas("ChartArea1").BackGradientStyle = GradientStyle.TopBottom
+							chart1.ChartAreas("ChartArea1").BorderColor = Color.FromArgb(64, 64, 64, 64)
+
+							chart1.ChartAreas("ChartArea1").AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas("ChartArea1").AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+							' Gridlines
+							If dottedGrid = True Then
+								chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+							Else
+								chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+							End If
+
+
+							If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Or chartType = 14 Then
+								' 3D Settings
+								chart1.ChartAreas("ChartArea1").Area3DStyle.Enable3D = True
+								chart1.ChartAreas("ChartArea1").Area3DStyle.Perspective = 10
+								chart1.ChartAreas("ChartArea1").Area3DStyle.Inclination = 15
+								chart1.ChartAreas("ChartArea1").Area3DStyle.Rotation = 10
+								chart1.ChartAreas("ChartArea1").Area3DStyle.IsRightAngleAxes = False
+								chart1.ChartAreas("ChartArea1").Area3DStyle.WallWidth = 0
+								chart1.ChartAreas("ChartArea1").Area3DStyle.IsClustered = False
+							End If
+
+							' Series - just one series as multiaxis = false.
+							chart1.Series.Add("Default")
+							chart1.Series("Default").BorderColor = Color.FromArgb(180, 26, 59, 105)
+							chart1.Series("Default").Color = Color.FromArgb(220, 65, 140, 240)
+
+							' Show Values/Percentages
+							If showValues = True Then
+								chart1.Series("Default")("LabelStyle") = "Top"
+								chart1.Series("Default").IsValueShownAsLabel = True
+
+								If showPercent = True Then
+									chart1.Series("Default").Label = "#PERCENT{P2}"
+								End If
+							End If
+
+							Select Case chartType
+								Case 0, 1
+									If stack = True Then
+										chart1.Series("Default").ChartType = SeriesChartType.StackedColumn
+									Else
+										chart1.Series("Default").ChartType = SeriesChartType.Column
+									End If
+
+								Case 2, 3
+									chart1.Series("Default").ChartType = SeriesChartType.Line
+								Case 4, 5
+									If stack = True Then
+										chart1.Series("Default").ChartType = SeriesChartType.StackedArea
+									Else
+										chart1.Series("Default").ChartType = SeriesChartType.Area
+									End If
+
+								Case 6, 7
+									chart1.Series("Default").ChartType = SeriesChartType.StepLine
+								Case 14
+									chart1.Series("Default").ChartType = SeriesChartType.Pie
+
+									chart1.ChartAreas("ChartArea1").BackColor = Color.Transparent
+									chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
+									chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
+
+							End Select
+
+							Do While Not mrstChartData.EOF
+								If mrstChartData.Fields(0).Value <> "No Access" And mrstChartData.Fields(0).Value <> "No Data" Then
+
+									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = mrstChartData.Fields(0).Value, .YValues = New Double() {mrstChartData.Fields(1).Value}})
+
+								End If
+								mrstChartData.MoveNext()
+							Loop
+
+							Using ms = New MemoryStream()
+								chart1.SaveImage(ms, ChartImageFormat.Png)
+								ms.Seek(0, SeekOrigin.Begin)
+
+								Return File(ms.ToArray(), "image/png", "mychart.png")
+							End Using
+						Else
+							' No Data						
+						End If
+					Else
+						' No Access
+					End If
+
+				End If
+
+			End If
+
+		End Function
+
+
+
+		Function GetMultiAxisChart(showLegend As Boolean,
+											dottedGrid As Boolean,
+											showValues As Boolean,
+											stack As Boolean,
+											showPercent As Boolean,
+											chartType As Long,
+											tableID As Long,
+											columnID As Long,
+											filterID As Long,
+											aggregateType As Long,
+											elementType As Long,
+											tableID2 As Long,
+											columnID2 As Long,
+											tableID3 As Long,
+											columnID3 As Long,
+											sortOrderID As Long,
+											sortDirection As Long,
+											colourID As Long) As FileContentResult
+
+			Err.Clear()
+
+			Dim mrstChartData As Recordset
+			Dim sErrorDescription As String
+
+			Dim objChart = New HR.Intranet.Server.clsMultiAxisChart
+
+			' Pass required info to the DLL
+			objChart.Username = CType(Session("username"), String)
+			objChart.Connection = CType(Session("databaseConnection"), Connection)
+
+			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID2, columnID2, tableID3, columnID3, sortOrderID, sortDirection, ColourID)
+
+			If Err.Number <> 0 Then
+				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+			Else
+				sErrorDescription = ""
+			End If
+
+			If Not mrstChartData Is Nothing Then
+				If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+			End If
+
+			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
+				Dim seriesName As String
+
+				If Not (mrstChartData.EOF And mrstChartData.BOF) Then
+					mrstChartData.MoveFirst()
+					If TryCast(mrstChartData.Fields(0).Value, String) <> "No Access" Then
+						If TryCast(mrstChartData.Fields(0).Value, String) <> "No Data" Then
+
+							Dim chart1 As New Chart()
+
+							chart1.BackColor = ColorTranslator.FromHtml("#D3DFF0")
+							chart1.Width = Unit.Pixel(412)
+							chart1.Height = Unit.Pixel(296)
+							chart1.BorderlineDashStyle = BorderStyle.Solid
+							chart1.BackGradientStyle = GradientStyle.TopBottom
+							chart1.BorderWidth = 2
+							chart1.BorderColor = Color.FromArgb(255, 26, 59, 105)
+
+							' Set Legend's visual attributes
+							If showLegend = True Then
+								chart1.Legends.Add("Default")
+								chart1.Legends("Default").Enabled = True
+								chart1.Legends("Default").BackColor = Color.Transparent
+								chart1.Legends("Default").ShadowOffset = 2
+							End If
+
+							' Border appearance
+							chart1.BorderSkin.SkinStyle = BorderSkinStyle.Emboss
+
+							seriesName = "Default"
+
+							chart1.ChartAreas.Add(seriesName)
+
+							chart1.ChartAreas(seriesName).BackColor = Color.Transparent
+							chart1.ChartAreas(seriesName).BackSecondaryColor = Color.Transparent
+							chart1.ChartAreas(seriesName).ShadowColor = Color.Transparent
+							chart1.ChartAreas(seriesName).BackGradientStyle = GradientStyle.TopBottom
+							chart1.ChartAreas(seriesName).BorderColor = Color.FromArgb(64, 64, 64, 64)
+
+							chart1.ChartAreas(seriesName).AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas(seriesName).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas(seriesName).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
+							chart1.ChartAreas(seriesName).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+							' Gridlines
+							If dottedGrid = True Then
+								chart1.ChartAreas(seriesName).AxisX.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas(seriesName).AxisY.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas(seriesName).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+								chart1.ChartAreas(seriesName).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+							Else
+								chart1.ChartAreas(seriesName).AxisX.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas(seriesName).AxisY.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas(seriesName).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+								chart1.ChartAreas(seriesName).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+							End If
+
+							' 3D Settings
+							If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Or chartType = 14 Then
+								chart1.ChartAreas(seriesName).Area3DStyle.Enable3D = True
+								chart1.ChartAreas(seriesName).Area3DStyle.Perspective = 10
+								chart1.ChartAreas(seriesName).Area3DStyle.Inclination = 15
+								chart1.ChartAreas(seriesName).Area3DStyle.Rotation = 10
+								chart1.ChartAreas(seriesName).Area3DStyle.IsRightAngleAxes = False
+								chart1.ChartAreas(seriesName).Area3DStyle.WallWidth = 0
+								chart1.ChartAreas(seriesName).Area3DStyle.IsClustered = False
+							End If
+
+							Dim seriesNames As String = ""
+
+							Do While Not mrstChartData.EOF
+								If TryCast(mrstChartData.Fields(0).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(0).Value, String) <> "No Data" Then
+
+									seriesName = mrstChartData.Fields(3).Value.ToString()
+									Dim columnName As String = mrstChartData.Fields(1).Value.ToString()
+									Dim yVal As Integer = CInt(mrstChartData.Fields(4).Value)
+
+									If Not seriesNames.Contains("<" & seriesName & ">") Then
+										' Add the series - ONLY if not already added.
+										chart1.Series.Add(seriesName)
+										seriesNames &= "<" & seriesName & ">"
+
+										' Show Values/Percentages
+										If showValues = True Then
+											chart1.Series(seriesName)("LabelStyle") = "Top"
+											chart1.Series(seriesName).IsValueShownAsLabel = True
+
+											If showPercent = True Then
+												chart1.Series(seriesName).Label = "#PERCENT{P2}"
+											End If
+										End If
+
+										Select Case chartType
+											Case 0, 1
+												If stack = True Then
+													chart1.Series(seriesName).ChartType = SeriesChartType.StackedColumn
+												Else
+													chart1.Series(seriesName).ChartType = SeriesChartType.Column
+												End If
+
+											Case 2, 3
+												chart1.Series(seriesName).ChartType = SeriesChartType.Line
+											Case 4, 5
+												If stack = True Then
+													chart1.Series(seriesName).ChartType = SeriesChartType.StackedArea
+												Else
+													chart1.Series(seriesName).ChartType = SeriesChartType.Area
+												End If
+
+											Case 6, 7
+												chart1.Series(seriesName).ChartType = SeriesChartType.StepLine
+											Case 14
+												chart1.Series(seriesName).ChartType = SeriesChartType.Pie
+										End Select
+									End If
+
+									chart1.Series(seriesName).Points.AddXY(columnName, yVal)
+
+								End If
+								mrstChartData.MoveNext()
+
+							Loop
+
+							chart1.ApplyPaletteColors()
+
+							For Each series As Series In chart1.Series
+								For Each dp As DataPoint In series.Points
+									dp.Color = Color.FromArgb(200, dp.Color.R, dp.Color.G, dp.Color.B)
+								Next
+							Next
+
+							Using ms = New MemoryStream()
+								chart1.SaveImage(ms, ChartImageFormat.Png)
+								ms.Seek(0, SeekOrigin.Begin)
+
+								Return File(ms.ToArray(), "image/png", "mychart.png")
+							End Using
+						Else
+							' No Data
+						End If
+					Else
+						' No access
+					End If
+				End If
+			End If
+
+		End Function
 
 		Function LogOff()
 			Session("databaseConnection") = Nothing
@@ -3440,153 +3809,153 @@ Namespace Controllers
 
 			Dim prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmName)
-			prmName.value = Request.Form("txtSend_name")
+			prmName.Value = Request.Form("txtSend_name")
 
 			Dim prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmDescription)
-			prmDescription.value = Request.Form("txtSend_description")
+			prmDescription.Value = Request.Form("txtSend_description")
 
 			Dim prmBaseTable = cmdSave.CreateParameter("baseTable", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmBaseTable)
-			prmBaseTable.value = CleanNumeric(Request.Form("txtSend_baseTable"))
+			prmBaseTable.Value = CleanNumeric(Request.Form("txtSend_baseTable"))
 
 			Dim prmAllRecords = cmdSave.CreateParameter("allRecords", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmAllRecords)
-			prmAllRecords.value = CleanBoolean(Request.Form("txtSend_allRecords"))
+			prmAllRecords.Value = CleanBoolean(Request.Form("txtSend_allRecords"))
 
 			Dim prmPicklistID = cmdSave.CreateParameter("picklistID", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmPicklistID)
-			prmPicklistID.value = CleanNumeric(Request.Form("txtSend_picklist"))
+			prmPicklistID.Value = CleanNumeric(Request.Form("txtSend_picklist"))
 
 			Dim prmFilterID = cmdSave.CreateParameter("filterID", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmFilterID)
-			prmFilterID.value = CleanNumeric(Request.Form("txtSend_filter"))
+			prmFilterID.Value = CleanNumeric(Request.Form("txtSend_filter"))
 
 			Dim prmParent1Table = cmdSave.CreateParameter("parent1Table", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent1Table)
-			prmParent1Table.value = CleanNumeric(Request.Form("txtSend_parent1Table"))
+			prmParent1Table.Value = CleanNumeric(Request.Form("txtSend_parent1Table"))
 
 			Dim prmParent1Filter = cmdSave.CreateParameter("parent1Filter", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent1Filter)
-			prmParent1Filter.value = CleanNumeric(Request.Form("txtSend_parent1Filter"))
+			prmParent1Filter.Value = CleanNumeric(Request.Form("txtSend_parent1Filter"))
 
 			Dim prmParent2Table = cmdSave.CreateParameter("parent2Table", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent2Table)
-			prmParent2Table.value = CleanNumeric(Request.Form("txtSend_parent2Table"))
+			prmParent2Table.Value = CleanNumeric(Request.Form("txtSend_parent2Table"))
 
 			Dim prmParent2Filter = cmdSave.CreateParameter("parent2Filter", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent2Filter)
-			prmParent2Filter.value = CleanNumeric(Request.Form("txtSend_parent2Filter"))
+			prmParent2Filter.Value = CleanNumeric(Request.Form("txtSend_parent2Filter"))
 
 			Dim prmSummary = cmdSave.CreateParameter("summary", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmSummary)
-			prmSummary.value = CleanBoolean(Request.Form("txtSend_summary"))
+			prmSummary.Value = CleanBoolean(Request.Form("txtSend_summary"))
 
 			Dim prmPrintFilterHeader = cmdSave.CreateParameter("printFilterHeader", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmPrintFilterHeader)
-			prmPrintFilterHeader.value = CleanBoolean(Request.Form("txtSend_printFilterHeader"))
+			prmPrintFilterHeader.Value = CleanBoolean(Request.Form("txtSend_printFilterHeader"))
 
 			Dim prmUserName = cmdSave.CreateParameter("userName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmUserName)
-			prmUserName.value = Request.Form("txtSend_userName")
+			prmUserName.Value = Request.Form("txtSend_userName")
 
 			Dim prmOutputPreview = cmdSave.CreateParameter("outputPreview", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmOutputPreview)
-			prmOutputPreview.value = CleanBoolean(Request.Form("txtSend_OutputPreview"))
+			prmOutputPreview.Value = CleanBoolean(Request.Form("txtSend_OutputPreview"))
 
 			Dim prmOutputFormat = cmdSave.CreateParameter("outputFormat", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmOutputFormat)
-			prmOutputFormat.value = CleanNumeric(Request.Form("txtSend_OutputFormat"))
+			prmOutputFormat.Value = CleanNumeric(Request.Form("txtSend_OutputFormat"))
 
 			Dim prmOutputScreen = cmdSave.CreateParameter("outputScreen", 11, 1)	' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmOutputScreen)
-			prmOutputScreen.value = CleanBoolean(Request.Form("txtSend_OutputScreen"))
+			prmOutputScreen.Value = CleanBoolean(Request.Form("txtSend_OutputScreen"))
 
 			Dim prmOutputPrinter = cmdSave.CreateParameter("outputPrinter", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmOutputPrinter)
-			prmOutputPrinter.value = CleanBoolean(Request.Form("txtSend_OutputPrinter"))
+			prmOutputPrinter.Value = CleanBoolean(Request.Form("txtSend_OutputPrinter"))
 
 			Dim prmOutputPrinterName = cmdSave.CreateParameter("outputPrinterName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmOutputPrinterName)
-			prmOutputPrinterName.value = Request.Form("txtSend_OutputPrinterName")
+			prmOutputPrinterName.Value = Request.Form("txtSend_OutputPrinterName")
 
 			Dim prmOutputSave = cmdSave.CreateParameter("outputSave", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmOutputSave)
-			prmOutputSave.value = CleanBoolean(Request.Form("txtSend_OutputSave"))
+			prmOutputSave.Value = CleanBoolean(Request.Form("txtSend_OutputSave"))
 
 			Dim prmOutputSaveExisting = cmdSave.CreateParameter("outputSaveExisting", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmOutputSaveExisting)
-			prmOutputSaveExisting.value = CleanNumeric(Request.Form("txtSend_OutputSaveExisting"))
+			prmOutputSaveExisting.Value = CleanNumeric(Request.Form("txtSend_OutputSaveExisting"))
 
 			Dim prmOutputEmail = cmdSave.CreateParameter("outputEmail", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmOutputEmail)
-			prmOutputEmail.value = CleanBoolean(Request.Form("txtSend_OutputEmail"))
+			prmOutputEmail.Value = CleanBoolean(Request.Form("txtSend_OutputEmail"))
 
 			Dim prmOutputEmailAddr = cmdSave.CreateParameter("outputEmailAddr", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmOutputEmailAddr)
-			prmOutputEmailAddr.value = CleanNumeric(Request.Form("txtSend_OutputEmailAddr"))
+			prmOutputEmailAddr.Value = CleanNumeric(Request.Form("txtSend_OutputEmailAddr"))
 
 			Dim prmOutputEmailSubject = cmdSave.CreateParameter("outputEmailSubject", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmOutputEmailSubject)
-			prmOutputEmailSubject.value = Request.Form("txtSend_OutputEmailSubject")
+			prmOutputEmailSubject.Value = Request.Form("txtSend_OutputEmailSubject")
 
 			Dim prmOutputEmailAttachAs = cmdSave.CreateParameter("outputEmailAttachAs", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmOutputEmailAttachAs)
-			prmOutputEmailAttachAs.value = Request.Form("txtSend_OutputEmailAttachAs")
+			prmOutputEmailAttachAs.Value = Request.Form("txtSend_OutputEmailAttachAs")
 
 			Dim prmOutputFilename = cmdSave.CreateParameter("outputFilename", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmOutputFilename)
-			prmOutputFilename.value = Request.Form("txtSend_OutputFilename")
+			prmOutputFilename.Value = Request.Form("txtSend_OutputFilename")
 
 			Dim prmParent1AllRecords = cmdSave.CreateParameter("parent1AllRecords", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmParent1AllRecords)
-			prmParent1AllRecords.value = CleanBoolean(Request.Form("txtSend_parent1AllRecords"))
+			prmParent1AllRecords.Value = CleanBoolean(Request.Form("txtSend_parent1AllRecords"))
 
 			Dim prmParent1Picklist = cmdSave.CreateParameter("parent1Picklist", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent1Picklist)
-			prmParent1Picklist.value = CleanNumeric(Request.Form("txtSend_parent1Picklist"))
+			prmParent1Picklist.Value = CleanNumeric(Request.Form("txtSend_parent1Picklist"))
 
 			Dim prmParent2AllRecords = cmdSave.CreateParameter("parent2AllRecords", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmParent2AllRecords)
-			prmParent2AllRecords.value = CleanBoolean(Request.Form("txtSend_parent2AllRecords"))
+			prmParent2AllRecords.Value = CleanBoolean(Request.Form("txtSend_parent2AllRecords"))
 
 			Dim prmParent2Picklist = cmdSave.CreateParameter("parent2Picklist", 3, 1)	' 3=integer,1=input
 			cmdSave.Parameters.Append(prmParent2Picklist)
-			prmParent2Picklist.value = CleanNumeric(Request.Form("txtSend_parent2Picklist"))
+			prmParent2Picklist.Value = CleanNumeric(Request.Form("txtSend_parent2Picklist"))
 
 			Dim prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmAccess)
-			prmAccess.value = Request.Form("txtSend_access")
+			prmAccess.Value = Request.Form("txtSend_access")
 
 			Dim prmJobToHide = cmdSave.CreateParameter("jobsToHide", 200, 1, 8000) ' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmJobToHide)
-			prmJobToHide.value = Request.Form("txtSend_jobsToHide")
+			prmJobToHide.Value = Request.Form("txtSend_jobsToHide")
 
 			Dim prmJobToHideGroups = cmdSave.CreateParameter("acess", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmJobToHideGroups)
-			prmJobToHideGroups.value = Request.Form("txtSend_jobsToHideGroups")
+			prmJobToHideGroups.Value = Request.Form("txtSend_jobsToHideGroups")
 
 			Dim prmColumns = cmdSave.CreateParameter("columns", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmColumns)
-			prmColumns.value = Request.Form("txtSend_columns")
+			prmColumns.Value = Request.Form("txtSend_columns")
 
 			Dim prmColumns2 = cmdSave.CreateParameter("columns2", 200, 1, 8000)	' 200=varchar,1=input,8000=size
 			cmdSave.Parameters.Append(prmColumns2)
-			prmColumns2.value = Request.Form("txtSend_columns2")
+			prmColumns2.Value = Request.Form("txtSend_columns2")
 
 			'pass the child string to the stored procedure, the stored procedure 
 			'saves the child information to the ASRSysCustomReportChildDetails table.
 			Dim prmChildTables = cmdSave.CreateParameter("childstring", 200, 1, 8000)
 			cmdSave.Parameters.Append(prmChildTables)
-			prmChildTables.value = Request.Form("txtSend_childTable")
+			prmChildTables.Value = Request.Form("txtSend_childTable")
 
 			Dim prmID = cmdSave.CreateParameter("id", 3, 3)	' 3=integer,3=input/output
 			cmdSave.Parameters.Append(prmID)
-			prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
+			prmID.Value = CleanNumeric(Request.Form("txtSend_ID"))
 
 			Dim prmIgnoreZeros = cmdSave.CreateParameter("ignoreZeros", 11, 1) ' 11=boolean, 1=input
 			cmdSave.Parameters.Append(prmIgnoreZeros)
-			prmIgnoreZeros.value = CleanBoolean(Request.Form("txtSend_IgnoreZeros"))
+			prmIgnoreZeros.Value = CleanBoolean(Request.Form("txtSend_IgnoreZeros"))
 
 			cmdSave.Execute()
 

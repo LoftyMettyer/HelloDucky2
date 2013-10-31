@@ -248,6 +248,10 @@ div.officetab li div.button .disabled {
 	line-height: normal;
 }
 
+.chart {
+	height: 300px;
+}
+
 .widgetplaceholder i { font-size: 48pt;}
 
 .widgetplaceholder>div { width: 100%;}

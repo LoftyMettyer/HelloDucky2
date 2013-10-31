@@ -119,6 +119,7 @@
     <Compile Include="clsEventLog.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="clsMultiAxisChart.vb" />
     <Compile Include="clsNavigationLink.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />
@@ -265,7 +266,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
+    <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
       <VersionMajor>2</VersionMajor>

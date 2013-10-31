@@ -20,6 +20,7 @@
 <%Dim fWFDisplayPendingSteps As Boolean = True%>
 
 	<script type="text/javascript">
+
 		dragged = 0;
 		function loadjscssfile(filename, filetype) {
 
@@ -259,7 +260,7 @@
 
 		function relocateURL(psURL, pfNewWindow) {
 			if (!dragged) {
-								// Submit the refresh.asp to keep the session alive
+				// Submit the refresh.asp to keep the session alive
 
 				refreshSession();
 
@@ -274,11 +275,11 @@
 					try {
 						var aParameters = psURL.split('?');
 						loadPartialView(psURL, 'home', 'workframe', aParameters[1]);
-				}
+					}
 					catch (e) {
 						alert('error in link');
-			}
-		}
+					}
+				}
 			}
 		}
 
@@ -781,15 +782,61 @@
 								<%iRowNum += 1%>
 
 
-							<%Case 2		' Chart %>
+							<%Case 2		' Chart 	
+									
+									Dim iChart_TableID = CleanNumeric(navlink.Chart_TableID)
+									Dim iChart_ColumnID = CleanNumeric(navlink.Chart_ColumnID)
+									Dim iChart_FilterID = CleanNumeric(navlink.Chart_FilterID)
+									Dim iChart_AggregateType = navlink.Chart_AggregateType
+									Dim iChart_ElementType = navlink.Element_Type
+									Dim fChart_ShowLegend = navlink.Chart_ShowLegend
+									Dim iChart_Type = navlink.Chart_Type
+									Dim fChart_ShowGrid = navlink.Chart_ShowGrid
+									Dim fChart_StackSeries = navlink.Chart_StackSeries
+									Dim fChart_ShowValues = navlink.Chart_ShowValues
+									Dim sChart_ColumnName = Replace(navlink.Chart_ColumnName, "_", " ")
+									Dim sChart_ColumnName_2 = Replace(navlink.Chart_ColumnName_2, "_", " ")
+		
+									Dim iChart_TableID_2 = CleanNumeric(navlink.Chart_TableID_2)
+									Dim iChart_ColumnID_2 = CleanNumeric(navlink.Chart_ColumnID_2)
+									Dim iChart_TableID_3 = CleanNumeric(navlink.Chart_TableID_3)
+									Dim iChart_ColumnID_3 = CleanNumeric(navlink.Chart_ColumnID_3)
+		
+									Dim iChartInitialDisplayMode = CleanNumeric(navlink.InitialDisplayMode)
+		
+									Dim iChart_SortOrderID = CleanNumeric(navlink.Chart_SortOrderID)
+									Dim iChart_SortDirection = CleanNumeric(navlink.Chart_SortDirection)
+
+									Dim iChart_ColourID = CleanNumeric(navlink.Chart_ColourID)
+		
+									Dim fChart_ShowPercentages = navlink.Chart_ShowPercentages
+		
+									Dim fMultiAxis As Boolean
+									
+									If iChart_TableID_2 > 0 Or iChart_TableID_3 > 0 Then
+										fMultiAxis = True
+									Else
+										fMultiAxis = False
+									End If
+									
+									
+									%>
+							
+							
+
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<a href="#"><%: navlink.Text %></a>
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-bar-chart"></i>
 									</p>
-									<div class="widgetplaceholder generaltheme">
-										<div><i class="icon-bar-chart"></i></div>
-										<a href="#">Chart</a>
+																
+									<div class="widgetplaceholder chart">
+										<%If fMultiAxis Then%>
+										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+										<%Else%>
+										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetChart", "Home", New With {.ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+										<%End If%>
+										<a href="#"></a>
 									</div>
 									
 								</li>
