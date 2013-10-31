@@ -1044,29 +1044,25 @@
 				<li class="ui-state-default ui-corner-top"><a id="toolbarWFPendingStepsFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li><span>Find</span>											
-											<div id="mnutoolRefreshWFPendingStepsFind" class="button">
+							<div id="mnutoolRefreshWFPendingStepsFind" class="button">
 								<a href="#" rel="table" title="Refresh">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Refresh64HOVER.png")%>" alt="" />
 								<i class="icon-refresh"></i>
 								<h6>Refresh</h6>
 								</a>
 							</div>
-											<div id="mnutoolRunWFPendingStepsFind" class="button">
+							<div id="mnutoolRunWFPendingStepsFind" class="button">
 								<a href="#" rel="table" title="Run">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
-								<i class="icon-refresh"></i>
-								
-
-									<h6>Run</h6>
+								<i class="icon-play-circle"></i>
+								<h6>Run</h6>
 								</a>
 							</div>
 							<div id="mnutoolCloseWFPendingStepsFind" class="button">
 								<%--<a href="#" rel="table" title="Close">--%>
 									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="Close">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
-								<i class="icon-refresh"></i>
-								
-
+								<i class="icon-close"></i>
 								<h6>Close</h6>
 								</a>
 							</div>
