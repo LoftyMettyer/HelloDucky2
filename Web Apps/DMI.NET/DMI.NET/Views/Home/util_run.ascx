@@ -167,7 +167,7 @@
 	<div class="absolutefull">
 		<div class="pageTitleDiv">
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
-				<i class='pageTitleIcon icon-arrow-left'></i>
+				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
 			<span class="pageTitle"><% =Session("utilname")%></span>
 		</div>

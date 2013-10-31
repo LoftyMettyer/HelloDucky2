@@ -217,7 +217,7 @@
 			<div id="row1" style="margin-left: 20px; margin-right: 20px">
 				<div class="pageTitleDiv">
 					<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
-						<i class='pageTitleIcon icon-arrow-left'></i>
+						<i class='pageTitleIcon icon-circle-arrow-left'></i>
 					</a>
 					<span style="margin-left: 40px; margin-right: 20px" class="pageTitle">Pending Workflow Steps</span>
 				</div>
