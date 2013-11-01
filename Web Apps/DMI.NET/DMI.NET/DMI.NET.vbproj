@@ -181,6 +181,7 @@
     <Content Include="Content\images\CalendarReports\Previous_Enabled.gif" />
     <Content Include="Content\images\CalendarReports\Today_Disabled.gif" />
     <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
+    <Content Include="Content\images\Chart_Popout.gif" />
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\images\Default Background.jpg" />
@@ -1243,7 +1244,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-    <ItemGroup>
+      <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
       <VersionMajor>2</VersionMajor>

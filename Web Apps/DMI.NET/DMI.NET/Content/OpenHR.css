@@ -487,6 +487,7 @@ table.calendarcell
 
 .displayonly { cursor: default;}
 .displayonly a { cursor: default;}
+.displayonly a:hover { background-color: transparent;}
 
 
 .DashHeader {position: absolute; top: 0px; height: 126px;left: 70px; right: 0px;}

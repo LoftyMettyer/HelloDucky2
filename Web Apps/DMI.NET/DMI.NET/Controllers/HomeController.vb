@@ -2939,7 +2939,9 @@ Namespace Controllers
 
 		End Sub
 
-		Function GetChart(showLegend As Boolean,
+		Function GetChart(height As Long,
+											width As Long,
+											showLegend As Boolean,
 											dottedGrid As Boolean,
 											showValues As Boolean,
 											stack As Boolean,
@@ -2965,7 +2967,7 @@ Namespace Controllers
 			objChart.Username = CType(Session("username"), String)
 			objChart.Connection = CType(Session("databaseConnection"), Connection)
 
-			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, sortOrderID, sortDirection, ColourID)
+			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, sortOrderID, sortDirection, colourID)
 
 			If Err.Number <> 0 Then
 				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -2987,8 +2989,8 @@ Namespace Controllers
 							Dim chart1 As New Chart()
 
 							chart1.BackColor = ColorTranslator.FromHtml("#D3DFF0")
-							chart1.Width = Unit.Pixel(412)
-							chart1.Height = Unit.Pixel(296)
+							chart1.Width = Unit.Pixel(width)
+							chart1.Height = Unit.Pixel(height)
 							chart1.BorderlineDashStyle = BorderStyle.Solid
 							chart1.BackGradientStyle = GradientStyle.TopBottom
 							chart1.BorderWidth = 2
@@ -3117,7 +3119,9 @@ Namespace Controllers
 
 
 
-		Function GetMultiAxisChart(showLegend As Boolean,
+		Function GetMultiAxisChart(height As Long,
+											width As Long,
+											showLegend As Boolean,
 											dottedGrid As Boolean,
 											showValues As Boolean,
 											stack As Boolean,
@@ -3170,8 +3174,8 @@ Namespace Controllers
 							Dim chart1 As New Chart()
 
 							chart1.BackColor = ColorTranslator.FromHtml("#D3DFF0")
-							chart1.Width = Unit.Pixel(412)
-							chart1.Height = Unit.Pixel(296)
+							chart1.Width = Unit.Pixel(width)
+							chart1.Height = Unit.Pixel(height)
 							chart1.BorderlineDashStyle = BorderStyle.Solid
 							chart1.BackGradientStyle = GradientStyle.TopBottom
 							chart1.BorderWidth = 2

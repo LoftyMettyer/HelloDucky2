@@ -249,7 +249,10 @@ div.officetab li div.button .disabled {
 }
 
 .chart {
+	margin-top: 5px;
 	height: 300px;
+	float: none;
+	clear: both;
 }
 
 .widgetplaceholder i { font-size: 48pt;}

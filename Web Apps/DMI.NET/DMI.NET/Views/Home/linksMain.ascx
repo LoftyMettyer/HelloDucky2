@@ -52,6 +52,99 @@
 		//	$('#pwfs').dialog('open');
 		//}
 
+		function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValues, Chart_StackSeries, Chart_ShowPercentages, iChart_Type, iChart_TableID,iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType,iChart_TableID_2,iChart_ColumnID_2,iChart_TableID_3,  iChart_ColumnID_3, iChart_SortOrderID,  iChart_SortDirection,iChart_ColourID) {
+			
+			var windowHeight = 500;
+			var windowWidth = 500;
+			
+			var w = window.open('Chart', '_blank', 'width=' + windowWidth + ', height=' + windowHeight + ',location=no,resizable=yes,toolbar=no,titlebar=no,menubar=no');
+			w.document.open();
+			w.document.write('<div style="width: 100%; height: 100%;"><img id="chartImage" style="" src="" alt="Chart" />');
+			w.document.write('</div>');
+			w.document.write('<div style="position: fixed; bottom: 0;">');
+			w.document.write('<table align="center" border="solid 1px" bgcolor="#cccccc">');
+			w.document.write("<tr style='font-family:Verdana;font-size:x-small'>");
+			w.document.write("<td>");
+			w.document.write('<input type="button" style="" value="Redraw chart" onclick="loadChart();"/>');
+			w.document.write('</td>');
+			w.document.write("<td>");
+			w.document.write("Chart Type: <select id='selChartType'>");
+			w.document.write("<option value=\"0\"" + ((iChart_Type == 0) ? " selected " : "") + ">3D Bar</option>");
+			w.document.write("<option value=\"1\"" + ((iChart_Type == 1) ? " selected " : "") + ">2D Bar</option>");
+			w.document.write("<option value=\"2\"" + ((iChart_Type == 2) ? " selected " : "") + ">3D Line</option>");
+			w.document.write("<option value=\"3\"" + ((iChart_Type == 3) ? " selected " : "") + ">2D Line</option>");
+			w.document.write("<option value=\"4\"" + ((iChart_Type == 4) ? " selected " : "") + ">3D Area</option>");
+			w.document.write("<option value=\"5\"" + ((iChart_Type == 5) ? " selected " : "") + ">2D Area</option>");
+			w.document.write("<option value=\"6\"" + ((iChart_Type == 6) ? " selected " : "") + ">3D Step</option>");
+			w.document.write("<option value=\"7\"" + ((iChart_Type == 7) ? " selected " : "") + ">2D Step</option>");
+			w.document.write("<option value=\"14\"" + ((iChart_Type == 14) ? " selected " : "") + ">2D Pie</option>");
+			w.document.write("<option value=\"16\"" + ((iChart_Type == 16) ? " selected " : "") + ">2D XY</option>");
+			w.document.write("</select></td>");
+			w.document.write("<td>Show Legend:<input id='chkshowLegend' type='checkbox' ");
+			w.document.write((Chart_ShowLegend == "True") ? "Checked " : "");
+			w.document.write("/></td>");
+			w.document.write("<td>Stack Series:<input id='chkstackSeries' type='checkbox' ");
+			w.document.write((Chart_StackSeries == 'True') ? "Checked " : "");
+			w.document.write("/></td> ");
+			w.document.write("<td>Show Gridlines:<input id='chkShowGrid' type='checkbox' ");
+			w.document.write((Chart_ShowGrid == 'True') ? "Checked " : "");
+			w.document.write(" /></td> ");
+			w.document.write("<td>Show Values As:<select id='lstValueType' >");
+			w.document.write("  <option value=\"Values\"" + (Chart_ShowPercentages == 'False' ? " selected " : "") + ">Values</option>");
+			w.document.write("  <option value=\"Percentages\"" + (Chart_ShowPercentages == 'True' ? " selected " : "") + ">Percentages</option>");
+			w.document.write("</select></td>");
+			w.document.write("<td><input value='Print' id='btnPrint' type='button' onClick='window.print()'/></td>");
+			w.document.write("</tr>");
+			w.document.write("</table>");
+			w.document.write('</div>');
+			w.document.write('<scri');
+			w.document.write('pt type="text/javascript">');
+			w.document.write('function loadChart() {');
+			w.document.write('var windowHeight = window.innerHeight - 80;'); //reduce height for toolbar.
+			w.document.write('var chartType = document.getElementById("selChartType").value;');
+			w.document.write('var chartShowLegend = (document.getElementById("chkshowLegend").checked==true);');
+			w.document.write('var chartStackSeries = (document.getElementById("chkstackSeries").checked==true);');
+			w.document.write('var chartShowGridlines = (document.getElementById("chkShowGrid").checked==true);');			
+			w.document.write('var chartShowPercentages = (document.getElementById("lstValueType").value == "Percentages");');
+			if (MultiAxis == 'True') {
+				w.document.write('var psURL = "GetMultiAxisChart?');
+			} else {
+				w.document.write('var psURL = "GetChart?');
+			}
+			w.document.write('height=" + windowHeight + "');
+			w.document.write('&width=" + window.innerWidth + "');
+			w.document.write('&ShowLegend=" + chartShowLegend + "');
+			w.document.write('&DottedGrid=" + chartShowGridlines + "');
+			w.document.write('&ShowValues=true');
+			w.document.write('&Stack=" + chartStackSeries + "');
+			w.document.write('&ShowPercent=" + chartShowPercentages + "');
+			w.document.write('&ChartType=" + chartType + "');
+			w.document.write('&TableID=' + iChart_TableID);
+			w.document.write('&ColumnID=' + iChart_ColumnID);
+			w.document.write('&FilterID=' + iChart_FilterID);
+			w.document.write('&AggregateType=' + iChart_AggregateType);
+			w.document.write('&ElementType=' + iChart_ElementType);
+			if (MultiAxis == 'True') {
+				w.document.write('&TableID_2=' + iChart_TableID_2);
+				w.document.write('&ColumnID_2=' + iChart_ColumnID_2);
+				w.document.write('&TableID_3=' + iChart_TableID_3);
+				w.document.write('&ColumnID_3=' + iChart_ColumnID_3);
+			}
+			w.document.write('&SortOrderID=' + iChart_SortOrderID);
+			w.document.write('&SortDirection=' + iChart_SortDirection);
+			w.document.write('&ColourID=' + iChart_ColourID + '";');
+			w.document.write('document.getElementById("chartImage").src = psURL;');
+			w.document.write('}');
+			w.document.write('loadChart();');
+			w.document.write('</scri');
+			w.document.write('pt>');
+			w.document.close();
+
+			
+
+		}
+
+
 		function refreshPendingWorkflowTiles() {
 			//Add pending worklow tiles if in tiles mode
 			if ((window.currentLayout == "tiles") && ($("#PendingStepsTable_Dash td").length > 0)) {				
@@ -822,19 +915,19 @@
 									
 									%>
 							
-							
-
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
-									<a href="#"><%: navlink.Text %></a>
+									<a href="#"><%: navlink.Text %><img src="<%:Url.Content("~/Content/images/Chart_Popout.gif")%>" style="float: right; cursor: pointer;width:16px;height:16px;vertical-align:bottom;" alt="View this chart in a new window" 
+											onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=iChart_ElementType%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>')"/>
+									</a>
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-bar-chart"></i>
 									</p>
 																
 									<div class="widgetplaceholder chart">
 										<%If fMultiAxis Then%>
-										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 										<%Else%>
-										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetChart", "Home", New With {.ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 										<%End If%>
 										<a href="#"></a>
 									</div>
