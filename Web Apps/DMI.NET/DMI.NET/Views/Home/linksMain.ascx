@@ -1284,4 +1284,6 @@
 	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0) && ('<%=Session("ViewDescription")%>' == '')) {
 		relocateURL('WorkflowPendingSteps', 0);
 	}
+
+	$(".sp-container.sp-hidden").css("display", "none"); //The color picker plugin sometimes leaves visible bits; remove them
 </script>
