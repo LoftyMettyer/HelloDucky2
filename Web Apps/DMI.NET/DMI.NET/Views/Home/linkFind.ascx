@@ -305,6 +305,17 @@
 		return frmLinkFindForm.selectView.options[frmLinkFindForm.selectView.selectedIndex].value;
 	}
 
+	function doViewHelp() {
+		var helpText = "The 'View' defines the subset of data from the table that is displayed in the grid." +
+			"The name of the view should give an indication of which data is included in the subset.";
+		OpenHR.messageBox(helpText, 48, "Information");
+	}
+
+	function doOrderHelp() {
+		var helpText = "The 'Order' defines which columns are displayed in the grid, and the order in which the data is listed.";
+		OpenHR.messageBox(helpText, 48, "Information");
+	}
+
 </script>
 
 <script for="ssOleDBGridLinkRecords" event="dblClick" language="JavaScript">
@@ -430,6 +441,11 @@
 												%>
 											</select>
 										</td>
+										<td width="17" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" nowrap disabled>
+											<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
+												src="<%=Url.Content("~/Content/images/Help32.png")%>"
+												title="What happens if I change the view?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
+										</td>
 										<td width="10">
 											<input type="button" value="Go" id="btnGoLinkView" name="btnGoLinkView" class="btn"
 												onclick="goLinkView()"
@@ -492,6 +508,11 @@
 													End If
 												%>
 											</select>
+										</td>
+										<td width="17" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" disabled>
+											<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
+												src="<%=Url.Content("~/Content/images/Help32.png")%>"
+												title="What happens if I change the order?" style="white-space: nowrap; width: 17px; height: 17px; border: 0; cursor: pointer" />
 										</td>
 										<td width="10">
 											<input type="button" value="Go" id="btnGoLinkOrder" name="btnGoLinkOrder" class="btn"
