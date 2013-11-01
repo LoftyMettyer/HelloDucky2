@@ -731,3 +731,7 @@ header {
   position: absolute;
   top: 190px;
 }
+
+
+/* SSI Specifics */
+.DMI #imgTViewHelp, .DMI #tdTOrderHelp { display: none;}
