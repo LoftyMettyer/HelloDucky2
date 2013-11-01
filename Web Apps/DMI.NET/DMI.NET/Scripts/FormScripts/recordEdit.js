@@ -1901,16 +1901,23 @@ function updateControl(lngColumnID, value) {
 							$(this).val(OpenHR.ConvertSQLDateToLocale(value));
 						}
 					} else if ($(this).hasClass("colorPicker")) { //Color picker
-						var thisID = $(this).attr("id"); //We need the ID for the plugin
-					
+						var thisId = $(this).attr("id"); //We need the ID for the plugin
+						$("#" + thisId).val(value);
+
 						$('.colorPicker').spectrum('destroy');
+						$('.sp-container').remove();
 						//Hook up the plugin to the control
+						var initialColor = (parseInt(value, 10)).toString(16);
+						initialColor = Array(7 - initialColor.length).join("0") + initialColor;
+						initialColor = initialColor.substr(4, 2) + initialColor.substr(2, 2) + initialColor.substr(0, 2);
 						$(".colorPicker").spectrum({
-							color: "#" + Number(value).toString(16),
+							color: "#" + initialColor, //Set the initial color
 							className: "colorPicker",
 							cancelText: "", //Hide the Cancel button
-							change: function(color) {
-								$("#" + thisID).val(parseInt(color.toHex(), 16)).change();
+							change: function(color) { //On selecting a color...
+								var newColor = color.toHex();
+								newColor = newColor.substr(4, 2) + newColor.substr(2, 2) + newColor.substr(0, 2);
+								$("#" + thisId).val(parseInt(newColor, 16)).change(); //We need to trigger the change event above so the Save button is enabled
 							}
 						});
 					} else {
