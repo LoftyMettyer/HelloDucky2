@@ -44,7 +44,7 @@ Public Class MvcApplication
 		Dim sBrowserInfo As String
 		Dim iIEVersion As Integer
 
-		Session("version") = "8.0.16"
+		Session("version") = "8.0.17"
 		Session.Timeout = 20
 		Session("TimeoutSecs") = Session.Timeout * 60
 		Server.ScriptTimeout = 1000
