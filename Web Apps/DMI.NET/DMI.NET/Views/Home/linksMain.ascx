@@ -912,11 +912,23 @@
 										fMultiAxis = False
 									End If
 									
+									' Drilldown?
+									If navlink.UtilityID > 0 Then
+										' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
+										sOnclick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTable & ")"
+									Else
+										sOnclick = ""
+									End If
 									
 									%>
 							
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
-									<a href="#"><%: navlink.Text %><img src="<%:Url.Content("~/Content/images/Chart_Popout.gif")%>" style="float: right; cursor: pointer;width:16px;height:16px;vertical-align:bottom;" alt="View this chart in a new window" 
+									<a href="#"><%: navlink.Text %>
+										<%If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then%>
+										<img src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="float: right; cursor: pointer; width: 16; height: 16; vertical-align: bottom;" alt="Drilldown..." title="Drill down to data..."
+											onclick="<%=sOnClick %>" />
+										<%End If%>
+										<img src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="float: right; cursor: pointer;width:16px;height:16px;vertical-align:bottom;" alt="Popout chart..." title="View this chart in a new window" 
 											onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=iChart_ElementType%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>')"/>
 									</a>
 									<p class="linkspagebuttontileIcon">

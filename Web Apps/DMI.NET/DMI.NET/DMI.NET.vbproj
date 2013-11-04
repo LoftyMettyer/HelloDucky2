@@ -53,7 +53,7 @@
     <DocumentationFile>DMI.NET.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup> 
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -181,15 +181,19 @@
     <Content Include="Content\images\CalendarReports\Previous_Enabled.gif" />
     <Content Include="Content\images\CalendarReports\Today_Disabled.gif" />
     <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
-    <Content Include="Content\images\Chart_Popout.gif" />
+    <Content Include="Content\images\chartdata.gif" />
+    <Content Include="Content\images\ChartGraph.gif" />
+    <Content Include="Content\images\Chart_Popout.png" />
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\images\Default Background.jpg" />
     <Content Include="Content\images\Penfold.png" />
+    <Content Include="Content\images\ProgressBar.gif" />
     <Content Include="Content\images\PunchHole.png" />
     <Content Include="Content\images\PunchHoleWhite.png" />
     <Content Include="Content\images\PunchHoleWhite2.png" />
     <Content Include="Content\images\TilesBackground.jpg" />
+    <Content Include="Content\images\Utilities.gif" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
@@ -1244,7 +1248,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-      <ItemGroup>
+  <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -1255,7 +1259,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
-  </ItemGroup>
+  </ItemGroup>  
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
