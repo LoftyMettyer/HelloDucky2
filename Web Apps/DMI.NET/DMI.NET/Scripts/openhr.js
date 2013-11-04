@@ -46,31 +46,51 @@
 
 
 		},
-		modalPrompt = function(prompt, buttons, title, followOnFunctionName) {
-			var dialogButtons = {
-				"Yes": function () {
-					$(this).dialog("close");
-					followOnFunctionName(6);
-				},
-				"No": function () {
-					$(this).dialog("close");
-					followOnFunctionName(7);
-				},
-				"Cancel": function () {
-					$(this).dialog("close");
-					followOnFunctionName(2);
-				}
-			};
 
-			//title
-			if (title.length == 0) title = 'OpenHR Intranet';
+
+		displayModalDialog = function (prompt, dialogButtons, title) {
+
+			// Default parameters
+			if (!title || title.length == 0) title = 'OpenHR Intranet';
 
 			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
 			$('#dialog-confirm').dialog('option', 'title', title);
 			$('#dialog-confirm p').text(prompt);
-			$('#dialog-confirm').dialog('open');						
+			$('#dialog-confirm').dialog('open');
 
 		},
+
+		modalMessage = function (message, title) {
+			var dialogButtons = {
+				"OK": function () {
+					$(this).dialog("close");
+				}
+			};
+
+			displayModalDialog(message, dialogButtons, title);
+
+		},
+
+		modalPrompt = function(prompt, buttons, title, followOnFunctionName) {
+			var dialogButtons = {
+				"Yes": function () {
+					$(this).dialog("close");
+					if (followOnFunctionName) followOnFunctionName(6);
+				},
+				"No": function () {
+					$(this).dialog("close");
+					if (followOnFunctionName) followOnFunctionName(7);
+				},
+				"Cancel": function () {
+					$(this).dialog("close");
+					if (followOnFunctionName) followOnFunctionName(2);
+				}
+			};
+
+			displayModalDialog(prompt, dialogButtons, title);
+
+		},
+		
 		showInReportFrame = function (form, asyncFlag) {
 
 			var $form = $(form),
@@ -521,6 +541,7 @@
 		version: version,
 		messageBox: messageBox,
 		modalPrompt: modalPrompt,
+		modalMessage: modalMessage,
 		showPopup: showPopup,
 		getFrame: getFrame,
 		getForm: getForm,

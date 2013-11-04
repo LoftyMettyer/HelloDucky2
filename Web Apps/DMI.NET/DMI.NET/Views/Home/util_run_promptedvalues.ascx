@@ -549,6 +549,10 @@
 		var sPoint;
 		var sConvertedValue;
 		var sValue;
+		var sMessage;
+		var fFound;
+		var sMaskCtlName;
+		var iIndex;
 
 		sDecimalSeparator = "\\";
 		sDecimalSeparator = sDecimalSeparator.concat(frmPromptedValues.txtLocaleDecimalSeparator.value);
@@ -589,9 +593,7 @@
 
 			if (isNaN(sConvertedValue) == true) {
 				fOK = false;
-				OpenHR.messageBox("Invalid numeric value entered.");
-				window.focus();
-				pctlPrompt.focus();
+				sMessage = "Invalid numeric value entered.";
 			}
 		}
 
@@ -618,9 +620,7 @@
 			}
 
 			if (fOK == false) {
-				OpenHR.messageBox("Invalid date value entered.");
-				window.focus();
-				pctlPrompt.focus();
+				sMessage = "Invalid date value entered.";
 			}
 		}
 
@@ -749,14 +749,18 @@
 					}
 				}
 
-				if (fOK == false) {
-					OpenHR.messageBox("The entered value does not match the required format (" + sMask + ").");
-					window.focus();
-					pctlPrompt.focus();
+				if (fOK == false) {				
+					sMessage = "The entered value does not match the required format (" + sMask + ").";
 				}
 			}
 		}
 
+		if (fOK == false) {
+			OpenHR.modalMessage(sMessage);
+			window.focus();
+			pctlPrompt.focus();
+		}
+		
 		return fOK;
 	}
 
