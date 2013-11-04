@@ -255,6 +255,14 @@ div.officetab li div.button .disabled {
 	clear: both;
 }
 
+.datagrid {
+	margin-top: 5px;
+	max-height: 200px;
+	float: none;
+	clear: both;
+	overflow-y: auto;
+}
+
 .widgetplaceholder i { font-size: 48pt;}
 
 .widgetplaceholder>div { width: 100%;}
@@ -263,8 +271,6 @@ div.officetab li div.button .disabled {
 		
 		border:1px dashed #ddd;  
 }  
-
-
 
 
 

@@ -301,6 +301,13 @@ body
 	height: 300px;	
 }
 
+.datagrid {
+	margin-top: 5px;
+	max-height: 200px;
+	float: none;
+	clear: both;
+	overflow-y: auto;
+}
 
 .widgetplaceholder i { font-size: 48pt;}
 

@@ -934,7 +934,7 @@
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-bar-chart"></i>
 									</p>
-																
+									<%If navlink.InitialDisplayMode = 0 Then%>
 									<div class="widgetplaceholder chart">
 										<%If fMultiAxis Then%>
 										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
@@ -943,7 +943,121 @@
 										<%End If%>
 										<a href="#"></a>
 									</div>
-									
+									<%Else%>
+									<div class="widgetplaceholder datagrid">
+										<table cellspacing="0" cellpadding="5" rules="all" frame="box" style="width:100%;vertical-align:top;border:3px solid lightgray">
+											<tr>
+												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: left">
+													<%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
+												</th>
+												<%If fMultiAxis Then%>
+												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: left">
+													<%=Trim(Left(NullSafeString(navlink.Chart_ColumnName_2), 50))%>
+												</th>
+												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: right">
+													<%Else%>
+												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: right">
+													<%End If%>
+													<%If navlink.Chart_AggregateType = 0 Then%>
+														Count
+													<%ElseIf navlink.Chart_AggregateType = 1 Then%>
+														Total
+													<%ElseIf navlink.Chart_AggregateType = 2 Then%>
+														Average
+													<%ElseIf navlink.Chart_AggregateType = 3 Then%>
+														Minimm
+													<%ElseIf navlink.Chart_AggregateType = 4 Then%>
+														Maximum
+													<%End If%>
+												</th>
+											</tr>
+											<%
+												Dim objChart As Object
+												Dim sErrorDescription As String = ""
+												' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
+																								
+												If fMultiAxis = True Then
+													objChart = New HR.Intranet.Server.clsMultiAxisChart
+												Else
+													objChart = New HR.Intranet.Server.clsChart
+												End If
+
+												' Pass required info to the DLL
+												objChart.Username = CType(Session("username"), String)
+												objChart.Connection = CType(Session("databaseConnection"), Connection)
+				
+												Dim mrstChartData As Recordset
+												Err.Clear()
+			
+												If fMultiAxis = True Then
+													mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+												Else
+													mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+												End If
+
+												If (Err.Number <> 0) Then
+													sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+												End If
+			
+												If Not mrstChartData Is Nothing Then
+													If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+												End If
+										
+												If Not (mrstChartData.EOF And mrstChartData.BOF) Then
+													mrstChartData.MoveFirst()
+								
+													Do While Not mrstChartData.EOF%>
+											<tr>
+												<td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
+													<%If fMultiAxis Then%>
+													<%=Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))%>
+													<%Else%>
+													<%=Trim(Left(NullSafeString(mrstChartData.Fields(0).Value), 50))%>
+													<%End If%>
+												</td>
+												<%If fMultiAxis Then%>
+												<td class="bordered" style="text-align: left; white-space: nowrap">
+													<div style="width: 150px; white-space: nowrap">
+														<%=Trim(Left(NullSafeString(mrstChartData.Fields(3).Value), 50))%>
+													</div>
+												</td>
+												<%End If%>
+												<td class="bordered" style="text-align: right; vertical-align: top; padding-bottom: 0; white-space: nowrap; overflow: hidden">
+													<%If fMultiAxis Then%>
+													<%If navlink.UseFormatting = True And (TryCast(mrstChartData.Fields(4).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(4).Value, String) <> "No Data") Then%>
+													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(mrstChartData.Fields(4).Value), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
+													<%Else%>
+													<%=Trim(Left(NullSafeString(mrstChartData.Fields(4).Value), 50))%>
+													<%End If%>
+													<%Else%>
+													<%If navlink.UseFormatting = True And (TryCast(mrstChartData.Fields(1).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(1).Value, String) <> "No Data") Then%>
+													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
+													<%Else%>
+													<%=Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))%>
+													<%End If%>
+													<%End If%>
+												</td>
+											</tr>
+											<%    
+												mrstChartData.MoveNext()
+											Loop
+										Else
+											%>
+											<tr>
+												<td class="bordered" style="text-align: left" nowrap="nowrap">No Data
+												</td>
+												<td class="bordered" style="text-align: right" nowrap="nowrap"></td>
+											</tr>
+
+
+											<%End If%>
+										
+										
+										
+										
+											</table>
+									</div>
+									<%End If%>
 								</li>
 								<%iRowNum += 1%>
 
