@@ -169,7 +169,7 @@
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
-			<span class="pageTitle"><% =Session("utilname")%></span>
+			<span class="pageTitle" id="PageDivTitle"><% =Session("utilname")%></span>
 		</div>
 		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 20px 0 20px; overflow: auto;">
 

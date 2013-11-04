@@ -1204,13 +1204,15 @@ function populateKey() {
 //
 
 function util_run_calendarreport_main_window_onload() {
-		
-		if ((txtPreview.value == 0) && (txtOK.value == "True")) {
-				setGridFont(frmOutput.grdCalendarOutput);
-				setGridFont(frmOutput.ssHiddenGrid);
+    if ((txtPreview.value == 0) && (txtOK.value == "True")) {
+        setGridFont(frmOutput.grdCalendarOutput);
+        setGridFont(frmOutput.ssHiddenGrid);
 
-				outputCalendarReport();
-				document.getElementById('tdDisplay').innerText = 'Calendar Report Output Complete.';
-				document.getElementById('Cancel').value = 'OK';
-		}
+        outputCalendarReport();
+        document.getElementById('tdDisplay').innerText = 'Calendar Report Output Complete.';
+        document.getElementById('Cancel').value = 'OK';
+    }
+    //Replace the calendar link that is shown by 
+    //default before we can get the true report name
+    $("#PageDivTitle").html($("#txtTitle").val());
 }
