@@ -483,7 +483,7 @@ LocalErr:
 		If objData Is Nothing Then
 			Return varDefault
 		Else
-			Return objData
+			Return objData.Value
 		End If
 
 	End Function
