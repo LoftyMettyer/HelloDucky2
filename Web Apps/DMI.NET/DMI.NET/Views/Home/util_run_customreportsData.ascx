@@ -77,4 +77,5 @@
 <script type="text/javascript">
 	reportdata_window_onload();
 	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
+	$("#PageDivTitle").html($("#txtDefn_Name").val());
 </script>

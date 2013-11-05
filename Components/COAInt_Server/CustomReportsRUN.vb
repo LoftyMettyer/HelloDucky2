@@ -297,6 +297,14 @@ End Enum
 		End Get
 	End Property
 
+
+	Public ReadOnly Property CustomReportsName() As String
+		Get
+			CustomReportsName = mstrCustomReportsName
+		End Get
+	End Property
+
+
 	Public ReadOnly Property OutputArray_VisibleColumns() As Object
 		Get
 

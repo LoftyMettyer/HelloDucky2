@@ -199,6 +199,7 @@
 
 	if fok and not bBradfordFactor then 
 		fok = objReport.GetCustomReportDefinition
+		session("utilname") = objReport.CustomReportsName
 		fNotCancelled = Response.IsClientConnected 
 		if fok then fok = fNotCancelled
 	end if
@@ -956,7 +957,7 @@
 
 		<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 				<%
-					Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(CType(Session("utilname"), String), """", "&quot;") & """>" & vbCrLf)
 					Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 				%>
 				<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
