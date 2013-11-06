@@ -558,23 +558,21 @@
 						Response.Write("								<TD width=20>&nbsp;&nbsp;</TD>" & vbCrLf)
 						Response.Write("								<TD width=""100%"">" & vbCrLf)
 
-						If aSummaryFields(7, iColumn2Index) = 1 Then
-							' The summary control is a checkbox.
-					%>
-					<input type="checkbox" id="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
-						name="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
-						disabled="disabled">
-					<%
-					Else
-						' The summary control is not a checkbox. Use a textbox for everything else.
-					%>
-					<input type="text" id="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
-						name="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"						
-						<%if aSummaryFields(8, iColumn2Index) = 1 then%>
-							style="width: 100%" disabled="disabled" class="text textdisabled" style="text-align: right " />
-						<% elseif aSummaryFields(8, iColumn2Index) = 2 then %> 
-							style="width: 100%" disabled="disabled" class="text textdisabled" style="text-align: center " />
-						<%end if %>
+						If aSummaryFields(7, iColumn2Index) = 1 Then%>
+							<%--The summary control is a checkbox.--%>
+							<input type="checkbox" id="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
+								name="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
+								disabled="disabled">
+						<%Else%>
+							<%--The summary control is not a checkbox. Use a textbox for everything else.--%>
+							<input type="text" id="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
+								name="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"						
+								disabled="disabled" class="text textdisabled"
+								<%If aSummaryFields(8, iColumn2Index) = 1 Then%>
+									style="width: 100%;text-align: right" />
+								<%ElseIf aSummaryFields(8, iColumn2Index) = 2 Then%> 
+									style="width: 100%;text-align: center" />
+								<%end if %>
 					<%	
 					End If
 				End If
