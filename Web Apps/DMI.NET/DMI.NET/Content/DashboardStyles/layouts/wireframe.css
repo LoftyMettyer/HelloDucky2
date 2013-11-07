@@ -402,7 +402,17 @@ div.officetab div.panel > span { display: none;}
 	cursor: pointer;
 }
 
+.TETile { display: none;}
 
+.TEList { display: block;
+	cursor: default;
+	width: 100%;
+}
+
+
+.TELink:hover {
+	cursor: pointer;
+}
 
 .FixedLinksRight { margin-top: 0;}
 .FixedLinksRight .userdetails {

@@ -1284,17 +1284,161 @@
 								<script type="text/javascript">									//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
-							<%Case 5		 ' Todays events	%>
-								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+							<%Case 5		 ' Todays events	%>							
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly TELink">
+									<div class="TETile <%=sTileColourClass%>">
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-calendar"></i>
+										<div class="TECount"></div>
 									</p>
+									<p>
+										<a href="#"><%=FormatDateTime(Now, vbLongDate)%></a>
+									</p>
+									<div class="widgetplaceholder generaltheme">
+										<div><i class="icon-calendar"></i></div>
+										<a href="#">Today's Events</a>
+									</div>
+									</div>
+									<div class="TEList <%=sTileColourClass%>">
+										<p><span>Today's Events:</span></p>
+										<table>
+											<%											
+												' ----------------------- DIARY LINKS -----------------------------
+												Dim sErrorDescription As String = ""
+												Dim iRecNum As Integer
+												Dim iNumberOfEvents As Integer = 0
+												
+												' Create the reference to the DLL
+												Dim objTodaysEvents As Object = New HR.Intranet.Server.clsDiary
+
+												' Pass required info to the DLL
+												objTodaysEvents.Username = CType(Session("username"), String)
+												objTodaysEvents.Connection = CType(Session("databaseConnection"), Connection)
+				
+												Err.Clear()
+												Dim mrstEventData = objTodaysEvents.GetDiaryData(False, DateValue(Now), DateValue(Now))
+													
+												
+												If (Err.Number() <> 0) Then
+													sErrorDescription = "The Event Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
+												End If
+												iRecNum = 0
+												
+												If sErrorDescription.Length = 0 Then
+													If Not (mrstEventData.EOF And mrstEventData.bof) Then
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Diary Links</td>
+											</tr>
+											<%       
+												Do While Not mrstEventData.EOF
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=mrstEventData.fields(3).value %></td>
+											</tr>
+											<%                
+												mrstEventData.movenext()
+												iRecNum = iRecNum + 1
+											Loop
+										End If
+
+										mrstEventData.close()
+									End If
+											
+									iNumberOfEvents += iRecNum
+											
+									' ----------------------- OUTLOOK LINKS -----------------------------
+									' Create the reference to the DLL
+									objTodaysEvents = New HR.Intranet.Server.clsOutlookLinks
+											
+
+									' Pass required info to the DLL
+									objTodaysEvents.Username = Session("username")
+									objTodaysEvents.Connection = Session("databaseConnection")
+				
+									Err.Clear()
+									mrstEventData = objTodaysEvents.GetOutlookLinks(False, DateValue(Now), DateValue(Now))
+
+									If (Err.Number <> 0) Then
+										sErrorDescription = "The Outlook Links Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
+									End If
+									iRecNum = 0
+											
+									If Len(sErrorDescription) = 0 Then
+										If Not (mrstEventData.EOF And mrstEventData.bof) Then
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
+											</tr>
+											<%
+												
+												Do While Not mrstEventData.EOF
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=trim(mrstEventData.fields(2).value)%></td>
+											</tr>
+											<%
+												mrstEventData.movenext()
+												iRecNum = iRecNum + 1
+											Loop
+										End If
+
+										mrstEventData.close()
+
+									End If
 									
-									<div class="holidaycontainer" id="HolContainer<%: navlink.id %>"></div>
-									
+									iNumberOfEvents += iRecNum
+											
+
+									' ----------------------- TODAY'S ABSENCES -----------------------------
+									' Create the reference to the DLL
+									objTodaysEvents = New HR.Intranet.Server.clsTodaysAbsence
+						
+
+									' Pass required info to the DLL
+									objTodaysEvents.Username = Session("username")
+									objTodaysEvents.Connection = Session("databaseConnection")
+				
+									Err.Clear()
+									mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
+
+									If (Err.Number <> 0) Then
+										sErrorDescription = "Todays Absence Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
+									End If
+									iRecNum = 0
+											
+									If Len(sErrorDescription) = 0 Then
+										If Not (mrstEventData.EOF And mrstEventData.bof) Then
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Today's Absences</td>
+											</tr>
+											<%             
+												
+												Do While Not mrstEventData.EOF
+											%>
+											<tr>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=trim(mrstEventData.fields(0).value) %></td>
+											</tr>
+											<%                
+												mrstEventData.movenext()
+												iRecNum = iRecNum + 1
+											Loop
+										End If
+										iNumberOfEvents += iRecNum
+											
+										mrstEventData.close()
+										
+											
+									End If%>
+
+										</table>											
+									</div>
+
+									<div class="linkspagebuttontileIcon"><span><p><%=iNumberOfEvents%></p><p style="font-size: small;">Events</p></span></div>
 								</li>
-								<%--<script type="text/javascript">loadjscssfile('$.getScript("http://abs16091/dmi.net/scripts/widgetscripts/wdg_oHRHoliday.js", function () { initialiseWidget(<%: navlink.id %>, "HolContainer<%: navlink.id %>", 19, ""); });', 'ajax');</script>--%>
 								<%iRowNum += 1%>
+								
 
 
 							<%Case Else%>

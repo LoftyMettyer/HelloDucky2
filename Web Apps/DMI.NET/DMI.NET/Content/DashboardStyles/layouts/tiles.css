@@ -70,7 +70,7 @@ body
 
 .hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .dropdownlinkseparatorframe, .pendingworkflowsframe, .pendingworkflowlinkseparator {float:left;}
 
-.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .pendingworkflowtext {border: none; color: Black;}
+.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .pendingworkflowtext {border: none; color: Black;overflow: hidden;}
 
 	.linkspagebuttontext:hover, .hypertextlinktext:hover, .pendingworkflowtext:hover {
 		-moz-box-shadow: 0 0 10px orange!important; /* FF3.5+ */
@@ -133,10 +133,6 @@ body
 .pendingworkflowdesc {
 	font-size: x-small;
 }
-
-.linkspagebuttontileIcon i {
-}
-
 
 .hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe, .pendingworkflowsframe  {
 	border: none;width: 140px;margin-right: 10px;
@@ -565,6 +561,32 @@ div#pwfs {
 }
 
 
+.TETile { display: block;}
+
+.TETile p { display: none;}
+
+.TEList { display: block;
+	width: 80%;
+}
+
+.TEList p { display: none;}
+
+.TELink .linkspagebuttontileIcon {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	text-align: right;
+	margin: 0;
+	padding-right: 10px;
+}
+
+	.TELink .linkspagebuttontileIcon p {
+		margin: 0;
+	}
+
+.TELink:hover {
+	cursor: pointer;
+}
 
 .FixedLinksRight { bottom: 0;width: 300px;}
 .FixedLinksRight .userdetails {

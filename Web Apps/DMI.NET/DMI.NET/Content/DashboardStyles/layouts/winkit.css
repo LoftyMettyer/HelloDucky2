@@ -827,6 +827,18 @@ div.officetab li div.textboxlist input {
 }
 
 
+.TETile { display: none;}
+
+.TEList { display: block;
+	cursor: default;
+	width: 100%;
+}
+
+
+.TELink:hover {
+	cursor: pointer;
+}
+
 .FixedLinksRight { margin-top: 15px;}
 .FixedLinksRight .userdetails {
 	float: left;

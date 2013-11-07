@@ -1129,7 +1129,7 @@ LocalErr:
 			Dim objColumnPrivileges As CColumnPrivileges
 			Dim strColList As String
 
-			strSQL = "SELECT DISTINCT ASRSysTables.TableID, ASRSysTables.TableName, " & "                ASRSysColumns.ColumnID, ASRSysColumns.ColumnName " & vbCrLf & "FROM ASRSysDiaryLinks " & vbCrLf & "JOIN ASRSysColumns ON ASRSysDiaryLinks.ColumnID = ASRSysColumns.ColumnID " & vbCrLf & "JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID"
+		strSQL = "SELECT DISTINCT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName " & vbCrLf & "FROM ASRSysDiaryLinks " & vbCrLf & "JOIN ASRSysColumns ON ASRSysDiaryLinks.ColumnID = ASRSysColumns.ColumnID " & vbCrLf & "JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID"
 			rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
 			If rsTemp.BOF And rsTemp.EOF Then
@@ -1152,11 +1152,12 @@ LocalErr:
 									If (objTableView.TableID = rsTemp.Fields("TableID").Value) Then
 											objColumnPrivileges = gcolColumnPrivilegesCollection.Item(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
 
-											If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName")) Then
-													If objColumnPrivileges.Item(rsTemp.Fields("ColumnName")).AllowSelect Then
-															strColList = strColList & IIf(strColList <> vbNullString, ", ", "") & CStr(rsTemp.Fields("ColumnID").Value)
-													End If
-											End If
+
+						If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName").Value.ToString()) Then
+							If objColumnPrivileges.Item(rsTemp.Fields("ColumnName").Value.ToString()).AllowSelect Then
+								strColList = strColList & IIf(strColList <> vbNullString, ", ", "") & CStr(rsTemp.Fields("ColumnID").Value)
+							End If
+						End If
 
 									End If
 
