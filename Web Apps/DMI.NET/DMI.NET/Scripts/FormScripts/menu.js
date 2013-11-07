@@ -668,11 +668,6 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	if (sToolName == "mnutoolDownloadControls") {
-		menu_DownloadControls();		
-		return;
-	}	
-			
 		//RecEdit - Find ---------------------------------------------------------------------------------------------------------------------------
 	if (sToolName == "mnutoolNewRecordFind") {
 			menu_newRecord();
@@ -3246,31 +3241,6 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			menu_SetmnutoolLocateRecordsText("");
 		}
 	}
-}
-
-function menu_DownloadControls()
-{	
-//	var sTarget = "winDownloadControls";
-//	var winl = screen.width / 3;
-//	var wint = screen.height / 3;
-//	var sWinProps;
-
-//	sWinProps = 'height=135,'
-//		+ ' width=425,'
-//		+ ' menubar=no,'
-//		+ ' titlebar=no,'
-//		+ ' resizable=no,'
-//		+ ' directories=no,'
-//		+ ' location=no,'
-//		+ ' scrollbars=no,'
-//		+ ' toolbar=no,'
-//		+ ' status=no,'
-//		+ ' top='	+ wint +',' 
-//		+ ' left=' + winl;
-
-//	frmDownloadControls.target = sTarget;
-//	spawnWindow('', sTarget, sWinProps);
-//	frmDownloadControls.submit();	
 }
 
 function menu_spawnWindow(mypage, myname, winprops) 

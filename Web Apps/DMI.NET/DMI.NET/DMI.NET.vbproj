@@ -53,7 +53,7 @@
     <DocumentationFile>DMI.NET.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
   </PropertyGroup>
-  <ItemGroup> 
+  <ItemGroup>
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -1092,9 +1092,6 @@
     <Content Include="Views\Home\_default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
-    <Content Include="Views\Home\downloadControls.aspx" />
-    <Content Include="Views\Home\downloadControlsMain.aspx" />
-    <Content Include="Views\Home\downloadControlsStatus.aspx" />
     <Content Include="Views\Home\emailSelection.aspx" />
     <Content Include="Views\Home\emptyoption.ascx" />
     <Content Include="Views\Home\EventLog.ascx" />
@@ -1259,7 +1256,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
-  </ItemGroup>  
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

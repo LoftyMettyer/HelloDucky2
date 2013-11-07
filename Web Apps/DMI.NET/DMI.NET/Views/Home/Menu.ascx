@@ -481,7 +481,6 @@
 				<li id="mnutoolNewUser"><a href="#">New User...</a></li>
 				<li id="mnutoolConfiguration"><a href="#">User Configuration...</a></li>
 				<li id="mnutoolPCConfiguration"><a href="#">PC Configuration...</a></li>
-				<li id="mnutoolDownloadControls"><a href="#">Download Controls</a></li>
 			</ul>
 		</div>
 		<h3 id="mnutoolHelp">Help</h3>
