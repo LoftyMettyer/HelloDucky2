@@ -53,7 +53,7 @@
     <DocumentationFile>DMI.NET.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup> 
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -192,6 +192,8 @@
     <Content Include="Content\images\PunchHole.png" />
     <Content Include="Content\images\PunchHoleWhite.png" />
     <Content Include="Content\images\PunchHoleWhite2.png" />
+    <Content Include="Content\images\splitterLeft.bmp" />
+    <Content Include="Content\images\splitterRight.bmp" />
     <Content Include="Content\images\TilesBackground.jpg" />
     <Content Include="Content\images\Utilities.gif" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
@@ -1087,6 +1089,7 @@
     <Content Include="Views\Home\CheckForUsage.ascx" />
     <Content Include="Views\Home\configuration.ascx" />
     <Content Include="Views\Home\confirmok.ascx" />
+    <Content Include="Views\Home\documentDisplay.ascx" />
     <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />
     <Content Include="Views\Home\_default.ascx" />
@@ -1256,7 +1259,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
-  </ItemGroup>
+  </ItemGroup>  
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

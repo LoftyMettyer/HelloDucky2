@@ -179,6 +179,28 @@
 		}
 
 
+		function setDocumentDisplayVisible(newSetting) {
+			
+			//are we toggling?
+			if (newSetting == undefined) newSetting = (($("#documentDisplay").width() < 10)?'true':'false');
+			
+			if (newSetting == 'true') {
+				//show the bar
+				$("#documentDisplay").animate({ width: '340px' }, 350);
+				$('#splitToggle').attr('src', '../Content/images/splitterRight.bmp');
+
+				window.setCookie('displayDocBar', 'true', 365);
+
+			} else {
+				//hide the bar
+				$("#documentDisplay").animate({ width: '6px' }, 350);
+				$('#splitToggle').attr('src', '../Content/images/splitterLeft.bmp');
+				
+				window.setCookie('displayDocBar', 'false', 365);
+			}
+
+		}
+
 
 		$(document).ready(function () {
 
@@ -215,6 +237,18 @@
 						$(this).replaceWith($select);
 					});
 				});
+				
+				//Show document display (not tiles)
+				//get cookie...
+				var showDocBar = window.getCookie('displayDocBar');
+				if (showDocBar.length == 0) showDocBar = 'true';
+				
+				if (showDocBar == 'true') {
+					setDocumentDisplayVisible('true');
+				} else {
+					setDocumentDisplayVisible('false');
+				}
+					
 			}
 
 			if (window.currentLayout == "wireframe") {
@@ -650,6 +684,7 @@
 								
 								Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
 								objNavigation.Connection = Session("databaseConnection")
+								
 								' Get the navigation hypertext links.
 								Dim iFindPage As Int16 = 0
 								'If sWorkPage = "FIND" Then
@@ -1331,8 +1366,19 @@
 
 		</div>
 	</div>
-		
-	<div id="pollframeset">
+
+
+<div id="documentDisplay">
+	<div id="divResize">
+		<img id="splitToggle" src="" alt="Show Document Display"
+			onclick="setDocumentDisplayVisible();" />
+	</div>
+		<div id="documentDisplayContent" rowspan="4" width="340px" valign="top" nowrap="nowrap">
+		<%Html.RenderPartial("~/Views/Home/documentDisplay.ascx")%>     
+		</div>
+</div>
+
+<div id="pollframeset">
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>    

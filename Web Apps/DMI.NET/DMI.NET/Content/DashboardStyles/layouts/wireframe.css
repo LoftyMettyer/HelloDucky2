@@ -416,3 +416,44 @@ div.officetab div.panel > span { display: none;}
 
 /* Always hide course booking ribbon buttons for SSI */
 .SSI #mnuSectionRecordFindTrainingBooking { display: none!important;}
+
+
+/* Document Display */
+#documentDisplay {	
+	position: fixed;
+	right: 0;
+	top: 141px;
+	bottom: 35px;
+	width: 0; 
+	z-index: 99;
+	overflow: hidden;
+}
+
+#divResize {
+	position: relative;
+	background-color: lightgray;
+	float: left;
+	position: relative;
+	width: 6px;
+	height: 100%;
+	right: 0;
+	top: 0;
+	z-index: auto;
+}
+
+#splitToggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	visibility: visible;
+	display: block;
+	cursor: pointer;
+}
+
+#documentDisplayContent {
+	position: relative;
+	visibility: visible;
+	padding: 0;
+	margin: 0;
+}

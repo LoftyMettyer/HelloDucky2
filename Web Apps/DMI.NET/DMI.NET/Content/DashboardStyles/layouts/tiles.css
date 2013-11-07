@@ -581,3 +581,8 @@ div#pwfs {
 
 /* Always hide course booking ribbon buttons for SSI */
 .SSI #mnuSectionRecordFindTrainingBooking { display: none!important;}
+
+/* Document Display */
+#documentDisplay {
+	display: none;
+}
