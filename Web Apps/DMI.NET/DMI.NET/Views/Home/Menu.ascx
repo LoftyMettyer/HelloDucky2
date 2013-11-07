@@ -488,7 +488,6 @@
 		<div>
 			<ul id="mnubandHelp">
 				<li id="mnutoolAboutHRPro"><a href="#">About OpenHR</a></li>
-				<li id="mnutoolVersionInfo"><a href="#">Version Information</a></li>
 				<li class="hidden" id="mnutoolContentsAndIndex"><a href="#">Contents and Index</a></li>
 			</ul>
 		</div>
