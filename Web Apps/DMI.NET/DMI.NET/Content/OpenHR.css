@@ -735,3 +735,131 @@ header {
 
 /* SSI Specifics */
 .DMI #imgTViewHelp, .DMI #tdTOrderHelp { display: none;}
+
+/* User picture */
+.userpic {
+	float: right;
+	vertical-align: central;
+	padding: 0 10px 0 10px;
+}
+
+/* User dropdown menu */
+#userDropdownmenu ul, #userDropdownmenu li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+#userDropdownmenu ul {
+	z-index: 597;
+	/*position: relative;
+	top: 5px;
+	right: -60px;*/
+}
+
+#userDropdownmenu ul li {
+	float: right;
+	min-height: 1px;
+	vertical-align: middle;
+}
+	
+#userDropdownmenu ul ul {
+	visibility: hidden;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 598;
+	margin-top: 0;
+	width: 170px;
+}
+
+#userDropdownmenu ul ul li {
+	float: none;
+}
+
+#userDropdownmenu ul ul ul {
+	top: 0;
+	left: 100%;
+}
+
+#userDropdownmenu a {
+	display: block;
+	text-decoration: none;
+}
+
+#userDropdownmenu ul li.last ul {
+	left: -157px;
+	right: 0;
+}
+
+#userDropdownmenu ul li.last ul ul {
+	left: auto;
+	right: 99.5%;
+}
+
+#userDropdownmenu:after,
+#userDropdownmenu ul:after {
+	content: '';
+	display: block;
+	clear: both;
+}
+
+#userDropdownmenu:before {
+	content: '';
+	display: block;
+	height: 8px;
+}
+
+#userDropdownmenu > ul > li {
+	margin: 0 10px;
+}
+
+#userDropdownmenu > ul > li.has-sub:hover > a {
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+#userDropdownmenu ul ul a {
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	line-height: 150%;
+	font-size: 13px;
+}
+
+#userDropdownmenu ul .active > a {
+	color: #FFF;
+	background-image: linear-gradient(blue, blue);
+}
+
+#userDropdownmenu ul .has-sub {
+	position: relative;
+}
+
+#userDropdownmenu ul .has-sub ul .has-sub a:after {
+	content: none;
+}
+
+#userDropdownmenu ul .has-sub > a {
+	padding-right: 0;
+}
+
+#userDropdownmenu ul .active > a:after {
+color: #FFF;
+}
+
+#userDropdownmenu_Items a {
+	color: black;
+}
+
+/* End of User dropdown menu */

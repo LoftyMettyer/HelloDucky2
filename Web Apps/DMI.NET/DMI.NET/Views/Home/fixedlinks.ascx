@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
+
 <%If Session("databaseConnection") Is Nothing Then Return%>
 <script type="text/javascript">
 	$(document).ready(function () {
@@ -92,47 +94,6 @@
 									<h6>OpenHR</h6>
 								</a>
 							</div>
-							<div id="mnutoolFixedLogoff" class="button">
-								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Logoff64HOVER.png")%>" alt="" />
-									<i class="icon-off"></i>
-									<h6>Log Off</h6>
-								</a>
-							</div>
-							<%--<div id="mnutoolPasswordChange" class="button">--%>
-							<div id="mnutoolFixedPasswordChange" class="button">
-								<a href="#" rel="table" title="Change Password">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/ChangePassword64HOVER.png") %>"
-										alt="" />
-									<i class="icon-lock"></i>
-									<h6>Change<br />
-										Password</h6>
-								</a>
-							</div>
-							<div id="mnutoolFixedLayout" class="button">
-								<a href="javascript:showThemeEditor()" rel="layout" title="Change Layout">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png") %>" alt="" />
-									<i class="icon-wrench"></i>
-									<h6>Layout</h6>
-								</a>
-							</div>
-<%--							
-							<div class="button">
-								<a href="#" rel="table" title="Pending Workflow Steps">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Workflow64HOVER.png") %>" alt="" />
-									<i class="icon-inbox"></i>
-									<h6>Workflow</h6>
-								</a>
-							</div>
---%>
-							<div id="mnutoolFixedWorkflowOutOfOffice" class="button">
-								<a href="#" rel="table" title="Workflow Out of Office">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/school_next64HOVER.png")%>" alt="" />
-									<i class="icon-signout"></i>
-									<h6>Workflow<br />Out of Office</h6>
-								</a>
-							</div>
-
 							<div id="mnutoolFixedAbout" class="button">
 								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR 8">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png")%>" alt="" />
@@ -1086,21 +1047,68 @@
 			</ul>
 		</div>
 	</div>
-	<div class="FixedLinksRight" >
-		<div class="userpic" style="float: right;vertical-align: central;padding:0 10px 0 10px">
-			<img style="vertical-align: middle" src="<%=Url.Content("~/Content/images/anonymous.png")%>" alt="" />	
+	<div class="FixedLinksRight" title="<%=Session("welcomemessage")%>">
+		<div class="userpic">
+			<img id="UserPicture" style="vertical-align: middle; height: 48px; width: 48px;" src="<%=Session("SelfServicePhotograph_src")%>" alt="Photo" />
 		</div>
 		<div class="userdetails">
-		<div class="userid">
-			<%=Session("username")%>
+			<div class="userid">
+				&nbsp;
 			</div>
-		<div class="groupid">
-			<%=Session("UserGroup")%>		
-		</div>
+			<div class="groupid">
+				<%=Session("UserGroup")%>
+			</div>
 		</div>
 	</div>
+	<!-- User dropdown menu -->
+	<div id="userDropdownmenu">
+		<a href="#"><%=Session("welcomeName")%> ▼</a>
+		<ul>
+			<li class="active has-sub last">
+				<ul id="userDropdownmenu_Items">
+					<li class="linkspagebuttontext">
+						<a href="javascript: showThemeEditor();">
+							<span>Layout</span>
+						</a>
+					</li>
+					<li class="linkspagebuttontext">
+						<a id="mnutoolFixedPasswordChange" href="#">
+							<span>Change password</span>
+						</a>
+					</li>
+					<li class="linkspagebuttontext">
+						<a id="mnutoolFixedWorkflowOutOfOffice" href="#">
+							<span>Workflow out of office</span>
+						</a>
+					</li>
+					<li class="linkspagebuttontext">
+						<a href="<%: Url.Action("LogOff", "Home") %>">
+							<span>Log off</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
 </div>
+<script>
+	$(document).ready(function() {
+		$("#userDropdownmenu a").on("click", function() {
+			$("#userDropdownmenu ul").css("visibility", "visible");
+			$("#userDropdownmenu ul li").css("visibility", "visible");
+		});
 
+		$('#userDropdownmenu').hover(function() {
+			//On hover in, do nothing
+		}, function() {
+			//On hover out, hide the menu
+			$("#userDropdownmenu ul").css("visibility", "hidden");
+			$("#userDropdownmenu li").css("visibility", "hidden");
+		});
+	
+		$("#userDropdownmenu_Items").menu();
+	});
+</script>
 
 <%--<				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="home">Record</a>
 					<ul>

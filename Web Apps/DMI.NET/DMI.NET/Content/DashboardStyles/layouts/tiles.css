@@ -595,7 +595,8 @@ div#pwfs {
 }
 
 .userpic {
-	/*width: 200px;*/
+	float: left;
+	margin-left: -30px;
 }
 
 .FixedLinksRight .userid { font-size: large;}
@@ -608,3 +609,39 @@ div#pwfs {
 #documentDisplay {
 	display: none;
 }
+
+/* User dropdown menu */
+#userDropdownmenu {
+	border: 0 none;
+	float: left;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	right: -57px;
+	top: 0px;
+	width: auto;
+	z-index: 999
+}
+
+#userDropdownmenu ul .has-sub ul a {
+	background: none;
+	padding: 8px 8px 8px 16px;
+	border-bottom: 1px solid transparent;
+	text-align: left;
+}
+
+#userDropdownmenu ul ul {
+	position: relative;
+	height: 167px;
+	top: -197px;
+	margin-left: -18px;
+}
+
+#userDropdownmenu_Items .linkspagebuttontext a {
+	position: relative;
+}
+
+#userDropdownmenu ul li.last ul {
+	left: 0px;
+}
+/* End of User dropdown menu */

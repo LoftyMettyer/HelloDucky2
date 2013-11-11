@@ -467,3 +467,23 @@ div.officetab div.panel > span { display: none;}
 	padding: 0;
 	margin: 0;
 }
+
+/* User dropdown menu */
+#userDropdownmenu {
+	border: 0 none;
+	float: right;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	right: 65px;
+	top: -8px;
+	width: auto;
+	z-index: 999
+}
+
+#userDropdownmenu ul .has-sub ul a {
+	padding: 8px 8px 8px 16px;
+	border-bottom: 1px solid transparent;
+	text-align: left;
+}
+/* End of User dropdown menu */

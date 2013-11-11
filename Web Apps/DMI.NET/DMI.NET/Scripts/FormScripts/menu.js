@@ -24,6 +24,15 @@
 			menu_abMainMenu_Click(pTool);
 	});
 
+	//Add onclick to user dropdown menu items
+	$("#userDropdownmenu li a").on('click', function (e) {
+		var pTool = $(this).attr("id");
+		if (pTool == null) {
+			return true; //We need to return true instead of false because some menu items (such as Change layout) call a Javascript function, and if we return false here that function won't be called
+		}
+		menu_abMainMenu_Click(pTool);
+	});
+	
 	//Add accordion functionality to the context menu
 	$(".accordion").accordion({
 			heightStyle: "fill",

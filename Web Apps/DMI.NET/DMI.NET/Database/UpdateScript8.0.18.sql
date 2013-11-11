@@ -1,3 +1,9 @@
+﻿
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetSSIWelcomeDetails]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetSSIWelcomeDetails];
+GO
+
+
 CREATE PROCEDURE [dbo].[spASRIntGetSSIWelcomeDetails]	
 (
 		@piWelcomeColumnID integer,
@@ -64,15 +70,15 @@ BEGIN
 	--- Now get the last logon details
 
 	SELECT TOP 1 @dtLastLogon = DateTimeStamp
-        FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
-        AND [HRProModule] = 'Intranet' AND [Action] = 'log in'
-              AND ID NOT IN (                  
+				FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
+				AND [HRProModule] = 'Intranet' AND [Action] = 'log in'
+							AND ID NOT IN (                  
 															SELECT top 1 ID
 															FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
 															AND [HRProModule] = 'Intranet' AND [Action] = 'log in'
 															ORDER BY DateTimeStamp DESC)                  
 	ORDER BY DateTimeStamp DESC
-      
+			
 
 	IF @@ROWCOUNT > 0 
 	BEGIN

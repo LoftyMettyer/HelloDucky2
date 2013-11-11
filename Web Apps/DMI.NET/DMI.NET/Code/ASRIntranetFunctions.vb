@@ -1,5 +1,7 @@
 ﻿Imports System.Threading
-Imports Scripting
+Imports System.Drawing
+Imports System.IO
+Imports System.Drawing.Imaging
 
 Public Module ASRIntranetFunctions
 
@@ -88,4 +90,47 @@ Public Module ASRIntranetFunctions
 		Return helper.Content(String.Format("{0}", GeneratePath(filename)))
 	End Function
 
+	Public Function Base64StringToImage(Base64String As String) As Image
+		Dim imageReturn As Image = Nothing
+
+		Dim byteBuffer As Byte() = Convert.FromBase64String(Base64String)
+		Dim memStream As New MemoryStream(byteBuffer)
+
+		memStream.Position = 0
+
+		imageReturn = Image.FromStream(memStream)
+
+		memStream.Close()
+		memStream = Nothing
+		byteBuffer = Nothing
+
+		Return imageReturn
+	End Function
+
+	Public Function ImageToBase64String(img As Image) As String
+		Using ms As MemoryStream = New MemoryStream()
+			'Convert Image to byte()
+			Dim qualityParam As New EncoderParameter(Encoder.Quality, 90L)
+			Dim encoderParams As New EncoderParameters(1)
+			encoderParams.Param(0) = qualityParam
+			Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
+
+			img.Save(ms, jgpEncoder, encoderParams)
+			Dim imageBytes As Byte() = ms.ToArray()
+
+			'Convert byte() to Base64 String
+			Return Convert.ToBase64String(imageBytes)
+		End Using
+	End Function
+
+	Private Function GetEncoder(format As ImageFormat) As ImageCodecInfo
+		Dim codecs As ImageCodecInfo() = ImageCodecInfo.GetImageDecoders()
+
+		For Each codec As ImageCodecInfo In codecs
+			If codec.FormatID = format.Guid Then
+				Return codec
+			End If
+		Next
+		Return Nothing
+	End Function
 End Module

@@ -1,5 +1,8 @@
 ﻿'Imports ADODB
 Imports System.Web.Configuration
+Imports ADODB
+Imports System.IO
+Imports System.Drawing
 
 Namespace Controllers
 	Public Class AccountController
@@ -1175,6 +1178,139 @@ Namespace Controllers
 			Session("SSILinkViewID") = 0
 
 			cmdModuleInfo = Nothing
+
+			' Get the configured SSI Welcome info; name, last login date & time. 		
+			cmdModuleInfo = New ADODB.Command
+			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
+			cmdModuleInfo.CommandType = 4	' Stored Procedure
+			cmdModuleInfo.ActiveConnection = conX
+
+			Dim prmModuleKey = cmdModuleInfo.CreateParameter("moduleKey", 200, 1, 255)
+			cmdModuleInfo.Parameters.Append(prmModuleKey)
+			prmModuleKey.Value = "MODULE_PERSONNEL"
+
+			Dim prmParameterKey = cmdModuleInfo.CreateParameter("parameterKey", 200, 1, 255)
+			cmdModuleInfo.Parameters.Append(prmParameterKey)
+			prmParameterKey.Value = "Param_FieldsSSIWelcome"
+
+			Dim prmParameterValue = cmdModuleInfo.CreateParameter("parameterValue", 200, 2, 1000)
+			cmdModuleInfo.Parameters.Append(prmParameterValue)
+
+			Err.Clear()
+			cmdModuleInfo.Execute()
+
+			If (Err.Number <> 0) Then
+				Session("ErrorTitle") = "Login Page - Module setup"
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" & FormatError(Err.Description)
+				Return RedirectToAction("loginerror")
+			End If
+
+			Dim lngSSIWelcomeColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
+
+			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
+
+			' photo
+			cmdModuleInfo = New ADODB.Command
+			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
+			cmdModuleInfo.CommandType = CommandType.StoredProcedure
+			cmdModuleInfo.ActiveConnection = conX
+
+			prmModuleKey = cmdModuleInfo.CreateParameter("moduleKey", 200, 1, 255)
+			cmdModuleInfo.Parameters.Append(prmModuleKey)
+			prmModuleKey.Value = "MODULE_PERSONNEL"
+
+			prmParameterKey = cmdModuleInfo.CreateParameter("parameterKey", 200, 1, 255)
+			cmdModuleInfo.Parameters.Append(prmParameterKey)
+			prmParameterKey.Value = "Param_FieldsSSIPhotograph"
+
+			prmParameterValue = cmdModuleInfo.CreateParameter("parameterValue", 200, 2, 1000)
+			cmdModuleInfo.Parameters.Append(prmParameterValue)
+
+			Err.Clear()
+			cmdModuleInfo.Execute()
+
+			If (Err.Number <> 0) Then
+				Session("ErrorTitle") = "Login Page - Module setup"
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" & FormatError(Err.Description)
+				Return RedirectToAction("loginerror")
+			End If
+
+			Dim lngSSIPhotographColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
+
+			If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
+
+			Dim cmdSSIWelcomeDetails = Nothing
+
+			cmdSSIWelcomeDetails = New ADODB.Command
+			cmdSSIWelcomeDetails.CommandText = "spASRIntGetSSIWelcomeDetails"
+			cmdSSIWelcomeDetails.CommandType = CommandType.StoredProcedure
+			cmdSSIWelcomeDetails.ActiveConnection = conX
+
+			prmModuleKey = cmdSSIWelcomeDetails.CreateParameter("WelcomeColumnID", DataTypeEnum.adInteger, ParameterDirection.Input)
+			cmdSSIWelcomeDetails.Parameters.Append(prmModuleKey)
+			prmModuleKey.Value = lngSSIWelcomeColumnID
+
+			prmModuleKey = cmdSSIWelcomeDetails.CreateParameter("SSIPhotographColumnID", DataTypeEnum.adInteger, ParameterDirection.Input)
+			cmdSSIWelcomeDetails.Parameters.Append(prmModuleKey)
+			prmModuleKey.Value = lngSSIPhotographColumnID
+
+			prmParameterKey = cmdSSIWelcomeDetails.CreateParameter("SingleRecordViewID", DataTypeEnum.adInteger, ParameterDirection.Input)
+			cmdSSIWelcomeDetails.Parameters.Append(prmParameterKey)
+			prmParameterKey.Value = Session("SingleRecordViewID")
+
+			prmParameterKey = cmdSSIWelcomeDetails.CreateParameter("UserName", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
+			cmdSSIWelcomeDetails.Parameters.Append(prmParameterKey)
+			prmParameterKey.Value = Session("username")
+
+			prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("WelcomeMessage", DataTypeEnum.adVarChar, ParameterDirection.Output, 255)
+			cmdSSIWelcomeDetails.Parameters.Append(prmParameterValue)
+
+			prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("WelcomeName", DataTypeEnum.adVarChar, ParameterDirection.Output, 255)
+			cmdSSIWelcomeDetails.Parameters.Append(prmParameterValue)
+
+			prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("SelfServicePhotograph", DataTypeEnum.adVarBinary, ParameterDirection.Output, 100000000)	'Big number, we couldn't determine the MAX value for a VarBinary
+			cmdSSIWelcomeDetails.Parameters.Append(prmParameterValue)
+
+			Err.Clear()
+			cmdSSIWelcomeDetails.Execute()
+
+			If (Err.Number <> 0) Then
+				Session("welcomemessage") = "error: " & Err.Description & ". ID: " & CStr(lngSSIWelcomeColumnID)
+			Else
+				Session("welcomemessage") = cmdSSIWelcomeDetails.Parameters("WelcomeMessage").Value
+				Session("welcomeName") = cmdSSIWelcomeDetails.Parameters("WelcomeName").Value
+				If Not IsDBNull(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value) Then
+					Dim OLEType As Short = Val(Encoding.UTF8.GetString(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value, 8, 2))
+					If OLEType = 2 Then	'Embeded
+						Dim abtImage = CType(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value, Byte())
+						Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
+						Try
+							Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
+							'Create an image based on the embeded (Base64) image and resize it to 48x48
+							Dim img As Image = Base64StringToImage(Convert.ToBase64String(binaryData, 0, binaryData.Length))
+							img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
+							Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & ImageToBase64String(img)
+						Catch exp As System.ArgumentNullException
+
+						End Try
+					ElseIf OLEType = 3 Then	'Link
+						Dim UNC As String = Trim(Encoding.UTF8.GetString(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value, 290, 60))
+						Dim FileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value, 10, 70))).Replace("\", "/")
+						Dim FullPath As String = Trim(Encoding.UTF8.GetString(cmdSSIWelcomeDetails.Parameters("SelfServicePhotograph").Value, 80, 210)).Replace("\", "/")
+						Session("SelfServicePhotograph_src") = "file:///" & UNC & "/" & FullPath & "/" & FileName
+					End If
+				Else 'No picture is defined for user, use anonymous one
+					Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
+				End If
+			End If
+
+			'clear the welcome message if neither the name or last logon information are available.
+			If Session("welcomemessage") = "Welcome " Then
+				Session("welcomemessage") = ""
+				Session("welcomeName") = ""
+			End If
+
+			cmdSSIWelcomeDetails = Nothing
 
 			Session("EnableSQL2000Functions") = False
 

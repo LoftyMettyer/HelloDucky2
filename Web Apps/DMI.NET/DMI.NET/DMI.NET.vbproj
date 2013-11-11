@@ -187,6 +187,7 @@
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\images\Default Background.jpg" />
+    <Content Include="Content\images\dropdown_icon.gif" />
     <Content Include="Content\images\Penfold.png" />
     <Content Include="Content\images\ProgressBar.gif" />
     <Content Include="Content\images\PunchHole.png" />
@@ -636,6 +637,7 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
     <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
+    <Content Include="Database\UpdateScript8.0.18.sql" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
