@@ -1059,6 +1059,9 @@
     <Content Include="Scripts\officebar\winkit\upblack64DIS.png" />
     <Content Include="Scripts\officebar\winkit\upblack64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\upblack64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\user64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\user64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\user64NORM.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64DIS.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64NORM.png" />

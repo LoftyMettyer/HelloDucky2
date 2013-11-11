@@ -165,8 +165,8 @@
 
 							<div id="mnutoolCancelLinksFind" class="button hidden">
 								<a href="#" rel="table" title="Return to links page">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
-									<i class="icon-remove"></i>
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/user64HOVER.png")%>" alt="" />
+									<i class="icon-user"></i>
 									<h6>Return to the<br/>links page</h6>
 								</a>
 							</div>
@@ -1052,12 +1052,12 @@
 			<img id="UserPicture" style="vertical-align: middle; height: 48px; width: 48px;" src="<%=Session("SelfServicePhotograph_src")%>" alt="Photo" />
 		</div>
 		<div class="userdetails">
-			<div class="userid">
+		<div class="userid">
 				&nbsp;
 			</div>
-			<div class="groupid">
-				<%=Session("UserGroup")%>
-			</div>
+		<div class="groupid">
+			<%=Session("UserGroup")%>		
+		</div>
 		</div>
 	</div>
 	<!-- User dropdown menu -->
@@ -1105,7 +1105,7 @@
 			$("#userDropdownmenu ul").css("visibility", "hidden");
 			$("#userDropdownmenu li").css("visibility", "hidden");
 		});
-	
+
 		$("#userDropdownmenu_Items").menu();
 	});
 </script>
