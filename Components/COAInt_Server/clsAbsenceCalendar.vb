@@ -1065,7 +1065,7 @@ PersonnelERROR:
 
     If Not mblnDisableWPs Then
       ' Working Pattern Info
-			strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & "><TD nowrap>&nbsp;Working Pattern :</TD><TD>" & HTML_WorkingPattern(mstrWorkingPattern) & "</TD></TR>" & vbNewLine
+			strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & "><TD nowrap>&nbsp;Working Pattern :&nbsp;&nbsp;</TD><TD>" & HTML_WorkingPattern(mstrWorkingPattern) & "</TD></TR>" & vbNewLine
     End If
 
     Return strHtml
@@ -1485,39 +1485,34 @@ Error_FillCalBoxes:
     strHtml = "<table class='invisible' cellspacing=0 cellpadding=0 frame=0>" & vbNewLine
 
     ' Row 1 contains day names
-    strHtml = strHtml & "<TR align=middle>" & "<TD>" & UCase(Left(VB6.Format(1, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(2, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(3, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(4, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(5, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(6, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(7, "ddd"), 1)) & "</TD></TR>" & vbNewLine
+		strHtml = strHtml & "<TR align=middle>" & "<td>&nbsp;</td><TD>" & UCase(Left(VB6.Format(1, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(2, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(3, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(4, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(5, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(6, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(7, "ddd"), 1)) & "</TD></TR>" & vbNewLine
 
     ' Row two contains the AM fields
-    strHtml = strHtml & "<TR>"
+		strHtml = strHtml & "<TR><td>AM</td>"
 
     For iCount = 1 To 13 Step 2
-
-      If Not Mid(pstrWorkingPattern, iCount, 1) = " " Then
-        strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" checked disabled></TD>"
+			If Not Mid(pstrWorkingPattern, iCount, 1) = " " Then
+				strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" checked disabled></TD>"
       Else
-        strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" disabled></TD>"
+				strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" disabled></TD>"
       End If
-
-    Next iCount
+			Next iCount
     strHtml = strHtml & "</TR>"
 
 
     ' Row three contains the PM fields
-    strHtml = strHtml & "<TR>"
+		strHtml = strHtml & "<TR><td>PM</td>"
     For iCount = 2 To 14 Step 2
-
-      strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"""
+			strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"""
       If Not Mid(pstrWorkingPattern, iCount, 1) = " " Then
         strHtml = strHtml & " Checked"
       End If
       strHtml = strHtml & " disabled></TD>"
-
-    Next iCount
+			Next iCount
     strHtml = strHtml & "</TR></TABLE>"
 
     HTML_WorkingPattern = strHtml
-
-  End Function
+		End Function
 
   Public Function HTML_DisplayOptions() As String
 
