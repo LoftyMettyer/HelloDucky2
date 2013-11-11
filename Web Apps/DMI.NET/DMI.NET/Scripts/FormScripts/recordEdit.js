@@ -1474,7 +1474,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			link.style.cursor = "default";
 			$(link).attr('href', '#');
 			checkboxesToAssociate = "";
-			for (j = 1; j <= 13; j += 2) {
+			for (j = 1; j <= 15; j += 2) {
 				checkboxesToAssociate += controlID + "_" + j.toString() + ",";
 			}
 			$(link).attr('data-checkboxes', checkboxesToAssociate.substring(0, checkboxesToAssociate.length - 1)); //Data attribute to hold associated checkboxes
@@ -1502,7 +1502,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			link.style.cursor = "default";
 			$(link).attr('href', '#');
 			checkboxesToAssociate = "";
-			for (j = 2; j <= 14; j += 2)
+			for (j = 2; j <= 16; j += 2)
 			{
 				checkboxesToAssociate += controlID + "_" + j.toString() + ",";
 			}
