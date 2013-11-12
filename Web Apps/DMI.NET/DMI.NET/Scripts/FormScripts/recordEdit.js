@@ -1652,6 +1652,11 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPickerPlugin = document.createElement('input');
 			textboxColorPickerPlugin.type = "text";
 			textboxColorPickerPlugin.className = "colorPicker";
+			textboxColorPickerPlugin.id = "colorPicker_" + controlID.substr(3);
+			textboxColorPickerPlugin.setAttribute("data-style-top", Number(controlItemArray[4]) / 15);
+			textboxColorPickerPlugin.setAttribute("data-style-left", Number(controlItemArray[5]) / 15);
+			textboxColorPickerPlugin.setAttribute("data-style-height", Number(controlItemArray[6]) / 15);
+			textboxColorPickerPlugin.setAttribute("data-style-width", Number(controlItemArray[7]) / 15);
 			addControl(iPageNo, textboxColorPickerPlugin);
 			
 			var textboxColorPicker; //To contain the value that will be saved
@@ -1664,6 +1669,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPicker.setAttribute("data-columnID", columnID);
 			textboxColorPicker.setAttribute('data-controlType', controlItemArray[3]);
 			textboxColorPicker.setAttribute("data-control-tag", key);
+			textboxColorPicker.setAttribute("data-associated-control-id", textboxColorPickerPlugin.id);
 			addControl(iPageNo, textboxColorPicker);
 			
 			//Note: the plugin is hooked up to the control in the updateControl function
@@ -1901,25 +1907,37 @@ function updateControl(lngColumnID, value) {
 							$(this).val(OpenHR.ConvertSQLDateToLocale(value));
 						}
 					} else if ($(this).hasClass("colorPicker")) { //Color picker
-						var thisId = $(this).attr("id"); //We need the ID for the plugin
-						$("#" + thisId).val(value);
-
-						$('.colorPicker').spectrum('destroy');
-						$('.sp-container').remove();
+						var textboxId = $(this).attr("id"); //This is the ID of the textbox that the color picker plugin will use to store the value of the selected color
+						var colorPickerId = $("#" + textboxId).attr('data-associated-control-id'); //This is the ID of the color picker associated with the textbox above
+						$("#" + textboxId).val(value); //Set the value that came from the database
+						$("#" + colorPickerId).spectrum("destroy");
+						$(".sp-container").remove();
 						//Hook up the plugin to the control
 						var initialColor = (parseInt(value, 10)).toString(16);
 						initialColor = Array(7 - initialColor.length).join("0") + initialColor;
 						initialColor = initialColor.substr(4, 2) + initialColor.substr(2, 2) + initialColor.substr(0, 2);
-						$(".colorPicker").spectrum({
+						$("#" + colorPickerId).spectrum({
 							color: "#" + initialColor, //Set the initial color
 							className: "colorPicker",
 							cancelText: "", //Hide the Cancel button
 							change: function(color) { //On selecting a color...
 								var newColor = color.toHex();
 								newColor = newColor.substr(4, 2) + newColor.substr(2, 2) + newColor.substr(0, 2);
-								$("#" + thisId).val(parseInt(newColor, 16)).change(); //We need to trigger the change event above so the Save button is enabled
+								$("#" + textboxId).val(parseInt(newColor, 16)).change(); //We need to trigger the change event here so the Save button is enabled
 							}
 						});
+						//After the plugin has been applied, there will be an added div (containing other divs); these need to be repositioned and styled
+						//Div
+						$("#" + colorPickerId).next().css("top", $("#" + colorPickerId).attr("data-style-top") - 2 + "px");
+						$("#" + colorPickerId).next().css("left", $("#" + colorPickerId).attr("data-style-left") - 1 + "px");
+						$("#" + colorPickerId).next().css("height", $("#" + colorPickerId).attr("data-style-height") + "px");
+						$("#" + colorPickerId).next().css("width", $("#" + colorPickerId).attr("data-style-width") + "px");
+						$("#" + colorPickerId).next().css("position", "absolute");
+						$("#" + colorPickerId).next().css("background", "none");
+						$("#" + colorPickerId).next().css("border", "none");
+						//First inner div of the div above
+						$("#" + colorPickerId).next().children().first("sp-preview").css("height", $("#" + colorPickerId).attr("data-style-height") + "px");
+						$("#" + colorPickerId).next().children().first("sp-preview").css("width", $("#" + colorPickerId).attr("data-style-width") - 16 + "px");
 					} else {
 						$(this).val(value);
 					}
