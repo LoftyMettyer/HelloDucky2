@@ -57,6 +57,9 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="DayPilot">
+      <HintPath>..\packages\DayPilotLite-4.0.261\DayPilot.dll</HintPath>
+    </Reference>
     <Reference Include="Infragistics.Web.Mvc.Documents.Excel, Version=12.1.20121.1010, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.DataVisualization" />
@@ -126,6 +129,7 @@
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -201,6 +205,7 @@
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
+    <Content Include="Content\MonthPicker.2.1.css" />
     <Content Include="Content\spectrum.css" />
     <Content Include="Content\table.css" />
     <Content Include="Content\themes\activeX\images\animated-overlay.gif" />
@@ -885,6 +890,7 @@
     <Content Include="Scripts\jquery\jsTree\theme\apple\dot_for_ie.gif" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\style.css" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\throbber.gif" />
+    <Content Include="Scripts\jquery\MonthPicker.2.1.js" />
     <Content Include="Scripts\officebar\images\bg.png" />
     <Content Include="Scripts\officebar\images\bg_tab.png" />
     <Content Include="Scripts\officebar\images\button2_over.png" />
@@ -1082,6 +1088,9 @@
     <Content Include="Scripts\jquery\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\jquery\jquery.menu.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Themes\calendar_white.css" />
+    <Content Include="Themes\layout.css" />
+    <Content Include="Themes\scheduler_white.css" />
     <Content Include="Views\Account\About.ascx" />
     <Content Include="Views\Account\ForgotPassword_Submit.aspx" />
     <Content Include="Views\Account\ResetPassword.aspx" />
@@ -1135,7 +1144,7 @@
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_breakdown.aspx" />
+    <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge_completed.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />
@@ -1166,12 +1175,8 @@
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_calendar.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_key.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_main.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_navfiller.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_options.ascx" />
     <Content Include="Views\Home\util_run_crosstabs.ascx" />
     <Content Include="Views\Home\util_run_crosstabsBreakdown.ascx" />
     <Content Include="Views\Home\util_run_crosstabsMain.ascx" />
@@ -1215,7 +1220,6 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
-    <Content Include="Views\Home\util_run_calendarreport_nav.ascx" />
     <Content Include="Views\Home\stdrpt_def_Absence.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
     <Content Include="Views\Shared\_Banner.ascx" />
@@ -1240,7 +1244,6 @@
     <Content Include="Views\Shared\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Views\Home\pictures\" />
   </ItemGroup>
   <ItemGroup>
@@ -1287,7 +1290,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>57795</DevelopmentServerPort>
+          <DevelopmentServerPort>49862</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:50115/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

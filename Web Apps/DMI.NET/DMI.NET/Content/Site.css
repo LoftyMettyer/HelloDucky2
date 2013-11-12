@@ -198,3 +198,14 @@ body.loading .modal {
 }
 
 .ui-jqgrid .ui-jqgrid-btable { cursor : default; }
+
+
+.display-label {
+	float: left;
+	width: 25%
+}
+
+.display-field{
+	float: right;
+	width: 73%;
+}

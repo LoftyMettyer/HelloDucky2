@@ -204,6 +204,7 @@
     <Compile Include="MailMerge.vb" />
     <Compile Include="Menu.vb" />
     <Compile Include="Metadata\Base.vb" />
+    <Compile Include="Metadata\LegendColor.vb" />
     <Compile Include="Metadata\Column.vb" />
     <Compile Include="Metadata\Function.vb" />
     <Compile Include="Metadata\ModuleSetting.vb" />
@@ -238,6 +239,7 @@
     </Compile>
     <Compile Include="OLE2.vb" />
     <Compile Include="SessionInfo.vb" />
+    <Compile Include="Structures\CalendarLegend.vb" />
     <Compile Include="Structures\HistoryScreen.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\TableScreen.vb" />
@@ -266,7 +268,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
       <VersionMajor>2</VersionMajor>

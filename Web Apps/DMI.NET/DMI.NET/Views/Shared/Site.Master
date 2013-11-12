@@ -120,6 +120,8 @@
 	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
+	
+	
 
 	<%--licence manager reference for activeX--%>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -146,6 +148,13 @@
 			$("#errorDialog").dialog({
 				autoOpen: false,
 				modal: true,			
+				width: 650,
+				height: 500
+			});
+
+			$("#CalendarEvent").dialog({
+				autoOpen: false,
+				modal: true,
 				width: 650,
 				height: 500
 			});
@@ -405,6 +414,8 @@
 			<p id="errorDialogContentText"></p>
 		</div>
 	</div>
+	
+	<div id="CalendarEvent"></div>
 	
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>

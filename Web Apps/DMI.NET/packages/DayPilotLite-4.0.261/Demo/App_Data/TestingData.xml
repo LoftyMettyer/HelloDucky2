@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TestingData>
+  <Event Name="Event #1" Start="2007-01-01T12:45:00" End="2007-01-01T13:10:00" Id="1" />
+  <Event Name="Event #2" Start="2007-01-01T12:30:00" End="2007-01-01T14:25:00" Id="2" />
+  <Event Name="Event #3" Start="2007-01-01T09:30:00" End="2007-01-01T10:00:00" Id="3" />
+  <Event Name="Event #4" Start="2007-01-02T09:30:00" End="2007-01-02T12:00:00" Id="4" />
+  <Event Name="Event #5" Start="2007-01-03T09:30:00" End="2007-01-03T12:00:00" Id="5" />
+  <Event Name="Event #6" Start="2007-01-03T10:00:00" End="2007-01-03T20:00:00" Id="5" />
+</TestingData>

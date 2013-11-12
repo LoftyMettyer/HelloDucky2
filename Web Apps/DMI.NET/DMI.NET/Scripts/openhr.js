@@ -135,6 +135,7 @@
 					//OK
 					$frame.html(html);
 
+
 					//jQuery styling
 					$(function () {
 						$("input[type=submit], input[type=button], button")

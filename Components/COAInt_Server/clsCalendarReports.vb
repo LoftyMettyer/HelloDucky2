@@ -3,10 +3,19 @@ Option Explicit On
 
 Imports System.Globalization
 Imports ADODB
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports System.Text
+Imports System.Collections.ObjectModel
+Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 Imports VB = Microsoft.VisualBasic
 Public Class CalendarReport
+
+	Public Legend As ICollection(Of CalendarLegend)
+	Private LegendColors As ICollection(Of LegendColor)
+
+	Public rsCareerChange As Recordset
 
 	Private mstrSQLSelect_RegInfoRegion As String
 	Private mstrSQLSelect_BankHolDate As String
@@ -166,7 +175,7 @@ Public Class CalendarReport
 	Private mblnPersonnelBase As Boolean
 
 	Private mstrRegionFormString As String
-	Private mstrBHolFormString As Stringbuilder
+	Private mstrBHolFormString As StringBuilder
 	Private mstrWPFormString As String
 
 	'****************************************************
@@ -706,6 +715,9 @@ Public Class CalendarReport
 		End Get
 	End Property
 
+	Public Events As DataTable
+
+
 	Public ReadOnly Property EventsRecordset() As Recordset
 		Get
 			Return mrsCalendarReportsOutput
@@ -848,7 +860,7 @@ Public Class CalendarReport
 		Return True
 	End Function
 
-	Public Function ConvertEventDescription(ByVal plngColumnID As Integer, ByVal pvarValue As Object) As String
+	Public Function ConvertEventDescription(ByVal plngColumnID As Integer, ByVal pvarValue As String) As String
 
 		Dim strTempEventDesc As String
 		Dim iDecimals As Short
@@ -860,19 +872,15 @@ Public Class CalendarReport
 			If datGeneral.DoesColumnUseSeparators(plngColumnID) Then
 				iDecimals = datGeneral.GetDecimalsSize(plngColumnID)
 				strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
-				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				strTempEventDesc = Format(pvarValue, strFormat)
 
 			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				strTempEventDesc = pvarValue
 
 			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
 
 			Else
-				'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				strTempEventDesc = pvarValue
 
 			End If
@@ -2986,13 +2994,13 @@ ErrorTrap:
 
 	End Function
 
-	Private Function GenerateSQLEvent(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
+	Private Function GenerateSQLEvent(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String, ByVal EventColor As String) As Boolean
 
 		Dim fOK As Boolean
 
 		fOK = True
 
-		If fOK Then fOK = GenerateSQLSelect(pstrEventKey, pstrDynamicKey, pstrDynamicName)
+		If fOK Then fOK = GenerateSQLSelect(pstrEventKey, pstrDynamicKey, pstrDynamicName, EventColor)
 		If fOK Then fOK = GenerateSQLFrom()
 		If fOK Then fOK = GenerateSQLJoin(pstrEventKey, pstrDynamicKey)
 		If fOK Then fOK = GenerateSQLWhere(pstrEventKey, pstrDynamicKey, pstrDynamicName)
@@ -3163,9 +3171,12 @@ ErrorTrap:
 		' Purpose : Sets references to other classes and redimensions arrays
 		'           used for table usage information
 
+		Dim rstData As Recordset
 		mclsData = New clsDataAccess
 		mobjEventLog = New clsEventLog
 		mcolBaseDescIndex = New Collection
+
+		Legend = New Collection(Of CalendarLegend)()
 
 		ReDim mvarSortOrder(2, 0)
 		ReDim mlngTableViews(2, 0)
@@ -3180,6 +3191,20 @@ ErrorTrap:
 		ReDim mvarOutputArray_Merges(0)
 
 		ReDim mvarEventColumnViews(1, 0)
+
+		LegendColors = New Collection(Of LegendColor)()
+
+		rstData = dataAccess.OpenRecordset("EXEC spASRIntGetCalendarColours", CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objItem = New LegendColor
+			objItem.ColOrder = rstData.Fields("colorder").Value.ToString
+			objItem.ColValue = rstData.Fields("ColValue").Value.ToString
+			objItem.ColDesc = rstData.Fields("ColDesc").Value.ToString
+			objItem.WordColorIndex = rstData.Fields("WordColourIndex").Value.ToString
+			objItem.IsCalendarLegendColor = rstData.Fields("CalendarLegendColour").Value
+			LegendColors.Add(objItem)
+			rstData.MoveNext()
+		Loop
 
 	End Sub
 
@@ -3243,6 +3268,18 @@ ErrorTrap:
 		' Purpose : This function executes the SQL string 'into' a recordset.
 
 		On Error GoTo ExecuteSQL_ERROR
+
+		mstrSQL = String.Format("SELECT DISTINCT [?ID_eventID] AS [key] FROM [{0}] ", mstrTempTableName)
+		mrsCalendarReportsOutput = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		If Not (mrsCalendarReportsOutput.BOF And mrsCalendarReportsOutput.EOF) Then
+			mrsCalendarReportsOutput.MoveFirst()
+			Do While Not mrsCalendarReportsOutput.EOF
+				Legend.GetLegend(mrsCalendarReportsOutput.Fields("key").Value).Count += 1
+				mrsCalendarReportsOutput.MoveNext()
+			Loop
+		End If
+
+
 
 		'  'get all the base & event data into a recordset
 		mstrSQL = String.Format("SELECT * FROM [{0}] ", mstrTempTableName)
@@ -3913,7 +3950,7 @@ Error_Trap:
 			Exit Function
 		End If
 
-		Dim rsCC As Recordset	'career change data for base records
+
 		Dim colWorkingPatterns As clsCalendarEvents
 
 		Dim strSQLCC As String 'sql for retieving career change data
@@ -3931,9 +3968,9 @@ Error_Trap:
 		ReDim avCareerRanges(4, 0)
 
 		strSQLCC = "SELECT " & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & ", " & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & ", " & vbNewLine _
+				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AS [BaseID]," & vbNewLine _
+				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS [WP_Date], " & vbNewLine _
+				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & "	AS [WP_Pattern], " & vbNewLine _
 				& "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHWorkingPatternTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL) AS 'CareerChanges' " & vbNewLine _
 				& "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & vbNewLine
 		If Len(Trim(mstrSQLIDs)) > 0 Then
@@ -3947,57 +3984,57 @@ Error_Trap:
 		strSQLCC = strSQLCC & "ORDER BY " _
 				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
 				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " "
-		rsCC = mclsData.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsCareerChange = mclsData.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		lngBaseRecordID = -1
 
 		'******************************************************************************
-		'Create an array containing the ranges of career change period
-		With rsCC
+		''Create an array containing the ranges of career change period
+		'With rsCC
 
-			If Not (.BOF And .EOF) Then
+		'	If Not (.BOF And .EOF) Then
 
-				Do While Not .EOF
-					intNextIndex = UBound(avCareerRanges, 2) + 1
-					ReDim Preserve avCareerRanges(4, intNextIndex)
+		'		Do While Not .EOF
+		'			intNextIndex = UBound(avCareerRanges, 2) + 1
+		'			ReDim Preserve avCareerRanges(4, intNextIndex)
 
-					If lngBaseRecordID <> .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value Then
-						lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
-						dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
+		'			If lngBaseRecordID <> .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value Then
+		'				lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
+		'				dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
 
-						avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
-						avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
-						avCareerRanges(2, intNextIndex) = "" 'End Date
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
-						avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
+		'				avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
+		'				avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
+		'				avCareerRanges(2, intNextIndex) = "" 'End Date
+		'				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+		'				avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
+		'				avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
 
-					Else
-						dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
-						dtEndDate = dtStartDate
-						avCareerRanges(2, intNextIndex - 1) = CStr(dtEndDate)	'End Date
+		'			Else
+		'				dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
+		'				dtEndDate = dtStartDate
+		'				avCareerRanges(2, intNextIndex - 1) = CStr(dtEndDate)	'End Date
 
-						avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
-						avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
-						avCareerRanges(2, intNextIndex) = "" 'End Date
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
-						avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
+		'				avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
+		'				avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
+		'				avCareerRanges(2, intNextIndex) = "" 'End Date
+		'				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+		'				avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
+		'				avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
 
-					End If
+		'			End If
 
-					.MoveNext()
-				Loop
+		'			.MoveNext()
+		'		Loop
 
-			Else
-				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Get_HistoricWorkingPatterns = True
-				GoTo TidyUpAndExit
+		'	Else
+		'		'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'		Get_HistoricWorkingPatterns = True
+		'		GoTo TidyUpAndExit
 
-			End If
+		'	End If
 
-		End With
-		'******************************************************************************
+		'End With
+		''******************************************************************************
 
 		lngBaseRecordID = -1
 
@@ -4010,42 +4047,42 @@ Error_Trap:
 		INPUT_STRING = vbNullString
 		intRecordWP = 0
 
-		mstrWPFormString = "<form id=frmWP name=frmWP style=""visibility:hidden;display:none"">" & vbNewLine
+		'mstrWPFormString = "<form id=frmWP name=frmWP style=""visibility:hidden;display:none"">" & vbNewLine
 
-		For intCount = 1 To UBound(avCareerRanges, 2) Step 1
+		'For intCount = 1 To UBound(avCareerRanges, 2) Step 1
 
-			If lngBaseRecordID <> CInt(avCareerRanges(0, intCount)) Then
-				If Not (colWorkingPatterns Is Nothing) Then
-					mcolHistoricWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
-					'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					colWorkingPatterns = Nothing
-				End If
-				colWorkingPatterns = New clsCalendarEvents
+		'	If lngBaseRecordID <> CInt(avCareerRanges(0, intCount)) Then
+		'		If Not (colWorkingPatterns Is Nothing) Then
+		'			mcolHistoricWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
+		'			'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		'			colWorkingPatterns = Nothing
+		'		End If
+		'		colWorkingPatterns = New clsCalendarEvents
 
-				lngBaseRecordID = CInt(avCareerRanges(0, intCount))
-				intRecordWP = 0
-				mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<input NAME=txtWPCOUNT_" & lngBaseRecordID & " id=txtWPCOUNT_" & lngBaseRecordID & " value=""" & avCareerRanges(4, intCount) & """>" & vbNewLine
-			End If
+		'		lngBaseRecordID = CInt(avCareerRanges(0, intCount))
+		'		intRecordWP = 0
+		'		mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<input NAME=txtWPCOUNT_" & lngBaseRecordID & " id=txtWPCOUNT_" & lngBaseRecordID & " value=""" & avCareerRanges(4, intCount) & """>" & vbNewLine
+		'	End If
 
-			colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , CShort(avCareerRanges(4, intCount)), , avCareerRanges(1, intCount), , , , avCareerRanges(2, intCount), , , , , , , , , , , , , , , , , , , , , avCareerRanges(3, intCount))
+		'	colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , CShort(avCareerRanges(4, intCount)), , avCareerRanges(1, intCount), , , , avCareerRanges(2, intCount), , , , , , , , , , , , , , , , , , , , , avCareerRanges(3, intCount))
 
-			intRecordWP = intRecordWP + 1
+		'	intRecordWP = intRecordWP + 1
 
-			INPUT_STRING = VB6.Format(avCareerRanges(1, intCount), mstrClientDateFormat) & "_" _
-					& VB6.Format(avCareerRanges(2, intCount), mstrClientDateFormat) & "_" _
-					& avCareerRanges(3, intCount)
+		'	INPUT_STRING = VB6.Format(avCareerRanges(1, intCount), mstrClientDateFormat) & "_" _
+		'			& VB6.Format(avCareerRanges(2, intCount), mstrClientDateFormat) & "_" _
+		'			& avCareerRanges(3, intCount)
 
-			mstrWPFormString = mstrWPFormString & vbTab & "<input NAME=txtWP_" & lngBaseRecordID & "_" & intRecordWP & " id=txtWP_" & lngBaseRecordID & "_" & intRecordWP & " value=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
+		'	mstrWPFormString = mstrWPFormString & vbTab & "<input NAME=txtWP_" & lngBaseRecordID & "_" & intRecordWP & " id=txtWP_" & lngBaseRecordID & "_" & intRecordWP & " value=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
 
-			If (intCount = UBound(avCareerRanges, 2)) And Not (colWorkingPatterns Is Nothing) Then
-				mcolHistoricWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
-				'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				colWorkingPatterns = Nothing
-			End If
+		'	If (intCount = UBound(avCareerRanges, 2)) And Not (colWorkingPatterns Is Nothing) Then
+		'		mcolHistoricWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
+		'		'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		'		colWorkingPatterns = Nothing
+		'	End If
 
-		Next intCount
+		'Next intCount
 
-		mstrWPFormString = mstrWPFormString & "</form>" & vbNewLine & vbNewLine
+		'mstrWPFormString = mstrWPFormString & "</form>" & vbNewLine & vbNewLine
 
 		'##############################################################################
 
@@ -4053,8 +4090,7 @@ Error_Trap:
 		Get_HistoricWorkingPatterns = True
 
 TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsCC may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsCC = Nothing
+
 		'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		colWorkingPatterns = Nothing
 		Exit Function
@@ -4589,28 +4625,6 @@ ErrorTrap:
 		'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		Get_StaticBankHolidays = False
 		GoTo TidyUpAndExit
-
-	End Function
-
-	Public Function HTML_MonthCombo(ByVal piStartMonth As Integer) As String
-
-		'Build month selection dropdown combo
-		Dim iCount As Integer
-		Dim strHTML As String
-
-		strHTML = "<select name='cboMonth' title='Current Month' id='cboMonth' class='combo' style='WIDTH: 100px' onChange='monthChange();'>" & vbNewLine
-
-		For iCount = 1 To 12
-
-			If iCount = 1 Then
-				strHTML = strHTML & "<option selected value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
-			Else
-				strHTML = strHTML & "<option value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
-			End If
-
-		Next iCount
-
-		HTML_MonthCombo = strHTML & "  </select>"
 
 	End Function
 
@@ -5259,6 +5273,8 @@ Error_Trap:
 		Dim fOK As Boolean = True
 		Dim objEvent As clsCalendarEvent
 		Dim rsLegendBreakdown As Recordset
+		Dim objLegendEvent As CalendarLegend
+		Dim objColor As Color
 
 		Dim strSQL As String
 		Dim strDynamicKey As String
@@ -5293,7 +5309,16 @@ Error_Trap:
 						strDynamicName = Replace(IIf(IsDBNull(rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "", rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "'", "''")
 						mstrSQLDynamicLegendWhere = vbNullString
 
-						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName)
+						objLegendEvent = New CalendarLegend
+						objLegendEvent.LegendKey = strDynamicKey
+						objLegendEvent.Text = strDynamicName
+
+						objColor = Color.FromArgb(LegendColors.GetByIndex(mintDynamicEventCount).ColValue)
+						objLegendEvent.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
+						objLegendEvent.HTMLColorName = LegendColors.GetByIndex(mintDynamicEventCount).ColDesc
+						Legend.Add(objLegendEvent)
+
+						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName, objLegendEvent.HexColor)
 
 						If Not fOK Then
 							GenerateSQL = False
@@ -5308,7 +5333,14 @@ Error_Trap:
 					rsLegendBreakdown.Close()
 
 				Else
-					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString)
+
+					objLegendEvent = New CalendarLegend
+					objLegendEvent.LegendKey = objEvent.Key
+					objLegendEvent.Text = vbNullString
+					objLegendEvent.HexColor = "#f3f3f3"
+					Legend.Add(objLegendEvent)
+
+					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString, objLegendEvent.HexColor)
 
 					If Not fOK Then
 						Return False
@@ -5326,7 +5358,7 @@ Error_Trap:
 
 	End Function
 
-	Private Function GenerateSQLSelect(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
+	Private Function GenerateSQLSelect(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String, ByVal EventColor As String) As Boolean
 
 		' Purpose : This function compiles the SQLSelect string looping
 		'           thru the column details recordset.
@@ -5349,8 +5381,8 @@ Error_Trap:
 
 		'Get the Base ID column values so that these can be used in the group by clause when checking
 		'for multiple events in MultipleCheck().
-		mstrSQLCreateTable = mstrSQLCreateTable & "[BaseID] [Integer] NOT NULL, "
-		strColList = strColList & "[" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
+		mstrSQLCreateTable = mstrSQLCreateTable & "[EventColor] nvarchar(7), [BaseID] [Integer] NOT NULL, "
+		strColList = "'" & EventColor & "' AS [EventColor], [" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
 
 		If mlngDescription1 > 0 Then
 			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrDescription1, strTableColumn) Then
@@ -5432,9 +5464,14 @@ Error_Trap:
 
 
 			'****************************************************************************
+			strColList = strColList & gcoTablePrivileges.Item(.TableName).RealSource & ".[ID] AS [ID], " & vbNewLine
+			mstrSQLCreateTable = mstrSQLCreateTable & "[ID] [integer] NULL, "
+
+
 			mlngEventViewColumn = .StartDateID
 			If CheckColumnPermissions(.TableID, .TableName, .StartDateName, strTableColumn) Then
 				strColList = strColList & strTableColumn & " AS 'StartDate', " & vbNewLine
+
 				mstrSQLBaseStartDateColumn = strTableColumn
 				strTableColumn = vbNullString
 			Else
@@ -6077,7 +6114,6 @@ GenerateSQLJoin_ERROR:
 
 		On Error GoTo GenerateSQLWhere_ERROR
 
-		Dim rsTemp As New ADODB.Recordset
 		Dim objEvent As clsCalendarEvent
 		Dim strFilterIDs As String
 
@@ -6220,8 +6256,6 @@ GenerateSQLJoin_ERROR:
 		GenerateSQLWhere = True
 
 TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
 		Exit Function
 
 GenerateSQLWhere_ERROR:
@@ -6469,180 +6503,6 @@ ClearUp_ERROR:
 
 		Return String.Format("Start Date: {0}{1} ---> {2}{3}" _
 			, VB6.Format(pdtStartDate, "dd-MMM-yyyy "), LCase(pstrStartSession), VB6.Format(pdtEndDate, "dd-MMM-yyyy "), LCase(pstrEndSession))
-
-	End Function
-
-	Public Function OutputGridColumns() As Boolean
-
-		On Error GoTo ErrTrap
-
-		Dim iLoop As Short
-		Dim pblnOK As Boolean
-		Dim intColCounter As Short
-
-		pblnOK = True
-
-		' Now loop through the recordset fields, adding the data columns
-		For iLoop = 0 To DAY_CONTROL_COUNT Step 1
-
-			intColCounter = iLoop
-
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Columns.Count"" VALUE=""1"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Caption"" VALUE=""Column_" & iLoop & """>" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Name"" VALUE=""Column_" & iLoop & """>" & vbNewLine)
-
-			' left align strings/dates, centre align logics, right align numerics
-			If iLoop = 1 Then
-				If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Alignment"" VALUE=""0"">" & vbNewLine)
-			Else
-				If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Alignment"" VALUE=""2"">" & vbNewLine)
-			End If
-
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").CaptionAlignment"" VALUE=""2"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Bound"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").AllowSizing"" VALUE=""1"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").DataField"" VALUE=""Column " & iLoop & """>" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").DataType"" VALUE=""8"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Level"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").NumberFormat"" VALUE="""">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Case"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").FieldLen"" VALUE=""4096"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").VertScrollBar"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Locked"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Style"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").ButtonsAlways"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").RowCount"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").ColCount"" VALUE=""1"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HasHeadForeColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HasHeadBackColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HasForeColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HasBackColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HeadForeColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HeadBackColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").ForeColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").BackColor"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").HeadStyleSet"" VALUE="""">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").StyleSet"" VALUE="""">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Nullable"" VALUE=""1"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Mask"" VALUE="""">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").PromptInclude"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").ClipMode"" VALUE=""0"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").PromptChar"" VALUE=""95"">" & vbNewLine)
-			If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Columns(" & intColCounter & ").Width"" VALUE=""575"">" & vbNewLine)
-
-		Next iLoop
-
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""_ExtentX"" VALUE=""17330"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""_ExtentY"" VALUE=""1323"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""_StockProps"" VALUE=""79"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Caption"" VALUE="""">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""ForeColor"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""Enabled"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Columns("        <PARAM NAME=""DataMember"" VALUE="""">" & vbNewLine)
-
-		OutputGridColumns = True
-
-		Exit Function
-
-ErrTrap:
-
-		OutputGridColumns = False
-		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
-
-	End Function
-
-	Public Function OutputGridDefinition() As Boolean
-
-		Dim pblnOK As Boolean
-
-		On Error GoTo ErrTrap
-
-		pblnOK = True
-
-		'  If pblnOK Then pblnOK = AddToArray_Definition("      <OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=grdCalendarOutput name=grdCalendarOutput codebase=""cabs/COAInt_Grid.cab#version=1,0,0,0"" style=""LEFT: 0px; TOP: 0px; WIDTH:400; HEIGHT:300"">" & vbNewLine)
-
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""FontName"" VALUE=""Tahoma"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""FontSize"" VALUE=""8.25"">" & vbNewLine)
-
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""_Version"" VALUE=""196616"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""DataMode"" VALUE=""2"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Caption"" VALUE=""" & Replace(mstrCalendarReportsName, """", "&quot;") & """>" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Cols"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Rows"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""GroupHeaders"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""HeadLines"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Col.Count"" VALUE=""" & DAY_CONTROL_COUNT + 2 & """>" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""UseGroups"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Font3D"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""DividerType"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BevelColorFrame"" VALUE=""-2147483642"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BevelColorHighlight"" VALUE=""-2147483628"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BevelColorShadow"" VALUE=""-2147483632"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BevelColorFace"" VALUE=""-2147483633"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""MultiLine"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowGroupShrinking"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""SelectTypeRow"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""SelectByCell"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""RowNavigation"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""StyleSet"" VALUE="""">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BackColorEven"" VALUE=""16777215"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""BackColorOdd"" VALUE=""16777215"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Levels"" VALUE=""1"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""RowHeight"" VALUE=""239"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbNewLine)
-		If pblnOK Then pblnOK = AddToArray_Definition("        <PARAM NAME=""Columns.Count"" VALUE=""" & (DAY_CONTROL_COUNT + 1) & """>" & vbNewLine)
-
-		OutputGridDefinition = pblnOK
-
-		Exit Function
-
-ErrTrap:
-
-		OutputGridDefinition = False
-		mstrErrorString = "Error with OutputGridDefinition: " & vbNewLine & Err.Description
 
 	End Function
 

@@ -3433,12 +3433,41 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Public Function util_run_calendarreport_navfiller() As ActionResult
-			Return PartialView()
-		End Function
-
 		Public Function util_run_calendarreport_breakdown() As ActionResult
-			Return View()
+
+			Dim objCalendarEvent As New Models.CalendarEvent
+			Dim sSQL As String
+
+			Dim objCalendar As HR.Intranet.Server.CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), HR.Intranet.Server.CalendarReport)
+			Dim intEventID As Int32 = Request.Form("txtBaseIndex").ToString()
+
+			Dim rsEvents As Recordset
+			rsEvents = objCalendar.EventsRecordset
+
+			Dim datEvent As DataTable = RecordSetToDataTable(rsEvents)
+
+			sSQL = "ID =" & intEventID
+			Dim objRow As DataRow = datEvent.Select(sSQL).FirstOrDefault()
+
+			objCalendarEvent.BaseID = objRow.Item("BaseID").ToString()
+			objCalendarEvent.Description = objCalendar.ConvertDescription(objRow("description1").ToString(), objRow("description2").ToString(), objRow("descriptionExpr").ToString())
+			objCalendarEvent.EventName = objRow.Item("Name").ToString()
+			objCalendarEvent.StartDate = objRow.Item("StartDate").ToString()
+			objCalendarEvent.StartSession = objRow.Item("StartSession").ToString()
+			objCalendarEvent.EndDate = objRow.Item("EndDate").ToString()
+			objCalendarEvent.EndSession = objRow.Item("EndSession").ToString()
+			objCalendarEvent.Duration = objRow.Item("Duration").ToString()
+			objCalendarEvent.Reason = objRow.Item("EventDescription1").ToString()
+			objCalendarEvent.Region = objRow.Item("Region").ToString()
+			objCalendarEvent.CalendarCode = objRow.Item("Legend").ToString()
+
+			Dim datWorkingPatterns As DataTable = RecordSetToDataTable(objCalendar.rsCareerChange)
+			sSQL = String.Format("BaseID = {0} AND [WP_Date] <= '{1}'", objCalendarEvent.BaseID, objCalendarEvent.StartDate)
+			objRow = datWorkingPatterns.Select(sSQL, "[WP_Date]").FirstOrDefault()
+			objCalendarEvent.WorkingPattern = objRow.Item("WP_Pattern").ToString()
+
+			Return View(objCalendarEvent)
+
 		End Function
 
 		Function util_run_calendarreport_data_submit() As ActionResult
@@ -3446,7 +3475,6 @@ Namespace Controllers
 			On Error Resume Next
 
 			Session("CALREP_Action") = Request.Form("txtAction")
-			Session("CALREP_DaysInMonth") = Request.Form("txtDaysInMonth")
 			Session("CALREP_Month") = Request.Form("txtMonth")
 			Session("CALREP_Year") = Request.Form("txtYear")
 			Session("CALREP_VisibleStartDate") = Request.Form("txtVisibleStartDate")
@@ -3454,6 +3482,13 @@ Namespace Controllers
 			Session("CalRep_Mode") = Request.Form("txtMode")
 			Session("EmailGroupID") = Request.Form("txtEmailGroupID")
 			Session("CALREP_firstLoad") = Request.Form("txtLoadCount")
+
+			Session("CALREP_IncludeBankHolidays") = Request.Form("txtIncludeBankHolidays")
+			Session("CALREP_IncludeWorkingDaysOnly") = Request.Form("txtIncludeWorkingDaysOnly")
+			Session("CALREP_ShowBankHolidays") = Request.Form("txtShowBankHolidays")
+			Session("CALREP_ShowCaptions") = Request.Form("txtShowCaptions")
+			Session("CALREP_ShowWeekends") = Request.Form("txtShowWeekends")
+			Session("CALREP_ChangeOptions") = Request.Form("txtChangeOptions")
 
 			' Go to the requested page.
 			Return RedirectToAction("util_run_calendarreport_data")

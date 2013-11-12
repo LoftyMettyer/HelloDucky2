@@ -1,20 +1,300 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
+<%@ Register Assembly="DayPilot" Namespace="DayPilot.Web.Ui" TagPrefix="DayPilot" %>
+
+<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
+
+<link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Themes/layout.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/MonthPicker.2.1.css")%>" rel="stylesheet" type="text/css" />
+<script src="<%: Url.Content("~/scripts/jquery/jquery.maskedinput.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/scripts/jquery/MonthPicker.2.1.js")%>" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+	$('#StartYearDemo').MonthPicker(
+		{
+			StartYear: $("#txtYear").val(),
+			ShowIcon: false,
+			UseInputMask: true,
+			Speed: 10,
+			OnAfterMenuClose: function () {
+
+				var sMonthYear = $('#StartYearDemo').val();
+				var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
+
+				frmGetDataForm.txtMode.value = "LOADCALENDARREPORTDATA";
+				frmGetDataForm.txtMonth.value = sMonthYear.substring(0, 2);
+				frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7); 
+
+				OpenHR.submitForm(frmGetDataForm);
+			}
+			
+		});
+
+	function eventCalendarClick(eventID) {
+
+		var frmEvent = OpenHR.getForm("divEventDetail", "frmEventDetails");
+		frmEvent.txtBaseIndex.value = eventID;
+		OpenHR.submitForm(frmEvent, "CalendarEvent");
+		$("#CalendarEvent").dialog("open");
+
+	}
+	
+</script>
+
+
+<%--<DayPilot:DayPilotCalendar ID="DayPilotCalendar1" runat="server"
+	DataTextField="description"
+	DataValueField="id"
+	StartDate="2007-01-01"
+	TimeFormat="Clock12Hours"
+	DataStartField="startdate"
+	DataEndField="enddate"
+	Days="5"
+	NonBusinessHours="Hide"
+	OnBeforeEventRender="DayPilotCalendar1_BeforeEventRender"
+	EventClickHandling="JavaScript"
+	TimeRangeSelectedHandling="JavaScript"
+	CssOnly="true"
+	CssClassPrefix="calendar_white">
+</DayPilot:DayPilotCalendar>--%>
+
+	<form id="blah" runat="server">
+		<asp:GridView ID="GridView1" runat="server"></asp:GridView>
+	</form>
+
+<div style="float:left;width:80%">
+	
+
+
+		<DayPilot:DayPilotScheduler ID="DayPilotScheduler1" runat="server"
+			HeaderFontSize="8pt" HeaderHeight="20"
+			DataStartField="startdate"
+			DataEndField="enddate"
+			DataTextField="description"
+			DataValueField="id"
+			DataResourceField="resource"
+			EventFontSize="11px"
+			CellDuration="1440"
+			NonBusinessBackColor="#FF0000"
+			OnBeforeEventRender="DayPilotScheduler1_BeforeEventRender"
+			EventClickHandling="JavaScript"
+			EventClickJavaScript="eventCalendarClick({0});"
+			TimeRangeSelectedHandling="JavaScript"
+			CssOnly="True"
+			CssClassPrefix="scheduler_white"
+			EventHeight="25" RowHeaderColumnWidths="200">
+			<Resources>
+			</Resources>
+		</DayPilot:DayPilotScheduler>
+	</div>
+	
+	
+	<%	
+		Dim objCalendar As HR.Intranet.Server.CalendarReport
+		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
+	%>
+
+	<div id="CalendarLegend" style="float:right;width:18%">
+		
+		<strong>Select Month :</strong>
+
+			<input id="StartYearDemo" type="text"  value="	
+			<%
+	
+				If Session("CALREP_Year") Is Nothing Then
+					Session("CALREP_Year") = objCalendar.ReportStartDate.Year.ToString.PadLeft(4, "0"c)
+					Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
+				End If
+				
+				Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
+	
+				Response.Write(dStartDate.Month.ToString.PadLeft(2, "0"c) & "/" & dStartDate.Year)
+			%>" />
+			
+			<p></p>
+		<strong>Legend :</strong>
+
+		<%
+			For Each objLegend In objCalendar.Legend
+				If objLegend.Count > 0 Then
+
+				%>
+				<div class="scheduler_white_event_inner" style="position: relative; width: 50px; height: 20px">
+					<div class="scheduler_white_event_bar_inner" style="background: <% =objLegend.HexColor %>; width: 100%">
+						<% =objLegend.Text%>
+					</div>
+				</div>
+				<%			
+			
+				End If
+			Next
+			
+			objCalendar.IncludeBankHolidays = CBool(Session("CALREP_IncludeBankHolidays"))
+			objCalendar.IncludeWorkingDaysOnly = CBool(Session("CALREP_IncludeWorkingDaysOnly"))
+			objCalendar.ShowBankHolidays = CBool(Session("CALREP_ShowBankHolidays"))
+			objCalendar.ShowCaptions = CBool(Session("CALREP_ShowCaptions"))
+			objCalendar.ShowWeekends = CBool(Session("CALREP_ShowWeekends"))			
+		%>
+
+	</div>
+
+<script runat="server">
+	
+	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+			
+		Dim objCalendar As HR.Intranet.Server.CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), HR.Intranet.Server.CalendarReport)
+		Dim dStartDate As DateTime = objCalendar.ReportStartDate
+	
+		If Not Session("CALREP_Year") Is Nothing Then
+			dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
+		End If
+		
+		DayPilotScheduler1.StartDate = dStartDate
+		DayPilotScheduler1.Days = DateTime.DaysInMonth(dStartDate.Year, dStartDate.Month)
+		DayPilotScheduler1.DataSource = getData()
+
+		'DayPilotCalendar1.StartDate = dStartDate
+		'DayPilotCalendar1.DataSource = getData()
+
+		
+		DataBind()
+		
+				
+		'DayPilotScheduler1.CssOnly = False
+		'Response.Clear()
+		'Response.ContentType = "image/png"
+		'Response.AddHeader("content-disposition", "attachment;filename=print.png")
+		
+		'Dim MemoryStream = DayPilotScheduler1.Export(ImageFormat.Png)
+		'img.WriteTo(Response.OutputStream)
+		'DayPilotScheduler1.CssOnly = True
+		'Response.End()
+
+		'		HoofToExcel()
+		
+	End Sub
+	
+	'Private Sub HoofToExcel()
+		
+	'	Dim objGrid As New GridView
+		
+	'	Using sw As New StreamWriter("c:\dev\test.xls")
+	'		Using hw As New HtmlTextWriter(sw)
+				
+	'			objGrid.DataSource = getData()
+	'			objGrid.DataBind()
+	'			objGrid.RenderControl(hw)			
+
+	'		End Using
+	'	End Using
+	'End Sub
+	
+	
+	
+	Protected Sub DayPilotScheduler1_BeforeEventRender(sender As Object, e As Events.Scheduler.BeforeEventRenderEventArgs)
+		Dim color As String = TryCast(e.DataItem("color"), String)
+		If Not [String].IsNullOrEmpty(color) Then
+			e.DurationBarColor = color
+		End If
+	End Sub
+
+	Protected Sub DayPilotCalendar1_BeforeEventRender(sender As Object, e As Events.Calendar.BeforeEventRenderEventArgs)
+		Dim color As String = TryCast(e.DataItem("color"), String)
+		If Not [String].IsNullOrEmpty(color) Then
+			e.DurationBarColor = color
+		End If
+	End Sub
+	
+	Protected Function getData() As DataTable
+		Dim dt As DataTable
+		dt = New DataTable()
+		dt.Columns.Add("startdate", GetType(DateTime))
+		dt.Columns.Add("enddate", GetType(DateTime))
+		dt.Columns.Add("description", GetType(String))
+		dt.Columns.Add("baseid", GetType(String))
+		dt.Columns.Add("id", GetType(String))
+		dt.Columns.Add("resource", GetType(String))
+		dt.Columns.Add("color", GetType(String))
+		
+		Dim dr As DataRow
+
+		Dim start As New DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)
+
+		Dim objCalendar As HR.Intranet.Server.CalendarReport
+		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
+			
+		Dim sDescription As String
+		Dim sPreviousDescription As String = ""
+		Dim sEventDescription As String
+		
+		Dim dStart As Date
+		Dim dEnd As Date
+		
+		For Each objRow In objCalendar.Events.Rows
+
+			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()
+			sDescription = objCalendar.ConvertDescription(objRow("description1").ToString(), objRow("description2").ToString(), objRow("descriptionExpr").ToString())
+
+			' Add to resource collection
+			If Not sPreviousDescription = sDescription Then
+				DayPilotScheduler1.Resources.Add(sDescription, objRow("baseid").ToString())
+				sPreviousDescription = sDescription
+			End If
+
+			dr = dt.NewRow()
+			dr("baseid") = objRow("baseid")
+			dr("id") = objRow("id")
+			
+			If objRow("startsession") = "AM" Then
+				dStart = CDate(objRow("startdate"))
+			Else
+				dStart = CDate(objRow("startdate")).AddHours(12)
+			End If
+
+			If objRow("endsession") = "AM" Then
+				dEnd = CDate(objRow("enddate")).AddHours(12)
+			Else
+				dEnd = CDate(objRow("enddate")).AddDays(1)
+			End If
+			
+			dr("startdate") = dStart
+			dr("enddate") = dEnd
+			dr("description") = sEventDescription
+			dr("color") = objRow("eventcolor")
+			dr("resource") = objRow("baseid")
+			dt.Rows.Add(dr)
+			
+		Next
+		
+		Return dt
+		
+	End Function
+	
+</script>
 
 <input type="hidden" name="txtFirstLoad" id="txtFirstLoad" value="<%=Session("CALREP_firstLoad").ToString()%>">
 
 <form action="util_run_calendarreport_data_submit?CalRepUtilID=<%=Session("CalRepUtilID").ToString()%>" method="post" id="frmCalendarGetData" name="frmCalendarGetData">
-		<input type="hidden" id="txtDaysInMonth" name="txtDaysInMonth">
-		<input type="hidden" id="txtMonth" name="txtMonth">
-		<input type="hidden" id="txtYear" name="txtYear">
+		<input type="hidden" id="txtMonth" name="txtMonth" value="<%=Session("CALREP_Month").ToString()%>">
+		<input type="hidden" id="txtYear" name="txtYear" value="<%=Session("CALREP_Year").ToString()%>">
 		<input type="hidden" id="txtVisibleStartDate" name="txtVisibleStartDate">
 		<input type="hidden" id="txtVisibleEndDate" name="txtVisibleEndDate">
 		<input type="hidden" id="txtMode" name="txtMode">
 		<input type="hidden" id="txtLoadCount" name="txtLoadCount" value="0">
-		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("EmailGroupID").ToString()%>">
+		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("EmailGroupID").ToString()%>">		
+
+		<input type="hidden" name="txtIncludeBankHolidays" id="txtIncludeBankHolidays" value="<%=Session("CALREP_IncludeBankHolidays").ToString()%>">
+		<input type="hidden" name="txtIncludeWorkingDaysOnly" id="txtIncludeWorkingDaysOnly" value="<%=Session("CALREP_IncludeWorkingDaysOnly").ToString()%>">
+		<input type="hidden" name="txtShowBankHolidays" id="txtShowBankHolidays" value="<%=Session("CALREP_ShowBankHolidays").ToString()%>">
+		<input type="hidden" name="txtShowCaptions" id="txtShowCaptions" value="<%=Session("CALREP_ShowCaptions").ToString()%>">
+		<input type="hidden" name="txtShowWeekends" id="txtShowWeekends" value="<%=Session("CALREP_ShowWeekends").ToString()%>">
+		<input type="hidden" name="txtChangeOptions" id="txtChangeOptions"  value="<%=Session("CALREP_ChangeOptions").ToString()%>">
 </form>
 
 <form id="frmCalendarData" name="frmCalendarData" style="visibility: visible; display: block">
@@ -22,437 +302,78 @@
 	on error resume next
 	
 	Dim sErrorDescription As String = ""
-	Dim fok As Boolean = True
-	Dim fNotCancelled As Boolean
-	
-	Dim objCalendar As HR.Intranet.Server.CalendarReport
-	Dim rsEvents As Recordset
-	Dim lngCurrentBaseID As Long
-	Dim intBaseRecordIndex As Integer
-	Dim dtEventStartDate As Date
-	Dim dtEventEndDate As Date
-	Dim strEventStartSession As String
-	Dim strEventEndSession As String
-	Dim strEventToolTip As String
-	Dim INPUT_VALUE As String
-	Dim strEventDetail As String
-	Dim strKeyCode As String
-	Dim intEventCounter As Integer
-	Dim intSessionStart As Integer
-	Dim intSessionEnd As Integer
-	Dim strEventID As String
-	
-	Dim strEventDesc1Value_BD As String
-	Dim strEventDesc1ColumnName_BD As String
-	Dim strEventDesc2Value_BD As String
-	Dim strEventDesc2ColumnName_BD As String
-	Dim strBaseDescription_BD As String
-	
-	Dim lngMonth As Long
-	Dim lngYear As Long
-	Dim dtMonth As Date
-	Dim dtVisibleStartDate As Date
-	Dim dtVisibleEndDate As Date
-	Dim mintDaysInMonth As Integer
 
-		Dim arrayDefinition
-		Dim arrayColumnsDefinition
-		Dim arrayDataDefinition
+	Dim cmdEmailGroup As Command
+	Dim prmEmailGroupID As ADODB.Parameter
+	Dim rstEmails As Recordset
+	Dim iLoop As Integer
 
-		Dim arrayStyles
-		Dim arrayMerges  
+	If Session("EmailGroupID") > 0 Then
+		cmdEmailGroup = New Command
+		cmdEmailGroup.CommandText = "spASRIntGetEmailGroupAddresses"
+		cmdEmailGroup.CommandType = CommandTypeEnum.adCmdStoredProc
+		cmdEmailGroup.ActiveConnection = Session("databaseConnection")
 
-	if Session("CalRep_Mode") = "EMAILGROUP" then
-		Session("CalRep_Mode") = "OUTPUTREPORT"
-	end if
-	
-	 if Session("CalRep_Mode") = "LOADCALENDARREPORTDATA" then		
+		prmEmailGroupID = cmdEmailGroup.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
+		cmdEmailGroup.Parameters.Append(prmEmailGroupID)
+		prmEmailGroupID.Value = CleanNumeric(Session("EmailGroupID"))
 
-				objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
-		
-				rsEvents = objCalendar.EventsRecordset
-		
-		intEventCounter = 0 
-		
-'********************************************************************
-		lngMonth = CLng(Session("CALREP_Month"))
-		lngYear = CLng(Session("CALREP_Year"))
-		
-		dtMonth = DateAdd("yyyy", CDbl(lngYear - Year(objCalendar.ReportStartDate_Calendar)), objCalendar.ReportStartDate_Calendar)
-				dtMonth = DateAdd("M", CDbl(lngMonth - Month(objCalendar.ReportStartDate_Calendar)), dtMonth)
-	
-		mintDaysInMonth = Cint(Session("CALREP_DaysInMonth"))
+		Err.Clear()
+		rstEmails = cmdEmailGroup.Execute
 
-		'Define the current visible Start and End Dates.
-		dtVisibleEndDate = DateAdd("d", CDbl(mintDaysInMonth - Day(dtMonth)), dtMonth)
-		dtVisibleStartDate = DateAdd("d", CDbl(-(mintDaysInMonth - 1)), dtVisibleEndDate)
-	
-'********************************************************************
-		
-		With rsEvents
-			If Not (.BOF And .EOF) Then
-					
-				.MoveFirst
-				Do While Not .EOF
-					
-					lngCurrentBaseID = rsEvents.Fields(objCalendar.BaseIDColumn).value
-					strEventID = rsEvents.Fields(objCalendar.EventIDColumn).value
-					intBaseRecordIndex = objCalendar.BaseIndex_Get(CStr(lngCurrentBaseID))
-
-					strBaseDescription_BD = objCalendar.ConvertDescription(CStr(.Fields("Description1").Value), CType(IIf(IsDBNull(.Fields("Description2").Value), "", .Fields("Description2").Value), String), CType(IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value), String))				
-					If IsDBNull(.Fields("Legend").value) Then
-						strKeyCode = ""
-					Else
-						strKeyCode = Left(.Fields("Legend").value, 2)
-					End If
-					
-					If IsDBNull(.Fields("EventDescription1Column").Value) Then
-						strEventDesc1ColumnName_BD = vbNullString
-					Else
-						strEventDesc1ColumnName_BD = CStr(.Fields("EventDescription1Column").Value)
-					End If
-										
-					If IsDBNull(.Fields("EventDescription1ColumnID").value) Then
-						strEventDesc1Value_BD = vbNullString
-					Else
-						strEventDesc1Value_BD = objCalendar.ConvertEventDescription(.Fields("EventDescription1ColumnID").Value, .Fields("EventDescription1").Value)
-					End If
-										
-					If IsDBNull(.Fields("EventDescription2Column").Value) Then
-						strEventDesc2ColumnName_BD = vbNullString
-					Else
-						strEventDesc2ColumnName_BD = CStr(.Fields("EventDescription2Column").Value)
-					End If
-										
-					If Not IsDBNull(.Fields("EventDescription2ColumnID").Value) And Not IsDBNull(.Fields("EventDescription2").Value) Then
-						strEventDesc2Value_BD = objCalendar.ConvertEventDescription(.Fields("EventDescription2ColumnID").Value, .Fields("EventDescription2").Value)
-					Else
-						strEventDesc2Value_BD = vbNullString
-					End If
-										
-					strEventDetail = String.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}", vbTab _
-							, ConvertSQLDateToLocale(.Fields("StartDate").Value), .Fields("StartSession").Value.ToString().ToUpper() _
-							, ConvertSQLDateToLocale(.Fields("EndDate").Value), .Fields("EndSession").Value.ToString().ToUpper() _
-							, FormatNumber(.Fields("Duration").Value, 1, True), strKeyCode _
-							, strEventDesc1ColumnName_BD, strEventDesc1Value_BD, strEventDesc2ColumnName_BD, strEventDesc2Value_BD, strBaseDescription_BD)
-					
-					
-					INPUT_VALUE = vbNullString
-					
-					'****************************************************************************
-					dtEventStartDate = CDate(.Fields("StartDate").Value)
-		
-					If IsDBNull(.Fields("EndDate").Value) Then
-						dtEventEndDate = dtEventStartDate
-					Else
-						dtEventEndDate = CDate(.Fields("EndDate").Value)
-					End If
-	
-					If IsDBNull(.Fields("StartSession").Value) And IsDBNull(.Fields("EndSession").Value) Then
-						strEventStartSession = "AM"
-						strEventEndSession = "PM"
-					ElseIf IsDBNull(.Fields("EndSession").Value) Then
-						strEventEndSession = strEventStartSession
-					Else
-						strEventStartSession = .Fields("StartSession").Value.ToString().ToUpper()
-						strEventEndSession = .Fields("EndSession").Value.ToString().ToUpper()
-					End If
-
-					strEventToolTip = objCalendar.EventToolTipText(dtEventStartDate, strEventStartSession, dtEventEndDate, strEventEndSession)
-		
-					'Force the Start & End Dates to be between the Report Start and End dates.
-					If dtEventStartDate < objCalendar.ReportStartDate Then
-						dtEventStartDate = objCalendar.ReportStartDate
-					End If
-			
-					If dtEventEndDate > objCalendar.ReportEndDate Then
-						dtEventEndDate = objCalendar.ReportEndDate
-					End If
-
-					'****************************************************************************
-			
-					' If the event start date is after the event end date, ignore the record
-					If (dtEventStartDate > dtEventEndDate) Then
-			
-						' if the event is totally before the currently viewed timespan then do nothing
-					ElseIf (dtEventStartDate < dtVisibleStartDate) And (dtEventEndDate < dtVisibleStartDate) Then
-			
-						' if the event is totally after the currently viewed timespan then do nothing
-					ElseIf (dtEventStartDate > dtVisibleEndDate) And (dtEventEndDate > dtVisibleEndDate) Then
-			
-						' if the event starts before currently viewed timespan, but ends in the timspan then
-					ElseIf (dtEventStartDate < dtVisibleStartDate) And (dtEventEndDate <= dtVisibleEndDate) Then
-						
-						dtEventStartDate = dtVisibleStartDate
-						strEventStartSession = "AM"
-						
-						If strEventStartSession = "AM" Then
-							intSessionStart = 0
-						Else
-							intSessionStart = 1
-						End If
-						
-						If strEventEndSession = "AM" Then
-							intSessionEnd = 0
-						Else
-							intSessionEnd = 1
-						End If
-						
-						intEventCounter = intEventCounter + 1
-						
-						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
-						
-						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
-						
-						' if the event starts in the currently viewed timespan, but ends after it then
-					ElseIf (dtEventStartDate >= dtVisibleStartDate) And (dtEventEndDate > dtVisibleEndDate) Then
-						
-						dtEventEndDate = dtVisibleEndDate
-						strEventEndSession = "PM"
-
-						If strEventStartSession = "AM" Then
-							intSessionStart = 0
-						Else
-							intSessionStart = 1
-						End If
-						
-						If strEventEndSession = "AM" Then
-							intSessionEnd = 0
-						Else
-							intSessionEnd = 1
-						End If
-						
-						intEventCounter = intEventCounter + 1
-						
-						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
-						
-						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
-	
-						' if the event is enclosed within viewed timespan, and months are equal then
-					ElseIf (dtEventStartDate >= dtVisibleStartDate) And (dtEventEndDate <= dtVisibleEndDate) And (Month(dtEventStartDate) = Month(dtEventEndDate)) Then
-	
-						If strEventStartSession = "AM" Then
-							intSessionStart = 0
-						Else
-							intSessionStart = 1
-						End If
-						
-						If strEventEndSession = "AM" Then
-							intSessionEnd = 0
-						Else
-							intSessionEnd = 1
-						End If
-						
-						intEventCounter = intEventCounter + 1
-						
-						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
-						
-						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
-		 
-						' if the event starts before the the viewed timespan and ends after the viewed timespan then
-					ElseIf (dtEventStartDate < dtVisibleStartDate) And (dtEventEndDate > dtVisibleEndDate) Then
-						
-						dtEventStartDate = dtVisibleStartDate
-						strEventStartSession = "AM"
-						
-						dtEventEndDate = dtVisibleEndDate
-						strEventEndSession = "PM"
-										
-						If strEventStartSession = "AM" Then
-							intSessionStart = 0
-						Else
-							intSessionStart = 1
-						End If
-						
-						If strEventEndSession = "AM" Then
-							intSessionEnd = 0
-						Else
-							intSessionEnd = 1
-						End If
-						
-						intEventCounter = intEventCounter + 1
-						
-						INPUT_VALUE = intBaseRecordIndex & "***" & strEventID & "***" & ConvertSQLDateToLocale(dtEventStartDate) & "***" & ConvertSQLDateToLocale(dtEventEndDate) & "***" & intSessionStart & "***" & intSessionEnd & "***" & strEventToolTip & "***" & strKeyCode
-						
-						Response.Write("<input type=hidden name=Event_" & intEventCounter & " ID=Event_" & intEventCounter & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-						Response.Write("<input type=hidden name=EventDetail_" & intEventCounter & " ID=EventDetail_" & intEventCounter & " VALUE=""" & Server.HtmlEncode(strEventDetail) & """>" & vbCrLf)
-	
-					End If
-				
-					.MoveNext()
-				Loop
-				
-			End If
-			
-		End With
-		
-	ElseIf Session("CalRep_Mode") = "OUTPUTREPORT" Then
-		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
-		
-		If fok Then
-			fok = objCalendar.OutputGridDefinition
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
+		If (Err.Number <> 0) Then
+			sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
 		End If
 
-		If fok Then
-			fok = objCalendar.OutputGridColumns
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+		If Len(sErrorDescription) = 0 Then
+			iLoop = 1
+			Response.Write("<INPUT id=txtEmailGroupAddr name=txtEmailGroupAddr value=""")
+			Do While Not rstEmails.EOF
+				If iLoop > 1 Then
+					Response.Write(";")
+				End If
+				Response.Write(Replace(rstEmails.Fields("Fixed").Value, """", "&quot;"))
+				rstEmails.MoveNext()
+				iLoop = iLoop + 1
+			Loop
+			Response.Write(""">" & vbCrLf)
 
-		If fok Then
-			fok = objCalendar.OutputReport(True)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
+			' Release the ADO recordset object.
+			rstEmails.Close()
 		End If
-
-		If fok Then
-			arrayDefinition = objCalendar.OutputArray_Definition
-			arrayColumnsDefinition = objCalendar.OutputArray_Columns
-			arrayDataDefinition = objCalendar.OutputArray_Data
-		End If
-		
-		If fok Then
-%>
-	<TABLE WIDTH=100% HEIGHT=500>
-		<TR>
-			<TD>
-				<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
-					id=grdCalendarOutput 
-					name=grdCalendarOutput 
-					codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
-					style="BACKGROUND-COLOR: threedface; visibility: visible; display: block; HEIGHT: 0px; WIDTH: 0px"
-					height="0"
-					width="0" VIEWASTEXT>
-<%
-	For iCount = 1 To UBound(arrayDefinition)
-		Response.Write(arrayDefinition(iCount))
-	Next
-
-	For iCount = 1 To UBound(arrayColumnsDefinition)
-		Response.Write(arrayColumnsDefinition(iCount))
-	Next
-			
-	For iCount = 1 To UBound(arrayDataDefinition)
-		Response.Write(arrayDataDefinition(iCount))
-	Next
-%>
-				</OBJECT>
-			</TD>
-		</TR>
-	</TABLE>
-<%
-	If fok Then
-		arrayStyles = objCalendar.OutputArray_Styles
-		arrayMerges = objCalendar.OutputArray_Merges
+					
+		rstEmails = Nothing
+		cmdEmailGroup = Nothing
+	Else
+		Response.Write("<input type=hidden id=txtEmailGroupAddr name=txtEmailGroupAddr value=''>" & vbCrLf)
 	End If
 
-	Html.RenderPartial("Util_Def_CustomReports/ssHiddenGrid")
-				
-	Response.Write("<INPUT type='hidden' id=txtCalendarPageCount name=txtCalendarPageCount value=" & UBound(arrayMerges) & ">" & vbCrLf)
-End If
-End If
+	If Not objCalendar Is Nothing Then
+		sErrorDescription = objCalendar.ErrorString
+	End If
 	
-Dim cmdEmailGroup As Command
-Dim prmEmailGroupID As ADODB.Parameter
-Dim rstEmails As Recordset
-Dim iLoop As Integer
-
-If Session("EmailGroupID") > 0 Then
-cmdEmailGroup = New Command
-cmdEmailGroup.CommandText = "spASRIntGetEmailGroupAddresses"
-cmdEmailGroup.CommandType = CommandTypeEnum.adCmdStoredProc
-cmdEmailGroup.ActiveConnection = Session("databaseConnection")
-
-prmEmailGroupID = cmdEmailGroup.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-cmdEmailGroup.Parameters.Append(prmEmailGroupID)
-prmEmailGroupID.Value = CleanNumeric(Session("EmailGroupID"))
-
-Err.Clear()
-rstEmails = cmdEmailGroup.Execute
-
-If (Err.Number <> 0) Then
-	sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-End If
-
-If Len(sErrorDescription) = 0 Then
-	iLoop = 1
-	Response.Write("<INPUT id=txtEmailGroupAddr name=txtEmailGroupAddr value=""")
-	Do While Not rstEmails.EOF
-		If iLoop > 1 Then
-			Response.Write(";")
-		End If
-		Response.Write(Replace(rstEmails.Fields("Fixed").Value, """", "&quot;"))
-		rstEmails.MoveNext()
-		iLoop = iLoop + 1
-	Loop
-	Response.Write(""">" & vbCrLf)
-
-	' Release the ADO recordset object.
-	rstEmails.close()
-End If
-					
-rstEmails = Nothing
-cmdEmailGroup = Nothing
-Else
-Response.Write("<input type=hidden id=txtEmailGroupAddr name=txtEmailGroupAddr value=''>" & vbCrLf)
-End If
-
-If Not objCalendar Is Nothing Then
-sErrorDescription = objCalendar.ErrorString
-End If
-	
-Response.Write("<input type='hidden' id=txtCalendarMode name=txtCalendarMode value=" & Session("CalRep_Mode") & ">" & vbCrLf)
-Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCalendarMode name=txtCalendarMode value=" & Session("CalRep_Mode") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 
 %>
 </form>
 
-<% 
-	If Session("CalRep_Mode") = "OUTPUTREPORT" Then
-
-		Dim iPage As Integer
-		Dim iStyle As Integer
-		Dim iMerge As Integer
-		Dim arrayPageStyles
-		Dim arrayPageMerges
-	
-		For iPage = 0 To UBound(arrayMerges)
-			arrayPageMerges = arrayMerges(iPage)
-			Response.Write("<form id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & ">" & vbCrLf)
-			For iMerge = 0 To UBound(arrayPageMerges)
-				INPUT_VALUE = arrayPageMerges(iMerge)
-				Response.Write("	<input type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-			Next
-			Response.Write("</form>" & vbCrLf)
-		Next
-
-		For iPage = 0 To UBound(arrayStyles)
-			arrayPageStyles = arrayStyles(iPage)
-			Response.Write("<form id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & ">" & vbCrLf)
-			For iStyle = 0 To UBound(arrayPageStyles)
-				INPUT_VALUE = arrayPageStyles(iStyle)
-				Response.Write("	<input type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
-			Next
-			Response.Write("</form>" & vbCrLf)
-		Next
-
-	End If
-
-	If fok And Not objCalendar Is Nothing Then
-		objCalendar.OutputArray_Clear()
-	End If
-
-	Session("CALREP_Action") = ""
-	Session("CalRep_Mode") = ""
-
-	objCalendar = Nothing
-
-%>
+<form method="post" id="frmExportData" name="frmExportData" action="util_run_outputoptions">
+	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCalendar.OutputPreview%>">
+	<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCalendar.OutputFormat%>">
+	<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCalendar.OutputScreen%>">
+	<input type="hidden" id="txtPrinter" name="txtPrinter" value="<%=objCalendar.OutputPrinter%>">
+	<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="<%=objCalendar.OutputPrinterName%>">
+	<input type="hidden" id="txtSave" name="txtSave" value="<%=objCalendar.OutputSave%>">
+	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=objCalendar.OutputSaveExisting%>">
+	<input type="hidden" id="txtEmail" name="txtEmail" value="<%=objCalendar.OutputEmail%>">
+	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=objCalendar.OutputEmailID%>">
+	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=Replace(objCalendar.OutputEmailGroupName, """", "&quot;")%>">
+	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=Replace(objCalendar.OutputEmailSubject, """", "&quot;")%>">
+	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=Replace(objCalendar.OutputEmailAttachAs, """", "&quot;")%>">
+	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCalendar.OutputFilename%>">
+	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+</form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 		<%
@@ -474,7 +395,25 @@ Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescrip
 		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Request("CalRepUtilID")%>'>
 </form>
 
+<div id="divEventDetail">
+	<form id="frmEventDetails" name="frmEventDetails" action="util_run_calendarreport_breakdown" method="post" style="visibility: hidden; display: none">
+		<input type="hidden" name="txtBreakdownCaption" id="txtBreakdownCaption">
+		<input type="hidden" name="txtShowRegion" id="txtShowRegion">
+		<input type="hidden" name="txtShowWorkingPattern" id="txtShowWorkingPattern">
+		<input type="hidden" name="txtBaseIndex" id="txtBaseIndex">
+		<input type="hidden" name="txtLabelIndex" id="txtLabelIndex">
+	</form>
+</div>
+
+<% 
+
+	Session("CALREP_Action") = ""
+	Session("CalRep_Mode") = ""
+
+	objCalendar = Nothing
+
+%>
 
 <script type="text/javascript">
-		util_run_calendarreport_data_window_onload();
+	util_run_calendarreport_data_window_onload();
 </script>

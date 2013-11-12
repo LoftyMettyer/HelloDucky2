@@ -1,11 +1,8 @@
 ﻿
 function closeclick() {
 	try {
+		$(".month-year-input").remove();
 		$(".popup").dialog("close");
-
-		//$("#optionframe").hide();
-		//$("#workframeset").show();
-		//$("#workframe").show();
 	}
 	catch (e) { }
 }

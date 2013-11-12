@@ -609,66 +609,66 @@
 
 		function saveFile()
 		{
-				dialog.CancelError = true;
-				dialog.DialogTitle = "Output Document";
-				dialog.Flags = 2621444;
+				//dialog.CancelError = true;
+				//dialog.DialogTitle = "Output Document";
+				//dialog.Flags = 2621444;
 
-				if (frmOutputDef.optOutputFormat1.checked == true) 
-				{
-						//CSV
-						dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
-				}
-				else if (frmOutputDef.optOutputFormat2.checked == true) 
-				{
-						//HTML
-						dialog.Filter = "HTML Document (*.htm)|*.htm";
-				}
-				else if (frmOutputDef.optOutputFormat3.checked == true) 
-				{
-						//WORD
-						//dialog.Filter = "Word Document (*.doc)|*.doc";
-						dialog.Filter = frmOutputDef.txtWordFormats.value;
-						dialog.FilterIndex = frmOutputDef.txtWordFormatDefaultIndex.value;
-				}
-				else 
-				{
-						//EXCEL
-						//dialog.Filter = "Excel Workbook (*.xls)|*.xls";
-						dialog.Filter = frmOutputDef.txtExcelFormats.value;
-						dialog.FilterIndex = frmOutputDef.txtExcelFormatDefaultIndex.value;
-				}
+				//if (frmOutputDef.optOutputFormat1.checked == true) 
+				//{
+				//		//CSV
+				//		dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
+				//}
+				//else if (frmOutputDef.optOutputFormat2.checked == true) 
+				//{
+				//		//HTML
+				//		dialog.Filter = "HTML Document (*.htm)|*.htm";
+				//}
+				//else if (frmOutputDef.optOutputFormat3.checked == true) 
+				//{
+				//		//WORD
+				//		//dialog.Filter = "Word Document (*.doc)|*.doc";
+				//		dialog.Filter = frmOutputDef.txtWordFormats.value;
+				//		dialog.FilterIndex = frmOutputDef.txtWordFormatDefaultIndex.value;
+				//}
+				//else 
+				//{
+				//		//EXCEL
+				//		//dialog.Filter = "Excel Workbook (*.xls)|*.xls";
+				//		dialog.Filter = frmOutputDef.txtExcelFormats.value;
+				//		dialog.FilterIndex = frmOutputDef.txtExcelFormatDefaultIndex.value;
+				//}
 
-				if (frmOutputDef.txtFilename.value.length == 0) 
-				{
-						sKey = new String("documentspath_");
-						sKey = sKey.concat(frmOutputDef.txtDatabase.value);
-						sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-						dialog.InitDir = sPath;
-				}
-				else 
-				{
-						dialog.FileName = frmOutputDef.txtFilename.value;
-				}
+				//if (frmOutputDef.txtFilename.value.length == 0) 
+				//{
+				//		sKey = new String("documentspath_");
+				//		sKey = sKey.concat(frmOutputDef.txtDatabase.value);
+				//		sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+				//		dialog.InitDir = sPath;
+				//}
+				//else 
+				//{
+				//		dialog.FileName = frmOutputDef.txtFilename.value;
+				//}
 
-				try 
-				{
-						dialog.ShowSave();
+				//try 
+				//{
+				//		dialog.ShowSave();
 
-						if (dialog.FileName.length > 256) 
-						{
-								OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-								window.focus();
-								return;
-						}
+				//		if (dialog.FileName.length > 256) 
+				//		{
+				//				OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+				//				window.focus();
+				//				return;
+				//		}
 
-						frmOutputDef.txtFilename.value = dialog.FileName;
-				}
-				catch(e) {}
+				//		frmOutputDef.txtFilename.value = dialog.FileName;
+				//}
+				//catch(e) {}
 		}
 
 </script>
 
-<OBJECT classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" 
+<%--<OBJECT classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" 
 	id=dialog 
 	 codebase="cabs/comdlg32.cab#Version=1,0,0,0"
 	style="LEFT: 0px; TOP: 0px" 
@@ -702,7 +702,7 @@
 	<PARAM NAME="MaxFileSize" VALUE="260">
 	<PARAM NAME="PrinterDefault" VALUE="1">
 	<PARAM NAME="ToPage" VALUE="0">
-	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
+	<PARAM NAME="Orientation" VALUE="1"></OBJECT>--%>
 
 <form id="frmOutputDef" name="frmOutputDef">
 		<table align=center  cellPadding=5 width=100% height=100% cellSpacing=0>

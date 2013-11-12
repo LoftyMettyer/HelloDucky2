@@ -2,6 +2,7 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Friend Module Extensions
 
@@ -9,6 +10,17 @@ Friend Module Extensions
 	Public Function GetById(Of T As Base)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 		Return items.FirstOrDefault(Function(item) item.ID = id)
 	End Function
+
+	<Extension()>
+	Public Function GetByIndex(Of T As Base)(ByVal items As ICollection(Of T), ByVal index As Integer) As T
+		Return items.ElementAt(index)
+	End Function
+
+	<Extension()>
+	Public Function GetLegend(Of T As CalendarLegend)(ByVal items As ICollection(Of T), ByVal key As String) As T
+		Return items.FirstOrDefault(Function(item) item.LegendKey = key)
+	End Function
+
 
 	<Extension()>
 	Public Function IsRelation(Of T As Relation)(ByVal items As ICollection(Of T), ByVal parentid As Integer, childID As Integer) As Boolean
@@ -40,12 +52,10 @@ Friend Module Extensions
 		Return items.FirstOrDefault(Function(baseItem) baseItem.TableID = id)
 	End Function
 
-
 	<Extension()>
 	Public Function Collection(Of T As CTablePrivilege)(ByVal items As ICollection(Of T)) As ICollection(Of T)
 		Return items
 	End Function
-
 
 	' Don't know exactly what these function do or if they are necessary yet. This is just a proof of concept for speeding up the login process
 

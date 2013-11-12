@@ -4,7 +4,16 @@
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
 <%
-		Session("CALREP_firstLoad") = 1
+	Session("CALREP_Year") = Nothing
+	Session("CALREP_Month") = Nothing
+	Session("CALREP_firstLoad") = 1
+	Session("CALREP_IncludeBankHolidays") = 0
+	Session("CALREP_IncludeWorkingDaysOnly") = 0
+	Session("CALREP_ShowBankHolidays") = 0
+	Session("CALREP_ShowCaptions") = 0
+	Session("CALREP_ShowWeekends") = 0
+	Session("CALREP_ChangeOptions") = 0
+	
 		Session("EmailGroupID") = 0
 		Session("OutputOptions_Format") = 0
 		Session("OutputOptions_Screen") = "true"
@@ -115,7 +124,6 @@
 		$("#reportbreakdownframe").hide();
 		$("#top").hide();
 		$("#outputoptions").hide();
-		$("#calendarframeset").show();
 		$("#optionsframeset").show();
 		$("#reportframe").show();
 		$("#reportworkframe").show();
@@ -124,27 +132,12 @@
 
 	function ExportDataPrompt() {
 
-		var frmExportData;
-		
-		<% If Session("utiltype") = 17 Then	 ' Calendar reports %>
+		var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
+		OpenHR.submitForm(frmExportData, "outputoptions");
 
-			frmExportData = OpenHR.getForm("calendarworkframe", "frmExportData");
-			OpenHR.submitForm(frmExportData, "outputoptions");
-
-			$("#calendarframeset").hide();
-			$("#optionsframeset").hide();
-			$("#outputoptions").show();
-
-		<% else %>
-
-			frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
-			OpenHR.submitForm(frmExportData, "outputoptions");
-
-			$("#reportworkframe").hide();
-			$("#reportbreakdownframe").hide();
-			$("#outputoptions").show();
-		
-		<% end if %>
+		$("#reportworkframe").hide();
+		$("#reportbreakdownframe").hide();
+		$("#outputoptions").show();
 		
 		$("#cmdOK").show();
 		$("#cmdCancel").show();
@@ -171,7 +164,8 @@
 			</a>
 			<span class="pageTitle" id="PageDivTitle"><% =Session("utilname")%></span>
 		</div>
-		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 20px 0 20px; overflow: auto;">
+		
+		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -221,9 +215,27 @@
 
 <script type="text/javascript">
 
+	<%
+	If Session("utiltype") = "17" Then
+	%>
+	$(".popup").dialog({ width: 1100, height: 700 });
+	<%
+Else
+	%>
+	$(".popup").dialog({ width: 850, height: 700 });
+	<%
+End If
+	%>
+
+	//$('.popup').css({ top: '50%', left: '50%', margin: '-' + ($('.popup').height() / 2) + 'px 0 0 -' + ($('.popup').width() / 2) + 'px' });
+
+	$('.popup').bind('dialogclose', function (event) {
+		closeclick();
+	});
+
 	if (menu_isSSIMode() == false) {
 		$(".pageTitleDiv").hide();
-		$('#main').css('marginTop', '50px').css('borderTop', '1px solid rgb(206, 206, 206)');
+		$('#main').css('marginTop', '30px').css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 
 	$("#outputoptions").hide();
