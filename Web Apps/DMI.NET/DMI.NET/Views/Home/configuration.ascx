@@ -361,13 +361,13 @@
 
 				$("#workframe").attr("data-framesource", "CONFIGURATION");
 
-//        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
+////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
 				showDefaultRibbon();
 
 				var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
-                // Get menu to refresh the menu.
+                //// Get menu to refresh the menu.
 				menu_refreshMenu();
 
 				// Load the original values into tab 1.
@@ -416,7 +416,7 @@
 
 				$("#toolbarAdminConfig").parent().show();
 				$("#toolbarAdminConfig").click();
-				$('input[name^="txt"]').on("change", function () { enableSaveButton(); });
+				$('input[name^="txt"]').on("blur", function () { enableSaveButton(); });
 				$('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
 				$('input[name^="chk"]').on("change", function () { enableSaveButton(); });
 		
@@ -981,7 +981,8 @@
 							<td align=left>
 								<INPUT id=txtFindSize name=txtFindSize class="text" style="HEIGHT: 22px; WIDTH: 200px" width=200 
 										onkeyup="validateFindBlockSize()" 
-										onchange="validateFindBlockSize()" />		
+										onchange="validateFindBlockSize()" 
+                                        />		
 							</td>
 							<td width=20>
 							</td>
