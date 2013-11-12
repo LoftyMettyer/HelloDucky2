@@ -100,19 +100,22 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 				{
 					c.Execute("fusion.pSetFusionContext", new { MessageType = message.GetMessageName() }, commandType: CommandType.StoredProcedure);
 					cmd.ExecuteNonQuery();
+
+					if (isNew & isValid)
+					{
+						BusRefTranslator.SetBusRef(EntityTranslationNames.Timesheet, idParameter.Value.ToString(), timesheetRef);
+					}  
+
 				}
 				catch (Exception e)
 				{
 					Logger.ErrorFormat("Inbound message {0}/{1} - {2} failed database save with error", message.GetMessageName(), message.EntityRef, e.Message);
+					this.Bus().HandleCurrentMessageLater();
 					isValid = false;
 				}
 
 			}
 
-			if (isNew & isValid)
-			{
-				BusRefTranslator.SetBusRef(EntityTranslationNames.Timesheet, idParameter.Value.ToString(), timesheetRef);
-			}  
 
 		}
 	}

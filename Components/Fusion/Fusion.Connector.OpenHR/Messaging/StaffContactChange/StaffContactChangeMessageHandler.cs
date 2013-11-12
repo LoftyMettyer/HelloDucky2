@@ -128,22 +128,20 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 										//var ChangeMessage = new StaffContactChange(contactRef, parentRef, newData);
 										MessageTracking.SetLastGeneratedXml(message.GetMessageName(), message.EntityRef.Value, contact.ToXml());
 
+										if (isNew & isValid)
+										{
+											BusRefTranslator.SetBusRef(EntityTranslationNames.Contact, idParameter.Value.ToString(), contactRef);
+										}  
+
                 }
                 catch (Exception e)
                 {
                     Logger.ErrorFormat("Inbound message {0}/{1} - {2} failed database save with error", message.GetMessageName(), message.EntityRef, e.Message);
+										this.Bus().HandleCurrentMessageLater();
                     isValid = false;
                 }
 
             }
-
-            if (isNew & isValid)
-            {
-                BusRefTranslator.SetBusRef(EntityTranslationNames.Contact, idParameter.Value.ToString(), contactRef);
-            }  
-        
-        
-        
         
         }
     }
