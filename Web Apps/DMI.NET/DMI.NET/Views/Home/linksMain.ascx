@@ -1301,7 +1301,7 @@
 									</div>
 									<div class="TEList <%=sTileColourClass%>">
 										<p><span>Today's Events:</span></p>
-										<table>
+										<table style="width: 100%;">
 											<%											
 												' ----------------------- DIARY LINKS -----------------------------
 												Dim sErrorDescription As String = ""
