@@ -1657,6 +1657,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPickerPlugin.setAttribute("data-style-left", Number(controlItemArray[5]) / 15);
 			textboxColorPickerPlugin.setAttribute("data-style-height", Number(controlItemArray[6]) / 15);
 			textboxColorPickerPlugin.setAttribute("data-style-width", Number(controlItemArray[7]) / 15);
+			textboxColorPickerPlugin.setAttribute("data-readonly", !fControlEnabled);
 			addControl(iPageNo, textboxColorPickerPlugin);
 			
 			var textboxColorPicker; //To contain the value that will be saved
@@ -1920,6 +1921,7 @@ function updateControl(lngColumnID, value) {
 							color: "#" + initialColor, //Set the initial color
 							className: "colorPicker",
 							cancelText: "", //Hide the Cancel button
+							disabled: ($("#" + colorPickerId).attr("data-readonly") == "true"),
 							change: function(color) { //On selecting a color...
 								var newColor = color.toHex();
 								newColor = newColor.substr(4, 2) + newColor.substr(2, 2) + newColor.substr(0, 2);
