@@ -2,6 +2,9 @@ Attribute VB_Name = "modIntranetSpecifics"
 Option Explicit
 
 Private Const msResetPassword_PROCEDURENAME = "spadmin_resetpassword"
+Private Const msOrgChart_PROCEDURENAME = "spASRIntOrgChart"
+Private Const msOrgChart_FUNCTIONNAME = "udfASRIntOrgChartGetTopLevelID"
+
 Private Const msWorkEMailColumnNotDefined = "'Work email' column not defined."
 
 Private mvar_fGeneralOK As Boolean
@@ -16,8 +19,31 @@ Private mvar_lngWorkEmailColumn As Long
 Private mvar_lngLeavingDateColumn As Long
 Private mvar_lngActivatedUserColumn As Long
 
+Private mvar_lngEmployeeTableColumnID As Long
+Private mvar_sEmployeeTable As String
+Private mvar_sEmployeeNumberColumn As String
+Private mvar_sEmployeeForenameColumn As String
+Private mvar_sEmployeeSurnameColumn As String
+Private mvar_sManagerEmployeeNumberColumn As String
+Private mvar_sEmployeeJobTitleColumn As String
+Private mvar_sEmployeePhotographColumn As String
+
+Private mvar_sAbsenceTable As String
+Private mvar_sAbsenceTypeColumn As String
+Private mvar_sAbsenceReasonColumn As String
+Private mvar_sAbsenceStartDateColumn As String
+Private mvar_sAbsenceEndDateColumn As String
+
+Private mvar_sTBTable As String
+Private mvar_sTBCourseTitleColumn As String
+Private mvar_sTBStartDateColumn As String
+Private mvar_sTBEndDateColumn As String
+
+
 Public Sub DropIntranetObjects()
   DropProcedure msResetPassword_PROCEDURENAME
+  DropFunction msOrgChart_FUNCTIONNAME
+  DropProcedure msOrgChart_PROCEDURENAME
 End Sub
 
 Public Function ConfigureIntranetSpecifics() As Boolean
@@ -59,6 +85,22 @@ Public Function ConfigureIntranetSpecifics() As Boolean
     fOK = CreateSP_ResetPassword
     If Not fOK Then
       DropProcedure msResetPassword_PROCEDURENAME
+    End If
+  End If
+  
+  ' Create the OrgChart scalar function.
+  If fOK And mvar_fGeneralOK Then
+    fOK = CreateUDFOrgChartGetTopLevelID
+    If Not fOK Then
+      DropFunction msOrgChart_FUNCTIONNAME
+    End If
+  End If
+  
+  ' Create the OrgChart stored procedure.
+  If fOK And mvar_fGeneralOK Then
+    fOK = CreateSP_OrgChart
+    If Not fOK Then
+      DropProcedure msOrgChart_PROCEDURENAME
     End If
   End If
   
@@ -136,6 +178,241 @@ Private Function ReadIntranetParameters() As Boolean
       fOK = (mvar_lngActivatedUserColumn > 0)
       If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Login name' column not defined."
     End If
+    
+    ' --------------For Organisation Charts----------------
+    If fOK Then
+      ' Get the Employee Table column ID.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE
+      If .NoMatch Then
+        mvar_lngEmployeeTableColumnID = 0
+      Else
+        mvar_lngEmployeeTableColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeeTable = GetTableName(mvar_lngEmployeeTableColumnID)
+      End If
+      
+      fOK = (mvar_lngEmployeeTableColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Table' not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Employee Number column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeeNumberColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Staff Number' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Employee Forename column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeeForenameColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Forename' column not defined."
+    End If
+     
+    If fOK Then
+      ' Get the Employee Surname column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeeSurnameColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Forename' column not defined."
+    End If
+      
+    If fOK Then
+      ' Get the Manager staff number column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_MANAGERSTAFFNO
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sManagerEmployeeNumberColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Line Manager Staff Number' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Employee Job title column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_JOBTITLE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeeJobTitleColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Job Title' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Employee Photograph column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SSIPHOTOGRAPH
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sEmployeePhotographColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Photograph' column not defined."
+    End If
+    
+    ' --- Absence columns for org charts
+    If fOK Then
+      ' Get the Absence Table Name.
+      .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE
+      If .NoMatch Then
+        lngTableID = 0
+      Else
+        lngTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sAbsenceTable = GetTableName(lngTableID)
+      End If
+      
+      fOK = (lngTableID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Absence Table' not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Absence Type column.
+      .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sAbsenceTypeColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Absence Reason' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Absence Reason column.
+      .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sAbsenceReasonColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Absence Reason' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Absence StartDate column.
+      .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sAbsenceStartDateColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Absence Start Date' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Absence EndDate column.
+      .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sAbsenceEndDateColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Absence End Date' column not defined."
+    End If
+    
+    ' --- Training Booking columns for org charts
+    
+    ' *** No training booking module setup info at present, so removed. ***
+    
+'    If fOK Then
+'      ' Get the Training Booking Table Name.
+'      .Seek "=", gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_TRAINBOOKTABLE
+'      If .NoMatch Then
+'        lngTableID = 0
+'      Else
+'        lngTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+'        mvar_sTBTable = GetTableName(lngTableID)
+'      End If
+'
+'      fOK = (lngTableID > 0)
+'      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Training Booking Table' not defined."
+'    End If
+'
+'    If fOK Then
+'      ' Get the TB Course Title column.
+'      .Seek "=", gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_TRAINBOOKCOURSETITLE
+'      If .NoMatch Then
+'        lngColumnID = 0
+'      Else
+'        If IsNull(!parametervalue) Then
+'          lngColumnID = 0
+'        Else
+'          lngColumnID = val(!parametervalue)
+'        End If
+'        'lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+'        mvar_sTBCourseTitleColumn = GetColumnName(lngColumnID, True)
+'      End If
+'
+'      fOK = (lngColumnID > 0)
+'      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Training Booking Course Title' column not defined."
+'    End If
+'
+'    If fOK Then
+'      ' Get the TB Course Start Date column.
+'      .Seek "=", gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_COURSESTARTDATE ' yoinked from CR
+'      If .NoMatch Then
+'        lngColumnID = 0
+'      Else
+'        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+'        mvar_sTBStartDateColumn = GetColumnName(lngColumnID, True)
+'      End If
+'
+'      fOK = (lngColumnID > 0)
+'      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Training Booking Start Date' column not defined."
+'    End If
+'
+'    If fOK Then
+'      ' Get the TB Course End Date column.
+'      .Seek "=", gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_COURSEENDDATE ' yoinked from CR
+'      If .NoMatch Then
+'        lngColumnID = 0
+'      Else
+'        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+'        mvar_sTBEndDateColumn = GetColumnName(lngColumnID, True)
+'      End If
+'
+'      fOK = (lngColumnID > 0)
+'      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Training Booking End Date' column not defined."
+'    End If
     
   End With
 
@@ -262,4 +539,138 @@ ErrorTrap:
 
 End Function
 
+Private Function CreateSP_OrgChart() As Boolean
+  ' Create the Check Login stored procedure.
+  On Error GoTo ErrorTrap
+
+  Dim fCreatedOK As Boolean
+  Dim sProcSQL As String
+  Dim iCount As Integer
+  
+  fCreatedOK = True
+
+  ' Construct the stored procedure creation string.
+  
+  sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
+    "/* Intranet module stored procedure.         */" & vbNewLine & _
+    "/* Automatically generated by the System manager.   */" & vbNewLine & _
+    "/* ------------------------------------------------ */" & vbNewLine & _
+    "CREATE PROCEDURE [dbo].[" & msOrgChart_PROCEDURENAME & "](" & vbNewLine & _
+    "  @RootID INT" & vbNewLine & _
+    "  )" & vbNewLine & _
+    "AS" & vbNewLine & _
+    "BEGIN" & vbNewLine
+    
+  sProcSQL = sProcSQL & "       SET NOCOUNT ON;" & vbNewLine & _
+    "       DECLARE @staff_number VARCHAR(MAX);" & vbNewLine & _
+    "       DECLARE @today DATETIME = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate()));" & vbNewLine & _
+    vbNewLine & _
+    "       -- Fetch Absences from DB" & vbNewLine & _
+    "       DECLARE @ids TABLE (id INT, TYPE VARCHAR(50), reason VARCHAR(50));" & vbNewLine & _
+    vbNewLine & _
+    "    -- Get top level manager" & vbNewLine & _
+    "    SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID( @RootID);" & vbNewLine & _
+    vbNewLine & _
+    "       INSERT @ids" & vbNewLine & _
+    "       SELECT id_" & CStr(mvar_lngEmployeeTableColumnID) & ", " & mvar_sAbsenceTypeColumn & ", " & mvar_sAbsenceReasonColumn & " FROM " & mvar_sAbsenceTable & " a WHERE a." & mvar_sAbsenceStartDateColumn & " <= @today AND (" & mvar_sAbsenceEndDateColumn & " >= @today OR isnull(" & mvar_sAbsenceEndDateColumn & ", '') = '')" & vbNewLine & _
+    vbNewLine
+
+  sProcSQL = sProcSQL & _
+    "--       -- Fetch Training bookings from DB" & vbNewLine & _
+    "--       DECLARE @trainingIDs TABLE (id INT, course_title VARCHAR(50))" & vbNewLine & _
+    "--       INSERT @trainingIDs" & vbNewLine & _
+    "--              SELECT id_" & CStr(mvar_lngEmployeeTableColumnID) & ", " & mvar_sTBCourseTitleColumn & " FROM " & mvar_sTBTable & vbNewLine & _
+    "--              WHERE " & mvar_sTBStartDateColumn & " <= @today and (" & mvar_sTBEndDateColumn & " >= @today or ISNULL(" & mvar_sTBEndDateColumn & ", '') = '')" & vbNewLine & _
+    vbNewLine & _
+    "       SELECT @staff_number = " & mvar_sEmployeeNumberColumn & " FROM " & mvar_sEmployeeTable & " WHERE id=@RootID;" & vbNewLine & _
+    vbNewLine & _
+    "       WITH Emp_CTE AS (" & vbNewLine & _
+    "              SELECT id, " & mvar_sEmployeeForenameColumn & ", " & mvar_sEmployeeSurnameColumn & " AS name, " & mvar_sEmployeeNumberColumn & ", " & mvar_sManagerEmployeeNumberColumn & ", " & mvar_sEmployeeJobTitleColumn & ", 1 AS HierarchyLevel, " & mvar_sEmployeePhotographColumn & vbNewLine & _
+    "                     From " & mvar_sEmployeeTable & vbNewLine & _
+    "                     WHERE " & mvar_sManagerEmployeeNumberColumn & " = @staff_number" & vbNewLine & _
+    "              Union All" & vbNewLine & _
+    "                     SELECT e.id, e." & mvar_sEmployeeForenameColumn & ", e." & mvar_sEmployeeSurnameColumn & ", e." & mvar_sEmployeeNumberColumn & ", e." & mvar_sManagerEmployeeNumberColumn & ", e." & mvar_sEmployeeJobTitleColumn & ", ecte.HierarchyLevel + 1 AS HierarchyLevel, e." & mvar_sEmployeePhotographColumn & vbNewLine & _
+    "                     FROM " & mvar_sEmployeeTable & " e" & vbNewLine & _
+    "              INNER JOIN Emp_CTE ecte ON ecte." & mvar_sEmployeeNumberColumn & " = e." & mvar_sManagerEmployeeNumberColumn & "" & vbNewLine & _
+    "       )" & vbNewLine
+
+  sProcSQL = sProcSQL & _
+    "       SELECT p.*, a." & mvar_sAbsenceTypeColumn & ", a." & mvar_sAbsenceReasonColumn & ", '' AS course_title FROM Emp_CTE p" & vbNewLine & _
+    "       LEFT JOIN @ids a ON a.id = p.id" & vbNewLine & _
+    "       --LEFT JOIN @trainingIDs t ON t.id = p.ID" & vbNewLine & _
+    vbNewLine & _
+    "    Union" & vbNewLine & _
+    "      SELECT id, " & mvar_sEmployeeForenameColumn & ", " & mvar_sEmployeeSurnameColumn & " AS name, " & mvar_sEmployeeNumberColumn & ", " & mvar_sManagerEmployeeNumberColumn & ", " & mvar_sEmployeeJobTitleColumn & ", 0 AS HierarchyLevel, " & mvar_sEmployeePhotographColumn & "," & vbNewLine & _
+    "      NULL AS type, NULL AS reason, NULL AS course_title" & vbNewLine & _
+    "        From " & mvar_sEmployeeTable & vbNewLine & _
+    "        WHERE ID = @RootID" & vbNewLine & _
+    vbNewLine & _
+    "       ORDER BY hierarchylevel, " & mvar_sEmployeeJobTitleColumn & ", name" & vbNewLine & _
+    "End" & vbNewLine
+
+
+  gADOCon.Execute sProcSQL, , adExecuteNoRecords
+
+TidyUpAndExit:
+  CreateSP_OrgChart = fCreatedOK
+  Exit Function
+
+ErrorTrap:
+  fCreatedOK = False
+  OutputError "Error creating Organisation Chart stored procedure (Intranet)"
+  Resume TidyUpAndExit
+
+End Function
+Private Function CreateUDFOrgChartGetTopLevelID() As Boolean
+  ' Create the Check Login stored procedure.
+  On Error GoTo ErrorTrap
+
+  Dim fCreatedOK As Boolean
+  Dim sProcSQL As String
+  Dim iCount As Integer
+  
+  fCreatedOK = True
+
+  ' Construct the stored procedure creation string.
+  
+  sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
+    "/* Intranet module function.         */" & vbNewLine & _
+    "/* Automatically generated by the System manager.   */" & vbNewLine & _
+    "/* ------------------------------------------------ */" & vbNewLine & _
+    "CREATE FUNCTION [dbo].[" & msOrgChart_FUNCTIONNAME & "](" & vbNewLine & _
+    "  @StaffRecordID integer" & vbNewLine & _
+    "  )" & vbNewLine & _
+    "RETURNS integer" & vbNewLine & _
+    "AS" & vbNewLine & _
+    "BEGIN" & vbNewLine
+  sProcSQL = sProcSQL & _
+    "  DECLARE @ManagerID varchar(MAX)," & vbNewLine & _
+    "      @ManagerRecordID integer;" & vbNewLine & _
+    vbNewLine & _
+    "  SELECT @ManagerID = [" & mvar_sManagerEmployeeNumberColumn & "]" & vbNewLine & _
+    "    FROM [" & mvar_sEmployeeTable & "] WHERE id = @StaffRecordID;" & vbNewLine & _
+    vbNewLine & _
+    "  IF ISNULL(@ManagerID,'') = ''" & vbNewLine & _
+    "    RETURN @StaffRecordID;" & vbNewLine & _
+    "  Else" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "      SELECT @ManagerRecordID = ID FROM [" & mvar_sEmployeeTable & "] WHERE [" & mvar_sEmployeeNumberColumn & "] = @ManagerID;" & vbNewLine & _
+    "      SELECT @ManagerRecordID = dbo.udfASRIntOrgChartGetTopLevelID(@ManagerRecordID);" & vbNewLine & _
+    "    End" & vbNewLine & _
+    "  RETURN @ManagerRecordID;" & vbNewLine & _
+    "END;"
+      
+    gADOCon.Execute sProcSQL, , adExecuteNoRecords
+
+TidyUpAndExit:
+  CreateUDFOrgChartGetTopLevelID = fCreatedOK
+  Exit Function
+
+ErrorTrap:
+  fCreatedOK = False
+  OutputError "Error creating Organisation Chart scalar function (Intranet)"
+  Resume TidyUpAndExit
+  
+End Function
+    
 

@@ -3384,6 +3384,15 @@ Private Sub cmdCopyHypertextLink_Click()
     .Show vbModal
 
     If Not .Cancelled Then
+      Dim iElementType As Integer
+      If .optLink(SSINTLINKSEPARATOR).value Then
+          iElementType = 1
+      ElseIf .optLink(SSINTLINKORGCHART).value Then
+          iElementType = 6
+      Else
+          iElementType = 0
+      End If
+    
       sRow = .Text _
         & vbTab & .URL _
         & vbTab & .UtilityType _
@@ -3393,7 +3402,7 @@ Private Sub cmdCopyHypertextLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & iElementType _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
         
@@ -3894,6 +3903,15 @@ Private Sub cmdEditHypertextLink_Click()
     .Show vbModal
 
     If Not .Cancelled Then
+      Dim iElementType As Integer
+      If .optLink(SSINTLINKSEPARATOR).value Then
+          iElementType = 1
+      ElseIf .optLink(SSINTLINKORGCHART).value Then
+          iElementType = 6
+      Else
+          iElementType = 0
+      End If
+    
       sRow = .Text _
         & vbTab & .URL _
         & vbTab & .UtilityType _
@@ -3903,7 +3921,7 @@ Private Sub cmdEditHypertextLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & iElementType _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
         
