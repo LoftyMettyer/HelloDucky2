@@ -70,6 +70,10 @@ body
 
 .hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .dropdownlinkseparatorframe, .pendingworkflowsframe, .pendingworkflowlinkseparator {float:left;}
 
+.DropLinkGoText {
+	display: none;
+}
+
 .linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .pendingworkflowtext {border: none; color: Black;overflow: hidden;}
 
 	.linkspagebuttontext:hover, .hypertextlinktext:hover, .pendingworkflowtext:hover {

@@ -226,15 +226,19 @@
 				// for wireframe layout, convert the dropdownlinks to a <select> element
 				$(function () {
 					$('ul.DropDownListMenu').each(function () {
-						var $select = $('<select />');
+						var $select = $('<select class="DropdownlistSelect"/>');
 
 						$(this).find('a').each(function () {
 							var $option = $('<option />');
-							$option.attr('value', $(this).attr('href')).html($(this).html());
-							$select.append($option);
+							$option.attr('value', $(this).attr('data-DDLValue')).html($(this).html());
+							$select.append($option);														
 						});
 
 						$(this).replaceWith($select);
+
+						
+						
+						
 					});
 				});
 				
@@ -479,7 +483,49 @@
 			}
 		}
 
-		
+		function goDropLink(sLinkInfo) {
+			if (sLinkInfo == undefined) {
+				sLinkInfo = $('.DropdownlistSelect').val();				
+			}
+
+
+			var sLinkType = sLinkInfo.substr(0, 1);
+			sLinkInfo = sLinkInfo.substr(2);
+			var sNewWindow;
+			var sAppFilePath;
+			var sAppParameters;
+
+			if (sLinkType == "0") {
+				// URL link
+				sNewWindow = sLinkInfo.substr(0, 1);
+				sLinkInfo = sLinkInfo.substr(2);
+
+				goURL(sLinkInfo, sNewWindow);
+			}
+			else {
+				if (sLinkType == "2") {
+					// Utility link
+					goUtility(sLinkInfo);
+				}
+				else if (sLinkType == "5") {
+					// Application link
+					sAppFilePath = sLinkInfo.substr(0, sLinkInfo.indexOf('_', 0));
+					sAppParameters = sLinkInfo.substr(sLinkInfo.indexOf('_', 0) + 1);
+					goApp(sAppFilePath, sAppParameters);
+				}
+				else {
+					if (sLinkType == "4") {
+						// Mulitple record find page
+						sLinkInfo = "recordEditMain.asp?multifind_0_" + sLinkInfo;
+						goURL(sLinkInfo, 0);
+					}
+					else {
+						// HR Pro screen link
+						goScreen(sLinkInfo);
+					}
+				}
+			}
+		}
 
 		function launchWorkflow(url, name) {
 
@@ -1479,15 +1525,54 @@
 			<p class="dropdownlinkseparator">Dropdown links:</p>
 			<div class="gridster" id="gridster_DropdownLinks">
 			<ul class="DropDownListMenu">
-				<%iRowNum = 1%>
-				<%iColNum = 1%>
-				<%For Each navlink In Model.NavigationLinks%>
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
+				<%iRowNum = 1
+				iColNum = 1
+				For Each navlink In Model.NavigationLinks
+						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
+						Dim sValue As String, sUtilityType As String, sUtilityID As String, sUtilityBaseTable As String, sUtilityDef As String
+						
+						If Len(navlink.AppFilePath) > 0 Then
+							sAppFilePath = Replace(navlink.AppFilePath, "\", "\\")
+							sAppParameters = Replace(navlink.AppParameters, "\", "\\")
+			
+							sValue = "5_" & sAppFilePath & "_" & sAppParameters
+			
+						ElseIf Len(navlink.URL) > 0 Then
+							sURL = Html.Encode(navlink.URL)
+							sURL = Replace(sURL, "'", "\'")
 
-				<%If navlink.LinkType = 2 Then	 ' dropdown link%>
-				<%If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)%>
-				<% iColNum += 1%>
-				<%iRowNum = 1%>
+							If navlink.NewWindow = True Then
+								sNewWindow = "1"
+							Else
+								sNewWindow = "0"
+							End If
+		 
+							sValue = "0_" & sNewWindow & "_" & sURL
+			
+						Else
+							If navlink.UtilityID > 0 Then
+								sUtilityType = CStr(navlink.UtilityType)
+								sUtilityID = CStr(navlink.UtilityID)
+								sUtilityBaseTable = CStr(navlink.BaseTable)
+								sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
+				
+								sValue = "2_" & sUtilityDef
+				
+							Else
+								sLinkKey = "recedit" & _
+									"_" & Session("TopLevelRecID").ToString() & _
+									"_" & navlink.ID
+					
+								sValue = "1_" & sLinkKey
+				
+							End If
+						End If
+						
+
+						If navlink.LinkType = 2 Then	 ' dropdown link
+							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
+								iColNum += 1
+				iRowNum = 1%>
 				<script type="text/javascript">
 					$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
 					$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
@@ -1499,17 +1584,17 @@
 						<i class="icon-external-link"></i>
 					</p>
 					<p>
-						<a href="#">
+						<a href="#" data-DDLValue="<%=sValue%>" onclick="goDropLink('<%=sValue%>')">
 							<%: navlink.Text %></a>
 					</p>
 				</li>
 				<%iRowNum += 1%>
 				<%End If%>
 				<%Next%>
-			</ul>
+			</ul><a class="DropLinkGoText" style="text-decoration: none;margin-left: 10px;" href="#" onclick="goDropLink()">Go...</a>
 			</div>
 			</li>
-
+			
 			</ul>
 	</div>
 

@@ -218,22 +218,32 @@ div.officetab li div.button .disabled {
 	padding-bottom: 20px;
 }
 
+.DropdownlistSelect {
+	margin-right: 10px;
+}
+
 .dropdownlinkseparatorframe {
 	margin: 0px auto;
-	width: 300px;
+	/*width: 300px;*/
 }
 
 .dropdownlinkseparator 
 {
 	float: left;
+	margin: 0;
 	text-decoration: none;
 	padding-right: 10px;
 }
 
 .dropdownlink-displaytype {
 	list-style: none;
+	margin: 0 40%;
+}
+
+.DropLinkGoText {
 	
 }
+
 .centered {
 	text-align:center;
 	 margin: 0px auto;
