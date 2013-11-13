@@ -79,14 +79,18 @@ a:hover{
 
 /* Custom node styling */
 .jOrgChart .node {
-	font-size 			: 14px;
-	background-color 	: rgb(92, 156, 204);
-	border-radius 		: 8px;
-	border 				: 3px solid white;
-	color 				: white;
+	/*font-size 			: 14px;*/
+	/*background-color 	: rgb(92, 156, 204);*/
+	/*border-radius 		: 8px;*/
+	font-weight: lighter!important;
+	/*border 				: 2px solid lightgray!important;*/
+	/*color 				: white;*/	
 	-moz-border-radius 	: 8px;
+	line-height: 1;
+	box-shadow: 5px 5px gray;
 }
 	.node p{
+		margin: 0;
 		font-family 	: tahoma;
 		font-size 		: 10px;
 		line-height 	: 11px;

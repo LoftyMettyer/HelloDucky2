@@ -141,16 +141,18 @@
 					if($tr.hasClass('contracted')){
 						$this.css('cursor','n-resize');
 						$tr.removeClass('contracted').addClass('expanded');
+						$tr.nextAll("tr").find(".node").show("blind");
 						$tr.nextAll("tr").css('visibility', '');
-
+						$nodeRow.nextAll('tr').css('display', '');
 						// Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
 						// maintain their appearance
 						$node.removeClass('collapsed');
 					}else{
 						$this.css('cursor','s-resize');
 						$tr.removeClass('expanded').addClass('contracted');
-						$tr.nextAll("tr").css('visibility', 'hidden');
-
+							$tr.nextAll("tr").find(".node").hide("blind").promise().done(function() {
+							$tr.nextAll("tr").css('visibility', 'hidden');							
+						});
 						$node.addClass('collapsed');
 					}
 				});
@@ -214,7 +216,8 @@
 								$nodeRow.nextAll('tr').css('visibility', 'hidden');
 										$nodeRow.removeClass('expanded');
 										$nodeRow.addClass('contracted');
-										$nodeDiv.css('cursor','s-resize');
+										$nodeDiv.css('cursor', 's-resize');
+										$nodeRow.nextAll('tr').css('display', 'none');
 						} else {
 								$nodeDiv.addClass(item);
 						}

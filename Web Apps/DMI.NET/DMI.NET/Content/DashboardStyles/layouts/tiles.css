@@ -645,3 +645,9 @@ div#pwfs {
 	left: 0px;
 }
 /* End of User dropdown menu */
+
+/* Org Chart scrollbar for tiles only*/
+.orgChart {
+	width: 100%;
+	overflow: auto;
+}

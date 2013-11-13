@@ -7,6 +7,9 @@ Imports ADODB
 Imports System.Drawing
 Imports HR.Intranet.Server
 Imports System.Web.Script.Serialization
+Imports DMI.NET.Models.OrgChart
+Imports DMI.NET.Models
+
 
 Namespace Controllers
 
@@ -785,14 +788,14 @@ Namespace Controllers
 					' variables to help select which main screen we return to after change or cancel
 					fRedirectToSSI = CleanBoolean(Request.Form("txtRedirectToSSI"))
 					Dim sMainRedirect = IIf(fRedirectToSSI, "Main?SSIMode=True", "main")
-					
+
 					If iUserSessionCount < 2 Then
 						' Read the Password details from the Password form.
 						Dim sCurrentPassword = Request.Form("txtCurrentPassword")
 						Dim sNewPassword = Request.Form("txtPassword1")
 
 
-						
+
 						' Attempt to change the password on the SQL Server.
 						Dim cmdChangePassword = CreateObject("ADODB.Command")
 						cmdChangePassword.CommandText = "sp_password"
@@ -901,7 +904,7 @@ Namespace Controllers
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "Password changed successfully."
-							
+
 							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 							' Return RedirectToAction("message", "Account")
@@ -953,6 +956,62 @@ Namespace Controllers
 
 		' GET: /Home
 		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
+
+			' Reload the toplevelrecid session variable as linksMain may have reset it.
+			Dim sErrorDescription = ""
+
+			' Get the self-service record ID.
+			Dim cmdSSRecord = New ADODB.Command
+			cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
+			cmdSSRecord.CommandType = 4	' Stored Procedure
+			cmdSSRecord.ActiveConnection = Session("databaseConnection")
+
+			Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
+			cmdSSRecord.Parameters.Append(prmRecordID)
+
+			Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
+			cmdSSRecord.Parameters.Append(prmRecordCount)
+
+			Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
+			cmdSSRecord.Parameters.Append(prmViewID)
+			prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
+
+			cmdSSRecord.Execute()
+
+			If (Err.Number <> 0) Then
+				sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
+			End If
+
+			If Len(sErrorDescription) = 0 Then
+				If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
+					' Only one record.
+					Session("TopLevelRecID") = CLng(cmdSSRecord.Parameters("@piRecordID").Value)
+				Else
+					If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
+						' No personnel record. 
+						Session("TopLevelRecID") = 0
+					Else
+						' More than one personnel record.
+						sErrorDescription = "You have access to more than one record in the defined Single-record view."
+
+						Session("ErrorTitle") = "Login Page"
+						Session("ErrorText") =
+						 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
+
+						Response.Redirect("FormError")
+
+						' Return RedirectToAction("Loginerror", "Account")
+					End If
+				End If
+			Else
+				Session("ErrorTitle") = "Login Page"
+				Session("ErrorText") =
+				 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+				Response.Redirect("FormError")
+				' Return RedirectToAction("Loginerror", "Account")
+			End If
+
+			cmdSSRecord = Nothing
 
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
@@ -2714,7 +2773,7 @@ Namespace Controllers
 					Dim iRetryCount = 0
 					Dim iRETRIES = 0
 					Dim sViewDescription As String = ""
-					
+
 					Do While fDeadlock
 						fDeadlock = False
 
@@ -2783,14 +2842,14 @@ Namespace Controllers
 					Dim objRs = cmdSSRecord.Execute()
 
 					Do While Not objRs.EOF
-						sViewName = CType(objRs.Fields(0).Value, String)						
+						sViewName = CType(objRs.Fields(0).Value, String)
 						objRs.MoveNext()
 					Loop
-					
+
 					cmdSSRecord = Nothing
-					
+
 					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & " view - " & sViewDescription
-					
+
 					Session("ViewDescription") = sViewDescription
 
 
@@ -6443,7 +6502,11 @@ Namespace Controllers
 #End Region
 
 		Public Function OrgChart() As PartialViewResult
-			Return PartialView()
+
+			Dim m As OrgChart = New OrgChart()
+			Dim model = m.LoadModel()
+
+			Return PartialView(model)
 		End Function
 
 		<HttpPost()>

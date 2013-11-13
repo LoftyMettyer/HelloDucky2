@@ -36,7 +36,7 @@
   width                 : 96px;
   height                : 100px;
   z-index 				: 10;
-  margin               : 0 2px;
+  margin               : 0 6px;
 }
 
 /* jQuery drag 'n drop */

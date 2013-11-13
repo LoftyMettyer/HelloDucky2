@@ -1440,6 +1440,13 @@
 								<%iRowNum += 1%>
 								
 
+							<%Case 6		 ' Organisation Chart	%>			
+							<%sOnclick = "loadPartialView('OrgChart', 'home', 'workframe')"%>			
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
+										<p class="linkspagebuttontileIcon"><i class="icon-sitemap" ></i></p>
+									</li>				
+							
 
 							<%Case Else%>
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"
