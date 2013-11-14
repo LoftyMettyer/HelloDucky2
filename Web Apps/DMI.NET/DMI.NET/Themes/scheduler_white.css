@@ -1,4 +1,4 @@
-﻿.scheduler_white_event_inner  
+﻿.scheduler_white_main .scheduler_white_event_inner  
 {
 	position: absolute;
 	left: 0px;
@@ -34,6 +34,31 @@
 		0px 2px 3px rgba(000,000,000,0.3),
 		inset 0px 0px 2px rgba(255,255,255,0.8);
 }
+
+#CalendarLegend .scheduler_white_event_inner  
+{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+
+	margin-right: 1px;
+	padding: 3px;
+	padding-top: 5px;
+	font-size: 12px;
+	overflow:hidden;
+
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#ffffff", endColorStr="#eeeeee");
+	border: 1px solid #999;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+	-webkit-box-shadow: 0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+	box-shadow: 0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+}
+
 
 .scheduler_white_event_hover .scheduler_white_event_inner 
 {
@@ -101,8 +126,7 @@
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#ffa216", endColorStr="#ff8400");
 }
 
-.scheduler_white_timeheadergroup,
-.scheduler_white_timeheadercol
+.scheduler_white_timeheadergroup
 {
 	color: #666;
 	background: #eee;
@@ -112,26 +136,6 @@
 	background: -webkit-linear-gradient(top, #eeeeee 0%, #dddddd);
 	background: linear-gradient(top, #eeeeee 0%, #dddddd);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd");
-/*	text-shadow:
-		0px -1px 1px rgba(000,000,000,0.2),
-		0px 1px 0px rgba(255,255,255,0.3);*/
-}
-
-.scheduler_white_rowheader,
-.scheduler_white_corner
-{
-	color: #666;
-	background: #eee;
-	background: -webkit-gradient(linear, left top, right top, from(#eeeeee), to(#dddddd));
-	background: -moz-linear-gradient(left, #eeeeee 0%, #dddddd);
-	background: -ms-linear-gradient(left, #eeeeee 0%, #dddddd);
-	background: -webkit-linear-gradient(left, #eeeeee 0%, #dddddd);
-	background: linear-gradient(left, #eeeeee 0%, #dddddd);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd", GradientType=1);
-	zoom: 1;
-/*	text-shadow:
-		0px -1px 1px rgba(000,000,000,0.2),
-		0px 1px 0px rgba(255,255,255,0.3);*/
 }
 
 .scheduler_white_rowheader_inner 

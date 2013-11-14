@@ -165,7 +165,7 @@
 			<span class="pageTitle" id="PageDivTitle"><% =Session("utilname")%></span>
 		</div>
 		
-		<div id="main" data-framesource="util_run" style="height: 75%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
+		<div id="main" data-framesource="util_run" style="height: 87%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -218,15 +218,17 @@
 	<%
 	If Session("utiltype") = "17" Then
 	%>
-	$(".popup").dialog({ width: 1100, height: 700 });
+	$(".popup").dialog({ width: 1100, height: 700, resizable: false });
 	<%
 Else
 	%>
-	$(".popup").dialog({ width: 850, height: 700 });
+	$(".popup").dialog({ width: 850, height: 700, resizable: false });
 	<%
 End If
 	%>
 
+	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
+	
 	//$('.popup').css({ top: '50%', left: '50%', margin: '-' + ($('.popup').height() / 2) + 'px 0 0 -' + ($('.popup').width() / 2) + 'px' });
 
 	$('.popup').bind('dialogclose', function (event) {

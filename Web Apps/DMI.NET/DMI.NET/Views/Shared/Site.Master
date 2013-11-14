@@ -156,7 +156,8 @@
 				autoOpen: false,
 				modal: true,
 				width: 650,
-				height: 500
+				height: 323,
+				resizable: false
 			});
 
 			$("#divthemeRoller").dialog({

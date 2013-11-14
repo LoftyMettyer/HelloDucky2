@@ -42,7 +42,7 @@
 		frmEvent.txtBaseIndex.value = eventID;
 		OpenHR.submitForm(frmEvent, "CalendarEvent");
 		$("#CalendarEvent").dialog("open");
-
+		$("#CalendarEvent").dialog("option", "position", ['center', 'center']); //Center popup in screen
 	}
 	
 </script>
