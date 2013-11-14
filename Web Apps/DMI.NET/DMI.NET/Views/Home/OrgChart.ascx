@@ -13,36 +13,39 @@
 
 <script>
 	$(document).ready(function () {
-		
-		//process the results into unordered list.		
-		$("#hiddenItems").find(":hidden").not("script").each(function () {
-			var props = $(this).val().split("\t");
-			var employeeID = props[0],
-				employeeForenames = props[1],
-				employeeSurname = props[2],
-				employeeStaffNo = props[3],
-				lineManagerStaffNo = props[4],
-				employeeJobTitle = props[5],
-				hierarchyLevel = props[6],
-				photoPath = props[7],
-				absenceTypeClass = props[8];
-			
-			//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
-			var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
-			$('#' + parentNode).append('<li class="' + absenceTypeClass + '">' + employeeJobTitle + '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/><p>' + employeeForenames + ' ' + employeeSurname + '</p><ul id="' + employeeStaffNo + '"></li>');
-		});
 
-		//Add a class to collapse all peer trees.
-		$("#org li.ui-state-active").siblings().addClass("collapsed");
+		if ('<%=Model.any()%>' == 'False') {
+			$('#noData').show();
+		} else {
+			//process the results into unordered list.		
+			$("#hiddenItems").find(":hidden").not("script").each(function() {
+				var props = $(this).val().split("\t");
+				var employeeID = props[0],
+					employeeForenames = props[1],
+					employeeSurname = props[2],
+					employeeStaffNo = props[3],
+					lineManagerStaffNo = props[4],
+					employeeJobTitle = props[5],
+					hierarchyLevel = props[6],
+					photoPath = props[7],
+					absenceTypeClass = props[8];
 
-		$('#workframe').attr('overflow', 'auto');
-		$("#org").jOrgChart({
-			chartElement: '#chart',
-			dragAndDrop: true
-		});
+				//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
+				var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
+				$('#' + parentNode).append('<li class="' + absenceTypeClass + '">' + employeeJobTitle + '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/><p>' + employeeForenames + ' ' + employeeSurname + '</p><ul id="' + employeeStaffNo + '"></li>');
+			});
 
-		setTimeout('centreMe()', 500);
+			//Add a class to collapse all peer trees.
+			$("#org li.ui-state-active").siblings().addClass("collapsed");
 
+			$('#workframe').attr('overflow', 'auto');
+			$("#org").jOrgChart({
+				chartElement: '#chart',
+				dragAndDrop: true
+			});
+
+			setTimeout('centreMe()', 500);
+		}
 	});
 	
 	function centreMe() {
@@ -59,7 +62,7 @@
 <div id="hiddenItems">
 <ul id='org' style="display: none;">
 </ul>
-<% For Each item In Model %>
+<% For Each item In Model%>
 	<%Dim inputString As String		
 		inputString = (item.EmployeeID & vbTab &
 									 item.EmployeeForenames & vbTab &
@@ -84,6 +87,12 @@
 	</div>
 
 	<div id="chart" class="orgChart"></div>
+	
+	<div id="noData" class="ui-widget-content hidden" style="width: 50%; margin: 0 auto; padding: 20px; border: none;">
+		<h2 class="centered">Cannot display the Organisation Chart</h2>
+		<br/>
+		<p class="centered">Please contact your system administrator</p>
+	</div>
 
 </div>
 

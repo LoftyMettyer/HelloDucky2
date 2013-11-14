@@ -29,14 +29,17 @@ Namespace Models
 			prmRootID.value = CleanNumeric(HttpContext.Current.Session("TopLevelRecID"))
 
 			Err.Clear()
-			Dim rstHierarchyRecords = cmdThousandFindColumns.Execute
+
+			Dim rstHierarchyRecords As ADODB.Recordset
 			Dim sErrorDescription = ""
 
+			Try
+				rstHierarchyRecords = cmdThousandFindColumns.Execute
+			Catch ex As Exception
+				sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
+			End Try
+			
 			Dim orgCharts = New List(Of OrgChart)
-
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Error reading the link find records." & vbCrLf & Err.Description
-			End If
 
 			If Len(sErrorDescription) = 0 Then
 				If rstHierarchyRecords.state = adStateOpen Then
