@@ -1,14 +1,14 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 
 Public Class MailMerge
 
-	Private mrsMailMergeColumns As ADODB.Recordset
-	Private mrsMergeData As ADODB.Recordset
+	Private mrsMailMergeColumns As Recordset
+	Private mrsMergeData As Recordset
 	Private mlngMailMergeID As Integer
-	Private mblnBatchMode As Boolean
 	Private mblnNoRecords As Boolean
 
 	Private mlngSuccessCount As Integer
@@ -23,17 +23,8 @@ Public Class MailMerge
 	Private mstrDefBaseTable As String
 	Private mlngRecordDescExprID As Integer
 	Private mlngDefBaseTableID As Integer
-	Private mlngDefOrderID As Integer
-	Private mintDefSelection As Short
 	Private mlngDefPickListID As Integer
 	Private mlngDefFilterID As Integer
-
-	'Private mintDefOutput As Integer
-	'Private mblnDefDocSave As Boolean
-	'Private mstrDefDocFile As String
-	'Private mstrDefEmailCol As String
-	'Private mblnDefCloseDoc As Boolean
-	'Private mstrEmailAddr As String
 
 	Private mstrDefTemplateFile As String
 	Private mblnDefPauseBeforeMerge As Boolean
@@ -54,9 +45,6 @@ Public Class MailMerge
 	Private mlngDocManMapID As Integer
 	Private mblnDocManManualHeader As Boolean
 
-
-	Private mbDefinitionOwner As Boolean
-
 	Private mintType() As Short
 	Private mlngSize() As Integer
 	Private mintDecimals() As Short
@@ -72,13 +60,6 @@ Public Class MailMerge
 	Private mlngTableViews(,) As Integer
 	Private mstrWhereIDs As String
 
-	'Word Variables
-	'Private wrdApp As New Word.Application
-	'Private wrdDocTemplate As New Word.Document
-	'Private wrdDocDataSource As New Word.Document
-	'Private wrdDocOutput As New Word.Document
-	'Private mstrDataSourceName As String
-
 	' Classes
 	Private mclsData As clsDataAccess
 	Private mclsGeneral As clsGeneral
@@ -87,7 +68,6 @@ Public Class MailMerge
 	Private mstrOutputArray_Data() As Object
 	Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
-	Private mstrLocalDecimalSeparator As String
 
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
@@ -217,8 +197,8 @@ Public Class MailMerge
 		End Get
 	End Property
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
 			gADOCon = Value
 		End Set
 	End Property
@@ -229,35 +209,15 @@ Public Class MailMerge
 		End Set
 	End Property
 
-	'Public Property Let Failed(BValue As Boolean)
-	'  If BValue = True Then
-	'    mobjEventLog.ChangeHeaderStatus elsFailed
-	'  End If
-	'End Property
-
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal Value As String)
 			mobjEventLog.AddDetailEntry(Value)
 		End Set
 	End Property
 
-	'Public Property Let Cancelled(BValue As Boolean)
-	'  If BValue = True Then
-	'    mobjEventLog.ChangeHeaderStatus elsCancelled
-	'  Else
-	'    mobjEventLog.ChangeHeaderStatus elsSuccessful
-	'  End If
-	'End Property
-
 	Public WriteOnly Property ClientDateFormat() As String
 		Set(ByVal Value As String)
 			mstrClientDateFormat = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property LocalDecimalSeparator() As String
-		Set(ByVal Value As String)
-			mstrLocalDecimalSeparator = Value
 		End Set
 	End Property
 
@@ -267,16 +227,11 @@ Public Class MailMerge
 		End Get
 	End Property
 
-	'Public Function OutputArrayUBound() As Long
-	'  OutputArrayUBound = UBound(mstrOutputArray_Data)
-	'End Function
-
 	Public WriteOnly Property MailMergeID() As Integer
 		Set(ByVal Value As Integer)
 			mlngMailMergeID = Value
 		End Set
 	End Property
-
 
 	Public WriteOnly Property Username() As String
 		Set(ByVal Value As String)
@@ -328,8 +283,6 @@ Public Class MailMerge
 		End Set
 	End Property
 
-
-
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
@@ -337,13 +290,7 @@ Public Class MailMerge
 		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
 		mobjEventLog = New clsEventLog
-		Dim mvarSortOrder(2, 0) As Object
-		Dim mvarColDetails(18, 0) As Object
 		ReDim mlngTableViews(2, 0)
-		Dim mstrViews(0) As Object
-		Dim mlngColWidth(0) As Object
-		Dim mvarOutputArray_Definition(0) As Object
-		Dim mvarOutputArray_Columns(0) As Object
 		ReDim mstrOutputArray_Data(0)
 
 		fOK = True
@@ -377,14 +324,6 @@ Public Class MailMerge
 	'Public Function OutputArrayData(Index As Long) As Variant
 	Public Function OutputArrayData() As Object
 
-		'Open "D:\mike.txt" For Output As #99
-		'Print #99, CStr(Index)
-		'Close
-
-		'Open "D:\mike.txt" For Append As #99
-		'Print #99, mstrOutputArray_Data(Index)
-		'Close
-
 		'UPGRADE_WARNING: Couldn't resolve default property of object OutputArrayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		OutputArrayData = VB6.CopyArray(mstrOutputArray_Data)	'(Index)
 
@@ -416,60 +355,14 @@ Public Class MailMerge
 		MergeFieldsUBound = mrsMergeData.Fields.Count - 1
 	End Function
 
-	Private Function Records(ByRef lngRec As Integer) As String
-		Records = CStr(lngRec) & IIf(lngRec <> 1, " records", " record")
-	End Function
-
-	'Private Function Progress() As Boolean
-	'
-	'  'This needs to be here, otherwise the progress bar will continue to the end
-	'  'rather than cancelling immediately
-	'  If fOK = False Then
-	'    Progress = False
-	'    Exit Function
-	'  End If
-	'
-	'  If gobjProgress.Cancelled Then
-	'    mblnUserCancelled = True
-	'    fOK = False
-	'  End If
-	'
-	'  gobjProgress.UpdateProgress mblnBatchMode
-	'
-	'  Progress = fOK
-	'
-	'End Function
-
-
-	'Private Function MergeFieldExists() As Boolean
-	'
-	'  Dim strTemplateFieldName As String
-	'  Dim intCount As Integer
-	'
-	'  intCount = 1
-	'  Do While intCount <= wrdDocTemplate.Fields.Count
-	'
-	'    strTemplateFieldName = Trim$(wrdDocTemplate.Fields(intCount).Code)
-	'    If Left$(strTemplateFieldName, 10) = "MERGEFIELD" Then
-	'      MergeFieldExists = True
-	'      Exit Function
-	'    End If
-	'
-	'    intCount = intCount + 1
-	'  Loop
-	'
-	'  MergeFieldExists = False
-	'
-	'End Function
-
 	Private Function CheckHiddenElements() As Boolean
 
 		'Sub created as part of fix for Fault 2656.
 
 		Dim sSQL As String
 		Dim bShowMSG As Boolean
-		Dim rsReport As ADODB.Recordset
-		Dim rsTemp As ADODB.Recordset
+		Dim rsReport As Recordset
+		Dim rsTemp As Recordset
 		Dim sMessage As String
 		Dim sText As String
 
@@ -504,8 +397,8 @@ Public Class MailMerge
 			End If
 		End If
 
-		sSQL = "SELECT * FROM ASRSysMailMergeColumns WHERE MailMergeID = " & mlngMailMergeID
-		rsReport = mclsGeneral.GetRecords(sSQL)
+		sSQL = String.Format("SELECT * FROM ASRSysMailMergeColumns WHERE MailMergeID = {0} ", mlngMailMergeID)
+		rsReport = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		'Check if any calculations are hidden.
 		With rsReport
@@ -549,11 +442,7 @@ ErrorTrap:
 
 	Public Function ExecuteMailMerge(ByRef lngMailMergeID As Integer, ByRef pblnBatchMode As Boolean, Optional ByRef lngRecordID As Integer = 0) As Boolean
 
-		Dim strProcedureName As String
-		Dim plngEventLogID As Integer
-
 		mlngMailMergeID = lngMailMergeID
-		mblnBatchMode = pblnBatchMode
 		mlngSingleRecordID = lngRecordID
 		fOK = True
 
@@ -566,13 +455,7 @@ ErrorTrap:
 		If fOK Then Call SQLGetMergeColumns()
 		If fOK Then Call SQLCodeCreate()
 		If fOK Then Call SQLGetMergeData()
-
-		'If fOK Then Call WrdOpenApp
-		'If fOK Then Call WrdCreateDataSource
 		If fOK Then Call BuildOutputArray()
-
-		'Call TidyUpAndExit(pblnBatchMode)
-		'Call OutputJobStatus
 
 		ExecuteMailMerge = fOK
 
@@ -583,14 +466,13 @@ ErrorTrap:
 		EventLogAddHeader = mobjEventLog.EventLogID
 	End Function
 
-
 	Public Function SQLGetMergeData() As Boolean
 
 		Dim strSQL As String
 
 		On Error GoTo LocalErr
 		strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
-		mrsMergeData = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		mrsMergeData = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If mrsMergeData.EOF Then
 			mstrStatusMessage = "No records meet selection criteria"
@@ -616,13 +498,13 @@ LocalErr:
 
 		On Error GoTo LocalErr
 
-		Dim rsMailMergeDefinition As ADODB.Recordset
+		Dim rsMailMergeDefinition As Recordset
 		Dim strSQL As String
 
 		SetupTablesCollection()
 
-		strSQL = "SELECT ASRSysMailMergeName.*, " & "ASRSysTables.TableName as TableName, " & "ASRSysTables.RecordDescExprID as RecordDescExprID " & "FROM ASRSysMailMergeName " & "JOIN ASRSYSTables ON (ASRSysTables.TableID = ASRSysMailMergeName.TableID) " & vbNewLine & "WHERE MailMergeID = " & mlngMailMergeID & " "
-		rsMailMergeDefinition = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		strSQL = "SELECT ASRSysMailMergeName.*, ASRSysTables.TableName as TableName, ASRSysTables.RecordDescExprID as RecordDescExprID FROM ASRSysMailMergeName JOIN ASRSYSTables ON (ASRSysTables.TableID = ASRSysMailMergeName.TableID) WHERE MailMergeID = " & mlngMailMergeID & " "
+		rsMailMergeDefinition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If rsMailMergeDefinition.BOF And rsMailMergeDefinition.EOF Then
 			'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -646,7 +528,6 @@ LocalErr:
 			mlngDefBaseTableID = .Fields("TableID").Value
 			mstrDefBaseTable = .Fields("TableName").Value
 			mlngRecordDescExprID = .Fields("RecordDescExprID").Value
-			mintDefSelection = .Fields("Selection").Value
 			mlngDefPickListID = .Fields("PickListID").Value
 			mlngDefFilterID = .Fields("FilterID").Value
 			'mstrDefBaseTable = mclsGeneral.GetTableName(mlngDefBaseTableID)
@@ -697,23 +578,9 @@ LocalErr:
 
 			End Select
 
-
-			mbDefinitionOwner = (LCase(Trim(gsUsername)) = LCase(Trim(.Fields("Username").Value)))
-
 		End With
 
 		fOK = IsRecordSelectionValid()
-
-
-		'  If fOK Then
-		'    If Not ValidPrinter(mstrDefOutputPrinterName) Then
-		'      mstrStatusMessage = _
-		''          "This definition is set to output to printer " & mstrDefOutputPrinterName & _
-		''          " which is not set up on your PC."
-		'      fOK = False
-		'    End If
-		'  End If
-		'
 
 		If fOK Then
 			Call UtilUpdateLastRun(UtilityType.utlMailMerge, mlngMailMergeID)
@@ -734,38 +601,14 @@ LocalErr:
 
 	End Function
 
-	'
-	'Private Function ValidPrinter(strName As String) As Boolean
-	'
-	'  Dim objPrinter As Printer
-	'  Dim blnFound As Boolean
-	'
-	'  If strName <> vbNullString And strName <> "<Default Printer>" Then
-	'    blnFound = False
-	'    For Each objPrinter In Printers
-	'      If objPrinter.DeviceName = strName Then
-	'        blnFound = True
-	'        Exit For
-	'      End If
-	'    Next
-	'  Else
-	'    blnFound = True
-	'  End If
-	'
-	'  ValidPrinter = blnFound
-	'
-	'End Function
-
-
+	
 	Public Function BuildOutputArray() As Boolean
 
 		'This sub converts the data to a table as it was causing
 		'a problem when opening a data source with a single field
 
-		'Const strBookMark As String = "TableStart"
 		Dim strOutput As String
 		Dim intCount As Short
-		Dim strSQL As String
 		Dim strEmailAddr As String
 		Dim blnRecordOkay As Boolean
 
@@ -910,129 +753,11 @@ LocalErr:
 
 	End Function
 
-
-	Public Function TidyUpAndExit() As Boolean
-
-		'  Dim wrdNewTable As Word.Table
-		'  Dim strSQL As String
-		'  Dim blnCloseWord As Boolean
-
-		On Error Resume Next
-
-		'  Err.Clear
-		'
-		'  If mblnBatchMode = False Then
-		'    gobjProgress.CloseProgress
-		'    DoEvents
-		'  Else
-		'    gobjProgress.ResetBar2
-		'  End If
-		'
-		'  Err.Clear
-		'  wrdApp.DisplayAlerts = wdAlertsNone
-		'
-		'  'MH20010709
-		'  If Err.Number <> 0 Then
-		'    'Problem with wrdapp object, could be closed so recreate it.
-		'    Set wrdApp = CreateObject("Word.Application")
-		'    wrdApp.DisplayAlerts = wdAlertsNone
-		'  End If
-		'
-		'  'Make sure that the template does not still reference the data source
-		'  '(close it and open it incase there have been changes to it or that
-		'  ' the template is now the temporary email attachment name thingy !)
-		'  wrdDocTemplate.Close SaveChanges:=False
-		'  Set wrdDocTemplate = wrdApp.Documents.Open( _
-		''      FileName:=mstrDefTemplateFile, _
-		''      ConfirmConversions:=False, _
-		''      ReadOnly:=False, _
-		''      AddToRecentFiles:=False, _
-		''      Revert:=False)
-		'
-		'  wrdDocTemplate.MailMerge.MainDocumentType = wdNotAMergeDocument
-		''  If wrdDocTemplate.Saved = False Then
-		'    wrdDocTemplate.Save
-		''  End If
-		'
-		'  wrdDocTemplate.Close SaveChanges:=False
-		'  Set wrdDocTemplate = Nothing
-		'
-		'
-		'  'If the temporary email attachment name exists then kill it
-		'  If Dir(mstrDefAttachmentName) <> vbNullString Then
-		'    Kill mstrDefAttachmentName
-		'  End If
-		'
-		'
-		'  'Kill the data source
-		'  wrdDocDataSource.Close SaveChanges:=False
-		'  Kill mstrDataSourceName
-		'  Set wrdDocDataSource = Nothing
-		'
-		'
-		'  blnCloseWord = (mblnDefCloseDoc Or _
-		''                 (mintDefOutput <> wdSendToNewDocument) Or _
-		''                 (fOK = False))
-		'
-		'  If blnCloseWord Then
-		'    wrdDocOutput.Close SaveChanges:=False
-		'    wrdApp.Quit
-		'  Else
-		'    wrdApp.Visible = True
-		'    If Not blnBatchMode Then
-		'      DoEvents
-		'      wrdApp.WindowState = wdWindowStateNormal
-		'      wrdApp.Activate
-		'
-		'      'MH20010307 Fault 1681
-		'      'If word 2000 then also need to activate the document !
-		'      wrdDocOutput.Activate
-		'    End If
-		'  End If
-
-		mrsMailMergeColumns.Close()
-		'UPGRADE_NOTE: Object mrsMailMergeColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrsMailMergeColumns = Nothing
-
-		mrsMergeData.Close()
-		'UPGRADE_NOTE: Object mrsMergeData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrsMergeData = Nothing
-
-		'  Set wrdDocOutput = Nothing
-		'  Set wrdApp = Nothing
-
-		On Error GoTo 0
-		TidyUpAndExit = True
-
-	End Function
-
-
-	Private Function GetTableAndColumnName(ByRef lngColumnID As Integer) As String
-
-		Dim strSQL As String
-		Dim rsTemp As ADODB.Recordset
-
-		strSQL = "SELECT ColumnName, TableName " & "FROM ASRSYSColumns " & "JOIN ASRSYSTables ON (ASRSYSColumns.TableID = ASRSYSTables.TableID)" & "WHERE ColumnID = " & CStr(lngColumnID) & " "
-		rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-		fOK = Not (rsTemp.BOF And rsTemp.EOF)
-		If fOK Then
-			GetTableAndColumnName = rsTemp.Fields("TableName").Value & "_" & rsTemp.Fields("ColumnName").Value
-		End If
-
-		rsTemp.Close()
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-
-	End Function
-
-
 	Private Function GetPicklistFilterSelect() As String
 
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 
 		On Error GoTo LocalErr
-
 
 		If mlngSingleRecordID > 0 Then
 			GetPicklistFilterSelect = CStr(mlngSingleRecordID)
@@ -1047,7 +772,7 @@ LocalErr:
 
 
 			'Get List of IDs from Picklist
-			rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+			rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			fOK = Not (rsTemp.BOF And rsTemp.EOF)
 
 			If Not fOK Then
@@ -1101,7 +826,6 @@ LocalErr:
 		Dim strSQL As String
 		Dim strSQL1 As String
 		Dim strSQL2 As String
-		Dim strSQL3 As String
 
 		On Error GoTo LocalErr
 
@@ -1112,16 +836,10 @@ LocalErr:
 		' "X" is a system column required by the merge
 		'     (currently only used for the email field where required)
 
-		strSQL1 = "SELECT 'ColExp'   = 'Col',                             " & vbNewLine & "       'ColExpId' = ASRSysColumns.ColumnID,            " & vbNewLine & "       'TableID'  = ASRSysTables.TableID,              " & vbNewLine & "       'Table'    = ASRSysTables.Tablename,            " & vbNewLine & "       'Name'     = ASRSysColumns.ColumnName,          " & vbNewLine & "       'Type'     = ASRSysColumns.DataType,            " & vbNewLine & "       'Size'     = ASRSysMailMergeColumns.Size,       " & vbNewLine & "       'Decimals' = ASRSysMailMergeColumns.Decimals    " & vbNewLine & "FROM ASRSysMailMergeColumns " & vbNewLine & "JOIN ASRSysColumns ON (ASRSysColumns.ColumnID = ASRSysMailMergeColumns.ColumnID) " & vbNewLine & "JOIN ASRSysTables ON (ASRSysTables.TableID = ASRSysColumns.TableID) " & vbNewLine & "WHERE ASRSysMailMergeColumns.Type = 'C' " & vbNewLine & "  AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
-
-		'"WHERE ASRSysMailMergeColumns.Type <> 'E' " & vbNewLine &
-
-		'MH20000906 Added the words "LEFT OUTER" so that we can pick up invalid calcs.
-		strSQL2 = "SELECT 'ColExp'   = 'Exp',                             " & vbNewLine & "       'ColExpId' = ASRSysExpressions.ExprID,          " & vbNewLine & "       'TableID'  = 0,                                 " & vbNewLine & "       'Table'    = 'Calculation_',                    " & vbNewLine & "       'Name'     = ASRSysExpressions.Name,            " & vbNewLine & "       'Type'     = ASRSysExpressions.ReturnType,      " & vbNewLine & "       'Size'     = ASRSysMailMergeColumns.Size,       " & vbNewLine & "       'Decimals' = ASRSysMailMergeColumns.Decimals    " & vbNewLine & "FROM ASRSysMailMergeColumns " & vbNewLine & "LEFT OUTER JOIN ASRSysExpressions ON (ASRSysExpressions.ExprID = ASRSysMailMergeColumns.ColumnID) " & vbNewLine & "WHERE ASRSysMailMergeColumns.Type = 'E' " & vbNewLine & "  AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
-
+		strSQL1 = "SELECT 'ColExp'   = 'Col',  'ColExpId' = ASRSysColumns.ColumnID, 'TableID'  = ASRSysTables.TableID, 'Table'    = ASRSysTables.Tablename, 'Name'     = ASRSysColumns.ColumnName, 'Type'     = ASRSysColumns.DataType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysColumns.ColumnID = ASRSysMailMergeColumns.ColumnID) JOIN ASRSysTables ON (ASRSysTables.TableID = ASRSysColumns.TableID) WHERE ASRSysMailMergeColumns.Type = 'C' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
+		strSQL2 = "SELECT 'ColExp'   = 'Exp', 'ColExpId' = ASRSysExpressions.ExprID, 'TableID'  = 0, 'Table'    = 'Calculation_', 'Name'     = ASRSysExpressions.Name, 'Type' = ASRSysExpressions.ReturnType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns LEFT OUTER JOIN ASRSysExpressions ON (ASRSysExpressions.ExprID = ASRSysMailMergeColumns.ColumnID) WHERE ASRSysMailMergeColumns.Type = 'E' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
 		strSQL = strSQL1 & vbNewLine & vbNewLine & "UNION" & vbNewLine & vbNewLine & strSQL2 & vbNewLine & vbNewLine & "ORDER BY 'ColExp', 'Table', 'Name'"
-
-		mrsMailMergeColumns = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		mrsMailMergeColumns = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		SQLGetMergeColumns = fOK
 
@@ -1133,7 +851,6 @@ LocalErr:
 		SQLGetMergeColumns = fOK
 
 	End Function
-
 
 	Public Function SQLCodeCreate() As Boolean
 
@@ -1155,7 +872,6 @@ LocalErr:
 		ReDim mastrUDFsRequired(0)
 
 		ReDim mlngTableViews(2, 0)
-		Dim asViews(0) As Object
 
 		intIndex = 0
 		ReDim mintType(intIndex)
@@ -1260,18 +976,9 @@ LocalErr:
 			End If
 		End With
 
-
-		'If Email address is same for all records then add to select
-		'If mstrEmailAddr <> vbNullString Then
-		'  mstrSQLSelect = mstrSQLSelect & ", " & _
-		''        mstrEmailAddr & " as 'Email Address'"
-		'End If
-
-
 		If mstrWhereIDs <> vbNullString Then
 			mstrSQLWhere = "(" & mstrWhereIDs & ")" & IIf(mstrSQLWhere <> vbNullString, " OR ", vbNullString) & mstrSQLWhere
 		End If
-
 
 		strPicklistFilterSelect = GetPicklistFilterSelect()
 		If fOK = False Then
@@ -1281,16 +988,13 @@ LocalErr:
 			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", vbNullString) & mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
 		End If
 
-
 		If mstrSQLWhere <> vbNullString Then
 			mstrSQLWhere = " WHERE " & mstrSQLWhere
 		End If
 
-
 		mrsMailMergeColumns.Close()
 		'UPGRADE_NOTE: Object mrsMailMergeColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mrsMailMergeColumns = Nothing
-
 
 		Call SQLOrderByClause()
 		SQLCodeCreate = fOK
@@ -1303,7 +1007,6 @@ LocalErr:
 		SQLCodeCreate = fOK
 
 	End Function
-
 
 	Private Sub SQLAddColumn(ByRef sColumnList As String, ByVal lngTableID As Integer, ByVal sTableName As String, ByVal sColumnName As String, ByVal strColCode As String)
 
@@ -1410,23 +1113,6 @@ LocalErr:
 								mlngTableViews(1, iNextIndex) = 1
 								mlngTableViews(2, iNextIndex) = objTableView.ViewID
 
-
-								'MH20000725 Fault 638
-								'A problem was occuring for a self service user.
-								'Base = view of child and column from view of parent included
-								'caused a problem with the following join command
-								'Need to check view on same table as base otherwise
-								'join slightly differently
-
-								'mstrSQLJoin = mstrSQLJoin & vbNewLine & _
-								'" LEFT OUTER JOIN " & sSource & _
-								'" ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
-
-								'mstrWhereIDs = mstrWhereIDs & _
-								'IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString) & _
-								'mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
-
-
 								If objTableView.TableID = mlngDefBaseTableID Then
 									sBaseIDColumn = mstrSQLFrom & ".ID"
 								Else
@@ -1491,30 +1177,15 @@ LocalErr:
 
 	End Sub
 
-
 	Private Sub SQLOrderByClause()
 
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 		Dim strSQL As String
-		Dim intCount As Short
 
 		On Error GoTo LocalErr
 
-		'strSQL = "SELECT ASRSysTables.TableID, " & _
-		'"       ASRSysTables.TableName, " & _
-		'"       ASRSysColumns.ColumnID, " & _
-		'"       ASRSysColumns.ColumnName, " & _
-		'"       ASRSysOrderItems.Ascending " & _
-		'" FROM ASRSysOrderItems" & _
-		'" JOIN ASRSysColumns ON (ASRSysOrderItems.ColumnID = ASRSysColumns.ColumnID)" & _
-		'" JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID)" & _
-		'" WHERE Type = 'O' AND OrderID = " & CStr(mlngDefOrderID) & _
-		'" ORDER BY Sequence"
-
-		strSQL = "SELECT ASRSysTables.TableID, " & "       ASRSysTables.TableName, " & "       ASRSysColumns.ColumnID, " & "       ASRSysColumns.ColumnName, " & "       ASRSysMailMergeColumns.SortOrder " & "FROM ASRSysMailMergeColumns " & "JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) " & "JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) " & "WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " " & "  AND SortOrderSequence > 0 " & "ORDER BY SortOrderSequence"
-
-		rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
+		strSQL = "SELECT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName, ASRSysMailMergeColumns.SortOrder FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " AND SortOrderSequence > 0 ORDER BY SortOrderSequence"
+		rsTemp = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		With rsTemp
 			Do While Not .EOF
@@ -1543,7 +1214,6 @@ LocalErr:
 		fOK = False
 
 	End Sub
-
 
 	Private Sub SQLAddCalculation(ByRef lngExpID As Integer, ByRef strColCode As String)
 
@@ -1605,7 +1275,6 @@ LocalErr:
 					lngTestTableID = lngCalcViews(2, intCount)
 
 					objTableView = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount))
-					'sSource = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount)).RealSource
 					sSource = objTableView.RealSource
 
 					'TM20020904 Fault 4364 - depending on whether the table that is about to
@@ -1614,31 +1283,14 @@ LocalErr:
 					If datGeneral.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & CStr(objTableView.TableID) & " = " & sSource & ".ID"
-
-					ElseIf datGeneral.IsAChildOf((objTableView.TableID), mlngDefBaseTableID) Then
-						'Table/View is child of Base Table.
-						' JPD20021028 Fault  4661
-						'mstrSQLJoin = mstrSQLJoin & vbNewLine & _
-						'" LEFT OUTER JOIN " & sSource & _
-						'" ON " & mstrSQLFrom & ".ID = " & sSource & ".ID_" & CStr(mlngDefBaseTableID)
-
-						'        Else
-						'          mstrSQLJoin = mstrSQLJoin & vbNewLine & _
-						''            " LEFT OUTER JOIN " & sSource & _
-						''            " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
-						'
 					End If
 
-					'mstrWhereIDs = mstrWhereIDs & _
-					'IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString) & _
-					'mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
 				End If
 
 			ElseIf lngCalcViews(1, intCount) = 0 Then
 				' Check if table has already been added to the array
 				blnFound = False
 				For intNextIndex = 1 To UBound(mlngTableViews, 2)
-					'TM20020827 Fault 4339
 					If mlngTableViews(1, intNextIndex) = 0 And mlngTableViews(2, intNextIndex) = lngCalcViews(2, intCount) Then
 						blnFound = True
 						Exit For
@@ -1670,14 +1322,6 @@ LocalErr:
 					If datGeneral.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & lngCalcViews(2, intCount) & " = " & sSource & ".ID"
-
-					ElseIf datGeneral.IsAChildOf((objTableView.TableID), mlngDefBaseTableID) Then
-						'Table/View is child of Base Table.
-						' JPD20021028 Fault 4661
-						'mstrSQLJoin = mstrSQLJoin & vbNewLine & _
-						'" LEFT OUTER JOIN " & sSource & _
-						'" ON " & mstrSQLFrom & ".ID = " & sSource & ".ID_" & CStr(mlngDefBaseTableID)
-
 					End If
 
 				End If
@@ -1687,31 +1331,30 @@ LocalErr:
 
 	End Sub
 
-
 	Private Function GetEmailAddress(ByRef lngRecordID As Integer) As String
 
 		' Return TRUE if the user has been granted the given permission.
-		Dim cmADO As ADODB.Command
-		Dim pmADO As ADODB.Parameter
+		Dim cmADO As Command
+		Dim pmADO As Parameter
 
 		On Error GoTo LocalErr
 
 		' Check if the user can create New instances of the given category.
-		cmADO = New ADODB.Command
+		cmADO = New Command
 		With cmADO
 			.CommandText = "dbo.spASRSysEmailAddr"
-			.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+			.CommandType = CommandTypeEnum.adCmdStoredProc
 			.CommandTimeout = 0
 			.ActiveConnection = gADOCon
 
-			pmADO = .CreateParameter("Result", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 8000)
+			pmADO = .CreateParameter("Result", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 			.Parameters.Append(pmADO)
 
-			pmADO = .CreateParameter("EmailID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+			pmADO = .CreateParameter("EmailID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			.Parameters.Append(pmADO)
 			pmADO.Value = mlngDefEmailAddrCalc
 
-			pmADO = .CreateParameter("RecordID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+			pmADO = .CreateParameter("RecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			.Parameters.Append(pmADO)
 			pmADO.Value = lngRecordID
 
@@ -1732,35 +1375,11 @@ LocalErr:
 
 	End Function
 
-
-	Private Function ValidEmailAddress(ByRef strEmailAddress As Object) As Boolean
-		'Must only contain one @ sign and must be something in front of @ and after @
-
-		Dim varTemp As Object
-
-		ValidEmailAddress = False
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object strEmailAddress. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object varTemp. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		varTemp = Split(Trim(strEmailAddress), "@")
-
-		If UBound(varTemp) = 1 Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object strEmailAddress. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If Left(strEmailAddress, CInt("1")) <> "@" And Right(strEmailAddress, CInt("1")) <> "@" Then
-				'Check for full stop after @ sign
-				'UPGRADE_WARNING: Couldn't resolve default property of object varTemp(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				ValidEmailAddress = (InStr(varTemp(1), ".") > 0)
-			End If
-		End If
-
-	End Function
-
-
 	Private Function GetRecordDesc(ByRef lngRecordID As Integer) As Object
 
 		' Return TRUE if the user has been granted the given permission.
-		Dim cmADO As ADODB.Command
-		Dim pmADO As ADODB.Parameter
+		Dim cmADO As Command
+		Dim pmADO As Parameter
 
 		On Error GoTo LocalErr
 
@@ -1772,17 +1391,17 @@ LocalErr:
 
 
 		' Check if the user can create New instances of the given category.
-		cmADO = New ADODB.Command
+		cmADO = New Command
 		With cmADO
 			.CommandText = "dbo.sp_ASRExpr_" & mlngRecordDescExprID
-			.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+			.CommandType = CommandTypeEnum.adCmdStoredProc
 			.CommandTimeout = 0
 			.ActiveConnection = gADOCon
 
-			pmADO = .CreateParameter("Result", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, VARCHAR_MAX_Size)
+			pmADO = .CreateParameter("Result", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, VARCHAR_MAX_Size)
 			.Parameters.Append(pmADO)
 
-			pmADO = .CreateParameter("RecordID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+			pmADO = .CreateParameter("RecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			.Parameters.Append(pmADO)
 			pmADO.Value = lngRecordID
 
@@ -1809,9 +1428,7 @@ LocalErr:
 
 	End Function
 
-
 	Private Function FormatData(ByRef strInput As Object, ByRef intColIndex As Short) As String
-
 
 		'07/08/2001 MH Check for Nulls...
 		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1944,12 +1561,10 @@ ErrorTrap:
 
 	End Function
 
-
 	Private Function IsRecordSelectionValid() As Boolean
 
 		Dim sSQL As String
-		Dim lCount As Integer
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As Recordset
 		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 
@@ -1984,7 +1599,7 @@ ErrorTrap:
 
 		'******* Check calculations for hidden/deleted elements *******
 		If Len(mstrStatusMessage) = 0 Then
-			sSQL = "SELECT * FROM ASRSysMailMergeColumns " & "WHERE MailMergeID = " & mlngMailMergeID & " AND LOWER(Type) = 'e' "
+			sSQL = "SELECT * FROM ASRSysMailMergeColumns WHERE MailMergeID = " & mlngMailMergeID & " AND LOWER(Type) = 'e' "
 
 			rsTemp = mclsGeneral.GetRecords(sSQL)
 			With rsTemp

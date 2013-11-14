@@ -5543,9 +5543,9 @@ Namespace Controllers
 			Return View()
 		End Function
 
-
-		Function util_run_mailmerge_completed() As ActionResult
-			Return View()
+		Public Function util_run_mailmerge_completed() As FilePathResult
+			Dim objMergeDocument As HR.Intranet.Server.MailMergeClient = Session("MailMerge_CompletedDocument")
+			Return File(objMergeDocument.CompletedDocumentName, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", objMergeDocument.MM_DefName & ".docx")
 		End Function
 
 		Function promptedValues() As ActionResult

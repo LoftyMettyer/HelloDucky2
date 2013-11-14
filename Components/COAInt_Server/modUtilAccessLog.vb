@@ -9,7 +9,7 @@ Module modUtilAccessLog
 
 		Dim strSQL As String
 
-		strSQL = "INSERT ASRSysUtilAccessLog " & "(Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) " & "VALUES (" & "'" & utlType & "', " & CStr(lngID) & ", " & " system_user, getdate(), host_name(), system_user, getdate(), host_name())"
+		strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) VALUES '" & utlType & "', " & CStr(lngID) & ", " & " system_user, getdate(), host_name(), system_user, getdate(), host_name())"
 
 		gADOCon.Execute(strSQL)
 
@@ -64,16 +64,16 @@ Module modUtilAccessLog
 
 		datData = New clsDataAccess
 
-		strSQL = "SELECT * FROM ASRSysUtilAccessLog " & "WHERE UtilID = " & CStr(lngID) & " AND Type = " & CStr(utlType)
+		strSQL = "SELECT * FROM ASRSysUtilAccessLog WHERE UtilID = " & CStr(lngID) & " AND Type = " & CStr(utlType)
 		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
 
 		'Have to do this to catch existing utilities !
 		If rsTemp.BOF And rsTemp.EOF Then
-			strSQL = "INSERT ASRSysUtilAccessLog " & "(Type, UtilID, " & strMode & "By, " & strMode & "Date, " & strMode & "Host) " & "VALUES (" & "'" & utlType & "', " & CStr(lngID) & ", " & "system_user, getdate(), host_name() )"
+			strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, " & strMode & "By, " & strMode & "Date, " & strMode & "Host) VALUES (" & "'" & utlType & "', " & CStr(lngID) & ", " & "system_user, getdate(), host_name() )"
 		Else
 			strSQL = "UPDATE ASRSysUtilAccessLog SET " & strMode & "By = system_user, " & strMode & "Date = getdate(), " & strMode & "Host = host_name() " & "WHERE UtilID = " & CStr(lngID) & " AND Type = " & CStr(utlType)
 		End If
-		gADOCon.Execute(strSQL)
+		gADOCon.Execute(strSQL, , ADODB.CommandTypeEnum.adCmdText)
 
 		rsTemp.Close()
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

@@ -692,20 +692,20 @@ LocalErr:
 
 	End Function
 
-
-	Public Function GetSelectionAccess(ByRef varID As Object, ByRef strType As String) As ADODB.Recordset
+	Public Function GetSelectionAccess(ByRef ID As Long, ByRef strType As String) As Recordset
 
 		Dim strSQL As String
-		Dim rsTemp As ADODB.Recordset
 
 		If strType = "picklist" Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object varID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strSQL = "SELECT Access, UserName FROM AsrSysPicklistName " & "WHERE PickListID = " & CStr(varID)
+			strSQL = String.Format("SELECT Access, UserName FROM AsrSysPicklistName WHERE PickListID = {0}", ID)
 		Else
-			'UPGRADE_WARNING: Couldn't resolve default property of object varID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strSQL = "SELECT Access, UserName FROM AsrSysExpressions " & "WHERE ExprID = " & CStr(varID)
+			strSQL = String.Format("SELECT Access, UserName FROM AsrSysExpressions WHERE ExprID = {0}", ID)
 		End If
 		GetSelectionAccess = datGeneral.GetReadOnlyRecords(strSQL)
+
+
+
+		'Return datGeneral
 
 	End Function
 
