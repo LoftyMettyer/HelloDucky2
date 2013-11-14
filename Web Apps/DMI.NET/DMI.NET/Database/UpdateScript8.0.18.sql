@@ -100,6 +100,8 @@ BEGIN
 
 END
 
+GO
+
 DECLARE @sSQL nvarchar(MAX),
 		@sGroup sysname,
 		@sObject sysname,
@@ -136,3 +138,9 @@ BEGIN
 END
 CLOSE curObjects
 DEALLOCATE curObjects
+
+GO
+
+EXEC spsys_setsystemsetting 'database', 'version', '8.0';
+EXEC spsys_setsystemsetting 'intranet', 'version', '8.0.18';
+EXEC spsys_setsystemsetting 'ssintranet', 'version', '8.0.18';
