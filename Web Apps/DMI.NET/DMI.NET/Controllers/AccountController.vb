@@ -1235,7 +1235,10 @@ Namespace Controllers
 				Return RedirectToAction("loginerror")
 			End If
 
-			Dim lngSSIPhotographColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
+			Dim lngSSIPhotographColumnID As Long = 0
+			If Not IsDBNull(cmdModuleInfo.Parameters("parameterValue").Value) Then
+				lngSSIPhotographColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
+			End If
 
 			If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
 
