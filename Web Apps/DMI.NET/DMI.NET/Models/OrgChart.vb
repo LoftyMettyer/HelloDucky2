@@ -36,6 +36,7 @@ Namespace Models
 			Try
 				rstHierarchyRecords = cmdThousandFindColumns.Execute
 			Catch ex As Exception
+				rstHierarchyRecords = Nothing
 				sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
 			End Try
 			
