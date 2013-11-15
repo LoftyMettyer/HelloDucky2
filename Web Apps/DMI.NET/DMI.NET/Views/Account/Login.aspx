@@ -561,21 +561,15 @@ End If
 				<td width="15"></td>
 			</tr>
 		</table>
-	
-	<p>
-<%HttpContext.Current.Response.Write(DateTime.Now & "<br/>Request.Browser.Browser: " & Request.Browser.Browser & "<br/>Request.Browser.MajorVersion: " & Request.Browser.MajorVersion())%>    
-</p>
 
-	
-
-	<INPUT type="hidden" id=txtSetDetails name=txtSetDetails value="<%=Session("showLoginDetails")%>">
-	 <INPUT type="hidden" id=txtLocaleDateFormat name=txtLocaleDateFormat>
-	 <INPUT type="hidden" id=txtLocaleDateSeparator name=txtLocaleDateSeparator>
-	 <INPUT type="hidden" id=txtLocaleDecimalSeparator name=txtLocaleDecimalSeparator>
-	 <INPUT type="hidden" id=txtLocaleThousandSeparator name=txtLocaleThousandSeparator>
-	 <INPUT type="hidden" id=txtSystemUser name=txtSystemUser value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
-	<INPUT type="hidden" id=txtWordVer name=txtWordVer value="12">
-	<INPUT type="hidden" id=txtExcelVer name=txtExcelVer value="12">
+	<input type="hidden" id="txtSetDetails" name="txtSetDetails" value="<%=Session("showLoginDetails")%>">
+	<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat">
+	<input type="hidden" id="txtLocaleDateSeparator" name="txtLocaleDateSeparator">
+	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator">
+	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator">
+	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
+	<input type="hidden" id="txtWordVer" name="txtWordVer" value="12">
+	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
 	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="" />
 
 <%If (Session("MSBrowser") = False) Or (Session("MSBrowser") = True) And (Session("IEVersion") > 8.0) Then%>
