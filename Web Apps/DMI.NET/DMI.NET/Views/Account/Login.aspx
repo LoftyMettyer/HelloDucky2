@@ -328,6 +328,12 @@
 
 
 	$(document).ready(function () {
+		
+		//HRPRO-3531 - Feature Detection		
+		if ("ActiveXObject" in window) {
+			$('#txtMSBrowser').val('true');
+		};
+
 		toggleChromeIfAndroid();
 	});
 
@@ -555,6 +561,12 @@ End If
 				<td width="15"></td>
 			</tr>
 		</table>
+	
+	<p>
+<%HttpContext.Current.Response.Write(DateTime.Now & "<br/>Request.Browser.Browser: " & Request.Browser.Browser & "<br/>Request.Browser.MajorVersion: " & Request.Browser.MajorVersion())%>    
+</p>
+
+	
 
 	<INPUT type="hidden" id=txtSetDetails name=txtSetDetails value="<%=Session("showLoginDetails")%>">
 	 <INPUT type="hidden" id=txtLocaleDateFormat name=txtLocaleDateFormat>
@@ -564,6 +576,7 @@ End If
 	 <INPUT type="hidden" id=txtSystemUser name=txtSystemUser value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
 	<INPUT type="hidden" id=txtWordVer name=txtWordVer value="12">
 	<INPUT type="hidden" id=txtExcelVer name=txtExcelVer value="12">
+	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="" />
 
 <%If (Session("MSBrowser") = False) Or (Session("MSBrowser") = True) And (Session("IEVersion") > 8.0) Then%>
 

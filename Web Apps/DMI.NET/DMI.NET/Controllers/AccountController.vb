@@ -1361,6 +1361,9 @@ Namespace Controllers
 				cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 				Response.Cookies.Add(cookie)
 
+				' HRPRO-3531
+				Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
+
 				If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
 					' non-IE browsers don't get DMI access yet.
 					ViewBag.SSIMode = True

@@ -63,10 +63,10 @@ Public Class MvcApplication
 		Dim sBrowserName As String = Request.Browser.Browser
 
 		If sBrowserName = "IE" Or sBrowserName = "InternetExplorer" Then
-			Session("MSBrowser") = True
+			'Session("MSBrowser") = True
 			Session("IEVersion") = Request.Browser.MajorVersion()
 		Else
-			Session("MSBrowser") = False
+			'Session("MSBrowser") = False
 			Session("IEVersion") = 0
 		End If
 
