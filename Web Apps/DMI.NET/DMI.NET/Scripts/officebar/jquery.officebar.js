@@ -197,7 +197,7 @@
       var count = $("li", this).size();
       var style = "";
       if(count === 1) {
-        style = ' style="margin-top: 23px"'; }
+        style = ' style="margin-top: 10px"'; }
       else if(count === 2) {
         style = ' style="margin-top: 14px"'; }
       $(this).wrap('<div'+style+'></div>');
@@ -311,7 +311,7 @@
       var count = $("li", this).size();
       var style = "";
       if(count === 1) {
-        style = ' style="margin-top: 23px"'; }
+        style = ' style="margin-top: 10px"'; }
       else if(count === 2) {
         style = ' style="margin-top: 13px"'; }
       $(this).wrap('<div'+style+'></div>');
