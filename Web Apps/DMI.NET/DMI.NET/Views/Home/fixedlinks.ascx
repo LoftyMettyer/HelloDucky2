@@ -94,14 +94,6 @@
 									<h6>OpenHR</h6>
 								</a>
 							</div>
-							<div id="mnutoolFixedAbout" class="button">
-								<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR 8">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png")%>" alt="" />
-									<i class="icon-question-sign"></i>
-									<h6>About</h6>
-								</a>
-							</div>
-
 						</li>
 					</ul>
 				</li>
@@ -1073,17 +1065,22 @@
 					</li>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedPasswordChange" href="#">
-							<span>Change password</span>
+							<span>Change Password</span>
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedWorkflowOutOfOffice" href="#">
-							<span>Workflow out of office</span>
+							<span>Workflow Out Of Office</span>
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
 						<a href="<%: Url.Action("LogOff", "Home") %>">
-							<span>Log off</span>
+							<span>Log Off</span>
+						</a>
+					</li>
+					<li class="linkspagebuttontext">
+						<a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR 8">
+							<span>About</span>
 						</a>
 					</li>
 				</ul>
