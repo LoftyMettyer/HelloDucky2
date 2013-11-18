@@ -1527,7 +1527,8 @@ function menu_refreshMenu() {
 			}
 		}
 		else {
-			sCaption = "New Record";
+		    sCaption = "New Record";
+		    menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
 		}
 
 		if (frmData.txtRecordDescription.value.length > 0) {
