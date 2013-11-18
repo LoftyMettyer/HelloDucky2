@@ -1047,14 +1047,14 @@
 		<div class="userid">
 				&nbsp;
 			</div>
-		<div class="groupid">
+		<div class="groupid" style="color: white">
 			<%=Session("UserGroup")%>		
 		</div>
 		</div>
 	</div>
 	<!-- User dropdown menu -->
 	<div id="userDropdownmenu">
-		<a href="#"><%=Session("welcomeName")%> ▼</a>
+		<a href="#" style="color: white"><%=Session("welcomeName")%> ▼</a>
 		<ul>
 			<li class="active has-sub last">
 				<ul id="userDropdownmenu_Items">
