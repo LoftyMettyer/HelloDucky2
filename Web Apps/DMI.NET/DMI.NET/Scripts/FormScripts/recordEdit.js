@@ -1658,7 +1658,6 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPickerPlugin.setAttribute("data-style-height", Number(controlItemArray[6]) / 15);
 			textboxColorPickerPlugin.setAttribute("data-style-width", Number(controlItemArray[7]) / 15);
 			textboxColorPickerPlugin.setAttribute("data-readonly", !fControlEnabled);
-			addControl(iPageNo, textboxColorPickerPlugin);
 			
 			var textboxColorPicker; //To contain the value that will be saved
 			textboxColorPicker = document.createElement('input');
@@ -1670,7 +1669,13 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPicker.setAttribute("data-columnID", columnID);
 			textboxColorPicker.setAttribute('data-controlType', controlItemArray[3]);
 			textboxColorPicker.setAttribute("data-control-tag", key);
+			
+			//Set attributes that link both controls
 			textboxColorPicker.setAttribute("data-associated-control-id", textboxColorPickerPlugin.id);
+			textboxColorPickerPlugin.setAttribute("data-associated-control-id", textboxColorPicker.id);
+			
+			// Add both controls to the page
+			addControl(iPageNo, textboxColorPickerPlugin);
 			addControl(iPageNo, textboxColorPicker);
 			
 			//Note: the plugin is hooked up to the control in the updateControl function
@@ -1912,7 +1917,7 @@ function updateControl(lngColumnID, value) {
 						var colorPickerId = $("#" + textboxId).attr('data-associated-control-id'); //This is the ID of the color picker associated with the textbox above
 						$("#" + textboxId).val(value); //Set the value that came from the database
 						$("#" + colorPickerId).spectrum("destroy");
-						$(".sp-container").remove();
+						$("#" + colorPickerId + "_div").remove(); //Remove the previous div that existed for the plugin (if any)
 						//Hook up the plugin to the control
 						var initialColor = (parseInt(value, 10)).toString(16);
 						initialColor = Array(7 - initialColor.length).join("0") + initialColor;
@@ -1929,7 +1934,8 @@ function updateControl(lngColumnID, value) {
 							}
 						});
 						//After the plugin has been applied, there will be an added div (containing other divs); these need to be repositioned and styled
-						//Div
+						//DIV
+						$("#" + colorPickerId).next().first().attr("id", colorPickerId + "_div"); //Assign an ID to the new DIV
 						$("#" + colorPickerId).next().css("top", $("#" + colorPickerId).attr("data-style-top") - 2 + "px");
 						$("#" + colorPickerId).next().css("left", $("#" + colorPickerId).attr("data-style-left") - 1 + "px");
 						$("#" + colorPickerId).next().css("height", $("#" + colorPickerId).attr("data-style-height") + "px");
