@@ -153,9 +153,13 @@
 					recEdit_setData(txtColumnID.value, txtFile.value);
 
 					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
-						$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-						menu_refreshMenu();
-					}
+					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+					
+					//Update the ID badge picture
+					$("#UserPicture").attr("src", "<%=Session("SelfServicePhotograph_src")%>");
+					
+					menu_refreshMenu();
+				}
 
 
 				if ((txtAction.value == "SELECTTRANSFERCOURSE") ||

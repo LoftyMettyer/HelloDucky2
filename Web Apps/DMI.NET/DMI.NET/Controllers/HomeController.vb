@@ -6217,6 +6217,9 @@ Namespace Controllers
 					Session("OLEObject") = objOLE
 					objOLE = Nothing
 
+					'Update the ID badge picture in Session
+					Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
+
 					' Just saved the OLE so we need to get the updated timestamp.
 					Dim cmdTimestamp = CreateObject("ADODB.Command")
 					cmdTimestamp.CommandText = "spASRIntGetTimestamp"
