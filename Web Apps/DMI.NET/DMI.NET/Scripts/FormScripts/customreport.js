@@ -17,7 +17,7 @@ function ShowCustomReport() {
 				sControlName = dataCollection.item(i).name;
 				sControlName = sControlName.substr(0, 12);
 				if (sControlName == "txtGridItem_") {
-					$('#ssOleDBGridDefSelRecords > tbody:last').append(dataCollection.item(i).value);
+					$('#ssOleDBGrid > tbody:last').append(dataCollection.item(i).value);
 					}
 				}
 			}
@@ -62,9 +62,9 @@ function getData() {
 
 function dataOnlyPrint() {
 		// PageHeaderFont and PageFooterFont don't function in ASPs.
-		//  frmOutput.ssOleDBGridDefSelRecords.PageHeaderFont.Name = "Verdana";
-		//  frmOutput.ssOleDBGridDefSelRecords.PageHeaderFont.Size = 12;
-		//  frmOutput.ssOleDBGridDefSelRecords.PageHeaderFont.Bold = true;
+		//  frmOutput.ssOleDBGrid.PageHeaderFont.Name = "Verdana";
+		//  frmOutput.ssOleDBGrid.PageHeaderFont.Size = 12;
+		//  frmOutput.ssOleDBGrid.PageHeaderFont.Bold = true;
 		//  frmOutput.ssOleDBGridDefSelRecords.PageHeaderFont.Underline = true;
 
 		//  frmOutput.ssOleDBGridDefSelRecords.PageFooterFont.Name = "Verdana";

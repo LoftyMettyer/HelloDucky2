@@ -410,13 +410,13 @@ switch ('<%=Session("defseltype")%>') {
 		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
 		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
 		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
-		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
 		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_setVisibleMenuItem("mnutoolEditReportFind", false);
 		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
-		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
 		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
 		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
 		//only display the 'close' button for defsel when called from rec edit...
 
@@ -442,13 +442,13 @@ switch ('<%=Session("defseltype")%>') {
 		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
 		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
 		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
-		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
 		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_setVisibleMenuItem("mnutoolEditReportFind", false);
 		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
-		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
 		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
 		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
 		//only display the 'close' button for defsel when called from rec edit...
 		if (Number(frmDefSel.txtSingleRecordID.value) > 0) {

@@ -691,7 +691,8 @@
 		If fOK Then
 			iValidityCode = objExpression.ValidateExpression
 			If iValidityCode > 0 Then
-				fDisplay = True
+                fDisplay = True
+                Response.Write("			  <table align = 'center'>" & vbCrLf)
 				Response.Write("			  <tr>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
@@ -712,16 +713,19 @@
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
 				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
+                Response.Write("					<td height='20' ></td>" & vbCrLf)
+                Response.Write("					<td height='20' ></td>" & vbCrLf)
+                Response.Write("					<td height='20' ></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
 				Response.Write("			  <tr> " & vbCrLf)
-				Response.Write("					<td width='20'></td>" & vbCrLf)
-				Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-				Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
+                Response.Write("				<td width='20'></td>" & vbCrLf)
+				Response.Write("			    <td align='center' > " & vbCrLf)
+                Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
 				Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
+                Response.Write("			  </tr>" & vbCrLf)
+                 Response.Write("			  </table>" & vbCrLf)
 			Else
 				iReturnType = objExpression.returnType
 			End If
