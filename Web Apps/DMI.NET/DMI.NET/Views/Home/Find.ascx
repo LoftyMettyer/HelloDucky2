@@ -10,7 +10,7 @@
 			//for multifind (SSI views) show relevant buttons with applicable functions
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
-			menu_setVisibleMenuItem("mnutoolCancelLinksFind", true);
+			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
 			//redo the doubleclick function			
 			setTimeout('$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) {doEdit();}});', 200);
