@@ -7,63 +7,63 @@ Imports System.Data.OleDb
 
 Public Module ASRIntranetFunctions
 
-  'TODO
-  Public Function GetRegistrySetting(psAppName As String, psSection As String, psKey As String) As String
-    ' Get the required value from the registry with the given registry key values.
-    GetRegistrySetting = GetSetting(AppName:=psAppName, Section:=psSection, Key:=psKey)
+	'TODO
+	Public Function GetRegistrySetting(psAppName As String, psSection As String, psKey As String) As String
+		' Get the required value from the registry with the given registry key values.
+		GetRegistrySetting = GetSetting(AppName:=psAppName, Section:=psSection, Key:=psKey)
 
-  End Function
+	End Function
 
-  'TODO
-  Function LocaleDateFormat() As String
+	'TODO
+	Function LocaleDateFormat() As String
 
-    Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
-    Return sLocaleDateFormat
+		Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
+		Return sLocaleDateFormat
 
-  End Function
+	End Function
 
-  'TODO
-  Function LocaleDecimalSeparator() As String
-    Return ""
-  End Function
+	'TODO
+	Function LocaleDecimalSeparator() As String
+		Return ""
+	End Function
 
-  'TODO
-  Function LocaleThousandSeparator() As String
-    Return ""
-  End Function
+	'TODO
+	Function LocaleThousandSeparator() As String
+		Return ""
+	End Function
 
-  'TODO
-  Function LocaleDateSeparator() As String
-    Return ""
-  End Function
+	'TODO
+	Function LocaleDateSeparator() As String
+		Return ""
+	End Function
 
-  '****************************************************************
-  ' NullSafeString
-  '****************************************************************
-  Public Function NullSafeString(ByVal arg As Object, _
-  Optional ByVal returnIfEmpty As String = "") As String
+	'****************************************************************
+	' NullSafeString
+	'****************************************************************
+	Public Function NullSafeString(ByVal arg As Object, _
+	Optional ByVal returnIfEmpty As String = "") As String
 
-    Dim returnValue As String
+		Dim returnValue As String
 
-    If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
-      OrElse (arg Is String.Empty) Then
-      returnValue = returnIfEmpty
-    Else
-      Try
-        returnValue = CStr(arg)
-      Catch
-        returnValue = returnIfEmpty
-      End Try
+		If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
+			OrElse (arg Is String.Empty) Then
+			returnValue = returnIfEmpty
+		Else
+			Try
+				returnValue = CStr(arg)
+			Catch
+				returnValue = returnIfEmpty
+			End Try
 
-    End If
+		End If
 
-    Return returnValue
+		Return returnValue
 
-  End Function
+	End Function
 
-  ' TODO
-  Function ValidateDir(ByRef paramType As String) As Boolean
-    Return True
+	' TODO
+	Function ValidateDir(ByRef paramType As String) As Boolean
+		Return True
 	End Function
 	'Code from INTCLient 
 	'Public Function ValidateDir(psDir As String) As Boolean
@@ -148,5 +148,29 @@ Public Module ASRIntranetFunctions
 		Return objDT
 
 	End Function
+
+	Public Function ConvertVb6ColourToArgb(systemColour As Integer) As System.Drawing.Color
+		Dim red As String
+		Dim green As String
+		Dim blue As String
+
+		Try
+			Dim hexColour = Hex(CLng(systemColour))
+
+			hexColour = Replace(hexColour, "#", "")
+			blue = Val("&H" & Mid(hexColour, 1, 2))
+			green = Val("&H" & Mid(hexColour, 3, 2))
+			red = Val("&H" & Mid(hexColour, 5, 2))
+
+		Catch ex As Exception
+			blue = Val("&H00")
+			green = Val("&H00")
+			red = Val("&H00")
+		End Try
+
+		Return Color.FromArgb(red, green, blue)
+
+	End Function
+
 
 End Module
