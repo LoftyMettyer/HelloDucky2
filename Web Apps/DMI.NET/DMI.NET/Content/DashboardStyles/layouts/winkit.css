@@ -794,7 +794,11 @@ div.officetab li div.textboxlist img {
 }
 
 div.officetab li div.textboxlist input {
-	margin: 0 0 0 4px;
+	margin: 20px 0 0 4px;
+}
+
+#mnutoolPositionRecordFind {
+	margin: 10px 0 0 4px;
 }
 
 /* Start by setting display:none to make this hidden.

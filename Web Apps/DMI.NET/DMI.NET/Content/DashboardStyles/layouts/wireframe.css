@@ -502,3 +502,13 @@ div.officetab div.panel > span { display: none;}
 	text-align: left;
 }
 /* End of User dropdown menu */
+
+div.officetab li div.textboxlist input {
+	margin: 0px 0 0 4px;
+}
+
+div.textboxlist ul {
+	margin: 0px 0 0 4px;
+}
+
+

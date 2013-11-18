@@ -655,3 +655,11 @@ div#pwfs {
 	width: 100%;
 	overflow: auto;
 }
+
+#mnutoolLocateRecordFind {
+	margin: 10px 0 0 4px;
+}
+
+#mnutoolPositionRecordFind {
+	margin: 10px 0 0 4px;
+}

@@ -192,17 +192,6 @@
       $(this).wrapInner('<div class="panel"></div>');
     });
 
-    // small button alignment
-    $("div.list>ul, div.textlist>ul", object).each(function() {
-      var count = $("li", this).size();
-      var style = "";
-      if(count === 1) {
-        style = ' style="margin-top: 10px"'; }
-      else if(count === 2) {
-        style = ' style="margin-top: 14px"'; }
-      $(this).wrap('<div'+style+'></div>');
-    });
-
     //text button lists
     $("div.textlist li>a", object).each(function() {
       $(this).wrapInner('<span></span>');
@@ -306,6 +295,19 @@
     $(".textboxlist", object).addClass("separator");
     $(".textboxlist:eq(0)", object).removeClass("separator");
 
+    // small button alignment
+    $("div.list>ul, div.textlist>ul", object).each(function () {
+        var count = $("li", this).size();
+        var style = "";
+        if (count === 1) {
+            style = ' style="margin-top: 0px"';
+        }
+        else if (count === 2) {
+            style = ' style="margin-top: 14px"';
+        }
+        $(this).wrap('<div' + style + '></div>');
+    });
+      
     //Separator button alignment
     $("div.textboxlist>ul", object).each(function() {
       var count = $("li", this).size();
