@@ -182,17 +182,21 @@
 										});
 
 									});
-									
-										$(".spinner").spinner();
+
+									$(".spinner").spinner();
 									
 									//Loop over the "number" fields
 									$(".number").each(function() {
 										var control = $(this);
 										control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
-										$(control).blur(function () { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
+										$(control).blur(function() { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
 											if ($(this).val() == 0) {
 												$(this).val($(this).attr('data-blankIfZeroValue'));
-								}
+											}
+										});
+										$(control).on("keyup", function() {
+											$("#ctlRecordEdit #changed").val("false");
+											enableSaveButton();
 										});
 									});
 								}
