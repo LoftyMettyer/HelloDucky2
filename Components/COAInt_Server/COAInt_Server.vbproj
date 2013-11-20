@@ -80,6 +80,9 @@
     <OptionStrict>Off</OptionStrict>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -164,6 +167,17 @@
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
     <Compile Include="Enums\WorkingPatternType.vb" />
+    <Compile Include="ExClientCode\clsColumn.vb" />
+    <Compile Include="ExClientCode\clsOutputCSV.vb" />
+    <Compile Include="ExClientCode\clsOutputExcel.vb" />
+    <Compile Include="ExClientCode\clsOutputGrid.vb" />
+    <Compile Include="ExClientCode\clsOutputHTML.vb" />
+    <Compile Include="ExClientCode\clsOutputRun.vb" />
+    <Compile Include="ExClientCode\clsOutputStyle.vb" />
+    <Compile Include="ExClientCode\clsOutputWord.vb" />
+    <Compile Include="ExClientCode\cSetDfltPrinter.vb" />
+    <Compile Include="ExClientCode\modIntClient.vb" />
+    <Compile Include="ExClientCode\modUserSettings.vb" />
     <Compile Include="ExprCalculation.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -205,7 +219,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MailMerge.vb" />
-    <Compile Include="MailMergeClient.vb" />
+    <Compile Include="ExClientCode\MailMergeClient.vb" />
     <Compile Include="Menu.vb" />
     <Compile Include="Metadata\Base.vb" />
     <Compile Include="Metadata\LegendColor.vb" />
