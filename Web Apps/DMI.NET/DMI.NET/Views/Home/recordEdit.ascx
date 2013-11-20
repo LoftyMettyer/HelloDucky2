@@ -358,6 +358,11 @@
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			});
+
+			$('input[id^="FI_"]').on("keyup", function() { //Keyup catches more keys than keypress (for example, Backspace)
+				$("#ctlRecordEdit #changed").val("false");
+				enableSaveButton();
+			});
 			
 			//Text area (Notes field, etc.)
 			$('textarea').on("keypress", function () { enableSaveButton(); });
