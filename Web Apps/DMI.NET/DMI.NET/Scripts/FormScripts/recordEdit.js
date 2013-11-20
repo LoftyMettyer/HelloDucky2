@@ -17,11 +17,10 @@ function addControl(tabNumber, controlDef) {
 			//var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
 			var tabCss = "";
 
-			var tabs = $("#ctlRecordEdit").tabs(),
-				tabTemplate = "<li><a " + tabCss + " href='#{href}'>#{label}</a></li>";
+			var tabs = $("#ctlRecordEdit").tabs();
 
 			var label = getTabCaption(tabNumber),
-			li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
+				li = "<li><a " + tabCss + " href='#" + tabID + "'>" + label + "</a></li>";
 
 			tabs.find(".ui-tabs-nav").append(li);
 			tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
