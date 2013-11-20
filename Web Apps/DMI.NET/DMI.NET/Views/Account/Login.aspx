@@ -287,10 +287,12 @@
 			DisableUsernamePassword(true);
 			frmLoginForm.txtUserName.value = frmLoginForm.txtSystemUser.value;
 			frmLoginForm.txtPassword.value = "*****";
+			$("#ForgotPasswordLink").css("display", "none");
 		}
 		else {
 			DisableUsernamePassword(false);
 			frmLoginForm.txtPassword.value = "";
+			$("#ForgotPasswordLink").css("display", "block");
 		}
 	}
 
@@ -556,7 +558,7 @@ End If
 			<tr height=10>
 				<td width="15"></td>
 				<td colSpan=2>
-					<p style="text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+					<p id="ForgotPasswordLink" style="text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 				</td>
 				<td width="15"></td>
 			</tr>
