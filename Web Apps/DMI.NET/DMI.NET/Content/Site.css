@@ -62,7 +62,7 @@ legend
 
 textarea 
 {
-    min-height: 75px;
+	resize: none;
 }
 
 .editor-label 

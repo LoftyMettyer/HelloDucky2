@@ -1250,6 +1250,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
 
+			if (Number(controlItemArray[37]) !== 0) { //Multi-line textbox (i.e. textarea); for this we need a slight adjustment to the height
+				textbox.style.height = (Number((controlItemArray[6]) / 15 - 1)) + "px";
+			}
+
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, textbox);
 			break;
