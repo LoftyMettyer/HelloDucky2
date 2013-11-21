@@ -456,18 +456,18 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 	
-    if (sToolName == "mnutoolFixedPasswordChange") {
-        if (menu_isSSIMode()) {
-            relocateURL('PasswordChange');
-            return false;
-        } else {
-            sToolName = 'mnutoolPasswordChange';
-        }
-    }
+	if (sToolName == "mnutoolFixedPasswordChange") {
+		if (menu_isSSIMode()) {
+			relocateURL('PasswordChange');
+			return false;
+		} else {
+			sToolName = 'mnutoolPasswordChange';
+		}
+	}
 
-    if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
-	    showDefaultRibbon();
-	    //return false;
+	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
+		showDefaultRibbon();
+		//return false;
 	}
 
 	//------------------------DEFSEL----------------------------//
@@ -1527,8 +1527,8 @@ function menu_refreshMenu() {
 			}
 		}
 		else {
-		    sCaption = "New Record";
-		    menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
+			sCaption = "New Record";
+			menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
 		}
 
 		if (frmData.txtRecordDescription.value.length > 0) {
@@ -2050,7 +2050,7 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
 	
 	if (!fBookCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
-    
+	
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
 	menu_setVisibleMenuItem("mnutoolAddFromWaitingListRecordFind", fAddFromWaitingListVisible);
@@ -2061,8 +2061,8 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
 	
-	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);
-	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);
+	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarVisible);
+	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarEnabled);
 
 	//New functionality
 			//if all these are false, then hide the Training Booking group.			
@@ -4721,15 +4721,15 @@ function menu_sortULMenuItems(parentULID) {
 }
 
 function menu_enableMenuItem(itemId, fNewSetting) {
-    if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-        $("#" + itemId + " a:first").removeAttr("disabled");
-    } else {
-        $("#" + itemId + " a:first").attr("disabled", "disabled");
-        $("#" + itemId + " a:first").css({
-            fontWeight: "lighter",
-            cursor: "default"
-        });
-    }
+	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+		$("#" + itemId + " a:first").removeAttr("disabled");
+	} else {
+		$("#" + itemId + " a:first").attr("disabled", "disabled");
+		$("#" + itemId + " a:first").css({
+			fontWeight: "lighter",
+			cursor: "default"
+		});
+	}
 }
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
