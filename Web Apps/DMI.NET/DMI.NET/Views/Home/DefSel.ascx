@@ -411,15 +411,15 @@ switch ('<%=Session("defseltype")%>') {
 		// Enable the buttons
 		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
 		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
-		menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
-		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-		menu_setVisibleMenuItem("mnutoolEditReportFind", false);
-		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
-		menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
-		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
-		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
+		menu_toolbarEnableItem("mnutoolCopyReportFind", false);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_toolbarEnableItem("mnutoolEditReportFind", false);
+		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_toolbarEnableItem("mnutoolDeleteReportFind", false);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_toolbarEnableItem("mnutoolPropertiesReportFind", false);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_toolbarEnableItem("mnutoolRunReportFind", false);
 		//only display the 'close' button for defsel when called from rec edit...
 
 		if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
@@ -443,16 +443,16 @@ switch ('<%=Session("defseltype")%>') {
 		// Enable the buttons
 		menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
 		menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-		menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
-		menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
-		menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-		menu_setVisibleMenuItem("mnutoolEditReportFind", false);
-		menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
-		menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
-		menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
-		menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
-		menu_setVisibleMenuItem("mnutoolRunReportFind", false);
+		menu_toolbarEnableItem("mnutoolCopyReportFind", false);
+		menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+		menu_toolbarEnableItem("mnutoolEditReportFind", false);
+		menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+		menu_toolbarEnableItem("mnutoolDeleteReportFind", false);
+		menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+		menu_toolbarEnableItem("mnutoolPropertiesReportFind", false);
+		menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+		menu_toolbarEnableItem("mnutoolRunReportFind", false);
+		menu_setVisibleMenuItem("mnutoolRunReportFind", true);
 		//only display the 'close' button for defsel when called from rec edit...
 		if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
 			menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
@@ -487,17 +487,17 @@ $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
 fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
 menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted);
-menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted);
-menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
-menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
-menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted);
+menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+menu_toolbarEnableItem("mnutoolEditUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
-menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", false);
+menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
+menu_toolbarEnableItem("mnutoolRunUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
 //only display the 'close' button for defsel when called from rec edit...
 menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
 	menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
@@ -515,12 +515,11 @@ $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
 menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
-menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
-menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
-menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
-menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
+menu_toolbarEnableItem("mnutoolEditToolsFind", false);
+menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
+
 								// Show and select the tab
 $("#toolbarToolsFind").parent().show();
 $("#toolbarToolsFind").click();
@@ -533,12 +532,11 @@ $("#toolbarEventLogFind").parent().hide();
 $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
 menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
-menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
-menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
-menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
-menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
+menu_toolbarEnableItem("mnutoolEditToolsFind", false);
+menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
+
 								// Show and select the tab
 $("#toolbarToolsFind").parent().show();
 $("#toolbarToolsFind").click();
@@ -551,12 +549,11 @@ break;
         $("#toolbarWFPendingStepsFind").parent().hide();
         // Enable the buttons
         menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-        menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted);
-        menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted));
-        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted);
-        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", true);
-        menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-        menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+        menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
+        menu_toolbarEnableItem("mnutoolEditToolsFind", false);
+        menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
+         
         // Show and select the tab
         $("#toolbarToolsFind").parent().show();
         $("#toolbarToolsFind").click();
@@ -571,18 +568,18 @@ $("#toolbarWFPendingStepsFind").parent().hide();
 // Enable the buttons
 fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
 menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
-menu_setVisibleMenuItem("mnutoolNewReportFind", fFromMenu);
-menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted);
-menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
-menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted));
-menu_setVisibleMenuItem("mnutoolEditReportFind", false);
-menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted);
-menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
-menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows);
-menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
+menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+menu_toolbarEnableItem("mnutoolCopyReportFind", false);
+menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+menu_toolbarEnableItem("mnutoolEditReportFind", false);
+menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+menu_toolbarEnableItem("mnutoolDeleteReportFind", false);
+menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+menu_toolbarEnableItem("mnutoolPropertiesReportFind", false);
+menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
 
-menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
-menu_setVisibleMenuItem("mnutoolRunReportFind", false);
+menu_toolbarEnableItem("mnutoolRunReportFind", false);
+menu_setVisibleMenuItem("mnutoolRunReportFind", true);
 //only display the 'close' button for defsel when called from rec edit...
 menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
 	menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
@@ -603,8 +600,8 @@ menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
 menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
-menu_toolbarEnableItem("mnutoolRunUtilitiesFind", true);
-menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", false);
+menu_toolbarEnableItem("mnutoolRunUtilitiesFind", false);
+menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
 //only display the 'close' button for defsel when called from rec edit...
 if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
 menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
