@@ -162,10 +162,31 @@
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
-			<span class="pageTitle" id="PageDivTitle"><% =Session("utilname")%></span>
+			<span class="pageTitleSmaller" id="PageDivTitle">
+				<% 
+					If Session("StandardReport_Type") <> "" Then
+						Response.Write(GetReportNameByReportType(Session("StandardReport_Type")))
+						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
+							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")
+						End If
+					End If
+					If CBool(Session("stdReport_PrintFilterPicklistHeader")) = True Then
+						If Not Session("stdReport_PicklistName") Is Nothing Then
+							If Session("stdReport_PicklistName").ToString <> "" Then
+								Response.Write(" (Base Table Picklist: " & Session("stdReport_PicklistName") & ")")
+							End If
+						End If
+						If Not Session("stdReport_FilterName") Is Nothing Then
+							If Session("stdReport_FilterName").ToString <> "" Then
+								Response.Write(" (Base Table Filter: " & Session("stdReport_FilterName") & ")")
+							End If
+						End If
+					End If
+			 	%>
+			</span>
 		</div>
 		
-		<div id="main" data-framesource="util_run" style="height: 87%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -218,11 +239,11 @@
 	<%
 	If Session("utiltype") = "17" Then
 	%>
-	$(".popup").dialog({ width: 1100, height: 700, resizable: false });
+	$(".popup").dialog({ width: 1100, height: 720, resizable: true });
 	<%
 Else
 	%>
-	$(".popup").dialog({ width: 850, height: 700, resizable: false });
+	$(".popup").dialog({ width: 850, height: 720, resizable: true });
 	<%
 End If
 	%>
@@ -236,7 +257,6 @@ End If
 	});
 
 	if (menu_isSSIMode() == false) {
-		$(".pageTitleDiv").hide();
 		$('#main').css('marginTop', '30px').css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 

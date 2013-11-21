@@ -466,7 +466,7 @@
 									</table>
 									&nbsp;
 									<span id="RecordSelection">
-										<table style="border-collapse: separate; border-collapse: separate; padding: 1px; width: 300px">
+										<table style="border-collapse: separate; padding: 1px; width: 300px">
 											<tr style="height: 10px">
 												<td style="height: 10px; text-align: left; vertical-align: top; font-weight: bold">Record Selection :</td>
 												<table class="invisible" style="border-collapse: collapse; padding: 3px">
@@ -1177,6 +1177,8 @@
 	<input type="hidden" id="txtSend_OutputEmailSubject" name="txtSend_OutputEmailSubject">
 	<input type="hidden" id="txtSend_OutputEmailAttachAs" name="txtSend_OutputEmailAttachAs">
 	<input type="hidden" id="txtSend_OutputFilename" name="txtSend_OutputFilename">
+	<input type="hidden" id="txtFilterName" name="txtFilterName">
+	<input type="hidden" id="txtPicklistName" name="txtPicklistName">
 </form>
 
 <!-- Stuff required to make record selection stuff work -->

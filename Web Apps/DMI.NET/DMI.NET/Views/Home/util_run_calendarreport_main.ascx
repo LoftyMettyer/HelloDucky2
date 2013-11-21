@@ -298,7 +298,7 @@ objCalendar = Nothing
 	$("#reportframe").show();
 
 	util_run_calendarreport_main_window_onload();
-	$(".popup").dialog('option', 'title', $("#txtTitle").val());
+	$(".popup").dialog('option', 'title', "Calendar reports"); //Reports now have a title, so the window title here should be the generic one
 	$("#top").hide();
 	$("#calendarframeset").show();
 

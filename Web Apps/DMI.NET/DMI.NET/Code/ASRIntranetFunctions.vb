@@ -172,5 +172,14 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
-
+	Public Function GetReportNameByReportType(ReportType As Integer) As String
+		Select Case ReportType
+			Case 15
+				Return "Absence Breakdown"
+			Case 16
+				Return "Bradford Factor"
+			Case Else	'Does anybody know more of this 'magic numbers' so we can add to this Case? Should we have an enum?
+				Return ""
+		End Select
+	End Function
 End Module
