@@ -186,7 +186,7 @@
 			</span>
 		</div>
 		
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow: hidden;">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -238,9 +238,15 @@
 
 	<%
 	If Session("utiltype") = "17" Then
-	%>
+		If Session("CalendarReports_FailedOrNoRecords") = True Then 'We need a smaller popup window because the report failed or has no records
+		%>
+	$(".popup").dialog({ width: 750, height: 400, resizable: true });
+	<%Else%>
 	$(".popup").dialog({ width: 1100, height: 720, resizable: true });
+	<%End If%>
+	
 	<%
+	Session.Remove("CalendarReports_FailedOrNoRecords")
 Else
 	%>
 	$(".popup").dialog({ width: 850, height: 720, resizable: true });

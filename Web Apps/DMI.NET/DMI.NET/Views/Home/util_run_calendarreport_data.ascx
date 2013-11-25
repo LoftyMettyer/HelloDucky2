@@ -212,8 +212,7 @@
 	End Sub
 	
 	Protected Function getData() As DataTable
-		Dim dt As DataTable
-		dt = New DataTable()
+		Dim dt As New DataTable()
 		dt.Columns.Add("startdate", GetType(DateTime))
 		dt.Columns.Add("enddate", GetType(DateTime))
 		dt.Columns.Add("description", GetType(String))
@@ -235,6 +234,10 @@
 		
 		Dim dStart As Date
 		Dim dEnd As Date
+		
+		If objCalendar.Events Is Nothing Then	'Report contains no records, return empty Data Table
+			Return dt
+		End If
 		
 		For Each objRow In objCalendar.Events.Rows
 

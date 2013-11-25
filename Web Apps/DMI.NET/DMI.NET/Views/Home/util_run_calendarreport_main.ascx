@@ -129,7 +129,7 @@
 		Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=0>" & vbCrLf)
 	End If
 		
-	If blnShowCalendar Then
+	If blnShowCalendar And Not fNoRecords Then
 %>
 
 <div id="reportworkframe" data-framesource="util_run_calendarreport_data" style="display: inline-block; width: 100%">
@@ -210,7 +210,8 @@ Else
 <input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="1">
 
 	<%
-Else
+	Else
+		Session("CalendarReports_FailedOrNoRecords") = True
 	%>
 
 <input type='hidden' id="txtOK" name="txtOK" value="False">
