@@ -379,11 +379,25 @@ function absence_okClick(){
         fOK = false;
     }
 
-    frmPostDefinition.utilid.value = "0";	
-    if (frmAbsenceDefinition.optPickList.checked == true) frmPostDefinition.utilid.value = "0";
-    if (frmAbsenceDefinition.optPickList.checked == true) frmPostDefinition.utilid.value = frmPostDefinition.txtBasePicklistID.value;
-    if (frmAbsenceDefinition.optFilter.checked == true) frmPostDefinition.utilid.value = frmPostDefinition.txtBaseFilterID.value;
-    if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0")) 
+
+	
+
+	frmPostDefinition.utilid.value = "0";
+	frmPostDefinition.txtPicklistName.value = "";
+	frmPostDefinition.txtFilterName.value = "";
+	if (frmAbsenceDefinition.optPickList.checked == true) {
+		frmPostDefinition.utilid.value = frmPostDefinition.txtBasePicklistID.value;
+		if ($("#RecordSelection").css("visibility") != "hidden") {
+			frmPostDefinition.txtPicklistName.value = frmAbsenceDefinition.txtBasePicklist.value;
+		}
+	}
+	if (frmAbsenceDefinition.optFilter.checked == true) {
+		frmPostDefinition.utilid.value = frmPostDefinition.txtBaseFilterID.value;
+		if ($("#RecordSelection").css("visibility") != "hidden") {
+			frmPostDefinition.txtFilterName.value = frmAbsenceDefinition.txtBaseFilter.value;
+		}
+	}
+	if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0")) 
     {
         OpenHR.messageBox("You must have a picklist selected.");
         display_Absence_Page(1);
