@@ -1545,7 +1545,7 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 		$("#mnutoolHistory").click();
 
-			// Standard reports (toolbar)
+	    // Standard reports (toolbar)
 		if (menu_isSSIMode() == true) {
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);  //hide for SSI
 		}
@@ -1562,13 +1562,19 @@ function menu_refreshMenu() {
 				//Hide Calendar Reports Group if all items are hidden.
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
 		}
-
-			// Mail Merge (Toolbar!)
-		menu_setVisibleMenuItem("mnutoolMailMergeRecord", fMailMergeVisible && !menu_isSSIMode());
-		menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
-
-
-				//dynamically created function, found in menu.ascx...
+	    
+		// Mail Merge (Toolbar!)
+		if (fMailMergeVisible && !menu_isSSIMode()) {
+		    menu_setVisibleMenuItem("mnutoolMailMergeRecord", true);
+		    menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
+		} else {
+		    menu_setVisibleMenuItem("mnutoolMailMergeRecord", false);
+		    menu_setVisibletoolbarGroup("mnutoolMailMergeRecord", false);
+		    //I think its safe to include not showing Record Position items here
+		    menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
+		}
+	    
+		//dynamically created function, found in menu.ascx...
 		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
 
 		// Disable the history menu for new records.
