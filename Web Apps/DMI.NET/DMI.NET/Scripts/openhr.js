@@ -155,7 +155,9 @@
 
 				},
 				error: function (req, status, errorObj) {
-					alert("OpenHR.showInReportFrame ajax call to '" + url + "' failed with '" + errorObj + "'.");
+					$("#errorDialogTitle").text(errorObj);
+					$("#errorDialogContentText").html(req.responseText);
+					$("#errorDialog").dialog("open");
 				}
 			});
 		},
