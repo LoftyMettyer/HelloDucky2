@@ -2219,19 +2219,18 @@ function openDialog(pDestination, pWidth, pHeight) {
 
 
 function util_def_expression_addhandlers() {
-
-	OpenHR.addActiveXHandler("SSTree1", "nodeClick", SSTree1_nodeClick);
-	OpenHR.addActiveXHandler("SSTree1", "beforeLabelEdit", SSTree1_beforeLabelEdit);
-	OpenHR.addActiveXHandler("SSTree1", "afterLabelEdit", SSTree1_afterLabelEdit);
-	OpenHR.addActiveXHandler("SSTree1", "collapse", SSTree1_collapse);
-	OpenHR.addActiveXHandler("SSTree1", "dblClick", SSTree1_dblClick);
-	OpenHR.addActiveXHandler("SSTree1", "keyPress", SSTree1_keyPress);
-	OpenHR.addActiveXHandler("SSTree1", "keyDown", SSTree1_keyDown);
-	OpenHR.addActiveXHandler("SSTree1", "mouseUp", SSTree1_mouseUp);
-	OpenHR.addActiveXHandler("abExprMenu", "DataReady", abExprMenu_DataReady);
-	OpenHR.addActiveXHandler("abExprMenu", "PreCustomizeMenu", abExprMenu_PreCustomizeMenu);
-	OpenHR.addActiveXHandler("abExprMenu", "Click", abExprMenu_Click);
-	OpenHR.addActiveXHandler("abExprMenu", "PreSysMenu", abExprMenu_PreSysMenu);
+	OpenHR.addActiveXHandler("SSTree1", "nodeClick", "SSTree1_nodeClick()");
+	OpenHR.addActiveXHandler("SSTree1", "beforeLabelEdit", "SSTree1_beforeLabelEdit()");
+	OpenHR.addActiveXHandler("SSTree1", "afterLabelEdit", "SSTree1_afterLabelEdit()");
+	OpenHR.addActiveXHandler("SSTree1", "collapse", "SSTree1_collapse()");
+	OpenHR.addActiveXHandler("SSTree1", "dblClick", "SSTree1_dblClick()");
+	OpenHR.addActiveXHandler("SSTree1", "keyPress", "SSTree1_keyPress()");
+	OpenHR.addActiveXHandler("SSTree1", "keyDown", "SSTree1_keyDown()");
+	OpenHR.addActiveXHandler("SSTree1", "mouseUp", "SSTree1_mouseUp()");
+	OpenHR.addActiveXHandler("abExprMenu", "DataReady", "abExprMenu_DataReady()");
+	OpenHR.addActiveXHandler("abExprMenu", "PreCustomizeMenu", "abExprMenu_PreCustomizeMenu()");
+	OpenHR.addActiveXHandler("abExprMenu", "Click", "abExprMenu_Click()");
+	OpenHR.addActiveXHandler("abExprMenu", "PreSysMenu", "abExprMenu_PreSysMenu()");
 }
 
 function SSTree1_nodeClick(pNode) {

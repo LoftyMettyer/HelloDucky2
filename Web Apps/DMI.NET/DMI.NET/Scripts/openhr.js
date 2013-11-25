@@ -266,7 +266,11 @@
 			var ctl = document.getElementById(controlId);
 
 			if (ctl != null) {
-				ctl.attachEvent(eventName, func);
+				var handler = document.createElement("script");
+				handler.setAttribute("for", controlId);
+				handler.event = eventName + "(param1, param2)";
+				handler.appendChild(document.createTextNode("javascript: " + func + ";"));
+				document.body.appendChild(handler);
 			}
 		},
 		refreshMenu = function () {

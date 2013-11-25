@@ -212,9 +212,9 @@
 				}
 
 				function fieldrec_addhandlers() {        
-						OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", ssOleDBGridSelRecords_rowcolchange);
-						OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", ssOleDBGridSelRecords_dblClick);
-						OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
+					OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", "ssOleDBGridSelRecords_rowcolchange()");
+					OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", "ssOleDBGridSelRecords_dblClick()");
+					OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", "ssOleDBGridSelRecords_KeyPress()");
 				}
 
 				function ssOleDBGridSelRecords_rowcolchange() {

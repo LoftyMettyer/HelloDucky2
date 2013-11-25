@@ -1279,11 +1279,10 @@
 <script type="text/javascript">
 
 	function eventlog_addActiveXHandlers() {
-
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", ssOleDBGridEventLog_dblclick);
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", ssOleDBGridEventLog_rowcolchange);
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "Click", ssOleDBGridEventLog_click);
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "HeadClick", ssOleDBGridEventLog_headclick);
+		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", "ssOleDBGridEventLog_dblclick()");
+		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", "ssOleDBGridEventLog_rowcolchange()");
+		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "Click", "ssOleDBGridEventLog_click()");
+		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "HeadClick", "ssOleDBGridEventLog_headclick()");
 	}
 
 	function ssOleDBGridEventLog_dblclick() {

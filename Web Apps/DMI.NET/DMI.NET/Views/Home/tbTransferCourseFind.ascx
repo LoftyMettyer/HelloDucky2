@@ -248,9 +248,9 @@
 
 <script type="text/javascript">
 	function tbAddFromWaitingListFind_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", tbssOleDBGridRecords_dblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", tbssOleDBGridRecords_click);
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", tbssOleDBGridRecords_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", "tbssOleDBGridRecords_dblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", "tbssOleDBGridRecords_click()");
+		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", "tbssOleDBGridRecords_KeyPress()");
 	}
 
 	function tbssOleDBGridRecords_dblClick() {

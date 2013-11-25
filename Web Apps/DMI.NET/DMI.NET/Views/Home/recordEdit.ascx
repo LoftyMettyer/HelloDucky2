@@ -398,21 +398,14 @@
 
 <script type="text/javascript">
 	function addActiveXHandlers() {
-		//TODO: NPG      
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "dataChanged", ctlRecordEdit_dataChanged);
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "ToolClickRequest", ctlRecordEdit_ToolClickRequest);
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "LinkButtonClick", ctlRecordEdit_LinkButtonClick);
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "LookupClick", ctlRecordEdit_LookupClick);
 		$("#ctlRecordEdit").find("[data-columntype='lookup']").click(function () {
 			ctlRecordEdit_LookupClick(this);	//TODO: add the parameters here....
 		});
 
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "ImageClick4", ctlRecordEdit_ImageClick4);
 		$("#ctlRecordEdit").find("[data-controlType='1024']").click(function () {
 			ctlRecordEdit_OLEClick4(this);
 		});
 
-		//OpenHR.addActiveXHandler("ctlRecordEdit", "OLEClick4", ctlRecordEdit_OLEClick4);
 		$("#ctlRecordEdit").find("[data-controlType='8']").click(function () {
 			ctlRecordEdit_OLEClick4(this);			
 		});

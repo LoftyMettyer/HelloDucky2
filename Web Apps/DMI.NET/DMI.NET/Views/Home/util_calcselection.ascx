@@ -169,9 +169,9 @@
 	}
 
 	function util_calcselection_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowColChange", ssOleDBGridDefSelRecordsRowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "DblClick", ssOleDBGridDefSelRecordsDblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowColChange", "ssOleDBGridDefSelRecordsRowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "DblClick", "ssOleDBGridDefSelRecordsDblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", "ssOleDBGridDefSelRecords_KeyPress()");
 	}
 	function ssOleDBGridDefSelRecordsRowColChange() {
 		//<SCRIPT FOR=ssOleDBGridDefSelRecords EVENT=rowcolchange LANGUAGE=JavaScript>

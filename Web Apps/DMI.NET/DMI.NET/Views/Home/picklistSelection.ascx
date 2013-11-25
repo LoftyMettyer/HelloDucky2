@@ -386,9 +386,9 @@
 <script type="text/javascript">
 
 	function picklistSelection_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", ssOleDBGridSelRecords_RowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", ssOleDBGridSelRecords_DblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", "ssOleDBGridSelRecords_RowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", "ssOleDBGridSelRecords_DblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", "ssOleDBGridSelRecords_KeyPress()");
 	}
 
 	function ssOleDBGridSelRecords_RowColChange() {

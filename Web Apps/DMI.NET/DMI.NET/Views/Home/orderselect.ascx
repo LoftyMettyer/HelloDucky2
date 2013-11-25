@@ -172,8 +172,8 @@
 
 
 	function orderselect_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridOrderRecords", "dblClick", ssOleDBGridOrderRecords_dblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridOrderRecords", "KeyPress", ssOleDBGridOrderRecords_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridOrderRecords", "dblClick", "ssOleDBGridOrderRecords_dblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridOrderRecords", "KeyPress", "ssOleDBGridOrderRecords_KeyPress()");
 	}
 
 

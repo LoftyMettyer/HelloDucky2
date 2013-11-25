@@ -267,8 +267,8 @@
 <script type="text/javascript">
 	
 	function tbBulkBooking_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", ssOleDBGridRecords_KeyPress);
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "RowColChange", ssOleDBGridRecords_RowColChange);
+		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", "ssOleDBGridRecords_KeyPress()");
+		OpenHR.addActiveXHandler("ssOleDBGridRecords", "RowColChange", "ssOleDBGridRecords_RowColChange()");
 	}
 
 	function ssOleDBGridRecords_KeyPress(iKeyAscii) {

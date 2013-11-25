@@ -131,41 +131,42 @@
 
 	function util_def_customreports_addhandlers() {
 		
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "RowColChange", ssOleDBGridAvailableColumns_RowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "DblClick", ssOleDBGridAvailableColumns_DblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "KeyPress", ssOleDBGridAvailableColumns_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "RowColChange", "ssOleDBGridAvailableColumns_RowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "DblClick", "ssOleDBGridAvailableColumns_DblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "KeyPress", "ssOleDBGridAvailableColumns_KeyPress()");
 
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "RowColChange", ssOleDBGridSelectedColumns_RowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "DblClick", ssOleDBGridSelectedColumns_DblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "SelChange", ssOleDBGridSelectedColumns_SelChange);
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "RowColChange", "ssOleDBGridSelectedColumns_RowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "DblClick", "ssOleDBGridSelectedColumns_DblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "SelChange", "ssOleDBGridSelectedColumns_SelChange()");
 
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "BeforeUpdate", ssOleDBGridSortOrder_BeforeUpdate);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "AfterInsert", ssOleDBGridSortOrder_AfterInsert);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowLoaded", ssOleDBGridSortOrder_RowLoaded);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowColChange", ssOleDBGridSortOrder_RowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Change", ssOleDBGridSortOrder_Change);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "KeyUp", ssOleDBGridSortOrder_KeyUp);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Click", ssOleDBGridSortOrder_Click);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "DblClick", ssOleDBGridSortOrder_DblClick);
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "BeforeUpdate", "ssOleDBGridSortOrder_BeforeUpdate()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "AfterInsert", "ssOleDBGridSortOrder_AfterInsert()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowLoaded", "ssOleDBGridSortOrder_RowLoaded()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowColChange", "ssOleDBGridSortOrder_RowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Change", "ssOleDBGridSortOrder_Change()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "KeyUp", "ssOleDBGridSortOrder_KeyUp()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Click", "ssOleDBGridSortOrder_Click()");
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "DblClick", "ssOleDBGridSortOrder_DblClick()");
 		
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "AfterInsert", ssOleDBGridRepetition_AfterInsert);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "Change", ssOleDBGridRepetition_Change);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "Click", ssOleDBGridRepetition_Click);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "DblClick", ssOleDBGridRepetition_DblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "KeyUp", ssOleDBGridRepetition_KeyUp);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowColChange", ssOleDBGridRepetition_RowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowLoaded", ssOleDBGridRepetition_RowLoaded);
 
-		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Change", ssOleDBGridChildren_Change);
-		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Click", ssOleDBGridChildren_Click);
-		OpenHR.addActiveXHandler("ssOleDBGridChildren", "AfterInsert", ssOleDBGridChildren_AfterInsert);
-		OpenHR.addActiveXHandler("ssOleDBGridChildren", "DblClick", ssOleDBGridChildren_DblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridChildren", "RowColChange", ssOleDBGridChildren_RowColChange);
-		
-		OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccess_ComboCloseUp);
-		OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccess_GotFocus);
-		OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccess_RowColChange);
-		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccess_RowLoaded);
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "AfterInsert", "ssOleDBGridRepetition_AfterInsert()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "Change", "ssOleDBGridRepetition_Change()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "Click", "ssOleDBGridRepetition_Click()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "DblClick", "ssOleDBGridRepetition_DblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "KeyUp", "ssOleDBGridRepetition_KeyUp()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowColChange", "ssOleDBGridRepetition_RowColChange()");
+		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowLoaded", "ssOleDBGridRepetition_RowLoaded()");
+
+		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Change", "ssOleDBGridChildren_Change()");
+		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Click", "ssOleDBGridChildren_Click()");
+		OpenHR.addActiveXHandler("ssOleDBGridChildren", "AfterInsert", "ssOleDBGridChildren_AfterInsert()");
+		OpenHR.addActiveXHandler("ssOleDBGridChildren", "DblClick", "ssOleDBGridChildren_DblClick()");
+		OpenHR.addActiveXHandler("ssOleDBGridChildren", "RowColChange", "ssOleDBGridChildren_RowColChange()");
+
+		OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", "grdAccess_ComboCloseUp()");
+		OpenHR.addActiveXHandler("grdAccess", "GotFocus", "grdAccess_GotFocus()");
+		OpenHR.addActiveXHandler("grdAccess", "RowColChange", "grdAccess_RowColChange()");
+		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccess_RowLoaded()");
 	}
 
 	function addGridCol(psKey) {

@@ -279,7 +279,7 @@
 
 <script type="text/javascript">
 	function lookupFind_addhandlers() {
-		//OpenHR.addActiveXHandler("ssOleDBGrid", "dblClick", ssOleDBGrid_dblClick);
+
 	}
 
 	function ssOleDBGrid_dblClick() {

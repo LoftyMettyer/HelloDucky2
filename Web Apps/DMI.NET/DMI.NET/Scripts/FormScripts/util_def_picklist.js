@@ -581,9 +581,8 @@ function changeAccess() {
 
 
 	function util_def_addhandlers() {
-		//OpenHR.addActiveXHandler("ssOleDBGrid", "rowColChange", ssOleDBGrid_rowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGrid", "KeyPress", ssOleDBGrid_KeyPress);
-		OpenHR.addActiveXHandler("ssOleDBGrid", "SelChange", ssOleDBGrid_SelChange);
+		OpenHR.addActiveXHandler("ssOleDBGrid", "KeyPress", "ssOleDBGrid_KeyPress()");
+		OpenHR.addActiveXHandler("ssOleDBGrid", "SelChange", "ssOleDBGrid_SelChange()");
 	}
 
 function ssOleDBGrid_rowColChange() {
