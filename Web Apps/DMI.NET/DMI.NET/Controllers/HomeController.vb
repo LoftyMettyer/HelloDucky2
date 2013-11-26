@@ -1092,6 +1092,7 @@ Namespace Controllers
 					sErrorDescription = "The find page could not be loaded." & vbCrLf & "No table or view specified."
 				End If
 
+
 				If Len(sErrorDescription) = 0 Then
 					' Flag an error if there is no current screen is specified.
 					If (Session("linkType") <> "multifind") And _
@@ -4614,13 +4615,13 @@ Namespace Controllers
 			Session("TopLevelRecID") = Left(sParameters, InStr(sParameters, "_") - 1)
 
 			If Session("linkType") = "multifind" Then
-				Session("screenID") = 0
+				'NHRD26112013 Jira-3484 default to personnel table instead of 0 as it only seems to be a problem in that first Next on fresh SSI
+				Session("screenID") = 1
 				Session("title") = ""
 				Session("startMode") = 0
 				Session("tableID") = Mid(sParameters, InStr(sParameters, "_") + 1, ((InStr(sParameters, "!") - 1) - InStr(sParameters, "_")))
 				Session("viewID") = Mid(sParameters, InStr(sParameters, "!") + 1)
 				Session("tableType") = 1
-
 			Else
 				Session("linkID") = Mid(sParameters, InStr(sParameters, "_") + 1)
 
