@@ -442,15 +442,24 @@ function insertUpdateDef() {
 						}
 					}
 
-					else if (objScreenControl.ControlType == 4096) {
-						fDoControl = false;
-						//TODO: Working patterns...
-						//TypeOf objControl Is COA_WorkingPattern Then
-						//	' Working Pattern Field (CHAR type column, len 14).
-						//	asColumns(2, iNextIndex) = "'" & Replace(objControl.Value, "'", "''") & "'"
-						//	'JPD 20051121 Fault 10583
-						//	'asColumns(4, iNextIndex) = objControl.Value
-						//	asColumns(4, iNextIndex) = Replace(objControl.Value, vbTab, " ")
+					else if (objScreenControl.ControlType == 4096) { //Working Pattern Field (CHAR type column, len 14).
+						fDoControl = true;
+						
+						//At this point objControl contains the fieldset that contains the actual working pattern checkboxes; so we need
+						//to iterate over them to get the value that needs to be passed to SQL
+						var workingPatternTemplate = "SSMMTTWWTTFFSS";
+						var workingPatternString = "";
+
+						$(objControl).children("input").each(function (itemIndex) {
+							if ($(this).attr("checked") == "checked") {
+								workingPatternString += workingPatternTemplate[itemIndex];
+							} else {
+								workingPatternString += " ";
+							}
+						});
+						
+						asColumnsToAdd[1] = workingPatternString;
+						asColumnsToAdd[3] = workingPatternString;
 					}
 
 					else if (objScreenControl.ControlType == Math.pow(2, 15)) { // 32768 - ctlColourPicker
@@ -2099,7 +2108,7 @@ function updateControl(lngColumnID, value) {
 				var tthisId = "#" + $(this).attr("id");
 				//tick relevant boxes.
 				for (var i = 1; i <= 14; i++) {
-					$(tthisId + "_" + i).prop("checked", value.substring(i - 1, i) != " " ? true : false);
+					$(tthisId + "_" + (i + 2)).prop("checked", value.substring(i - 1, i) != " " ? true : false);
 				}
 			}
 
