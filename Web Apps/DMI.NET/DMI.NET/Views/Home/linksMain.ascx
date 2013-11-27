@@ -271,6 +271,7 @@
 
 				$('.DashContent').addClass("ui-widget ui-widget-content");
 				//$('.ViewDescription').addClass('ui-widget ui-widget-content');
+				
 			}
 
 
@@ -371,6 +372,24 @@
 				window.location = "Main?SSIMode=True";
 			});
 		}
+
+		function changeTheme(newThemeName) {
+			
+			$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + newThemeName + "/jquery-ui.min.css" });
+			setCookie('Intranet_Wireframe_Theme', newThemeName, 365);
+		}
+
+		function applyImportedTheme(newValue) {
+			if (newValue == false) {
+				$("link[id=WireframethemeLink]").attr({ href: "" });
+			} else {
+				$("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
+			}
+
+			setCookie('Apply_Wireframe_Theme', newValue, 365);
+
+		}
+
 
 		//NPG20082901 Fault 12873
 		function isEMail(psURL) {			
@@ -658,9 +677,9 @@
 			
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
-					<div class="wrapupcontainer">
-						<div class="wrapuptext">
-							<p class="hypertextlinkseparator"><%=sText%></p>
+					<div class="wrapupcontainer hypertextlinktextseparator">
+						<div class="wrapuptext hypertextlinktextseparator">
+							<p class="hypertextlinkseparator hypertextlinkseparator-font hypertextlinkseparator-colour hypertextlinkseparator-size hypertextlinkseparator-bold hypertextlinkseparator-italics"><%=sText%></p>
 						</div>
 					</div>					
 					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
@@ -714,10 +733,9 @@
 									End If
 									
 							End Select%>
-
-							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+							<li class="hypertextlinktext hypertextlinktext-highlightcolour <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
-								<a href="#" title="<%: navlink.Text %>"><%: navlink.Text %></a>
+								<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: navlink.Text %></a>
 								<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
 							</li>
 							<%iRowNum += 1%>
@@ -799,11 +817,9 @@
 								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
 							<%End If%>
-
-
 							<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
-								<a href="#"><%=sText%></a>
+								<a class="hypertextlinktext hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#"><%=sText%></a>
 								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
 							</li>
 							<%iRowNum += 1%>
@@ -819,11 +835,6 @@
 			</ul>
 			<%End If%>
 		</div>
-
-
-		
-
-
 
 		<%fFirstSeparator = True%>
 		<div class="linkspagebutton">
@@ -877,12 +888,14 @@
 										End If
 									End If
 										%>
-				<%If navlink.Element_Type = 1 Then		' separator%>
-				<%iRowNum = 1%>
-				<%iColNum = 1%>
-				<%If fFirstSeparator Then%>
-				<%fFirstSeparator = False%>
-				<%Else%>
+				<%If navlink.Element_Type = 1 Then		' separator
+						iRowNum = 1
+						iColNum = 1
+						Dim sSeparatorColor = ""
+						If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "background-color: " & navlink.SeparatorColour & "!important;"
+						If fFirstSeparator Then
+							fFirstSeparator = False
+				Else%>
 				</ul>
 			</div>
 			</li> </ul>
@@ -894,9 +907,9 @@
 			<%iSeparatorNum += 1%>
 			<ul class="linkspagebuttonseparatorframe" id="linkspagebuttonseparatorframe_<%=iSeparatorNum %>">
 				<li class="linkspagebutton-displaytype">					
-					<div class="wrapupcontainer">
-						<div class="wrapuptext">
-							<p class="linkspagebuttonseparator"><%: navlink.Text %></p>
+					<div class="wrapupcontainer linkspagebuttonseparator-bordercolour" style="<%=sSeparatorColor%>">
+						<div class="wrapuptext">							
+							<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics"><%: navlink.Text %></p>
 						</div>
 					</div>
 					<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
@@ -914,48 +927,21 @@
 							<%Select Case navlink.Element_Type%>
 
 							<%Case 0		 ' Button Link	%>
-								<%If navlink.UtilityType = -1 Then	' screen view%>
+								<%Dim sIconClass As String = "icon-file"
+									
+									If navlink.UtilityType = -1 Then	' screen view
+										sIconClass = "icon-table"
+									ElseIf navlink.UtilityType = 25 Then
+										sIconClass = "icon-magic"
+									End If%>
+							
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
-										<p class="linkspagebuttontileIcon"><i class="icon-table" ></i></p>
-									</li>								
-								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
-										<p class="linkspagebuttontileIcon"><i class="icon-magic"></i></p>
-									</li>								
-
-								<%ElseIf navlink.UtilityType = 2 Then	 ' Custom report%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
-										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
-									</li>
-
-								<%ElseIf navlink.UtilityType = 1 Then	 ' Cross Tab%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
-										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
-									</li>
-
-								<%ElseIf navlink.UtilityType = 9 Then	 ' Mail Merge%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
-										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
-									</li>								
-
-
-							<%ElseIf navlink.UtilityType = 17 Then	 ' Calendar report%>
-							<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-								<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt="" /></a>
-								<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
-							</li>
-
-								<%End If%>
-
-
+										<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
+											<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
+										<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>" ></i></p>
+									</li>																																																																								
 								<%iRowNum += 1%>
-
-
+							
 							<%Case 2		' Chart 	
 									
 									Dim iChart_TableID = CleanNumeric(navlink.Chart_TableID)
@@ -1149,12 +1135,9 @@
 										<i class="icon-inbox"></i>
 										<div class="workflowCount"></div>
 									</p>
-									<p>
-										<a href="#">Pending Workflows</a>
-									</p>
 									<div class="widgetplaceholder generaltheme">
 										<div><i class="icon-inbox"></i></div>
-										<a href="#">Pending Workflows</a>
+										<a class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#">Pending Workflows</a>
 									</div>
 									</div>
 									<div class="pwfList <%=sTileColourClass%>" style="display: none;">
@@ -1289,7 +1272,7 @@
 										If fFormattingApplies Then
 							%>
 							<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 									<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
 											<%If fUseFormatting = True Then%>
@@ -1308,7 +1291,7 @@
 
 							<%Else%>
 							<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 									<p class="DBValue" id="DBV<%: navlink.id %>">
 											<%If fUseFormatting = True Then%>

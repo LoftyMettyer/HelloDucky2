@@ -43,10 +43,12 @@
 			$(".ui-corner-right, .ui-corner-br").css("border-radius", $("#cornerRadius").val());
 		});
 
-
+		$("input[type=submit], input[type=button], button, input[type=file]").button();
 
 		//Apply accordion functionality
 		//$("#themeeditoraccordion").accordion({ heightStyle: "content" });
+		
+		if (window.cookieapplyWireframeTheme == "true") $('#chkAppywireframetheme').prop('checked', true);
 
 	});
 
@@ -62,16 +64,49 @@
 		padding: 2px;
 	}
 </style>
+<form method="POST" action="importTheme_Submit" name="themeroller" id="themeroller" enctype="multipart/form-data">
+	<div class="application">
+		<div id="themeeditoraccordion" style="margin: 30px;">
+			<p>Choose a predefined theme:</p>
+			<span>Layout:<select style="width: 150px; margin-left: 40px;" onchange="try{changeLayout(this.value);}catch (e) {}"><option></option>
+				<option>wireframe</option>
+				<option>winkit</option>
+				<option>tiles</option>
+			</select></span>
+			<br />
+			<br />
+			<span>Theme:<select style="width: 150px; margin-left: 40px;" onchange="try{changeTheme(this.value);}catch (e) {}"><option></option>
+				<option>ABS</option>
+				<option>activeX</option>
+				<option>cupertino</option>
+				<option>excite-bike</option>
+				<option>flick</option>
+				<option>hot-sneaks</option>
+				<option>jMetro</option>
+				<option>jqueryui</option>
+				<option>le-frog</option>
+				<option>pink-pip</option>
+				<option>redmond</option>
+				<option>redmond-verdana</option>
+				<option>smoothness</option>
+				<option>sunny</option>
+				<option>ui-darkness</option>
+				<option>ui-lightness</option>
+			</select>
+			<br />
+				<p style="font-size: x-small">Applies to 'wireframe' layout only.</p>
+			</span>
+			<hr />
+			<p>You can also import a theme:</p>
+			<input type="file" id="themeFile" name="themeFile" onchange="$(this).closest('form').trigger('submit');"/>
+			<br/>
+			<input id="chkAppywireframetheme" type="checkbox" onchange="applyImportedTheme(this.checked);"/>Apply imported theme?
+		</div>
+	</div>
+</form>
 
-<div class="application">
-	<div id="themeeditoraccordion" style="margin: 30px;">
-		<span>Layout:<select style="width: 150px;margin-left: 40px;" onchange="try{changeLayout(this.value);}catch (e) {}"><option></option>
-			<option>wireframe</option>
-			<option>winkit</option>
-			<option>tiles</option>
-		</select></span>
-
-		<div class="hidden">
+<div class="hidden">
+		<div>
 			<h3>Font Settings</h3>
 			<!-- /theme group header -->
 			<div class="theme-group-content corner-bottom clearfix">
@@ -1098,4 +1133,5 @@
 		</div>
 	</div>
 	<!-- /themeroller -->
-</div>
+
+<iframe name="submit-iframe" style="display:none;"></iframe>

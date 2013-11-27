@@ -73,7 +73,7 @@
 								 and (-webkit-device-pixel-ratio: 2)"
 		rel="apple-touch-startup-image">
 
-		<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
+	<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
 
 	<%
 		' Mobiles. Fix as tiles display.
@@ -92,7 +92,7 @@
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
-	
+
 
 
 	<%--Base stylesheets--%>
@@ -113,6 +113,7 @@
 	<%--Placeholders for theme and layout--%>
 	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
 	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
+	<link id="WireframethemeLink" href="" rel="stylesheet" type="text/css" />
 
 	<%--External script resources--%>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
@@ -120,8 +121,8 @@
 	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
-	
-	
+
+
 
 	<%--licence manager reference for activeX--%>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -163,8 +164,8 @@
 			$("#divthemeRoller").dialog({
 				autoOpen: false,
 				modal: false,
-				width: 350,
-				height: 150
+				width: 400,
+				height: 380
 			});
 
 			
@@ -212,54 +213,73 @@
 
 				var cookieTheme = getCookie('Intranet_Theme');
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
-				window.currentTheme = cookieTheme;
+				window.currentTheme = cookieTheme;	
+	
+
+			var cookiewireframeTheme = getCookie("Intranet_Wireframe_Theme");
+			if (cookiewireframeTheme === undefined || cookiewireframeTheme === "undefined" || cookiewireframeTheme.length <= 0) {			
+				//no local setting for wireframe theme, try to use ui-wireframe-theme setting from application settings...
+				if ('<%:Session("ui-wireframe-theme").ToString()%>' != '') {
+					cookiewireframeTheme = '<%:Session("ui-wireframe-theme").ToString()%>';
+				} else {
+					//nothing set anywhere. Default to ABS.
+					cookiewireframeTheme = "abs";
+				}				
+			}
+				
+			window.cookieapplyWireframeTheme = getCookie("Apply_Wireframe_Theme");
+				if (cookieapplyWireframeTheme === undefined || cookieapplyWireframeTheme === "undefined" || cookieapplyWireframeTheme.length <= 0) {
+					window.cookieapplyWireframeTheme = "false";
+				}
 
 				$('body').addClass('SSI');
-				//Kill themeRoller:
-				if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
-					$("link[id=DMIthemeLink]").attr({ href: "" });
+			//Kill themeRoller:
+			if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
+			$("link[id=DMIthemeLink]").attr({ href: "" });
 				
-				switch (window.currentLayout) {
-									case "winkit":
-										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-										$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-										$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-											break;
-										case "wireframe":
-											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
-											$("link[id=SSIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%: Url.LatestContent("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")%>" });
-											break;
-										case "tiles":
-											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-											$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-											$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-											break;
-									}
+			switch (window.currentLayout) {
+			case "winkit":
+			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+			$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+			$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+			break;
+			case "wireframe":
+			if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
 
-				switch (window.currentTheme) {
-					case "red":
-						$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-								break;
-							case "blue":
-								$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-											break;
-										case "white":
-											$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-										default:
-											break;
-									}
+			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+			$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+			$("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+			break;
+			case "tiles":
+			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+			$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+			$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+			break;
+		}
 
-			}
+			switch (window.currentTheme) {
+			case "red":
+			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+			break;
+			case "blue":
+			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+			break;
+			case "white":
+			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+			default:
+			break;
+		}
+
+		}
 			
 			//Apply ajax please wait message
 			$(document).ajaxStart(function () {
-				$("body").addClass("loading");
-			});
+			$("body").addClass("loading");
+		});
 
 			$(document).ajaxStop(function () {
-				$("body").removeClass("loading");
-			});
+			$("body").removeClass("loading");
+		});
 
 		});
 	</script>
@@ -306,18 +326,18 @@
 					break;
 				case "theme-Blue":
 					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-				break;
-			case "theme-White":
-				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-			default:
-				break;
+					break;
+				case "theme-White":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+				default:
+					break;
+			}
 		}
-	}
 
-	//set up ROOT variable for use in external JS files.
-	window.ROOT = '<%= Url.Content("~/") %>';
+		//set up ROOT variable for use in external JS files.
+		window.ROOT = '<%= Url.Content("~/") %>';
 
-	function loadPartialView(action, controller, targetDiv, params) {		
+		function loadPartialView(action, controller, targetDiv, params) {
 			$.ajax({
 				url: window.ROOT + controller + "/" + action,
 				data: { psScreenInfo: params },
@@ -325,7 +345,7 @@
 				type: "POST",
 				success: function (html) {
 					try {
-						
+
 						if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
 							if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
 								//$('#' + targetDiv).fadeOut('slow');
@@ -334,31 +354,31 @@
 								$('.DashContent').fadeOut('slow');
 								$('#' + targetDiv).show();
 							}
-							
-								$("#" + targetDiv).html('');
-								$("#" + targetDiv).html(html);
+
+							$("#" + targetDiv).html('');
+							$("#" + targetDiv).html(html);
 
 							//jquery Styling...
-							
-								$(function () {
-									$("input[type=submit], input[type=button], button")
-										.button();
-									$("input").addClass("ui-widget ui-widget-content ui-corner-all");
-									$("input").removeClass("text");
 
-									$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
-									$("textarea").removeClass("text");
+							$(function () {
+								$("input[type=submit], input[type=button], button")
+									.button();
+								$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+								$("input").removeClass("text");
 
-									$("select").addClass("ui-widget ui-widget-content ui-corner-all");
-									$("select").removeClass("text");
-									$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-									$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-								});
+								$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+								$("textarea").removeClass("text");
+
+								$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+								$("select").removeClass("text");
+								$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+								$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+							});
 						} else {
-								$("#" + targetDiv).html('');
-								$("#" + targetDiv).html(html);						
-							}
-						
+							$("#" + targetDiv).html('');
+							$("#" + targetDiv).html(html);
+						}
+
 						if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
 							//final resize of the dashboard - for tiles, ensure width is sufficient
 							if (window.currentLayout == 'tiles') {
@@ -366,7 +386,7 @@
 								var hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
 								var buttonwidth = Number($('.linkspagebutton').css('width').replace('px', ''));
 								if ((pwfswidth > 0) && (hlwidth > 0) && (buttonwidth > 0)) {
-									var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300 + 300;									
+									var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300 + 300;
 									requiredWidth += 'px';
 									$('.tileContent').css('width', requiredWidth);
 								}
@@ -386,12 +406,12 @@
 					$("#errorDialog").dialog("open");
 				}
 			});
-		//}
-	}
+			//}
+		}
 
 	</script>
 
-	
+
 </head>
 <body class="ui-widget absolutefull">
 
@@ -415,9 +435,9 @@
 			<p id="errorDialogContentText"></p>
 		</div>
 	</div>
-	
+
 	<div id="CalendarEvent"></div>
-	
+
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
 	</div>

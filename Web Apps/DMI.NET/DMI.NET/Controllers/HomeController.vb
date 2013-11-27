@@ -6140,6 +6140,175 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<HttpPost()>
+		Public Function importTheme_Submit(themeFile As HttpPostedFileBase) As ActionResult
+
+			If themeFile.ContentLength > 0 Then
+
+				Dim validThemes As New Dictionary(Of String, String)
+				validThemes.Add("Aliceblue", "#F0F8FF")
+				validThemes.Add("Antiquewhite", "#FAEBD7")
+				validThemes.Add("Aqua", "#00ffff")
+				validThemes.Add("Azure", "#F0FFFF")
+				validThemes.Add("Black", "#000000")
+				validThemes.Add("Blanco", "#FFFFFF")
+				validThemes.Add("Blue", "#6699CC")
+				validThemes.Add("Burlywood", "#DEB887")
+				validThemes.Add("Chocolate", "#D2691E")
+				validThemes.Add("Damson", "#7D388A")
+				validThemes.Add("Darkgray", "#A9A9A9")
+				validThemes.Add("Darkkhaki", "#BDB76B")
+				validThemes.Add("Darkorange", "#FF8C00")
+				validThemes.Add("Darkseagreen", "#8FBC8B")
+				validThemes.Add("Darkviolet", "#9400D3")
+				validThemes.Add("DeepRed", "#C90016")
+				validThemes.Add("DeepSkyBlue", "#00BFFF")
+				validThemes.Add("DodgerBlue", "#1E90FF")
+				validThemes.Add("Forestgreen", "#228B22")
+				validThemes.Add("Gold", "#FFD700")
+				validThemes.Add("GreySkyBlue", "#DEE7EF")
+				validThemes.Add("Ivy", "#A6B540")
+				validThemes.Add("LightSkyBlue", "#87CEFA")
+				validThemes.Add("Limegreen", "#32CD32")
+				validThemes.Add("Maroon", "#700017")
+				validThemes.Add("MidnightNavy", "#330066")
+				validThemes.Add("Navy", "#000080")
+				validThemes.Add("Navy2", "#000099")
+				validThemes.Add("Olive", "#CCCC99")
+				validThemes.Add("PantoneBlue", "#003F6E")
+				validThemes.Add("PantoneGold", "#F7C046")
+				validThemes.Add("Raspberry", "#C71444")
+				validThemes.Add("Red", "#CC3300")
+				validThemes.Add("Red2", "#FF0000")
+				validThemes.Add("RichGrey", "#807A6E")
+				validThemes.Add("RipeTomato", "#DF0029")
+				validThemes.Add("Teal", "#008080")
+				validThemes.Add("Teal2", "#009999")
+				validThemes.Add("TuscanOrange", "#F39900")
+				validThemes.Add("VioletBlue", "#B0B2F5")
+				validThemes.Add("VioletGrey", "#CFCCE5")
+				validThemes.Add("VioletGreyer", "#C8C9E4")
+
+				Dim buffer As Byte() = New Byte(themeFile.InputStream.Length - 1) {}
+				Dim offset As Integer = 0
+				Dim cnt As Integer = 0
+				While (InlineAssignHelper(cnt, themeFile.InputStream.Read(buffer, offset, 10))) > 0
+					offset += cnt
+				End While
+
+				Dim ms As MemoryStream = New MemoryStream(buffer)
+
+				Dim configFile As New Dictionary(Of String, String)
+
+				Using myReader As New Microsoft.VisualBasic.FileIO.TextFieldParser(ms)
+					myReader.TextFieldType = FileIO.FieldType.Delimited
+					myReader.SetDelimiters("=")
+
+					Dim currentRow As String()
+					While Not myReader.EndOfData
+						Try
+							currentRow = myReader.ReadFields()
+							If currentRow.Length > 1 Then
+								configFile.Add(currentRow.GetValue(0), ConvertConfigValue(currentRow.GetValue(1), validThemes))
+							End If
+						Catch
+						End Try
+					End While
+				End Using
+
+				' we now have a dictionary of key/value pairs from the old config file.
+				If configFile.Count > 0 Then
+
+					Dim cssOutput As New StringBuilder()
+
+					cssOutput.AppendLine(".ui-widget-header { background-color: " & configFile("generaltheme") & "}")
+					cssOutput.AppendLine(".ui-widget-header { background-image: none}")
+
+					cssOutput.AppendLine(".hypertextlinktextseparator { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}")
+					cssOutput.AppendLine(".hypertextlinktext { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}")
+
+					cssOutput.AppendLine(".hypertextlinkseparator-font { font-family: " & configFile("hypertextlinkseparator-font") & "}")
+					cssOutput.AppendLine(".hypertextlinkseparator-colour { color: " & configFile("hypertextlinkseparator-colour") & "}")
+					cssOutput.AppendLine(".hypertextlinkseparator-size { font-size: " & configFile("hypertextlinkseparator-size") & "pt}")
+					cssOutput.AppendLine(".hypertextlinkseparator-bold { font-weight: " & configFile("hypertextlinkseparator-bold") & "}")
+					cssOutput.AppendLine(".hypertextlinkseparator-italics { font-style: " & configFile("hypertextlinkseparator-italics") & "}")
+
+					cssOutput.AppendLine(".hypertextlinktext-font { font-family: " & configFile("hypertextlinktext-font") & "}")
+					cssOutput.AppendLine(".hypertextlinktext-colour { color: " & configFile("hypertextlinktext-colour") & "!important;}")
+					cssOutput.AppendLine(".hypertextlinktext-size { font-size: " & configFile("hypertextlinktext-size") & "pt}")
+					cssOutput.AppendLine(".hypertextlinktext-bold { font-weight: " & configFile("hypertextlinktext-bold") & "}")
+					cssOutput.AppendLine(".hypertextlinktext-italics { font-style: " & configFile("hypertextlinktext-italics") & "}")
+
+					cssOutput.AppendLine(".hypertextlinktext-highlightcolour:hover { background-color: " & configFile("hypertextlinktext-highlightcolour") & "}")
+
+					cssOutput.AppendLine(".linkspageprompttext-font { font-family: " & configFile("linkspageprompttext-font") & "}")
+					cssOutput.AppendLine(".linkspageprompttext-colour { color: " & configFile("linkspageprompttext-colour") & "!important;}")
+					cssOutput.AppendLine(".linkspageprompttext-size { font-size: " & configFile("linkspageprompttext-size") & "pt}")
+					cssOutput.AppendLine(".linkspageprompttext-bold { font-weight: " & configFile("linkspageprompttext-bold") & "}")
+					cssOutput.AppendLine(".linkspageprompttext-italics { font-style: " & configFile("linkspageprompttext-italics") & "}")
+
+					If configFile("linkspagebutton-displaytype").ToLower() <> "rounded" Then
+						cssOutput.AppendLine(".linkspagebutton-displaytype { border-radius: 0!important;}")
+					End If
+					cssOutput.AppendLine(".linkspagebuttontext-alignment { float: none; text-align: " & configFile("linkspagebuttontext-alignment") & "}")
+					cssOutput.AppendLine(".linkspagebutton-colourtheme { background-color: " & configFile("linkspagebutton-colourtheme") & "; padding-top: 0!important;padding-bottom: 0!important;margin-bottom: 2px!important;}")
+
+					cssOutput.AppendLine(".linkspagebuttonseparator-font { font-family: " & configFile("linkspagebuttonseparator-font") & "}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-colour { color: " & configFile("linkspagebuttonseparator-colour") & "!important;}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-size { font-size: " & configFile("linkspagebuttonseparator-size") & "pt}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-bold { font-weight: " & configFile("linkspagebuttonseparator-bold") & "}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-italics { font-style: " & configFile("linkspagebuttonseparator-italics") & "}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-bordercolour { background-color: " & configFile("linkspagebuttonseparator-bordercolour") & "!important; background-image: none!important;}")
+					cssOutput.AppendLine(".linkspagebuttonseparator-alignment { float: none; padding-left: 0!important; text-align: " & configFile("linkspagebuttonseparator-alignment") & "}")
+					cssOutput.AppendLine(".ui-accordion-header { border-radius: 0!important;}")
+
+
+					cssOutput.AppendLine(".linkspagebuttontext-font { font-family: " & configFile("linkspagebuttontext-font") & "}")
+					cssOutput.AppendLine(".linkspagebuttontext-colour { color: " & configFile("linkspagebuttontext-colour") & "!important;}")
+					cssOutput.AppendLine(".linkspagebuttontext-size { font-size: " & configFile("linkspagebuttontext-size") & "pt}")
+					cssOutput.AppendLine(".linkspagebuttontext-bold { font-weight: " & configFile("linkspagebuttontext-bold") & "}")
+					cssOutput.AppendLine(".linkspagebuttontext-italics { font-style: " & configFile("linkspagebuttontext-italics") & "}")
+
+
+
+					' output to css file.
+					Using cssFile As New StreamWriter(Server.MapPath("~/Content/DashboardStyles/themes/upgraded.css"))
+						cssFile.Write(cssOutput.ToString())
+					End Using
+
+				End If
+
+			End If
+
+			Return RedirectToAction("Main", "Home", New With {.SSIMode = True})
+
+		End Function
+
+		Function ConvertConfigValue(configValue As String, ByRef validThemes As Dictionary(Of String, String)) As String
+
+			' remove hash for hex colours
+			' If configValue.StartsWith("#") Then Return configValue.Substring(1)
+
+			' check for it being a theme colour
+			If validThemes.ContainsKey(configValue) Then Return validThemes(configValue)
+
+			' try to convert from known name
+			If Color.FromName(configValue).IsKnownColor Then
+				Try
+					Dim c As Color = Color.FromName(configValue)
+					'Return c.ToArgb().ToString()
+					Return "#" & ColorTranslator.FromHtml(String.Format("#{0:X2}{1:X2}{2:X2}", c.R, c.G, c.B)).Name.Remove(0, 2)
+				Catch ex As Exception
+				End Try
+			End If
+
+
+
+			Return configValue
+
+		End Function
+
+
 		<HttpPost()> _
 		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
 			' On Error Resume Next
