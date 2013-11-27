@@ -266,13 +266,22 @@
 		},
 		addActiveXHandler = function (controlId, eventName, func) {
 			var ctl = document.getElementById(controlId);
-
+			var handler;
+			
 			if (ctl != null) {
-				var handler = document.createElement("script");
-				handler.setAttribute("for", controlId);
-				handler.event = eventName + "(param1, param2)";
-				handler.appendChild(document.createTextNode("javascript: " + func + ";"));
-				document.body.appendChild(handler);
+				if (eventName == "mouseUp") {
+					handler = document.createElement("script");
+					handler.setAttribute("for", controlId);
+					handler.event = eventName + "(param1, param2, param3, param4)";
+					handler.appendChild(document.createTextNode("javascript: " + func + ";"));
+					document.body.appendChild(handler);
+				} else {
+					handler = document.createElement("script");
+					handler.setAttribute("for", controlId);
+					handler.event = eventName + "(param1, param2)";
+					handler.appendChild(document.createTextNode("javascript: " + func + ";"));
+					document.body.appendChild(handler);
+				}
 			}
 		},
 		refreshMenu = function () {

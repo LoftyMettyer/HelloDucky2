@@ -28,7 +28,7 @@ function util_def_expression_onload() {
 		setMenuFont(abExprMenu);
 
 		abExprMenu.Attach();
-		abExprMenu.DataPath = "include\\exprmenu.htm";
+		abExprMenu.DataPath = window.ROOT + "misc/exprmenu.htm";
 		abExprMenu.RecalcLayout();
 
 		if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
@@ -2222,14 +2222,14 @@ function util_def_expression_addhandlers() {
 	OpenHR.addActiveXHandler("SSTree1", "nodeClick", "SSTree1_nodeClick()");
 	OpenHR.addActiveXHandler("SSTree1", "beforeLabelEdit", "SSTree1_beforeLabelEdit()");
 	OpenHR.addActiveXHandler("SSTree1", "afterLabelEdit", "SSTree1_afterLabelEdit()");
-	OpenHR.addActiveXHandler("SSTree1", "collapse", "SSTree1_collapse()");
+	OpenHR.addActiveXHandler("SSTree1", "collapse", "SSTree1_collapse(param1, param2)");
 	OpenHR.addActiveXHandler("SSTree1", "dblClick", "SSTree1_dblClick()");
 	OpenHR.addActiveXHandler("SSTree1", "keyPress", "SSTree1_keyPress()");
 	OpenHR.addActiveXHandler("SSTree1", "keyDown", "SSTree1_keyDown()");
-	OpenHR.addActiveXHandler("SSTree1", "mouseUp", "SSTree1_mouseUp()");
-	OpenHR.addActiveXHandler("abExprMenu", "DataReady", "abExprMenu_DataReady()");
+	OpenHR.addActiveXHandler("SSTree1", "mouseUp", "SSTree1_mouseUp(param1, param2, param3, param4)");
+	//OpenHR.addActiveXHandler("abExprMenu", "DataReady", "abExprMenu_DataReady()");
 	OpenHR.addActiveXHandler("abExprMenu", "PreCustomizeMenu", "abExprMenu_PreCustomizeMenu()");
-	OpenHR.addActiveXHandler("abExprMenu", "Click", "abExprMenu_Click()");
+	OpenHR.addActiveXHandler("abExprMenu", "Click", "abExprMenu_Click(param1, param2)");
 	OpenHR.addActiveXHandler("abExprMenu", "PreSysMenu", "abExprMenu_PreSysMenu()");
 }
 
