@@ -375,6 +375,14 @@
 
 		}
 
+
+		function GoBack() {
+			if (menu_saveChanges("", true, false) != 2) { // 2 = vbCancel
+				return;
+			}
+			loadPartialView("linksMain", "Home", "workframe", null);
+		}
+
 		function enableSaveButton() {
 			if ($("#ctlRecordEdit #changed").val() == "false") {
 				$("#ctlRecordEdit #changed").val("true");
@@ -613,8 +621,12 @@
 		
 
 %>
-		<div class="pageTitleDiv" >
-			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+		<div class="pageTitleDiv">
+			<%--<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>--%>
+				<a href='#'
+					title='Home'
+					onclick="GoBack()"
+					>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
 			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">
