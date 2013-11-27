@@ -3954,6 +3954,7 @@ function menu_loadSelectOrderFilter(psType) {
 		menu_toolbarEnableItem("mnutoolEditRecordFind", false);
 		menu_toolbarEnableItem("mnutoolDeleteRecordFind", false);
 		menu_toolbarEnableItem("mnutoolCancelCourseRecord", false);
+		menu_toolbarEnableItem("mnutoolParentRecordFind", false);
 	}
 	else {
 		sSaveChangesTag = "SELECTFILTER";
