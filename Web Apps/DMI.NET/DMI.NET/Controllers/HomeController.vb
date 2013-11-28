@@ -6539,55 +6539,54 @@ Namespace Controllers
 
 					Dim cssOutput As New StringBuilder()
 
-					cssOutput.AppendLine(".ui-widget-header { background-color: " & configFile("generaltheme") & "}")
+					cssOutput.AppendLine(CssCheck(".ui-widget-header { background-color: " & configFile("generaltheme") & "}", configFile("generaltheme")))
 					cssOutput.AppendLine(".ui-widget-header { background-image: none}")
 
-					cssOutput.AppendLine(".hypertextlinktextseparator { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}")
-					cssOutput.AppendLine(".hypertextlinktext { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}")
+					cssOutput.AppendLine(CssCheck(".hypertextlinktextseparator { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}", configFile("generaltheme")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext { background-color: " & configFile("generaltheme") & "!important;background-image: none!important;}", configFile("generaltheme")))
 
-					cssOutput.AppendLine(".hypertextlinkseparator-font { font-family: " & configFile("hypertextlinkseparator-font") & "}")
-					cssOutput.AppendLine(".hypertextlinkseparator-colour { color: " & configFile("hypertextlinkseparator-colour") & "}")
-					cssOutput.AppendLine(".hypertextlinkseparator-size { font-size: " & configFile("hypertextlinkseparator-size") & "pt}")
-					cssOutput.AppendLine(".hypertextlinkseparator-bold { font-weight: " & configFile("hypertextlinkseparator-bold") & "}")
-					cssOutput.AppendLine(".hypertextlinkseparator-italics { font-style: " & configFile("hypertextlinkseparator-italics") & "}")
+					cssOutput.AppendLine(CssCheck(".hypertextlinkseparator-font { font-family: " & configFile("hypertextlinkseparator-font") & "}", configFile("hypertextlinkseparator-font")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinkseparator-colour { color: " & configFile("hypertextlinkseparator-colour") & "}", configFile("hypertextlinkseparator-colour")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinkseparator-size { font-size: " & configFile("hypertextlinkseparator-size") & "pt}", configFile("hypertextlinkseparator-size")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinkseparator-bold { font-weight: " & configFile("hypertextlinkseparator-bold") & "}", configFile("hypertextlinkseparator-bold")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinkseparator-italics { font-style: " & configFile("hypertextlinkseparator-italics") & "}", configFile("hypertextlinkseparator-italics")))
 
-					cssOutput.AppendLine(".hypertextlinktext-font { font-family: " & configFile("hypertextlinktext-font") & "}")
-					cssOutput.AppendLine(".hypertextlinktext-colour { color: " & configFile("hypertextlinktext-colour") & "!important;}")
-					cssOutput.AppendLine(".hypertextlinktext-size { font-size: " & configFile("hypertextlinktext-size") & "pt}")
-					cssOutput.AppendLine(".hypertextlinktext-bold { font-weight: " & configFile("hypertextlinktext-bold") & "}")
-					cssOutput.AppendLine(".hypertextlinktext-italics { font-style: " & configFile("hypertextlinktext-italics") & "}")
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-font { font-family: " & configFile("hypertextlinktext-font") & "}", configFile("hypertextlinktext-font")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-colour { color: " & configFile("hypertextlinktext-colour") & "!important;}", configFile("hypertextlinktext-colour")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-size { font-size: " & configFile("hypertextlinktext-size") & "pt}", configFile("hypertextlinktext-size")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-bold { font-weight: " & configFile("hypertextlinktext-bold") & "}", configFile("hypertextlinktext-bold")))
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-italics { font-style: " & configFile("hypertextlinktext-italics") & "}", configFile("hypertextlinktext-italics")))
 
-					cssOutput.AppendLine(".hypertextlinktext-highlightcolour:hover { background-color: " & configFile("hypertextlinktext-highlightcolour") & "}")
+					cssOutput.AppendLine(CssCheck(".hypertextlinktext-highlightcolour:hover { background-color: " & configFile("hypertextlinktext-highlightcolour") & "}", configFile("hypertextlinktext-highlightcolour")))
 
-					cssOutput.AppendLine(".linkspageprompttext-font { font-family: " & configFile("linkspageprompttext-font") & "}")
-					cssOutput.AppendLine(".linkspageprompttext-colour { color: " & configFile("linkspageprompttext-colour") & "!important;}")
-					cssOutput.AppendLine(".linkspageprompttext-size { font-size: " & configFile("linkspageprompttext-size") & "pt}")
-					cssOutput.AppendLine(".linkspageprompttext-bold { font-weight: " & configFile("linkspageprompttext-bold") & "}")
-					cssOutput.AppendLine(".linkspageprompttext-italics { font-style: " & configFile("linkspageprompttext-italics") & "}")
+					cssOutput.AppendLine(CssCheck(".linkspageprompttext-font { font-family: " & configFile("linkspageprompttext-font") & "}", configFile("linkspageprompttext-font")))
+					cssOutput.AppendLine(CssCheck(".linkspageprompttext-colour { color: " & configFile("linkspageprompttext-colour") & "!important;}", configFile("linkspageprompttext-colour")))
+					cssOutput.AppendLine(CssCheck(".linkspageprompttext-size { font-size: " & configFile("linkspageprompttext-size") & "pt}", configFile("linkspageprompttext-size")))
+					cssOutput.AppendLine(CssCheck(".linkspageprompttext-bold { font-weight: " & configFile("linkspageprompttext-bold") & "}", configFile("linkspageprompttext-bold")))
+					cssOutput.AppendLine(CssCheck(".linkspageprompttext-italics { font-style: " & configFile("linkspageprompttext-italics") & "}", configFile("linkspageprompttext-italics")))
 
 					If configFile("linkspagebutton-displaytype").ToLower() <> "rounded" Then
 						cssOutput.AppendLine(".linkspagebutton-displaytype { border-radius: 0!important;}")
 					End If
-					cssOutput.AppendLine(".linkspagebuttontext-alignment { float: none; text-align: " & configFile("linkspagebuttontext-alignment") & "}")
-					cssOutput.AppendLine(".linkspagebutton-colourtheme { background-color: " & configFile("linkspagebutton-colourtheme") & "; padding-top: 0!important;padding-bottom: 0!important;margin-bottom: 2px!important;}")
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-alignment { float: none; text-align: " & configFile("linkspagebuttontext-alignment") & "}", configFile("linkspagebuttontext-alignment")))
+					cssOutput.AppendLine(CssCheck(".linkspagebutton-colourtheme { background-color: " & configFile("linkspagebutton-colourtheme") & "; padding-top: 0!important;padding-bottom: 0!important;margin-bottom: 2px!important;}", configFile("linkspagebutton-colourtheme")))
 
-					cssOutput.AppendLine(".linkspagebuttonseparator-font { font-family: " & configFile("linkspagebuttonseparator-font") & "}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-colour { color: " & configFile("linkspagebuttonseparator-colour") & "!important;}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-size { font-size: " & configFile("linkspagebuttonseparator-size") & "pt}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-bold { font-weight: " & configFile("linkspagebuttonseparator-bold") & "}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-italics { font-style: " & configFile("linkspagebuttonseparator-italics") & "}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-bordercolour { background-color: " & configFile("linkspagebuttonseparator-bordercolour") & "!important; background-image: none!important;}")
-					cssOutput.AppendLine(".linkspagebuttonseparator-alignment { float: none; padding-left: 0!important; text-align: " & configFile("linkspagebuttonseparator-alignment") & "}")
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-font { font-family: " & configFile("linkspagebuttonseparator-font") & "}", configFile("linkspagebuttonseparator-font")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-colour { color: " & configFile("linkspagebuttonseparator-colour") & "!important;}", configFile("linkspagebuttonseparator-colour")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-size { font-size: " & configFile("linkspagebuttonseparator-size") & "pt}", configFile("linkspagebuttonseparator-size")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-bold { font-weight: " & configFile("linkspagebuttonseparator-bold") & "}", configFile("linkspagebuttonseparator-bold")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-italics { font-style: " & configFile("linkspagebuttonseparator-italics") & "}", configFile("linkspagebuttonseparator-italics")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-bordercolour { background-color: " & configFile("linkspagebuttonseparator-bordercolour") & "!important; background-image: none!important;}", configFile("linkspagebuttonseparator-bordercolour")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttonseparator-alignment { float: none; padding-left: 0!important; text-align: " & configFile("linkspagebuttonseparator-alignment") & "}", configFile("linkspagebuttonseparator-alignment")))
 					cssOutput.AppendLine(".ui-accordion-header { border-radius: 0!important;}")
 
 
-					cssOutput.AppendLine(".linkspagebuttontext-font { font-family: " & configFile("linkspagebuttontext-font") & "}")
-					cssOutput.AppendLine(".linkspagebuttontext-colour { color: " & configFile("linkspagebuttontext-colour") & "!important;}")
-					cssOutput.AppendLine(".linkspagebuttontext-size { font-size: " & configFile("linkspagebuttontext-size") & "pt}")
-					cssOutput.AppendLine(".linkspagebuttontext-bold { font-weight: " & configFile("linkspagebuttontext-bold") & "}")
-					cssOutput.AppendLine(".linkspagebuttontext-italics { font-style: " & configFile("linkspagebuttontext-italics") & "}")
-
-
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-font { font-family: " & configFile("linkspagebuttontext-font") & "}", configFile("linkspagebuttontext-font")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-colour { color: " & configFile("linkspagebuttontext-colour") & "!important;}", configFile("linkspagebuttontext-colour")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-size { font-size: " & configFile("linkspagebuttontext-size") & "pt}", configFile("linkspagebuttontext-size")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-bold { font-weight: " & configFile("linkspagebuttontext-bold") & "}", configFile("linkspagebuttontext-bold")))
+					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-italics { font-style: " & configFile("linkspagebuttontext-italics") & "}", configFile("linkspagebuttontext-italics")))
+					
 
 					' output to css file.
 					Using cssFile As New StreamWriter(Server.MapPath("~/Content/DashboardStyles/themes/upgraded.css"))
@@ -6599,6 +6598,15 @@ Namespace Controllers
 			End If
 
 			Return RedirectToAction("Main", "Home", New With {.SSIMode = True})
+
+		End Function
+
+		Function CssCheck(cssString As String, configValue As String) As String
+			If NullSafeString(configValue).Length > 0 Then
+				Return cssString
+			End If
+
+			Return vbNullString
 
 		End Function
 
