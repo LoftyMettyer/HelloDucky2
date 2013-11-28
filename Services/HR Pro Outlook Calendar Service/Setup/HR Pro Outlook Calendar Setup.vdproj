@@ -15,18 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_2780D5A6F265B38E9F4D16C017EE0B3E"
-        "OwnerKey" = "8:_5AF4735A88CF318B5E8F63B49BE0B5F3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5AF4735A88CF318B5E8F63B49BE0B5F3"
-        "OwnerKey" = "8:_7F7F64D01D0C40C9A7790A56D1DBC68F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_7F7F64D01D0C40C9A7790A56D1DBC68F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -47,12 +35,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7F7F64D01D0C40C9A7790A56D1DBC68F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5AF4735A88CF318B5E8F63B49BE0B5F3"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -196,57 +178,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2780D5A6F265B38E9F4D16C017EE0B3E"
-            {
-            "SourcePath" = "8:coardoex.dll"
-            "TargetName" = "8:coardoex.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_8EA5D5E6713648129BDA7975A1C6628F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:4"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5AF4735A88CF318B5E8F63B49BE0B5F3"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Interop.Redemption, Version=4.7.0.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_5AF4735A88CF318B5E8F63B49BE0B5F3"
-                    {
-                    "Name" = "8:Interop.Redemption.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Interop.Redemption.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_8EA5D5E6713648129BDA7975A1C6628F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D31538BAF2134CCB864AA5612917821B"
             {
             "SourcePath" = "8:..\\..\\Graphics\\COA_Banner.jpg"
@@ -322,7 +253,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Outlook Calendar Service v5.2"
         "ProductCode" = "8:{F2D5785B-1B70-461B-9874-C91D8F55A73C}"
-        "PackageCode" = "8:{B5251017-990E-41F6-B6B4-195B7CFDEE63}"
+        "PackageCode" = "8:{DB456322-4D46-43E4-BD44-E57DA08A1E83}"
         "UpgradeCode" = "8:{91530BAE-8658-465E-8B4D-1C97C7DF5A51}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
