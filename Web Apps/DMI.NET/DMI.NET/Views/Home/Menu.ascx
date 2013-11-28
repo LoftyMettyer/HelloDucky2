@@ -212,7 +212,7 @@
 	' Clear out any existing history sub-menus.
 	Response.Write("  var objFileTool;" & vbCrLf)
 	Response.Write("  var fDone = false;" & vbCrLf)
-	Response.Write("  $(""#mnubandHistory"").empty();")
+	Response.Write("  $(""#mnubandHistory"").empty();" & vbCrLf)
 	
 	Dim iLastParentScreenID = 0
 	Dim iDoneCount = 0
@@ -290,6 +290,13 @@
 	Response.Write("      $('#mnutoolDatabase').click();")
 	Response.Write("  }" & vbCrLf)
 	Response.Write("  else {" & vbCrLf)
+	Response.Write("	    // Disable the history menu for new records" & vbCrLf)
+	Response.Write("	    var frmRecEdit = OpenHR.getForm('workframe', 'frmRecordEditForm');" & vbCrLf)
+	Response.Write("	    if (frmRecEdit.txtCurrentRecordID.value <= 0) {" & vbCrLf)
+	Response.Write("				$('[id^=""HT_""]').each(function () {" & vbCrLf)
+	Response.Write("					menu_enableMenuItem($(this).attr(""id""), false);" & vbCrLf)
+	Response.Write("				});" & vbCrLf)
+	Response.Write("	    };" & vbCrLf)
 	Response.Write("      applyJSTree('[aria-labelledby=""mnutoolHistory""]');" & vbCrLf)
 	Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
 	Response.Write("      $('#mnutoolHistory').click();")

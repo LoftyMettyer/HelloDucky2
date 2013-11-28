@@ -1579,7 +1579,8 @@ function menu_refreshMenu() {
 
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
-			menu_enableMenuItem("mnutoolHistory", false);
+			//menu_enableMenuItem("mnutoolHistory", false)
+			//The disabling is now done in the Menu.ascx file (around line 300)
 		}
 		
 		//TODO: NPG; 
