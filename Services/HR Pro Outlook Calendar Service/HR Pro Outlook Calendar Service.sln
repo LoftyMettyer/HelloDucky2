@@ -6,15 +6,17 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Outlook Calendar Service Setup", "Setup\HR Pro Outlook Calendar Setup.vdproj", "{7B9684A6-C47D-48CF-AA88-18CE56CDA075}"
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
+	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Service\\HR\u0020Pro\u0020Outlook\u0020Calendar\u0020Service.vbproj
-		SccLocalPath1 = .
-		SccProjectFilePathRelativizedFromConnection1 = Service\\
+		SccProjectName1 = Service
+		SccLocalPath1 = Service
 		SccProjectUniqueName2 = Setup\\HR\u0020Pro\u0020Outlook\u0020Calendar\u0020Setup.vdproj
-		SccLocalPath2 = .
-		SccProjectFilePathRelativizedFromConnection2 = Setup\\
+		SccProjectName2 = Setup
+		SccLocalPath2 = Setup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
