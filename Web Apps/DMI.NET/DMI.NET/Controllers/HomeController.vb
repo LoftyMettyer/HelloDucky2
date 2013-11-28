@@ -782,7 +782,7 @@ Namespace Controllers
 					Err.Clear()
 					cmdCheckUserSessions.Execute()
 
-					Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
+					Dim iUserSessionCount = NullSafeInteger(cmdCheckUserSessions.Parameters("count").Value)
 					cmdCheckUserSessions = Nothing
 
 					' variables to help select which main screen we return to after change or cancel
@@ -985,7 +985,7 @@ Namespace Controllers
 			If Len(sErrorDescription) = 0 Then
 				If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
 					' Only one record.
-					Session("TopLevelRecID") = CLng(cmdSSRecord.Parameters("@piRecordID").Value)
+					Session("TopLevelRecID") = NullSafeInteger(cmdSSRecord.Parameters("@piRecordID").Value)
 				Else
 					If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
 						' No personnel record. 
@@ -1053,7 +1053,7 @@ Namespace Controllers
 
 				lngTopLevelRecordID = Session("TopLevelRecID")
 
-				If CLng(Session("tableType")) <> 2 Then
+				If NullSafeInteger(Session("tableType")) <> 2 Then
 					' Top Level table.
 					'Response.Write "#<FONT COLOR='Red'><B>Top Level table.</B></FONT>#<BR>"
 
@@ -1160,11 +1160,11 @@ Namespace Controllers
 
 				If Len(sErrorDescription) = 0 Then
 
-					If CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID")) Then
+					If NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID")) Then
 						lngTopLevelRecordID = Session("TopLevelRecID")
 					End If
 
-					If CLng(Session("tableType")) <> 2 Then
+					If NullSafeInteger(Session("tableType")) <> 2 Then
 						' Top Level table.
 						Session("recordID") = 0	'  lngPersonnelRecordID			' never set???
 						Session("parentTableID") = 0
@@ -1180,7 +1180,7 @@ Namespace Controllers
 				End If
 
 				Dim sRecDesc = ""
-				If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) And _
+				If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And _
 					(Len(sErrorDescription) = 0) Then
 
 
@@ -1344,7 +1344,7 @@ Namespace Controllers
 
 				If (Len(sErrorDescription) = 0) Then
 
-					If CLng(Session("SSILinkViewID")) > -1 Then
+					If NullSafeInteger(Session("SSILinkViewID")) > -1 Then
 
 						Dim cmdGetViewName = CreateObject("ADODB.Command")
 						cmdGetViewName.CommandText = "spASRIntGetViewName"
@@ -1354,7 +1354,7 @@ Namespace Controllers
 						Dim prmViewID = cmdGetViewName.CreateParameter("ViewID", 3, 1)
 						cmdGetViewName.Parameters.Append(prmViewID)
 
-						If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) And _
+						If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And _
 							(Session("linkType") <> "multifind") Then
 							prmViewID.value = CleanNumeric(Session("SSILinkViewID"))
 						Else
@@ -1410,7 +1410,7 @@ Namespace Controllers
 
 					End If
 
-					If (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID")) Or _
+					If (NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID")) Or _
 						(Session("linkType") = "multifind")) And _
 						Session("SingleRecordViewID") = 0 Then
 
@@ -1899,7 +1899,7 @@ Namespace Controllers
 				Dim iTBResultCode = 0
 				Dim sCode = ""
 
-				If (Not fTBOverride) And (CLng(lngTableID) = CLng(Session("TB_TBTableID"))) Then
+				If (Not fTBOverride) And (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID"))) Then
 					' Training Booking check.
 					Dim cmdTBCheck = CreateObject("ADODB.Command")
 					cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
@@ -2145,7 +2145,7 @@ Namespace Controllers
 
 							Dim prmTableID = cmdUpdateRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmTableID)
-							prmTableID.value = CLng(CleanNumeric(lngTableID))
+							prmTableID.value = NullSafeInteger(CleanNumeric(lngTableID))
 
 							Dim prmRealSource = cmdUpdateRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
 							cmdUpdateRecord.Parameters.Append(prmRealSource)
@@ -2267,7 +2267,7 @@ Namespace Controllers
 
 				Dim prmTableID = cmdDeleteRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirection.Input)
 				cmdDeleteRecord.Parameters.Append(prmTableID)
-				prmTableID.value = CLng(CleanNumeric(lngTableID))
+				prmTableID.value = NullSafeInteger(CleanNumeric(lngTableID))
 
 				Dim prmRealSource = cmdDeleteRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirection.Input, 8000)
 				cmdDeleteRecord.Parameters.Append(prmRealSource)
@@ -2614,20 +2614,20 @@ Namespace Controllers
 
 				ResetSessionVars()
 
-				Session("SSILinkTableID") = CLng(Left(sParameters, InStr(1, sParameters, "!") - 1))
-				Session("SSILinkViewID") = CLng(Mid(sParameters, InStr(sParameters, "!") + 1, (InStr(sParameters, "_") - 1) - (InStr(sParameters, "!"))))
+				Session("SSILinkTableID") = NullSafeInteger(Left(sParameters, InStr(1, sParameters, "!") - 1))
+				Session("SSILinkViewID") = NullSafeInteger(Mid(sParameters, InStr(sParameters, "!") + 1, (InStr(sParameters, "_") - 1) - (InStr(sParameters, "!"))))
 
 				If Mid(sParameters, InStr(sParameters, "_") + 1) = "" Then
 					Session("TopLevelRecID") = 0
 				Else
-					Session("TopLevelRecID") = CLng(Mid(sParameters, InStr(sParameters, "_") + 1))
+					Session("TopLevelRecID") = NullSafeInteger(Mid(sParameters, InStr(sParameters, "_") + 1))
 				End If
 
 			End If
 
 
-			If (CLng(Session("SSILinkTableID")) = CLng(Session("SingleRecordTableID"))) _
-	And (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID"))) Then
+			If (NullSafeInteger(Session("SSILinkTableID")) = NullSafeInteger(Session("SingleRecordTableID"))) _
+	And (NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))) Then
 
 				' Ripped from AcctController
 				Try
@@ -2659,7 +2659,7 @@ Namespace Controllers
 					If Len(sErrorDescription) = 0 Then
 						If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
 							' Only one record.
-							Session("TopLevelRecID") = CLng(cmdSSRecord.Parameters("@piRecordID").Value)
+							Session("TopLevelRecID") = NullSafeInteger(cmdSSRecord.Parameters("@piRecordID").Value)
 						Else
 							If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
 								' No personnel record. 
@@ -2729,7 +2729,7 @@ Namespace Controllers
 
 
 			' For SSI, subordinate views
-			If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) Then
+			If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) Then
 
 				Try
 
@@ -4195,8 +4195,8 @@ Namespace Controllers
 				sUtilType2 = "calculation"
 			End If
 
-			fok = objExpression.Initialise(CLng(Request.Form("txtSend_tableID")), _
-				CLng(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
+			fok = objExpression.Initialise(NullSafeInteger(Request.Form("txtSend_tableID")), _
+				NullSafeInteger(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
 
 			If fok Then
 				fok = objExpression.SetExpressionDefinition(CStr(Request.Form("txtSend_components1")), _
@@ -4567,7 +4567,7 @@ Namespace Controllers
 
 				lngTopLevelRecordID = Session("TopLevelRecID")
 
-				If CLng(Session("tableID")) = CLng(Session("SSILinkTableID")) Then
+				If NullSafeInteger(Session("tableID")) = NullSafeInteger(Session("SSILinkTableID")) Then
 					' Top Level table.
 					Session("recordID") = lngTopLevelRecordID
 					Session("parentTableID") = 0
@@ -4633,7 +4633,7 @@ Namespace Controllers
 
 				Dim prmLinkID = cmdLinkInfo.CreateParameter("linkID", 3, 1)	' 3=integer, 1=input
 				cmdLinkInfo.Parameters.Append(prmLinkID)
-				prmLinkID.value = CLng(CleanNumeric(Session("linkID")))
+				prmLinkID.value = NullSafeInteger(CleanNumeric(Session("linkID")))
 
 				Dim prmScreenID = cmdLinkInfo.CreateParameter("screenID", 3, 2)	' 3=integer, 2=output
 				cmdLinkInfo.Parameters.Append(prmScreenID)
@@ -4675,10 +4675,10 @@ Namespace Controllers
 			If Session("linkType") = "multifind" Then
 				Return RedirectToAction("Find", New With {.sParameters = "LOAD_0_0_"})
 			Else
-				If (CLng(Session("SSILinkTableID")) = CLng(Session("SingleRecordTableID"))) _
-						And (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID"))) _
-						And (CLng(Session("TopLevelRecID")) = 0) _
-						And (CLng(Session("tableID")) <> CLng(Session("SingleRecordTableID"))) Then
+				If (NullSafeInteger(Session("SSILinkTableID")) = NullSafeInteger(Session("SingleRecordTableID"))) _
+						And (NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))) _
+						And (NullSafeInteger(Session("TopLevelRecID")) = 0) _
+						And (NullSafeInteger(Session("tableID")) <> NullSafeInteger(Session("SingleRecordTableID"))) Then
 					'TODO: error - no parent record in the current view.          
 				End If
 				If CleanNumeric(Session("startMode")) <> 3 Then
@@ -5167,7 +5167,7 @@ Namespace Controllers
 			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTADDFROMWAITINGLIST_1") Then
-				If CLng(Session("optionRecordID")) > 0 Then
+				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' First pass after selecting the employee to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
@@ -5182,7 +5182,7 @@ Namespace Controllers
 			End If
 
 			If (sAction = "SELECTADDFROMWAITINGLIST_2") Then
-				If CLng(Session("optionRecordID")) > 0 Then
+				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
 						Dim sTBErrorMsg = ""
@@ -5289,7 +5289,7 @@ Namespace Controllers
 			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTBOOKCOURSE_1") Then
-				If CLng(Session("optionRecordID")) > 0 Then
+				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' First pass after selecting the course to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
@@ -5304,7 +5304,7 @@ Namespace Controllers
 			End If
 
 			If (sAction = "SELECTBOOKCOURSE_2") Then
-				If CLng(Session("optionRecordID")) > 0 Then
+				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' Get the employee record ID from the given Waiting List record.
 					Dim iEmpRecID = 0
 
@@ -5318,7 +5318,7 @@ Namespace Controllers
 
 					Dim prmTBWLRecordID = cmdEmpIDFromWLID.CreateParameter("WLRecID", 3, 1)	'3=integer, 1=input
 					cmdEmpIDFromWLID.Parameters.Append(prmTBWLRecordID)
-					prmTBWLRecordID.value = CleanNumeric(CLng(Session("optionRecordID")))
+					prmTBWLRecordID.value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))
 
 					Err.Clear()
 					cmdEmpIDFromWLID.Execute()
@@ -5659,7 +5659,7 @@ Namespace Controllers
 			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTTRANSFERBOOKING_1") Then
-				If CLng(Session("optionRecordID")) > 0 Then
+				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' Get the employee record ID from the given Training Booking record.
 					Dim iEmpRecID = 0
 
@@ -5673,7 +5673,7 @@ Namespace Controllers
 
 					Dim prmTBRecordID = cmdEmpIDFromTBID.CreateParameter("TBRecID", 3, 1)	'3=integer, 1=input
 					cmdEmpIDFromTBID.Parameters.Append(prmTBRecordID)
-					prmTBRecordID.value = CleanNumeric(CLng(Session("optionRecordID")))
+					prmTBRecordID.value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))
 
 					Err.Clear()
 					cmdEmpIDFromTBID.Execute()

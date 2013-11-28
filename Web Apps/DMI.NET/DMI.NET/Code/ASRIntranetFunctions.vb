@@ -61,6 +61,30 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
+	'****************************************************************
+	' NullSafeInteger
+	'****************************************************************
+	Public Function NullSafeInteger(ByVal arg As Object, _
+	Optional ByVal returnIfEmpty As Integer = 0) As String
+
+		Dim returnValue As Integer
+
+		If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
+			OrElse (arg Is String.Empty) Then
+			returnValue = returnIfEmpty
+		Else
+			Try
+				returnValue = CInt(arg)
+			Catch
+				returnValue = returnIfEmpty
+			End Try
+
+		End If
+
+		Return returnValue
+
+	End Function
+
 	' TODO
 	Function ValidateDir(ByRef paramType As String) As Boolean
 		Return True
