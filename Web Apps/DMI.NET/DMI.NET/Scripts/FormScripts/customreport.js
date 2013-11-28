@@ -4,35 +4,7 @@ function ShowCustomReport() {
 	var i;
 	var sControlName;
 
-	if (txtSuccessFlag.value == 2) {
-
-		$("#divReportButtons").css("visibility", "visible");
-
-		var frmGridItems = OpenHR.getForm("reportworkframe", "frmGridItems");
-
-		var dataCollection = frmGridItems.elements;
-		if (dataCollection != null) {
-
-			for (i = 0; i < dataCollection.length; i++) {
-				sControlName = dataCollection.item(i).name;
-				sControlName = sControlName.substr(0, 12);
-				if (sControlName == "txtGridItem_") {
-					$('#ssOleDBGrid > tbody:last').append(dataCollection.item(i).value);
-					}
-				}
-			}
-
-		if ($("#txtHasSummaryColumns")[0].value == "True") {
-			$(".summarytablecolumn").css("visibility", "visible");
-			$(".summarytablecolumn").css("display", "table-cell");
-
-		} else {
-			$(".summarytablecolumn").css("visibility", "hidden");
-			$(".summarytablecolumn").css("display", "none");
-		}
-
-	}
-
+	$("#divReportButtons").css("visibility", "visible");
 	$("#top").hide();
 	$("#reportworkframe").show();
 
@@ -54,10 +26,6 @@ function replace(sExpression, sFind, sReplace) {
 		var re = new RegExp(sFind, "gi");
 		sExpression = sExpression.replace(re, sReplace);
 		return (sExpression);
-}
-
-function getData() {
-		customreport_loadAddRecords();
 }
 
 function dataOnlyPrint() {

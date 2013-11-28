@@ -41,7 +41,6 @@ Friend Module Extensions
 		Return items.FirstOrDefault(Function(item) item.Section = section And item.Key = Key)
 	End Function
 
-
 	<Extension()>
 	Public Function Item(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
 		Return items.FirstOrDefault(Function(baseItem) (baseItem.TableName = name And baseItem.IsTable = True) Or (baseItem.ViewName = name And baseItem.IsTable = False))
@@ -88,5 +87,12 @@ Friend Module Extensions
 		Return objPermission.IsPermitted
 
 	End Function
+
+
+	'<Extension()>
+	'Public Function GetByColumnId(Of T As ReportDetailItem)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
+	'	Return items.FirstOrDefault(Function(item) item.Column12 = id)
+	'End Function
+
 
 End Module

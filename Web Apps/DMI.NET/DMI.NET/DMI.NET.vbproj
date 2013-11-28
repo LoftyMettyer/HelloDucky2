@@ -1187,7 +1187,6 @@
     <Content Include="Views\Home\util_run_crosstabsMain.ascx" />
     <Content Include="Views\Home\util_run_crosstabsData.ascx" />
     <Content Include="Views\Home\util_run_customreports.ascx" />
-    <Content Include="Views\Home\util_run_customreportsData.ascx" />
     <Content Include="Views\Home\util_run_customreportsMain.ascx" />
     <Content Include="Views\Home\util_run_promptedvalues.ascx" />
     <Content Include="Views\Home\util_run_workflow.ascx" />

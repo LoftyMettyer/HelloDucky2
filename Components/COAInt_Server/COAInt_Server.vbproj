@@ -163,6 +163,7 @@
     <Compile Include="Enums\RecordSelectionTypes.vb" />
     <Compile Include="Enums\RecordSelectionValidityCodes.vb" />
     <Compile Include="Enums\RegionType.vb" />
+    <Compile Include="Enums\RowType.vb" />
     <Compile Include="Enums\SQLDataType.vb" />
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
@@ -259,7 +260,9 @@
     <Compile Include="SessionInfo.vb" />
     <Compile Include="Structures\CalendarLegend.vb" />
     <Compile Include="Structures\HistoryScreen.vb" />
+    <Compile Include="Structures\ReportColumn.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
+    <Compile Include="Structures\ReportSortItem.vb" />
     <Compile Include="Structures\TableScreen.vb" />
     <Compile Include="TablePrivilege.vb">
       <SubType>Code</SubType>

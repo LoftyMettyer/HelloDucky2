@@ -132,8 +132,8 @@
 
 	function ExportDataPrompt() {
 
-		var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
-		OpenHR.submitForm(frmExportData, "outputoptions");
+		//var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
+		//OpenHR.submitForm(frmExportData, "outputoptions");
 
 		$("#reportworkframe").hide();
 		$("#reportbreakdownframe").hide();
@@ -221,7 +221,7 @@
 
 		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
 			<div style="float: right;">
-				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" disabled="disabled" />
+				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
 				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();"
@@ -239,7 +239,7 @@
 	<%
 	If Session("utiltype") = "17" Then
 		If Session("CalendarReports_FailedOrNoRecords") = True Then 'We need a smaller popup window because the report failed or has no records
-		%>
+	%>
 	$(".popup").dialog({ width: 750, height: 400, resizable: true });
 	<%Else%>
 	$(".popup").dialog({ width: 1100, height: 720, resizable: true });

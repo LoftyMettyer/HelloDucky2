@@ -536,10 +536,10 @@
 				window.setTimeout('doExport()',1000);	
 		}
 
-		function doExport() {			
+		function doExport() {
 
 				//Send the values back to the calling form...
-				var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
+			var frmExportData = OpenHR.getForm("main", "frmExportData");
 
 				frmExportData.txtFormat.value = 0;
 				if (frmOutputDef.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
@@ -579,31 +579,26 @@
 				frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
 				frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
-				var frmGetDataForm = OpenHR.getForm("reportdataframe", "frmGetReportData");
-	
-				if (frmOutputDef.txtEmailGroupID.value > 0) 
-				{
-						if (frmOutputDef.txtUtilType.value == 17)
-						{
-								frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-								window.ExportData("OUTPUTRUN");
-						}
-						else
-						{
-								frmGetDataForm.txtMode.value = "EMAILGROUP";
-								frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-								OpenHR.submitForm(frmGetDataForm);
-						}
+				var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
+
+				if (frmOutputDef.txtEmailGroupID.value > 0) {
+					if (frmOutputDef.txtUtilType.value == 17) {
+						frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
+						ExportData("OUTPUTRUN");
+					}
+					else {
+						frmGetDataForm.txtMode.value = "EMAILGROUP";
+						frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
+						frmGetDataForm.submit();
+					}
 				}
-				else
-				{
-						frmGetDataForm.txtEmailGroupID.value = 0;
-						window.ExportData("OUTPUTRUN");
+				else {
+					frmGetDataForm.txtEmailGroupID.value = 0;
+					frmGetDataForm.submit();
 				}
-		
-				if (frmOutputDef.txtUtilType.value == 2)
-				{		
-						window.ShowDataFrame();
+
+				if (frmOutputDef.txtUtilType.value == 2) {
+					ShowDataFrame();
 				}
 		}
 

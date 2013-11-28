@@ -6,17 +6,28 @@
 .header {
 	background-color:#FFFFFF;
 	padding: 5px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #cce2f9;
 }
 
-.visibletablecolumn {
-	border-bottom: 1px;
-	border-bottom-color: #cce2f9;
-	border-bottom-style: solid;
+.visibletablecolumn table {
+	float: left;
+}
+
+.visibletablecolumn tr {
 	margin: 0;
 	padding-left: 5px;
 	padding-right: 5px;
 	height: 20px;
+	text-align: left;
 }
+
+.visibletablecolumn td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
 
 .summarytablerow {
 	border-top: 1px;

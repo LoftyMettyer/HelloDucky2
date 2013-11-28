@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -10,16 +9,9 @@
 	Dim sErrMsg As String
 		
 	bBradfordFactor = (Session("utiltype") = "16")
-%>
 
-<script type="text/javascript">
-	function reports_window_onload() {
-		customreport_loadAddRecords();
-	}
-</script>
-
-
-<%
+	Dim objReport As HR.Intranet.Server.Report
+	
 	if session("utiltype") = "" or _ 
 		 session("utilname") = "" or _ 
 		 session("utilid") = "" or _ 
@@ -96,8 +88,7 @@
 
 				Dim icount As Integer
 				Dim fok As Boolean
-				Dim objReport As HR.Intranet.Server.Report
-				Dim fNotCancelled As Boolean
+	Dim fNotCancelled As Boolean
 
 			Dim dtStartDate As String
 			Dim dtEndDate As String
@@ -143,7 +134,7 @@
 	fNotCancelled = true
 
 	' Create the reference to the DLL (Report Class)
-				objReport = New HR.Intranet.Server.Report
+	objReport = New HR.Intranet.Server.Report
 				
 	' Pass required info to the DLL
 
@@ -236,7 +227,7 @@
 		if fok then fok = fNotCancelled
 	end if
 
-				Dim aPrompts
+	Dim aPrompts
 				
 	aPrompts =  Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
 	if fok then 
@@ -293,20 +284,14 @@
 		if fok then fok = fNotCancelled
 	end if
 
-				If fok And objReport.ChildCount > 1 And objReport.UsedChildCount > 1 Then
-						fok = objReport.CreateMutipleChildTempTable
-						fNotCancelled = Response.IsClientConnected
-						If fok Then fok = fNotCancelled
-				End If
+	If fok And objReport.ChildCount > 1 And objReport.UsedChildCount > 1 Then
+		fok = objReport.CreateMutipleChildTempTable
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
 	if fok then 
 		fok = objReport.CheckRecordSet 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then 
-		fok = objreport.OutputGridDefinition 
 		fNotCancelled = Response.IsClientConnected 
 		if fok then fok = fNotCancelled
 	end if
@@ -319,540 +304,74 @@
 		fNotCancelled = Response.IsClientConnected 
 		if fok then fok = fNotCancelled
 	end if		
-	
-	if fok then 
-		fok = objreport.OutputGridColumns 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
 
-	Dim arrayColumnsDefinition() As String
-				Dim arrayPageBreakValues
-				Dim arrayVisibleColumns
+	If fok Then
 
-	if fok then
-
-		if fok then 
-			fok = objreport.PopulateGrid_LoadRecords 
-			fNotCancelled = Response.IsClientConnected 
-			if fok then fok = fNotCancelled
-		end if
-
-		arrayColumnsDefinition = objreport.OutputArray_Columns 
-								
-		arrayPageBreakValues = objreport.OutputArray_PageBreakValues		
-		arrayVisibleColumns = objreport.OutputArray_VisibleColumns
+		If fok Then
+			fok = objReport.PopulateGrid_LoadRecords
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 		
-						If fok Then
-								Response.Write(objReport.Output_GridForm)
-						End If
-				End If
-
-	if fok then
-
-						
-		Response.Write("<form action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtPreview name=txtPreview value=""" & objReport.OutputPreview & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtFormat name=txtFormat value=" & objReport.OutputFormat & ">" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtScreen name=txtScreen value=""" & objReport.OutputScreen & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtPrinter name=txtPrinter value=""" & objReport.OutputPrinter & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtPrinterName name=txtPrinterName value=""" & objReport.OutputPrinterName & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtSave name=txtSave value=""" & objReport.OutputSave & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtSaveExisting name=txtSaveExisting value=""" & CStr(objReport.OutputSaveExisting) & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtEmail name=txtEmail value=""" & objReport.OutputEmail & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtEmailAddr name=txtEmailAddr value=""" & CStr(objReport.OutputEmailID) & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtEmailAddrName name=txtEmailAddrName value=""" & Replace(objReport.OutputEmailGroupName, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtEmailSubject name=txtEmailSubject value=""" & Replace(objReport.OutputEmailSubject, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtEmailAttachAs name=txtEmailAttachAs value=""" & Replace(objReport.OutputEmailAttachAs, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtFileName name=txtFileName value=""" & objReport.OutputFilename & """>" & vbCrLf)
-						Response.Write("  <INPUT type=""hidden"" id=txtUtilType name=txtUtilType value=""" & Session("UtilType") & """>" & vbCrLf)
-		Response.Write("  <INPUT type=""hidden"" id=""txtHasSummaryColumns"" name=""txtHasSummaryColumns"" value=""" & objReport.HasSummaryColumns & """>" & vbCrLf)
-		
-						
-		For icount = 0 To (UBound(arrayPageBreakValues))
-				Response.Write("	<INPUT type=hidden id=txtPageBreak_" & icount & " name=txtPageBreak_" & icount & " value=""" & Replace(arrayPageBreakValues(icount), """", "&quot;") & """>" & vbCrLf)
-		Next
-
-		Response.Write("			<input type=hidden id=pagebreak name=pagebreak value=""" & objReport.ReportHasPageBreak & """>" & vbCrLf)
-		Response.Write("			<input type=hidden id=txtSummaryReport name=txtSummaryReport value=""" & objReport.ReportHasSummaryInfo & """>" & vbCrLf)
-		
-		For icount = 0 To (UBound(arrayVisibleColumns, 2))
-			Response.Write("	<input type=hidden id=txtVisHeading_" & icount & " name=txtVisHeading_" & icount & " value=""" & Replace(Replace(arrayVisibleColumns(0, icount), """", "&quot;"), "_", " ") & """>" & vbCrLf)
-			Response.Write("	<input type=hidden id=txtVisDataType_" & icount & " name=txtVisDataType_" & icount & " value=""" & arrayVisibleColumns(1, icount) & """>" & vbCrLf)
-			Response.Write("	<input type=hidden id=txtVisDecimals_" & icount & " name=txtVisDecimals_" & icount & " value=""" & arrayVisibleColumns(2, icount) & """>" & vbCrLf)
-			Response.Write("	<input type=hidden id=txtVis1000Separator_" & icount & " name=txtVis1000Separator_" & icount & " value=""" & arrayVisibleColumns(3, icount) & """>" & vbCrLf)
-		Next
-		Response.Write("	<input type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
-		Response.Write("</form>" & vbCrLf)
-	
-		Response.Write("<script type=""text/javascript"">" & vbCrLf)
-
-						' Change the output text if Bradford Factor Report
-
-						Response.Write("function ExportData(strMode) " & vbCrLf)
-						Response.Write("	{" & vbCrLf & vbCrLf)
-		
-						Response.Write("	var bm;" & vbCrLf)
-						Response.Write("    var fok;" & vbCrLf)
-						Response.Write("	var sBreakValue = new String('');" & vbCrLf)
-						Response.Write("	var blnBreakCheck = false;" & vbCrLf)
-		Response.Write("    var frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
-						
-						Dim objUser As New HR.Intranet.Server.clsSettings          
-						
-						objReport.Username = Session("username").ToString()
-						CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))            
-						
-						'MH20031113 Fault 7606 Reset Columns and Styles...
-						Response.Write("  ClientDLL.ResetColumns();" & vbCrLf)
-						Response.Write("  ClientDLL.ResetStyles();" & vbCrLf)
-						Response.Write("  ClientDLL.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
-						Response.Write("  ClientDLL.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
-
-						Response.Write("  ClientDLL.SettingLocations(")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
-
-						Response.Write("  ClientDLL.SettingTitle(")
-						If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-
-						If (objUser.GetUserSetting("Output", "TitleBold", "1") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-
-						If (objUser.GetUserSetting("Output", "TitleUnderline", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")))) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")))) & ");" & vbCrLf)
-
-						Response.Write("  ClientDLL.SettingHeading(")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")))) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")))) & ");" & vbCrLf)
-
-						Response.Write("  ClientDLL.SettingData(")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")))) & ", ")
-						Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", "6697779")))) & ");" & vbCrLf)
-
-						Response.Write("  ClientDLL.InitialiseStyles();" & vbCrLf)
-						Response.Write("  ClientDLL.SettingOptions(")
-						Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
-						Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
-
-						If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-
-						If (objUser.GetUserSetting("Output", "ExcelHeaders", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-		
-						If (objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-		
-						If (objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", "0") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-		
-						If (objUser.GetUserSetting("Output", "AutoFitCols", "1") = "1") Then
-								Response.Write("true, ")
-						Else
-								Response.Write("false, ")
-						End If
-
-						If (objUser.GetUserSetting("Output", "Landscape", "1") = "1") Then
-								Response.Write("true, " & vbCrLf)
-						Else
-								Response.Write("false, " & vbCrLf)
-						End If
-
-						Response.Write("document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
-
-						'Set Options
-						If Not objReport.OutputPreview Then
-								Dim lngFormat As Long
-								Dim blnScreen As Boolean
-								Dim blnPrinter As Boolean
-								Dim strPrinterName As String
-								Dim blnSave As Boolean
-								Dim lngSaveExisting As Long
-								Dim blnEmail As Boolean
-								Dim lngEmailGroupID As Long
-								Dim strEmailSubject As String
-								Dim strEmailAttachAs As String
-								Dim strFileName As String
-			
-								lngFormat = CleanStringForJavaScript(objReport.OutputFormat)
-								blnScreen = CleanStringForJavaScript(LCase(objReport.OutputScreen))
-								blnPrinter = CleanStringForJavaScript(LCase(objReport.OutputPrinter))
-								strPrinterName = CleanStringForJavaScript(objReport.OutputPrinterName)
-								blnSave = CleanStringForJavaScript(LCase(objReport.OutputSave))
-								lngSaveExisting = CleanStringForJavaScript(objReport.OutputSaveExisting)
-								blnEmail = CleanStringForJavaScript(LCase(objReport.OutputEmail))
-								lngEmailGroupID = CLng(objReport.OutputEmailID)
-								strEmailSubject = CleanStringForJavaScript(objReport.OutputEmailSubject)
-								strEmailAttachAs = CleanStringForJavaScript(objReport.OutputEmailAttachAs)
-								'strFileName = objreport.OutputFilename 
-								strFileName = CleanStringForJavaScript(objReport.OutputFilename)
-			
-					Dim cmdEmailAddr As ADODB.Command
-					Dim prmEmailGroupID As ADODB.Parameter
-					Dim rstEmailAddr As ADODB.Recordset
-								Dim sErrorDescription As String = ""
-								Dim iLoop As Integer
-								Dim sEmailAddresses As String = ""
-								
-								If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
+		If fok Then
+			fok = objReport.PopulateGrid_HideColumns
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 				
-				cmdEmailAddr = New Command()
-										cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-				cmdEmailAddr.CommandType = CommandTypeEnum.adCmdStoredProc
-										cmdEmailAddr.ActiveConnection = Session("databaseConnection")
+	End If
 
-						prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-										cmdEmailAddr.Parameters.Append(prmEmailGroupID)
-										prmEmailGroupID.value = CleanNumeric(lngEmailGroupID)
-
-										Err.Clear()
-										rstEmailAddr = cmdEmailAddr.Execute
-
-										If (Err.Number <> 0) Then
-												sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-										End If
-
-										If Len(sErrorDescription) = 0 Then
-												iLoop = 1
-												Do While Not rstEmailAddr.EOF
-														If iLoop > 1 Then
-																sEmailAddresses = sEmailAddresses & ";"
-														End If
-														sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-														rstEmailAddr.MoveNext()
-														iLoop = iLoop + 1
-												Loop
-						
-												' Release the ADO recordset object.
-												rstEmailAddr.close()
-										End If
-							
-										rstEmailAddr = Nothing
-										cmdEmailAddr = Nothing
-								End If
-			
-								Response.Write("  fok = ClientDLL.SetOptions(false, " & _
-																												lngFormat & "," & blnScreen & ", " & _
-																												blnPrinter & ",""" & strPrinterName & """, " & _
-																												blnSave & "," & lngSaveExisting & ", " & _
-																												blnEmail & ", """ & CleanStringForJavaScript(sEmailAddresses) & """, """ & _
-																												strEmailSubject & """,""" & strEmailAttachAs & """,""" & strFileName & """);" & vbCrLf)
-						Else
-			Response.Write("  fok = ClientDLL.SetOptions(false, " & _
-																			"parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
-																			"frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
-																			"frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
-																			"frmExportData.txtEmail.value, $(""#txtEmailGroupAddr"")[0].value, " & _
-																			"frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
+	Session("CustomReport") = objReport
+	
+	gridReportData.DataSource = objReport.datCustomReportOutput
+	gridReportData.DataBind()
 		
-						End If
+		Dim fNoRecords As Boolean
 		
-						Response.Write("  if (fok == true) {" & vbCrLf)
+		fNoRecords = objReport.NoRecords
 
-						'(Chart or Pivot) and not summary report
-						Response.Write("  blnIndicatorColumn = false;" & vbCrLf)
-						Response.Write("  if ((frmExportData.txtFormat.value == ""5"") " & vbCrLf)
-						Response.Write("   || (frmExportData.txtFormat.value == ""6"")) {" & vbCrLf)
-						Response.Write("    blnIndicatorColumn = (frmExportData.txtSummaryReport.value == 'False')" & vbCrLf)
-						Response.Write("  }" & vbCrLf)
-		
-						Response.Write("  ClientDLL.SizeColumnsIndependently = true;" & vbCrLf)
-
-						Response.Write("  if (frmExportData.txtFormat.value == ""0"") {" & vbCrLf)
-						Response.Write("    if (frmExportData.txtPrinter.value.toLowerCase() == ""true"") {" & vbCrLf)
-						Response.Write("      ClientDLL.SetPrinter();" & vbCrLf)
-						Response.Write("      dataOnlyPrint();" & vbCrLf)
-						Response.Write("      ClientDLL.ResetDefaultPrinter();" & vbCrLf)
-						Response.Write("    }" & vbCrLf)
-						Response.Write("  }" & vbCrLf)
-						Response.Write("  else {" & vbCrLf)
-						Response.Write("  ClientDLL.HeaderRows = 1;" & vbCrLf)
-
-						Response.Write("  if (ClientDLL.GetFile() == true) " & vbCrLf)
-						Response.Write("		{" & vbCrLf)
-			
-		Response.Write("		if (frmExportData.pagebreak.value.toLowerCase() == ""true"") " & vbCrLf)
-						Response.Write("			{" & vbCrLf)
-						Response.Write("			var lngActualRow = new Number(0);" & vbCrLf)
-			
-						Response.Write("			ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
-						Response.Write("			lngActualRow = 0;" & vbCrLf)
-
-						Response.Write("      frmOutput.ssOleDBGridDefSelRecords.MoveFirst();" & vbCrLf)
-						Response.Write("      for (lngRow = 0; lngRow <= frmOutput.ssOleDBGridDefSelRecords.Rows; lngRow++)" & vbCrLf)
-						Response.Write("				{" & vbCrLf)
-
-						Response.Write("				lngActualRow = lngActualRow + 1; " & vbCrLf)
-						Response.Write("				bm = frmOutput.ssOleDBGridDefSelRecords.AddItemBookmark(lngRow);" & vbCrLf)
-		Response.Write("				if (lngRow == (frmOutput.ssOleDBGridDefSelRecords.Rows))" & vbCrLf)
-						Response.Write("					{" & vbCrLf)
-
-						Response.Write("					if (frmExportData.txtSummaryReport.value == 'True') " & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("						sBreakValue = 'Grand Totals';" & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-						Response.Write("					else" & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("						sBreakValue = document.getElementById('txtPageBreak_'+lngRow).value;" & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-			
-						Response.Write("				  if (lngActualRow > 0) {" & vbCrLf)
-						If bBradfordFactor = True Then
-								Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
-						Else
-								Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
-						End If
-						Response.Write("					var sColHeading = new String(''); " & vbCrLf)
-						Response.Write("					var iColDataType = new Number(0); " & vbCrLf)
-						Response.Write("					var iColDecimals = new Number(0); " & vbCrLf)
-						Response.Write("					for (var lngCol = 0; lngCol<=frmExportData.txtVisColCount.value; lngCol++)" & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("						sColHeading = document.getElementById('txtVisHeading_'+lngCol).value;" & vbCrLf)
-						Response.Write("						iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
-						Response.Write("						iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
-						Response.Write("						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
-						Response.Write("						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-						Response.Write("                    ClientDLL.DataArray();" & vbCrLf)
-						Response.Write("					lngActualRow = 0;" & vbCrLf)
-						Response.Write("					blnBreakCheck = true;" & vbCrLf)
-						Response.Write("					sBreakValue = '';" & vbCrLf)
-
-						Response.Write("					}" & vbCrLf)
-						Response.Write("				  }" & vbCrLf)
-						Response.Write("        else if ((frmOutput.ssOleDBGridDefSelRecords.Columns(0).CellText(bm) == '*')" & vbCrLf)
-						Response.Write("								&& (!blnBreakCheck))" & vbCrLf)
-						Response.Write("					{" & vbCrLf)
-			
-						Response.Write("					sBreakValue = document.getElementById('txtPageBreak_'+lngRow).value;" & vbCrLf)
-
-						If bBradfordFactor = True Then
-								Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
-						Else
-								Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
-						End If
-
-						Response.Write("					var sColHeading = new String(''); " & vbCrLf)
-						Response.Write("					var iColDataType = new Number(0); " & vbCrLf)
-						Response.Write("					var iColDecimals = new Number(0); " & vbCrLf)
-						Response.Write("					var iCol1000 = new Number(0); " & vbCrLf)
-						Response.Write("					for (var lngCol = 0; lngCol<=frmExportData.txtVisColCount.value; lngCol++)" & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("						sColHeading = document.getElementById('txtVisHeading_'+lngCol).value;" & vbCrLf)
-						Response.Write("						iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
-						Response.Write("						iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
-						Response.Write("						iCol1000 = document.getElementById('txtVis1000Separator_'+lngCol).value;" & vbCrLf)
-						Response.Write("						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
-						Response.Write("						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-
-						Response.Write("          ClientDLL.DataArray();" & vbCrLf)
-						Response.Write("					ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
-						Response.Write("					lngActualRow = 0;" & vbCrLf)
-						Response.Write("					blnBreakCheck = true;" & vbCrLf)
-						Response.Write("					sBreakValue = '';" & vbCrLf)
-						Response.Write("					ClientDLL.ResetColumns();" & vbCrLf)
-						Response.Write("					ClientDLL.ResetStyles();" & vbCrLf)
-			
-						Response.Write("					}" & vbCrLf & vbCrLf)
-						Response.Write("        else if (frmOutput.ssOleDBGridDefSelRecords.Columns(0).CellText(bm) != '*')" & vbCrLf)
-						Response.Write("					{" & vbCrLf)
-			
-						Response.Write("					blnBreakCheck = false;" & vbCrLf)
-						Response.Write("					lngCol = 0;" & vbCrLf)
-						Response.Write("					ClientDLL.ArrayReDim();" & vbCrLf & vbCrLf)
-						Response.Write("					for (var lngCount=0; lngCount<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; lngCount++)" & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("						if (frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).Visible == true)" & vbCrLf)
-						Response.Write("							{" & vbCrLf)
-						Response.Write("						  ClientDLL.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
-						Response.Write("						  lngCol++;" & vbCrLf)
-						Response.Write("							}" & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-
-						Response.Write("					}" & vbCrLf)
-						Response.Write("				}" & vbCrLf)
-						Response.Write("			} " & vbCrLf)
-						Response.Write("		else // no page break " & vbCrLf)
-						Response.Write("			{ " & vbCrLf)
-
-						Response.Write("      ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
-						If bBradfordFactor = True Then
-								Response.Write("			ClientDLL.PageTitles = false;" & vbCrLf)
-								Response.Write("      ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & "Bradford Factor" & "');" & vbCrLf)
-						Else
-								Response.Write("      ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & CleanStringForJavaScript(objReport.BaseTableName) & "');" & vbCrLf)
-						End If
-
-						Response.Write("			var sColHeading = new String(''); " & vbCrLf)
-						Response.Write("			var iColDataType = new Number(0); " & vbCrLf)
-						Response.Write("			var iColDecimals = new Number(0); " & vbCrLf)
-						Response.Write("			var iCol1000 = new Number(0); " & vbCrLf)
-						Response.Write("			for (var lngCol = 0; lngCol<=frmExportData.txtVisColCount.value; lngCol++)" & vbCrLf)
-						Response.Write("				{" & vbCrLf)
-						Response.Write("				sColHeading = document.getElementById('txtVisHeading_'+lngCol).value;" & vbCrLf)
-						Response.Write("				iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
-						Response.Write("				iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
-						Response.Write("				iCol1000 = document.getElementById('txtVis1000Separator_'+lngCol).value;" & vbCrLf)
-						Response.Write("				ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
-						Response.Write("				ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
-						Response.Write("				}" & vbCrLf)
-			
-						Response.Write("	  lngActualRow = 0;" & vbCrLf)
-						Response.Write("      for (lngRow = 0; lngRow < frmOutput.ssOleDBGridDefSelRecords.Rows; lngRow++)" & vbCrLf)
-						Response.Write("				{" & vbCrLf)
-						Response.Write("				bm = frmOutput.ssOleDBGridDefSelRecords.AddItemBookmark(lngRow);" & vbCrLf)
-
-						'MH20040403
-						Response.Write("    if (blnIndicatorColumn) " & vbCrLf)
-						Response.Write("			{" & vbCrLf)
-						Response.Write("			var sTestValue = new String(''); " & vbCrLf)
-						Response.Write("			sTestValue = frmOutput.ssOleDBGridDefSelRecords.Columns(0).CellText(bm).substr(0,1); " & vbCrLf)
-						Response.Write("			var blnIgnoreRow = (sTestValue == '*'); " & vbCrLf)
-						Response.Write("			}" & vbCrLf)
-						Response.Write("		else" & vbCrLf)
-						Response.Write("			{" & vbCrLf)
-						Response.Write("			blnIgnoreRow = false;" & vbCrLf)
-						Response.Write("			}" & vbCrLf)
-		
-						Response.Write("      if (!blnIgnoreRow) {" & vbCrLf)
-						Response.Write("				lngActualRow = lngActualRow + 1; " & vbCrLf)
-						Response.Write("        lngCol = 0;" & vbCrLf)
-						Response.Write("        ClientDLL.ArrayReDim();" & vbCrLf & vbCrLf)
-						Response.Write("        for (var lngCount=0; lngCount<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; lngCount++)" & vbCrLf)
-						Response.Write("					{" & vbCrLf)
-						Response.Write("          if (frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).Visible == true)" & vbCrLf)
-						Response.Write("						{" & vbCrLf)
-						Response.Write("            ClientDLL.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
-						Response.Write("            lngCol++;" & vbCrLf)
-						Response.Write("						}" & vbCrLf)
-						Response.Write("					}" & vbCrLf)
-						Response.Write("				}" & vbCrLf)
-						Response.Write("			}	// end (no page break) " & vbCrLf)
-						Response.Write("			ClientDLL.DataArray();" & vbCrLf)
-			
-						Response.Write("		}" & vbCrLf)
-						Response.Write("		}" & vbCrLf)
-						Response.Write("	}" & vbCrLf)
-						Response.Write("    ClientDLL.Complete();" & vbCrLf)
-
-						Response.Write("	ShowDataFrame();" & vbCrLf)
-						Response.Write("  }" & vbCrLf)
-
-						If Not objReport.OutputPreview Then
-								Response.Write("  frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objReport.EventLogID) & """;" & vbCrLf)
-								Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-								Response.Write("    raiseError('',false,true);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-								Response.Write("  else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
-								Response.Write("    raiseError(ClientDLL.ErrorMessage,false,false);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-								Response.Write("  else {" & vbCrLf)
-								Response.Write("    raiseError('',true,false);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-						Else
-			Response.Write("  sUtilTypeDesc =(""#txtUtilTypeDesc"")[0];" & vbCrLf)
-								Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-								Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-								Response.Write("  else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
-								Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + ClientDLL.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-								Response.Write("  else {" & vbCrLf)
-								Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
-								Response.Write("  }" & vbCrLf)
-						End If
-
-						Response.Write("  }" & vbCrLf)
-		Response.Write("</script>" & vbCrLf & vbCrLf)
-				End If
-
-				Dim fNoRecords As Boolean
-				
-				fNoRecords = objReport.NoRecords
-
-				If fok Then
-						If Response.IsClientConnected Then
-								objReport.Cancelled = False
-						Else
-								objReport.Cancelled = True
-						End If
+		If fok Then
+			If Response.IsClientConnected Then
+				objReport.Cancelled = False
+			Else
+				objReport.Cancelled = True
+			End If
+		Else
+			If Not fNoRecords Then
+				If fNotCancelled Then
+					objReport.FailedMessage = objReport.ErrorString
+					objReport.Failed = True
 				Else
-						If Not fNoRecords Then
-								If fNotCancelled Then
-										objReport.FailedMessage = objReport.ErrorString
-										objReport.Failed = True
-								Else
-										objReport.Cancelled = True
-								End If
-						End If
+					objReport.Cancelled = True
 				End If
+			End If
+		End If
+	
+	'objReport.ClearUp()
 
-				objReport.ClearUp()
-
-			If fok Then
-		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
-		Response.Write("<div>")
+		
+		If fok Then
+			Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
+			Response.Write("<div>")
 		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-		Response.Write("				<tr>" & vbCrLf)
-		Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
-				Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
-
+			Response.Write("				<tr>" & vbCrLf)
+			Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
+			Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
+			
+			
 %>
 
-<div>
-	<table class='outline' style='width: 100%; height: auto' id="ssOleDBGridDefSelRecords">
-		<tbody>
-			<tr class='header' style="text-align: left;">
-				<%			
-					For icount = 1 To UBound(arrayColumnsDefinition)
-						Response.Write(arrayColumnsDefinition(icount))
-					Next
-				%>
-			</tr>
-		</tbody>
-	</table>
-</div>
+<form id="formReportData" runat="server">
+	<asp:GridView ID="gridReportData" runat="server" 	
+		AllowPaging="False"		 
+		GridLines="None"
+		CssClass="visibletablecolumn">
+		<Columns>
+			<asp:BoundField DataField="rowtype" ItemStyle-CssClass="hiddentablecolumn" HeaderText="" />
+		</Columns>		
+	</asp:GridView>
+</form>
+
 
 <%
 
@@ -954,7 +473,6 @@
 %>
 
 
-
 		<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 				<%
 					Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(CType(Session("utilname"), String), """", "&quot;") & """>" & vbCrLf)
@@ -973,7 +491,70 @@
 				<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 		</form>
 
-		<%
-			Response.Write("<input type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
-		%>
+		<script runat="server">
 
+			Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
+			End Sub
+			
+			Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
+
+				Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
+				Dim objThisColumn As HR.Intranet.Server.Structures.ReportDetailItem
+				
+				If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
+					e.Row.CssClass = "header"
+					
+				Else
+
+					If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
+						e.Row.CssClass = "grandsummaryrow"
+					
+					ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
+						e.Row.CssClass = "summarytablerow"
+						
+					End If
+					
+				End If
+							
+				e.Row.Cells(0).Visible = False
+				
+				If Not objReport.HasSummaryColumns Then
+					e.Row.Cells(1).Visible = False					
+				End If
+
+				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+						
+					objThisColumn = objReport.ColumnDetails(iCount - 2)
+					
+					If objThisColumn.IsNumeric Then					
+						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
+					Else
+						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
+					End If
+
+					e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
+									
+				Next
+				
+			End Sub
+			
+		</script>
+		
+<form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData">
+	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objReport.OutputPreview%>">
+	<input type="hidden" id="txtFormat" name="txtFormat" value=<%=objReport.OutputFormat%>>
+	<input type="hidden" id="txtScreen" name="txtScreen" value=<%=objReport.OutputScreen%>>
+	<input type="hidden" id="txtPrinter" name="txtPrinter" value="<%=objReport.OutputPrinter%>">
+	<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="<%=objReport.OutputPrinterName%>">
+	<input type="hidden" id="txtSave" name="txtSave" value="<%=objReport.OutputSave%>">
+	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=objReport.OutputSaveExisting%>">
+	<input type="hidden" id="txtEmail" name="txtEmail" value="<%=objReport.OutputEmail%>">
+	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=objReport.OutputEmailID%>">
+	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=objReport.OutputEmailGroupName%>">
+	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=objReport.OutputEmailSubject%>">
+	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objReport.OutputEmailAttachAs%>">
+	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
+	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objReport.OutputFilename%>">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
+	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+</form>

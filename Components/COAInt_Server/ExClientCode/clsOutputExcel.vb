@@ -64,11 +64,11 @@ Friend Class clsOutputExcel
 		'If error then close the workbook and app...
 		If Not mxlWorkBook Is Nothing Then
 			mxlWorkBook.Saved = True
-			mxlWorkBook.Close()
+			'mxlWorkBook.Close()
 		End If
-		If Not mxlApp Is Nothing Then
-			mxlApp.Quit()
-		End If
+		'If Not mxlApp Is Nothing Then
+		'	mxlApp.Quit()
+		'End If
 
 		'Reset all references to ensure that Excel closes cleanly...
 		'UPGRADE_NOTE: Object mxlTemplateSheet may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

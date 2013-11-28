@@ -16,34 +16,34 @@ Public Class clsSettings
   End Function
 
 
-  Public Function GetWordColourIndex(ByRef lngColourValue As Integer) As Integer
+	Public Function GetWordColourIndex(ByRef lngColourValue As Long) As Integer
 
-    Dim rsTemp As ADODB.Recordset
-    Dim strSQL As String
+		Dim rsTemp As ADODB.Recordset
+		Dim strSQL As String
 
-    On Error GoTo LocalErr
+		On Error GoTo LocalErr
 
-    strSQL = "SELECT WordColourIndex FROM ASRSysColours " & " WHERE ColValue = " & CStr(lngColourValue)
-    rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
+		strSQL = "SELECT WordColourIndex FROM ASRSysColours " & " WHERE ColValue = " & CStr(lngColourValue)
+		rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
 
-    With rsTemp
-      If Not .BOF And Not .EOF Then
-        GetWordColourIndex = rsTemp.Fields("WordColourIndex").Value
-      Else
-        GetWordColourIndex = 0
-      End If
-    End With
+		With rsTemp
+			If Not .BOF And Not .EOF Then
+				GetWordColourIndex = rsTemp.Fields("WordColourIndex").Value
+			Else
+				GetWordColourIndex = 0
+			End If
+		End With
 
-    rsTemp.Close()
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
+		rsTemp.Close()
+		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		rsTemp = Nothing
 
-    Exit Function
+		Exit Function
 
 LocalErr:
-    GetWordColourIndex = 0
+		GetWordColourIndex = 0
 
-  End Function
+	End Function
 
 
   Public Function GetEmailGroupAddresses(ByRef lngGroupID As Integer) As String

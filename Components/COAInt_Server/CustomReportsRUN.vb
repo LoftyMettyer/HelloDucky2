@@ -2,7 +2,10 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
+Imports System.Collections.ObjectModel
 
 Public Class Report
 
@@ -70,11 +73,10 @@ Public Class Report
 	Private mstrSQLOrderBy As String
 	Private mstrSQL As String
 
-	' Array holding the columns to sort the report by
-	Private mvarSortOrder(,) As Object
+	' Collection to hold column definitions in the report
+	Public ColumnDetails As ICollection(Of ReportDetailItem)
+	Private colSortOrder As ICollection(Of ReportSortItem)
 
-	' Array to hold the columns used in the report
-	Dim mvarColDetails(,) As Object
 	Dim mstrExcelFormats() As String
 	Dim mvarVisibleColumns(,) As Object
 
@@ -91,6 +93,7 @@ Public Class Report
 
 	' Recordset to store the final data from the temp table
 	Private mrstCustomReportsOutput As New Recordset
+	'Private datCustomReportsOutput As DataTable
 
 	'Does the report generate no records ?
 	Private mblnNoRecords As Boolean
@@ -146,12 +149,18 @@ Public Class Report
 	'Runnning report for single record only!
 	Private mlngSingleRecordID As Integer
 
-Private Enum enum_RowType
-	Data = 0
-	Count = 1
-	Average = 2
-	Total = 3
-End Enum
+Public datCustomReportOutput As DataTable
+
+Private Sub datCustomReportOutput_Start()
+	datCustomReportOutput = New DataTable()
+	datCustomReportOutput.Columns.Add("rowType", GetType(RowType))
+	datCustomReportOutput.Columns.Add("Summary Info", GetType(String))
+
+	For Each objItem In ColumnDetails
+		datCustomReportOutput.Columns.Add(objItem.IDColumnName, GetType(String))
+	Next
+
+End Sub
 
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
@@ -162,27 +171,24 @@ End Enum
 	Public WriteOnly Property SingleRecordID() As Integer
 		Set(ByVal Value As Integer)
 			mlngSingleRecordID = Value
-
 		End Set
 	End Property
+
 	Public ReadOnly Property BaseTableName() As String
 		Get
-			BaseTableName = mstrCustomReportsBaseTableName
+			Return mstrCustomReportsBaseTableName
 		End Get
 	End Property
-
 
 	Public ReadOnly Property ChildCount() As Short
 		Get
-			ChildCount = miChildTablesCount
+			Return miChildTablesCount
 		End Get
 	End Property
 
-
-
 	Public ReadOnly Property UsedChildCount() As Short
 		Get
-			UsedChildCount = miUsedChildCount
+			Return miUsedChildCount
 		End Get
 	End Property
 
@@ -237,10 +243,8 @@ End Enum
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal Value As String)
 			mobjEventLog.AddDetailEntry(Value)
-
 		End Set
 	End Property
-
 
 	Public WriteOnly Property Cancelled() As Boolean
 		Set(ByVal Value As Boolean)
@@ -257,59 +261,46 @@ End Enum
 
 	Public ReadOnly Property NoRecords() As Boolean
 		Get
-
-			' Does the report have any records ?
-			NoRecords = mblnNoRecords
-
+			Return mblnNoRecords
 		End Get
 	End Property
 
-	Public ReadOnly Property SQLSTRING() As String
-		Get
+	'Public ReadOnly Property SQLSTRING() As String
+	'	Get
 
-			' Does the report have any records ?
-			SQLSTRING = mstrSQL
+	'		' Does the report have any records ?
+	'		SQLSTRING = mstrSQL
 
-		End Get
-	End Property
+	'	End Get
+	'End Property
 
 	Public ReadOnly Property ReportHasPageBreak() As Boolean
 		Get
-
-			' Does the report have a page break
-			ReportHasPageBreak = mblnReportHasPageBreak
-
+			Return mblnReportHasPageBreak
 		End Get
 	End Property
 
 	Public ReadOnly Property ReportHasSummaryInfo() As Boolean
 		Get
-
-			' Does the report have summary info
-			ReportHasSummaryInfo = mblnReportHasSummaryInfo
-
+			Return mblnReportHasSummaryInfo
 		End Get
 	End Property
 
 	Public ReadOnly Property CustomReportsSummaryReport() As Boolean
 		Get
-			CustomReportsSummaryReport = mblnCustomReportsSummaryReport
+			Return mblnCustomReportsSummaryReport
 		End Get
 	End Property
-
 
 	Public ReadOnly Property CustomReportsName() As String
 		Get
-			CustomReportsName = mstrCustomReportsName
+			Return mstrCustomReportsName
 		End Get
 	End Property
 
-
 	Public ReadOnly Property OutputArray_VisibleColumns() As Object
 		Get
-
-			OutputArray_VisibleColumns = VB6.CopyArray(mvarVisibleColumns)
-
+			Return VB6.CopyArray(mvarVisibleColumns)
 		End Get
 	End Property
 
@@ -321,10 +312,7 @@ End Enum
 
 	Public ReadOnly Property OutputArray_PageBreakValues() As Object
 		Get
-
-			'Holds all the page break values for the report. The index is the same as the grids row number!
-			OutputArray_PageBreakValues = VB6.CopyArray(mvarPageBreak)
-
+			Return VB6.CopyArray(mvarPageBreak)
 		End Get
 	End Property
 
@@ -345,31 +333,6 @@ End Enum
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputArray_Heading(ByVal lngIndex As Object) As String
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, lngIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArray_Heading = mvarColDetails(0, lngIndex)
-		End Get
-	End Property
-
-
-	Public ReadOnly Property OutputArray_DataType(ByVal lngIndex As Object) As Integer
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArray_DataType = IIf(mvarColDetails(3, lngIndex), SQLDataType.sqlNumeric, SQLDataType.sqlVarChar)
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputArray_Decimals(ByVal lngIndex As Object) As Integer
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, lngIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArray_Decimals = mvarColDetails(2, lngIndex)
-		End Get
-	End Property
-
 	Public WriteOnly Property Connection() As Connection
 		Set(ByVal Value As Connection)
 			gADOCon = Value
@@ -385,10 +348,6 @@ End Enum
 		End Set
 	End Property
 
-	'Public Property Get UserCancelled() As Boolean
-	'  UserCancelled = mblnUserCancelled
-	'End Property
-
 	Public WriteOnly Property CustomReportID() As Integer
 		Set(ByVal Value As Integer)
 
@@ -401,92 +360,93 @@ End Enum
 
 	Public ReadOnly Property ErrorString() As String
 		Get
-
-			' Error information passed back to the asp page
-			ErrorString = mstrErrorString
-
+			Return mstrErrorString
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputPreview() As Boolean
 		Get
-			OutputPreview = mblnOutputPreview
+			Return mblnOutputPreview
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputFormat() As Integer
 		Get
-			OutputFormat = mlngOutputFormat
+			Return mlngOutputFormat
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputScreen() As Boolean
 		Get
-			OutputScreen = mblnOutputScreen
+			Return mblnOutputScreen
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputPrinter() As Boolean
 		Get
-			OutputPrinter = mblnOutputPrinter
+			Return mblnOutputPrinter
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputPrinterName() As String
 		Get
-			OutputPrinterName = mstrOutputPrinterName
+			Return mstrOutputPrinterName
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputSave() As Boolean
+	Public Property OutputSave() As Boolean
 		Get
-			OutputSave = mblnOutputSave
+			Return mblnOutputSave
 		End Get
+		Set(value As Boolean)
+			mblnOutputSave = value
+		End Set
 	End Property
 
 	Public ReadOnly Property OutputSaveExisting() As Integer
 		Get
-			OutputSaveExisting = mlngOutputSaveExisting
+			Return mlngOutputSaveExisting
 		End Get
 	End Property
 
-
 	Public ReadOnly Property OutputEmail() As Boolean
 		Get
-			OutputEmail = mblnOutputEmail
+			Return mblnOutputEmail
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputEmailID() As Integer
 		Get
-			OutputEmailID = mlngOutputEmailID
+			Return mlngOutputEmailID
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputEmailGroupName() As String
 		Get
-			OutputEmailGroupName = mstrOutputEmailName
+			Return mstrOutputEmailName
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputEmailSubject() As String
 		Get
-			OutputEmailSubject = mstrOutputEmailSubject
+			Return mstrOutputEmailSubject
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputEmailAttachAs() As String
 		Get
-			OutputEmailAttachAs = mstrOutputEmailAttachAs
+			Return mstrOutputEmailAttachAs
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputFilename() As String
+	Public Property OutputFilename As String
 		Get
-			OutputFilename = mstrOutputFilename
+			Return mstrOutputFilename
 		End Get
+		Set(value As String)
+			mstrOutputFilename = value
+		End Set
 	End Property
-
 
 	Public Property EventLogID() As Integer
 		Get
@@ -496,43 +456,6 @@ End Enum
 			mobjEventLog.EventLogID = Value
 		End Set
 	End Property
-
-	Public Function Output_GridForm() As String
-
-		Dim sTemp As String
-		Dim lngCount As Integer
-		Dim asStrings() As String
-
-		Const STRINGLENGTH As Short = 5000
-
-		ReDim asStrings(0)
-
-		sTemp = vbNullString
-		sTemp = sTemp & "   <form name=frmGridItems id=frmGridItems>" & vbNewLine
-
-		For lngCount = 0 To mvarOutputArray_Data.Count - 1
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarOutputArray_Data(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			sTemp = sTemp & "      <input type=hidden id=" & "txtGridItem_" & CStr(lngCount) & " name=" & "txtGridItem_" & CStr(lngCount) & " value=""" & Replace(CStr(mvarOutputArray_Data(lngCount)), """", "&quot;") & """>" & vbNewLine
-
-			If Len(sTemp) > STRINGLENGTH Then
-				ReDim Preserve asStrings(UBound(asStrings) + 1)
-				asStrings(UBound(asStrings)) = sTemp
-				sTemp = vbNullString
-			End If
-		Next lngCount
-		sTemp = sTemp & "</form>" & vbNewLine
-
-		ReDim Preserve asStrings(UBound(asStrings) + 1)
-		asStrings(UBound(asStrings)) = sTemp
-		sTemp = vbNullString
-
-		For lngCount = 1 To UBound(asStrings)
-			sTemp = sTemp & asStrings(lngCount)
-		Next lngCount
-
-		Output_GridForm = sTemp
-
-	End Function
 
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
 
@@ -616,10 +539,8 @@ ErrorTrap:
 		' Initialise the the classes/arrays to be used
 		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
-		'mclsUI = New clsUI
 		mobjEventLog = New clsEventLog
-		ReDim mvarSortOrder(2, 0)
-		ReDim mvarColDetails(25, 0)
+
 		ReDim mlngTableViews(2, 0)
 		ReDim mstrViews(0)
 		ReDim mvarOutputArray_Columns(0)
@@ -631,6 +552,7 @@ ErrorTrap:
 
 		' By default this is not a Bradford Index Report
 		mbIsBradfordIndexReport = False
+		ColumnDetails = New Collection(Of ReportDetailItem)()
 
 	End Sub
 	Public Sub New()
@@ -655,6 +577,7 @@ ErrorTrap:
 		'Set gcolColumnPrivilegesCollection = Nothing
 
 	End Sub
+
 	Protected Overrides Sub Finalize()
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
@@ -682,20 +605,8 @@ AddTempTableToSQL_ERROR:
 
 	Public Function MergeSQLStrings() As Boolean
 
-		On Error GoTo MergeSQLStrings_ERROR
-
 		mstrSQL = mstrSQLSelect & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " " & mstrSQLOrderBy
-
-		MergeSQLStrings = True
-
-		Exit Function
-
-MergeSQLStrings_ERROR:
-
-		MergeSQLStrings = False
-		mstrErrorString = "Error merging SQL string components." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Return True
 
 	End Function
 
@@ -705,15 +616,14 @@ MergeSQLStrings_ERROR:
 
 		mclsData.ExecuteSql(mstrSQL)
 
-		ExecuteSql = True
-		Exit Function
+		Return True
 
 ExecuteSQL_ERROR:
 
-		ExecuteSql = False
 		mstrErrorString = "Error executing SQL statement." & vbNewLine & Err.Description
 		mobjEventLog.AddDetailEntry(mstrErrorString)
 		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Return False
 
 	End Function
 
@@ -847,6 +757,8 @@ GetCustomReportDefinition_ERROR:
 		Dim prstCustomReportsSortOrder As Recordset
 		Dim lngTableID As Integer
 		Dim sMask As String
+		Dim objReportItemDetail As ReportDetailItem
+		Dim objSortItem As ReportSortItem
 
 		' Get the column information from the Details table, in order
 		strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
@@ -867,8 +779,7 @@ GetCustomReportDefinition_ERROR:
 			End If
 
 			Do Until .EOF
-				intTemp = UBound(mvarColDetails, 2) + 1
-				ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
+				objReportItemDetail = New ReportDetailItem
 
 				ReDim Preserve mstrExcelFormats(intTemp) 'MH20010307
 
@@ -882,54 +793,40 @@ GetCustomReportDefinition_ERROR:
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(0, intTemp) = "?ID_HD_" & .Fields("Type").Value & "_" & .Fields("ColExprID").Value
+					objReportItemDetail.IDColumnName = "?ID_HD_" & .Fields("Type").Value & "_" & .Fields("ColExprID").Value
 				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(0, intTemp) = .Fields("Heading").Value
+					objReportItemDetail.IDColumnName = .Fields("Heading").Value
 				End If
 
 				'*************************************************************************
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(1, intTemp) = .Fields("Size").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(2, intTemp) = .Fields("dp").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(3, intTemp) = .Fields("IsNumeric").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(4, intTemp) = .Fields("Avge").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(5, intTemp) = .Fields("cnt").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(6, intTemp) = .Fields("tot").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(7, intTemp) = .Fields("boc").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(8, intTemp) = .Fields("poc").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(9, intTemp) = .Fields("voc").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(10, intTemp) = .Fields("srv").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(11, intTemp) = ""
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(12, intTemp) = .Fields("ColExprID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(13, intTemp) = .Fields("Type").Value
+				objReportItemDetail.Size = .Fields("Size").Value
+				objReportItemDetail.Decimals = .Fields("dp").Value
+				objReportItemDetail.IsNumeric = .Fields("IsNumeric").Value
+				objReportItemDetail.IsAverage = .Fields("Avge").Value
+				objReportItemDetail.IsCount = .Fields("cnt").Value
+				objReportItemDetail.IsTotal = .Fields("tot").Value
+				objReportItemDetail.IsBreakOnChange = .Fields("boc").Value
+				objReportItemDetail.IsPageOnChange = .Fields("poc").Value
+				objReportItemDetail.IsValueOnChange = .Fields("voc").Value
+				objReportItemDetail.SuppressRepeated = .Fields("srv").Value
+				objReportItemDetail.LastValue = ""
+				objReportItemDetail.ColExprID = .Fields("ColExprID").Value
+				objReportItemDetail.ID = .Fields("ColExprID").Value
+
+				objReportItemDetail.Type = .Fields("Type").Value
 
 				lngTableID = IIf(IsDBNull(.Fields("TableID").Value), 0, .Fields("TableID").Value)
-				mvarColDetails(14, intTemp) = lngTableID
-				mvarColDetails(15, intTemp) = .Fields("TableName").Value
+				objReportItemDetail.TableID = lngTableID
+				objReportItemDetail.TableName = .Fields("TableName").Value
 
 				If .Fields("Type").Value = "C" Then
-					mvarColDetails(16, intTemp) = .Fields("ColumnName").Value
-					mvarColDetails(17, intTemp) = .Fields("IsDateColumn").Value
-					mvarColDetails(18, intTemp) = .Fields("IsBooleanColumn").Value
+					objReportItemDetail.ColumnName = .Fields("ColumnName").Value
+					objReportItemDetail.IsDateColumn = .Fields("IsDateColumn").Value
+					objReportItemDetail.IsBitColumn = .Fields("IsBooleanColumn").Value
 
 				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = ""
+					objReportItemDetail.ColumnName = ""
 
 					'MH20010307
 					objExpr = New clsExprExpression
@@ -939,48 +836,39 @@ GetCustomReportDefinition_ERROR:
 					objExpr.ValidateExpression(True)
 
 					lngTableID = objExpr.BaseTableID
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(14, intTemp) = lngTableID
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(15, intTemp) = objExpr.BaseTableName
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = ""
+					objReportItemDetail.TableID = lngTableID
+					objReportItemDetail.TableName = objExpr.BaseTableName
+					objReportItemDetail.ColumnName = ""
 
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objExpr = Nothing
 
-					mvarColDetails(17, intTemp) = mclsGeneral.DateColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(18, intTemp) = mclsGeneral.BitColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
+					objReportItemDetail.IsDateColumn = mclsGeneral.DateColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
+					objReportItemDetail.IsBitColumn = mclsGeneral.BitColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
 
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(19, intTemp) = IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(20, intTemp) = IsReportChildTable(lngTableID) 'Indicates if column is a report child table.
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(21, intTemp) = IIf(.Fields("repetition").Value = 1, True, False)
-
-				mvarColDetails(22, intTemp) = .Fields("Use1000separator").Value
+				objReportItemDetail.IsHidden = IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False)
+				objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
+				objReportItemDetail.Repetition = IIf(.Fields("repetition").Value = 1, True, False)
+				objReportItemDetail.Use1000Separator = .Fields("Use1000separator").Value
 
 				' Format for this numeric column
-				If mvarColDetails(3, intTemp) Then
+				If objReportItemDetail.IsNumeric Then
 					sMask = ""
-					If mvarColDetails(22, intTemp) Then sMask = ",0"
-					If mvarColDetails(2, intTemp) > 0 Then sMask = sMask & "." & New String("0", mvarColDetails(2, intTemp))
-					mvarColDetails(23, intTemp) = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", mvarColDetails(2, intTemp)) & "}"
+					If objReportItemDetail.Use1000Separator Then sMask = ",0"
+					If objReportItemDetail.Decimals > 0 Then sMask = sMask & "." & New String("0", objReportItemDetail.Decimals)
+					objReportItemDetail.Mask = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", objReportItemDetail.Decimals) & "}"
 				End If
 
-
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(24, intTemp) = IIf((IsDBNull(.Fields("GroupWithNextColumn").Value) Or (Not .Fields("GroupWithNextColumn").Value)), False, True)
+				objReportItemDetail.GroupWithNextColumn = IIf((IsDBNull(.Fields("GroupWithNextColumn").Value) Or (Not .Fields("GroupWithNextColumn").Value)), False, True)
 
 				.MoveNext()
+
+				ColumnDetails.Add(objReportItemDetail)
+
 			Loop
 			.MoveFirst()
 		End With
@@ -991,67 +879,34 @@ GetCustomReportDefinition_ERROR:
 		' NB. Is called only when there is more than one child in the report.
 		'******************************************************************************
 
-		intTemp = UBound(mvarColDetails, 2) + 1
-		ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
+		objReportItemDetail = New ReportDetailItem
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(1, intTemp) = 99
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(2, intTemp) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(3, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(4, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(5, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(6, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(7, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(8, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(9, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(10, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(11, intTemp) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(12, intTemp) = -1
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(13, intTemp) = "C"
+		objReportItemDetail.Size = 99
+		objReportItemDetail.Decimals = 0
+		objReportItemDetail.IsNumeric = False
+		objReportItemDetail.IsAverage = False
+		objReportItemDetail.IsCount = False
+		objReportItemDetail.IsTotal = False
+		objReportItemDetail.IsBreakOnChange = False
+		objReportItemDetail.IsPageOnChange = False
+		objReportItemDetail.IsValueOnChange = False
+		objReportItemDetail.SuppressRepeated = False
+		objReportItemDetail.LastValue = ""
+		objReportItemDetail.ColExprID = -1
+		objReportItemDetail.Type = "C"
+		objReportItemDetail.TableID = mlngCustomReportsBaseTable
+		objReportItemDetail.TableName = datGeneral.GetTableName(CInt(objReportItemDetail.TableID))
+		objReportItemDetail.IDColumnName = "?ID"
+		objReportItemDetail.ColumnName = "ID"
+		objReportItemDetail.IsDateColumn = False
+		objReportItemDetail.IsBitColumn = False
+		objReportItemDetail.IsHidden = True
+		objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
+		objReportItemDetail.Repetition = True
+		objReportItemDetail.Mask = "0"
+		objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+		ColumnDetails.Add(objReportItemDetail)
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(14, intTemp) = mlngCustomReportsBaseTable
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(15, intTemp) = datGeneral.GetTableName(CInt(mvarColDetails(14, intTemp)))
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(0, intTemp) = "?ID"
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(16, intTemp) = "ID"
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(17, intTemp) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(18, intTemp) = False
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(19, intTemp) = True
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(20, intTemp) = IsReportChildTable(lngTableID) 'Indicates if column is a report child table.
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(21, intTemp) = True
-
-		mvarColDetails(23, intTemp) = "0"
-
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(24, intTemp) = False	'Group With Next Column.
 
 		Dim iChildCount As Short
 		Dim lngChildTableID As Integer
@@ -1061,173 +916,94 @@ GetCustomReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				lngChildTableID = mvarChildTables(0, iChildCount)
 				If IsChildTableUsed(lngChildTableID) Then
-					intTemp = UBound(mvarColDetails, 2) + 2
-					ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(1, intTemp - 1) = 99
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(2, intTemp - 1) = 0
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(3, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(4, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(5, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(6, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(7, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(8, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(9, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(10, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(11, intTemp - 1) = ""
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(12, intTemp - 1) = -1
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(13, intTemp - 1) = "C"
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(14, intTemp - 1) = mvarChildTables(0, iChildCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(15, intTemp - 1) = mvarChildTables(3, iChildCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(0, intTemp - 1) = "?ID_" & mvarColDetails(14, intTemp - 1)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp - 1) = "ID_" & mlngCustomReportsBaseTable
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(17, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(18, intTemp - 1) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(19, intTemp - 1) = True
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(20, intTemp - 1) = True 'Indicates if column is a report child table.
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(21, intTemp - 1) = True
+					objReportItemDetail = New ReportDetailItem
+					objReportItemDetail.Size = 99
+					objReportItemDetail.Decimals = 0
+					objReportItemDetail.IsNumeric = False
+					objReportItemDetail.IsAverage = False
+					objReportItemDetail.IsCount = False
+					objReportItemDetail.IsTotal = False
+					objReportItemDetail.IsBreakOnChange = False
+					objReportItemDetail.IsPageOnChange = False
+					objReportItemDetail.IsValueOnChange = False
+					objReportItemDetail.SuppressRepeated = False
+					objReportItemDetail.LastValue = ""
+					objReportItemDetail.ColExprID = -1
+					objReportItemDetail.Type = "C"
+					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
+					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
+					objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableID
+					objReportItemDetail.ColumnName = "ID_" & mlngCustomReportsBaseTable
+					objReportItemDetail.IsDateColumn = False
+					objReportItemDetail.IsBitColumn = False
+					objReportItemDetail.IsHidden = True
+					objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+					objReportItemDetail.Repetition = True
+					objReportItemDetail.Mask = "0"
+					objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+					ColumnDetails.Add(objReportItemDetail)
 
-					mvarColDetails(23, intTemp) = "0"
+					objReportItemDetail = New ReportDetailItem
+					objReportItemDetail.Size = 99
+					objReportItemDetail.Decimals = 0
+					objReportItemDetail.IsNumeric = False
+					objReportItemDetail.IsAverage = False
+					objReportItemDetail.IsCount = False
+					objReportItemDetail.IsTotal = False
+					objReportItemDetail.IsBreakOnChange = False
+					objReportItemDetail.IsPageOnChange = False
+					objReportItemDetail.IsValueOnChange = False
+					objReportItemDetail.SuppressRepeated = False
+					objReportItemDetail.LastValue = ""
+					objReportItemDetail.ColExprID = -1
+					objReportItemDetail.Type = "C"
+					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
+					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
+					objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableName
+					objReportItemDetail.ColumnName = "ID"
+					objReportItemDetail.IsDateColumn = False
+					objReportItemDetail.IsBitColumn = False
+					objReportItemDetail.IsHidden = True
+					objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+					objReportItemDetail.Repetition = True
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(24, intTemp - 1) = False	'Group With Next Column.
-
-					'*********************************************
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(1, intTemp) = 99
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(2, intTemp) = 0
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(3, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(4, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(5, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(6, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(7, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(8, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(9, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(10, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(11, intTemp) = ""
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(12, intTemp) = -1
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(13, intTemp) = "C"
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(14, intTemp) = mvarChildTables(0, iChildCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(15, intTemp) = mvarChildTables(3, iChildCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(0, intTemp) = "?ID_" & mvarColDetails(15, intTemp)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = "ID"
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(17, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(18, intTemp) = False
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(19, intTemp) = True
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(20, intTemp) = True 'Indicates if column is a report child table.
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(21, intTemp) = True
-
-					mvarColDetails(23, intTemp) = "0"
-
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(24, intTemp) = False	'Group With Next Column.
+					objReportItemDetail.Mask = "0"
+					objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+					ColumnDetails.Add(objReportItemDetail)
 
 				End If
 			Next iChildCount
 		End If
 
 		If miChildTablesCount > 1 Then
-			intTemp = UBound(mvarColDetails, 2) + 1
-			ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
 
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(1, intTemp) = 99
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(2, intTemp) = 0
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(3, intTemp) = True
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(4, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(5, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(6, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(7, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(8, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(9, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(10, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(11, intTemp) = ""
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(12, intTemp) = -1
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(13, intTemp) = "C"
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(14, intTemp) = -1
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(15, intTemp) = ""
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(0, intTemp) = lng_SEQUENCECOLUMNNAME
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(16, intTemp) = ""
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(17, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(18, intTemp) = False
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(19, intTemp) = True
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(20, intTemp) = True 'Indicates if column is a report child table.
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(21, intTemp) = True
-
-			mvarColDetails(23, intTemp) = "0"
-
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarColDetails(24, intTemp) = False	'Group With Next Column.
+			objReportItemDetail = New ReportDetailItem()
+			objReportItemDetail.Size = 99
+			objReportItemDetail.Decimals = 0
+			objReportItemDetail.IsNumeric = True
+			objReportItemDetail.IsAverage = False
+			objReportItemDetail.IsCount = False
+			objReportItemDetail.IsTotal = False
+			objReportItemDetail.IsBreakOnChange = False
+			objReportItemDetail.IsPageOnChange = False
+			objReportItemDetail.IsValueOnChange = False
+			objReportItemDetail.SuppressRepeated = False
+			objReportItemDetail.LastValue = ""
+			objReportItemDetail.ColExprID = -1
+			objReportItemDetail.Type = "C"
+			objReportItemDetail.TableID = -1
+			objReportItemDetail.TableName = ""
+			objReportItemDetail.IDColumnName = lng_SEQUENCECOLUMNNAME
+			objReportItemDetail.ColumnName = ""
+			objReportItemDetail.IsDateColumn = False
+			objReportItemDetail.IsBitColumn = False
+			objReportItemDetail.IsHidden = True
+			objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+			objReportItemDetail.Repetition = True
+			objReportItemDetail.Mask = "0"
+			objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+			ColumnDetails.Add(objReportItemDetail)
 
 		End If
 
@@ -1235,8 +1011,10 @@ GetCustomReportDefinition_ERROR:
 
 		' Get those columns defined as a SortOrder and load into array
 
-		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE " & "CustomReportID = " & mlngCustomReportID & " " & "AND SortOrderSequence > 0 " & "ORDER BY [SortOrderSequence]"
+		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
 		prstCustomReportsSortOrder = mclsGeneral.GetReadOnlyRecords(strTempSQL)
+
+		colSortOrder = New Collection(Of ReportSortItem)
 
 		With prstCustomReportsSortOrder
 			If .BOF And .EOF Then
@@ -1245,14 +1023,11 @@ GetCustomReportDefinition_ERROR:
 				Exit Function
 			End If
 			Do Until .EOF
-				intTemp = UBound(mvarSortOrder, 2) + 1
-				ReDim Preserve mvarSortOrder(2, intTemp)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(0, intTemp) = GetTableIDFromColumn(.Fields("ColExprID").Value)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(1, intTemp) = .Fields("ColExprID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(2, intTemp) = .Fields("SortOrder").Value
+				objSortItem = New ReportSortItem
+				objSortItem.TableID = GetTableIDFromColumn(.Fields("ColExprID").Value)
+				objSortItem.ColExprID = .Fields("ColExprID").Value
+				objSortItem.AscDesc = .Fields("SortOrder").Value
+				colSortOrder.Add(objSortItem)
 				.MoveNext()
 			Loop
 		End With
@@ -1274,17 +1049,13 @@ GetDetailsRecordsets_ERROR:
 
 	Private Function IsChildTableUsed(ByRef iChildTableID As Integer) As Boolean
 
-		Dim i As Short
-
-		IsChildTableUsed = False
-
-		For i = 1 To UBound(mvarColDetails, 2) Step 1
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(14, i) = iChildTableID Then
-				IsChildTableUsed = True
-				Exit Function
+		For Each objItem In ColumnDetails
+			If objItem.TableID = iChildTableID Then
+				Return True
 			End If
-		Next i
+		Next
+
+		Return False
 
 	End Function
 
@@ -1371,7 +1142,7 @@ GetDetailsRecordsets_ERROR:
 		ReDim mlngTableViews(2, 0)
 
 		' Loop thru the columns collection creating the SELECT and JOIN code
-		For pintLoop = 1 To UBound(mvarColDetails, 2)
+		For Each objReportItem In ColumnDetails
 
 			' Clear temp vars
 			plngTempTableID = 0
@@ -1379,17 +1150,12 @@ GetDetailsRecordsets_ERROR:
 			pstrTempColumnName = vbNullString
 
 			' If its a COLUMN then...
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(13, pintLoop) = "C" Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(0, pintLoop) <> lng_SEQUENCECOLUMNNAME Then
+			If objReportItem.Type = "C" Then
+				If objReportItem.IDColumnName <> lng_SEQUENCECOLUMNNAME Then
 					' Load the temp variables
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					plngTempTableID = mvarColDetails(14, pintLoop)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					pstrTempTableName = mvarColDetails(15, pintLoop)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					pstrTempColumnName = mvarColDetails(16, pintLoop)
+					plngTempTableID = objReportItem.TableID
+					pstrTempTableName = objReportItem.TableName
+					pstrTempColumnName = objReportItem.ColumnName
 
 					' Check permission on that column
 					mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
@@ -1412,11 +1178,9 @@ GetDetailsRecordsets_ERROR:
 						' this column can be read direct from the tbl/view or from a parent table
 						' JDM - 16/05/2005 - Fault 10018 - Pad out the duration field because it may not be long enough
 						If mbIsBradfordIndexReport And (pintLoop = 12 Or pintLoop = 13) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & "convert(numeric(10,2)," & mstrRealSource & "." & Trim(pstrTempColumnName) & ")" & " AS [" & mvarColDetails(0, pintLoop) & "]"
+							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & "convert(numeric(10,2)," & mstrRealSource & "." & Trim(pstrTempColumnName) & ")" & " AS [" & objReportItem.IDColumnName & "]"
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName) & " AS [" & mvarColDetails(0, pintLoop) & "]"
+							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName) & " AS [" & objReportItem.IDColumnName & "]"
 						End If
 
 
@@ -1504,12 +1268,7 @@ GetDetailsRecordsets_ERROR:
 							Next pintNextIndex
 
 							If Len(pstrColumnCode) > 0 Then
-								'            pstrColumnCode = pstrColumnCode & _
-								'" ELSE NULL" & _
-								'" END AS '" & mvarColDetails(0, pintLoop) & "'"
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								pstrColumnCode = pstrColumnCode & " ELSE NULL" & " END AS [" & mvarColDetails(0, pintLoop) & "]"
-
+								pstrColumnCode = pstrColumnCode & " ELSE NULL" & " END AS [" & objReportItem.IDColumnName & "]"
 								pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrColumnCode
 							End If
 
@@ -1518,8 +1277,7 @@ GetDetailsRecordsets_ERROR:
 						' If we cant see a column, then get outta here
 						If pblnNoSelect Then
 							GenerateSQLSelect = False
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & mvarColDetails(16, pintLoop) & "'" & vbNewLine & "either directly or through any views."
+							mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & objReportItem.ColumnName & "'" & vbNewLine & "either directly or through any views."
 							Exit Function
 						End If
 
@@ -1533,8 +1291,7 @@ GetDetailsRecordsets_ERROR:
 				Else
 					'Add the column which can store the sequence the records are added to the Temp table
 					'when more than one Child table is selected.
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & 0 & " AS [" & mvarColDetails(0, pintLoop) & "] "
+					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & 0 & " AS [" & objReportItem.IDColumnName & "] "
 
 				End If
 
@@ -1547,8 +1304,7 @@ GetDetailsRecordsets_ERROR:
 				' Column 2 = table/view ID.
 				ReDim alngSourceTables(2, 0)
 				objCalcExpr = New clsExprExpression
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(mvarColDetails(12, pintLoop)), ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(objReportItem.ColExprID), ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				If blnOK Then
 					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
 
@@ -1607,8 +1363,7 @@ GetDetailsRecordsets_ERROR:
 				objCalcExpr = Nothing
 
 				If blnOK Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & sCalcCode & " AS [" & mvarColDetails(0, pintLoop) & "]"
+					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & sCalcCode & " AS [" & objReportItem.IDColumnName & "]"
 
 					' Add the required views to the JOIN code.
 					For iLoop1 = 1 To UBound(alngSourceTables, 2)
@@ -1660,21 +1415,17 @@ GetDetailsRecordsets_ERROR:
 					Next iLoop1
 				Else
 					' Permission denied on something in the calculation.
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mstrErrorString = "You do not have permission to use the '" & mvarColDetails(0, pintLoop) & "' calculation."
-					GenerateSQLSelect = False
-					Exit Function
+					mstrErrorString = "You do not have permission to use the '" & objReportItem.IDColumnName & "' calculation."
+					Return False
 				End If
 
 			End If
 
-		Next pintLoop
+		Next
 
 		mstrSQLSelect = mstrSQLSelect & pstrColumnList
+		Return True
 
-		GenerateSQLSelect = True
-
-		Exit Function
 
 GenerateSQLSelect_ERROR:
 
@@ -1734,42 +1485,30 @@ Error_Trap:
 
 	End Function
 
-	Private Function OrderBy(ByRef plngTableID As Integer) As Object
+	Private Function OrderBy(ByRef plngTableID As Integer) As String
 
 		' This function creates an ORDER BY statement by searching
 		' through the columns defined as the reports sort order, then
 		' uses the relevant alias name
 
-		Dim iColCount As Short
-		Dim iSortCount As Short
 		Dim bHasOrder As Boolean
 
+		OrderBy = ""
 		bHasOrder = False
 
-		For iSortCount = 1 To UBound(mvarSortOrder, 2)
-			For iColCount = 1 To UBound(mvarColDetails, 2)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, iSortCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iSortCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarSortOrder(1, iSortCount) = mvarColDetails(12, iColCount) And mvarSortOrder(0, iSortCount) = plngTableID Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, iSortCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					OrderBy = OrderBy & "[" & mvarColDetails(0, iColCount) & "] " & mvarSortOrder(2, iSortCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					OrderBy = OrderBy & ", "
+		For Each objSort In colSortOrder
+			For Each objItem In ColumnDetails
+				If objSort.ColExprID = objItem.ColExprID And objSort.TableID = plngTableID Then
+					OrderBy = OrderBy & "[" & objItem.IDColumnName & "] " & objSort.AscDesc & ", "
 					bHasOrder = True
 					Exit For
 				End If
-			Next iColCount
-		Next iSortCount
+			Next
+		Next
 
 		If bHasOrder Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			OrderBy = " ORDER BY " & Left(OrderBy, Len(OrderBy) - 2) & " "
 		Else
-			'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			OrderBy = vbNullString
 		End If
 
@@ -1779,7 +1518,6 @@ Error_Trap:
 
 		Dim sMCTempTable As String
 		Dim sSQL As String
-		Dim iColCount As Short
 		Dim sParentSelectSQL As String
 		Dim rsParent As Recordset
 		Dim lngColumnID As Integer
@@ -1814,24 +1552,19 @@ Error_Trap:
 
 
 		'************** Get the Parent SELECT SQL statment ******************************
-		For iColCount = 1 To UBound(mvarColDetails, 2) Step 1
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, iColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			lngTableID = mvarColDetails(14, iColCount)
+		For Each objItem In ColumnDetails
+
+			lngTableID = objItem.TableID
 			If IsReportParentTable(lngTableID) Or IsReportBaseTable(lngTableID) Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				sParentSelectSQL = sParentSelectSQL & "[" & mvarColDetails(0, iColCount) & "]"
-				sParentSelectSQL = sParentSelectSQL & ", "
+				sParentSelectSQL = sParentSelectSQL & "[" & objItem.IDColumnName & "], "
 			End If
-		Next iColCount
+		Next
 
 		sParentSelectSQL = Left(sParentSelectSQL, Len(sParentSelectSQL) - 2) & " "
 
-		sSQL = "SELECT DISTINCT " & sParentSelectSQL
-		sSQL = sSQL & " FROM [" & mstrTempTableName & "] "
-
+		sSQL = "SELECT DISTINCT " & sParentSelectSQL & " FROM [" & mstrTempTableName & "] "
 
 		'Order the Parent recorset
-		'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		sSQL = sSQL & OrderBy(mlngCustomReportsBaseTable)
 
 		rsParent = datGeneral.GetRecords(sSQL)
@@ -1878,29 +1611,24 @@ Error_Trap:
 					If mvarChildTables(4, iChildCount) Then	'is the child table used???
 						'UPGRADE_NOTE: Object rsChild may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						rsChild = Nothing
-						For iColCount = 1 To UBound(mvarColDetails, 2) Step 1
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, iColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							lngTableID = mvarColDetails(14, iColCount)
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, iColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
+						For Each objItem In ColumnDetails
+							lngTableID = objItem.TableID
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (mvarColDetails(20, iColCount)) And (lngTableID = mvarChildTables(0, iChildCount)) And (mvarColDetails(16, iColCount) <> ("?ID_" & CStr(mlngCustomReportsBaseTable))) Then
+							If objItem.IsReportChildTable And (lngTableID = mvarChildTables(0, iChildCount)) And (objItem.ColumnName <> ("?ID_" & CStr(mlngCustomReportsBaseTable))) Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sChildSelectSQL = sChildSelectSQL & "[" & mvarColDetails(0, iColCount) & "]"
-								sChildSelectSQL = sChildSelectSQL & ", "
+								sChildSelectSQL = sChildSelectSQL & "[" & objItem.IDColumnName & "]" & ", "
 							End If
-						Next iColCount
+						Next
 						sChildSelectSQL = Left(sChildSelectSQL, Len(sChildSelectSQL) - 2) & " "
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sChildWhereSQL = sChildWhereSQL & "[?ID_" & mvarChildTables(0, iChildCount) & "] = "
 						sChildWhereSQL = sChildWhereSQL & .Fields("?ID").Value
 
-						sSQL = "SELECT DISTINCT " & sChildSelectSQL
-						sSQL = sSQL & " FROM [" & mstrTempTableName & "]"
-						sSQL = sSQL & " WHERE " & sChildWhereSQL
+						sSQL = "SELECT DISTINCT " & sChildSelectSQL & " FROM [" & mstrTempTableName & "] WHERE " & sChildWhereSQL
 
 						'Order the child recordset.
-						'UPGRADE_WARNING: Couldn't resolve default property of object OrderBy(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sSQL = sSQL & OrderBy(lngCurrentTableID)
 
 						sChildSelectSQL = vbNullString
@@ -2893,7 +2621,7 @@ GenerateSQLWhere_ERROR:
 
 		Else
 
-			If UBound(mvarSortOrder, 2) > 0 Then
+			If colSortOrder.Count > 0 Then
 				' Columns have been defined, so use these for the base table/view
 				mstrSQLOrderBy = DoDefinedOrderBy()
 			End If
@@ -2902,10 +2630,7 @@ GenerateSQLWhere_ERROR:
 
 		End If
 
-
-
-		GenerateSQLOrderBy = True
-		Exit Function
+		Return True
 
 GenerateSQLOrderBy_ERROR:
 
@@ -2922,51 +2647,24 @@ GenerateSQLOrderBy_ERROR:
 		' through the columns defined as the reports sort order, then
 		' uses the relevant alias name
 
-		Dim iLoop As Short
-		Dim iLoop2 As Short
+		For Each objSort In colSortOrder
 
-		For iLoop = 1 To UBound(mvarSortOrder, 2)
+			For Each objReportItem In ColumnDetails
 
-			For iLoop2 = 1 To UBound(mvarColDetails, 2)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarSortOrder(1, iLoop) = mvarColDetails(12, iLoop2) Then
-
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					DoDefinedOrderBy = DoDefinedOrderBy & IIf(Len(DoDefinedOrderBy) > 0, ",", "") & "[" & mvarColDetails(0, iLoop2) & "] " & mvarSortOrder(2, iLoop)
-
+				If objSort.ColExprID = objReportItem.ColExprID Then
+					DoDefinedOrderBy = DoDefinedOrderBy & IIf(Len(DoDefinedOrderBy) > 0, ",", "") & "[" & objReportItem.IDColumnName & "] " & objSort.AscDesc
 					Exit For
 
 				End If
 
-			Next iLoop2
+			Next
 
-		Next iLoop
+		Next
 
 	End Function
 
 	Private Function GetTableIDFromColumn(ByVal lngColumnID As Integer) As Integer
-
-		' Purpose : To return the table id for which the given column belongs
-
-		Dim rsInfo As Recordset
-		Dim strSQL As String
-
-		strSQL = "SELECT ASRSysTables.TableID " & "FROM ASRSysColumns JOIN ASRSysTables " & "ON (ASRSysTables.TableID = ASRSysColumns.TableID) " & "WHERE ColumnID = " & CStr(lngColumnID)
-
-		rsInfo = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-		If rsInfo.BOF And rsInfo.EOF Then
-			GetTableIDFromColumn = 0
-		Else
-			GetTableIDFromColumn = rsInfo.Fields("TableID").Value
-		End If
-
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
-
+		Return Columns.GetById(lngColumnID).TableID
 	End Function
 
 	Public Function CheckRecordSet() As Boolean
@@ -3033,14 +2731,13 @@ CheckRecordSet_ERROR:
 
 		On Error GoTo LoadRecords_ERROR
 
-		Dim sAddString As String
-		Dim iLoop As Short
-		Dim vDisplayData As Object
-		Dim avColumns(,) As Object
+		Dim aryAddString As ArrayList
+		Dim vDisplayData As String
+		Dim colColumns As ICollection(Of ReportColumn)
+
 		Dim vValue As Object
 		Dim fBreak As Boolean
 		Dim iLoop2 As Short
-		Dim iLoop3 As Short
 		Dim iColumnIndex As Short
 		Dim iOtherColumnIndex As Short
 		Dim fNotFirstTime As Boolean
@@ -3071,25 +2768,30 @@ CheckRecordSet_ERROR:
 		Dim bBaseRecordChanged As Boolean
 		Dim isHiddenColumn As Boolean
 
-		' Construct an array of the columns in the report. Basically this is an extension of the mvarColDetails array.
-		' Col 1 = TRUE if the column is used for breaking/paging on change.
-		' Col 2 = TRUE if the column is to be aggregated (average/count/total), else FALSE.
-		' Col 3 = last column value.
-		ReDim avColumns(3, UBound(mvarColDetails, 2))
-		For iLoop = 1 To UBound(mvarColDetails, 2)
-			'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avColumns(1, iLoop) = mvarColDetails(7, iLoop) Or mvarColDetails(8, iLoop)
-			'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avColumns(2, iLoop) = mvarColDetails(4, iLoop) Or mvarColDetails(5, iLoop) Or mvarColDetails(6, iLoop)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(3, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avColumns(3, iLoop) = DBNull.Value
-		Next iLoop
+		Dim objReportItem As ReportDetailItem
+		Dim otherColumnDetail As ReportDetailItem
+		Dim objNextItem As ReportDetailItem
+		Dim objReportColumn As ReportColumn
+
+		' Construct a collection of the columns in the report.
+		colColumns = New Collection(Of ReportColumn)
+		For Each objReportItem In ColumnDetails
+			objReportColumn = New ReportColumn()
+			objReportColumn.ID = objReportItem.ColExprID
+			objReportColumn.BreakOrPageOnChange = objReportItem.IsBreakOnChange Or objReportItem.IsPageOnChange
+			objReportColumn.HasSummaryLine = objReportItem.IsAverage Or objReportItem.IsCount Or objReportItem.IsTotal
+			objReportColumn.LastValue = DBNull.Value
+			colColumns.Add(objReportColumn)
+		Next
+
+		datCustomReportOutput_Start()
 
 		'Ensure we are at the beginning of the output recordset
 		mrstCustomReportsOutput.MoveFirst()
 
 		Do Until mrstCustomReportsOutput.EOF
+
+			aryAddString = New ArrayList()
 
 			'bRecordChanged used for repetition funcionality.
 			If Not mbIsBradfordIndexReport Then
@@ -3101,162 +2803,109 @@ CheckRecordSet_ERROR:
 				End If
 			End If
 
-			'offset the addstring by 2 columns (for pagebreak and summary info)
-			sAddString = "<td class='hiddentablecolumn'></td><td class='summarytablecolumn'></td>"
-
 			' Dont do summary info for first record (otherwise blank!)
 			'If mrstCustomReportsOutput.AbsolutePosition > 1 Then
 			If fNotFirstTime Then
 				' Put the values from the previous record in the column array.
-				For iLoop = 1 To UBound(mvarColDetails, 2)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(3, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avColumns(3, iLoop) = mvarColDetails(11, iLoop)
-				Next iLoop
+
+				For Each objReportItem In ColumnDetails
+					colColumns.GetById(objReportItem.ColExprID).LastValue = objReportItem.LastValue
+				Next
 
 				' From last column in the order to first, check changes.
-				For iLoop = UBound(mvarSortOrder, 2) To 1 Step -1
+				For iLoop7 = colSortOrder.Count - 1 To 0 Step -1
 					' Find the column in the details array.
 					iColumnIndex = 0
-					For iLoop2 = 1 To UBound(mvarColDetails, 2)
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
-							iColumnIndex = iLoop2
+					iLoop2 = 1
+					For Each objReportItem In ColumnDetails
+						If (objReportItem.ColExprID = colSortOrder.GetByIndex(iLoop7).ColExprID) And (objReportItem.Type = "C") Then
+							iColumnIndex = iLoop2 - 1
 							Exit For
 						End If
-					Next iLoop2
+						iLoop2 += 1
+					Next
 
-					If iColumnIndex > 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If avColumns(1, iColumnIndex) Then
+					'If iColumnIndex > 0 Then
+
+						If colColumns.GetByIndex(iColumnIndex).BreakOrPageOnChange Then
 							fBreak = False
 
+							objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
+
 							' The column breaks. Check if its changed.
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) And (Not mvarColDetails(3, iColumnIndex)) And (Not mvarColDetails(17, iColumnIndex)) And (Not mvarColDetails(18, iColumnIndex)) Then
-								' Field value is null but a character data type, so set it to be "".
-								'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vValue = ""
-							Else
-								'Dates need to be formatted with yyyy for boc to work ok
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-
-								If mvarColDetails(17, iColumnIndex) Then 'Date
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									vValue = Left(VB6.Format(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, DateFormat), mvarColDetails(1, iColumnIndex))
-
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								ElseIf mvarColDetails(3, iColumnIndex) Then	 'Numeric
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									vValue = Left(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, mvarColDetails(1, iColumnIndex))
-
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								ElseIf mvarColDetails(18, iColumnIndex) Then	'Bit
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = True) Or (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = 1) Then vValue = "Y"
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = False) Or (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = 0) Then vValue = "N"
-									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then vValue = ""
-
-								Else 'Varchar
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									vValue = Left(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, mvarColDetails(1, iColumnIndex))
-
-								End If
-							End If
+							vValue = PopulateGrid_FormatData(objReportItem, mrstCustomReportsOutput.Fields(iColumnIndex).Value, False, False)
 
 							'Now that we store the formatted value in position (11) of the mcolDetails
 							'Comparison made after adjusting the size of the field.
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								fBreak = ("" <> mvarColDetails(11, iColumnIndex))
+							If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex).Value) Then
+								fBreak = ("" <> objReportItem.LastValue)
 							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarColDetails(18, iColumnIndex) Then 'Bit
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If objReportItem.IsBitColumn Then	'Bit
 									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(mvarColDetails(11, iColumnIndex))))
+									fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(objReportItem.LastValue)))
 								Else
-									'TM23112004 Fault 9072
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value)) <> RTrim(LCase(mvarColDetails(11, iColumnIndex))))
+									fBreak = Not (vValue = objReportItem.LastValue)
 								End If
 							End If
 
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If mvarColDetails(8, iColumnIndex) Then
-								sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
+
+							If objReportItem.IsPageOnChange Then
+								sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
 							End If
 
 							If Not fBreak Then
 								' The value has not changed, but check if we need to do the summary due to another column changing.
-								For iLoop2 = (iLoop - 1) To 1 Step -1
+								For iLoop2 = iLoop7 - 1 To 0 Step -1
 									iOtherColumnIndex = 0
-									For iLoop3 = 1 To UBound(mvarColDetails, 2)
-										'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										If mvarColDetails(12, iLoop3).ToString() = mvarSortOrder(1, iLoop2).ToString() And mvarColDetails(13, iLoop3) = "C" Then
-											iOtherColumnIndex = iLoop3
+									For Each objItem In ColumnDetails
+										If objItem.ColExprID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
+											otherColumnDetail = objItem
 											Exit For
 										End If
-									Next iLoop3
+										iOtherColumnIndex += 1
+									Next
 
-									If iOtherColumnIndex > 0 Then
-										'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										If avColumns(1, iOtherColumnIndex) Then
+									If Not otherColumnDetail Is Nothing Then
+										If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
 											' The column breaks. Check if its changed.
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) And (Not mvarColDetails(3, iOtherColumnIndex)) And (Not mvarColDetails(17, iOtherColumnIndex)) And (Not mvarColDetails(18, iOtherColumnIndex)) Then
+											If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
 												' Field value is null but a character data type, so set it to be "".
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 												vValue = ""
 
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											ElseIf mvarColDetails(3, iOtherColumnIndex) Then	'Numeric
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											ElseIf otherColumnDetail.IsNumeric Then	'Numeric
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value, mvarColDetails(1, iOtherColumnIndex))
+												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
 
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											ElseIf mvarColDetails(18, iOtherColumnIndex) Then	 'Bit
+											ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = True) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = 1) Then vValue = "Y"
+												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = True) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 1) Then vValue = "Y"
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = 0) Then vValue = "N"
+												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 0) Then vValue = "N"
 												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then vValue = ""
+												If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then vValue = ""
 
 											Else
 												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value, mvarColDetails(1, iOtherColumnIndex))
+												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
 
 											End If
 
 											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												fBreak = ("" <> mvarColDetails(11, iOtherColumnIndex))
+											If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then
+												fBreak = ("" <> otherColumnDetail.LastValue)
 											Else
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If mvarColDetails(18, iOtherColumnIndex) Then	'Bit
+												If otherColumnDetail.IsBitColumn Then	'Bit
 													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 													'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-													fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(mvarColDetails(11, iOtherColumnIndex))))
+													fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(otherColumnDetail.LastValue)))
 												Else
 													'TM23112004 Fault 9072
 													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-													fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value)) <> RTrim(LCase(mvarColDetails(11, iOtherColumnIndex))))
+													fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value)) <> RTrim(LCase(otherColumnDetail.LastValue)))
 												End If
 											End If
 
@@ -3272,22 +2921,24 @@ CheckRecordSet_ERROR:
 							'               selected for the column, so check for aggregate too, and only
 							'               do summary info if its true.
 							If fBreak Then
-								PopulateGrid_DoSummaryInfo(avColumns, iColumnIndex, iLoop)
+								PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop7)
 
 								' Do the page break ?
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarColDetails(8, iColumnIndex) Then
+
+								If objReportItem.IsPageOnChange Then
 									mblnPageBreak = True
 									mblnReportHasPageBreak = True
 								End If
 							End If
 						End If
-					End If
-				Next iLoop
+					'End If
+				Next
 			End If
 
+
 			If mblnPageBreak Then
-				AddToArray_Data("*", enum_RowType.Data)
+				NEW_AddToArray_Data(RowType.Data, "*")
+
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 				AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
 			End If
@@ -3306,128 +2957,115 @@ CheckRecordSet_ERROR:
 					isHiddenColumn = True
 				End If
 
+				Dim objSkippedItem As ReportDetailItem = ColumnDetails.GetByIndex(intSkippedIndex + 1)
+
+				If Not iLoop = (mrstCustomReportsOutput.Fields.Count - 1) Then
+					objNextItem = ColumnDetails.GetByIndex(iLoop)
+
 				' Only suppress values for new records in the Bradford Factor report
-				bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
+					bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
 
-				If (mvarColDetails(18, iLoop + 1)) Then	'Bit
-					'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
-						vDisplayData = ""
-					Else
+					If objNextItem.IsBitColumn Then	 'Bit
 						'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then vDisplayData = "Y"
-						'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then vDisplayData = "N"
-					End If
-
-				Else
-					' Get the formatted data to display in the grid
-					'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					vDisplayData = PopulateGrid_FormatData((mrstCustomReportsOutput.Fields(iLoop).Name), mrstCustomReportsOutput.Fields(iLoop).Value, bSuppress, bBaseRecordChanged)
-				End If
-
-				If blnSkipped Then
-					' Store the ACTUAL data in the array (previous value dimension)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) And (Not mvarColDetails(3, intSkippedIndex + 1)) And (Not mvarColDetails(17, intSkippedIndex + 1)) And (Not mvarColDetails(18, intSkippedIndex + 1)) Then
-						' Field value is null but a character data type, so set it to be "".
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(11, intSkippedIndex + 1) = ""
-
-					Else
-						'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(17, intSkippedIndex + 1) Then	'Date
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, intSkippedIndex + 1) = VB6.Format(mrstCustomReportsOutput.Fields(intSkippedIndex).Value, DateFormat)
-
-						ElseIf (mvarColDetails(3, intSkippedIndex + 1)) Then	'Numeric
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, intSkippedIndex + 1) = IIf(IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
-
-						ElseIf (mvarColDetails(18, intSkippedIndex + 1)) Then	 'Bit
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "True") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 1) Then mvarColDetails(11, intSkippedIndex + 1) = "Y"
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "False") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 0) Then mvarColDetails(11, intSkippedIndex + 1) = "N"
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) Then mvarColDetails(11, intSkippedIndex + 1) = ""
-
-						Else 'Varchar
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, intSkippedIndex + 1) = mrstCustomReportsOutput.Fields(intSkippedIndex).Value
+						If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
+							vDisplayData = ""
+						Else
+							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then vDisplayData = "Y"
+							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then vDisplayData = "N"
 						End If
 
+					Else
+						' Get the formatted data to display in the grid
+						'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						vDisplayData = PopulateGrid_FormatData(objNextItem, mrstCustomReportsOutput.Fields(iLoop).Value, bSuppress, bBaseRecordChanged)
 					End If
 
-				Else
-					' Store the ACTUAL data in the array (previous value dimension)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) And (Not mvarColDetails(3, iLoop + 1)) And (Not mvarColDetails(17, iLoop + 1)) And (Not mvarColDetails(18, iLoop + 1)) Then
-						' Field value is null but a character data type, so set it to be "".
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(11, iLoop + 1) = ""
-					Else
+					If blnSkipped Then
+						' Store the ACTUAL data in the array (previous value dimension)
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) And (Not objSkippedItem.IsNumeric) And (Not objSkippedItem.IsDateColumn) And (Not objSkippedItem.IsBitColumn) Then
+							' Field value is null but a character data type, so set it to be "".
+							objSkippedItem.LastValue = ""
 
-						'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(17, iLoop + 1) Then	'Date
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, iLoop + 1) = VB6.Format(mrstCustomReportsOutput.Fields(iLoop).Value, DateFormat)
+						Else
+							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
+							If objSkippedItem.IsDateColumn Then	'Date
+								objSkippedItem.LastValue = VB6.Format(mrstCustomReportsOutput.Fields(intSkippedIndex).Value, DateFormat)
 
-						ElseIf (mvarColDetails(3, iLoop + 1)) Then	'Numeric
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, iLoop + 1) = IIf(IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
+							ElseIf objSkippedItem.IsNumeric Then	'Numeric
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								objSkippedItem.LastValue = IIf(IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
 
-						ElseIf (mvarColDetails(18, iLoop + 1)) Then	 'Bit
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
-								mvarColDetails(11, iLoop + 1) = ""
-							Else
-								If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then mvarColDetails(11, iLoop + 1) = "Y"
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then mvarColDetails(11, iLoop + 1) = "N"
+							ElseIf (objSkippedItem.IsBitColumn) Then	 'Bit
+								If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "True") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 1) Then objSkippedItem.LastValue = "Y"
+								If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "False") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 0) Then objSkippedItem.LastValue = "N"
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) Then objSkippedItem.LastValue = ""
 
+							Else 'Varchar
+								objSkippedItem.LastValue = mrstCustomReportsOutput.Fields(intSkippedIndex).Value
 							End If
 
-						Else 'Varchar
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(11, iLoop + 1) = mrstCustomReportsOutput.Fields(iLoop).Value
 						End If
-					End If
-				End If
 
-				' Group with next column
-				If (mvarColDetails(24, iLoop + 1) And (Not mvarColDetails(19, iLoop + 1))) Then
-					sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is Nothing, "<br/>", "")
-
-				Else
-					vDisplayData = sLastValue & vDisplayData
-					sLastValue = vbNullString
-
-					If isHiddenColumn Then
-						sAddString = sAddString & "<td class='hiddentablecolumn'>" & vDisplayData & "</td>"
 					Else
-						If mvarColDetails(3, iLoop + 1) Then
-							sAddString = sAddString & "<td class='visibletablecolumn' align='right'>" & vDisplayData & "</td>"
+						' Store the ACTUAL data in the array (previous value dimension)
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) And (Not objNextItem.IsNumeric) And (Not objNextItem.IsDateColumn) And (Not objNextItem.IsBitColumn) Then
+							' Field value is null but a character data type, so set it to be "".
+							objNextItem.LastValue = ""
 						Else
-							sAddString = sAddString & "<td class='visibletablecolumn'>" & vDisplayData & "</td>"
+
+							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
+							If objNextItem.IsDateColumn Then	'Date
+								objNextItem.LastValue = VB6.Format(mrstCustomReportsOutput.Fields(iLoop).Value, DateFormat)
+
+							ElseIf objNextItem.IsNumeric Then	'Numeric
+								objNextItem.LastValue = IIf(IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
+
+							ElseIf objNextItem.IsBitColumn Then	 'Bit
+								If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
+									objNextItem.LastValue = ""
+								Else
+									If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then objNextItem.LastValue = "Y"
+									If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then objNextItem.LastValue = "N"
+								End If
+
+							Else 'Varchar
+								objNextItem.LastValue = mrstCustomReportsOutput.Fields(iLoop).Value
+							End If
 						End If
 					End If
 
+					' Group with next column
+					If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
+						sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "") & "<br></br>\n"
+
+					Else
+
+						If Not isHiddenColumn Then ' hidden columns at end of recordset (hopefully)
+
+							vDisplayData = sLastValue & vDisplayData
+							aryAddString.Add(vDisplayData)
+							sLastValue = vbNullString
+
+						End If
+
+					End If
 				End If
 
 			Next iLoop
 
 			' Only Add the addstring to the grid if its not a summary report
 			If mblnCustomReportsSummaryReport = False Then
-				If Not AddToArray_Data(sAddString, enum_RowType.Data) Then
-					PopulateGrid_LoadRecords = False
-					Exit Function
+				If Not NEW_AddToArray_Data(RowType.Data, aryAddString) Then
+
+				'If Not AddToArray_Data(sAddString, RowType.Data) Then
+					Return False
+
 				Else
 					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 
@@ -3439,7 +3077,8 @@ CheckRecordSet_ERROR:
 
 							mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 						Next intGroupCount
-						AddToArray_Data(strGroupString, enum_RowType.Data)
+
+						AddToArray_Data(strGroupString, RowType.Data)
 
 					End If
 
@@ -3462,45 +3101,42 @@ CheckRecordSet_ERROR:
 
 		' Now do the final summary for the last bit (before the grand summary)
 		' Put the values from the previous record in the column array.
-		For iLoop = 1 To UBound(mvarColDetails, 2)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(3, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avColumns(3, iLoop) = mvarColDetails(11, iLoop)
-		Next iLoop
+
+		For Each objReportItem In ColumnDetails
+			colColumns.GetById(objReportItem.ColExprID).LastValue = objReportItem.LastValue
+		Next
+
+
+		Dim objColumnIndex As ReportDetailItem
+
 		' From last column in the order to first, check changes.
-		For iLoop = UBound(mvarSortOrder, 2) To 1 Step -1
+		For iLoop = colSortOrder.Count - 1 To 0 Step -1
 			' Find the column in the details array.
 			iColumnIndex = 0
-			For iLoop2 = 1 To UBound(mvarColDetails, 2)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
+			For Each objItem In ColumnDetails
 
+				If objItem.ColExprID = colSortOrder.GetByIndex(iLoop).ColExprID And objItem.Type = "C" Then
+					objColumnIndex = objItem
 					iColumnIndex = iLoop2
 					Exit For
 				End If
-			Next iLoop2
+			Next
 
-			If iColumnIndex > 0 Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object avColumns(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If avColumns(1, iColumnIndex) Then
-					'        mblnPageBreak = True
-					'        sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(8, iColumnIndex) Then
-						mblnPageBreak = True
-						sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
-					End If
+			If objColumnIndex.IsBreakOnChange Or objColumnIndex.IsPageOnChange Then
 
-					PopulateGrid_DoSummaryInfo(avColumns, iColumnIndex, iLoop)
+				If objColumnIndex.IsPageOnChange Then
+					mblnPageBreak = True
+					sBreakValue = IIf(Len(objColumnIndex.LastValue) < 1, "<Empty>", objColumnIndex.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
 				End If
+
+				PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop)
 			End If
+
 		Next iLoop
 
+
 		If mblnPageBreak Then
-			'AddToArray_Data "*"
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
 		End If
@@ -3517,7 +3153,7 @@ CheckRecordSet_ERROR:
 
 		End If
 
-		If Not AddToArray_Data(vbNullString, enum_RowType.Data) Then
+		If Not NEW_AddToArray_Data(RowType.Data, Nothing) Then
 			Return False
 		End If
 
@@ -3541,123 +3177,108 @@ LoadRecords_ERROR:
 
 	End Sub
 
-	Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
+			Private Function PopulateGrid_FormatData(ByRef objReportItem As ReportDetailItem, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As String
+	'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
 		' Purpose : Format the data to the form the user has specified to see it
 		'           in the grid
 		' Input   : None
 		' Output  : True/False
-		Dim pintLoop As Short
-		Dim vOriginalData As Object
+		Dim vOriginalData As String
 
 		If IsDBNull(vData) Then Return ""
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object vOriginalData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		vOriginalData = vData
 
-		For pintLoop = 1 To UBound(mvarColDetails, 2)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(0, pintLoop) = sfieldname Then
 
-				' Is it a boolean calculation ? If so, change to Y or N
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(18, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If vData = "True" Then vData = "Y"
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If vData = "False" Then vData = "N"
+		' Is it a boolean calculation ? If so, change to Y or N
+		If objReportItem.IsBitColumn Then
+			If vData = "True" Then vData = "Y"
+			If vData = "False" Then vData = "N"
+		End If
+
+		' If its a date column, format it as dateformat
+		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		If objReportItem.IsDateColumn Then
+			vData = VB6.Format(vData, mstrClientDateFormat)
+		End If
+
+
+		' Is Numeric
+		If objReportItem.IsNumeric Then
+
+			vData = CDbl(vData)
+
+			' Overflow check (ignore decimals)
+			If CLng(vData).ToString.Length > objReportItem.Size Then
+				vData = New String("#", objReportItem.Size)
+			Else
+				If Not objReportItem.Mask Is Nothing Then
+					vData = String.Format(objReportItem.Mask, vData)
 				End If
+			End If
 
-				' If its a date column, format it as dateformat
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(17, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					vData = VB6.Format(vData, mstrClientDateFormat)
-				End If
-
-
-				' Is Numeric
-				If mvarColDetails(3, pintLoop) Then
-
-					vData = CDbl(vData)
-
-					' Overflow check (ignore decimals)
-					If CLng(vData).ToString.Length > mvarColDetails(1, pintLoop) Then
-						vData = New String("#", mvarColDetails(1, pintLoop))
-					Else
-						If Not mvarColDetails(23, pintLoop) Is Nothing Then
-							vData = String.Format(mvarColDetails(23, pintLoop), vData)
-						End If
-					End If
-
-				End If
+		End If
 
 
 				' SRV ?
 				If Not mbIsBradfordIndexReport Then
 					If mbSuppressRepeated = True Then
 						'check if column value should be repeated or not.
-						If Not mvarColDetails(21, pintLoop) And Not pbNewBaseRecord And Not mvarColDetails(10, pintLoop) And Not mvarColDetails(20, pintLoop) Then
+						If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
 								vData = ""
 							End If
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(10, pintLoop) Then
+
+						ElseIf objReportItem.SuppressRepeated Then
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
 								vData = ""
 							End If
 						End If
 					End If
-					Exit For
+
 				Else
 					'Bradford Factor does not use the repetition functionality.
 					If mbSuppressRepeated = True Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(10, pintLoop) Then
+
+						If objReportItem.SuppressRepeated Then
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
 								vData = ""
 							End If
 						End If
 					End If
 				End If
 
-			End If
-		Next pintLoop
 
-		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		If Not IsDBNull(vData) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbNewLine, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbCr, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbLf, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbTab, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, Chr(10), "")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, Chr(13), "")
-		End If
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		PopulateGrid_FormatData = vData
+		''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+		'If Not IsDBNull(vData) Then
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbNewLine, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbCr, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbLf, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbTab, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, Chr(10), "")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, Chr(13), "")
+		'End If
+
+		Return vData
 
 	End Function
 
-	Private Function PopulateGrid_DoSummaryInfo(ByRef pavColumns As Object, ByRef piColumnIndex As Short, ByRef piSortIndex As Short) As Boolean
+	Private Function PopulateGrid_DoSummaryInfo(ByRef pavColumns As ICollection(Of ReportColumn), ByRef piColumnIndex As Short, ByRef piSortIndex As Short) As Boolean
 
 		Dim fDoValue As Boolean
 		Dim iLoop As Short
-		Dim iLoop2 As Short
-		Dim iColumnIndex As Short
+	'	Dim iLoop2 As Short
+	'	Dim iColumnIndex As Short
 		Dim sSQL As String
 		Dim rsTemp As Recordset
 		Dim fHasAverage As Boolean
@@ -3665,161 +3286,140 @@ LoadRecords_ERROR:
 		Dim fHasTotal As Boolean
 		Dim sWhereCode As String
 		Dim sFromCode As String
-		Dim sCountAddString As String
-		Dim sAverageAddString As String
-		Dim sTotalAddString As String
+
 		Dim sTotalBradfordAddString As String
 		Dim iLogicValue As Short
+
+		Dim aryAverageAddString As ArrayList
+		Dim aryTotalAddString As ArrayList
+		Dim aryCountAddString As ArrayList
 
 		Dim miAmountOfRecords As Single
 		Dim sBradfordSummary As String
 		Dim asBradfordSummaryLine() As String
 
 		Dim intColCounter As Short
-
 		Dim strAggrValue As String
+		Dim objLastItem As New ReportDetailItem
+		Dim objThisColumn As ReportColumn
+
+		Dim objReportItem As ReportDetailItem
+		Dim objSortItem As ReportSortItem
 
 		intColCounter = 1
 		strAggrValue = vbNullString
 
 		' Construct the summary where clause.
 		sWhereCode = ""
-		For iLoop = 1 To piSortIndex
-			iColumnIndex = 0
-			For iLoop2 = 1 To UBound(mvarColDetails, 2)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
-					iColumnIndex = iLoop2
-					Exit For
-				End If
-			Next iLoop2
+		For iLoop = 0 To piSortIndex
 
-			If iColumnIndex > 0 Then
-				If mvarColDetails(7, iColumnIndex) Or mvarColDetails(8, iColumnIndex) Then
-					' The column is a break/page on change column so put it in the Where clause.
-					sWhereCode = sWhereCode & IIf(Len(sWhereCode) = 0, " WHERE ", " AND ")
+			objSortItem = colSortOrder.GetByIndex(iLoop)
+			objReportItem = ColumnDetails.GetById(objSortItem.ColExprID)
 
-					If (Not mvarColDetails(3, iColumnIndex)) And (Not mvarColDetails(17, iColumnIndex)) And (Not mvarColDetails(18, iColumnIndex)) Then
-						' Character column. Treat empty strings along with nulls.
-						If Len(pavColumns(3, iColumnIndex)) = 0 Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sWhereCode = sWhereCode & "(([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '') OR ([" & CStr(mvarColDetails(0, iColumnIndex)) & "] IS NULL))"
-						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & Replace(pavColumns(3, iColumnIndex), "'", "''") & "')"
-						End If
+			If objReportItem.IsBreakOnChange Or objReportItem.IsPageOnChange Then
+				' The column is a break/page on change column so put it in the Where clause.
+				sWhereCode = sWhereCode & IIf(Len(sWhereCode) = 0, " WHERE ", " AND ")
+
+				objThisColumn = pavColumns.GetById(objSortItem.ColExprID)
+
+				If (Not objReportItem.IsNumeric) And (Not objReportItem.IsDateColumn) And (Not objReportItem.IsBitColumn) Then
+					' Character column. Treat empty strings along with nulls.
+					If Len(objThisColumn.LastValue) = 0 Then
+						sWhereCode = sWhereCode & "(([" & CStr(objReportItem.IDColumnName) & "] = '') OR ([" & CStr(objReportItem.IDColumnName) & "] IS NULL))"
 					Else
-						If IsDBNull(pavColumns(3, iColumnIndex)) Or pavColumns(3, iColumnIndex).ToString() = "" Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] IS NULL)"
+						sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = '" & Replace(objThisColumn.LastValue, "'", "''") & "')"
+					End If
+				Else
+					If IsDBNull(objThisColumn.LastValue) Or objThisColumn.LastValue = "" Then
+						sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] IS NULL)"
+					Else
+
+						If objReportItem.IsDateColumn Then
+							' Date column.
+							sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = '" & VB6.Format(objThisColumn.LastValue, "MM/dd/yyyy") & "')"
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If mvarColDetails(17, iColumnIndex) Then
-								' Date column.
-								'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & VB6.Format(pavColumns(3, iColumnIndex), "MM/dd/yyyy") & "')"
+
+							If objReportItem.IsBitColumn Then
+								' Logic Column.
+								iLogicValue = IIf(objThisColumn.LastValue = "Y", 1, 0)
+								sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = " & iLogicValue & ")"
 							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarColDetails(18, iColumnIndex) Then
-									' Logic Column.
-									'TM20020523 Fault 3910 - if logic column then convert the stored 'Y' or 'N' to 1 or 0.
-									'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									iLogicValue = IIf(pavColumns(3, iColumnIndex) = "Y", 1, 0)
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = " & iLogicValue & ")"
-								Else
-									' Numeric column.
-									'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(3, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = " & pavColumns(3, iColumnIndex) & ")"
-								End If
+								' Numeric column.
+								sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = " & objThisColumn.LastValue & ")"
 							End If
 						End If
 					End If
 				End If
 			End If
+
 		Next iLoop
 
 		' Construct the required select statement.
 		sSQL = ""
 		sFromCode = ""
-		For iLoop = 1 To UBound(mvarColDetails, 2)
+		aryAverageAddString = New ArrayList()
+		aryTotalAddString = New ArrayList()
+		aryCountAddString = New ArrayList()
 
-			If Not mvarColDetails(0, iLoop).ToString().Substring(0, 3) = "?ID" Then
+		aryAverageAddString.Add("Sub Average")
+		aryCountAddString.Add("Sub Count")
+		aryTotalAddString.Add("Sub Total")
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(4, iLoop) Then
+		iLoop = 0
+		For Each objReportItem In ColumnDetails
+
+			If Not objReportItem.IDColumnName.ToString().Substring(0, 3) = "?ID" Then
+
+				If objReportItem.IsAverage Then
 					' Average.
 					mblnReportHasSummaryInfo = True
-					sAverageAddString = "<td class='hiddentablecolumn'>*average*</td><td class='summarytablerow'>Sub Average</td>"
+					'aryAverageAddString.Add("Sub Average")
+
 
 					If Not mbIsBradfordIndexReport Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(20, iLoop) Then
-							' JPD20020712 Fault 4156
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT AVG(convert(float,[" & mvarColDetails(0, iLoop) & "])) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+						If objReportItem.IsReportChildTable Then
+							sSQL = sSQL & ",(SELECT AVG(convert(float,[" & objReportItem.IDColumnName & "])) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 						Else
-							' JPD20020712 Fault 4156
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT AVG(convert(float, [" & mvarColDetails(0, iLoop) & "])) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+							sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 						End If
 					Else
 						'Bradford Index
-						' JPD20020712 Fault 4156
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & IIf(Len(sSQL) = 0, "SELECT", ",") & " avg(convert(float,[" & mvarColDetails(0, iLoop) & "])) AS avg_" & Trim(Str(iLoop))
+						sSQL = sSQL & IIf(Len(sSQL) = 0, "SELECT", ",") & " avg(convert(float,[" & objReportItem.IDColumnName & "])) AS avg_" & Trim(Str(iLoop))
 					End If
 				End If
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(5, iLoop) Then
+				If objReportItem.IsCount Then
 					' Count.
 					mblnReportHasSummaryInfo = True
-					sCountAddString = "<td class='hiddentablecolumn'>*count*</td><td class='summarytablerow'>Sub Count</td>"
+					'aryCountAddString.Add("Sub Count")
 
 					If Not mbIsBradfordIndexReport Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(20, iLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT COUNT([?ID_" & mvarColDetails(15, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+						If objReportItem.IsReportChildTable Then
+							sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT COUNT([?ID]) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+							sSQL = sSQL & ",(SELECT COUNT([?ID]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
@@ -3831,47 +3431,39 @@ LoadRecords_ERROR:
 				End If
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(6, iLoop) Then
+				If objReportItem.IsTotal Then
 					' Total.
 					mblnReportHasSummaryInfo = True
-					sTotalAddString = "<td class='hiddentablecolumn'>*total*</td><td class='summarytablerow'>Sub Total</td>"
 					sTotalBradfordAddString = "*total*" & vbTab & "Sub Total"
 
 					If Not mbIsBradfordIndexReport Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(20, iLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT SUM([" & mvarColDetails(0, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+						If objReportItem.IsReportChildTable Then
+							sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & ",(SELECT SUM([" & mvarColDetails(0, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
+							sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " " & sWhereCode & " "
 
-							If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sSQL = sSQL & " AND ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+							If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+								sSQL = sSQL & " AND ([" & objReportItem.IDColumnName & "] <> 0) "
 							End If
 
 							sSQL = sSQL & ") AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 						End If
 					Else
 						'Bradford Index
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & IIf(Len(sSQL) = 0, "SELECT", ",") & " sum([" & mvarColDetails(0, iLoop) & "])  AS ttl_" & Trim(Str(iLoop))
+						sSQL = sSQL & IIf(Len(sSQL) = 0, "SELECT", ",") & " sum([" & objReportItem.IDColumnName & "])  AS ttl_" & Trim(Str(iLoop))
 					End If
 				End If
 			End If
 
-		Next iLoop
+			iLoop += 1
+		Next
 
 		If Len(sSQL) > 0 Then
 			If Not mbIsBradfordIndexReport Then
@@ -3882,91 +3474,74 @@ LoadRecords_ERROR:
 
 			rsTemp = datGeneral.GetRecords(sSQL)
 
-			For iLoop = 1 To UBound(mvarColDetails, 2)
+			iLoop = 0
+			For Each objReportItem In ColumnDetails
 				intColCounter = intColCounter + 1
 
-				If Not mvarColDetails(0, iLoop).ToString().Substring(0, 3) = "?ID" Then
+				If Not objReportItem.IDColumnName.ToString().Substring(0, 3) = "?ID" Then
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(4, iLoop) Then
+					If objReportItem.IsAverage Then
 
-						If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not ColumnDetails.GetByIndex(iLoop).GroupWithNextColumn) Then
 							fHasAverage = True
 						End If
 
 						' Average.
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						If IsDBNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
 							strAggrValue = "0"
 							'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 							'do not format the data, show it as it is.
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
+						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
 							strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
+						ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
 							strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(2, iLoop) = 0 Then
+						ElseIf objReportItem.Decimals = 0 Then
 							strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+							strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
 						End If
 
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(22, iLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
+						If objReportItem.Use1000Separator Then
+							If objReportItem.Decimals = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
+								strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
+							ElseIf (objReportItem.Size > 0) And (objReportItem.Decimals = 0) Then
 								strAggrValue = Format(strAggrValue, "#,0")
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							ElseIf mvarColDetails(2, iLoop) = 0 Then
+							ElseIf objReportItem.Decimals = 0 Then
 								strAggrValue = Format(strAggrValue, "#,0.#")
 							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+								strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
 							End If
 						End If
 
-						sAverageAddString = sAverageAddString & "<td class='summarytablerow' align='right'>" & strAggrValue & "</td>"
+						aryAverageAddString.Add(strAggrValue)
 
 						strAggrValue = vbNullString
 					Else
-						'        If (mvarColDetails(24, iLoop) = False) Then
+
 						' Display the value ?
 						fDoValue = False
-						If (mvarColDetails(9, iLoop)) Then
-							For iLoop2 = 1 To UBound(mvarSortOrder, 2)
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
-									fDoValue = (iLoop2 <= piSortIndex)
+						If (objReportItem.IsValueOnChange) Then
+
+							For Each objSort In colSortOrder
+								If objSort.ColExprID = objReportItem.ColExprID Then
+									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
-							Next iLoop2
+							Next
 						End If
 
 						If fDoValue Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sAverageAddString = sAverageAddString & "<td class='summarytablerow'>" & PopulateGrid_FormatData(CStr(mvarColDetails(0, iLoop)), pavColumns(3, iLoop), False, True) & "</td>"
+							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						Else
-							sAverageAddString = sAverageAddString & "<td class='summarytablerow'></td>"
+							aryAverageAddString.Add("")
+
 						End If
 
 					End If
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(5, iLoop) Then
+					If objReportItem.IsCount Then
 
-						If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not ColumnDetails.GetByIndex(iLoop).GroupWithNextColumn) Then
 							fHasCount = True
 						End If
 
@@ -3976,21 +3551,18 @@ LoadRecords_ERROR:
 
 						' Count.
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						sCountAddString = sCountAddString & "<td class='summarytablerow' align='right'>" & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & "</td>"
-
+						aryCountAddString.Add(IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")))
 					Else
-						'        If (mvarColDetails(24, iLoop) = False) Then
+
 						' Display the value ?
 						fDoValue = False
-						If (mvarColDetails(9, iLoop)) Then
-							For iLoop2 = 1 To UBound(mvarSortOrder, 2)
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
-									fDoValue = (iLoop2 <= piSortIndex)
+						If (objReportItem.IsValueOnChange) Then
+							For Each objSort In colSortOrder
+								If objSort.ColExprID = objReportItem.ColExprID Then
+									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
-							Next iLoop2
+							Next
 						End If
 
 						If (mbIsBradfordIndexReport And mblnCustomReportsSummaryReport) And (mbBradfordCount) Then
@@ -3998,70 +3570,54 @@ LoadRecords_ERROR:
 						End If
 
 						If fDoValue Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sCountAddString = sCountAddString & "<td class='summarytablerow'>" & PopulateGrid_FormatData(CStr(mvarColDetails(0, iLoop)), pavColumns(3, iLoop), False, True) & "</td>"
+							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						Else
-							sCountAddString = sCountAddString & "<td class='summarytablerow'></td>"
+						aryCountAddString.Add("")
 						End If
 						'        End If
 					End If
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(6, iLoop) Then
+					If objReportItem.IsTotal Then
 						' Total.
 
-						If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objLastItem.GroupWithNextColumn) Then
 							fHasTotal = True
 						End If
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						If IsDBNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
 							strAggrValue = "0"
-							'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
-							'do not format the data, show it as it is.
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
+						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
 							strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(2, iLoop) = 0 Then
+						ElseIf objReportItem.Decimals = 0 Then
 							strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+							strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
 						End If
 
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(22, iLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If mvarColDetails(2, iLoop) = 0 Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+						If objReportItem.Use1000Separator Then
+							If objReportItem.Decimals = 0 Then
+								strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
 							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+								strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
 							End If
 						End If
 
-						sTotalAddString = sTotalAddString & "<td class='summarytablerow' align='right'>" & strAggrValue & "</td>"
+						aryTotalAddString.Add(strAggrValue)
 						sTotalBradfordAddString = sTotalBradfordAddString & strAggrValue & vbTab
 
 						strAggrValue = vbNullString
 
 					Else
-						'        If (mvarColDetails(24, iLoop) = False) Then
 						' Display the value ?
 						fDoValue = False
-						If (mvarColDetails(9, iLoop)) Then
-							For iLoop2 = 1 To UBound(mvarSortOrder, 2)
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
-									fDoValue = (iLoop2 <= piSortIndex)
+						If objReportItem.IsValueOnChange Then
+							For Each objSort In colSortOrder
+								If objSort.ColExprID = objReportItem.ColExprID Then
+									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
-							Next iLoop2
+							Next
 						End If
 
 						If (mbIsBradfordIndexReport And mblnCustomReportsSummaryReport) Then
@@ -4071,55 +3627,48 @@ LoadRecords_ERROR:
 						End If
 
 						If fDoValue Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sTotalAddString = sTotalAddString & "<td class='summarytablerow'>" & PopulateGrid_FormatData(CStr(mvarColDetails(0, iLoop)), pavColumns(3, iLoop), False, True) & "</td>"
+							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						Else
-							sTotalAddString = sTotalAddString & "<td class='summarytablerow'></td>"
+							aryTotalAddString.Add("")
 						End If
 
 						sTotalBradfordAddString = sTotalBradfordAddString & vbTab
 					End If
 				End If
-			Next iLoop
+
+				objLastItem = objReportItem
+				iLoop += 1
+			Next
 
 			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 		End If
 
+		'Dim objUnknownItem As ReportDetailItem = ColumnDetails.GetByIndex(iColumnIndex)
+
 		' Do a different summary if we are a Bradford Index Report
-		Dim iWidthTemp As Short
 		If Not mbIsBradfordIndexReport Then
 
-			' Put a blank line in here if its not a page break as well
-			'    If Not mblnCustomReportsSummaryReport And (fHasAverage Or fHasCount Or fHasTotal) Then
-			If ((Not mblnCustomReportsSummaryReport) And (fHasAverage Or fHasCount Or fHasTotal)) Or ((Not mblnCustomReportsSummaryReport) And Not (fHasAverage Or fHasCount Or fHasTotal Or (mvarColDetails(8, iColumnIndex)))) Then
-				AddToArray_Data("*indicator*", enum_RowType.Data)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-			End If
-
 			If fHasAverage Then
-				AddToArray_Data(sAverageAddString, enum_RowType.Average)
+				NEW_AddToArray_Data(RowType.Average, aryAverageAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			If fHasCount Then
-				AddToArray_Data(sCountAddString, enum_RowType.Count)
+				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			If fHasTotal Then
-				AddToArray_Data(sTotalAddString, enum_RowType.Total)
+				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			If Not mblnCustomReportsSummaryReport Then
-				If (Not mvarColDetails(8, iColumnIndex)) Then
-					If fHasAverage Or fHasCount Or fHasTotal Then
-						AddToArray_Data("*indicator*", enum_RowType.Data)
-						mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-					End If
+				If fHasAverage Or fHasCount Or fHasTotal Then
+					NEW_AddToArray_Data(RowType.Data, "")
+					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 				End If
 			End If
 
@@ -4133,7 +3682,9 @@ LoadRecords_ERROR:
 			asBradfordSummaryLine(10) = "Total"
 			asBradfordSummaryLine(12) = CStr(Val(Str(CDbl(asBradfordSummaryLine(12)))))
 			asBradfordSummaryLine(13) = CStr(Val(Str(CDbl(asBradfordSummaryLine(13)))))
-			sTotalAddString = Join(asBradfordSummaryLine, vbTab)
+' TODO
+'			sTotalAddString = Join(asBradfordSummaryLine, vbTab)
+
 
 			' Calculate Bradford index line
 			asBradfordSummaryLine(10) = "Bradford Factor"
@@ -4157,18 +3708,19 @@ LoadRecords_ERROR:
 
 			' Add the summary lines
 			If mbBradfordCount Then
-				AddToArray_Data(sCountAddString, enum_RowType.Count)
+				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			If mbBradfordTotals Then
-				AddToArray_Data(sTotalAddString, enum_RowType.Total)
+			' TODO
+'				AddToArray_Data(sTotalAddString, RowType.Total)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
-			AddToArray_Data(sBradfordSummary, enum_RowType.Total)
+			AddToArray_Data(sBradfordSummary, RowType.Total)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-			AddToArray_Data("*indicator*", enum_RowType.Data)
+			NEW_AddToArray_Data(RowType.Data, "")
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 
 		End If
@@ -4186,9 +3738,11 @@ LoadRecords_ERROR:
 		Dim iLoop As Short
 		Dim rsTemp As Recordset
 
-		Dim sAverageAddString As String
-		Dim sCountAddString As String
-		Dim sTotalAddString As String
+		Dim aryAverageAddString As New ArrayList
+		Dim aryCountAddString As New ArrayList
+		Dim aryTotalAddString As New ArrayList
+
+		Dim objPrevious As ReportDetailItem
 
 		Dim fHasAverage As Boolean
 		Dim fHasCount As Boolean
@@ -4203,44 +3757,32 @@ LoadRecords_ERROR:
 		intColCounter = 1
 		strAggrValue = vbNullString
 
-		sAverageAddString = vbNullString
-		sCountAddString = vbNullString
-		sTotalAddString = vbNullString
-
 		' Construct the required select statement.
 		sSQL = vbNullString
 
-		For iLoop = 1 To UBound(mvarColDetails, 2)
+		aryAverageAddString.Add("Average")
+		aryCountAddString.Add("Count")
+		aryTotalAddString.Add("Total")
+
+		For Each objReportItem In ColumnDetails
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(4, iLoop) Then
+			If objReportItem.IsAverage Then
 				' Average.
 
-				'TM20020718 Fault 4170 - indicate in the hidden column that the row is an average row.
-				sAverageAddString = "<td class='hiddentablecolumn'>*average*</td><td class='grandsummaryrow'>Average</td>"
+				If objReportItem.IsReportChildTable Then
+					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(20, iLoop) Then
-					' JPD20020712 Fault 4156
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & mvarColDetails(0, iLoop) & "])) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 				Else
-					' JPD20020712 Fault 4156
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & mvarColDetails(0, iLoop) & "])) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
 
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
@@ -4248,34 +3790,22 @@ LoadRecords_ERROR:
 
 			End If
 
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(5, iLoop) Then
+			If objReportItem.IsCount Then
 				' Count.
 
-				'Add a hidden key '*count*' so that when outputting to excel it does not format the
-				'count to a date.
-				sCountAddString = "<td class='hiddentablecolumn'>*count*</td><td class='grandsummaryrow'>Count</td>"
+				If objReportItem.IsReportChildTable Then
+					sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(20, iLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT COUNT([?ID_" & mvarColDetails(15, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
 				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT COUNT([?ID]) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT COUNT([?ID]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
 
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
@@ -4283,56 +3813,45 @@ LoadRecords_ERROR:
 
 			End If
 
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(6, iLoop) Then
+			If objReportItem.IsTotal Then
 				' Total.
 
-				'TM20020718 Fault 4170 - indicate in the hidden column that the row is a total row.
-				sTotalAddString = "<td class='hiddentablecolumn'>*total*</td><td class='grandsummaryrow'>Total</td>"
+				If objReportItem.IsReportChildTable Then
+					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(20, iLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT SUM([" & mvarColDetails(0, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID_" & mvarColDetails(15, iLoop) & "], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & ",(SELECT SUM([" & mvarColDetails(0, iLoop) & "]) " & "FROM (SELECT DISTINCT [?ID], [" & mvarColDetails(0, iLoop) & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
-					If mblnIgnoreZerosInAggregates And mvarColDetails(3, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "WHERE ([" & mvarColDetails(0, iLoop) & "] <> 0) "
+					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
 					End If
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 				End If
 
 			End If
-		Next iLoop
+		Next
 
 		If Len(sSQL) > 0 Then
 			sSQL = "SELECT " & Right(sSQL, Len(sSQL) - 1)
 
 			rsTemp = datGeneral.GetRecords(sSQL)
 
-			For iLoop = 1 To UBound(mvarColDetails, 2)
+			For Each objReportItem In ColumnDetails
 
 				intColCounter = intColCounter + 1
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(4, iLoop) Then
+				If iLoop > 0 Then objPrevious = ColumnDetails.GetByIndex(iLoop - 1) Else objPrevious = New ReportDetailItem
+
+				If objReportItem.IsAverage Then
 					' Average.
 
-					If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
 						fHasAverage = True
 					End If
 
@@ -4341,69 +3860,54 @@ LoadRecords_ERROR:
 						strAggrValue = "0"
 						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 						'do not format the data, show it as it is.
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
+					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
 						strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
+					ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
 						strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					ElseIf mvarColDetails(2, iLoop) = 0 Then
+					ElseIf objReportItem.Decimals = 0 Then
 						strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
 					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+						strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
 					End If
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(22, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
+					If objReportItem.Use1000Separator Then
+						If objReportItem.Decimals = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
+							strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
+						ElseIf (objReportItem.Size > 0) And (objReportItem.Decimals = 0) Then
 							strAggrValue = Format(strAggrValue, "#,0")
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(2, iLoop) = 0 Then
+						ElseIf objReportItem.Decimals = 0 Then
 							strAggrValue = Format(strAggrValue, "#,0.#")
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+							strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
 						End If
 					End If
 
-					sAverageAddString = sAverageAddString & "<td class='grandsummaryrow' align='right'>" & strAggrValue & "</td>"
-
+					aryAverageAddString.Add(strAggrValue)
 					strAggrValue = vbNullString
 
 				Else
-					sAverageAddString = sAverageAddString & "<td class='grandsummaryrow'></td>"
+					aryAverageAddString.Add("")
 				End If
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(5, iLoop) Then
+
+				If objReportItem.IsCount Then
 					' Count.
 
-					If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
 						fHasCount = True
 					End If
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					sCountAddString = sCountAddString & "<td class='grandsummaryrow' align='right'>" & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & "</td>"
-
+					aryCountAddString.Add(IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")))
 				Else
-					sCountAddString = sCountAddString & "<td class='grandsummaryrow'></td>"
+					aryCountAddString.Add("")
 				End If
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(6, iLoop) Then
+				If objReportItem.IsTotal Then
 					' Total.
 
-					If Not mvarColDetails(19, iLoop) And (Not mvarColDetails(24, iLoop)) And (Not mvarColDetails(24, iLoop - 1)) Then
+					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
 						fHasTotal = True
 					End If
 
@@ -4412,38 +3916,29 @@ LoadRecords_ERROR:
 						strAggrValue = "0"
 						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 						'do not format the data, show it as it is.
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
+					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
 						strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					ElseIf mvarColDetails(2, iLoop) = 0 Then
+					ElseIf objReportItem.Decimals = 0 Then
 						strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
 					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+						strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
 					End If
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(22, iLoop) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If (mvarColDetails(2, iLoop) = 0) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+					If objReportItem.Use1000Separator Then
+						If (objReportItem.Decimals = 0) Then
+							strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+							strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
 						End If
 					End If
 
-					sTotalAddString = sTotalAddString & "<td class='grandsummaryrow' align='right'>" & strAggrValue & "</td>"
-
+					aryTotalAddString.Add(strAggrValue)
 					strAggrValue = vbNullString
 				Else
-					sTotalAddString = sTotalAddString & "<td class='grandsummaryrow'></td>"
+					aryTotalAddString.Add("")
 				End If
 
-			Next iLoop
+			Next
 
 			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -4454,24 +3949,24 @@ LoadRecords_ERROR:
 
 		'Output the 4 lines of grand aggregates (blank,AVG,CNT,TTL)
 		If mblnDoesHaveGrandSummary Then
-			AddToArray_Data(IIf(mblnPageBreak, "*", "*indicator*"), enum_RowType.Data)
+			NEW_AddToArray_Data(RowType.Data, "")
 		End If
 
 		If fHasAverage Then
 			mblnReportHasSummaryInfo = True
-			AddToArray_Data(sAverageAddString, enum_RowType.Average)
+			NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 		End If
 
 		If fHasCount Then
 			mblnReportHasSummaryInfo = True
-			AddToArray_Data(sCountAddString, enum_RowType.Count)
+			NEW_AddToArray_Data(RowType.GrandSummary, aryCountAddString)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 		End If
 
 		If fHasTotal Then
 			mblnReportHasSummaryInfo = True
-			AddToArray_Data(sTotalAddString, enum_RowType.Total)
+			NEW_AddToArray_Data(RowType.GrandSummary, aryTotalAddString)
 			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 		End If
 
@@ -4485,6 +3980,80 @@ PopulateGrid_DoGrandSummary_ERROR:
 		Return
 
 	End Sub
+
+Public Function PopulateGrid_HideColumns() As Boolean
+
+		' Purpose : This function hides any columns we don't want the user to see.
+		Dim iCount As Short
+		Dim pblnOK As Boolean
+		Dim intColCounter As Short
+		Dim intVisColCount As Short
+		Dim objLastItem As New ReportDetailItem
+
+		pblnOK = True
+
+		intVisColCount = 0
+		intColCounter = 0
+'		mintVisibleColumnCount = 0
+		'Hide the pagebreak column regardless
+
+		'If report contains no summary info, hide the column
+		intColCounter = intColCounter + 1
+		If (Not mblnReportHasSummaryInfo) Or (mbIsBradfordIndexReport) Then
+		Else
+
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(0, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarVisibleColumns(0, intVisColCount) = "Summary Info" 'Heading
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlVarChar	'DataType
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(2, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarVisibleColumns(2, intVisColCount) = 0	'Decimals
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(3, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarVisibleColumns(3, intVisColCount) = 0	'1000 Separator
+			intVisColCount = intVisColCount + 1
+		End If
+
+		For Each objReportItem In ColumnDetails
+			intColCounter = intColCounter + 1
+
+			If Not objLastItem.GroupWithNextColumn Then
+
+				If (Not objReportItem.IsHidden) Then
+					ReDim Preserve mvarVisibleColumns(3, intVisColCount)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(0, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarVisibleColumns(0, intVisColCount) = objReportItem.IDColumnName	 'Heading
+
+					'TM20050901 - Fault 10291
+					'If the column is is grouped then don't force the date format.
+					If objReportItem.IsDateColumn And objReportItem.GroupWithNextColumn = False Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlDate
+					ElseIf objReportItem.IsNumeric And objReportItem.GroupWithNextColumn = False Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlNumeric
+					Else
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlVarChar
+					End If
+
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(2, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarVisibleColumns(2, intVisColCount) = objReportItem.Decimals	'Decimals
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(3, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarVisibleColumns(3, intVisColCount) = IIf(objReportItem.Use1000Separator, 1, 0)	'1000 Separator.
+					intVisColCount = intVisColCount + 1
+				End If
+
+			End If
+
+			objLastItem = objReportItem
+
+		Next
+
+	'	mintVisibleColumnCount = intVisColCount - 1
+
+		Return True
+
+	End Function
 
 	Public Function ClearUp() As Boolean
 
@@ -4553,7 +4122,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 		' Arrays
 
 		'  ReDim mvarColDetails(24, 0)
-		ReDim mvarSortOrder(2, 0)
 		ReDim mvarChildTables(5, 0)
 
 		' Flags
@@ -4803,90 +4371,112 @@ AddError:
 
 	End Function
 
-	Public Function OutputGridDefinition() As Boolean
+	Public ReadOnly Property ReportCaption() As String
+		Get
 
-		Dim pblnOK As Boolean
-		Dim sCaption As String
+			Dim sCaption As String = mstrCustomReportsName
 
-		On Error GoTo ErrTrap
+			Try
 
-		pblnOK = True
+				If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID = 0) Then
+					If (mlngCustomReportsFilterID > 0) Then
+						sCaption = sCaption & " (Base Table filter : " & datGeneral.GetFilterName(mlngCustomReportsFilterID) & ")"
+					ElseIf (mlngCustomReportsPickListID > 0) Then
+						sCaption = sCaption & " (Base Table picklist : " & datGeneral.GetPicklistName(mlngCustomReportsPickListID) & ")"
+					Else
+						sCaption = sCaption & " (All records)"
+					End If
+				End If
 
-		sCaption = mstrCustomReportsName
+				Return sCaption
 
-		If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID = 0) Then
-			If (mlngCustomReportsFilterID > 0) Then
-				sCaption = sCaption & " (Base Table filter : " & datGeneral.GetFilterName(mlngCustomReportsFilterID) & ")"
-			ElseIf (mlngCustomReportsPickListID > 0) Then
-				sCaption = sCaption & " (Base Table picklist : " & datGeneral.GetPicklistName(mlngCustomReportsPickListID) & ")"
-			Else
-				sCaption = sCaption & " (No Picklist or Filter Selected)"
-			End If
+			Catch ex As Exception
+				Return String.Format("{0} {1})", sCaption, ex.Message)
+
+			End Try
+		End Get
+	End Property
+
+'	Public Function OutputGridColumns() As Boolean
+
+'		On Error GoTo ErrTrap
+
+'		Dim iLoop As Short
+'		Dim pblnOK As Boolean
+'		Dim intColCounter As Short
+
+'		pblnOK = True
+
+'		'Pagebreak
+'		intColCounter = 0
+
+'		AddToArray_Columns("<th class='hiddentablecolumn'>PageBreak</th>")
+
+'		'Summary Info
+'		intColCounter = intColCounter + 1
+'		AddToArray_Columns("<th class='summarytablecolumn'>Summary Info</th>")
+
+'		' Now loop through the recordset fields, adding the data columns
+'		For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
+
+'			intColCounter = intColCounter + 1
+
+'			If Not mvarColDetails(24, iLoop + 1) Then
+'				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
+'					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
+'				Else
+'					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
+'				End If
+'			End If
+
+'		Next iLoop
+
+'		OutputGridColumns = True
+
+'		Exit Function
+
+'ErrTrap:
+
+'		OutputGridColumns = False
+'		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
+
+'	End Function
+
+	Private Function NEW_AddToArray_Data(ByVal RowType As RowType, data As IEnumerable) As Boolean
+
+		Dim dr As DataRow
+		Dim iColumn As Integer
+
+		dr = datCustomReportOutput.Rows.Add()
+		dr(0) = RowType
+
+		Select Case RowType
+			Case RowType.Data
+				iColumn = 2
+			Case Else
+				iColumn = 1
+				mblnReportHasSummaryInfo = True
+		End Select
+
+		If Not data Is Nothing Then
+			For Each objData In data
+				dr(iColumn) = objData
+				iColumn += 1
+			Next
 		End If
 
-		OutputGridDefinition = pblnOK
-		Exit Function
-
-ErrTrap:
-
-		OutputGridDefinition = False
-		mstrErrorString = "Error with OutputGridDefinition: " & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
-	Public Function OutputGridColumns() As Boolean
-
-		On Error GoTo ErrTrap
-
-		Dim iLoop As Short
-		Dim pblnOK As Boolean
-		Dim intColCounter As Short
-
-		pblnOK = True
-
-		'Pagebreak
-		intColCounter = 0
-
-		AddToArray_Columns("<th class='hiddentablecolumn'>PageBreak</th>")
-
-		'Summary Info
-		intColCounter = intColCounter + 1
-		AddToArray_Columns("<th class='summarytablecolumn'>Summary Info</th>")
-
-		' Now loop through the recordset fields, adding the data columns
-		For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
-
-			intColCounter = intColCounter + 1
-
-			If Not mvarColDetails(24, iLoop + 1) Then
-				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
-					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-				Else
-					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-				End If
-			End If
-
-		Next iLoop
-
-		OutputGridColumns = True
-
-		Exit Function
-
-ErrTrap:
-
-		OutputGridColumns = False
-		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
-
-	End Function
-
-	Private Function AddToArray_Data(ByRef pstrRowToAdd As String, rowType As enum_RowType) As Boolean
+	Private Function AddToArray_Data(ByRef pstrRowToAdd As String, rowType As RowType) As Boolean
 
 		On Error GoTo AddError
 
 		Dim sClassName As String = "rowdata"
 
 		Select Case rowType
-			Case enum_RowType.Count, enum_RowType.Average, enum_RowType.Total
+			Case rowType.Count, rowType.Average, rowType.Total
 				sClassName = "rowsummary"
 
 		End Select
@@ -4905,13 +4495,12 @@ ErrTrap:
 
 		End If
 
-		AddToArray_Data = True
-		Exit Function
+		Return True
 
 AddError:
 
-		AddToArray_Data = False
 		mstrErrorString = "Error adding to data array additem:" & vbNewLine & Err.Description
+		Return False
 
 	End Function
 
@@ -4924,11 +4513,9 @@ AddError:
 		Dim strAbsenceType As String
 		Dim iCount As Short
 		Dim astrIncludeTypes() As String
-		Dim iUbound As Integer
+		Dim objBradfordDetail As ReportDetailItem
 
 		' Get the absence start/end field details
-		'    strAbsenceStartField = mstrRealSource + "." + datGeneral.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)))
-		'    strAbsenceEndField = mstrRealSource + "." + datGeneral.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE)))
 		strAbsenceType = mstrAbsenceRealSource & "." & datGeneral.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
 
 		' Force the inputted string into an array
@@ -4950,113 +4537,61 @@ AddError:
 		' This is needed to re-calculate the duration amounts
 		mstrSQLSelect = mstrSQLSelect & "," & mstrSQLFrom & ".ID AS 'Personnel_ID'," & mstrAbsenceRealSource & ".ID as 'Absence_ID'"
 
-		' Redimension arrays (to handle the ID fields (Personel/absnece)
-		ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), UBound(mvarColDetails, 2) + 2)
 
 		'Personel ID
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(0, UBound(mvarColDetails, 2) - 1) = "Personnel_ID"
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(1, UBound(mvarColDetails, 2) - 1) = 99
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(2, UBound(mvarColDetails, 2) - 1) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(3, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(4, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(5, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(6, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(7, UBound(mvarColDetails, 2) - 1) = True
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(8, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(9, UBound(mvarColDetails, 2) - 1) = True
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(10, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(11, UBound(mvarColDetails, 2) - 1) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(12, UBound(mvarColDetails, 2) - 1) = -1
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(13, UBound(mvarColDetails, 2) - 1) = "C"
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(14, UBound(mvarColDetails, 2) - 1) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(15, UBound(mvarColDetails, 2) - 1) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(16, UBound(mvarColDetails, 2) - 1) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(17, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(18, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(19, UBound(mvarColDetails, 2) - 1) = True ' Is column hidden
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(20, UBound(mvarColDetails, 2) - 1) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, UBound() - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(21, UBound(mvarColDetails, 2) - 1) = False
+		objBradfordDetail = New ReportDetailItem
+		objBradfordDetail.IDColumnName = "Personnel_ID"
+		objBradfordDetail.Size = 99
+		objBradfordDetail.Decimals = 0
+		objBradfordDetail.IsNumeric = False
+		objBradfordDetail.IsAverage = False
+		objBradfordDetail.IsCount = False
+		objBradfordDetail.IsTotal = False
+		objBradfordDetail.IsBreakOnChange = True
+		objBradfordDetail.IsPageOnChange = False
+		objBradfordDetail.IsValueOnChange = True
+		objBradfordDetail.SuppressRepeated = False
+		objBradfordDetail.LastValue = ""
+		objBradfordDetail.ColExprID = -1
+		objBradfordDetail.Type = "C"
+		objBradfordDetail.TableID = 0
+		objBradfordDetail.TableName = ""
+		objBradfordDetail.ColumnName = ""
+		objBradfordDetail.IsDateColumn = False
+		objBradfordDetail.IsBitColumn = False
+		objBradfordDetail.IsHidden = True	' Is column hidden
+		objBradfordDetail.IsReportChildTable = False
+		objBradfordDetail.Repetition = False
+		ColumnDetails.Add(objBradfordDetail)
 
 		'Absence ID
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(0, UBound(mvarColDetails, 2)) = "Absence_ID"
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(1, UBound(mvarColDetails, 2)) = 99
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(2, UBound(mvarColDetails, 2)) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(3, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(4, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(5, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(6, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(7, UBound(mvarColDetails, 2)) = True
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(8, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(9, UBound(mvarColDetails, 2)) = True
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(10, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(11, UBound(mvarColDetails, 2)) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(12, UBound(mvarColDetails, 2)) = -1
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(13, UBound(mvarColDetails, 2)) = "C"
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(14, UBound(mvarColDetails, 2)) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(15, UBound(mvarColDetails, 2)) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(16, UBound(mvarColDetails, 2)) = ""
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(17, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(18, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(19, UBound(mvarColDetails, 2)) = True ' Is column hidden
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(20, UBound(mvarColDetails, 2)) = False
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarColDetails(21, UBound(mvarColDetails, 2)) = False
-
-		iUbound = UBound(mvarSortOrder, 2)
-		ReDim Preserve mvarSortOrder(2, iUbound)
-		mvarSortOrder(0, iUbound) = 0
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(1, iUbound) = -1
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(2, iUbound) = "ASC"
+		objBradfordDetail = New ReportDetailItem
+		objBradfordDetail.IDColumnName = "Absence_ID"
+		objBradfordDetail.Size = 99
+		objBradfordDetail.Decimals = 0
+		objBradfordDetail.IsNumeric = False
+		objBradfordDetail.IsAverage = False
+		objBradfordDetail.IsCount = False
+		objBradfordDetail.IsTotal = False
+		objBradfordDetail.IsBreakOnChange = True
+		objBradfordDetail.IsPageOnChange = False
+		objBradfordDetail.IsValueOnChange = True
+		objBradfordDetail.SuppressRepeated = False
+		objBradfordDetail.LastValue = ""
+		objBradfordDetail.ColExprID = -1
+		objBradfordDetail.Type = "C"
+		objBradfordDetail.TableID = 0
+		objBradfordDetail.TableName = ""
+		objBradfordDetail.ColumnName = ""
+		objBradfordDetail.IsDateColumn = False
+		objBradfordDetail.IsBitColumn = False
+		objBradfordDetail.IsHidden = True	' Is column hidden
+		objBradfordDetail.IsReportChildTable = False
+		objBradfordDetail.Repetition = False
+		ColumnDetails.Add(objBradfordDetail)
 
 		' All done correctly
-		'UPGRADE_WARNING: Couldn't resolve default property of object GenerateSQLBradford. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GenerateSQLBradford = True
-		Exit Function
+		Return True
 
 
 GenerateSQLBradford_ERROR:
@@ -5196,7 +4731,7 @@ GetBradfordReportDefinition_ERROR:
 
 		On Error GoTo GetBradfordRecordSet_ERROR
 
-		Dim intTemp As Short
+		'Dim intTemp As Short
 		Dim lngTableID As Integer
 		Dim iCount As Short
 		Dim lngColumnID As Integer
@@ -5262,200 +4797,155 @@ GetBradfordReportDefinition_ERROR:
 
 		' Load the field list
 		Dim objExpr As clsExprExpression
+		Dim objReportItem As ReportDetailItem
+
+		ColumnDetails = New Collection(Of ReportDetailItem)
 		For iCount = 1 To UBound(aStrRequiredFields, 1)
 
 			If CDbl(aStrRequiredFields(iCount, 1)) <> -1 Then
 
-				intTemp = UBound(mvarColDetails, 2) + 1
-				ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
+				objReportItem = New ReportDetailItem
 
-				ReDim Preserve mstrExcelFormats(intTemp) 'MH20010307
+				'intTemp = UBound(mvarColDetails, 2) + 1
+				'ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
+
+				ReDim Preserve mstrExcelFormats(iCount)	'MH20010307
 
 				lngColumnID = CInt(aStrRequiredFields(iCount, 1))
 				lngTableID = GetTableIDFromColumn(lngColumnID)
 
 				' Specify the column names and whether they are visible or not
-				Select Case intTemp
+				Select Case iCount
 					Case 1
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Staff_No"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = lbHideStaffNumber
+						objReportItem.IDColumnName = "Staff_No"
+						objReportItem.IsHidden = lbHideStaffNumber
 					Case 2
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Surname"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = False
+						objReportItem.IDColumnName = "Surname"
+						objReportItem.IsHidden = False
 					Case 3
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Forenames"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = False
+						objReportItem.IDColumnName = "Forenames"
+						objReportItem.IsHidden = False
 					Case 4
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Department"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = False
+						objReportItem.IDColumnName = "Department"
+						objReportItem.IsHidden = False
 					Case 5
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Type"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "Type"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 6
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Start_Date"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "Start_Date"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 7
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Start_Session"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "Start_Session"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 8
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "End_Date"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "End_Date"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 9
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "End_Session"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "End_Session"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 10
 						If mbDisplayBradfordDetail Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(0, intTemp) = "Reason"
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(19, intTemp) = False
+							objReportItem.IDColumnName = "Reason"
+							objReportItem.IsHidden = False
 						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(0, intTemp) = "Summary Info"
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(19, intTemp) = False
+							objReportItem.IDColumnName = "Summary Info"
+							objReportItem.IsHidden = False
 						End If
 					Case 11
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Continuous"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = Not mbDisplayBradfordDetail
+						objReportItem.IDColumnName = "Continuous"
+						objReportItem.IsHidden = Not mbDisplayBradfordDetail
 					Case 12
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Duration"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = False
+						objReportItem.IDColumnName = "Duration"
+						objReportItem.IsHidden = False
 					Case 13
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Included_Days"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = False
+						objReportItem.IDColumnName = "Included_Days"
+						objReportItem.IsHidden = False
 
 						'**********************************************************************
 					Case 14
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Order_1"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = True
+						objReportItem.IDColumnName = "Order_1"
+						objReportItem.IsHidden = True
 
 					Case 15
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(0, intTemp) = "Order_2"
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarColDetails(19, intTemp) = True
+						objReportItem.IDColumnName = "Order_2"
+						objReportItem.IsHidden = True
 						'**********************************************************************
 
 					Case Else
 
-						'MH20020521 Fault 3820
-						'mvarColDetails(0, intTemp) = datGeneral.GetColumnName(lngColumnID)
 						If lngTableID = mlngCustomReportsBaseTable Then
 							'Personnel
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(0, intTemp) = mstrSQLFrom & "." & datGeneral.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrSQLFrom & "." & datGeneral.GetColumnName(lngColumnID)
 						Else
 							'Absence
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarColDetails(0, intTemp) = mstrRealSource & "." & datGeneral.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrRealSource & "." & datGeneral.GetColumnName(lngColumnID)
 						End If
 
 				End Select
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(1, intTemp) = 99
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(2, intTemp) = IIf(intTemp = 12 Or intTemp = 13, 1, 0) 'Decimals
-				'JDM - 02/07/01 - Fault 2144 - Needs to know if we're numeric or not.
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(3, intTemp) = IIf(datGeneral.GetDataType(lngTableID, lngColumnID) = 2, True, False) 'Is Numeric
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(4, intTemp) = False 'Average
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(5, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(5, intTemp) = IIf(intTemp = 12 Or intTemp = 13, True, False)	'Count
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(6, intTemp) = IIf(intTemp = 12 Or intTemp = 13, True, False)	'Total
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(7, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(7, intTemp) = False 'Break on change
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(8, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(8, intTemp) = False 'Page break on change
+				objReportItem.Size = 99
+				objReportItem.Decimals = IIf(iCount = 12 Or iCount = 13, 1, 0)	'Decimals
+				objReportItem.IsNumeric = IIf(datGeneral.GetDataType(lngTableID, lngColumnID) = 2, True, False)	'Is Numeric
+				objReportItem.IsAverage = False	'Average
+				objReportItem.IsCount = IIf(iCount = 12 Or iCount = 13, True, False)	'Count
+				objReportItem.IsTotal = IIf(iCount = 12 Or iCount = 13, True, False)	'Total
+				objReportItem.IsBreakOnChange = False	'Break on change
+				objReportItem.IsPageOnChange = False	'Page break on change
 				If mblnCustomReportsSummaryReport Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(9, intTemp) = True	'Value on change
+					objReportItem.IsValueOnChange = True	'Value on change
 				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(9, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(9, intTemp) = False 'Value on change
+					objReportItem.IsValueOnChange = False	'Value on change
 				End If
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(10, intTemp) = IIf(intTemp < 5 And mbBradfordSRV, True, False)	'Suppress repeated values
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(11, intTemp) = ""
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(12, intTemp) = lngColumnID
+				objReportItem.SuppressRepeated = IIf(iCount < 5 And mbBradfordSRV, True, False)	'Suppress repeated values
+				objReportItem.LastValue = ""
+				objReportItem.ColExprID = lngColumnID
 
 				' Set the expression/column type of this column
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(13, intTemp) = "C"
+				objReportItem.Type = "C"
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(14, intTemp) = lngTableID
+				objReportItem.TableID = lngTableID
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(15, intTemp) = datGeneral.GetTableName(CInt(lngTableID))
+				objReportItem.TableName = datGeneral.GetTableName(CInt(lngTableID))
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(13, intTemp) = "C" Then
+				If objReportItem.Type = "C" Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = datGeneral.GetColumnName(CInt(mvarColDetails(12, intTemp)))
+					objReportItem.ColumnName = datGeneral.GetColumnName(CInt(objReportItem.ColExprID))
 
 					'MH20010307
-					Select Case mvarColDetails(12, intTemp)
+					Select Case objReportItem.ColExprID
 						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mstrExcelFormats(intTemp) = "0" & IIf(mvarColDetails(2, intTemp) > 0, "." & New String("0", mvarColDetails(2, intTemp)), "")
+							mstrExcelFormats(iCount) = "0" & IIf(objReportItem.Decimals > 0, "." & New String("0", objReportItem.Decimals), "")
 						Case SQLDataType.sqlDate
-							mstrExcelFormats(intTemp) = DateFormat()
+							mstrExcelFormats(iCount) = DateFormat()
 						Case Else
-							mstrExcelFormats(intTemp) = "@"
+							mstrExcelFormats(iCount) = "@"
 					End Select
 
 
 
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(16, intTemp) = ""
+					objReportItem.ColumnName = ""
 
 					'MH20010307
 					objExpr = New clsExprExpression
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objExpr.ExpressionID = CInt(mvarColDetails(12, intTemp))
+					objExpr.ExpressionID = CInt(objReportItem.ColExprID)
 					objExpr.ConstructExpression()
 
 					Select Case objExpr.ReturnType
 						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							mstrExcelFormats(intTemp) = "0.####"
+							mstrExcelFormats(iCount) = "0.####"
 						Case ExpressionValueTypes.giEXPRVALUE_DATE
-							mstrExcelFormats(intTemp) = DateFormat()
+							mstrExcelFormats(iCount) = DateFormat()
 						Case Else
-							mstrExcelFormats(intTemp) = "@"
+							mstrExcelFormats(iCount) = "@"
 					End Select
 
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -5464,52 +4954,51 @@ GetBradfordReportDefinition_ERROR:
 				End If
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(17, intTemp) = datGeneral.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
+				objReportItem.IsDateColumn = datGeneral.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(18, intTemp) = datGeneral.BitColumn("C", lngTableID, lngColumnID)
+				objReportItem.IsBitColumn = datGeneral.BitColumn("C", lngTableID, lngColumnID)
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarColDetails(22, intTemp) = datGeneral.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
+				objReportItem.Use1000Separator = datGeneral.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
 
 				'Adjust the size of the field if digit separator is used
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(22, intTemp) Then
+				If objReportItem.Use1000Separator Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarColDetails(1, intTemp) = mvarColDetails(1, intTemp) + Int((mvarColDetails(1, intTemp) - mvarColDetails(2, intTemp)) / 3)
+					objReportItem.Size = objReportItem.Size + Int((objReportItem.Size - objReportItem.Decimals) / 3)
 				End If
 
 				' Format for this numeric column
-				If mvarColDetails(3, intTemp) Then
+				If objReportItem.IsNumeric Then
 					sMask = ""
-					If mvarColDetails(22, intTemp) Then sMask = ",0"
-					If mvarColDetails(2, intTemp) > 0 Then sMask = sMask & "." & New String("0", mvarColDetails(2, intTemp))
-					mvarColDetails(23, intTemp) = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", mvarColDetails(2, intTemp)) & "}"
+					If objReportItem.Use1000Separator Then sMask = ",0"
+					If objReportItem.Decimals > 0 Then sMask = sMask & "." & New String("0", objReportItem.Decimals)
+					objReportItem.Mask = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", objReportItem.Decimals) & "}"
 				End If
+
+				ColumnDetails.Add(objReportItem)
 
 			End If
 
 		Next iCount
 
 		' Get those columns defined as a SortOrder and load into array
-		ReDim mvarSortOrder(2, 3)
+		Dim objSortItem As ReportSortItem
+		colSortOrder = New Collection(Of ReportSortItem)()
 
 		'Employee surname
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(1, 1) = mstrOrderByColumn	'Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME))
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(2, 1) = "Asc"
+		objSortItem = New ReportSortItem
+		objSortItem.ColExprID = aStrRequiredFields(2, 1) ' mstrOrderByColumn
+		objSortItem.AscDesc = "Asc"
+		colSortOrder.Add(objSortItem)
 
 		'Employee forename
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(1, 2) = mstrGroupByColumn	'Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME))
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarSortOrder(2, 2) = "Asc"
-
-		'    ' Absence start date
-		'    mvarSortOrder(1, 3) = "Start_Date" 'Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE))"
-		'    mvarSortOrder(2, 3) = "Asc"
+		objSortItem = New ReportSortItem
+		objSortItem.ColExprID = aStrRequiredFields(3, 1)	'mstrGroupByColumn
+		objSortItem.AscDesc = "Asc"
+		colSortOrder.Add(objSortItem)
 
 		' Force duration and included days to be numeric format in Excel
 		iCount = 11 - IIf(lbHideStaffNumber = True, 1, 0)
