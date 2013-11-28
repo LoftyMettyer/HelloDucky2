@@ -14,11 +14,13 @@ Public Structure OpenHRSystem
     Dim Serviced As Boolean
     Dim ServiceServer As String
     Dim VersionOK As Boolean
+    Dim UserName As String
+    Dim Password As String
 
     ''' <summary>Gets the ConnectionString for the given OpenHR System</summary>
     Public ReadOnly Property ConnectionString() As String
         Get
-            Return GetConnectionString(String.Empty, String.Empty, DatabaseName, ServerName)
+            Return GetConnectionString(UserName, Password, DatabaseName, ServerName)
         End Get
     End Property
 
@@ -123,12 +125,12 @@ Module General
     builder.ApplicationName = Reflection.Assembly.GetExecutingAssembly.GetName.Name
     builder.Pooling = False
 
-    If Not userID.Equals(String.Empty) Then
-      builder.UserID = userID
-      builder.Password = password
-    Else
-      builder.IntegratedSecurity = True
-    End If
+        If Not userID.Equals(String.Empty) Then
+            builder.UserID = userID
+            builder.Password = password
+        Else
+            builder.IntegratedSecurity = True
+        End If
 
     Return builder.ConnectionString
 

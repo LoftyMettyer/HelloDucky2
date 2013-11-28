@@ -33,6 +33,9 @@ Public Class OpenHROutlookCalendarService
         Dim Value As String = String.Empty
         Dim sEventLogEntry As String = String.Empty
 
+        Dim sUserName As String = ""
+        Dim sPassword As String = ""
+
         Try
 
             bIsProcessing = False
@@ -56,10 +59,19 @@ Public Class OpenHROutlookCalendarService
             _CommandTimeout = -1
 
             For Each configValue As KeyValueConfigurationElement In section.Settings
+                If configValue.Key.ToLower().Trim() = "openhruser" Then sUserName = configValue.Value
+                If configValue.Key.ToLower().Trim() = "openhrpassword" Then sPassword = configValue.Value
+            Next
+
+            For Each configValue As KeyValueConfigurationElement In section.Settings
                 Tag = configValue.Key.ToLower().Trim()
                 Value = configValue.Value.ToLower().Trim()
 
                 currentOpenHR = New OpenHRSystem()
+
+                ' User credentials - same user for all databases
+                currentOpenHR.UserName = sUserName
+                currentOpenHR.Password = sPassword
 
                 ' Debug key
                 If Tag.Length = DEBUGTAG.Length AndAlso Tag.Substring(0, DEBUGTAG.Length) = DEBUGTAG.ToLower() Then
@@ -310,7 +322,7 @@ Public Class OpenHROutlookCalendarService
                       _openHRSystems(iOpenHRSystem).ServerName.ToUpper, _openHRSystems(iOpenHRSystem).DatabaseName.ToUpper)
 
                     Try
-                        TraceLog("Opening Connection", sw, _enableTrace)
+                        TraceLog(String.Format("Opening Connection {0}", _openHRSystems(iOpenHRSystem).ConnectionString), sw, _enableTrace)
                         Using conn As New SqlConnection(_openHRSystems(iOpenHRSystem).ConnectionString)
                             conn.Open()
                             TraceLog("Connection Open", sw, _enableTrace)
