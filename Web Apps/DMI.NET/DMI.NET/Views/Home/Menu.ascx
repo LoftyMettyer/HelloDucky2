@@ -212,7 +212,7 @@
 	' Clear out any existing history sub-menus.
 	Response.Write("  var objFileTool;" & vbCrLf)
 	Response.Write("  var fDone = false;" & vbCrLf)
-	Response.Write("  $(""#mnubandHistory"").empty();" & vbCrLf)
+	Response.Write("  $('[aria-labelledby=""mnutoolHistory""] ul:first').empty();" & vbCrLf)
 	
 	Dim iLastParentScreenID = 0
 	Dim iDoneCount = 0
