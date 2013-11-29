@@ -186,7 +186,7 @@
 			</span>
 		</div>
 		
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow: hidden;">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
 
 			<%   
 				If Session("utiltype") = "1" Then
