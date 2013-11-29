@@ -365,8 +365,16 @@
 			});
 			
 			//Text area (Notes field, etc.)
-			$('textarea').on("keypress", function () { enableSaveButton(); });
+			$('textarea').on("keypress", function() {
+				$("#ctlRecordEdit #changed").val("false");
+				enableSaveButton();
+			});
 
+			$('textarea').on("keyup", function () { //Keyup catches more keys than keypress (for example, Backspace)
+				$("#ctlRecordEdit #changed").val("false");
+				enableSaveButton();
+			});
+			
 			//need char live, spinner, dropdown, textarea,
 			$('input[id^="FI_"]').on("keypress", function () {
 				//TODO: check this; fires change too.....
