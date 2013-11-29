@@ -467,7 +467,7 @@ function menu_MenuClick(sTool) {
 
 	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
 		showDefaultRibbon();
-		//return false;
+		$("#toolbarHome").click();
 	}
 
 	//------------------------DEFSEL----------------------------//
