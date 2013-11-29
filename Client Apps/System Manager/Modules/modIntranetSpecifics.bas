@@ -13,6 +13,7 @@ Private mvar_sGeneralMsg As String
 Private mvar_sLoginColumn As String
 Private mvar_sLoginTable As String
 Private mvar_sWorkEmailColumn As String
+Private mvar_sStartingDateColumn As String
 Private mvar_sLeavingDateColumn As String
 Private mvar_sActivatedUserColumn As String
 Private mvar_lngWorkEmailColumn As Long
@@ -276,6 +277,34 @@ Private Function ReadIntranetParameters() As Boolean
       
       fOK = (lngColumnID > 0)
       If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Photograph' column not defined."
+    End If
+       
+    If fOK Then
+      ' Get the Employee Start Date column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sStartingDateColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Start Date' column not defined."
+    End If
+    
+    If fOK Then
+      ' Get the Employee Leaving Date column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE
+      If .NoMatch Then
+        lngColumnID = 0
+      Else
+        lngColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sLeavingDateColumn = GetColumnName(lngColumnID, True)
+      End If
+      
+      fOK = (lngColumnID > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "'Employee Leaving Date' column not defined."
     End If
     
     ' --- Absence columns for org charts
@@ -568,8 +597,8 @@ Private Function CreateSP_OrgChart() As Boolean
     "       -- Fetch Absences from DB" & vbNewLine & _
     "       DECLARE @ids TABLE (id INT, TYPE VARCHAR(50), reason VARCHAR(50));" & vbNewLine & _
     vbNewLine & _
-    "    -- Get top level manager" & vbNewLine & _
-    "    SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID( @RootID);" & vbNewLine & _
+    "       -- Get top level manager" & vbNewLine & _
+    "       SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID( @RootID);" & vbNewLine & _
     vbNewLine & _
     "       INSERT @ids" & vbNewLine & _
     "       SELECT id_" & CStr(mvar_lngEmployeeTableColumnID) & ", " & mvar_sAbsenceTypeColumn & ", " & mvar_sAbsenceReasonColumn & " FROM " & mvar_sAbsenceTable & " a WHERE a." & mvar_sAbsenceStartDateColumn & " <= @today AND (" & mvar_sAbsenceEndDateColumn & " >= @today OR isnull(" & mvar_sAbsenceEndDateColumn & ", '') = '')" & vbNewLine & _
@@ -586,12 +615,14 @@ Private Function CreateSP_OrgChart() As Boolean
     vbNewLine & _
     "       WITH Emp_CTE AS (" & vbNewLine & _
     "              SELECT id, " & mvar_sEmployeeForenameColumn & ", " & mvar_sEmployeeSurnameColumn & " AS name, " & mvar_sEmployeeNumberColumn & ", " & mvar_sManagerEmployeeNumberColumn & ", " & mvar_sEmployeeJobTitleColumn & ", 1 AS HierarchyLevel, " & mvar_sEmployeePhotographColumn & vbNewLine & _
-    "                     From " & mvar_sEmployeeTable & vbNewLine & _
+    "                     FROM " & mvar_sEmployeeTable & vbNewLine & _
     "                     WHERE " & mvar_sManagerEmployeeNumberColumn & " = @staff_number" & vbNewLine & _
-    "              Union All" & vbNewLine & _
+    "                         AND (" & mvar_sLeavingDateColumn & " IS NULL OR " & mvar_sLeavingDateColumn & " >= @today) AND " & mvar_sStartingDateColumn & " <= @today" & vbNewLine & _
+    "              UNION ALL" & vbNewLine & _
     "                     SELECT e.id, e." & mvar_sEmployeeForenameColumn & ", e." & mvar_sEmployeeSurnameColumn & ", e." & mvar_sEmployeeNumberColumn & ", e." & mvar_sManagerEmployeeNumberColumn & ", e." & mvar_sEmployeeJobTitleColumn & ", ecte.HierarchyLevel + 1 AS HierarchyLevel, e." & mvar_sEmployeePhotographColumn & vbNewLine & _
     "                     FROM " & mvar_sEmployeeTable & " e" & vbNewLine & _
-    "              INNER JOIN Emp_CTE ecte ON ecte." & mvar_sEmployeeNumberColumn & " = e." & mvar_sManagerEmployeeNumberColumn & "" & vbNewLine & _
+    "                     INNER JOIN Emp_CTE ecte ON ecte." & mvar_sEmployeeNumberColumn & " = e." & mvar_sManagerEmployeeNumberColumn & "" & vbNewLine & _
+    "                     WHERE (" & mvar_sLeavingDateColumn & " IS NULL OR " & mvar_sLeavingDateColumn & " >= @today) AND " & mvar_sStartingDateColumn & " <= @today" & vbNewLine & _
     "       )" & vbNewLine
 
   sProcSQL = sProcSQL & _
@@ -599,10 +630,10 @@ Private Function CreateSP_OrgChart() As Boolean
     "       LEFT JOIN @ids a ON a.id = p.id" & vbNewLine & _
     "       --LEFT JOIN @trainingIDs t ON t.id = p.ID" & vbNewLine & _
     vbNewLine & _
-    "    Union" & vbNewLine & _
+    "    UNION" & vbNewLine & _
     "      SELECT id, " & mvar_sEmployeeForenameColumn & ", " & mvar_sEmployeeSurnameColumn & " AS name, " & mvar_sEmployeeNumberColumn & ", " & mvar_sManagerEmployeeNumberColumn & ", " & mvar_sEmployeeJobTitleColumn & ", 0 AS HierarchyLevel, " & mvar_sEmployeePhotographColumn & "," & vbNewLine & _
     "      NULL AS type, NULL AS reason, NULL AS course_title" & vbNewLine & _
-    "        From " & mvar_sEmployeeTable & vbNewLine & _
+    "        FROM " & mvar_sEmployeeTable & vbNewLine & _
     "        WHERE ID = @RootID" & vbNewLine & _
     vbNewLine & _
     "       ORDER BY hierarchylevel, " & mvar_sEmployeeJobTitleColumn & ", name" & vbNewLine & _
@@ -645,11 +676,12 @@ Private Function CreateUDFOrgChartGetTopLevelID() As Boolean
     "BEGIN" & vbNewLine
   sProcSQL = sProcSQL & _
     "  DECLARE @ManagerID varchar(MAX)," & vbNewLine & _
+    "      @today DATETIME = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate()))," & vbNewLine & _
     "      @ManagerRecordID integer;" & vbNewLine & _
     vbNewLine & _
     "  SELECT @ManagerID = [" & mvar_sManagerEmployeeNumberColumn & "]" & vbNewLine & _
-    "    FROM [" & mvar_sEmployeeTable & "] WHERE id = @StaffRecordID;" & vbNewLine & _
-    vbNewLine & _
+    "    FROM [" & mvar_sEmployeeTable & "]" & vbNewLine & _
+    "    WHERE id = @StaffRecordID AND (" & mvar_sLeavingDateColumn & " IS NULL OR " & mvar_sLeavingDateColumn & " >= @today) AND " & mvar_sStartingDateColumn & " <= @today;" & vbNewLine & vbNewLine & _
     "  IF ISNULL(@ManagerID,'') = ''" & vbNewLine & _
     "    RETURN @StaffRecordID;" & vbNewLine & _
     "  ELSE" & vbNewLine & _
