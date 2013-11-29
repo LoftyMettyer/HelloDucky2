@@ -14,27 +14,20 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
-	'TODO
 	Function LocaleDateFormat() As String
-
-		Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
-		Return sLocaleDateFormat
-
+		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
 	End Function
 
-	'TODO
 	Function LocaleDecimalSeparator() As String
-		Return ""
+		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
 	End Function
 
-	'TODO
 	Function LocaleThousandSeparator() As String
-		Return ""
+		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
 	End Function
 
-	'TODO
 	Function LocaleDateSeparator() As String
-		Return ""
+		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.DateSeparator
 	End Function
 
 	'****************************************************************

@@ -606,7 +606,7 @@ function ConvertData(pvData, pDataType) {
 				if ($.trim(pvData).length == 0) {
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData);
+					vReturnData = Number(pvData.toString().replace(window.LocaleThousandSeparator, ""));
 				}
 				break;
 			case 4:
@@ -615,7 +615,7 @@ function ConvertData(pvData, pDataType) {
 
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData);
+					vReturnData = Number(pvData.toString().replace(window.LocaleThousandSeparator, ""));
 				}
 				break;
 
@@ -1183,12 +1183,17 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				else if (controlDataType == 2 || controlDataType == 4) { //sqlNumeric, sqlInteger
 					textbox.className = "number";
 
+
 					//Add some attributes used by the autoNumeric plugin we are using to validate numeric text boxes
 					var x; //For the loop below
 					var value = "";
 					
 					textbox.setAttribute("data-a-dec", $('#txtRecEditControlNumberDecimalSeparator').val()); //Decimal separator
-					textbox.setAttribute("data-a-sep", $('#txtRecEditControlNumberGroupSeparator').val()); //Thousand separator
+					if (Number(controlItemArray[52]) != 0) { //Use 1000 separator?
+						textbox.setAttribute("data-a-sep", $('#txtRecEditControlNumberGroupSeparator').val()); //Thousand separator
+					} else {
+						textbox.setAttribute("data-a-sep", ''); //No thousand separator
+					}
 					textbox.setAttribute('data-m-dec', controlItemArray[26]); //Decimal places
 					
 					//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
