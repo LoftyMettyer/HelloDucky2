@@ -140,7 +140,7 @@ End If
 
 <script type="text/javascript">
 
-    var fFromMenu = false;
+    //var fFromMenu = false;
     function ssOleDBGridDefSelRecords_dblClick() {
 
         var frmDefSel = document.getElementById("frmDefSel");
@@ -223,7 +223,7 @@ End If
                 button_disable(frmDefSel.cmdDelete, true);
             }
         }
-        fFromMenu = true;
+        //fFromMenu = true;
         refreshControls();
     }
 
@@ -300,11 +300,12 @@ End If
 
         if (rowCount() > 0) {
 
-            //fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+            var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
             var gotoID;
 
             if (fFromMenu == true) {
                 gotoID = $("#lastSelectedID")[0].value;
+                if (Number(gotoID) == 0) gotoID = $("#DefSelRecords").getDataIDs()[0];
             } else {
                 gotoID = $("#DefSelRecords").getDataIDs()[0];
             }
@@ -374,6 +375,7 @@ End If
         //show the Defsel-Find menu block.
         //$("#mnuSectionUtilities").show();
         frmDefSel = document.getElementById('frmDefSel');
+       
 
         disableNonDefselTabs();
 
@@ -384,7 +386,7 @@ End If
         menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
         menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
         menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
-       
+        var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
         var fHasRows = (rowCount() > 0);
 
 
@@ -482,7 +484,7 @@ End If
 		        $("#toolbarWFPendingStepsFind").parent().hide();
 
 		        // Enable the buttons
-		        //fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+		        
 		        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted);
 		        menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
 		        menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && fFromMenu);
