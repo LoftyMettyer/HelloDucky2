@@ -385,8 +385,10 @@
 
 
 		function GoBack() {
-			if (menu_saveChanges("", true, false) != 2) { // 2 = vbCancel
-				return;
+			if ($("#ctlRecordEdit #changed").val() == "true") { //If the user made any changes to the record, prompt to Save
+				if (menu_saveChanges("", true, false) != 2) { // 2 = vbCancel
+					return;
+				}
 			}
 			loadPartialView("linksMain", "Home", "workframe", null);
 		}
