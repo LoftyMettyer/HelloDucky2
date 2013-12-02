@@ -1059,18 +1059,13 @@
 			<li class="active has-sub last">
 				<ul id="userDropdownmenu_Items">
 					<li class="linkspagebuttontext">
-						<a href="javascript: showThemeEditor();">
-							<span>Layout</span>
-						</a>
-					</li>
-					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedPasswordChange" href="#">
 							<span>Change Password</span>
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedWorkflowOutOfOffice" href="#">
-							<span>Workflow Out Of Office</span>
+							<span>Out Of Office</span>
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
@@ -1083,6 +1078,11 @@
 							<span>About</span>
 						</a>
 					</li>
+					<li class="linkspagebuttontext" id="userDropdownmenu_Layout">
+						<a href="javascript: showThemeEditor();">
+							<span>Layout</span>
+						</a>
+					</li>
 				</ul>
 			</li>
 		</ul>
@@ -1090,7 +1090,10 @@
 </div>
 <script>
 	$(document).ready(function() {
-		$("#userDropdownmenu a").on("click", function() {
+		menu_setVisibleMenuItem("userDropdownmenu_Layout", menu_isSSIMode()); //Set visibility of Layout menu
+
+		$("#userDropdownmenu a").on("click", function ()
+		{
 			$("#userDropdownmenu ul").css("visibility", "visible");
 			$("#userDropdownmenu ul li").css("visibility", "visible");
 		});
