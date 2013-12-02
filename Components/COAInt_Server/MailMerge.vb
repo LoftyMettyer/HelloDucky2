@@ -73,139 +73,106 @@ Public Class MailMerge
 	Private mastrUDFsRequired() As String
 
 	Private mlngSingleRecordID As Integer
-
-	Public ReadOnly Property DefOutput() As Short
-		Get
-			'DefOutput = mintDefOutput
-		End Get
-	End Property
-
-	Public ReadOnly Property DefDocSave() As Boolean
-		Get
-			'DefDocSave = mblnDefDocSave
-		End Get
-	End Property
-
-	Public ReadOnly Property DefDocFile() As String
-		Get
-			'DefDocFile = mstrDefDocFile
-		End Get
-	End Property
-
-	Public ReadOnly Property DefCloseDoc() As Boolean
-		Get
-			'DefCloseDoc = mblnDefCloseDoc
-		End Get
-	End Property
-
+	
 	Public ReadOnly Property DefName() As String
 		Get
-			DefName = mstrDefName
+			Return mstrDefName
 		End Get
 	End Property
 
 	Public ReadOnly Property DefTemplateFile() As String
 		Get
-			DefTemplateFile = mstrDefTemplateFile
+			Return mstrDefTemplateFile
 		End Get
 	End Property
 
 	Public ReadOnly Property DefPauseBeforeMerge() As Boolean
 		Get
-			DefPauseBeforeMerge = mblnDefPauseBeforeMerge
+			Return mblnDefPauseBeforeMerge
 		End Get
 	End Property
 
 	Public ReadOnly Property DefSuppressBlankLines() As String
 		Get
-			DefSuppressBlankLines = CStr(mblnDefSuppressBlankLines)
+			Return CStr(mblnDefSuppressBlankLines)
 		End Get
 	End Property
 
-
 	Public ReadOnly Property DefEMailSubject() As String
 		Get
-			DefEMailSubject = mstrDefEMailSubject
+			Return mstrDefEMailSubject
 		End Get
 	End Property
 
 	Public ReadOnly Property DefEmailAddrCalc() As Integer
 		Get
-			DefEmailAddrCalc = mlngDefEmailAddrCalc
+			Return mlngDefEmailAddrCalc
 		End Get
 	End Property
 
 	Public ReadOnly Property DefEMailAttachment() As Boolean
 		Get
-			DefEMailAttachment = mblnDefEMailAttachment
+			Return mblnDefEMailAttachment
 		End Get
 	End Property
 
 	Public ReadOnly Property DefAttachmentName() As String
 		Get
-			DefAttachmentName = mstrDefAttachmentName
+			Return mstrDefAttachmentName
 		End Get
 	End Property
-
-
+	
 	Public ReadOnly Property DefOutputFormat() As Short
 		Get
-			DefOutputFormat = mintDefOutputFormat
+			Return mintDefOutputFormat
 		End Get
 	End Property
 
 	Public ReadOnly Property DefOutputScreen() As Boolean
 		Get
-			DefOutputScreen = mblnDefOutputScreen
+			Return mblnDefOutputScreen
 		End Get
 	End Property
 
 	Public ReadOnly Property DefOutputPrinter() As Boolean
 		Get
-			DefOutputPrinter = mblnDefOutputPrinter
+			Return mblnDefOutputPrinter
 		End Get
 	End Property
 
 	Public ReadOnly Property DefOutputPrinterName() As String
 		Get
-			DefOutputPrinterName = mstrDefOutputPrinterName
+			Return mstrDefOutputPrinterName
 		End Get
 	End Property
 
 	Public ReadOnly Property DefOutputSave() As Boolean
 		Get
-			DefOutputSave = mblnDefOutputSave
+			Return mblnDefOutputSave
 		End Get
 	End Property
 
 	Public ReadOnly Property DefOutputFileName() As String
 		Get
-			DefOutputFileName = mstrDefOutputFileName
+			Return mstrDefOutputFileName
 		End Get
 	End Property
 
-
 	Public ReadOnly Property DefDocManMapID() As Integer
 		Get
-			DefDocManMapID = mlngDocManMapID
+			Return mlngDocManMapID
 		End Get
 	End Property
 
 	Public ReadOnly Property DefDocManManualHeader() As Boolean
 		Get
-			DefDocManManualHeader = mblnDocManManualHeader
+			Return mblnDocManManualHeader
 		End Get
 	End Property
 
 	Public WriteOnly Property Connection() As Connection
 		Set(ByVal Value As Connection)
 			gADOCon = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property CustomReportID() As Integer
-		Set(ByVal Value As Integer)
-			mlngMailMergeID = Value
 		End Set
 	End Property
 
@@ -223,7 +190,7 @@ Public Class MailMerge
 
 	Public ReadOnly Property NoRecords() As Boolean
 		Get
-			NoRecords = mblnNoRecords
+			Return mblnNoRecords
 		End Get
 	End Property
 
@@ -247,7 +214,7 @@ Public Class MailMerge
 
 	Public ReadOnly Property UserCancelled() As Boolean
 		Get
-			UserCancelled = mblnUserCancelled
+			Return mblnUserCancelled
 		End Get
 	End Property
 
@@ -263,20 +230,18 @@ Public Class MailMerge
 		End Set
 	End Property
 
-
 	Public Property SuccessCount() As Integer
 		Get
-			SuccessCount = mlngSuccessCount
+			Return mlngSuccessCount
 		End Get
 		Set(ByVal Value As Integer)
 			mlngSuccessCount = Value
 		End Set
 	End Property
 
-
 	Public Property FailCount() As Integer
 		Get
-			FailCount = mlngFailCount
+			Return mlngFailCount
 		End Get
 		Set(ByVal Value As Integer)
 			mlngFailCount = Value
@@ -296,6 +261,7 @@ Public Class MailMerge
 		fOK = True
 
 	End Sub
+
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
@@ -316,6 +282,7 @@ Public Class MailMerge
 		'Set gcolColumnPrivilegesCollection = Nothing
 
 	End Sub
+
 	Protected Overrides Sub Finalize()
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
@@ -471,7 +438,7 @@ ErrorTrap:
 		Dim strSQL As String
 
 		On Error GoTo LocalErr
-		strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
+		strSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
 		mrsMergeData = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If mrsMergeData.EOF Then
@@ -482,9 +449,7 @@ ErrorTrap:
 			mblnNoRecords = False
 		End If
 
-		SQLGetMergeData = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		fOK = False
@@ -530,17 +495,11 @@ LocalErr:
 			mlngRecordDescExprID = .Fields("RecordDescExprID").Value
 			mlngDefPickListID = .Fields("PickListID").Value
 			mlngDefFilterID = .Fields("FilterID").Value
-			'mstrDefBaseTable = mclsGeneral.GetTableName(mlngDefBaseTableID)
-			'mlngDefOrderID = !OrderID
-			'mintDefOutput = !Output
-			'mblnDefCloseDoc = !CloseDoc
-
 			mstrDefTemplateFile = .Fields("TemplateFileName").Value
 			mblnDefSuppressBlankLines = .Fields("SuppressBlanks").Value
 			mblnDefPauseBeforeMerge = .Fields("PauseBeforeMerge").Value
 
 			mlngDefEmailAddrCalc = 0
-			'mstrEmailAddr = vbNullString
 
 			mintDefOutputFormat = .Fields("OutputFormat").Value
 			Select Case mintDefOutputFormat
@@ -589,13 +548,10 @@ LocalErr:
 TidyAndExit:
 		'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsMailMergeDefinition = Nothing
-		SQLGetMergeDefinition = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error reading Mail Merge definition"
-		'mstrStatusMessage = mstrStatusMessage & "  (" & Err.Description & ")"
 		fOK = False
 		Resume TidyAndExit
 
@@ -608,12 +564,11 @@ LocalErr:
 		'a problem when opening a data source with a single field
 
 		Dim strOutput As String
-		Dim intCount As Short
+		Dim intCount As Integer
 		Dim strEmailAddr As String
 		Dim blnRecordOkay As Boolean
 
 		Dim lngIndex As Integer
-
 
 		On Error GoTo LocalErr
 
@@ -638,18 +593,11 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object mstrOutputArray_Data(0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mstrOutputArray_Data(0) = strOutput
 
-
-		'Open "d:\mike.txt" For Output As #99
-		'Print #99, strOutput
-
 		While Not mrsMergeData.EOF And fOK
 
 			'And record's fields
 			strOutput = vbNullString
 			For intCount = 2 To mrsMergeData.Fields.Count
-				'strOutput = strOutput & _
-				'IIf(intCount > 2, vbTab, vbNullString) & _
-				'Trim(mrsMergeData.Fields(intCount - 1).Value)
 				strOutput = strOutput & IIf(intCount > 2, vbTab, vbNullString) & FormatData((mrsMergeData.Fields(intCount - 1).Value), intCount - 1)
 			Next
 
@@ -658,7 +606,6 @@ LocalErr:
 				strEmailAddr = GetEmailAddress((mrsMergeData.Fields(0).Value))
 				If Trim(strEmailAddr) = vbNullString Then
 					'email is blank
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetRecordDesc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mobjEventLog.AddDetailEntry(GetRecordDesc((mrsMergeData.Fields(0).Value)) & vbNewLine & vbNewLine & "Email Address is blank")
 					blnRecordOkay = False
 				Else
@@ -668,17 +615,8 @@ LocalErr:
 
 			mrsMergeData.MoveNext()
 
-			'MH20000620
-			'Need to check for null output in case you are merging a single
-			'record, single column and the data in that column is blank!
-			'(This used to result in the data source table containing a
-			'single cell which contains the column header, which in turn,
-			'will result in an error opening the data source document).
-
 			If blnRecordOkay Then
 				mlngSuccessCount = mlngSuccessCount + 1
-				'.TypeParagraph
-				'.TypeText IIf(strOutput <> vbNullString, strOutput, " ")
 
 				strOutput = Replace(strOutput, "\", "\\")
 				strOutput = Replace(strOutput, Chr(10), "")
@@ -686,70 +624,26 @@ LocalErr:
 
 				lngIndex = lngIndex + 1
 				ReDim Preserve mstrOutputArray_Data(lngIndex)
-				' JPD 14/02/02 Fault 3490
-				'mstrOutputArray_Data(lngIndex) = strOutput
+
 				'UPGRADE_WARNING: Couldn't resolve default property of object mstrOutputArray_Data(lngIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mstrOutputArray_Data(lngIndex) = IIf(strOutput = vbNullString, " ", strOutput)
 
 			Else
 				mlngFailCount = mlngFailCount + 1
 			End If
-			'Print #99, strOutput
 
 		End While
-
-		'Close #99
 
 		If mlngSuccessCount = 0 Then
 			mstrStatusMessage = "No records have a valid email address."
 			fOK = False
 		End If
 
-
-		'If only one column is selected, the system will prompt
-		'for a deliminator at the time of opening the data source.
-		'This can be avoided by putting the data into a table.
-
-		'need to do this regardless now as error occured
-		'when the data contained a comma (also now use tabs as delim)!
-
-		'MH20000620
-		'Okay, so now we get an error converting to table if more than
-		'about sixty columns/calculations are selected. So only convert
-		'to a table if one column selected and use tabs as delim to avoid
-		'problems when the data contains commas.
-
-		'    If fOK Then
-		'      If mrsMergeData.Fields.Count < 3 Then
-		'
-		'        'go to start of table highlight to end of document
-		'        .GoTo What:=wdGoToBookmark, Name:=strBookMark
-		'        .EndKey Unit:=wdStory, Extend:=wdExtend
-		'
-		'        'convert selected text into a table
-		'        .ConvertToTable _
-		''            Separator:=wdSeparateByTabs, _
-		''            Format:=wdTableFormatNone, _
-		''            ApplyFont:=False, _
-		''            ApplyColor:=False, _
-		''            AutoFit:=False
-		'
-		'      End If
-		'    End If
-
-		'End With
-
-		'wrdDocDataSource.Save
-		'wrdDocDataSource.Close SaveChanges:=False
-
-		BuildOutputArray = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error populating data source document"
-		fOK = False
-		BuildOutputArray = fOK
+		Return False
 
 	End Function
 
@@ -812,14 +706,13 @@ LocalErr:
 
 		End If
 
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error processing picklist"
-		fOK = False
+		Return False
 
 	End Function
-
 
 	Public Function SQLGetMergeColumns() As Boolean
 
@@ -923,18 +816,11 @@ LocalErr:
 						Case "Exp"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 							If IsDBNull(.Fields("Name").Value) Then
-								'MH20011127
-								'mstrStatusMessage = _
-								'"This definition contains one or more calculation(s) which" & vbNewLine & _
-								'"have been deleted by another user."
 								mstrStatusMessage = "This definition contains one or more calculation(s) which " & "have been deleted by another user."
 								fOK = False
 								Exit Function
 
 							ElseIf IsCalcValid(.Fields("ColExpID").Value) <> vbNullString Then
-								'MH20011127
-								'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
-								'"Please re-visit your definition to remove the hidden calculations." & vbNewLine
 								mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
 								fOK = False
 								Exit Function
@@ -969,7 +855,6 @@ LocalErr:
 						Exit Function
 					End If
 
-
 					.MoveNext()
 				Loop
 
@@ -997,14 +882,11 @@ LocalErr:
 		mrsMailMergeColumns = Nothing
 
 		Call SQLOrderByClause()
-		SQLCodeCreate = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error processing calculation/column definitions."
-		fOK = False
-		SQLCodeCreate = fOK
+		Return False
 
 	End Function
 
@@ -1375,20 +1257,18 @@ LocalErr:
 
 	End Function
 
-	Private Function GetRecordDesc(ByRef lngRecordID As Integer) As Object
+	Private Function GetRecordDesc(ByRef lngRecordID As Integer) As String
 
 		' Return TRUE if the user has been granted the given permission.
 		Dim cmADO As Command
 		Dim pmADO As Parameter
+		Dim sDescription As String
 
 		On Error GoTo LocalErr
 
 		If mlngRecordDescExprID < 1 Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetRecordDesc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetRecordDesc = "Record Description Undefined"
-			Exit Function
+			Return "Record Description Undefined"
 		End If
-
 
 		' Check if the user can create New instances of the given category.
 		cmADO = New Command
@@ -1407,24 +1287,20 @@ LocalErr:
 
 			cmADO.Execute()
 
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetRecordDesc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetRecordDesc = .Parameters(0).Value
+			sDescription = .Parameters(0).Value
 		End With
 		'UPGRADE_NOTE: Object cmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		cmADO = Nothing
 
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetRecordDesc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		If Trim(GetRecordDesc) = vbNullString Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetRecordDesc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetRecordDesc = "Record Description Undefined"
+		If Trim(sDescription) = vbNullString Then
+			Return "Record Description Undefined"
 		End If
 
-		Exit Function
+		Return sDescription
 
 LocalErr:
 		mstrStatusMessage = "Error reading record description " & "(ID = " & CStr(lngRecordID) & ", Record Description = " & CStr(mlngRecordDescExprID)
-		fOK = False
+		Return mstrStatusMessage
 
 	End Function
 
