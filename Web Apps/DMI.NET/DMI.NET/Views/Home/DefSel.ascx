@@ -1339,32 +1339,33 @@ End If
 		</form>
 
 
-
-<form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
-				<input type="hidden" id="Hidden1" name="utiltype" value="<%=Session("defseltype")%>">
-				<input type="hidden" id="Hidden2" name="utilid" value='<%=Session("utilid")%>'>
-				<input type="hidden" id="Hidden3" name="utilname">
-				<input type="hidden" id="Hidden4" name="action">
+    <form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
+				<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("defseltype")%>">
+				<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
+				<input type="hidden" id="utilname" name="utilname">
+				<input type="hidden" id="action" name="action">
 		</form>
 
 		<form name="frmWorkflow" method="post" action="util_run_workflow" id="frmWorkflow" style="visibility: hidden; display: none">
-				<input type="hidden" id="Hidden5" name="utiltype">
-				<input type="hidden" id="Hidden6" name="utilid">
-				<input type="hidden" id="Hidden7" name="utilname">
-				<input type="hidden" id="Hidden8" name="action">
+				<input type="hidden" id="utiltype" name="utiltype">
+				<input type="hidden" id="utilid" name="utilid">
+				<input type="hidden" id="utilname" name="utilname">
+				<input type="hidden" id="action" name="action">
 		</form>
 
 		<form action="defsel" method="post" id="frmOnlyMine" name="frmOnlyMine" style="visibility: hidden; display: none">
 				<input type="hidden" id="OnlyMine" name="OnlyMine" value='<%=Session("OnlyMine")%>'>
-				<input type="hidden" id="Hidden9" name="txtTableID" value='<%=Session("utilTableID")%>'>
+				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=Session("utilTableID")%>'>
 				<input type="hidden" id="SelectedTableID" name="SelectedTableID">
 		</form>
 
 		<form target="properties" action="defselproperties" method="post" id="frmProp" name="frmProp" style="visibility: hidden; display: none">
 				<input type="hidden" id="prop_name" name="prop_name">
 				<input type="hidden" id="prop_id" name="prop_id">
-				<input type="hidden" id="Hidden10" name="utiltype">
+				<input type="hidden" id="utiltype" name="utiltype">
 		</form>
+
+
 
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
 	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
