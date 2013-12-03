@@ -1268,8 +1268,12 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
 
-			if (Number(controlItemArray[37]) !== 0) { //Multi-line textbox (i.e. textarea); for this we need a slight adjustment to the height
+			if (Number(controlItemArray[37]) != 0) { //Multi-line textbox (i.e. textarea); for this we need a slight adjustment to the height
 				textbox.style.height = (Number((controlItemArray[6]) / 15 - 1)) + "px";
+				//Check if control should be disabled (read only)
+				if (controlItemArray[40] != "0") {
+					textbox.setAttribute("disabled", "disabled");
+				}
 			}
 
 			//Add control to relevant tab, create if required.                
