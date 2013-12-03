@@ -629,9 +629,7 @@
 			Dim classIcon As String = ""
 			Dim sNewWindow As String = ""
 			Dim sAppFilePath As String = ""
-			Dim sAppParameters As String = ""
-			
-			%>
+			Dim sAppParameters As String = ""%>
 			
 			<div class="pendingworkflowlinks">
 			<ul class="pendingworkflowsframe cols2">
@@ -644,8 +642,6 @@
 				</li>
 			</ul>	
 			</div>
-			
-			
 
 			<%fFirstSeparator = True%>
 			<div class="hypertextlinks">
@@ -653,15 +649,15 @@
 					For Each navlink In Model.NavigationLinks
 						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 					If navlink.LinkType = 0 Then	 ' hypertext link
-						If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then		' separator
-							iRowNum = 1
-							iColNum = 1
-							If fFirstSeparator Then
-								fFirstSeparator = False
-										Else%>
-				</ul>
-			</div>
-			</li> </ul>
+							If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) And navlink.UtilityType = -1 Then		' separator
+								iRowNum = 1
+								iColNum = 1
+								If fFirstSeparator Then
+									fFirstSeparator = False
+									 Else%>
+											</ul>
+											</div>
+												</li> </ul>
 			<%End If
 				iSeparatorNum += 1
 				
@@ -671,9 +667,7 @@
 					sText = sText.Replace("'", """")
 				Else
 					sText = ""
-				End If
-				
-				%>
+				End If%>
 			
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
@@ -683,7 +677,6 @@
 						</div>
 					</div>					
 					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
-						
 						<ul>
 							<%Else%>
 							<%If iRowNum > iMaxRows Then%>
