@@ -1205,13 +1205,15 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 						var n = Number(controlItemArray[25]) - Number(controlItemArray[26]); //Size minus decimal places
 						for (x = n; x--;) value += "9"; //Create a string of the form "999"
 						
-						if (controlItemArray[26] != "0") { //If decimal places are specified, add a period and a an appropriate number of "9"s
+						if (controlItemArray[26] != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
 							value += ".";
 							for (x = Number(controlItemArray[26]); x--;) value += "9";
 						}
 						
 						textbox.setAttribute('data-v-min', '-' + value);
 						textbox.setAttribute('data-v-max', value);
+
+						$(textbox).addClass("autoNumeric"); //Add this class so the Limit plugin won't be attached to this textbox, which was causing clashes between the Limit and AutoNumeric plugins
 					}
 					
 					//Alignment; this is not used by the plugin so we'll add it as a CSS style
@@ -1259,7 +1261,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
 			if (controlItemArray[25] > 0) { //Use a jQuery plugin to limit number of characters that can be input
-				$(textbox).limit(controlItemArray[25].toString());
+				if(!$(textbox).hasClass("autoNumeric")) { //Only use the Limit plugin if the textbox doesn't have a class indicating that it is being used by the AutoNumeric plugin
+					$(textbox).limit(controlItemArray[25].toString());
+				}
 			}
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
