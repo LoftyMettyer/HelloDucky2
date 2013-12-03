@@ -8,8 +8,31 @@
 			if (document.selection && document.selection.empty) {
 				document.selection.empty();
 			}
-		})();	
+		})();
 
+		$(document).on('keydown', '.datepicker', function () {
+			var queryDate = new Date();
+			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+			switch (event.keyCode) {
+				case 113:    // F2 insert todays date
+					$(this).val(queryDate);
+					$(this).datepicker('widget').hide('true');
+					break;
+				case 37:    // LEFT --> -1 day
+					//todo
+					break;
+				case 38:    // UPP --> -7 day
+					//todo
+					break;
+				case 39:    // RIGHT --> +1 day
+					//todo
+					break;
+				case 40:    // DOWN --> +7 day
+					//todo
+					break;
+			}
+		});
 
 		function recordEdit_window_onload() {			
 			//public variables
@@ -154,9 +177,13 @@
 
 								//jQuery Functionality:
 								if (fOK == true) {
-										//add datepicker functionality.
+									//add datepicker functionality.
 									$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
-									
+									//$(".datepicker").datepicker({
+									//	dateFormat: Date,
+									//	_keyEvent: true
+									//});
+
 										//add spinner functionality
 									$('.spinner').each(function () {
 										var id = $(this).attr('id');
@@ -380,10 +407,8 @@
 				//TODO: check this; fires change too.....
 				enableSaveButton();				
 			});
-
 		}
-
-
+	
 		function GoBack() {
 			if ($("#ctlRecordEdit #changed").val() == "true") { //If the user made any changes to the record, prompt to Save
 				if (menu_saveChanges("", true, false) != 2) { // 2 = vbCancel
@@ -628,9 +653,8 @@
 				'Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)        
 				Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdRecEditWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
 		End If
-		
-
 %>
+
 		<div class="pageTitleDiv">
 			<%--<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>--%>
 				<a href='#'
