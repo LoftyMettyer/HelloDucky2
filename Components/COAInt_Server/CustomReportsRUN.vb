@@ -3042,7 +3042,9 @@ CheckRecordSet_ERROR:
 
 					' Group with next column
 					If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
-						sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "") & "<br></br>\n"
+						If Not vDisplayData = "" Then
+							sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "") & vbNewLine
+						End If
 
 					Else
 
