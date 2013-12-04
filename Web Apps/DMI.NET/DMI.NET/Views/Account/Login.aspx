@@ -588,6 +588,11 @@ End If
 
 <%end if %>
 
+<%If (Session("MSBrowser") = True) And (Session("IEVersion") < 9.0) Then%>
+	<script type="text/javascript">
+		$("#ForgotPasswordLink").css("display", "none");
+	</script>
+<%End If%>
 <%	Html.EndForm()%>
 </div>
 
