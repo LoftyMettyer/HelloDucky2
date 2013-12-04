@@ -1273,6 +1273,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				//Check if control should be disabled (read only)
 				if (controlItemArray[40] != "0") {
 					textbox.setAttribute("disabled", "disabled");
+					$(textbox).addClass("ui-state-disabled");
 				}
 			}
 
