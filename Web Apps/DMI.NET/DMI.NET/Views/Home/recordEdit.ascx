@@ -10,7 +10,7 @@
 			}
 		})();
 
-		$(document).on('keydown', '.datepicker', function () {
+		$(document).on('keydown', '.datepicker', function (event) {
 			var queryDate = new Date();
 			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
 
