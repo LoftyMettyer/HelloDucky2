@@ -19,6 +19,7 @@
 
 <script type="text/javascript">
 	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-	$("#PageDivTitle").html($("#txtDefn_Name").val());
+	//The next line was overriding the report title
+	//$("#PageDivTitle").html($("#txtDefn_Name").val()); 
 	ShowCustomReport();
 </script>
