@@ -158,6 +158,7 @@
     <Compile Include="Enums\ExpressionTypes.vb" />
     <Compile Include="Enums\ExpressionValueTypes.vb" />
     <Compile Include="Enums\FieldSelectionTypes.vb" />
+    <Compile Include="Enums\MailMergeOutputTypes.vb" />
     <Compile Include="Enums\NavigationLinkType.vb" />
     <Compile Include="Enums\OutputFormats.vb" />
     <Compile Include="Enums\RecordSelectionTypes.vb" />
@@ -220,7 +221,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MailMerge.vb" />
-    <Compile Include="ExClientCode\MailMergeClient.vb" />
     <Compile Include="Menu.vb" />
     <Compile Include="Metadata\Base.vb" />
     <Compile Include="Metadata\LegendColor.vb" />

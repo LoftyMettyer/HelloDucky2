@@ -1,144 +1,99 @@
-﻿c<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿c<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %><%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
 <%
 	
-	Dim ActiveXClientDLL As New HR.Intranet.Server.MailMergeClient
 	
-		Dim MergeFieldsData
-		Dim OutputArrayData
-		Dim fok As Boolean
-		Dim objMailMerge As HR.Intranet.Server.MailMerge
-		Dim fNotCancelled As Boolean
-		Dim lngEventLogID As Long
-		Dim blnNoDefinition As Boolean
-		Dim aPrompts
-
-	if session("utiltype") = "" or _ 
-		 session("utilname") = "" or _ 
-		 session("utilid") = "" or _ 
-		 session("action") = "" then 
-				
-				Response.Write("Error : Not all session variables found...<HR>")
-				Response.Write("Type = " & Session("utiltype") & "<BR>")
-				Response.Write("UtilName = " & Session("utilname") & "<BR>")
-				Response.Write("UtilID = " & Session("utilid") & "<BR>")
-				Response.Write("Action = " & Session("action") & "<BR>")
-				Response.End()
-	end if
+	Dim fok As Boolean = True
+	Dim blnSuccess As Boolean
+	Dim bDownloadFile As Boolean
+	Dim objMailMerge As HR.Intranet.Server.MailMerge
+	Dim objMailMergeOutput As New Code.MailMergeRun
+	Dim fNotCancelled As Boolean
+	Dim lngEventLogID As Long
+	Dim aPrompts
 
 	' Create the reference to the DLL (Report Class)
-		objMailMerge = New HR.Intranet.Server.MailMerge   
-		
+	objMailMerge = New HR.Intranet.Server.MailMerge
+
 	' Pass required info to the DLL
 	objMailMerge.Username = Session("username").ToString()
-	objMailMerge.Connection = session("databaseConnection")
-	objMailMerge.MailMergeID = session("utilid")
-	objMailMerge.ClientDateFormat = session("localedateformat")
+	objMailMerge.Connection = Session("databaseConnection")
+	objMailMerge.MailMergeID = Session("utilid")
+	objMailMerge.ClientDateFormat = Session("localedateformat")
 	objMailMerge.SingleRecordID = Session("singleRecordID")
-	
-	fok = true
-	blnNoDefinition = true
 
-	if fok then
+	If fok Then
 		fok = objMailMerge.SQLGetMergeDefinition
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-	if fok then
-		blnNoDefinition = false
-
+	If fok Then
 		lngEventLogID = objMailMerge.EventLogAddHeader
 		fok = (lngEventLogID > 0)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	aPrompts =  Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
-	if fok then 
-		fok = objMailMerge.SetPromptedValues(aPrompts)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then 
-		fok = objMailMerge.SQLGetMergeColumns
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then 
-		fok = objMailMerge.SQLCodeCreate
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		fok = objMailMerge.UDFFunctions(true)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then 
-		fok = objMailMerge.SQLGetMergeData
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then 
-		fok = objMailMerge.BuildOutputArray
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	ActiveXClientDLL.MM_DimArrays()
-
-	OutputArrayData = objMailMerge.OutputArrayData
-
-	For intCount = 0 To UBound(OutputArrayData)
-		ActiveXClientDLL.MM_AddToOutputArrayData(OutputArrayData(intCount))
-	Next
-		
-	MergeFieldsData = objMailMerge.MergeFieldsData
-
-	For intCount = 0 To UBound(MergeFieldsData)
-		ActiveXClientDLL.MM_AddToMergeFieldsData(MergeFieldsData(intCount))
-	Next
-
-	ActiveXClientDLL.MM_MergeFieldsUbound = objMailMerge.MergeFieldsUBound
-	ActiveXClientDLL.MM_DefName = objMailMerge.DefName
-	ActiveXClientDLL.MM_DefTemplateFile = objMailMerge.DefTemplateFile
-	ActiveXClientDLL.MM_DefPauseBeforeMerge(objMailMerge.DefPauseBeforeMerge)
-	ActiveXClientDLL.MM_DefSuppressBlankLines(objMailMerge.DefSuppressBlankLines)
-
-	ActiveXClientDLL.MM_DefEmailSubject = objMailMerge.DefEMailSubject
-	ActiveXClientDLL.MM_DefEmailAddrCalc = objMailMerge.DefEmailAddrCalc
-	ActiveXClientDLL.MM_DefEMailAttachment(objMailMerge.DefEMailAttachment)
-	ActiveXClientDLL.MM_DefAttachmentName = objMailMerge.DefAttachmentName
-
-	ActiveXClientDLL.MM_DefOutputFormat = objMailMerge.DefOutputFormat
-	ActiveXClientDLL.MM_DefOutputScreen(objMailMerge.DefOutputScreen)
-	ActiveXClientDLL.MM_DefOutputPrinter(objMailMerge.DefOutputPrinter)
-	ActiveXClientDLL.MM_DefOutputPrinterName = objMailMerge.DefOutputPrinterName
-	ActiveXClientDLL.MM_DefOutputSave(objMailMerge.DefOutputSave)
-	ActiveXClientDLL.MM_DefOutputFileName = objMailMerge.DefOutputFileName
-
-	ActiveXClientDLL.SaveAsValues = Session("OfficeSaveAsValues")
-
-	Dim blnSuccess = ActiveXClientDLL.MM_WORD_ExecuteMailMerge()
-	Dim blnCancelled = ActiveXClientDLL.MM_Cancelled()
-	
-	Session("MailMerge_CompletedDocument") = ActiveXClientDLL
-	
-	fok = objMailMerge.UDFFunctions(false)
-	fNotCancelled = Response.IsClientConnected 
-	If fok Then fok = fNotCancelled
-	
-	If Not blnSuccess Then
-		Response.Write(String.Format("Failure : {0}", ActiveXClientDLL.ErrorMessage))	
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
 	End If
+
+	aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
+	If fok Then
+		fok = objMailMerge.SetPromptedValues(aPrompts)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
+	If fok Then
+		fok = objMailMerge.SQLGetMergeColumns
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
+	If fok Then
+		fok = objMailMerge.SQLCodeCreate
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
+	If fok Then
+		fok = objMailMerge.UDFFunctions(True)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
+	If fok Then
+		fok = objMailMerge.SQLGetMergeData
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
+	fok = objMailMerge.UDFFunctions(False)
+	fNotCancelled = Response.IsClientConnected
+	If fok Then fok = fNotCancelled
+
+	objMailMergeOutput.Name = objMailMerge.DefName
+	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
+	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+
+	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
+	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
 	
-%>
+	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
+	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
+
+	objMailMergeOutput.MergeData = objMailMerge.MergeData
+
+	If objMailMerge.DefOutputFormat = MailMergeOutputTypes.WordDocument Then
+		blnSuccess = objMailMergeOutput.ExecuteMailMerge()
+		bDownloadFile = True
+	Else
+		blnSuccess = objMailMergeOutput.ExecuteToEmail()
+		bDownloadFile = False
+	End If
+
+	Session("MailMerge_CompletedDocument") = objMailMergeOutput
+	
+	%>
 
 <form action="util_run_mailmerge_completed" method="post" id="frmMailMergeOutput" name="frmMailMergeOutput">
 		<input type="hidden" id="deftitle" name="deftitle" value="false">
@@ -152,9 +107,9 @@
 		<input type="hidden" id="nodefinition" name="nodefinition" value="false">
 </form>
 
-
 <script type="text/javascript">
-	<%	If objMailMerge.DefOutputScreen And blnSuccess Then%>
+	<% If bDownloadFile %>
 		document.getElementById("frmMailMergeOutput").submit();
 	<% End If %>
+	closeclick();
 </script>

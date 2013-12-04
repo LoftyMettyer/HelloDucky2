@@ -5,6 +5,7 @@ Imports System.Web
 Imports System.Web.Services.Description
 Imports ADODB
 Imports System.Drawing
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Web.Script.Serialization
 Imports DMI.NET.Models.OrgChart
@@ -5862,9 +5863,13 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Public Function util_run_mailmerge_completed() As FilePathResult
-			Dim objMergeDocument As HR.Intranet.Server.MailMergeClient = Session("MailMerge_CompletedDocument")
-			Return File(objMergeDocument.CompletedDocumentName, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", objMergeDocument.MM_DefName & ".docx")
+		Public Function util_run_mailmerge_completed() As FileStreamResult
+
+			Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
+
+			Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+				, Path.GetFileName(objMergeDocument.OutputFileName))
+
 		End Function
 
 		Function promptedValues() As ActionResult
