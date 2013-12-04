@@ -136,6 +136,7 @@ function find_window_onload() {
 					colModel: colMode,
 					rowNum: 100,
 					autowidth: true,
+					shrinktofit: false,
 					ondblClickRow: function () {
 					    menu_editRecord();
 					}
