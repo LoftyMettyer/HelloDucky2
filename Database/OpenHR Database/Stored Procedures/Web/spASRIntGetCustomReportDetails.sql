@@ -5,10 +5,9 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT d.*, ISNULL(c.Use1000separator,0) AS Use1000separator
-			, c.columnname
-			, t.tableid
-			, t.tablename
-			, c.datatype AS [ColumnDataType]
+			, ISNULL(c.columnname,'') AS [columnname]
+			, ISNULL(t.tableid,0) AS [tableid]
+			, ISNULL(t.tablename,'') AS [tablename]
 			, CASE c.datatype WHEN 11 THEN 1 ELSE 0 END AS [IsDateColumn]
 			, CASE c.datatype WHEN -7 THEN 1 ELSE 0 END AS [IsBooleanColumn]
 		FROM ASRSysCustomReportsDetails d
