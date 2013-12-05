@@ -765,7 +765,7 @@ Public Class CalendarReport
 
 	Public Property StartOnCurrentMonth() As Boolean
 		Get
-			StartOnCurrentMonth = mbStartOnCurrentMonth
+			Return mbStartOnCurrentMonth
 		End Get
 		Set(ByVal Value As Boolean)
 			mbStartOnCurrentMonth = Value

@@ -5,8 +5,6 @@
 
 <%@ Register Assembly="DayPilot" Namespace="DayPilot.Web.Ui" TagPrefix="DayPilot" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
-
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/layout.css")%>" rel="stylesheet" type="text/css" />
@@ -16,6 +14,7 @@
 
 <script type="text/javascript">
 
+	$("#divReportButtons").css("visibility", "visible");
 	$('#StartYearDemo').MonthPicker(
 		{
 			StartYear: $("#txtYear").val(),
@@ -26,8 +25,6 @@
 
 				var sMonthYear = $('#StartYearDemo').val();
 				var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
-
-				frmGetDataForm.txtMode.value = "LOADCALENDARREPORTDATA";
 				frmGetDataForm.txtMonth.value = sMonthYear.substring(0, 2);
 				frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7); 
 
@@ -44,58 +41,51 @@
 		$("#CalendarEvent").dialog("open");
 		$("#CalendarEvent").dialog("option", "position", ['center', 'center']); //Center popup in screen
 	}
-	
+
+	function todayClick() {
+
+		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
+		var d = new Date();
+		frmGetDataForm.txtMonth.value = d.getMonth() + 1;
+		frmGetDataForm.txtYear.value = d.getFullYear();
+		OpenHR.submitForm(frmGetDataForm);
+		return true;
+	}
+
+	function ExportData(strMode) {
+		var frmGetDataForm = OpenHR.getForm("dataframe", "frmCalendarGetData");
+		frmGetDataForm.txtMode.value = "OUTPUTREPORT";
+		OpenHR.submitForm(frmGetDataForm);
+		return true;
+	}
+
 </script>
 
+<div style="float: left; width: 80%">
+	<DayPilot:DayPilotScheduler ID="DayPilotScheduler1" runat="server"
+		HeaderFontSize="8pt" HeaderHeight="20"
+		DataStartField="startdate"
+		DataEndField="enddate"
+		DataTextField="description"
+		DataValueField="id"
+		DataResourceField="resource"
+		EventFontSize="11px"
+		CellDuration="1440"
+		NonBusinessBackColor="#FF0000"
+		OnBeforeEventRender="DayPilotScheduler1_BeforeEventRender"
+		EventClickHandling="JavaScript"
+		EventClickJavaScript="eventCalendarClick({0});"
+		TimeFormat="Clock24Hours" 
+		CssOnly="True"
+		CssClassPrefix="scheduler_white"
+		EventHeight="25" RowHeaderColumnWidths="200">
+		<Resources>
+		</Resources>
+	</DayPilot:DayPilotScheduler>
+</div>
 
-<%--<DayPilot:DayPilotCalendar ID="DayPilotCalendar1" runat="server"
-	DataTextField="description"
-	DataValueField="id"
-	StartDate="2007-01-01"
-	TimeFormat="Clock12Hours"
-	DataStartField="startdate"
-	DataEndField="enddate"
-	Days="5"
-	NonBusinessHours="Hide"
-	OnBeforeEventRender="DayPilotCalendar1_BeforeEventRender"
-	EventClickHandling="JavaScript"
-	TimeRangeSelectedHandling="JavaScript"
-	CssOnly="true"
-	CssClassPrefix="calendar_white">
-</DayPilot:DayPilotCalendar>--%>
 
-	<form id="blah" runat="server">
-		<asp:GridView ID="GridView1" runat="server"></asp:GridView>
-	</form>
-
-<div style="float:left;width:80%">
-	
-
-
-		<DayPilot:DayPilotScheduler ID="DayPilotScheduler1" runat="server"
-			HeaderFontSize="8pt" HeaderHeight="20"
-			DataStartField="startdate"
-			DataEndField="enddate"
-			DataTextField="description"
-			DataValueField="id"
-			DataResourceField="resource"
-			EventFontSize="11px"
-			CellDuration="1440"
-			NonBusinessBackColor="#FF0000"
-			OnBeforeEventRender="DayPilotScheduler1_BeforeEventRender"
-			EventClickHandling="JavaScript"
-			EventClickJavaScript="eventCalendarClick({0});"
-			TimeRangeSelectedHandling="JavaScript"
-			CssOnly="True"
-			CssClassPrefix="scheduler_white"
-			EventHeight="25" RowHeaderColumnWidths="200">
-			<Resources>
-			</Resources>
-		</DayPilot:DayPilotScheduler>
-	</div>
-	
-	
-	<%	
+<%	
 		Dim objCalendar As HR.Intranet.Server.CalendarReport
 		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 	%>
@@ -104,20 +94,26 @@
 		
 		<strong>Select Month :</strong>
 
-			<input id="StartYearDemo" type="text"  value="	
-			<%
-	
-				If Session("CALREP_Year") Is Nothing Then
-					Session("CALREP_Year") = objCalendar.ReportStartDate.Year.ToString.PadLeft(4, "0"c)
-					Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
-				End If
+		<input id="StartYearDemo" type="text"  value="	
+		<%
+		If objCalendar.StartOnCurrentMonth Then
+			Session("CALREP_Year") = Date.Now.Year.ToString.PadLeft(4, "0"c)
+			Session("CALREP_Month") = Date.Now.Month.ToString.PadLeft(2, "0"c)
+			objCalendar.StartOnCurrentMonth = False
+		ElseIf Session("CALREP_Year") Is Nothing Then
+			Session("CALREP_Year") = objCalendar.ReportStartDate.Year.ToString.PadLeft(4, "0"c)
+			Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
+		End If
 				
-				Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
+		Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
 	
-				Response.Write(dStartDate.Month.ToString.PadLeft(2, "0"c) & "/" & dStartDate.Year)
-			%>" />
-			
-			<p></p>
+		Response.Write(dStartDate.Month.ToString.PadLeft(2, "0"c) & "/" & dStartDate.Year)
+		%>" />
+
+		<input class="btn" type="button" id="cmdToday" name="cmdToday" value="Today" onclick="todayClick()" />
+
+		<p></p>
+
 		<strong>Legend :</strong>
 
 		<%
@@ -158,44 +154,9 @@
 		DayPilotScheduler1.StartDate = dStartDate
 		DayPilotScheduler1.Days = DateTime.DaysInMonth(dStartDate.Year, dStartDate.Month)
 		DayPilotScheduler1.DataSource = getData()
-
-		'DayPilotCalendar1.StartDate = dStartDate
-		'DayPilotCalendar1.DataSource = getData()
-
-		
 		DataBind()
 		
-				
-		'DayPilotScheduler1.CssOnly = False
-		'Response.Clear()
-		'Response.ContentType = "image/png"
-		'Response.AddHeader("content-disposition", "attachment;filename=print.png")
-		
-		'Dim MemoryStream = DayPilotScheduler1.Export(ImageFormat.Png)
-		'img.WriteTo(Response.OutputStream)
-		'DayPilotScheduler1.CssOnly = True
-		'Response.End()
-
-		'		HoofToExcel()
-		
 	End Sub
-	
-	'Private Sub HoofToExcel()
-		
-	'	Dim objGrid As New GridView
-		
-	'	Using sw As New StreamWriter("c:\dev\test.xls")
-	'		Using hw As New HtmlTextWriter(sw)
-				
-	'			objGrid.DataSource = getData()
-	'			objGrid.DataBind()
-	'			objGrid.RenderControl(hw)			
-
-	'		End Using
-	'	End Using
-	'End Sub
-	
-	
 	
 	Protected Sub DayPilotScheduler1_BeforeEventRender(sender As Object, e As Events.Scheduler.BeforeEventRenderEventArgs)
 		Dim color As String = TryCast(e.DataItem("color"), String)
@@ -222,8 +183,6 @@
 		dt.Columns.Add("color", GetType(String))
 		
 		Dim dr As DataRow
-
-		Dim start As New DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)
 
 		Dim objCalendar As HR.Intranet.Server.CalendarReport
 		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
@@ -416,7 +375,3 @@
 	objCalendar = Nothing
 
 %>
-
-<script type="text/javascript">
-	util_run_calendarreport_data_window_onload();
-</script>
