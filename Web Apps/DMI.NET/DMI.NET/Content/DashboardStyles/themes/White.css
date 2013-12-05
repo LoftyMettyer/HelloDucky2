@@ -2,6 +2,7 @@
 	/*background-color: white;*/
 			/*color: black;*/
 			font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
+			color: #2e6e9e;
 }
 
 .headerbar {background-color: #e9eef7;}
@@ -47,5 +48,5 @@ li a {	color: black;}
 .linkspagebutton .displayonly { background-color: transparent; }
 .generaltheme {background-color: rgb(191, 219, 255);}
 
-.widgetplaceholder { color: white;}
+/*.widgetplaceholder { color: white;}*/
 
