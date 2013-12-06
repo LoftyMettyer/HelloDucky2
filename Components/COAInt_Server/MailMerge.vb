@@ -659,7 +659,7 @@ LocalErr:
 		End If
 
 		mstrSQLFrom = gcoTablePrivileges.Item(mstrDefBaseTable).RealSource
-		mstrSQLSelect = mstrSQLFrom & ".ID, 'lofty@asr.co.uk' AS [?Receipt]"
+		mstrSQLSelect = mstrSQLFrom & ".ID, '' AS [?Receipt]"
 
 		With mrsMailMergeColumns
 			fOK = Not (.BOF And .EOF)
