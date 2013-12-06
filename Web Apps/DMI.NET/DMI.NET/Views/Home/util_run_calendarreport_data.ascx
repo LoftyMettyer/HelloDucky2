@@ -53,9 +53,10 @@
 	}
 
 	function ExportData(strMode) {
-		var frmGetDataForm = OpenHR.getForm("dataframe", "frmCalendarGetData");
-		frmGetDataForm.txtMode.value = "OUTPUTREPORT";
-		OpenHR.submitForm(frmGetDataForm);
+
+		var frmExport = OpenHR.getForm("reportworkframe", "frmExportData");
+		frmExport.submit();
+
 		return true;
 	}
 
@@ -320,7 +321,7 @@
 %>
 </form>
 
-<form method="post" id="frmExportData" name="frmExportData" action="util_run_outputoptions">
+<form action="util_run_calendarreport_download" method="post" id="frmExportData" name="frmExportData">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCalendar.OutputPreview%>">
 	<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCalendar.OutputFormat%>">
 	<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCalendar.OutputScreen%>">
@@ -333,8 +334,10 @@
 	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=Replace(objCalendar.OutputEmailGroupName, """", "&quot;")%>">
 	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=Replace(objCalendar.OutputEmailSubject, """", "&quot;")%>">
 	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=Replace(objCalendar.OutputEmailAttachAs, """", "&quot;")%>">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("EmailGroupID").ToString()%>">
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCalendar.OutputFilename%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">

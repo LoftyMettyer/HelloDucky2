@@ -128,6 +128,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
+    <Compile Include="Code\CalendarOutput.vb" />
     <Compile Include="Code\MailMergeRun.vb" />
     <Compile Include="Code\svrCleanup.vb" />
     <Compile Include="Controllers\AccountController.vb" />

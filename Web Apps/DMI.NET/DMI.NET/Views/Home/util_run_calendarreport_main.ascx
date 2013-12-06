@@ -292,6 +292,11 @@ objCalendar = Nothing
 	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
 </form>
 
+
+<form action="util_run_calendarreport_download" method="post" id="frmCalendarOutput" name="frmCalendarOutput">
+</form>
+
+
 <script type="text/javascript">
 
 	$("#reportframe").show();
@@ -301,4 +306,11 @@ objCalendar = Nothing
 	$("#top").hide();
 	$("#calendarframeset").show();
 
+	<%	If Not blnShowCalendar Then%>
+	document.getElementById("frmCalendarOutput").submit();
+	closeclick();
+	<%	End If%>
+
 </script>
+
+

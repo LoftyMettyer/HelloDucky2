@@ -5,6 +5,7 @@ Imports System.Web
 Imports System.Web.Services.Description
 Imports ADODB
 Imports System.Drawing
+Imports DMI.NET.Code
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Web.Script.Serialization
@@ -3854,6 +3855,29 @@ Namespace Controllers
 
 		End Function
 
+	Function util_run_calendarreport_download() As FileStreamResult
+
+		Dim sDownloadFilename As String
+		Dim objCalendar As HR.Intranet.Server.CalendarReport
+		objCalendar = Session("objCalendar" & Session("UtilID"))
+
+		Dim objOutput As New CalendarOutput
+		objOutput.ReportData = objCalendar.Events
+		objOutput.Calendar = objCalendar
+
+		If objOutput.Generate(OutputFormats.fmtWordDoc) Then
+
+			sDownloadFilename = objCalendar.OutputFilename
+			If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
+
+			Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+				, Path.GetFileName(sDownloadFilename))
+		End If
+
+	End Function
+
+
+
 		Function util_run_calendarreport_data_submit() As ActionResult
 
 			On Error Resume Next
@@ -6591,7 +6615,7 @@ Namespace Controllers
 					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-size { font-size: " & configFile("linkspagebuttontext-size") & "pt}", configFile("linkspagebuttontext-size")))
 					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-bold { font-weight: " & configFile("linkspagebuttontext-bold") & "}", configFile("linkspagebuttontext-bold")))
 					cssOutput.AppendLine(CssCheck(".linkspagebuttontext-italics { font-style: " & configFile("linkspagebuttontext-italics") & "}", configFile("linkspagebuttontext-italics")))
-					
+
 
 					' output to css file.
 					Using cssFile As New StreamWriter(Server.MapPath("~/Content/DashboardStyles/themes/upgraded.css"))
