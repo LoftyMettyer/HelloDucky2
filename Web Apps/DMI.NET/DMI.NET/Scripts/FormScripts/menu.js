@@ -1456,6 +1456,7 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolChangeOrderRecord", false);
 			menu_setVisibleMenuItem("mnutoolFilterRecord", false);
 			menu_setVisibleMenuItem("mnutoolClearFilterRecord", false);
+			menu_setVisibleMenuItem("mnuSectionRecordOrder", false);
 		}
 		else {
 		menu_setVisibletoolbarGroup("mnutoolFindRecord", true);
