@@ -3211,7 +3211,7 @@ LoadRecords_ERROR:
 			vData = CDbl(vData)
 
 			' Overflow check (ignore decimals)
-			If CLng(vData).ToString.Length > objReportItem.Size Then
+			If CLng(vData).ToString.Length > objReportItem.Size And objReportItem.Size > 0 Then
 				vData = New String("#", objReportItem.Size)
 			Else
 				If Not objReportItem.Mask Is Nothing Then
