@@ -1,20 +1,18 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 
 Public Class clsEventLog
 
-	Private mclsData As New clsDataAccess
 	Private mlngEventLogID As Integer
 	Private mstrBatchName As String = ""
 	Private mlngBatchRunID As Integer
 	Private mlngBatchJobID As Integer
-	Private mblnBatchMode As Boolean
 
 	Public WriteOnly Property BatchMode() As Boolean
 		Set(ByVal Value As Boolean)
-			mblnBatchMode = Value
 			mlngBatchRunID = GetBatchRunID()
 		End Set
 	End Property
@@ -33,8 +31,6 @@ Public Class clsEventLog
 		End Set
 	End Property
 
-
-
 	Public Property EventLogID() As Integer
 		Get
 			EventLogID = mlngEventLogID
@@ -43,24 +39,6 @@ Public Class clsEventLog
 			mlngEventLogID = Value
 		End Set
 	End Property
-
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-		mclsData = New clsDataAccess
-	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
-	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
 
 	Public Sub TidyUp()
 
@@ -77,14 +55,14 @@ Public Class clsEventLog
 
 		On Error GoTo ErrTrap
 
-		Dim cmdAddHeader As New ADODB.Command
-		Dim prmNewID As New ADODB.Parameter
-		Dim prmType As New ADODB.Parameter
-		Dim prmName As New ADODB.Parameter
-		Dim prmUserName As New ADODB.Parameter
-		Dim prmBatchName As New ADODB.Parameter
-		Dim prmBatchRunID As New ADODB.Parameter
-		Dim prmBatchJobID As New ADODB.Parameter
+		Dim cmdAddHeader As New Command
+		Dim prmNewID As Parameter
+		Dim prmType As Parameter
+		Dim prmName As Parameter
+		Dim prmUserName As Parameter
+		Dim prmBatchName As Parameter
+		Dim prmBatchRunID As Parameter
+		Dim prmBatchJobID As Parameter
 		Dim sErrorMsg As String = ""
 		Dim iLoop As Short
 
@@ -138,78 +116,11 @@ Public Class clsEventLog
 		'UPGRADE_NOTE: Object cmdAddHeader may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		cmdAddHeader = Nothing
 
-		'  Dim fInTransaction As Boolean
-		'  Dim lngTimeOut As Long
-		'
-		'  lngTimeOut = Timer + 5
-		'
-		'  mlngEventLogID = 0
-		'  fInTransaction = False
-		'
-		'  ' If we are in batchmode, is everything ok ?
-		'  If (mlngBatchRunID = -1 And mstrBatchName <> vbNullString) Then
-		'    AddHeader = False
-		'    Exit Function
-		'  End If
-		'
-		'  ' Temp recordset to hold the returned id of the record just added
-		'  Dim prstRowAdded As ADODB.Recordset
-		'
-		'  ' Start a transaction
-		'  gADOCon.BeginTrans
-		'  fInTransaction = True
-		'
-		'  ' Do the insert
-		'  gADOCon.Execute "INSERT INTO AsrSysEventLog (" & _
-		''                  "DateTime," & _
-		''                  "Type," & _
-		''                  "Name," & _
-		''                  "Status," & _
-		''                  "Username," & _
-		''                  "Mode," & _
-		''                  "BatchName," & _
-		''                  "SuccessCount," & _
-		''                  "FailCount," & _
-		''                  "BatchRunID) " & _
-		''                  "VALUES(" & _
-		''                  "GETDATE()," & _
-		''                   udtType & "," & _
-		''                  "'" & Replace(strName, "'", "''") & "'," & _
-		''                  elsPending & "," & _
-		''                  "'" & gsUsername & "'," & _
-		''                  IIf(mstrBatchName = vbNullString, 0, 1) & "," & _
-		''                  "'" & Replace(mstrBatchName, "'", "''") & "'," & _
-		''                  "NULL," & _
-		''                  "NULL," & _
-		''                  IIf(mlngBatchRunID > 0, mlngBatchRunID, "NULL") & ")"
-		'
-		'  ' Retrieve the id just added
-		'  Set prstRowAdded = gADOCon.Execute("SELECT MAX(ID) FROM AsrSysEventLog")
-		'
-		'  ' Set function return to the id just added
-		'  mlngEventLogID = prstRowAdded.Fields(0)
-		'
-		'  ' Commit the transaction
-		'  gADOCon.CommitTrans
-		'  fInTransaction = False
-		'
-		'  ' Tidy up
-		'  Set prstRowAdded = Nothing
-		'
-		AddHeader = True
-
-		Exit Function
+		Return True
 
 ErrTrap:
-		'  If Timer < lngTimeOut Then
-		'    Resume 0
-		'  End If
-		'
-		'  If fInTransaction Then
-		'    gADOCon.RollbackTrans
-		'  End If
-		'
-		AddHeader = False
+
+		Return False
 
 	End Function
 
@@ -242,11 +153,10 @@ ErrTrap:
 		strSQL = "UPDATE [AsrSysEventLog] SET " & " [AsrSysEventLog].[Duration] = DATEDIFF(second, [AsrSysEventLog].[DateTime], [AsrSysEventLog].[EndTime]) " & " WHERE [AsrSysEventLog].[ID] = " & mlngEventLogID
 		gADOCon.Execute(strSQL)
 
-		ChangeHeaderStatus = True
-		Exit Function
+		Return True
 
 ErrTrap:
-		ChangeHeaderStatus = False
+		Return False
 
 	End Function
 
@@ -256,12 +166,11 @@ ErrTrap:
 
 		If mlngEventLogID > 0 Then
 			gADOCon.Execute("INSERT INTO AsrSysEventLogDetails (" & "EventLogID," & "Notes) " & "VALUES(" & mlngEventLogID & "," & "'" & Replace(pstrNotes, "'", "''") & "')")
-			AddDetailEntry = True
-			Exit Function
+			Return True
 		End If
 
 ErrTrap:
-		AddDetailEntry = False
+		Return False
 
 	End Function
 
@@ -269,7 +178,7 @@ ErrTrap:
 
 		On Error GoTo ErrTrap
 
-		Dim prstRowAdded As ADODB.Recordset
+		Dim prstRowAdded As Recordset
 
 		' Start a transaction
 		gADOCon.BeginTrans()

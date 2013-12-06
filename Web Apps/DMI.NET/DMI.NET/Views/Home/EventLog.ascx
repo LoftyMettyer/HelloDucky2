@@ -1,45 +1,45 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <%
 	'This section of script is used for saving the new purge criteria.
-	Dim bDoesPurge
+	Dim sDoesPurge As String
 	Dim sPeriod As String
 	Dim iFrequency As Integer
-	Dim sSQL As String
-	Dim cmdPurge
-	Dim prmPeriod
-	Dim prmFrequency
+	Dim cmdPurge As Command
+	Dim prmPeriod As ADODB.Parameter
+	Dim prmFrequency As ADODB.Parameter
 		
-	bDoesPurge = Trim(Request.Form("txtDoesPurge"))
+	sDoesPurge = Trim(Request.Form("txtDoesPurge"))
 	sPeriod = Request.Form("txtPurgePeriod")
 	iFrequency = Request.Form("txtPurgeFrequency")
 	
-	If bDoesPurge <> vbNullString Then
+	If sDoesPurge <> vbNullString Then
 		
 		' Delete old purge information to the database
-		cmdPurge = CreateObject("ADODB.Command")
+		cmdPurge = New Command
 		cmdPurge.CommandText = "spASRIntClearEventLogPurge"
-		cmdPurge.CommandType = 4 ' Stored procedure.
+		cmdPurge.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdPurge.ActiveConnection = Session("databaseConnection")
 		Err.Clear()
 		cmdPurge.Execute()
 		cmdPurge = Nothing
  
-		If bDoesPurge = 1 Then
+		If sDoesPurge = "1" Then
 			' Insert the new purge criteria
-			cmdPurge = CreateObject("ADODB.Command")
+			cmdPurge = New Command
 			cmdPurge.CommandText = "spASRIntSetEventLogPurge"
-			cmdPurge.CommandType = 4 ' Stored procedure.
+			cmdPurge.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdPurge.ActiveConnection = Session("databaseConnection")
 		
-			prmPeriod = cmdPurge.CreateParameter("period", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+			prmPeriod = cmdPurge.CreateParameter("period", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 			cmdPurge.Parameters.Append(prmPeriod)
-			prmPeriod.value = CStr(sPeriod)
+			prmPeriod.Value = CStr(sPeriod)
 
-			prmFrequency = cmdPurge.CreateParameter("frequency", 3, 1) ' 3=integer, 1=input
+			prmFrequency = cmdPurge.CreateParameter("frequency", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 			cmdPurge.Parameters.Append(prmFrequency)
-			prmFrequency.value = CleanNumeric(CLng(iFrequency))
+			prmFrequency.Value = CleanNumeric(CLng(iFrequency))
 			
 			Err.Clear()
 			cmdPurge.Execute()
@@ -51,55 +51,44 @@
 		End If
 	End If
 	
-	bDoesPurge = Nothing
-	sPeriod = Nothing
-	iFrequency = Nothing
-	sSQL = Nothing
-%>
-
-<%
 	'This section of script is used for deleting Event Log records according to the selection on the Delete screen. 
-	Dim iDeleteSelection
-	Dim sSelectedEventIDs
-	Dim cmdDelete
-	Dim bHasViewAllPermission
-	Dim prmEventIDs
-	Dim prmType
-	Dim prmCanViewAll
+	Dim iDeleteSelection As Integer
+	Dim sSelectedEventIDs As String
+	Dim cmdDelete As Command
+	Dim sHasViewAllPermission As String
+	Dim prmEventIDs As ADODB.Parameter
+	Dim prmType As ADODB.Parameter
+	Dim prmCanViewAll As ADODB.Parameter
 	
 	iDeleteSelection = Request.Form("txtDeleteSel")
 	sSelectedEventIDs = Request.Form("txtSelectedIDs")
-	bHasViewAllPermission = Request.Form("txtViewAllPerm")
+	sHasViewAllPermission = Request.Form("txtViewAllPerm")
 
 	If iDeleteSelection <> vbNullString Then
 		iDeleteSelection = CInt(iDeleteSelection)
 		
-		cmdDelete = CreateObject("ADODB.Command")
+		cmdDelete = New Command
 		cmdDelete.CommandText = "spASRIntDeleteEventLogRecords"
-		cmdDelete.CommandType = 4	' Stored procedure.
+		cmdDelete.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdDelete.ActiveConnection = Session("databaseConnection")
 		
-		prmType = cmdDelete.CreateParameter("type", 3, 1)	' 3=integer, 1=input
+		prmType = cmdDelete.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 		cmdDelete.Parameters.Append(prmType)
 		prmType.value = CleanNumeric(CLng(iDeleteSelection))
 
-		prmEventIDs = cmdDelete.CreateParameter("eventIDs", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		prmEventIDs = cmdDelete.CreateParameter("eventIDs", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 		cmdDelete.Parameters.Append(prmEventIDs)
 		prmEventIDs.value = CStr(sSelectedEventIDs)
 
-		prmCanViewAll = cmdDelete.CreateParameter("canViewAll", 11, 1) ' 11=bit, 1=input
+		prmCanViewAll = cmdDelete.CreateParameter("canViewAll", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
 		cmdDelete.Parameters.Append(prmCanViewAll)
-		prmCanViewAll.value = CleanBoolean(CBool(bHasViewAllPermission))
+		prmCanViewAll.Value = CleanBoolean(CBool(sHasViewAllPermission))
 
 		Err.Clear()
 		cmdDelete.Execute()
 		cmdDelete = Nothing
 	End If
 
-	iDeleteSelection = Nothing
-	sSelectedEventIDs = Nothing
-	cmdDelete = Nothing
-	bHasViewAllPermission = Nothing
 %>
 
 
@@ -147,9 +136,6 @@
 		refreshUsers();
 
 	}
-</script>
-
-<script type="text/javascript">
 
 	function EventLog_moveRecord(psMovement) {
 		var frmGetData = OpenHR.getForm("dataframe", "frmGetData");
@@ -165,7 +151,9 @@
 	}
 
 	function refreshStatusBar() {
-	var sRecords;
+		
+		var sRecords;
+		var sCaption;
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
 		sRecords = frmData.txtELTotalRecordCount.value;
@@ -224,10 +212,10 @@
 
 	function loadEventLog() {
 		var i;
-		var sAddLine;
-
 		var iPollCounter;
 		var iPollPeriod;
+		var sControlName;
+		var sControlPrefix;
 
 		iPollPeriod = 100;
 		iPollCounter = iPollPeriod;
@@ -235,9 +223,8 @@
 		var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
 		var dataCollection = frmUtilDefForm.elements;
 
-		var frmRefresh;
-		frmRefresh = OpenHR.getForm("pollframe", "frmHit");
-
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
+		
 		if (dataCollection != null) {
 			frmLog.ssOleDBGridEventLog.focus();
 			frmLog.ssOleDBGridEventLog.Redraw = false;
@@ -463,40 +450,13 @@
 	}
 
 	function EventLog_refreshButtons() {
-		with (frmLog.ssOleDBGridEventLog) {
-			menu_enableMenuItem("mnutoolViewEventLogFind", (Rows > 0) );
-			//if (Rows > 0) {
-			//	button_disable(frmLog.cmdView, false);
-			//}
-			//else {
-			//	button_disable(frmLog.cmdView, true);
-			//}
 
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
+		menu_toolbarEnableItem("mnutoolViewEventLogFind", (frmLog.ssOleDBGridEventLog.Rows > 0));
+		menu_toolbarEnableItem("mnutoolPurgeEventLogFind", (frmLog.txtELPurgePermission.value == "1"));
+		menu_toolbarEnableItem("mnutoolDeleteEventLogFind", ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.txtELDeletePermission.value == "1")));
+		menu_toolbarEnableItem("mnutoolEmailEventLogFind", ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == "1")));
 
-			menu_enableMenuItem("mnutoolPurgeEventLogFind", (frmLog.txtELPurgePermission.value == 1) );
-			//if ((frmLog.txtELPurgePermission.value == 1)) {
-			//	button_disable(frmLog.cmdPurge, false);
-			//}
-			//else {
-			//	button_disable(frmLog.cmdPurge, true);
-			//}
-
-			menu_enableMenuItem("mnutoolDeleteEventLogFind", ((Rows > 0) && (frmLog.txtELDeletePermission.value == 1)) );
-			//if ((Rows > 0) && (frmLog.txtELDeletePermission.value == 1)) {
-			//	button_disable(frmLog.cmdDelete, false);
-			//}
-			//else {
-			//	button_disable(frmLog.cmdDelete, true);
-			//}
-
-			menu_enableMenuItem("mnutoolEmailEventLogFind", ((SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == 1)) );
-			//if ((SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == 1)) {
-			//	button_disable(frmLog.cmdEmail, false);
-			//}
-			//else {
-			//	button_disable(frmLog.cmdEmail, true);
-			//}
-		}
 	}
 
 	function refreshUsers() {
@@ -1231,37 +1191,37 @@
 <form id="frmEventUseful" name="frmEventUseful" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<%
-		Dim cmdDefinition
-		Dim prmModuleKey
-		Dim prmParameterKey
-		Dim prmParameterValue
+		Dim cmdDefinition As Command
+		Dim prmModuleKey As ADODB.Parameter
+		Dim prmParameterKey As ADODB.Parameter
+		Dim prmParameterValue As ADODB.Parameter
 		Dim sErrorDescription As String
 		
-		cmdDefinition = CreateObject("ADODB.Command")
+		cmdDefinition = New Command
 		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-		cmdDefinition.CommandType = 4	' Stored procedure.
+		cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
 		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 		cmdDefinition.Parameters.Append(prmModuleKey)
 		prmModuleKey.value = "MODULE_PERSONNEL"
 
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
 		cmdDefinition.Parameters.Append(prmParameterKey)
 		prmParameterKey.value = "Param_TablePersonnel"
 
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
+		prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 		cmdDefinition.Parameters.Append(prmParameterValue)
 
 		Err.Clear()
 		cmdDefinition.Execute()
 
-		Response.Write("<INPUT type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbCrLf)
 	
 		cmdDefinition = Nothing
 
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
 	%>
 </form>
 
@@ -1294,28 +1254,15 @@
 	function ssOleDBGridEventLog_rowcolchange() {
 
 		menu_enableMenuItem("mnutoolViewEventLogFind", frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1);
-		
-		//if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) {
-		//	button_disable(frmLog.cmdView, true);
-		//}
-		//else {
-		//	button_disable(frmLog.cmdView, false);
-		//}
+
+
 	}
 
 	function ssOleDBGridEventLog_click() {
-		
+
 		menu_enableMenuItem("mnutoolViewEventLogFind",
 												(!(frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)));
 
-		//if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) {
-		//	//button_disable(frmLog.cmdView, true);
-		//	$("#mnutoolViewEventLogFind").disable();
-		//}
-		//else {
-		//	//button_disable(frmLog.cmdView, false);
-		//	$("#mnutoolViewEventLogFind").enable();
-		//}
 	}
 
 	function ssOleDBGridEventLog_headclick() {
