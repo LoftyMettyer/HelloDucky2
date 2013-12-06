@@ -1,8 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>
-
 <%
 	Dim fok As Boolean
 	Dim objCalendar As HR.Intranet.Server.CalendarReport
