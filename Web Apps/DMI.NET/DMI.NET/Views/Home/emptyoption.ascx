@@ -127,6 +127,7 @@
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 					menu_refreshMenu();
+					menu_refreshMenu(); //A second call to menu_RefreshMenu fixes the problem reported in the notes by Craig in Jira http://tcjira01:8080/browse/HRPRO-3140; don't ask me why it fixes it, it just does!
 				}
 
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
@@ -375,6 +376,7 @@
 
 					// Get menu.asp to refresh the menu.
 					menu_refreshMenu();
+					menu_refreshMenu(); //A second call to menu_RefreshMenu fixes the problem reported in the notes by Craig in Jira http://tcjira01:8080/browse/HRPRO-3140; don't ask me why it fixes it, it just does!
 				}
 
 				// Fault 3503
