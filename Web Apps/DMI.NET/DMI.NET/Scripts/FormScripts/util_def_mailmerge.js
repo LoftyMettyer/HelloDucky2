@@ -982,7 +982,6 @@ function submitDefinition() {
 				"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
 				"&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
 				"&destination=util_validate_mailmerge";
-		//openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 }
 
@@ -2592,7 +2591,7 @@ function sortEdit() {
 				"&txtSortPOC=" + escape(frmSortOrder.txtSortPOC.value) +
 				"&txtSortVOC=" + escape(frmSortOrder.txtSortVOC.value) +
 				"&txtSortSRV=" + escape(frmSortOrder.txtSortSRV.value);
-		openDialog(sURL, 500, 275, "yes", "yes");
+		openDialog(sURL, 500, 275, "no", "no");
 
 		frmUseful.txtChanged.value = 1;
 		refreshTab3Controls();
