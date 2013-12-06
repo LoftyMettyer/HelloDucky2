@@ -3530,6 +3530,8 @@ TidyUpAndExit:
 
 		Dim rsIDs As Recordset
 		Dim blnOK As Boolean
+		Dim iStartDateType As CalendarDataType
+		Dim iEndDateType As CalendarDataType
 
 		mstrSQLIDs = vbNullString
 
@@ -3657,74 +3659,67 @@ TidyUpAndExit:
 
 			'************** Must do the dates stuff here *****************
 			'calculate and store the start and end dates
+			iStartDateType = .Fields("StartType").Value
+			iEndDateType = .Fields("EndType").Value
 
 			'START DATE
-			Select Case .Fields("StartType").Value
-				Case 0
+			Select Case iStartDateType
+				Case CalendarDataType.Fixed
 					mdtStartDate = .Fields("FixedStart").Value
-				Case 1
-					'JPD 20041119 Faults 9510 & 9511
-					'mdtStartDate = CDate(Format(Now, mstrClientDateFormat))
+				Case CalendarDataType.CurrentDate
 					mdtStartDate = Today
-				Case 3
+				Case CalendarDataType.Custom
 					'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdtStartDate = datGeneral.GetValueForRecordIndependantCalc(mlngStartDateExpr, mvarPrompts)
 			End Select
 
 			'END DATE
-			Select Case .Fields("EndType").Value
-				Case 0
+			Select Case iEndDateType
+				Case CalendarDataType.Fixed
 					mdtEndDate = .Fields("FixedEnd").Value
-				Case 1
-					'JPD 20041119 Faults 9510 & 9511
-					'mdtEndDate = CDate(Format(Now, mstrClientDateFormat))
+				Case CalendarDataType.CurrentDate
 					mdtEndDate = CStr(Today)
-				Case 3
+				Case CalendarDataType.Custom
 					'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdtEndDate = datGeneral.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts)
 			End Select
 
-
-			If (.Fields("StartType").Value = 2) And (.Fields("EndType").Value = 2) Then
+			If iStartDateType = CalendarDataType.Offset And iEndDateType = CalendarDataType.Offset Then
 				'START DATE
 				Select Case .Fields("StartPeriod").Value
-					Case 0 : sDateInterval = "d"
-					Case 1 : sDateInterval = "ww"
-					Case 2 : sDateInterval = "m"
-					Case 3 : sDateInterval = "yyyy"
+					Case DatePeriod.Days : sDateInterval = "d"
+					Case DatePeriod.Weeks : sDateInterval = "ww"
+					Case DatePeriod.Months : sDateInterval = "m"
+					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				'JPD 20041119 Faults 9510 & 9511
-				'mdtStartDate = DateAdd(sDateInterval, CDbl(!StartFrequency), CDate(Format(Now, mstrClientDateFormat)))
 				mdtStartDate = DateAdd(sDateInterval, CDbl(.Fields("StartFrequency").Value), Today)
 
 				'END DATE
 				Select Case .Fields("EndPeriod").Value
-					Case 0 : sDateInterval = "d"
-					Case 1 : sDateInterval = "ww"
-					Case 2 : sDateInterval = "m"
-					Case 3 : sDateInterval = "yyyy"
+					Case DatePeriod.Days : sDateInterval = "d"
+					Case DatePeriod.Weeks : sDateInterval = "ww"
+					Case DatePeriod.Months : sDateInterval = "m"
+					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				'JPD 20041119 Faults 9510 & 9511
-				'mdtEndDate = DateAdd(sDateInterval, CDbl(!EndFrequency), CDate(Format(Now, mstrClientDateFormat)))
 				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(.Fields("EndFrequency").Value), Today))
 
-			ElseIf .Fields("StartType").Value = 2 And .Fields("EndType").Value <> 2 Then
+			ElseIf iStartDateType = CalendarDataType.Offset And Not iEndDateType = CalendarDataType.Offset Then
 				'START DATE
 				Select Case .Fields("StartPeriod").Value
-					Case 0 : sDateInterval = "d"
-					Case 1 : sDateInterval = "ww"
-					Case 2 : sDateInterval = "m"
-					Case 3 : sDateInterval = "yyyy"
+					Case DatePeriod.Days : sDateInterval = "d"
+					Case DatePeriod.Weeks : sDateInterval = "ww"
+					Case DatePeriod.Months : sDateInterval = "m"
+					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
 				mdtStartDate = DateAdd(sDateInterval, CDbl(.Fields("StartFrequency").Value), CDate(mdtEndDate))
 
-			ElseIf .Fields("EndType").Value = 2 And .Fields("StartType").Value <> 2 Then
+			ElseIf iEndDateType = CalendarDataType.Offset And Not iStartDateType = CalendarDataType.Offset Then
 				'END DATE
 				Select Case .Fields("EndPeriod").Value
-					Case 0 : sDateInterval = "d"
-					Case 1 : sDateInterval = "ww"
-					Case 2 : sDateInterval = "m"
-					Case 3 : sDateInterval = "yyyy"
+					Case DatePeriod.Days : sDateInterval = "d"
+					Case DatePeriod.Weeks : sDateInterval = "ww"
+					Case DatePeriod.Months : sDateInterval = "m"
+					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
 				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(.Fields("EndFrequency").Value), mdtStartDate))
 

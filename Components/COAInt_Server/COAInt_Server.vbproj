@@ -148,8 +148,10 @@
     <Compile Include="Declarations.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enums\CalendarDataType.vb" />
     <Compile Include="Enums\ControlTypes.vb" />
     <Compile Include="Enums\CrossTabType.vb" />
+    <Compile Include="Enums\DatePeriod.vb" />
     <Compile Include="Enums\ExprValidationCodes.vb" />
     <Compile Include="Enums\FieldPassTypes.vb" />
     <Compile Include="Enums\EventLog_Status.vb" />
