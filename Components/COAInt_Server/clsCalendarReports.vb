@@ -2653,7 +2653,7 @@ ErrorTrap:
 								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								varTempArray(8, intCount) = strColour
 								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								varTempArray(9, intCount) = HexValue(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black))
+								varTempArray(9, intCount) = HexValue(ColorTranslator.ToOle(Color.Black))
 								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								strBackColour = varTempArray(8, intCount)
 								'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -2668,7 +2668,7 @@ ErrorTrap:
 						'rather than hide by making the forecolor the same as the backcolor.
 						If ((blnShowCaptions) And (blnShowCaption)) Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							varTempArray(9, intCount) = HexValue(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black))
+							varTempArray(9, intCount) = HexValue(ColorTranslator.ToOle(Color.Black))
 							'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							strForeColour = varTempArray(9, intCount)
 							'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -2933,9 +2933,6 @@ ErrorTrap:
 								ReDim Preserve mlngTableViews(2, intNextIndex)
 								mlngTableViews(1, intNextIndex) = 1
 								mlngTableViews(2, intNextIndex) = mobjTableView.ViewID
-								'              Exit For
-							Else
-								'              Exit For
 							End If
 
 						End If
@@ -3883,13 +3880,11 @@ Error_Trap:
 			If fOK And mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
 
 				'get historical bank holidays
-				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_HistoricBankHolidays()
 
 			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
 
 				'get static bank holidays collection
-				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_StaticBankHolidays()
 
 				If fOK Then
@@ -3903,9 +3898,7 @@ Error_Trap:
 		End If
 
 
-
 		If (fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
-
 			blnWorkingPatternEnabled = CheckPermission_WPInfo()
 		End If
 
@@ -3913,13 +3906,11 @@ Error_Trap:
 			If fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
 				'get historical working patterns
-				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_HistoricWorkingPatterns()
 
 			ElseIf fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
 
 				'get static working patterns
-				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				fOK = Get_StaticWorkingPatterns()
 
 				If fOK Then
@@ -3945,20 +3936,12 @@ Error_Trap:
 			Exit Function
 		End If
 
-
 		Dim colWorkingPatterns As clsCalendarEvents
 
 		Dim strSQLCC As String 'sql for retieving career change data
 
-		Dim dtStartDate As Date
-		Dim dtEndDate As Date
-
 		Dim avCareerRanges(,) As String
-		Dim intNextIndex As Short
-
 		Dim lngBaseRecordID As Integer
-
-		Dim intCount As Short
 
 		ReDim avCareerRanges(4, 0)
 
@@ -5045,12 +5028,7 @@ DisableRegions:
 
 		End If
 
-		'  'TM01042004 Fault 8428
-		'  If mblnCheckingRegionColumn = True Then
-		'    mstrRegionColumnRealSource = mstrRealSource
-		'  End If
-
-		CheckPermission_Columns = True
+		Return True
 
 	End Function
 
@@ -6263,20 +6241,9 @@ GenerateSQLWhere_ERROR:
 	Private Function GenerateSQLOrderBy() As Boolean
 
 		' Purpose : Returns order by string from the sort order array
-
-		On Error GoTo GenerateSQLOrderBy_ERROR
-
 		mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
-
 		mstrSQLBaseData = mstrSQLBaseData & mstrSQLOrderBy
-
-		GenerateSQLOrderBy = True
-		Exit Function
-
-GenerateSQLOrderBy_ERROR:
-
-		GenerateSQLOrderBy = False
-		mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
@@ -6372,14 +6339,12 @@ GenerateSQLOrderBy_ERROR:
 		'UPGRADE_NOTE: Object mobjColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjColumnPrivileges = Nothing
 
-		ClearUp = True
-
-		Exit Function
+		Return True
 
 ClearUp_ERROR:
 
 		mstrErrorString = "Error whilst clearing data." & vbNewLine & "(" & Err.Description & ")"
-		ClearUp = False
+		Return False
 
 	End Function
 
@@ -6490,7 +6455,7 @@ ClearUp_ERROR:
 			End If
 		End If
 
-		IsRecordSelectionValid = (Len(mstrErrorString) = 0)
+		Return (Len(mstrErrorString) = 0)
 
 	End Function
 
@@ -6512,20 +6477,12 @@ ClearUp_ERROR:
 		If Not IsDBNull(pvarDesc1) Then
 			Select Case mintType_BaseDesc1
 				Case 3
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription1 = Format(pvarDesc1, mstrFormat_BaseDesc1)
 				Case 2
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription1 = IIf(pvarDesc1, "Y", "N")
 				Case 1
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription1 = VB6.Format(pvarDesc1, mstrClientDateFormat)
 				Case 0
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription1 = pvarDesc1
 			End Select
 		Else
@@ -6537,20 +6494,12 @@ ClearUp_ERROR:
 		If Not IsDBNull(pvarDesc2) Then
 			Select Case mintType_BaseDesc2
 				Case 3
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription2 = VB6.Format(pvarDesc2, mstrFormat_BaseDesc2)
 				Case 2
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription2 = IIf(pvarDesc2, "Y", "N")
 				Case 1
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription2 = VB6.Format(pvarDesc2, mstrClientDateFormat)
 				Case 0
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescription2 = pvarDesc2
 			End Select
 		Else
@@ -6562,22 +6511,17 @@ ClearUp_ERROR:
 		If Not IsDBNull(pvarDesc3) Then
 			Select Case mintType_BaseDescExpr
 				Case 2
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc3. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescriptionExpr = IIf(pvarDesc3, "Y", "N")
 				Case 1
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc3. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescriptionExpr = VB6.Format(pvarDesc3, mstrClientDateFormat)
 				Case 0
-					'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc3. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strBaseDescriptionExpr = pvarDesc3
 			End Select
 		Else
 			strBaseDescriptionExpr = vbNullString
 		End If
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		strTempRecordDesc = strBaseDescription1
-		'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		strTempRecordDesc = strTempRecordDesc & IIf((Len(strTempRecordDesc) > 0) And (Len(strBaseDescription2) > 0), mstrDescriptionSeparator, "") & strBaseDescription2
 		strTempRecordDesc = strTempRecordDesc & IIf((Len(strTempRecordDesc) > 0) And (Len(strBaseDescriptionExpr) > 0), mstrDescriptionSeparator, "") & strBaseDescriptionExpr
 
