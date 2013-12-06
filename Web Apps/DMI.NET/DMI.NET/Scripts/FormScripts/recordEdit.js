@@ -961,6 +961,12 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			label.style.fontFamily = controlItemArray[11];
 			label.style.fontSize = controlItemArray[12] + 'pt';
 
+			//Check if control should be disabled (read only or screen read only)
+			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
+				checkbox.setAttribute("disabled", "disabled");
+				$(checkbox).addClass("ui-state-disabled");
+			}
+
 			//align left or right...
 			if (controlItemArray[20] != "0") {
 				//right align				
@@ -1068,7 +1074,13 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			
 			if (tabIndex > 0) button.tabindex = tabIndex;
 
-			//button.disabled = false;    //always enabled
+			
+			//Check if control should be disabled (read only or screen read only)
+			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
+				button.setAttribute("disabled", "disabled");
+				$(button).addClass("ui-state-disabled");
+			}
+
 			addControl(iPageNo, button);
 
 			break;
@@ -1270,11 +1282,12 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (Number(controlItemArray[37]) != 0) { //Multi-line textbox (i.e. textarea); for this we need a slight adjustment to the height
 				textbox.style.height = (Number((controlItemArray[6]) / 15 - 1)) + "px";
-				//Check if control should be disabled (read only)
-				if (controlItemArray[40] != "0") {
-					textbox.setAttribute("disabled", "disabled");
-					$(textbox).addClass("ui-state-disabled");
-				}
+			}
+
+			//Check if control should be disabled (read only or screen read only)
+			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
+				textbox.setAttribute("disabled", "disabled");
+				$(textbox).addClass("ui-state-disabled");
 			}
 
 			//Add control to relevant tab, create if required.                
@@ -1334,6 +1347,12 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (!fControlEnabled) image.disabled = true;
 
+			//Check if control should be disabled (read only or screen read only)
+			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
+				image.setAttribute("disabled", "disabled");
+				$(image).addClass("ui-state-disabled");
+			}
+			
 			//var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
 
 			//image.setAttribute('src', path);

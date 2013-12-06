@@ -445,8 +445,11 @@
 			ctlRecordEdit_LookupClick(this);	//TODO: add the parameters here....
 		});
 
-		$("#ctlRecordEdit").find("[data-controlType='1024']").click(function () {
-			ctlRecordEdit_OLEClick4(this);
+		$("#ctlRecordEdit").find("[data-controlType='1024']").click(function() {
+			//Before triggering the click, make sure that the control is not disabled
+			if ($(this).attr("disabled") != "disabled") {
+				ctlRecordEdit_OLEClick4(this);
+			}
 		});
 
 		$("#ctlRecordEdit").find("[data-controlType='8']").click(function () {
