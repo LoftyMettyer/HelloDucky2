@@ -350,9 +350,6 @@
 
 </script>
 
-
-
-
 <object
 		classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
 		id="Microsoft_Licensed_Class_Manager_1_0"
@@ -403,239 +400,179 @@
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 				<tr>
 						<td>
-								<table align="center" class="invisible" cellpadding="0" cellspacing="0">
-										<tr>
-												<td height="10" colspan="7"></td>
-										</tr>
-										<tr>
-												<td align="center" colspan="7">
-														<strong>Network File Locations</strong>
-												</td>
-										</tr>
+							<table align="center" class="invisible" cellpadding="0" cellspacing="0">
+								<tr>
+									<td height="10" colspan="7"></td>
+								</tr>
+								<tr>
+									<td align="center" colspan="7">
+										<strong>Network File Locations</strong>
+									</td>
+								</tr>
+								<tr>
+									<td height="10" colspan="7"></td>
+								</tr>
+								<tr>
+									<td width="20"></td>
+									<td align="left" nowrap>Document Default Output Path :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtDocuments" name="txtDocuments" class="text" style="HEIGHT: 22px; WIDTH: 500px">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnDocuments" name="btnDocuments"
+											onclick="selectPath('DOCUMENTS')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearDocuments" name="btnClearDocuments"
+											onclick="clearPath('DOCUMENTS')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20"></td>
+								</tr>
+								<tr>
+									<td height="5" colspan="7"></td>
+								</tr>
+								<tr>
+									<td width="20"></td>
+									<td align="left" nowrap>OLE Path (Server) :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtOLEServer" name="txtOLEServer" class="text" style="height: 22px; width: 500px">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLEServer" name="btnOLEServer"
+											onclick="selectPath('OLESERVER')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearOLEServer" name="btnClearOLEServer"
+											onclick="clearPath('OLESERVER')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20"></td>
+								</tr>
+								<tr>
+									<td height="5" colspan="7"></td>
+								</tr>
+								<tr>
+									<td width="20"></td>
+									<td align="left" nowrap>Image Path :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtImage" name="txtImage" class="text" style="HEIGHT: 22px; WIDTH: 500px">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnImage" name="btnImage"
+											onclick="selectPath('IMAGE')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearImage" name="btnClearImage"
+											onclick="clearPath('IMAGE')"
+											onmouseover="try{button_onMouseOver(this);}catch(e){}"
+											onmouseout="try{button_onMouseOut(this);}catch(e){}"
+											onfocus="try{button_onFocus(this);}catch(e){}"
+											onblur="try{button_onBlur(this);}catch(e){}" />
+									</td>
+									<td width="20"></td>
+								</tr>
 
-										<tr>
-												<td height="10" colspan="7"></td>
-										</tr>
-
-										<tr>
-												<td width="20"></td>
-												<td align="left" nowrap>Document Default Output Path :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtDocuments" name="txtDocuments" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnDocuments" name="btnDocuments"
-																onclick="selectPath('DOCUMENTS')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearDocuments" name="btnClearDocuments"
-																onclick="clearPath('DOCUMENTS')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-
-										<tr>
-												<td height="5" colspan="7"></td>
-										</tr>
-
-										<tr>
-												<td width="20"></td>
-												<td align="left" nowrap>OLE Path (Server) :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtOLEServer" name="txtOLEServer" class="text" style="height: 22px; width: 200px">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLEServer" name="btnOLEServer"
-																onclick="selectPath('OLESERVER')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearOLEServer" name="btnClearOLEServer"
-																onclick="clearPath('OLESERVER')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-										<tr>
-												<td height="5" colspan="7"></td>
-										</tr>
-										<tr>
-												<td width="20"></td>
-												<td align="left" nowrap>Photograph Path (non-linked) :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtPhoto" name="txtPhoto" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnPhoto" name="btnPhoto"
-																onclick="selectPath('PHOTO')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearPhoto" name="btnClearPhoto"
-																onclick="clearPath('PHOTO')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-
-										<tr>
-												<td height="5" colspan="7"></td>
-										</tr>
-
-										<tr>
-												<td width="20"></td>
-												<td align="left" nowrap>Image Path :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtImage" name="txtImage" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnImage" name="btnImage"
-																onclick="selectPath('IMAGE')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearImage" name="btnClearImage"
-																onclick="clearPath('IMAGE')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-
-<%--										<tr>
-												<td height="5" colspan="7"></td>
-										</tr>--%>
-										
-									<tr style="visibility: hidden;border-collapse: collapse">
-										<td width="20"></td>
-										<td align="left" nowrap>OLE Path (Local) :
-										</td>
-										<td width="20"></td>
-										<td align="left">
-											<input id="txtOLELocal" name="txtOLELocal" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-										</td>
-										<td width="20" style="display: none;">
-											<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLELocal" name="btnOLELocal"
-												onclick="selectPath('OLELOCAL')"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-										</td>
-										<td width="20">
-											<input type="button" class="btn" value="Clear" id="btnClearOLELocal" name="btnClearOLELocal"
-												onclick="clearPath('OLELOCAL')"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-										</td>
-										<td width="20"></td>
-									</tr>
-
-										<tr style="visibility: hidden">
-												<td width="20"></td>
-												<td align="left" nowrap>Temporary Menu File Path :
-												</td>
-												<td width="20"></td>
-												<td align="left">
-														<input id="txtTempMenuFile" name="txtTempMenuFile" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
-												</td>
-												<td width="20" style="display: none;">
-														<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnTempMenuFile" name="btnTempMenuFile"
-																onclick="selectPath('TEMPMENUFILE')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20">
-														<input type="button" class="btn" value="Clear" id="btnClearTempMenuFile" name="btnClearTempMenuFile"
-																onclick="clearPath('TEMPMENUFILE')"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
-												</td>
-												<td width="20"></td>
-										</tr>
-
-										<tr>
-												<td height="20" colspan="7"></td>
-										</tr>
-
-										<tr>
-												<td height="5" colspan="7">
-														<table width="100%" class="invisible" cellspacing="0" cellpadding="0" align="center">
-																<td>&nbsp;</td>
-																<td width="80">
-																		<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-																			<%--
-																			onclick = "okClick()"
-																			onmouseover = "try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout = "try{button_onMouseOut(this);}catch(e){}"
-																			onfocus = "try{button_onFocus(this);}catch(e){}"
-																			onblur = "try{button_onBlur(this);}catch(e){}"
-																			--%>
-																			/>
-																</td>
-																<td width="20"></td>
-																<td width="80">
-																		<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-																			<%--
-																			onclick = "cancelClick()"
-																			onmouseover = "try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout = "try{button_onMouseOut(this);}catch(e){}"
-																			onfocus = "try{button_onFocus(this);}catch(e){}"
-																			onblur = "try{button_onBlur(this);}catch(e){}"
-																			--%>
-																			/>
-																</td>
-																<td>&nbsp;</td>
-														</table>
-												</td>
-										</tr>
-										<tr>
-												<td height="10" colspan="7"></td>
-										</tr>
-								</table>
+								<tr style="visibility: hidden; border-collapse: collapse">
+									<td width="20"></td>
+									<td align="left" nowrap>Photograph Path (non-linked) :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtPhoto" name="txtPhoto" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnPhoto" name="btnPhoto"
+											onclick="selectPath('PHOTO')" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearPhoto" name="btnClearPhoto"
+											onclick="clearPath('PHOTO')" />
+									</td>
+									<td width="20"></td>
+								</tr>
+								<tr style="visibility: hidden; border-collapse: collapse">
+									<td width="20"></td>
+									<td align="left" nowrap>OLE Path (Local) :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtOLELocal" name="txtOLELocal" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnOLELocal" name="btnOLELocal"
+											onclick="selectPath('OLELOCAL')" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearOLELocal" name="btnClearOLELocal"
+											onclick="clearPath('OLELOCAL')" />
+									</td>
+									<td width="20"></td>
+								</tr>
+								<tr style="visibility: hidden">
+									<td width="20"></td>
+									<td align="left" nowrap>Temporary Menu File Path :
+									</td>
+									<td width="20"></td>
+									<td align="left">
+										<input id="txtTempMenuFile" name="txtTempMenuFile" class="text" style="HEIGHT: 22px; WIDTH: 200px" width="200">
+									</td>
+									<td width="20" style="display: none;">
+										<input type="button" class="btn" style="WIDTH: 30px" value="..." id="btnTempMenuFile" name="btnTempMenuFile"
+											onclick="selectPath('TEMPMENUFILE')" />
+									</td>
+									<td width="20">
+										<input type="button" class="btn" value="Clear" id="btnClearTempMenuFile" name="btnClearTempMenuFile"
+											onclick="clearPath('TEMPMENUFILE')" />
+									</td>
+									<td width="20"></td>
+								</tr>
+								<tr>
+									<td height="5" colspan="7">
+										<table width="100%" class="invisible" cellspacing="0" cellpadding="0" align="center">
+											<td>&nbsp;</td>
+											<td width="80">
+												<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75" />
+											</td>
+											<td width="20"></td>
+											<td width="80">
+												<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" />
+											</td>
+											<td>&nbsp;</td>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td height="10" colspan="7"></td>
+								</tr>
+							</table>
 						</td>
 				</tr>
 		</table>
-
 		<input type="hidden" id="txtReaction" name="txtReaction">
 </form>
 
