@@ -3737,8 +3737,8 @@
 												"&txtSortPOC=" + escape(frmSortOrder.txtSortPOC.value) +
 													"&txtSortVOC=" + escape(frmSortOrder.txtSortVOC.value) +
 														"&txtSortSRV=" + escape(frmSortOrder.txtSortSRV.value);
-				//openDialog(sURL, 600, 275, "no", "no");
-				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
+				openDialog(sURL, 600, 300, "no", "no");
+				//openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
 
 				frmUseful.txtChanged.value = 1;
 			}
@@ -3849,8 +3849,9 @@
 										"&txtSortPOC=" + escape(frmSortOrder.txtSortPOC.value) +
 											"&txtSortVOC=" + escape(frmSortOrder.txtSortVOC.value) +
 												"&txtSortSRV=" + escape(frmSortOrder.txtSortSRV.value);
-		openDialog(sURL, 500, 275, "yes", "yes");
-
+		openDialog(sURL, 600, 300, "no", "no");
+		//openDialog(sURL, (screen.width) / 3, (screen.height) / 4.5, "no", "no");
+	    
 		frmUseful.txtChanged.value = 1;
 
 		frmDefinition.ssOleDBGridSortOrder.Refresh();
