@@ -54,7 +54,7 @@
 				Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
 				objNavigation.Connection = CType(Session("databaseConnection"), Connection)
 												
-				Dim objDocumentInfo = objNavigation.GetDocuments(NavigationLinkType.intDOCUMENTDISPLAY)
+				Dim objDocumentInfo = objNavigation.GetDocuments(NavigationLinkType.DocumentDisplay)
 
 				For iCount = 1 To objDocumentInfo.Count
 		

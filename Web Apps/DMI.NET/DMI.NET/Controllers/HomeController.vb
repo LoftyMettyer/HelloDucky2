@@ -2637,18 +2637,18 @@ Namespace Controllers
 					Dim sErrorDescription = ""
 
 					' Get the self-service record ID.
-					Dim cmdSSRecord = New ADODB.Command
+					Dim cmdSSRecord = New Command
 					cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
-					cmdSSRecord.CommandType = 4	' Stored Procedure
+					cmdSSRecord.CommandType = CommandTypeEnum.adCmdStoredProc
 					cmdSSRecord.ActiveConnection = Session("databaseConnection")
 
-					Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
+					Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 					cmdSSRecord.Parameters.Append(prmRecordID)
 
-					Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
+					Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 					cmdSSRecord.Parameters.Append(prmRecordCount)
 
-					Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
+					Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdSSRecord.Parameters.Append(prmViewID)
 					prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
 
@@ -2676,7 +2676,6 @@ Namespace Controllers
 
 								Response.Redirect("FormError")
 
-								' Return RedirectToAction("Loginerror", "Account")
 							End If
 						End If
 					Else
@@ -2684,7 +2683,6 @@ Namespace Controllers
 						Session("ErrorText") =
 						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
 						Response.Redirect("FormError")
-						' Return RedirectToAction("Loginerror", "Account")
 					End If
 
 					cmdSSRecord = Nothing
@@ -2695,20 +2693,20 @@ Namespace Controllers
 					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
 					Dim fShowOOOHyperlink As Boolean = False
 
-					Dim cmdShowOOOLink As ADODB.Command = New ADODB.Command
+					Dim cmdShowOOOLink As Command = New Command
 					cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
-					cmdShowOOOLink.CommandType = 4 ' Stored procedure
+					cmdShowOOOLink.CommandType = CommandTypeEnum.adCmdStoredProc
 					cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
 
-					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", 3, 1)	 ' 3=integer, 1=input
+					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdShowOOOLink.Parameters.Append(prmTableID2)
 					prmTableID2.Value = lngSSILinkTableID
 
-					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", 3, 1)	 ' 3=integer, 1=input
+					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdShowOOOLink.Parameters.Append(prmViewID2)
 					prmViewID2.Value = lngSSILinkViewID
 
-					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", 11, 2)	' 11=bit, 2=output
+					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
 					cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
 
 					Err.Clear()
@@ -2737,30 +2735,29 @@ Namespace Controllers
 
 					' Get the record description.
 					Dim sErrorDescription As String = ""
-					Dim sRecDesc = ""
-					Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
+					Dim cmdGetRecordDesc As Command = New Command
 
 					cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-					cmdGetRecordDesc.CommandType = 4 ' Stored procedure
+					cmdGetRecordDesc.CommandType = CommandTypeEnum.adCmdStoredProc
 					cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
 
-					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
+					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdGetRecordDesc.Parameters.Append(prmTableID)
 					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
 
-					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
+					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdGetRecordDesc.Parameters.Append(prmRecordID)
 					prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
 
-					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
+					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdGetRecordDesc.Parameters.Append(prmParentTableID)
 					prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
 
-					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
+					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 					cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
 					prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
 
-					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
 					cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
 
 					Const DEADLOCK_ERRORNUMBER = -2147467259
@@ -2828,16 +2825,14 @@ Namespace Controllers
 						Session("ErrorText") =
 						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
 						Response.Redirect("FormError")
-						'Return RedirectToAction("Loginerror", "Account")
 					End If
 
 					cmdGetRecordDesc = Nothing
 
-
 					' get the view name, and append it.
 					Dim sViewName As String
 					sViewName = ""
-					Dim cmdSSRecord = New ADODB.Command
+					Dim cmdSSRecord = New Command
 
 					cmdSSRecord.CommandText = "SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID")
 					cmdSSRecord.ActiveConnection = Session("databaseConnection")
@@ -2855,33 +2850,15 @@ Namespace Controllers
 
 					Session("ViewDescription") = sViewDescription
 
-
-					'cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
-					'cmdSSRecord.CommandType = 4	' Stored Procedure
-					'cmdSSRecord.ActiveConnection = Session("databaseConnection")
-
-					'Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
-					'cmdSSRecord.Parameters.Append(prmRecordID)
-
-					'Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
-					'cmdSSRecord.Parameters.Append(prmRecordCount)
-
-					'Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
-					'cmdSSRecord.Parameters.Append(prmViewID)
-					'prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
-
-					'cmdSSRecord.Execute()
-
-
-
 				Catch ex As Exception
+					Throw
 
 				End Try
 
 			End If
 
 
-			Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
+			Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
 			objNavigation.Connection = Session("databaseConnection")
 			objNavigation.ClearLinks()
 
@@ -2890,23 +2867,15 @@ Namespace Controllers
 			objNavigation.LoadLinks()
 			objNavigation.LoadNavigationLinks()
 
-			Dim objHypertextInfo As Collection = objNavigation.GetLinks(0)
-			Dim objButtonInfo As Collection = objNavigation.GetLinks(1)
-			Dim objDropdownInfo As Collection = objNavigation.GetLinks(2)
-
-			'Session("objHypertextInfo") = objHypertextInfo
-			'Session("objButtonInfo") = objButtonInfo
-			'Session("objDropdownInfo") = objDropdownInfo
+			Dim objHypertextInfo As Collection = objNavigation.GetLinks(NavigationLinkType.HyperLink)
+			Dim objButtonInfo As Collection = objNavigation.GetLinks(NavigationLinkType.Button)
+			Dim objDropdownInfo As Collection = objNavigation.GetLinks(NavigationLinkType.DropDown)
 
 			Dim lstButtonInfo = (From collectionItem As Object In objHypertextInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages)).ToList()
 			lstButtonInfo.AddRange(From collectionItem As Object In objButtonInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages))
 			lstButtonInfo.AddRange(From collectionItem As Object In objDropdownInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages))
 
 			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = lstButtonInfo, .NumberOfLinks = objDropdownInfo.Count}
-
-			'Session("SSILinkTableID") = Session("SingleRecordTableID")
-			'Session("SSILinkViewID") = Session("SingleRecordViewID")
-
 
 			Return View(viewModel)
 		End Function
@@ -3508,83 +3477,83 @@ Namespace Controllers
 			Session("OutputOptions_Filename") = Request("txtFilename")
 			Session("utiltype") = Request.Form("txtUtilType")
 
-			Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
-			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
-			Dim objUser As New HR.Intranet.Server.clsSettings
+		Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
+		Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+		Dim objUser As New HR.Intranet.Server.clsSettings
 
-			Dim fOK As Boolean
-			Dim bBradfordFactor As Boolean
-			Dim strDesiredFileName As String
+		Dim fOK As Boolean
+		Dim bBradfordFactor As Boolean
+		Dim strDesiredFileName As String
 
-			strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
-			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
+		strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
+		objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
 
-			ClientDLL.ResetColumns()
-			ClientDLL.ResetStyles()
-			ClientDLL.UserName = Session("Username").ToString()
-			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
+		ClientDLL.ResetColumns()
+		ClientDLL.ResetStyles()
+		ClientDLL.UserName = Session("Username").ToString()
+		ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
 
-			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
-				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
-				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
-				, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
+		ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
+			, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
+			, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
+			, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
 
-			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
-				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
-				, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
-				, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
-				, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
-				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
-				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
+		ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
+			, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
+			, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
+			, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
+			, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
+			, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
+			, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
 
-			ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
-				, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
-				, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
-				, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
-				, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
-				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
-				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
+		ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
+			, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
+			, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
+			, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
+			, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
+			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
+			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
 
-			ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
-				, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
-				, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
-				, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
-				, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
-				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
-				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
+		ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
+			, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
+			, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
+			, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
+			, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
+			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
+			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
 
-			ClientDLL.InitialiseStyles()
+		ClientDLL.InitialiseStyles()
 
-			ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
-				, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
-				, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
-				, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
-				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
-				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
-				, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
-				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
-				, False) 'emailnotimplementedyet
+		ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
+			, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
+			, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
+			, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
+			, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
+			, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
+			, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
+			, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
+			, False) 'emailnotimplementedyet
 
 
-			Dim lngFormat As Long
-			Dim blnScreen As Boolean
-			Dim blnPrinter As Boolean
-			Dim strPrinterName As String
-			Dim blnSave As Boolean
-			Dim lngSaveExisting As Long
-			Dim blnEmail As Boolean
-			Dim lngEmailGroupID As Long
-			Dim strEmailSubject As String
-			Dim strEmailAttachAs As String
-			Dim strFileName As String
+		Dim lngFormat As Long
+		Dim blnScreen As Boolean
+		Dim blnPrinter As Boolean
+		Dim strPrinterName As String
+		Dim blnSave As Boolean
+		Dim lngSaveExisting As Long
+		Dim blnEmail As Boolean
+		Dim lngEmailGroupID As Long
+		Dim strEmailSubject As String
+		Dim strEmailAttachAs As String
+		Dim strFileName As String
 
 			Dim arrayColumnsDefinition() As String
-			Dim arrayPageBreakValues
-			Dim arrayVisibleColumns
+				Dim arrayPageBreakValues
+				Dim arrayVisibleColumns
 
 
-			'Set Options
-			'	If Not objReport.OutputPreview Then
+		'Set Options
+	'	If Not objReport.OutputPreview Then
 
 			lngFormat = objReport.OutputFormat
 			blnScreen = objReport.OutputScreen
@@ -3642,10 +3611,10 @@ Namespace Controllers
 			'	cmdEmailAddr = Nothing
 			'End If
 
-			'	fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
-			'		, strEmailSubject, strEmailAttachAs, strFileName)
+		'	fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
+		'		, strEmailSubject, strEmailAttachAs, strFileName)
 
-			'Else
+		'Else
 
 			'fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
 			'	, Session("OutputOptions_PrinterName"), Session("OutputOptions_Save"), Session("OutputOptions_SaveExisting") _
@@ -3659,161 +3628,161 @@ Namespace Controllers
 
 
 
-			'	End If
+	'	End If
 
-			arrayColumnsDefinition = objReport.OutputArray_Columns
-			arrayPageBreakValues = objReport.OutputArray_PageBreakValues
-			arrayVisibleColumns = objReport.OutputArray_VisibleColumns
+		arrayColumnsDefinition = objReport.OutputArray_Columns
+		arrayPageBreakValues = objReport.OutputArray_PageBreakValues
+		arrayVisibleColumns = objReport.OutputArray_VisibleColumns
 
 
-			ClientDLL.SizeColumnsIndependently = True
+		ClientDLL.SizeColumnsIndependently = True
 
-			Dim sColHeading As String
-			Dim iColDataType As Integer
-			Dim iColDecimals As Integer
-			Dim sBreakValue As String
-			Dim blnBreakCheck As Boolean
-			Dim bIsCol1000 As Boolean
-			Dim lngActualRow As Integer
-			Dim lngCol As Integer
-			Dim lngRow As Integer
+		Dim sColHeading As String
+		Dim iColDataType As Integer
+		Dim iColDecimals As Integer
+		Dim sBreakValue As String
+		Dim blnBreakCheck As Boolean
+		Dim bIsCol1000 As Boolean
+		Dim lngActualRow As Integer
+		Dim lngCol As Integer
+		Dim lngRow As Integer
 
-			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+		ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
-			If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
-				If Session("OutputOptions_Printer") = True Then
-					ClientDLL.SetPrinter()
-					'		Response.Write("      dataOnlyPrint();" & vbCrLf)
-					ClientDLL.ResetDefaultPrinter()
-				End If
-			Else
-				ClientDLL.HeaderRows = 1
-				If ClientDLL.GetFile() = True Then
+		If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
+			If Session("OutputOptions_Printer") = True Then
+				ClientDLL.SetPrinter()
+				'		Response.Write("      dataOnlyPrint();" & vbCrLf)
+				ClientDLL.ResetDefaultPrinter()
+			End If
+		Else
+			ClientDLL.HeaderRows = 1
+			If ClientDLL.GetFile() = True Then
 
-					If objReport.ReportHasPageBreak Then
+				If objReport.ReportHasPageBreak Then
 
-						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
-						lngActualRow = 0
-						lngRow = 1
+					ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+					lngActualRow = 0
+					lngRow = 1
 
-						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+					For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
 
-							lngRow += 1
-							lngActualRow += 1
-							If lngActualRow = objReport.datCustomReportOutput.Rows.Count Then
+						lngRow += 1
+						lngActualRow += 1
+						If lngActualRow = objReport.datCustomReportOutput.Rows.Count Then
 
-								If objReport.ReportHasSummaryInfo Then
-									sBreakValue = "Grand Totals"
-								Else
-									sBreakValue = arrayPageBreakValues(lngActualRow)
-								End If
+							If objReport.ReportHasSummaryInfo Then
+								sBreakValue = "Grand Totals"
+							Else
+								sBreakValue = arrayPageBreakValues(lngActualRow)
+							End If
 
-								If (lngActualRow > 0) Then
-									If bBradfordFactor = True Then
-										ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
-									Else
-										ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
-									End If
-
-									For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-										sColHeading = arrayVisibleColumns(0, lngCol)
-										iColDataType = arrayVisibleColumns(1, lngCol)
-										iColDecimals = arrayVisibleColumns(2, lngCol)
-										ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, False)
-										ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-									Next
-
-									ClientDLL.DataArray()
-									lngActualRow = 0
-									blnBreakCheck = True
-									sBreakValue = ""
-
-								End If
-
-							ElseIf objRow(1).ToString() = "*" And Not blnBreakCheck Then
-								sBreakValue = arrayPageBreakValues(lngRow)
-
+							If (lngActualRow > 0) Then
 								If bBradfordFactor = True Then
 									ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
 								Else
-									ClientDLL.AddPage(objReport.ReportCaption, sBreakValue)
+									ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
 								End If
 
 								For lngCol = 0 To UBound(arrayVisibleColumns, 2)
 									sColHeading = arrayVisibleColumns(0, lngCol)
 									iColDataType = arrayVisibleColumns(1, lngCol)
 									iColDecimals = arrayVisibleColumns(2, lngCol)
-									bIsCol1000 = arrayVisibleColumns(3, lngCol)
-									ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+									ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, False)
 									ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
 								Next
 
 								ClientDLL.DataArray()
-								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 								lngActualRow = 0
 								blnBreakCheck = True
-								ClientDLL.ResetColumns()
-								ClientDLL.ResetStyles()
-
-							ElseIf Not objRow(0).ToString() = "*" Then
-								blnBreakCheck = False
-								lngCol = 0
-
-								ClientDLL.ArrayReDim()
-
-								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
-									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
-									lngCol += 1
-								Next
+								sBreakValue = ""
 
 							End If
 
-						Next
+						ElseIf objRow(1).ToString() = "*" And Not blnBreakCheck Then
+							sBreakValue = arrayPageBreakValues(lngRow)
 
-					Else ' no page break
+							If bBradfordFactor = True Then
+								ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
+							Else
+								ClientDLL.AddPage(objReport.ReportCaption, sBreakValue)
+							End If
 
-						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
+							For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+								sColHeading = arrayVisibleColumns(0, lngCol)
+								iColDataType = arrayVisibleColumns(1, lngCol)
+								iColDecimals = arrayVisibleColumns(2, lngCol)
+								bIsCol1000 = arrayVisibleColumns(3, lngCol)
+								ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+								ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+							Next
 
-						If bBradfordFactor = True Then
-							ClientDLL.PageTitles = False
-							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
-						Else
-							ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
+							ClientDLL.DataArray()
+							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+							lngActualRow = 0
+							blnBreakCheck = True
+							ClientDLL.ResetColumns()
+							ClientDLL.ResetStyles()
+
+						ElseIf Not objRow(0).ToString() = "*" Then
+							blnBreakCheck = False
+							lngCol = 0
+
+							ClientDLL.ArrayReDim()
+
+							For lngCount = 0 To UBound(arrayVisibleColumns, 2)
+									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
+								lngCol += 1
+							Next
+
 						End If
 
-						For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-							sColHeading = arrayVisibleColumns(0, lngCol)
-							iColDataType = arrayVisibleColumns(1, lngCol)
-							iColDecimals = arrayVisibleColumns(2, lngCol)
-							bIsCol1000 = arrayVisibleColumns(3, lngCol)
-							ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
-							ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-						Next
+					Next
+
+				Else ' no page break
+
+					ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
+
+					If bBradfordFactor = True Then
+						ClientDLL.PageTitles = False
+						ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
+					Else
+						ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
+					End If
+
+					For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+						sColHeading = arrayVisibleColumns(0, lngCol)
+						iColDataType = arrayVisibleColumns(1, lngCol)
+						iColDecimals = arrayVisibleColumns(2, lngCol)
+						bIsCol1000 = arrayVisibleColumns(3, lngCol)
+						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+					Next
 
 
-						lngRow = 1
-						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+					lngRow = 1
+					For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
 
-							For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
+						For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
 								If objReport.ReportHasSummaryInfo Then
-									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
+							ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
 								Else
 									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns + 1).ToString())
 								End If
-							Next
-
-							lngRow += 1
-
 						Next
 
-					End If
+						lngRow += 1
 
-					ClientDLL.DataArray()
+					Next
+
 				End If
 
+				ClientDLL.DataArray()
 			End If
 
-			ClientDLL.Complete()
+		End If
+
+		ClientDLL.Complete()
 
 			Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
 		End Function
@@ -3859,26 +3828,26 @@ Namespace Controllers
 
 		End Function
 
-		Function util_run_calendarreport_download() As FileStreamResult
+	Function util_run_calendarreport_download() As FileStreamResult
 
-			Dim sDownloadFilename As String
-			Dim objCalendar As HR.Intranet.Server.CalendarReport
-			objCalendar = Session("objCalendar" & Session("UtilID"))
+		Dim sDownloadFilename As String
+		Dim objCalendar As HR.Intranet.Server.CalendarReport
+		objCalendar = Session("objCalendar" & Session("UtilID"))
 
-			Dim objOutput As New CalendarOutput
-			objOutput.ReportData = objCalendar.Events
-			objOutput.Calendar = objCalendar
+		Dim objOutput As New CalendarOutput
+		objOutput.ReportData = objCalendar.Events
+		objOutput.Calendar = objCalendar
 
-			If objOutput.Generate(OutputFormats.fmtWordDoc) Then
+		If objOutput.Generate(OutputFormats.fmtWordDoc) Then
 
-				sDownloadFilename = objCalendar.OutputFilename
-				If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
+			sDownloadFilename = objCalendar.OutputFilename
+			If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
 
-				Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-					, Path.GetFileName(sDownloadFilename))
-			End If
+			Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+				, Path.GetFileName(sDownloadFilename))
+		End If
 
-		End Function
+	End Function
 
 
 

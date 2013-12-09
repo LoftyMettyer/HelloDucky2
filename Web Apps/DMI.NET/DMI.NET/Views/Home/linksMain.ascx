@@ -4,6 +4,7 @@
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -409,6 +410,7 @@
 		}
 
 		function relocateURL(psURL, pfNewWindow) {
+
 			if (!dragged) {
 				// Submit the refresh.asp to keep the session alive
 
@@ -435,7 +437,8 @@
 
 
 		function goURL(psURL, pfNewWindow, pfExternal) {
-			try {				
+
+			try {
 				pfNewWindow = (pfExternal==true?1:0);
 				//if (txtHypertextLinksEnabled.value != 0) {
 				relocateURL(psURL, pfNewWindow);
@@ -447,6 +450,7 @@
 
 
 		function goScreen(psScreenInfo) {
+
 			//check to see if we're completing a drag event
 			if (!dragged) {
 				var sDestination;
@@ -503,6 +507,7 @@
 		}
 
 		function goDropLink(sLinkInfo) {
+			
 			if (sLinkInfo == undefined) {
 				sLinkInfo = $('.DropdownlistSelect').val();				
 			}
@@ -525,6 +530,11 @@
 				if (sLinkType == "2") {
 					// Utility link
 					goUtility(sLinkInfo);
+				}
+				// Org Chart
+				else if (sLinkType == "6") {
+					loadPartialView('OrgChart', 'home', 'workframe')
+
 				}
 				else if (sLinkType == "5") {
 					// Application link
@@ -623,7 +633,7 @@
 			Dim iRowNum = 1
 			Dim iColNum = 1
 			Dim iSeparatorNum = 0
-			Dim sOnclick As String = ""
+			Dim sOnClick As String = ""
 			Dim sText As String = ""
 			Dim sURL As String = ""
 			Dim classIcon As String = ""
@@ -648,13 +658,13 @@
 				<%Dim tileCount = 1
 					For Each navlink In Model.NavigationLinks
 						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
-					If navlink.LinkType = 0 Then	 ' hypertext link
+						If navlink.LinkType = NavigationLinkType.HyperLink Then
 							If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) And navlink.UtilityType = -1 Then		' separator
 								iRowNum = 1
 								iColNum = 1
 								If fFirstSeparator Then
 									fFirstSeparator = False
-									 Else%>
+									Else%>
 											</ul>
 											</div>
 												</li> </ul>
@@ -692,7 +702,7 @@
 								sNewWindow = ""
 								
 								Select Case navlink.Element_Type%>
-							<%Case 0
+							<%Case ElementType.ButtonLink
 									sURL = NullSafeString(navlink.URL).Replace("'", "\'")
 									sURL = sURL.Replace("&", "&amp;")
 									sURL = sURL.Replace("""", "&quot;")
@@ -725,6 +735,10 @@
 
 									End If
 									
+								Case ElementType.OrgChart
+									sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"
+									
+									
 							End Select%>
 							<li class="hypertextlinktext hypertextlinktext-highlightcolour <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
@@ -737,9 +751,7 @@
 							<%tileCount += 1%>
 							<%Next
 								
-							
-								
-								Dim objNavigation = New Global.HR.Intranet.Server.clsNavigationLinks
+								Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
 								objNavigation.Connection = Session("databaseConnection")
 								
 								' Get the navigation hypertext links.
@@ -843,7 +855,7 @@
 				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
 				<%--Dim sTileColourClass = "absColour7"--%>
 
-				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
+				<%If navlink.LinkType = NavigationLinkType.Button Then%>
 								<%
 									If navlink.AppFilePath.Length > 0 Then
 										sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
@@ -917,10 +929,10 @@
 							</script>
 							<%End If%>
 														
-							<%Select Case navlink.Element_Type%>
+							<%	 Select Case navlink.Element_Type
 
-							<%Case 0		 ' Button Link	%>
-								<%Dim sIconClass As String = "icon-file"
+									Case ElementType.ButtonLink
+										Dim sIconClass As String = "icon-file"
 									
 									If navlink.UtilityType = -1 Then	' screen view
 										sIconClass = "icon-table"
@@ -935,7 +947,7 @@
 									</li>																																																																								
 								<%iRowNum += 1%>
 							
-							<%Case 2		' Chart 	
+							<%Case ElementType.Chart
 									
 									Dim iChart_TableID = CleanNumeric(navlink.Chart_TableID)
 									Dim iChart_ColumnID = CleanNumeric(navlink.Chart_ColumnID)
@@ -1121,7 +1133,7 @@
 								</li>
 								<%iRowNum += 1%>
 
-							<%Case 3		 ' Pending Workflows	%>
+							<%Case ElementType.PendingWorkflows%>
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
 									<div class="pwfTile <%=sTileColourClass%>">
 									<p class="linkspagebuttontileIcon">
@@ -1142,7 +1154,7 @@
 								<%fWFDisplayPendingSteps = False%>
 
 
-							<%Case 4		' Database Value
+							<%Case ElementType.DatabaseValue
 									
 									' DBValue Formatting options...
 									Dim fUseFormatting = navlink.UseFormatting
@@ -1179,7 +1191,7 @@
 									Dim sCFFontItalic = "" + Session("Config-linkspagebuttontext-italic")
 									Dim sCFVisible = True
 		
-									Dim fFormattingApplies = True   																		
+									Dim fFormattingApplies = True
 									
 									Dim sErrorDescription = ""
 									Dim sPrompt = navlink.Text
@@ -1225,7 +1237,7 @@
 															Case "is less than"
 																If CType(sText, Int32) < CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
 															Case "is greater than"
-																If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True																														
+																If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
 														End Select
 														
 														If fDoFormatting Then
@@ -1306,7 +1318,7 @@
 								<script type="text/javascript">									//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
-							<%Case 5		 ' Todays events	%>							
+							<%Case ElementType.TodaysEvents%>							
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly TELink">
 									<div class="TETile <%=sTileColourClass%>">
 									<p class="linkspagebuttontileIcon">
@@ -1459,11 +1471,10 @@
 
 									<div class="linkspagebuttontileIcon"><span><p><%=iNumberOfEvents%></p><p style="font-size: small;">Events</p></span></div>
 								</li>
-								<%iRowNum += 1%>
-								
-
-							<%Case 6		 ' Organisation Chart	%>			
-							<%sOnclick = "loadPartialView('OrgChart', 'home', 'workframe')"%>			
+								<%iRowNum += 1
+							
+								Case ElementType.OrgChart
+									sOnclick = "loadPartialView('OrgChart', 'home', 'workframe')"%>			
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 										<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="icon-sitemap" ></i></p>
@@ -1474,18 +1485,15 @@
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"
 									class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a href="#">
 										<%: navlink.Text %></a></li>
-								<%iRowNum += 1%>
+								<%iRowNum += 1
 
-							<%End Select%>
+							End Select
 
-
-
-
-							<%End If%>
-							<%End If%>
-							<%tileCount += 1%>
-							<%Next%>
-								<%If Not fFirstSeparator Then%>
+							End If
+							End If
+							tileCount += 1
+						Next
+						If Not fFirstSeparator Then%>
 							</ul>
 				</div>
 						</li>
@@ -1502,8 +1510,10 @@
 			<div class="gridster" id="gridster_DropdownLinks">
 			<ul class="DropDownListMenu">
 				<%iRowNum = 1
-				iColNum = 1
-				For Each navlink In Model.NavigationLinks
+					iColNum = 1
+
+					For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = NavigationLinkType.DropDown)
+						
 						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 						Dim sValue As String, sUtilityType As String, sUtilityID As String, sUtilityBaseTable As String, sUtilityDef As String
 						
@@ -1512,7 +1522,13 @@
 							sAppParameters = Replace(navlink.AppParameters, "\", "\\")
 			
 							sValue = "5_" & sAppFilePath & "_" & sAppParameters
-			
+							sOnclick = "goDropLink('" + sValue + "')"
+
+						ElseIf navlink.Element_Type = ElementType.OrgChart Then
+							sValue = "6_OrgChart"
+							sOnclick = "loadPartialView('OrgChart', 'home', 'workframe')"
+							
+							
 						ElseIf Len(navlink.URL) > 0 Then
 							sURL = Html.Encode(navlink.URL)
 							sURL = Replace(sURL, "'", "\'")
@@ -1524,7 +1540,8 @@
 							End If
 		 
 							sValue = "0_" & sNewWindow & "_" & sURL
-			
+							sOnclick = "goDropLink('" + sValue + "')"
+							
 						Else
 							If navlink.UtilityID > 0 Then
 								sUtilityType = CStr(navlink.UtilityType)
@@ -1542,13 +1559,14 @@
 								sValue = "1_" & sLinkKey
 				
 							End If
+							
+							sOnclick = "goDropLink('" + sValue + "')"
+							
 						End If
-						
 
-						If navlink.LinkType = 2 Then	 ' dropdown link
-							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
-								iColNum += 1
-				iRowNum = 1%>
+						If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
+							iColNum += 1
+							iRowNum = 1%>
 				<script type="text/javascript">
 					$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
 					$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
@@ -1560,13 +1578,13 @@
 						<i class="icon-external-link"></i>
 					</p>
 					<p>
-						<a href="#" data-DDLValue="<%=sValue%>" onclick="goDropLink('<%=sValue%>')">
+						<a href="#" data-DDLValue="<%=sValue%>" onclick="<%=sOnclick%>">
 							<%: navlink.Text %></a>
 					</p>
 				</li>
-				<%iRowNum += 1%>
-				<%End If%>
-				<%Next%>
+				<%iRowNum += 1
+
+				Next%>
 			</ul><a class="DropLinkGoText" style="text-decoration: none;margin-left: 10px;" href="#" onclick="goDropLink()">Go...</a>
 			</div>
 			</li>

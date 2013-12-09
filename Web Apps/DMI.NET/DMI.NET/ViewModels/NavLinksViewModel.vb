@@ -1,4 +1,6 @@
-﻿Public Class NavLinksViewModel
+﻿Imports HR.Intranet.Server.Enums
+
+Public Class NavLinksViewModel
 	Public Property NumberOfLinks As Integer
 
 	Public Property NavigationLinks As List(Of navigationLink)
@@ -162,7 +164,7 @@ Public Class navigationLink
 
 	Public Property ID As Long
 	Public Property DrillDownHidden As Boolean
-	Public Property LinkType As Integer
+	Public Property LinkType As NavigationLinkType
 	Public Property LinkOrder As Integer
 	Public Property Text As String
 	Public Property Text1 As String
@@ -189,7 +191,7 @@ Public Class navigationLink
 	Public Property DocumentFilePath As String
 	Public Property DisplayDocumentHyperlink As Boolean
 	Public Property IsSeparator As Boolean
-	Public Property Element_Type As Integer
+	Public Property Element_Type As ElementType
 	Public Property SeparatorOrientation As Integer
 	Public Property PictureID As Long
 	Public Property Chart_ShowLegend As Boolean

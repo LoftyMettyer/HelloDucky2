@@ -1,9 +1,9 @@
 ﻿Namespace Enums
 	Public Enum NavigationLinkType
-		intHYPERLINK = 0
-		intBUTTON = 1
-		intDROPDOWNLINK = 2
-		intDOCUMENTDISPLAY = 3
+		HyperLink = 0
+		Button = 1
+		DropDown = 2
+		DocumentDisplay = 3
 	End Enum
 End Namespace
 
