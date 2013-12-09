@@ -21,6 +21,7 @@ Begin VB.Form frmSSIntranetSetup
    Icon            =   "frmSSIntranetSetup.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6240
@@ -122,7 +123,7 @@ Begin VB.Form frmSSIntranetSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   2
+      Tab             =   3
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
@@ -137,14 +138,14 @@ Begin VB.Form frmSSIntranetSetup
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":1BC18
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraButtonLinks"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Dropdown List Links"
       TabPicture(3)   =   "frmSSIntranetSetup.frx":1BC34
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraDropdownListLinks"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
       TabPicture(4)   =   "frmSSIntranetSetup.frx":1BC50
@@ -856,7 +857,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dashboard Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   49
          Top             =   405
          Width           =   8120
@@ -1439,7 +1440,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dropdown List Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   51
          Top             =   405
          Width           =   8120
@@ -1505,7 +1506,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   13
+            Col.Count       =   14
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -1527,8 +1528,8 @@ Begin VB.Form frmSSIntranetSetup
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   79
-            Columns.Count   =   13
+            ExtraHeight     =   265
+            Columns.Count   =   14
             Columns(0).Width=   10821
             Columns(0).Caption=   "Text"
             Columns(0).Name =   "Text"
@@ -1622,6 +1623,12 @@ Begin VB.Form frmSSIntranetSetup
             Columns(12).DataField=   "Column 12"
             Columns(12).DataType=   8
             Columns(12).FieldLen=   256
+            Columns(13).Width=   3200
+            Columns(13).Caption=   "Element_Type"
+            Columns(13).Name=   "Element_Type"
+            Columns(13).DataField=   "Column 13"
+            Columns(13).DataType=   8
+            Columns(13).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11289
             _ExtentY        =   6959
@@ -2255,6 +2262,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sEMailSubject = .Columns("EMailSubject").CellText(varBookMark)
               sAppFilePath = .Columns("AppFilePath").CellText(varBookMark)
               sAppParameters = .Columns("AppParameters").CellText(varBookMark)
+              sElement_Type = .Columns("Element_Type").CellText(varBookMark)
             
             Case SSINTLINK_DOCUMENT
               sPrompt = ""
@@ -2661,7 +2669,8 @@ Private Sub cmdAddDropdownListLink_Click()
         & vbTab & .EMailAddress _
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
-        & vbTab & .AppParameters
+        & vbTab & .AppParameters _
+        & vbTab & .ElementType
         
       For iLoop = 0 To cboDropdownListLinkView.ListCount - 1
         If cboDropdownListLinkView.List(iLoop) = .TableViewName Then
@@ -3254,7 +3263,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", _
-      False, False, _
+      False, ctlSourceGrid.Columns("Element_Type").Text, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
@@ -3274,7 +3283,8 @@ Private Sub cmdCopyDropdownListLink_Click()
         & vbTab & .EMailAddress _
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
-        & vbTab & .AppParameters
+        & vbTab & .AppParameters _
+        & vbTab & .ElementType
         
       For iLoop = 0 To cboDropdownListLinkView.ListCount - 1
         If cboDropdownListLinkView.List(iLoop) = .TableViewName Then
@@ -3770,7 +3780,7 @@ Private Sub cmdEditDropdownListLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", _
-      False, False, _
+      False, ctlSourceGrid.Columns("Element_Type").Text, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
@@ -3790,7 +3800,8 @@ Private Sub cmdEditDropdownListLink_Click()
         & vbTab & .EMailAddress _
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
-        & vbTab & .AppParameters
+        & vbTab & .AppParameters _
+        & vbTab & .ElementType
 
       ctlSourceGrid.RemoveItem lngRow
       
@@ -5048,7 +5059,8 @@ Private Sub ReadParameters()
             vbTab & rsLinks!EMailAddress & _
             vbTab & rsLinks!EMailSubject & _
             vbTab & rsLinks!AppFilePath & _
-            vbTab & rsLinks!AppParameters
+            vbTab & rsLinks!AppParameters & _
+            vbTab & IIf(Len(rsLinks!Element_Type) > 0, rsLinks!Element_Type, 0)
         End If
         
       Case SSINTLINK_DOCUMENT

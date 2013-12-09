@@ -3862,6 +3862,8 @@ Private Sub optLink_Click(Index As Integer)
     ElementType = 4
   ElseIf optLink(SSINTLINKTODAYS_EVENTS).value Then
     ElementType = 5
+  ElseIf optLink(SSINTLINKORGCHART).value Then
+    ElementType = 6
   Else
     ElementType = 0
   End If

@@ -626,7 +626,7 @@ Private Function CreateSP_OrgChart() As Boolean
     "       )" & vbNewLine
 
   sProcSQL = sProcSQL & _
-    "       SELECT p.*, a." & mvar_sAbsenceTypeColumn & " AS [type], a." & mvar_sAbsenceReasonColumn & " AS [reason], '' AS course_title FROM Emp_CTE p" & vbNewLine & _
+    "       SELECT p.*, a.[type], a.[reason], '' AS course_title FROM Emp_CTE p" & vbNewLine & _
     "       LEFT JOIN @ids a ON a.id = p.id" & vbNewLine & _
     "       --LEFT JOIN @trainingIDs t ON t.id = p.ID" & vbNewLine & _
     vbNewLine & _
