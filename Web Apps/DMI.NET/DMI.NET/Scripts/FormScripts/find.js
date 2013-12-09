@@ -22,7 +22,7 @@ function find_window_onload() {
 	var fOk;
 	fOk = true;
 	$("#workframe").attr("data-framesource", "FIND");
-	//$("#optionframe").hide();
+	$("#optionframe").hide();
 	$("#workframe").show();
 
 	var frmFindForm = document.getElementById("frmFindForm");

@@ -24,6 +24,9 @@
 				frmPasswordChangeForm.txtCurrentPassword.focus();
 			}
 		}
+		
+		$("#optionframe").hide();
+		$("#workframe").show();
 	}
 
 	/* Validate the password change, and change the user's password on the SQL database if everything is okay. */

@@ -28,7 +28,8 @@ function stdrpt_def_absence_window_onload() {
 	
     // Disable the menu
     //menu_disableMenu();
-
+    $("#optionframe").hide();
+    $("#workframe").show();
 }
 
 function changeTab1Control() {

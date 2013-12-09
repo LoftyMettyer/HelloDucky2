@@ -420,7 +420,8 @@
 				$('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
 				$('input[name^="chk"]').on("change", function () { enableSaveButton(); });
 		
-
+				$("#optionframe").hide();
+				$("#workframe").show();
     }
 
     function enableSaveButton() {

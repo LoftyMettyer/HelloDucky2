@@ -77,7 +77,8 @@
 		<%End If%>
 		
 
-	
+		$("#optionframe").hide();
+		$("#workframe").show();
 
 	}
 </script>

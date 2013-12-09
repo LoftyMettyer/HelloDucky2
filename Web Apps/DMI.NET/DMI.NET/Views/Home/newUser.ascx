@@ -15,6 +15,9 @@
 		if (ctlNewUsers != null) {
 			ctlNewUsers.focus();
 		}
+		
+		$("#optionframe").hide();
+		$("#workframe").show();
 	}
 </script>
 

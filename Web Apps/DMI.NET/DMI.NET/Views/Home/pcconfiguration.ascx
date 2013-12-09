@@ -73,7 +73,8 @@
 
 				$('input[name^="txt"]').on("change", function () { enableSaveButton(); });
 
-
+				$("#optionframe").hide();
+				$("#workframe").show();
 		}
 
 		function enableSaveButton() {

@@ -45,6 +45,9 @@
 			});
 
 			setTimeout('centreMe()', 500);
+			
+			$("#optionframe").hide();
+			$("#workframe").show();
 		}
 	});
 	
