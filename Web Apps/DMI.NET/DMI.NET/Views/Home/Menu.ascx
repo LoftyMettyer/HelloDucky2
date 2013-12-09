@@ -2,6 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Collections.ObjectModel" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%
 	On Error Resume Next
@@ -221,8 +222,9 @@
 	Dim sBand As String = ""
 		
 	avHistoryMenuInfo = objMenu.GetHistoryScreens
+	
 	iLoop = 0
-	For Each objHistoryScreen In avHistoryMenuInfo
+	For Each objHistoryScreen In avHistoryMenuInfo.OrderBy(Function(n) n.parentScreenID)
 
 		If iLastParentScreenID <> objHistoryScreen.parentScreenID Then
 			If iDoneCount > 0 Then
@@ -255,7 +257,7 @@
 			' which will have created the sub-menu, so just add it to the sub-menu.
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
-						
+			
 		Else
 			If (iNextChildTableID = objHistoryScreen.childTableID) Then
 				' The current screen is for the same table as the next screen to be added
@@ -270,7 +272,7 @@
 			Else
 				' The current screen is for a different table/view to the next and last screens
 				' added to the menu so just add this screen to the main menu as normal.
-				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
+				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)			
 			End If
 		End If
 

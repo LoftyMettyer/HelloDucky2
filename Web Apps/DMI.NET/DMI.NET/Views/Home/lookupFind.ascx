@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="ADODB" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -278,9 +279,6 @@
 </script>
 
 <script type="text/javascript">
-	function lookupFind_addhandlers() {
-
-	}
 
 	function ssOleDBGrid_dblClick() {
 		SelectLookup();
@@ -297,17 +295,21 @@
 			Dim lngLookupTableID = 0
 			Dim sErrorDescription = ""
 			Dim sFailureDescription = ""
+			Dim cmdGetTable As Command
+			Dim cmdIsLookupTable As Command
+			Dim cmdViewRecords As Command
+			Dim cmdOrderRecords As Command
 	
-			Dim cmdGetTable = CreateObject("ADODB.Command")
+			cmdGetTable = New Command
 			cmdGetTable.CommandText = "spASRIntGetColumnTableID"
-			cmdGetTable.CommandType = 4	' Stored procedure
+			cmdGetTable.CommandType = CommandTypeEnum.adCmdStoredProc
 			cmdGetTable.ActiveConnection = Session("databaseConnection")
 
 			Dim prmColumnID = cmdGetTable.CreateParameter("LookupColumnID", 3, 1)
 			cmdGetTable.Parameters.Append(prmColumnID)
 			prmColumnID.value = CleanNumeric(Session("optionLookupColumnID"))
 
-			Dim prmTableID = cmdGetTable.CreateParameter("tableID", 3, 2)	' 3=integer, 2=output
+			Dim prmTableID = cmdGetTable.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 			cmdGetTable.Parameters.Append(prmTableID)
 
 			Err.Clear()
@@ -322,16 +324,16 @@
 			cmdGetTable = Nothing
 
 			If Len(sErrorDescription) = 0 Then
-				Dim cmdIsLookupTable = CreateObject("ADODB.Command")
+				cmdIsLookupTable = New Command
 				cmdIsLookupTable.CommandText = "spASRIntIsLookupTable"
-				cmdIsLookupTable.CommandType = 4 ' Stored procedure
+				cmdIsLookupTable.CommandType = CommandTypeEnum.adCmdStoredProc
 				cmdIsLookupTable.ActiveConnection = Session("databaseConnection")
 
-				prmTableID = cmdIsLookupTable.CreateParameter("tableID", 3, 1)
+				prmTableID = cmdIsLookupTable.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 				cmdIsLookupTable.Parameters.Append(prmTableID)
 				prmTableID.value = CleanNumeric(lngLookupTableID)
 
-				Dim prmIsLookup = cmdIsLookupTable.CreateParameter("isLookup", 11, 2)	' 11=bit, 2=output
+				Dim prmIsLookup = cmdIsLookupTable.CreateParameter("isLookup", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
 				cmdIsLookupTable.Parameters.Append(prmIsLookup)
 
 				Err.Clear()
@@ -374,19 +376,19 @@
 
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
 																	' Get the view records.
-																	Dim cmdViewRecords = CreateObject("ADODB.Command")
+																	cmdViewRecords = New Command
 																	cmdViewRecords.CommandText = "spASRIntGetLookupViews"
-																	cmdViewRecords.CommandType = 4 ' Stored Procedure
+																	cmdViewRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																	cmdViewRecords.ActiveConnection = Session("databaseConnection")
 
-																	prmTableID = cmdViewRecords.CreateParameter("tableID", 3, 1)
+																	prmTableID = cmdViewRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																	cmdViewRecords.Parameters.Append(prmTableID)
 																	prmTableID.value = CleanNumeric(lngLookupTableID)
 
-																	Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, 2) ' 11=integer, 2=output
+																	Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
 																	cmdViewRecords.Parameters.Append(prmDfltOrderID)
 
-																	prmColumnID = cmdViewRecords.CreateParameter("columnID", 3, 1)
+																	prmColumnID = cmdViewRecords.CreateParameter("columnID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																	cmdViewRecords.Parameters.Append(prmColumnID)
 																	prmColumnID.value = CleanNumeric(Session("optionColumnID"))
 
@@ -443,11 +445,7 @@
 													</td>
 													<td width="10">
 														<input type="button" value="Go" class="btn" id="btnGoView" name="btnGoView"
-															onclick="goView()"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="goView()" />
 													</td>
 													<td>&nbsp;
 													</td>
@@ -460,16 +458,16 @@
 															<%
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
 																	' Get the order records.
-																	Dim cmdOrderRecords = CreateObject("ADODB.Command")
+																	cmdOrderRecords = New Command
 																	cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-																	cmdOrderRecords.CommandType = 4	' Stored Procedure
+																	cmdOrderRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																	cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
-																	prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
+																	prmTableID = cmdOrderRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																	cmdOrderRecords.Parameters.Append(prmTableID)
 																	prmTableID.value = CleanNumeric(lngLookupTableID)
 
-																	Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
+																	Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																	cmdOrderRecords.Parameters.Append(prmViewID)
 																	prmViewID.value = 0
 
@@ -510,11 +508,7 @@
 													</td>
 													<td width="10">
 														<input type="button" value="Go" class="btn" id="btnGoOrder" name="btnGoOrder"
-															onclick="goOrder()"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="goOrder()" />
 													</td>
 												</tr>
 											</table>
@@ -542,36 +536,23 @@
 							<td></td>
 							<td width="10">
 								<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-									onclick="SelectLookup()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="SelectLookup()" />
 							</td>
 							<td width="40"></td>
 							<td width="10">
 								<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" width="75" class="btn"
-									onclick="ClearLookup()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="ClearLookup()" />
 							</td>
 							<td width="40"></td>
 							<td width="10">
 								<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-									onclick="CancelLookup()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="CancelLookup()" />
 							</td>
 						</tr>
 					</table>
 				</div>
 			</div>
 		</div>
-
 
 
 		<input type='hidden' id="txtErrorDescription" name="txtErrorDescription" value="<%=sErrorDescription%>">
@@ -596,6 +577,5 @@
 </div>
 
 <script type="text/javascript">
-	lookupFind_addhandlers();
 	lookupFind_window_onload();
 </script>

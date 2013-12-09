@@ -280,7 +280,6 @@
 					// Need to hide the popup in case setdata causes
 					// the intrecedit control to display an error message.
 					$("#ctlRecordEdit #changed").val("false");
-					menu_refreshMenu();
 
 					for (var i=0; i<dataCollection.length; i++)  {
 						sControlName = dataCollection.item(i).name;

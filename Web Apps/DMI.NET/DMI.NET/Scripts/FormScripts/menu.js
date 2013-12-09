@@ -1544,6 +1544,10 @@ function menu_refreshMenu() {
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
 		menu_setVisibleMenuItem("mnutoolHistory", true);
+
+		//dynamically created function, found in menu.ascx...
+		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
+
 		$("#mnutoolHistory").click();
 
 	    // Standard reports (toolbar)
@@ -1575,8 +1579,6 @@ function menu_refreshMenu() {
 		    menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
 		}
 	    
-		//dynamically created function, found in menu.ascx...
-		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
 
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
@@ -4705,7 +4707,7 @@ function menu_insertMenuItem(parentULID, NewLICaption, NewLIID) {
 				var insertRefULParent = insertRef.replace("#mnuband", "mnutool");
 				
 				$("#contextmenu div[aria-labelledby='" + insertRefULParent + "']>ul").attr("id", insertRef.replace("#", ""));
-				
+				$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
 		}
 }
 
