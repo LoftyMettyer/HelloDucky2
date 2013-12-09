@@ -1,6 +1,7 @@
 ﻿Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.ExClientCode
 Imports HR.Intranet.Server.Enums
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 
