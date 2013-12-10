@@ -135,6 +135,8 @@
 
 		refreshUsers();
 
+		$("#optionframe").hide();
+		$("#workframe").show();
 	}
 
 	function EventLog_moveRecord(psMovement) {
