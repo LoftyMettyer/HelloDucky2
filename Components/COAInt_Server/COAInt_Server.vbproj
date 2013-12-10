@@ -227,6 +227,7 @@
     <Compile Include="MailMerge.vb" />
     <Compile Include="Menu.vb" />
     <Compile Include="Metadata\Base.vb" />
+    <Compile Include="Metadata\FunctionParameter.vb" />
     <Compile Include="Metadata\LegendColor.vb" />
     <Compile Include="Metadata\Column.vb" />
     <Compile Include="Metadata\Function.vb" />

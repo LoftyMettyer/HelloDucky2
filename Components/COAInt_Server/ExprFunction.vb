@@ -1113,7 +1113,7 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim iIndex As Short
 		Dim sSQL As String
-		Dim rsParameters As Recordset
+
 		Dim objNewParameter As clsExprComponent
 
 		fOK = True
@@ -1122,31 +1122,25 @@ ErrorTrap:
 		ClearParameters()
 
 		' Get the standard function parameter definitions.
-		sSQL = String.Format("SELECT * FROM ASRSysFunctionParameters WHERE functionID = {0} ORDER BY parameterIndex", mlngFunctionID)
-		rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		For Each objParameter In Functions.GetById(mlngFunctionID).Parameters
 
-		With rsParameters
-			Do While Not .EOF
-				' Instantiate a component in the array to represent the parameter.
-				mcolParameters.Add(New clsExprComponent)
-				With mcolParameters.Item(mcolParameters.Count())
-					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item(mcolParameters.Count).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.Component.Name = rsParameters.Fields("parameterName").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
-					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item(mcolParameters.Count).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.Component.ReturnType = rsParameters.Fields("parameterType").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
-				End With
+			mcolParameters.Add(New clsExprComponent)
+			With mcolParameters.Item(mcolParameters.Count())
+				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item(mcolParameters.Count).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				.Component.Name = objParameter.Name
+				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
+				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item(mcolParameters.Count).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				.Component.ReturnType = objParameter.ParameterType
+				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
+			End With
 
-				.MoveNext()
-			Loop
+		Next
 
-			.Close()
-		End With
+		Dim rsParameters As Recordset
 
 		' Get the customised function parameter definitions if they exist.
 		If (mobjBaseComponent.ComponentID > 0) Then

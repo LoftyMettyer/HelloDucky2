@@ -775,9 +775,25 @@ Public Sub PopulateMetadata()
 			objFunction.ID = rstData.Fields("functionID").Value.ToString
 			objFunction.Name = rstData.Fields("functionName").Value.ToString
 			objFunction.ReturnType = rstData.Fields("returnType").Value.ToString
+			objFunction.Parameters = New Collection(Of FunctionParameter)()
 			Functions.Add(objFunction)
 			rstData.MoveNext()
 		Loop
+
+		sSQL = "SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex"
+		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Do While Not rstData.EOF
+			Dim objParameter = New [FunctionParameter]
+			objParameter.ParameterIndex = rstData.Fields("ParameterIndex").Value.ToString
+			objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
+			objParameter.Name = rstData.Fields("ParameterName").Value.ToString
+
+			Dim objFunction = Functions.GetById(rstData.Fields("functionID").Value.ToString)
+
+			objFunction.Parameters.Add(objParameter)
+			rstData.MoveNext()
+		Loop
+
 
 		sSQL = "SELECT * FROM ASRSysOperators"
 		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
@@ -808,18 +824,6 @@ Public Sub PopulateMetadata()
 			Operators.GetById(rstData.Fields("operatorID").Value.ToString).Parameters.Add(objParameter)
 			rstData.MoveNext()
 		Loop
-
-
-		'sSQL = "SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex"
-		'rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		'Do While Not rstData.EOF
-		'	Dim objParameter = New [FunctionParameter]
-		'	objParameter.Name = rstData.Fields("ParameterName").Value.ToString
-		'	objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
-		'	Operators.GetById(rstData.Fields("functionID").Value.ToString).Parameters.Add(objParameter)
-		'	rstData.MoveNext()
-		'Loop
-
 
 		sSQL = "EXEC sp_ASRIntGetSystemPermissions"
 		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
