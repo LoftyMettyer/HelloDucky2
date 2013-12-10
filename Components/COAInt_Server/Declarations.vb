@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Metadata
+Imports System.Collections.ObjectModel
 
 Module Declarations
 
@@ -18,8 +19,8 @@ Module Declarations
 	Public gcoTablePrivileges As ICollection(Of CTablePrivilege)
 
 	Public gcolColumnPrivilegesCollection As Collection
-  Public gcolLinks As Collection
-  Public gcolNavigationLinks As Collection
+	Public gcolLinks As List(Of NavigationLink)
+	Public gcolNavigationLinks As List(Of NavigationLink)
 
 	Public Tables As ICollection(Of Table)
 	Public Columns As ICollection(Of Column)

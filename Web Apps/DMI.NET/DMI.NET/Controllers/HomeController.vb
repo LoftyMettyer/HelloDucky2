@@ -2867,9 +2867,9 @@ Namespace Controllers
 			objNavigation.LoadLinks()
 			objNavigation.LoadNavigationLinks()
 
-			Dim objHypertextInfo As Collection = objNavigation.GetLinks(NavigationLinkType.HyperLink)
-			Dim objButtonInfo As Collection = objNavigation.GetLinks(NavigationLinkType.Button)
-			Dim objDropdownInfo As Collection = objNavigation.GetLinks(NavigationLinkType.DropDown)
+			Dim objHypertextInfo As List(Of Metadata.NavigationLink) = objNavigation.GetLinks(NavigationLinkType.HyperLink)
+			Dim objButtonInfo As List(Of Metadata.NavigationLink) = objNavigation.GetLinks(NavigationLinkType.Button)
+			Dim objDropdownInfo As List(Of Metadata.NavigationLink) = objNavigation.GetLinks(NavigationLinkType.DropDown)
 
 			Dim lstButtonInfo = (From collectionItem As Object In objHypertextInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages)).ToList()
 			lstButtonInfo.AddRange(From collectionItem As Object In objButtonInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages))
@@ -3841,26 +3841,26 @@ Namespace Controllers
 
 		End Function
 
-	Function util_run_calendarreport_download() As FileStreamResult
+		Function util_run_calendarreport_download() As FileStreamResult
 
-		Dim sDownloadFilename As String
-		Dim objCalendar As HR.Intranet.Server.CalendarReport
-		objCalendar = Session("objCalendar" & Session("UtilID"))
+			Dim sDownloadFilename As String
+			Dim objCalendar As HR.Intranet.Server.CalendarReport
+			objCalendar = Session("objCalendar" & Session("UtilID"))
 
-		Dim objOutput As New CalendarOutput
-		objOutput.ReportData = objCalendar.Events
-		objOutput.Calendar = objCalendar
+			Dim objOutput As New CalendarOutput
+			objOutput.ReportData = objCalendar.Events
+			objOutput.Calendar = objCalendar
 
-		If objOutput.Generate(OutputFormats.fmtWordDoc) Then
+			If objOutput.Generate(OutputFormats.fmtWordDoc) Then
 
-			sDownloadFilename = objCalendar.OutputFilename
-			If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
+				sDownloadFilename = objCalendar.OutputFilename
+				If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
 
-			Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-				, Path.GetFileName(sDownloadFilename))
-		End If
+				Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+					, Path.GetFileName(sDownloadFilename))
+			End If
 
-	End Function
+		End Function
 
 
 

@@ -127,7 +127,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
-    <Compile Include="clsNavigationLink.vb" />
+    <Compile Include="Metadata\NavigationLink.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />
     <Compile Include="clsResetPassword.vb" />

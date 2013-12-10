@@ -208,45 +208,41 @@
 					objNavigation.Connection = Session("databaseConnection")
 								
 					' Get the navigation hypertext links.
-					Dim iFindPage As Int16 = 0
-					'If sWorkPage = "FIND" Then
-					'	iFindPage = 1
-					'Else
-					'	iFindPage = 0
-					'End If
-					Dim objNavigationHyperlinkInfo = objNavigation.GetNavigationLinks(0, CBool(iFindPage))
-								
-					Dim sDestination As String
-								
-					For iCount = 1 To objNavigationHyperlinkInfo.Count
-						sText = Html.Encode(objNavigationHyperlinkInfo(iCount).text1)
+							
+						Dim sDestination As String					
+							
+						For Each objNavLink In objNavigation.GetNavigationLinks(False)
+							
+							sText = Html.Encode(objNavLink.Text1)
 		
-						If objNavigationHyperlinkInfo(iCount).linkToFind = 0 Then
-							sDestination = "linksMain?" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
+							If objNavLink.LinkToFind = 0 Then
+								sDestination = "linksMain?" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
 			
-							If objNavigationHyperlinkInfo(iCount).singleRecord = 1 Then
-								sDestination = sDestination & "_0"
+								If objNavLink.SingleRecord = 1 Then
+									sDestination = sDestination & "_0"
+								Else
+									sDestination = sDestination & "_" & CStr(Session("TopLevelRecID"))
+								End If
 							Else
-								sDestination = sDestination & "_" & CStr(Session("TopLevelRecID"))
+								sDestination = "recordEditMain?multifind_0_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
 							End If
-						Else
-							sDestination = "recordEditMain?multifind_0_" & CStr(objNavigationHyperlinkInfo(iCount).tableID) & "!" & CStr(objNavigationHyperlinkInfo(iCount).viewID)
-						End If
-			If fFirstSeparator Then		' add a separator
-									iRowNum = 1
-									iColNum = 1
-									If fFirstSeparator Then
-										fFirstSeparator = False
-									Else%>
+							If fFirstSeparator Then		' add a separator
+								iRowNum = 1
+								iColNum = 1
+								If fFirstSeparator Then
+									fFirstSeparator = False
+								Else
+									%>
 						</ul>
 					</div>
 				</li>
 			</ul>
 
-			<%End If
-				iSeparatorNum += 1
+								<%
+								End If
+								iSeparatorNum += 1
 			
-			%>
+							%>
 
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype">
@@ -258,32 +254,38 @@
 					<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
 
 						<ul>
-							<%end if
-								If iRowNum > iMaxRows Then
-									iColNum += 1
-									iRowNum = 1%>
+						<%
+						End If
+						If iRowNum > iMaxRows Then
+							iColNum += 1
+							iRowNum = 1
+							%>
 							<script type="text/javascript">
 								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
 								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
-							<%End If%>
+						<%
+						End If
+						%>
 							<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
 								<a class="hypertextlinktext hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#"><%=sText%></a>
 								<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
 							</li>
-							<%iRowNum += 1
-							
-								tileCount += 1
-							Next
+					<%
+						iRowNum += 1						
+						tileCount += 1
+					Next
 
-							If Not fFirstSeparator Then		' close off the hypertext group%>
+					If Not fFirstSeparator Then		' close off the hypertext group%>
 						</ul>
 					</div>
 				</li>
 			</ul>
 
-			<%End If%>
+					<%
+					End If
+					%>
 		</div>
 
 		<%fFirstSeparator = True%>
@@ -957,7 +959,9 @@
 				</div>
 						</li>
 					</ul>
-				<%End If%>
+				<%
+				End If
+				%>
 			</div>
 		</div>
 

@@ -1,7 +1,9 @@
 Option Strict Off
 Option Explicit On
 
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Public Class clsNavigationLinks
 
@@ -52,13 +54,13 @@ Public Class clsNavigationLinks
 
 		Dim rsLinks As ADODB.Recordset
 		Dim sSQL As String
-		Dim objLink As clsNavigationLink
+		Dim objLink As NavigationLink
 
 		If Not gcolLinks Is Nothing Then
 			Exit Sub
 		End If
 
-		gcolLinks = New Collection
+		gcolLinks = New List(Of NavigationLink)
 
 		sSQL = "EXEC spASRIntGetLinks " & mlngSSITableID & ", " & mlngSSIViewID
 		rsLinks = New ADODB.Recordset
@@ -66,7 +68,7 @@ Public Class clsNavigationLinks
 
 		With rsLinks
 			Do While Not (.EOF Or .BOF)
-				objLink = New clsNavigationLink
+				objLink = New NavigationLink
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				objLink.BaseTable = IIf(Not IsDBNull(.Fields("BaseTable").Value), .Fields("BaseTable").Value, "")
@@ -187,13 +189,13 @@ Public Class clsNavigationLinks
 
 		Dim rsLinks As ADODB.Recordset
 		Dim sSQL As String
-		Dim objLink As clsNavigationLink
+		Dim objLink As NavigationLink
 
 		If Not gcolNavigationLinks Is Nothing Then
 			Exit Sub
 		End If
 
-		gcolNavigationLinks = New Collection
+		gcolNavigationLinks = New List(Of NavigationLink)
 
 		sSQL = "EXEC spASRIntGetNavigationLinks " & mlngSSITableID & ", " & mlngSSIViewID
 		rsLinks = New ADODB.Recordset
@@ -201,7 +203,7 @@ Public Class clsNavigationLinks
 
 		With rsLinks
 			Do While Not (.EOF Or .BOF)
-				objLink = New clsNavigationLink
+				objLink = New NavigationLink
 
 				objLink.LinkType = .Fields("LinkType").Value
 				objLink.Text1 = .Fields("Text1").Value
@@ -224,54 +226,12 @@ Public Class clsNavigationLinks
 
 	End Sub
 
-	Public Function GetNavigationLinks(ByRef piLinkType As NavigationLinkType, ByRef pbShowFindPages As Boolean) As Collection
-
-		Dim objLink As clsNavigationLink
-		Dim objLinks As Collection
-
-		objLinks = New Collection
-
-		For Each objLink In gcolNavigationLinks
-			If objLink.LinkType = piLinkType And (objLink.FindPage = pbShowFindPages Or pbShowFindPages) Then
-				objLinks.Add(objLink)
-			End If
-		Next objLink
-
-		GetNavigationLinks = objLinks
-
+	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of NavigationLink)
+		Return gcolNavigationLinks.FindAll(Function(n) n.FindPage = pbShowFindPages Or pbShowFindPages)
 	End Function
 
-	Public Function GetLinks(ByRef piLinkType As NavigationLinkType) As Collection
-
-		Dim objLink As clsNavigationLink
-		Dim objLinks As Collection
-
-		objLinks = New Collection
-
-		For Each objLink In gcolLinks
-			If objLink.LinkType = piLinkType Then
-				objLinks.Add(objLink)
-			End If
-		Next objLink
-
-		GetLinks = objLinks
-
+	Public Function GetLinks(ByVal piLinkType As NavigationLinkType) As List(Of NavigationLink)
+		Return gcolLinks.FindAll(Function(n) n.LinkType = piLinkType)
 	End Function
 
-	Public Function GetDocuments(ByRef piLinkType As NavigationLinkType) As Collection
-
-		Dim objLink As clsNavigationLink
-		Dim objLinks As Collection
-
-		objLinks = New Collection
-
-		For Each objLink In gcolLinks
-			If objLink.LinkType = piLinkType Then
-				objLinks.Add(objLink)
-			End If
-		Next objLink
-
-		GetDocuments = objLinks
-
-	End Function
 End Class

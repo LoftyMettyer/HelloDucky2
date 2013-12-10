@@ -3,6 +3,7 @@
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
 <script type="text/javascript">
+
 	function formatDocumentDisplay(fShowDocDisplay) {
 		
 		if (fShowDocDisplay == 'False') {
@@ -37,7 +38,6 @@
 			return;
 		}
 	}
-		
 
 	function openDocument(docUrl) {
 		window.open(docUrl);
@@ -52,31 +52,33 @@
 			<% 
 				' Get the Documents collection
 				Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
-				objNavigation.Connection = CType(Session("databaseConnection"), Connection)
+				Dim iCount As Integer = 0
 												
-				Dim objDocumentInfo = objNavigation.GetDocuments(NavigationLinkType.DocumentDisplay)
-
-				For iCount = 1 To objDocumentInfo.Count
+				For Each objLink In objNavigation.GetLinks(NavigationLinkType.DocumentDisplay)
 		
 			%>
 			<tr>
 				<td style="vertical-align: top">
 					<iframe id="ifDocumentDisplay<%=iCount %>" style="border: 0; margin: 0;"
-						src="<%=objDocumentInfo(iCount).DocumentFilePath%>" style="visibility: visible; z-index: 1; display: block; padding: 0; margin: 0; position: relative; width: 100%; height: 100%; border-style: none; border-width: 0;"></iframe>
+						src="<%=objLink.DocumentFilePath%>" style="visibility: visible; z-index: 1; display: block; padding: 0; margin: 0; position: relative; width: 100%; height: 100%; border-style: none; border-width: 0;"></iframe>
 				</td>
 			</tr>
-			<%	 If objDocumentInfo(iCount).DisplayDocumentHyperlink = True Then%>
+			<%
+				If objLink.DisplayDocumentHyperlink Then
+			%>
 			<tr>
 				<td>
 					<label id="divDocumentHyperlink<%=iCount %>"
-						onclick="openDocument('<%=objDocumentInfo(iCount).DocumentFilePath %>');"
+						onclick="openDocument('<%=objLink.DocumentFilePath%>');"
 						style="cursor: pointer; position: static;">
-						<%=objDocumentInfo(iCount).Text %>
+						<%=objLink.Text%>
 					</label>
 				</td>
 			</tr>
 			<%    
 			End If
+			
+			iCount += 1
 		Next
 
 			%>
@@ -84,5 +86,12 @@
 	</div>
 </div>
 
-<%Dim fShowDocDisplay As Boolean = (objDocumentInfo.Count > 0)%>
-<script type="text/javascript"> formatDocumentDisplay('<%=fShowDocDisplay%>');</script>
+<script type="text/javascript">
+	<%
+	If (iCount > 0) Then
+		Response.Write("formatDocumentDisplay('true');")
+	Else
+		Response.Write("formatDocumentDisplay('false');")
+	End If
+%>
+</script>
