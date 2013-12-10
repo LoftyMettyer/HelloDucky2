@@ -316,6 +316,11 @@ div.officetab li div.button
 	width: 49px;
 	overflow: hidden;
 	line-height: normal;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 5px;
+
 }
 
 .officebar li { list-style: none;}
