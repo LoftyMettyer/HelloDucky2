@@ -578,9 +578,9 @@
 	Dim _WorkflowGood As Boolean = True
 		
 	'Get the pendings workflow steps from the database
-	Dim _cmdDefSelRecords = New ADODB.Command
+	Dim _cmdDefSelRecords = New Command
 	_cmdDefSelRecords.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-	_cmdDefSelRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+	_cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 	_cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
 	Dim prmKeyParameter = _cmdDefSelRecords.CreateParameter("screenID", 200, 1, 8000)	
@@ -1343,14 +1343,14 @@
 												Dim iNumberOfEvents As Integer = 0
 												
 												' Create the reference to the DLL
-												Dim objTodaysEvents As Object = New HR.Intranet.Server.clsDiary
+												Dim objDiaryEvents As HR.Intranet.Server.clsDiary = New HR.Intranet.Server.clsDiary
 
 												' Pass required info to the DLL
-												objTodaysEvents.Username = CType(Session("username"), String)
-												objTodaysEvents.Connection = CType(Session("databaseConnection"), Connection)
+												objDiaryEvents.Username = CType(Session("username"), String)
+												objDiaryEvents.Connection = CType(Session("databaseConnection"), Connection)
 				
 												Err.Clear()
-												Dim mrstEventData = objTodaysEvents.GetDiaryData(False, DateValue(Now), DateValue(Now))
+												Dim mrstEventData As Recordset = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
 													
 												
 												If (Err.Number() <> 0) Then
@@ -1359,7 +1359,7 @@
 												iRecNum = 0
 												
 												If sErrorDescription.Length = 0 Then
-													If Not (mrstEventData.EOF And mrstEventData.bof) Then
+													If Not (mrstEventData.EOF And mrstEventData.BOF) Then
 											%>
 											<tr>
 												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Diary Links</td>
@@ -1371,7 +1371,7 @@
 												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=mrstEventData.fields(3).value %></td>
 											</tr>
 											<%                
-												mrstEventData.movenext()
+												mrstEventData.MoveNext()
 												iRecNum = iRecNum + 1
 											Loop
 										End If
@@ -1383,15 +1383,14 @@
 											
 									' ----------------------- OUTLOOK LINKS -----------------------------
 									' Create the reference to the DLL
-									objTodaysEvents = New HR.Intranet.Server.clsOutlookLinks
-											
+									Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks									
 
 									' Pass required info to the DLL
-									objTodaysEvents.Username = Session("username")
-									objTodaysEvents.Connection = Session("databaseConnection")
+									objOutlookEvents.Username = Session("username")
+									objOutlookEvents.Connection = Session("databaseConnection")
 				
 									Err.Clear()
-									mrstEventData = objTodaysEvents.GetOutlookLinks(False, DateValue(Now), DateValue(Now))
+									mrstEventData = objOutlookEvents.GetOutlookLinks(False, Now.Date, Now.Date)
 
 									If (Err.Number <> 0) Then
 										sErrorDescription = "The Outlook Links Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -1399,7 +1398,7 @@
 									iRecNum = 0
 											
 									If Len(sErrorDescription) = 0 Then
-										If Not (mrstEventData.EOF And mrstEventData.bof) Then
+										If Not (mrstEventData.EOF And mrstEventData.BOF) Then
 											%>
 											<tr>
 												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
@@ -1426,7 +1425,7 @@
 
 									' ----------------------- TODAY'S ABSENCES -----------------------------
 									' Create the reference to the DLL
-									objTodaysEvents = New HR.Intranet.Server.clsTodaysAbsence
+									Dim objTodaysEvents As HR.Intranet.Server.clsTodaysAbsence = New HR.Intranet.Server.clsTodaysAbsence
 						
 
 									' Pass required info to the DLL

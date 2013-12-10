@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports ADODB
 
 Public Class clsDiary
 '----------------------------------------------------------------------
@@ -486,8 +487,7 @@ Public Property ViewingAlarms() As Boolean
 
 	End Function
 
-	Public Function GetDiaryData(ByRef blnOnlyCountFilterMatch As Boolean, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As Object
-
+	Public Function GetDiaryData(ByRef blnOnlyCountFilterMatch As Boolean, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As Recordset
 
 			Dim strSQL As String
 			Dim strSQLSelect As String
@@ -499,8 +499,6 @@ Public Property ViewingAlarms() As Boolean
 			Dim blnClearedFilter As Boolean
 
 			blnListView = (mintCurrentView = mintVIEWBYLIST)
-
-
 
 			'*******************************
 			'* SELECT AND ORDER BY CLAUSES *
@@ -525,33 +523,8 @@ Public Property ViewingAlarms() As Boolean
 					blnClearedFilter = False
 
 					strSQL = "SELECT COUNT(*) " & strSQLFrom & "WHERE " & SQLFilter()
-					rsTables = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+					rsTables = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 					mlngRecordCount = rsTables.Fields(0).Value
-
-					'MH20020701 Fault 4088
-					'If mlngRecordCount = 0 And Not blnOnlyCountFilterMatch And _
-					''  (mintFilterEventType > 0 Or mintFilterPastPresent > 0 Or mintFilterAlarmStatus > 0 Or mblnFilterOnlyMine)) Then
-
-					If mlngRecordCount = 0 And Not blnOnlyCountFilterMatch And ((FilterEventType > 0 And AllowSystemEvents) Or (mintFilterPastPresent > 0 Or mintFilterAlarmStatus > 0 Or mblnFilterOnlyMine)) Then
-							'Filter applied and no records match (and not only counting match for alarm!)
-
-							'        If ViewingAlarms = True Then
-							''          COAMsgBox "All alarms on past events have now been cleared.", vbInformation + vbOKOnly, "Diary"
-							'          If frmDiaryDetail.Visible Then frmDiaryDetail.Hide
-							'          frmDiary.Hide
-							'        Else
-							'          FilterEventType = 0
-							'          FilterPastPresent = 0
-							'          FilterAlarmStatus = 0
-							'          FilterOnlyMine = False
-							'
-							'          COAMsgBox "No records match the current filter." & vbCrLf & _
-							''                 "No filter is applied.", vbInformation + vbOKOnly, "Diary Filter"
-							'          frmDiary.Caption = Me.FilterText
-							'          blnClearedFilter = True
-							'        End If
-
-					End If
 
 			Loop While blnClearedFilter = True
 
@@ -562,8 +535,7 @@ Public Property ViewingAlarms() As Boolean
 					strSQLWhere = "WHERE EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 23:59' AND "
 
 					strSQL = strSQLSelect & strSQLFrom & strSQLWhere & SQLFilter() & strSQLOrderBy
-					' Set rsTables = datData.OpenRecordset(strSQL, adOpenStatic, adLockReadOnly)
-					GetDiaryData = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+					GetDiaryData = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			End If
 
 	End Function
@@ -1122,35 +1094,33 @@ LocalErr:
 
 	Private Sub CheckAccessToSystemEvents()
 
-			Dim rsTemp As ADODB.Recordset
-			Dim strSQL As String
+		Dim rsTemp As Recordset
+		Dim strSQL As String
 
-			Dim objTableView As CTablePrivilege
-			Dim objColumnPrivileges As CColumnPrivileges
-			Dim strColList As String
+		Dim objTableView As CTablePrivilege
+		Dim objColumnPrivileges As CColumnPrivileges
+		Dim strColList As String
 
-		strSQL = "SELECT DISTINCT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName " & vbCrLf & "FROM ASRSysDiaryLinks " & vbCrLf & "JOIN ASRSysColumns ON ASRSysDiaryLinks.ColumnID = ASRSysColumns.ColumnID " & vbCrLf & "JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID"
-			rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+		strSQL = "SELECT DISTINCT t.TableID, t.TableName, c.ColumnID, c.ColumnName FROM ASRSysDiaryLinks d JOIN ASRSysColumns c ON d.ColumnID = c.ColumnID JOIN ASRSysTables t ON c.TableID = t.TableID"
+		rsTemp = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CursorLocationEnum.adUseClient)
 
-			If rsTemp.BOF And rsTemp.EOF Then
-					'Can't find any links !!!
-					'mstrSystemEvents = ""
-					mstrSystemEvents = "ColumnID = -1" 'MH20061010 Fault 11566
-					Exit Sub
-			End If
+		If rsTemp.BOF And rsTemp.EOF Then
+			'Can't find any links !!!
+			mstrSystemEvents = "ColumnID = -1" 'MH20061010 Fault 11566
+			Exit Sub
+		End If
 
+		For Each objTableView In gcoTablePrivileges.Collection
 
-			For Each objTableView In gcoTablePrivileges.Collection
+			strColList = vbNullString
+			If (objTableView.AllowSelect) Then
 
-					strColList = vbNullString
-					If (objTableView.AllowSelect) Then
+				rsTemp.MoveFirst()
+				Do While Not rsTemp.EOF
 
-							rsTemp.MoveFirst()
-							Do While Not rsTemp.EOF
-
-									'Loop thru all of the views for this table where the user has select access
-									If (objTableView.TableID = rsTemp.Fields("TableID").Value) Then
-											objColumnPrivileges = gcolColumnPrivilegesCollection.Item(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
+					'Loop thru all of the views for this table where the user has select access
+					If (objTableView.TableID = rsTemp.Fields("TableID").Value) Then
+							objColumnPrivileges = gcolColumnPrivilegesCollection.Item(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
 
 
 						If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName").Value.ToString()) Then
@@ -1159,22 +1129,21 @@ LocalErr:
 							End If
 						End If
 
-									End If
-
-									rsTemp.MoveNext()
-							Loop
-
-							If strColList <> vbNullString Then
-									mstrSystemEvents = mstrSystemEvents & IIf(mstrSystemEvents <> vbNullString, " OR " & vbCrLf, "") & "(RowID IN (SELECT ID FROM " & objTableView.RealSource & ") AND (ColumnID IN (" & strColList & ")))"
-							End If
-
 					End If
-			Next objTableView
 
+					rsTemp.MoveNext()
+				Loop
 
-			If mstrSystemEvents <> vbNullString Then
-					mstrSystemEvents = "(" & mstrSystemEvents & ")"
+				If strColList <> vbNullString Then
+						mstrSystemEvents = mstrSystemEvents & IIf(mstrSystemEvents <> vbNullString, " OR " & vbCrLf, "") & "(RowID IN (SELECT ID FROM " & objTableView.RealSource & ") AND (ColumnID IN (" & strColList & ")))"
+				End If
+
 			End If
+		Next objTableView
+
+		If mstrSystemEvents <> vbNullString Then
+			mstrSystemEvents = "(" & mstrSystemEvents & ")"
+		End If
 
 	End Sub
 
