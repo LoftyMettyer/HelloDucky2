@@ -803,10 +803,8 @@ LocalErr:
 
 
 	Public Function SetOptions(ByRef blnPrompt As Boolean, ByRef lngFormat As Integer, ByRef blnScreen As Boolean, ByRef blnPrinter As Boolean, ByRef strPrinterName As String, ByRef blnSave As Boolean, ByRef lngSaveExisting As Integer, ByRef blnEmail As Boolean, ByRef strEmailAddresses As String, ByRef strEmailSubject As String, ByRef strEmailAttachAs As String, ByRef strFilename As String) As Boolean
-		Dim Printer As New Printer
+		Dim Printer As New Printing.PrinterSettings
 
-		Dim Prtr As Printer
-		Dim objColumn As clsColumn
 		Dim blnCancelled As Boolean
 		'Dim lngSaveExisting As Long
 
@@ -876,7 +874,7 @@ LocalErr:
 		mblnPrintData = (mlngFormat = OutputFormats.fmtDataOnly And blnPrinter)
 
 		If strPrinterName = "<Default Printer>" Then
-			mstrPrinterName = Printer.DeviceName
+			mstrPrinterName = printer.PrinterName
 		Else
 			mstrPrinterName = strPrinterName
 		End If
@@ -907,12 +905,12 @@ LocalErr:
 
 
 	Public Sub SetPrinter()
-		Dim Printer As New Printer
+		Dim Printer As New Printing.PrinterSettings
 
 		Dim objDefPrinter As cSetDfltPrinter
 
 		If mstrPrinterName <> "<Default Printer>" Then
-			mstrDefaultPrinter = Printer.DeviceName
+			mstrDefaultPrinter = Printer.PrinterName
 			objDefPrinter = New cSetDfltPrinter
 			objDefPrinter.SetPrinterAsDefault(mstrPrinterName)
 			'UPGRADE_NOTE: Object objDefPrinter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

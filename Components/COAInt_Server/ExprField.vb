@@ -49,7 +49,7 @@ ErrorTrap:
 	End Function
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printer
+		Dim Printer As New Printing.PrinterSettings
 
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
@@ -59,11 +59,12 @@ ErrorTrap:
 		fOK = True
 
 		' Position the printing.
-		With Printer
-			.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			.CurrentY = .CurrentY + giPRINT_YSPACE
-			Printer.Print(ComponentDescription)
-		End With
+		' TODO: Implement printing
+		'With Printer
+		'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
+		'	.CurrentY = .CurrentY + giPRINT_YSPACE
+		'	Printer.Print(ComponentDescription)
+		'End With
 
 TidyUpAndExit:
 		PrintComponent = fOK
