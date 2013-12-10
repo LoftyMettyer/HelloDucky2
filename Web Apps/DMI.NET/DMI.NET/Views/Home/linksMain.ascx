@@ -849,63 +849,62 @@
 									sAppFilePath = ""
 									sAppParameters = ""
 									sNewWindow = "0"									
-									%>
-				<%For Each navlink In Model.NavigationLinks%>
+
+									For Each navlink In Model.NavigationLinks
 				
-				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
-				<%--Dim sTileColourClass = "absColour7"--%>
+										Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 
-				<%If navlink.LinkType = NavigationLinkType.Button Then%>
-								<%
-									If navlink.AppFilePath.Length > 0 Then
-										sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
-										sAppParameters = NullSafeString(navlink.AppParameters).Replace("\", "\\")
-										' TODO: apps???
-										sOnclick = "//goApp('" & sAppFilePath & "', '" & sAppParameters & "')"
-										' sCheckKeyPressed = "CheckKeyPressed('APP', '" & sAppFilePath & "', 0, '" & sAppParameters & "')"
-			
-									ElseIf NullSafeString(navlink.URL).Length > 0 Then
-										sURL = NullSafeString(navlink.URL)
-										sURL = sURL.Replace("&", "&amp;")
-										sURL = sURL.Replace("""", "&quot;")
-										sURL = sURL.Replace(">", "&gt;")
-										sURL = sURL.Replace("<", "&lt;")
+										If navlink.LinkType = NavigationLinkType.Button Then
 
-										If navlink.NewWindow = True Then
-											sNewWindow = "1"
-										Else
-											sNewWindow = "0"
-										End If
+											If navlink.AppFilePath.Length > 0 Then
+												sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
+												sAppParameters = NullSafeString(navlink.AppParameters).Replace("\", "\\")
+												' TODO: apps???
+												sOnClick = "//goApp('" & sAppFilePath & "', '" & sAppParameters & "')"
+												' sCheckKeyPressed = "CheckKeyPressed('APP', '" & sAppFilePath & "', 0, '" & sAppParameters & "')"
 			
-										sOnclick = "goURL('" & sURL & "', " & sNewWindow & ", true)"
-										' sCheckKeyPressed = "CheckKeyPressed('URL', '" & sURL & "', " & sNewWindow & ", '')"
-									Else
-										If navlink.UtilityID > 0 Then
-											Dim sUtilityType = CStr(navlink.UtilityType)
-											Dim sUtilityID = CStr(navlink.UtilityID)
-											Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+											ElseIf NullSafeString(navlink.URL).Length > 0 Then
+												sURL = NullSafeString(navlink.URL)
+												sURL = sURL.Replace("&", "&amp;")
+												sURL = sURL.Replace("""", "&quot;")
+												sURL = sURL.Replace(">", "&gt;")
+												sURL = sURL.Replace("<", "&lt;")
+
+												If navlink.NewWindow = True Then
+													sNewWindow = "1"
+												Else
+													sNewWindow = "0"
+												End If
+			
+												sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true)"
+
+											Else
+												If navlink.UtilityID > 0 Then
+													Dim sUtilityType = CStr(navlink.UtilityType)
+													Dim sUtilityID = CStr(navlink.UtilityID)
+													Dim sUtilityBaseTable = CStr(navlink.BaseTable)
 												
-											sOnclick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
-										Else
-											sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
+													sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
+												Else
+													sLinkKey = "recedit" & "_" & Session("TopLevelRecID").ToString() & "_" & navlink.ID
 												
-											sOnclick = "goScreen('" & sLinkKey & "')"
-										End If
-									End If
-										%>
-				<%If navlink.Element_Type = 1 Then		' separator
-						iRowNum = 1
-						iColNum = 1
-						Dim sSeparatorColor = ""
-						If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "background-color: " & navlink.SeparatorColour & "!important;"
-						If fFirstSeparator Then
-							fFirstSeparator = False
-				Else%>
+													sOnClick = "goScreen('" & sLinkKey & "')"
+												End If
+											End If
+
+											If navlink.Element_Type = 1 Then		' separator
+												iRowNum = 1
+												iColNum = 1
+												Dim sSeparatorColor = ""
+												If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "background-color: " & navlink.SeparatorColour & "!important;"
+												If fFirstSeparator Then
+													fFirstSeparator = False
+																 Else%>
 				</ul>
 			</div>
 			</li> </ul>
-			<%End If%>
-			<%If navlink.SeparatorOrientation = 1 Then	' Vertical break/new column %>
+			<%End If
+				If navlink.SeparatorOrientation = 1 Then	' Vertical break/new column %>
 		</div>
 		<div class="ButtonLinkColumn">
 			<%End If%>
@@ -919,62 +918,61 @@
 					</div>
 					<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
 						<ul>
-							<%Else%>
-							<%If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)%>
-							<% iColNum += 1%>
-							<%iRowNum = 1%>
+							<%Else
+									If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
+										iColNum += 1
+										iRowNum = 1%>
 							<script type="text/javascript">
 								$("#linkspagebuttonseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
 								$("#linkspagebuttonseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
-							<%End If%>
+							<%End If
 														
-							<%	 Select Case navlink.Element_Type
+								Select Case navlink.Element_Type
 
 									Case ElementType.ButtonLink
 										Dim sIconClass As String = "icon-file"
 									
-									If navlink.UtilityType = -1 Then	' screen view
-										sIconClass = "icon-table"
-									ElseIf navlink.UtilityType = 25 Then
-										sIconClass = "icon-magic"
-									End If%>
+										If navlink.UtilityType = -1 Then	' screen view
+											sIconClass = "icon-table"
+										ElseIf navlink.UtilityType = 25 Then
+											sIconClass = "icon-magic"
+												 End If%>
 							
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 										<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
 											<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a>
 										<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>" ></i></p>
 									</li>																																																																								
-								<%iRowNum += 1%>
-							
-							<%Case ElementType.Chart
-									
-									Dim iChart_TableID = CleanNumeric(navlink.Chart_TableID)
-									Dim iChart_ColumnID = CleanNumeric(navlink.Chart_ColumnID)
-									Dim iChart_FilterID = CleanNumeric(navlink.Chart_FilterID)
-									Dim iChart_AggregateType = navlink.Chart_AggregateType
-									Dim iChart_ElementType = navlink.Element_Type
-									Dim fChart_ShowLegend = navlink.Chart_ShowLegend
-									Dim iChart_Type = navlink.Chart_Type
-									Dim fChart_ShowGrid = navlink.Chart_ShowGrid
-									Dim fChart_StackSeries = navlink.Chart_StackSeries
-									Dim fChart_ShowValues = navlink.Chart_ShowValues
-									Dim sChart_ColumnName = Replace(navlink.Chart_ColumnName, "_", " ")
-									Dim sChart_ColumnName_2 = Replace(navlink.Chart_ColumnName_2, "_", " ")
-		
-									Dim iChart_TableID_2 = CleanNumeric(navlink.Chart_TableID_2)
-									Dim iChart_ColumnID_2 = CleanNumeric(navlink.Chart_ColumnID_2)
-									Dim iChart_TableID_3 = CleanNumeric(navlink.Chart_TableID_3)
-									Dim iChart_ColumnID_3 = CleanNumeric(navlink.Chart_ColumnID_3)
-		
-									Dim iChartInitialDisplayMode = CleanNumeric(navlink.InitialDisplayMode)
-		
-									Dim iChart_SortOrderID = CleanNumeric(navlink.Chart_SortOrderID)
-									Dim iChart_SortDirection = CleanNumeric(navlink.Chart_SortDirection)
+								<%iRowNum += 1
 
-									Dim iChart_ColourID = CleanNumeric(navlink.Chart_ColourID)
+								Case ElementType.Chart
+									
+									Dim iChart_TableID As Long = navlink.Chart_TableID
+									Dim iChart_ColumnID As Long = navlink.Chart_ColumnID
+									Dim iChart_FilterID As Long = navlink.Chart_FilterID
+									Dim iChart_AggregateType As Long = navlink.Chart_AggregateType
+									Dim iChart_ElementType As ElementType = navlink.Element_Type
+									'Dim fChart_ShowLegend = navlink.Chart_ShowLegend
+									Dim iChart_Type = navlink.Chart_Type
+									'Dim fChart_ShowGrid = navlink.Chart_ShowGrid
+									'Dim fChart_StackSeries = navlink.Chart_StackSeries
+									'Dim fChart_ShowValues = navlink.Chart_ShowValues
+									'Dim sChart_ColumnName = Replace(navlink.Chart_ColumnName, "_", " ")
+									'Dim sChart_ColumnName_2 = Replace(navlink.Chart_ColumnName_2, "_", " ")
 		
-									Dim fChart_ShowPercentages = navlink.Chart_ShowPercentages
+									Dim iChart_TableID_2 As Long = navlink.Chart_TableID_2
+									Dim iChart_ColumnID_2 As Long = navlink.Chart_ColumnID_2
+									Dim iChart_TableID_3 As Long = navlink.Chart_TableID_3
+									Dim iChart_ColumnID_3 As Long = navlink.Chart_ColumnID_3
+		
+									'Dim iChartInitialDisplayMode = CleanNumeric(navlink.InitialDisplayMode)
+		
+									Dim iChart_SortOrderID As Long = navlink.Chart_SortOrderID
+									Dim iChart_SortDirection As Integer = navlink.Chart_SortDirection
+									Dim iChart_ColourID As Long = navlink.Chart_ColourID
+		
+									'Dim fChart_ShowPercentages = navlink.Chart_ShowPercentages
 		
 									Dim fMultiAxis As Boolean
 									
@@ -987,9 +985,9 @@
 									' Drilldown?
 									If navlink.UtilityID > 0 Then
 										' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
-										sOnclick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTable & ")"
+										sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTable & ")"
 									Else
-										sOnclick = ""
+										sOnClick = ""
 									End If
 									
 									%>
@@ -1121,11 +1119,7 @@
 												<td class="bordered" style="text-align: right" nowrap="nowrap"></td>
 											</tr>
 
-
 											<%End If%>
-										
-										
-										
 										
 											</table>
 									</div>
@@ -1159,7 +1153,7 @@
 									' DBValue Formatting options...
 									Dim fUseFormatting = navlink.UseFormatting
 									
-									Dim iFormatting_DecimalPlaces = CleanNumeric(navlink.Formatting_DecimalPlaces)
+									Dim iFormatting_DecimalPlaces = navlink.Formatting_DecimalPlaces
 									Dim fFormatting_Use1000Separator = navlink.Formatting_Use1000Separator
 									Dim sFormatting_Prefix = Html.Encode(navlink.Formatting_Prefix)
 									Dim sFormatting_Suffix = Html.Encode(navlink.Formatting_Suffix)
@@ -1167,7 +1161,10 @@
 									' DBValue Conditional Formatting options...
 									Dim fUseConditionalFormatting = navlink.UseConditionalFormatting
 
-									Dim sCFOperator(2), sCFValue(2), sCFStyle(2), sCFColour(2)
+									Dim sCFOperator(2) As String									
+									Dim sCFValue(2) As String
+									Dim sCFStyle(2) As String
+									Dim sCFColour(2) As String
 									
 									sCFOperator(0) = navlink.ConditionalFormatting_Operator_1
 									sCFOperator(1) = navlink.ConditionalFormatting_Operator_2

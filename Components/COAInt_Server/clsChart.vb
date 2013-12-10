@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 
 Public Class clsChart
 
@@ -28,7 +29,7 @@ Public Class clsChart
 	Private mstrSQL As String
 	Private mstrErrorString As String
 
-	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As Long _
+	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As Integer _
 	, ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
 
 		Dim fOK As Boolean
@@ -60,7 +61,6 @@ Public Class clsChart
 		strColourColumnName = mclsGeneral.GetColumnName(lngColourID)
 
 		If fOK Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColumnID, strColumnName, False)
-		'UPGRADE_WARNING: Couldn't resolve default property of object piElementType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		If fOK And piElementType = 2 And lngColourID > 0 Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColourID, strColourColumnName, True)
 		If fOK Then fOK = GenerateSQLFrom(strTableName)
 		If fOK Then fOK = GenerateSQLJoin(lngTableID)
