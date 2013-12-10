@@ -3477,83 +3477,83 @@ Namespace Controllers
 			Session("OutputOptions_Filename") = Request("txtFilename")
 			Session("utiltype") = Request.Form("txtUtilType")
 
-		Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
-		Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
-		Dim objUser As New HR.Intranet.Server.clsSettings
+			Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
+			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			Dim objUser As New HR.Intranet.Server.clsSettings
 
-		Dim fOK As Boolean
-		Dim bBradfordFactor As Boolean
-		Dim strDesiredFileName As String
+			Dim fOK As Boolean
+			Dim bBradfordFactor As Boolean
+			Dim strDesiredFileName As String
 
-		strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
-		objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
+			strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
+			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
 
-		ClientDLL.ResetColumns()
-		ClientDLL.ResetStyles()
-		ClientDLL.UserName = Session("Username").ToString()
-		ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
+			ClientDLL.ResetColumns()
+			ClientDLL.ResetStyles()
+			ClientDLL.UserName = Session("Username").ToString()
+			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
 
-		ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
-			, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
-			, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
-			, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
+			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
+				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
+				, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
 
-		ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
-			, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
-			, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
-			, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
-			, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
-			, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
-			, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
+			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
+				, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
 
-		ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
-			, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
-			, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
-			, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
-			, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
-			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
-			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
+			ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
 
-		ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
-			, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
-			, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
-			, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
-			, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
-			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
-			, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
+			ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
+				, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
+				, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
 
-		ClientDLL.InitialiseStyles()
+			ClientDLL.InitialiseStyles()
 
-		ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
-			, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
-			, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
-			, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
-			, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
-			, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
-			, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
-			, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
-			, False) 'emailnotimplementedyet
+			ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
+				, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
+				, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
+				, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
+				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
+				, False) 'emailnotimplementedyet
 
 
-		Dim lngFormat As Long
-		Dim blnScreen As Boolean
-		Dim blnPrinter As Boolean
-		Dim strPrinterName As String
-		Dim blnSave As Boolean
-		Dim lngSaveExisting As Long
-		Dim blnEmail As Boolean
-		Dim lngEmailGroupID As Long
-		Dim strEmailSubject As String
-		Dim strEmailAttachAs As String
-		Dim strFileName As String
+			Dim lngFormat As Long
+			Dim blnScreen As Boolean
+			Dim blnPrinter As Boolean
+			Dim strPrinterName As String
+			Dim blnSave As Boolean
+			Dim lngSaveExisting As Long
+			Dim blnEmail As Boolean
+			Dim lngEmailGroupID As Long
+			Dim strEmailSubject As String
+			Dim strEmailAttachAs As String
+			Dim strFileName As String
 
 			Dim arrayColumnsDefinition() As String
-				Dim arrayPageBreakValues
-				Dim arrayVisibleColumns
+			Dim arrayPageBreakValues
+			Dim arrayVisibleColumns
 
 
-		'Set Options
-	'	If Not objReport.OutputPreview Then
+			'Set Options
+			'	If Not objReport.OutputPreview Then
 
 			lngFormat = objReport.OutputFormat
 			blnScreen = objReport.OutputScreen
@@ -3611,10 +3611,10 @@ Namespace Controllers
 			'	cmdEmailAddr = Nothing
 			'End If
 
-		'	fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
-		'		, strEmailSubject, strEmailAttachAs, strFileName)
+			'	fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
+			'		, strEmailSubject, strEmailAttachAs, strFileName)
 
-		'Else
+			'Else
 
 			'fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
 			'	, Session("OutputOptions_PrinterName"), Session("OutputOptions_Save"), Session("OutputOptions_SaveExisting") _
@@ -3628,163 +3628,176 @@ Namespace Controllers
 
 
 
-	'	End If
+			'	End If
 
-		arrayColumnsDefinition = objReport.OutputArray_Columns
-		arrayPageBreakValues = objReport.OutputArray_PageBreakValues
-		arrayVisibleColumns = objReport.OutputArray_VisibleColumns
+			arrayColumnsDefinition = objReport.OutputArray_Columns
+			arrayPageBreakValues = objReport.OutputArray_PageBreakValues
+			arrayVisibleColumns = objReport.OutputArray_VisibleColumns
 
 
-		ClientDLL.SizeColumnsIndependently = True
+			ClientDLL.SizeColumnsIndependently = True
 
-		Dim sColHeading As String
-		Dim iColDataType As Integer
-		Dim iColDecimals As Integer
-		Dim sBreakValue As String
-		Dim blnBreakCheck As Boolean
-		Dim bIsCol1000 As Boolean
-		Dim lngActualRow As Integer
-		Dim lngCol As Integer
-		Dim lngRow As Integer
+			Dim sColHeading As String
+			Dim iColDataType As Integer
+			Dim iColDecimals As Integer
+			Dim sBreakValue As String
+			Dim blnBreakCheck As Boolean
+			Dim bIsCol1000 As Boolean
+			Dim lngActualRow As Integer
+			Dim lngCol As Integer
+			Dim lngRow As Integer
 
-		ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
-		If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
-			If Session("OutputOptions_Printer") = True Then
-				ClientDLL.SetPrinter()
-				'		Response.Write("      dataOnlyPrint();" & vbCrLf)
-				ClientDLL.ResetDefaultPrinter()
-			End If
-		Else
-			ClientDLL.HeaderRows = 1
-			If ClientDLL.GetFile() = True Then
+			If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
+				If Session("OutputOptions_Printer") = True Then
+					ClientDLL.SetPrinter()
+					'		Response.Write("      dataOnlyPrint();" & vbCrLf)
+					ClientDLL.ResetDefaultPrinter()
+				End If
+			Else
+				ClientDLL.HeaderRows = 1
+				If ClientDLL.GetFile() = True Then
 
-				If objReport.ReportHasPageBreak Then
+					If objReport.ReportHasPageBreak Then
 
-					ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
-					lngActualRow = 0
-					lngRow = 1
+						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+						lngActualRow = 0
+						lngRow = 1
 
-					For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
 
-						lngRow += 1
-						lngActualRow += 1
-						If lngActualRow = objReport.datCustomReportOutput.Rows.Count Then
+							lngRow += 1
+							lngActualRow += 1
+							If lngActualRow = objReport.datCustomReportOutput.Rows.Count Then
 
-							If objReport.ReportHasSummaryInfo Then
-								sBreakValue = "Grand Totals"
-							Else
-								sBreakValue = arrayPageBreakValues(lngActualRow)
-							End If
+								If objReport.ReportHasSummaryInfo Then
+									sBreakValue = "Grand Totals"
+								Else
+									sBreakValue = arrayPageBreakValues(lngActualRow)
+								End If
 
-							If (lngActualRow > 0) Then
+								If (lngActualRow > 0) Then
+									If bBradfordFactor = True Then
+										ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
+									Else
+										ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
+									End If
+
+									For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+										sColHeading = arrayVisibleColumns(0, lngCol)
+										iColDataType = arrayVisibleColumns(1, lngCol)
+										iColDecimals = arrayVisibleColumns(2, lngCol)
+										ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, False)
+										ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+									Next
+
+									ClientDLL.DataArray()
+									lngActualRow = 0
+									blnBreakCheck = True
+									sBreakValue = ""
+
+								End If
+
+							ElseIf objRow(1).ToString() = "*" And Not blnBreakCheck Then
+								sBreakValue = arrayPageBreakValues(lngRow)
+
 								If bBradfordFactor = True Then
 									ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
 								Else
-									ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
+									ClientDLL.AddPage(objReport.ReportCaption, sBreakValue)
 								End If
 
 								For lngCol = 0 To UBound(arrayVisibleColumns, 2)
 									sColHeading = arrayVisibleColumns(0, lngCol)
 									iColDataType = arrayVisibleColumns(1, lngCol)
 									iColDecimals = arrayVisibleColumns(2, lngCol)
-									ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, False)
+									bIsCol1000 = arrayVisibleColumns(3, lngCol)
+									ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
 									ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
 								Next
 
 								ClientDLL.DataArray()
+								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 								lngActualRow = 0
 								blnBreakCheck = True
-								sBreakValue = ""
+								ClientDLL.ResetColumns()
+								ClientDLL.ResetStyles()
 
-							End If
+							ElseIf Not objRow(0).ToString() = "*" Then
+								blnBreakCheck = False
+								lngCol = 0
 
-						ElseIf objRow(1).ToString() = "*" And Not blnBreakCheck Then
-							sBreakValue = arrayPageBreakValues(lngRow)
+								ClientDLL.ArrayReDim()
 
-							If bBradfordFactor = True Then
-								ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
-							Else
-								ClientDLL.AddPage(objReport.ReportCaption, sBreakValue)
-							End If
-
-							For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-								sColHeading = arrayVisibleColumns(0, lngCol)
-								iColDataType = arrayVisibleColumns(1, lngCol)
-								iColDecimals = arrayVisibleColumns(2, lngCol)
-								bIsCol1000 = arrayVisibleColumns(3, lngCol)
-								ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
-								ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-							Next
-
-							ClientDLL.DataArray()
-							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
-							lngActualRow = 0
-							blnBreakCheck = True
-							ClientDLL.ResetColumns()
-							ClientDLL.ResetStyles()
-
-						ElseIf Not objRow(0).ToString() = "*" Then
-							blnBreakCheck = False
-							lngCol = 0
-
-							ClientDLL.ArrayReDim()
-
-							For lngCount = 0 To UBound(arrayVisibleColumns, 2)
+								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
 									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
-								lngCol += 1
-							Next
+									lngCol += 1
+								Next
 
+							End If
+
+						Next
+
+					Else ' no page break
+
+						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
+
+						If bBradfordFactor = True Then
+							ClientDLL.PageTitles = False
+							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
+						Else
+							ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
 						End If
 
-					Next
-
-				Else ' no page break
-
-					ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
-
-					If bBradfordFactor = True Then
-						ClientDLL.PageTitles = False
-						ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
-					Else
-						ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
-					End If
-
-					For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-						sColHeading = arrayVisibleColumns(0, lngCol)
-						iColDataType = arrayVisibleColumns(1, lngCol)
-						iColDecimals = arrayVisibleColumns(2, lngCol)
-						bIsCol1000 = arrayVisibleColumns(3, lngCol)
-						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
-						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-					Next
+						For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+							sColHeading = arrayVisibleColumns(0, lngCol)
+							iColDataType = arrayVisibleColumns(1, lngCol)
+							iColDecimals = arrayVisibleColumns(2, lngCol)
+							bIsCol1000 = arrayVisibleColumns(3, lngCol)
+							ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+							ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+						Next
 
 
-					lngRow = 1
-					For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+						lngRow = 1
+						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
 
-						For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
+							For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
 								If objReport.ReportHasSummaryInfo Then
-							ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
+									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
 								Else
 									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns + 1).ToString())
 								End If
+							Next
+
+							lngRow += 1
+
 						Next
 
-						lngRow += 1
+					End If
 
-					Next
-
+					ClientDLL.DataArray()
 				End If
 
-				ClientDLL.DataArray()
 			End If
 
-		End If
+			ClientDLL.Complete()
 
-		ClientDLL.Complete()
+			' Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
+			Try
+				If IO.File.Exists(objReport.OutputFilename) Then
+					Response.ClearContent()
+					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDesiredFileName)
+					Response.TransmitFile(objReport.OutputFilename)
+					Response.Flush()
+				End If
+			Catch ex As Exception
+			Finally
+				IO.File.Delete(objReport.OutputFilename)
+			End Try
 
-			Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
+
 		End Function
 
 		Public Function util_run_calendarreport_data() As ActionResult
