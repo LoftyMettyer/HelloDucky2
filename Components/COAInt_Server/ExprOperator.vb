@@ -3,7 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
-Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
+
 Friend Class clsExprOperator
 
 	' Component definition variables.
@@ -182,7 +182,7 @@ Friend Class clsExprOperator
 
 		Try
 
-			Dim Printer As New Printing.PrinterSettings
+			'Dim Printer As New Printing.PrinterSettings
 
 			' Position the printing.
 			' TODO: Implement printing

@@ -3,7 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
-Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
+
 Friend Class clsExprFilter
 
 	' Component definition variables.
@@ -45,7 +45,7 @@ Friend Class clsExprFilter
 
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printing.PrinterSettings
+		'Dim Printer As New Printing.PrinterSettings
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
 

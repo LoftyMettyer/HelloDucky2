@@ -3,7 +3,6 @@ Option Explicit On
 
 Imports HR.Intranet.Server.ExClientCode
 Imports HR.Intranet.Server.Enums
-Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 
 Public Class clsOutputRun
 
@@ -881,9 +880,9 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.PrinterName. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.PrinterName = mstrPrinterName
 
-		If blnPrinter And Printers.Count = 0 Then
-			mstrErrorMessage = "Unable to print as no printers are installed."
-		End If
+		'If blnPrinter And Printers.Count = 0 Then
+		'	mstrErrorMessage = "Unable to print as no printers are installed."
+		'End If
 
 
 		'MH20040209 Fault 8024
@@ -905,17 +904,17 @@ LocalErr:
 
 
 	Public Sub SetPrinter()
-		Dim Printer As New Printing.PrinterSettings
+		'Dim Printer As New Printing.PrinterSettings
 
 		Dim objDefPrinter As cSetDfltPrinter
 
-		If mstrPrinterName <> "<Default Printer>" Then
-			mstrDefaultPrinter = Printer.PrinterName
-			objDefPrinter = New cSetDfltPrinter
-			objDefPrinter.SetPrinterAsDefault(mstrPrinterName)
-			'UPGRADE_NOTE: Object objDefPrinter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objDefPrinter = Nothing
-		End If
+		'If mstrPrinterName <> "<Default Printer>" Then
+		'	mstrDefaultPrinter = Printer.PrinterName
+		'	objDefPrinter = New cSetDfltPrinter
+		'	objDefPrinter.SetPrinterAsDefault(mstrPrinterName)
+		'	'UPGRADE_NOTE: Object objDefPrinter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		'	objDefPrinter = Nothing
+		'End If
 
 	End Sub
 
@@ -1041,23 +1040,24 @@ LocalErr:
 	End Function
 
 	Private Function ValidPrinter(ByRef strName As String) As Boolean
+		Return True
+		'TODO Implement printing
+		'Dim objPrinter As New Printing.PrinterSettings
+		'Dim blnFound As Boolean
 
-		Dim objPrinter As Printer
-		Dim blnFound As Boolean
+		'If strName <> vbNullString And strName <> "<Default Printer>" Then
+		'	blnFound = False
+		'	For Each objPrinter In Printers
+		'		If objPrinter.PrinterName = strName Then
+		'			blnFound = True
+		'			Exit For
+		'		End If
+		'	Next objPrinter
+		'Else
+		'	blnFound = True
+		'End If
 
-		If strName <> vbNullString And strName <> "<Default Printer>" Then
-			blnFound = False
-			For Each objPrinter In Printers
-				If objPrinter.DeviceName = strName Then
-					blnFound = True
-					Exit For
-				End If
-			Next objPrinter
-		Else
-			blnFound = True
-		End If
-
-		ValidPrinter = blnFound
+		'ValidPrinter = blnFound
 
 	End Function
 

@@ -2,7 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports HR.Intranet.Server.Enums
-Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
+
 Friend Class clsExprValue
 	
 	' Component definition variables.
@@ -84,7 +84,7 @@ ErrorTrap:
 	
 	
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printing.PrinterSettings
+		'Dim Printer As New Printing.PrinterSettings
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
 		
