@@ -5,8 +5,8 @@
 <script type="text/javascript">
 
 	function formatDocumentDisplay(fShowDocDisplay) {
-		
-		if (fShowDocDisplay == 'False') {
+
+		if (fShowDocDisplay == 'false') {
 			//Hide parent div
 			$('#documentDisplay').hide();
 		}
