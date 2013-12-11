@@ -54,7 +54,7 @@
 				Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
 				Dim iCount As Integer = 0
 												
-				For Each objLink In objNavigation.GetLinks(NavigationLinkType.DocumentDisplay)
+				For Each objLink In objNavigation.GetLinks(LinkType.DocumentDisplay)
 		
 			%>
 			<tr>

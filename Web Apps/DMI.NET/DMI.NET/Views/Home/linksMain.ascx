@@ -107,7 +107,7 @@
 			<div class="hypertextlinks">
 				<%
 					Dim tileCount = 1
-					For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = NavigationLinkType.HyperLink)
+					For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.HyperLink)
 						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 							
 						If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) And navlink.UtilityType = -1 Then		' separator
@@ -297,11 +297,9 @@
 									sAppParameters = ""
 									sNewWindow = "0"									
 
-									For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = NavigationLinkType.Button)
+									For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.Button)
 				
 										Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
-
-										'										If navlink.LinkType = NavigationLinkType.Button Then
 
 										If navlink.AppFilePath.Length > 0 Then
 											sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
@@ -466,7 +464,7 @@
 									<%If navlink.InitialDisplayMode = 0 Then%>
 									<div class="widgetplaceholder chart">
 										<%If fMultiAxis Then%>
-										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+										<div><img src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 										<%Else%>
 										<div><img onerror="$(this).parent().parent().hide();" src="<%:Url.Action("GetChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = iChart_ElementType, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 										<%End If%>
@@ -975,7 +973,7 @@
 				<%iRowNum = 1
 					iColNum = 1
 
-					For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = NavigationLinkType.DropDown)
+					For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.DropDown)
 						
 						Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 						Dim sValue As String, sUtilityType As String, sUtilityID As String, sUtilityBaseTable As String, sUtilityDef As String
@@ -985,11 +983,11 @@
 							sAppParameters = Replace(navlink.AppParameters, "\", "\\")
 			
 							sValue = "5_" & sAppFilePath & "_" & sAppParameters
-							sOnclick = "goDropLink('" + sValue + "')"
+							sOnClick = "goDropLink('" + sValue + "')"
 
 						ElseIf navlink.Element_Type = ElementType.OrgChart Then
 							sValue = "6_OrgChart"
-							sOnclick = "loadPartialView('OrgChart', 'home', 'workframe')"
+							sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"
 							
 							
 						ElseIf Len(navlink.URL) > 0 Then
@@ -1003,7 +1001,7 @@
 							End If
 		 
 							sValue = "0_" & sNewWindow & "_" & sURL
-							sOnclick = "goDropLink('" + sValue + "')"
+							sOnClick = "goDropLink('" + sValue + "')"
 							
 						Else
 							If navlink.UtilityID > 0 Then
@@ -1023,7 +1021,7 @@
 				
 							End If
 							
-							sOnclick = "goDropLink('" + sValue + "')"
+							sOnClick = "goDropLink('" + sValue + "')"
 							
 						End If
 

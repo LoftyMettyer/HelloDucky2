@@ -1,5 +1,5 @@
 ﻿Namespace Enums
-	Public Enum NavigationLinkType
+	Public Enum LinkType
 		HyperLink = 0
 		Button = 1
 		DropDown = 2

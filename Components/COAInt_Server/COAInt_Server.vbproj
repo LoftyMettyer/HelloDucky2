@@ -123,7 +123,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
-    <Compile Include="Metadata\NavigationLink.vb" />
+    <Compile Include="Metadata\Link.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />
     <Compile Include="clsResetPassword.vb" />
@@ -159,7 +159,7 @@
     <Compile Include="Enums\ExpressionValueTypes.vb" />
     <Compile Include="Enums\FieldSelectionTypes.vb" />
     <Compile Include="Enums\MailMergeOutputTypes.vb" />
-    <Compile Include="Enums\NavigationLinkType.vb" />
+    <Compile Include="Enums\LinkType.vb" />
     <Compile Include="Enums\OutputFormats.vb" />
     <Compile Include="Enums\RecordSelectionTypes.vb" />
     <Compile Include="Enums\RecordSelectionValidityCodes.vb" />

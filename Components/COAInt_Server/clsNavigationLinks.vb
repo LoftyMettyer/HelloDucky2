@@ -54,13 +54,13 @@ Public Class clsNavigationLinks
 
 		Dim rsLinks As ADODB.Recordset
 		Dim sSQL As String
-		Dim objLink As NavigationLink
+		Dim objLink As Link
 
 		If Not gcolLinks Is Nothing Then
 			Exit Sub
 		End If
 
-		gcolLinks = New List(Of NavigationLink)
+		gcolLinks = New List(Of Link)
 
 		sSQL = "EXEC spASRIntGetLinks " & mlngSSITableID & ", " & mlngSSIViewID
 		rsLinks = New ADODB.Recordset
@@ -68,7 +68,7 @@ Public Class clsNavigationLinks
 
 		With rsLinks
 			Do While Not (.EOF Or .BOF)
-				objLink = New NavigationLink
+				objLink = New Link
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				objLink.BaseTable = IIf(Not IsDBNull(.Fields("BaseTable").Value), .Fields("BaseTable").Value, "")
@@ -189,13 +189,13 @@ Public Class clsNavigationLinks
 
 		Dim rsLinks As ADODB.Recordset
 		Dim sSQL As String
-		Dim objLink As NavigationLink
+		Dim objLink As Link
 
 		If Not gcolNavigationLinks Is Nothing Then
 			Exit Sub
 		End If
 
-		gcolNavigationLinks = New List(Of NavigationLink)
+		gcolNavigationLinks = New List(Of Link)
 
 		sSQL = "EXEC spASRIntGetNavigationLinks " & mlngSSITableID & ", " & mlngSSIViewID
 		rsLinks = New ADODB.Recordset
@@ -203,7 +203,7 @@ Public Class clsNavigationLinks
 
 		With rsLinks
 			Do While Not (.EOF Or .BOF)
-				objLink = New NavigationLink
+				objLink = New Link
 
 				objLink.LinkType = .Fields("LinkType").Value
 				objLink.Text1 = .Fields("Text1").Value
@@ -226,12 +226,16 @@ Public Class clsNavigationLinks
 
 	End Sub
 
-	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of NavigationLink)
+	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of Link)
 		Return gcolNavigationLinks.FindAll(Function(n) n.FindPage = pbShowFindPages Or pbShowFindPages)
 	End Function
 
-	Public Function GetLinks(ByVal piLinkType As NavigationLinkType) As List(Of NavigationLink)
+	Public Function GetLinks(ByVal piLinkType As LinkType) As List(Of Link)
 		Return gcolLinks.FindAll(Function(n) n.LinkType = piLinkType)
 	End Function
 
+	Public Function GetAllLinks() As List(Of Link)
+		Return gcolLinks
+	End Function
+	
 End Class

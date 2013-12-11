@@ -3,7 +3,7 @@ Option Explicit On
 
 Namespace Metadata
 
-	Public Class NavigationLink
+	Public Class Link
 		Inherits Base
 
 		Public LinkType As Short

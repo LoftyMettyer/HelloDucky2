@@ -19,8 +19,8 @@ Module Declarations
 	Public gcoTablePrivileges As ICollection(Of CTablePrivilege)
 
 	Public gcolColumnPrivilegesCollection As Collection
-	Public gcolLinks As List(Of NavigationLink)
-	Public gcolNavigationLinks As List(Of NavigationLink)
+	Public gcolLinks As List(Of Link)
+	Public gcolNavigationLinks As List(Of Link)
 
 	Public Tables As ICollection(Of Table)
 	Public Columns As ICollection(Of Column)
