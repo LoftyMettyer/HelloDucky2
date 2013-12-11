@@ -540,7 +540,7 @@
 			
 		</script>
 		
-<form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData">
+<form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objReport.OutputPreview%>">
 	<input type="hidden" id="txtFormat" name="txtFormat" value=<%=objReport.OutputFormat%>>
 	<input type="hidden" id="txtScreen" name="txtScreen" value=<%=objReport.OutputScreen%>>
@@ -557,4 +557,7 @@
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objReport.OutputFilename%>">
 	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+	
+	<iframe name="submit-iframe" style="display: none;"></iframe>
+
 </form>

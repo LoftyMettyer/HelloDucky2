@@ -3485,8 +3485,8 @@ Namespace Controllers
 			Dim bBradfordFactor As Boolean
 			Dim strDesiredFileName As String
 
-			strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
 			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
+			strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
 
 			ClientDLL.ResetColumns()
 			ClientDLL.ResetStyles()
@@ -3555,7 +3555,7 @@ Namespace Controllers
 			'Set Options
 			'	If Not objReport.OutputPreview Then
 
-			lngFormat = objReport.OutputFormat
+			lngFormat = NullSafeInteger(Session("OutputOptions_Format"))		' objReport.OutputFormat
 			blnScreen = objReport.OutputScreen
 			blnPrinter = objReport.OutputPrinter
 			strPrinterName = objReport.OutputPrinterName
