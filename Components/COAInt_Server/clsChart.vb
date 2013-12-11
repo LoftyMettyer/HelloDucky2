@@ -29,7 +29,7 @@ Public Class clsChart
 	Private mstrSQL As String
 	Private mstrErrorString As String
 
-	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As Integer _
+	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As ElementType _
 	, ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
 
 		Dim fOK As Boolean
@@ -128,22 +128,15 @@ MergeSQLStrings_ERROR:
 
 		Dim pblnOK As Boolean
 		Dim pblnColumnOK As Boolean
-		Dim iLoop1 As Short
 		Dim pblnNoSelect As Boolean
 		Dim pblnFound As Boolean
 
-		Dim pintLoop As Short
 		Dim pstrColumnList As String
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
 		Dim pintNextIndex As Short
 
-		Dim blnOK As Boolean
-		Dim sCalcCode As String
-		Dim alngSourceTables() As Integer
-		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As CTablePrivilege
-
 
 		SetupTablesCollection()
 
@@ -341,23 +334,7 @@ GenerateSQLSelect_ERROR:
 		On Error GoTo GenerateSQLJoin_ERROR
 
 		Dim pobjTableView As CTablePrivilege
-		Dim objChildTable As CTablePrivilege
 		Dim pintLoop As Short
-		Dim sChildJoinCode As String
-		Dim sReuseJoinCode As String
-		Dim sChildOrderString As String
-		Dim rsTemp As ADODB.Recordset
-		Dim strFilterIDs As String
-		Dim blnOK As Boolean
-		Dim pblnChildUsed As Boolean
-		Dim sChildJoin As String
-		Dim lngTempChildID As Integer
-		Dim lngTempMaxRecords As Integer
-		Dim lngTempFilterID As Integer
-		Dim lngTempOrderID As Integer
-		Dim i As Short
-		Dim sOtherParentJoinCode As String
-		Dim iLoop2 As Short
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom

@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Enums
 
 Public Class clsMultiAxisChart
 
@@ -39,11 +40,10 @@ Public Class clsMultiAxisChart
 	'Private mrstChartDataOutput As New adodb.Recordset
 
 	' Recordset to store legend data from sQL
-	Private mrstChartLegendData As New ADODB.Recordset
-
+	Private mrstChartLegendData As New Recordset
 
 	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
-															 ByRef piAggregateType As Long, ByRef piElementType As Long, ByRef plngTableID_2 As Long,
+															 ByRef piAggregateType As Long, ByRef piElementType As ElementType, ByRef plngTableID_2 As Long,
 															 ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
 															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
 
@@ -68,8 +68,6 @@ Public Class clsMultiAxisChart
 
 		Dim lngSortOrderID As Integer
 		Dim iSortDirection As Short
-
-		Dim sSQL As String
 
 		fOK = True
 
@@ -142,9 +140,7 @@ Public Class clsMultiAxisChart
 		End If
 
 		' Execute the SQL and store in recordset
-		' Set mrstChartDataOutput = mclsData.OpenRecordset(sSQL, adOpenStatic, adLockReadOnly)
-
-		GetChartData = mclsData.OpenRecordset(mstrSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		Return mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 	End Function
 
@@ -166,13 +162,13 @@ Public Class clsMultiAxisChart
 			pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectVerticalID & ") AS [VERTICAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " ORDER BY 1 "
 
 			' Execute the SQL and store in recordset
-			mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+			mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			pstrCaseStatements = ""
 
 			' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.
 			If mrstChartLegendData.BOF And mrstChartLegendData.EOF Then
 				mstrErrorString = "No Data"
-				Exit Function
+				Return False
 			End If
 
 
@@ -241,7 +237,7 @@ SQLSelectVerticalID_ERROR:
 		pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectHorizontalID & ") AS [HORIZONTAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & pstrSQLOrderBy
 
 		' Execute the SQL and store in recordset
-		mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
+		mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 		pstrCaseStatements = ""
 
 		' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.

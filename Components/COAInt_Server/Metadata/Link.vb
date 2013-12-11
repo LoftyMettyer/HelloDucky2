@@ -1,6 +1,8 @@
 Option Strict On
 Option Explicit On
 
+Imports HR.Intranet.Server.Enums
+
 Namespace Metadata
 
 	Public Class Link
@@ -30,7 +32,7 @@ Namespace Metadata
 		Public Chart_ColumnID As Integer
 		Public Chart_FilterID As Integer
 		Public Chart_AggregateType As Integer
-		Public Element_Type As Short
+		Public Element_Type As ElementType
 		Public Chart_ShowValues As Boolean
 
 		Public UseFormatting As Boolean

@@ -2974,7 +2974,7 @@ Namespace Controllers
 											columnID As Long,
 											filterID As Long,
 											aggregateType As Long,
-											elementType As Long,
+											elementType As ElementType,
 											sortOrderID As Long,
 											sortDirection As Long,
 											colourID As Long) As FileContentResult
@@ -3006,8 +3006,8 @@ Namespace Controllers
 
 				If Not (mrstChartData.EOF And mrstChartData.BOF) Then
 					mrstChartData.MoveFirst()
-					If mrstChartData.Fields(0).Value <> "No Access" Then
-						If mrstChartData.Fields(0).Value <> "No Data" Then
+					If mrstChartData.Fields(0).Value.ToString() <> "No Access" Then
+						If mrstChartData.Fields(0).Value.ToString() <> "No Data" Then
 
 							Dim chart1 As New Chart()
 
@@ -3113,7 +3113,7 @@ Namespace Controllers
 							End Select
 
 							Do While Not mrstChartData.EOF
-								If mrstChartData.Fields(0).Value <> "No Access" And mrstChartData.Fields(0).Value <> "No Data" Then
+								If mrstChartData.Fields(0).Value.ToString() <> "No Access" And mrstChartData.Fields(0).Value.ToString() <> "No Data" Then
 
 									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = mrstChartData.Fields(0).Value, .YValues = New Double() {mrstChartData.Fields(1).Value}})
 
@@ -3154,7 +3154,7 @@ Namespace Controllers
 											columnID As Long,
 											filterID As Long,
 											aggregateType As Long,
-											elementType As Long,
+											elementType As ElementType,
 											tableID_2 As Long,
 											columnID_2 As Long,
 											tableID_3 As Long,
