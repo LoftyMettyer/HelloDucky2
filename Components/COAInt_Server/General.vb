@@ -686,163 +686,163 @@ ErrorTrap:
 
 	End Function
 
-Public Sub PopulateMetadata()
+	Public Sub PopulateMetadata()
 
-	Dim rstData As Recordset
-	Dim sSQL As String
+		Dim rstData As Recordset
+		Dim sSQL As String
 
-	Tables = New Collection(Of Table)
-	Columns = New Collection(Of Column)
-	Relations = New Collection(Of Relation)
-	ModuleSettings = New Collection(Of ModuleSetting)
-	UserSettings = New Collection(Of UserSetting)
-	Functions = New Collection(Of Metadata.Function)
-	Operators = New Collection(Of Metadata.Operator)
-	Permissions = New Collection(Of Permission)
+		Tables = New Collection(Of Table)
+		Columns = New Collection(Of Column)
+		Relations = New Collection(Of Relation)
+		ModuleSettings = New Collection(Of ModuleSetting)
+		UserSettings = New Collection(Of UserSetting)
+		Functions = New Collection(Of Metadata.Function)
+		Operators = New Collection(Of Metadata.Operator)
+		Permissions = New Collection(Of Permission)
 
-	Try
+		Try
 
-		sSQL = "SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM ASRSysTables"
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim table As New Table
-			table.ID = CInt(rstData.Fields("TableID").Value.ToString)
-			table.TableType = rstData.Fields("TableType").Value.ToString
-			table.Name = rstData.Fields("TableName").Value.ToString
-			table.DefaultOrderID = rstData.Fields("DefaultOrderID").Value.ToString
-			table.RecordDescExprID = rstData.Fields("RecordDescExprID").Value.ToString
-			Tables.Add(table)
-			rstData.MoveNext()
-		Loop
-
-
-		sSQL = "SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM ASRSysColumns"
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim column As New Column
-			column.ID = rstData.Fields("columnid").Value.ToString
-			column.TableID = rstData.Fields("tableid").Value.ToString
-			column.TableName = Tables.GetById(column.TableID).Name
-			column.Name = rstData.Fields("columnname").Value.ToString
-			column.DataType = rstData.Fields("datatype").Value.ToString
-			column.Use1000Separator = rstData.Fields("use1000separator").Value.ToString
-			column.Size = rstData.Fields("size").Value.ToString
-			column.Decimals = rstData.Fields("decimals").Value.ToString
-			Columns.Add(column)
-			rstData.MoveNext()
-		Loop
+			sSQL = "SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM ASRSysTables"
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim table As New Table
+				table.ID = CInt(rstData.Fields("TableID").Value.ToString)
+				table.TableType = rstData.Fields("TableType").Value.ToString
+				table.Name = rstData.Fields("TableName").Value.ToString
+				table.DefaultOrderID = rstData.Fields("DefaultOrderID").Value.ToString
+				table.RecordDescExprID = rstData.Fields("RecordDescExprID").Value.ToString
+				Tables.Add(table)
+				rstData.MoveNext()
+			Loop
 
 
-		sSQL = "SELECT ParentID, ChildID FROM ASRSysRelations"
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim relation As New Relation
-			relation.ParentID = rstData.Fields("parentid").Value.ToString
-			relation.ChildID = rstData.Fields("childid").Value.ToString
-			Relations.Add(relation)
-			rstData.MoveNext()
-		Loop
-
-		sSQL = "SELECT * FROM ASRSysModuleSetup"
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim moduleSetting As New ModuleSetting
-			moduleSetting.ModuleKey = rstData.Fields("ModuleKey").Value.ToString
-			moduleSetting.ParameterKey = rstData.Fields("ParameterKey").Value.ToString
-			moduleSetting.ParameterValue = rstData.Fields("ParameterValue").Value.ToString
-			moduleSetting.ParameterType = rstData.Fields("ParameterType").Value.ToString
-			ModuleSettings.Add(moduleSetting)
-			rstData.MoveNext()
-		Loop
+			sSQL = "SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM ASRSysColumns"
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim column As New Column
+				column.ID = rstData.Fields("columnid").Value.ToString
+				column.TableID = rstData.Fields("tableid").Value.ToString
+				column.TableName = Tables.GetById(column.TableID).Name
+				column.Name = rstData.Fields("columnname").Value.ToString
+				column.DataType = rstData.Fields("datatype").Value.ToString
+				column.Use1000Separator = rstData.Fields("use1000separator").Value.ToString
+				column.Size = rstData.Fields("size").Value.ToString
+				column.Decimals = rstData.Fields("decimals").Value.ToString
+				Columns.Add(column)
+				rstData.MoveNext()
+			Loop
 
 
-		sSQL = String.Format("SELECT * FROM ASRSysUserSettings WHERE Username = '{0}'", gsUsername)
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim userSetting As New UserSetting
-			userSetting.Section = rstData.Fields("Section").Value.ToString
-			userSetting.Key = rstData.Fields("SettingKey").Value.ToString
-			userSetting.Value = rstData.Fields("SettingValue").Value.ToString
-			UserSettings.Add(userSetting)
-			rstData.MoveNext()
-		Loop
+			sSQL = "SELECT ParentID, ChildID FROM ASRSysRelations"
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim relation As New Relation
+				relation.ParentID = rstData.Fields("parentid").Value.ToString
+				relation.ChildID = rstData.Fields("childid").Value.ToString
+				Relations.Add(relation)
+				rstData.MoveNext()
+			Loop
+
+			sSQL = "SELECT * FROM ASRSysModuleSetup"
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim moduleSetting As New ModuleSetting
+				moduleSetting.ModuleKey = rstData.Fields("ModuleKey").Value.ToString
+				moduleSetting.ParameterKey = rstData.Fields("ParameterKey").Value.ToString
+				moduleSetting.ParameterValue = rstData.Fields("ParameterValue").Value.ToString
+				moduleSetting.ParameterType = rstData.Fields("ParameterType").Value.ToString
+				ModuleSettings.Add(moduleSetting)
+				rstData.MoveNext()
+			Loop
 
 
-		sSQL = "SELECT functionID, functionName, returnType FROM ASRSysFunctions"
-		rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim objFunction = New [Function]
-			objFunction.ID = rstData.Fields("functionID").Value.ToString
-			objFunction.Name = rstData.Fields("functionName").Value.ToString
-			objFunction.ReturnType = rstData.Fields("returnType").Value.ToString
-			objFunction.Parameters = New Collection(Of FunctionParameter)()
-			Functions.Add(objFunction)
-			rstData.MoveNext()
-		Loop
-
-		sSQL = "SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex"
-		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim objParameter = New [FunctionParameter]
-			objParameter.ParameterIndex = rstData.Fields("ParameterIndex").Value.ToString
-			objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
-			objParameter.Name = rstData.Fields("ParameterName").Value.ToString
-
-			Dim objFunction = Functions.GetById(rstData.Fields("functionID").Value.ToString)
-
-			objFunction.Parameters.Add(objParameter)
-			rstData.MoveNext()
-		Loop
+			sSQL = String.Format("SELECT * FROM ASRSysUserSettings WHERE Username = '{0}'", gsUsername)
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim userSetting As New UserSetting
+				userSetting.Section = rstData.Fields("Section").Value.ToString
+				userSetting.Key = rstData.Fields("SettingKey").Value.ToString
+				userSetting.Value = rstData.Fields("SettingValue").Value.ToString
+				UserSettings.Add(userSetting)
+				rstData.MoveNext()
+			Loop
 
 
-		sSQL = "SELECT * FROM ASRSysOperators"
-		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim objOperator = New [Operator]
+			sSQL = "SELECT functionID, functionName, returnType FROM ASRSysFunctions"
+			rstData = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim objFunction = New [Function]
+				objFunction.ID = rstData.Fields("functionID").Value.ToString
+				objFunction.Name = rstData.Fields("functionName").Value.ToString
+				objFunction.ReturnType = rstData.Fields("returnType").Value.ToString
+				objFunction.Parameters = New Collection(Of FunctionParameter)()
+				Functions.Add(objFunction)
+				rstData.MoveNext()
+			Loop
 
-			objOperator.ID = rstData.Fields("OperatorID").Value.ToString
-			objOperator.Name = rstData.Fields("Name").Value.ToString
-			objOperator.ReturnType = rstData.Fields("returnType").Value.ToString
-			objOperator.Precedence = rstData.Fields("Precedence").Value.ToString
-			objOperator.OperandCount = rstData.Fields("OperandCount").Value.ToString
-			objOperator.SPName = rstData.Fields("SPName").Value.ToString
-			objOperator.SQLCode = rstData.Fields("SQLCode").Value.ToString
-			objOperator.SQLType = rstData.Fields("SQLType").Value.ToString
-			objOperator.CheckDivideByZero = rstData.Fields("CheckDivideByZero").Value.ToString
-			objOperator.SQLFixedParam1 = rstData.Fields("SQLFixedParam1").Value.ToString
-			objOperator.CastAsFloat = rstData.Fields("CastAsFloat").Value.ToString
-			objOperator.Parameters = New Collection(Of OperatorParameter)()
-			Operators.Add(objOperator)
-			rstData.MoveNext()
-		Loop
+			sSQL = "SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex"
+			rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim objParameter = New [FunctionParameter]
+				objParameter.ParameterIndex = rstData.Fields("ParameterIndex").Value.ToString
+				objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
+				objParameter.Name = rstData.Fields("ParameterName").Value.ToString
 
-		sSQL = "SELECT * FROM ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex"
-		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim objParameter = New OperatorParameter
-			objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
-			Operators.GetById(rstData.Fields("operatorID").Value.ToString).Parameters.Add(objParameter)
-			rstData.MoveNext()
-		Loop
+				Dim objFunction = Functions.GetById(rstData.Fields("functionID").Value.ToString)
 
-		sSQL = "EXEC sp_ASRIntGetSystemPermissions"
-		rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
-			Dim objItem = New Permission
-			objItem.Key = rstData.Fields("key").Value.ToString
-			objItem.IsPermitted = rstData.Fields("permitted").Value.ToString
-			Permissions.Add(objItem)
-			rstData.MoveNext()
-		Loop
+				objFunction.Parameters.Add(objParameter)
+				rstData.MoveNext()
+			Loop
 
 
+			sSQL = "SELECT * FROM ASRSysOperators"
+			rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim objOperator = New [Operator]
 
-	Catch ex As Exception
+				objOperator.ID = rstData.Fields("OperatorID").Value.ToString
+				objOperator.Name = rstData.Fields("Name").Value.ToString
+				objOperator.ReturnType = rstData.Fields("returnType").Value.ToString
+				objOperator.Precedence = rstData.Fields("Precedence").Value.ToString
+				objOperator.OperandCount = rstData.Fields("OperandCount").Value.ToString
+				objOperator.SPName = rstData.Fields("SPName").Value.ToString
+				objOperator.SQLCode = rstData.Fields("SQLCode").Value.ToString
+				objOperator.SQLType = rstData.Fields("SQLType").Value.ToString
+				objOperator.CheckDivideByZero = rstData.Fields("CheckDivideByZero").Value.ToString
+				objOperator.SQLFixedParam1 = rstData.Fields("SQLFixedParam1").Value.ToString
+				objOperator.CastAsFloat = rstData.Fields("CastAsFloat").Value.ToString
+				objOperator.Parameters = New Collection(Of OperatorParameter)()
+				Operators.Add(objOperator)
+				rstData.MoveNext()
+			Loop
+
+			sSQL = "SELECT * FROM ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex"
+			rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim objParameter = New OperatorParameter
+				objParameter.ParameterType = rstData.Fields("ParameterType").Value.ToString
+				Operators.GetById(rstData.Fields("operatorID").Value.ToString).Parameters.Add(objParameter)
+				rstData.MoveNext()
+			Loop
+
+			sSQL = "EXEC sp_ASRIntGetSystemPermissions"
+			rstData = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			Do While Not rstData.EOF
+				Dim objItem = New Permission
+				objItem.Key = rstData.Fields("key").Value.ToString
+				objItem.IsPermitted = rstData.Fields("permitted").Value.ToString
+				Permissions.Add(objItem)
+				rstData.MoveNext()
+			Loop
+
+
+
+		Catch ex As Exception
 			Throw
 
-	End Try
+		End Try
 
-End Sub
+	End Sub
 
 
 End Class
