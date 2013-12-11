@@ -257,6 +257,7 @@
     <Compile Include="modUtilityAccess.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NavLinksViewModel.vb" />
     <Compile Include="OLE2.vb" />
     <Compile Include="SessionInfo.vb" />
     <Compile Include="Structures\CalendarLegend.vb" />

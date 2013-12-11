@@ -2,7 +2,7 @@
 	Response.CacheControl = "no-cache"
 	Response.AddHeader("Pragma", "no-cache")
 	Response.Expires = -1%>
-<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.NavLinksViewModel)" %>
+<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of HR.Intranet.Server.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
