@@ -95,14 +95,14 @@ ErrorTrap:
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
+		Dim fOK As Boolean = True
 		Dim fFound As Boolean
 		Dim fSrchColumnOK As Boolean
 		Dim fRtnColumnOK As Boolean
 		Dim iLoop As Short
 		Dim lngSrchTableID As Integer
 		Dim lngRtnTableID As Integer
-		Dim sCode As String
+		Dim sCode As String = ""
 		Dim sSQL As String
 		Dim sRtnColumnCode As String
 		Dim sSrchColumnCode As String
@@ -129,13 +129,6 @@ ErrorTrap:
 		Dim sCConvExRateCol As String
 		Dim sCConvCurrDescCol As String
 		Dim sCConvDecCol As String
-
-		fOK = True
-		sCode = ""
-
-		'UPGRADE_NOTE: clsGeneral was upgraded to clsGeneral_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-		Dim clsGeneral_Renamed As clsGeneral
-		clsGeneral_Renamed = New clsGeneral
 
 		' Get the first parameter's runtime code if required.
 		If mcolParameters.Count() >= 1 Then
@@ -173,7 +166,7 @@ ErrorTrap:
 					sCode = "IsNull(ltrim(str(" & sParamCode1 & ", 255, " & sParamCode2 & ")),'')"
 
 				Case 4 ' If... Then... Else...
-					sCode = "CASE WHEN (" & sParamCode1 & " = 1) THEN " & sParamCode2 & " ELSE " & sParamCode3 & " END"
+					sCode = String.Format("CASE WHEN ({0} = 1) THEN {1} ELSE {2} END", sParamCode1, sParamCode2, sParamCode3)
 
 				Case 5 ' Remove leading and trailing spaces
 					sCode = "ltrim(rtrim(" & sParamCode1 & "))"
@@ -501,10 +494,6 @@ ErrorTrap:
 					sCode = "dateadd(day, " & sParamCode2 & ", " & sParamCode1 & ")"
 
 				Case 45	' Days Between 2 Dates
-
-					'MH20010220 Fault 1850
-					'This function needs to be inclusive of both start and end
-					'sCode = "datediff(dd, " & sParamCode1 & ", " & sParamCode2 & ")"
 					sCode = "datediff(dd, " & sParamCode1 & ", " & sParamCode2 & ")+1"
 
 				Case 46	'Working days between two dates
@@ -540,21 +529,11 @@ ErrorTrap:
 					sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "MM/dd/yyyy") & "')" & "))"
 
 				Case 48	' Round Up to nearest whole number.
-					' JPD20030116 Fault 4910
-					'sCode = "ceiling(" & sParamCode1 & ")"
 					sCode = "CASE WHEN (" & sParamCode1 & ") < 0 THEN floor(" & sParamCode1 & ")" & " ELSE ceiling(" & sParamCode1 & ") END"
 
 				Case 49	' Round to nearest number.
-					' JPD20020415 Fault 3701
-					' Changed 'division by 2' to 'division by 2.0' to avoid SQL casting the result to an integer value.
 					strRemainString = "(" & sParamCode1 & ") - ((floor(" & sParamCode1 & "/" & sParamCode2 & "))*" & sParamCode2 & ")"
-					' JPD20030116 Fault 4910
-					'sCode = "CASE WHEN (" + strRemainString + ")<((" + sParamCode2 + ")/2.0)" & _
-					'" THEN (" + sParamCode1 + ")-(" + strRemainString + ")" & _
-					'" ELSE (" + sParamCode1 + ")+(" + sParamCode2 + ")-(" + strRemainString + ") END"
 					sCode = "CASE WHEN (((" & sParamCode1 & ")<0) AND ((" & strRemainString & ")<=((" & sParamCode2 & ")/2.0)))" & " OR (((" & sParamCode1 & ")>=0) AND ((" & strRemainString & ")<((" & sParamCode2 & ")/2.0)))" & " THEN (" & sParamCode1 & ")-(" & strRemainString & ")" & " ELSE (" & sParamCode1 & ")+(" & sParamCode2 & ")-(" & strRemainString & ") END"
-
-					'MH20100629
 					sCode = "CASE WHEN (" & sParamCode2 & " > 0) THEN " & sCode & " ELSE 0 END"
 
 					'TM20011022 Currency Implementation
@@ -615,13 +594,13 @@ ErrorTrap:
 
 					' Last field change date
 				Case 52
-					objTableView = gcoTablePrivileges.FindTableID(CInt(clsGeneral_Renamed.GetColumnTable(CInt(sParamCode1))))
+					objTableView = gcoTablePrivileges.FindTableID(Columns.GetById(CInt(sParamCode1)).TableID)
 					sCode = "(SELECT Top 1 DateTimeStamp FROM ASRSysAuditTrail WHERE ColumnID = " & sParamCode1
 					sCode = sCode & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID ORDER BY DateTimeStamp DESC)"
 
 					' Field changed between two dates
 				Case 53
-					objTableView = gcoTablePrivileges.FindTableID(CInt(clsGeneral_Renamed.GetColumnTable(CInt(sParamCode1))))
+					objTableView = gcoTablePrivileges.FindTableID(Columns.GetById(CInt(sParamCode1)).TableID)
 					sCode = " case when " & " Exists(Select DateTimeStamp From ASRSysAuditTrail Where ColumnID = " & sParamCode1 & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID" & " And DateTimeStamp >= " & sParamCode2 & " And DateTimeStamp <= " & sParamCode3 & " + 1)" & " then 1 else 0 end"
 
 					'Whole years between two dates
@@ -780,20 +759,17 @@ ErrorTrap:
 		If fOK Then
 			' We need to convert date values to varchars in the format 'mm/dd/yyyy'.
 			If miReturnType = ExpressionValueTypes.giEXPRVALUE_DATE Then
-				sCode = "convert(" & vbNewLine & "datetime, " & vbNewLine & "convert(" & vbNewLine & "varchar(20), " & vbNewLine & sCode & "," & vbNewLine & "101)" & vbNewLine & ")"
+				sCode = String.Format("CONVERT(datetime, convert(varchar(20),{0}, 101))", sCode)
 			End If
 		End If
 
 TidyUpAndExit:
 		If fOK Then
-			' JDM - 20/03/02 - Fault 3667 - Needs some brackets around these functions
-			'psRuntimeCode = sCode
-			psRuntimeCode = "(" & sCode & ")"
+			psRuntimeCode = String.Format("({0})", sCode)
 		Else
 			psRuntimeCode = ""
 		End If
-		RuntimeCode = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False
