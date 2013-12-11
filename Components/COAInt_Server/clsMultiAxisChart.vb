@@ -190,7 +190,8 @@ Public Class clsMultiAxisChart
 					Else
 						pstrVerticalIDColumn = Trim(.Fields("VERTICAL_ID").Value)
 						pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
-						If GetDataType(plngColumnID) = 11 Then ' Date column, reverse the data
+
+						If mclsGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 							pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 						End If
 						pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'") & " THEN " & CStr(piCount)
@@ -264,7 +265,8 @@ SQLSelectVerticalID_ERROR:
 				Else
 					pstrHorizontalIDColumn = Trim(.Fields("HORIZONTAL_ID").Value)
 					pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
-					If GetDataType(lngColumnID) = 11 Then	' Date column, reverse the data
+
+					If mclsGeneral.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
 						pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 					End If
 					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'") & " THEN " & CStr(piCount)
@@ -284,9 +286,7 @@ SQLSelectVerticalID_ERROR:
 		' Replace the marker (<^>) in 'mstrSQL' with the case when statements...
 		mstrSQL = Replace(mstrSQL, "<^>", pstrCaseStatements)
 
-		SQLSelectHorizontalID = True
-
-		Exit Function
+		Return True
 
 SQLSelectHorizontalID_ERROR:
 		SQLSelectHorizontalID = False
@@ -1053,25 +1053,6 @@ GenerateSQLWhere_ERROR:
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
 	End Sub
-
-
-	Private Function GetDataType(ByRef lColumnID As Integer) As Integer
-
-		'Needed to be created as the one in datgeneral requires tableid
-
-		Dim sSQL As String
-		Dim rsTemp As ADODB.Recordset
-
-		sSQL = "Select DataType From ASRSysColumns Where ColumnID = " & lColumnID
-		rsTemp = New ADODB.Recordset
-		rsTemp.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
-		GetDataType = rsTemp.Fields(0).Value
-
-		rsTemp.Close()
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-
-	End Function
 
 	Private Function ReverseDateTextField(ByRef pDateValue As String) As String
 
