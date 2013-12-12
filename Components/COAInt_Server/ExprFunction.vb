@@ -158,13 +158,13 @@ ErrorTrap:
 		If fOK Then
 			Select Case mlngFunctionID
 				Case 1 ' System date
-					sCode = "getdate()"
+					sCode = "GETDATE()"
 
 				Case 2 ' Convert to uppercase
-					sCode = "upper(" & sParamCode1 & ")"
+					sCode = String.Format("UPPER({0})", sParamCode1)
 
 				Case 3 ' Convert numeric to string
-					sCode = "IsNull(ltrim(str(" & sParamCode1 & ", 255, " & sParamCode2 & ")),'')"
+					sCode = String.Format("ISNULL(LTRIM(STR({0}, 255, {1})),'')", sParamCode1, sParamCode2)
 
 				Case 4 ' If... Then... Else...
 					sCode = String.Format("CASE WHEN ({0} = 1) THEN {1} ELSE {2} END", sParamCode1, sParamCode2, sParamCode3)
@@ -179,13 +179,13 @@ ErrorTrap:
 					sCode = "len(" & sParamCode1 & ")"
 
 				Case 8 ' Convert to lowercase
-					sCode = "lower(" & sParamCode1 & ")"
+					sCode = String.Format("LOWER({0})", sParamCode1)
 
 				Case 9 ' Maximum
-					sCode = "CASE WHEN (" & sParamCode1 & " > " & sParamCode2 & ") THEN " & sParamCode1 & " ELSE " & sParamCode2 & " END"
+					sCode = String.Format("CASE WHEN ({0} > {1}) THEN {0} ELSE {1} END", sParamCode1, sParamCode2)
 
 				Case 10	' Minimum
-					sCode = "CASE WHEN (" & sParamCode1 & " < " & sParamCode2 & ") THEN " & sParamCode1 & " ELSE " & sParamCode2 & " END"
+					sCode = String.Format("CASE WHEN ({0} < {1}) THEN {0} ELSE {1} END", sParamCode1, sParamCode2)
 
 				Case 11	' Search for character string.
 					sCode = "charindex(" & sParamCode2 & ", " & sParamCode1 & ")"
@@ -223,26 +223,22 @@ ErrorTrap:
 					sCode = sCode & " THEN 1 ELSE 0 END)"
 
 				Case 17	' Current user
-					sCode = "system_user"
+					sCode = "SYSTEM_USER"
 
 				Case 18	' Whole Years Until Current Date
-					sCode = "datediff(year," & sParamCode1 & ", getdate())" & " - case" & "       when datepart(month," & sParamCode1 & ") > datepart(month, getdate()) then 1" & "       when (datepart(month," & sParamCode1 & ") = datepart(month, getdate())) " & "           and (datepart(day," & sParamCode1 & ") > datepart(day, getdate())) then 1" & "       else 0" & "   end"
+					sCode = String.Format("datediff(year,{0}, getdate()) - case when datepart(month,{0}) > datepart(month, getdate()) then 1 when (datepart(month,{0}) = datepart(month, getdate())) and (datepart(day,{0}) > datepart(day, getdate())) then 1 else 0 end", sParamCode1)
 
 				Case 19	' Remaining Months Since Whole Years
-					sCode = "datepart(month, getdate())" & " - datepart(month, " & sParamCode1 & ")" & " - case" & "       when datepart(day," & sParamCode1 & ") > datepart(day, getdate()) then 1" & "       else 0" & "   end" & " + case" & "       when (datepart(month, getdate())" & "           - datepart(month," & sParamCode1 & ")" & "           - case" & "               when datepart(day," & sParamCode1 & ") > datepart(day, getdate()) then 1" & "               else 0" & "             end) < 0 then 12" & "       else 0" & "   end"
+					sCode = String.Format("datepart(month, getdate()) - datepart(month, {0}) - case when datepart(day,{0}) > datepart(day, getdate()) then 1 else 0 end + case when (datepart(month, getdate()) - datepart(month,{0}) - case when datepart(day,{0}) > datepart(day, getdate()) then 1 else 0 end) < 0 then 12 else 0 end", sParamCode1)
 
 				Case 20	' Capitalise Initials
 					sCode = "(dbo.udf_ASRFn_InitialsFromForenames(" & sParamCode1 & "))"
 
 				Case 21	' First Name from Forenames
-					sCode = "case" & "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & "))-1)" & "    else ltrim(" & sParamCode1 & ")" & "end"
+					sCode = "case when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & "))-1)" & "    else ltrim(" & sParamCode1 & ")" & "end"
 
 				Case 22	' Weekdays From Start and End Dates
-
-					'MH200600802 Fault 11395
-					'"    when datediff(day, " & sParamCode1 & ", " & sParamCode2 & ") <= 0 then 0" & _
-					'
-					sCode = " case" & "    when datediff(day, " & sParamCode1 & ", " & sParamCode2 & ") < 0 then 0" & "    else datediff(day, " & sParamCode1 & ", " & sParamCode2 & " + 1)" & "        - (2 * (datediff(day, " & sParamCode1 & " - (datepart(dw, " & sParamCode1 & ") - 1), " & "                              " & sParamCode2 & " - (datepart(dw, " & sParamCode2 & ") - 1)) / 7))" & "        - case" & "              when datepart(dw, " & sParamCode1 & ") = 1 then 1" & "              else 0" & "          end" & "        - case" & "              when datepart(dw, " & sParamCode2 & ") = 7 then 1" & "              else 0" & "          end" & " end"
+					sCode = String.Format(" case when datediff(day, {0}, {1}) < 0 then 0 else datediff(day, {0}, {1} + 1) - (2 * (datediff(day, {0} - (datepart(dw, {0}) - 1), {1} - (datepart(dw, {1}) - 1)) / 7)) - case when datepart(dw, {0}) = 1 then 1 else 0 end - case when datepart(dw, {1}) = 7 then 1 else 0 end end", sParamCode1, sParamCode2)
 
 				Case 23	' Add months to date
 					sCode = "dateadd(month, " & sParamCode2 & ", " & sParamCode1 & ")"
@@ -251,16 +247,10 @@ ErrorTrap:
 					sCode = "dateadd(year, " & sParamCode2 & ", " & sParamCode1 & ")"
 
 				Case 25	' Convert character to numeric.
-					'JPD 20041213 Fault 9568
-					'sCode = _
-					'" case" & _
-					'"    when isnumeric(" & sParamCode1 & ") = 1 then convert(float, " & sParamCode1 & ")" & _
-					'"    else 0" & _
-					'" end"
-					sCode = " case" & "    when isnumeric(" & sParamCode1 & ") = 1 then convert(float, convert(money, " & sParamCode1 & "))" & "    else 0" & " end"
+					sCode = " case when isnumeric(" & sParamCode1 & ") = 1 then convert(float, convert(money, " & sParamCode1 & "))  else 0 end"
 
 				Case 26	' Whole Months between 2 Dates.
-					sCode = " case" & "    when " & sParamCode1 & " >= " & sParamCode2 & " then 0" & "    else datediff(month, " & sParamCode1 & ", " & sParamCode2 & ")" & "        - case" & "              when datepart(day, " & sParamCode2 & ") < datepart(day, " & sParamCode1 & ") then 1" & "              else 0" & "          end" & " end"
+					sCode = " case when " & sParamCode1 & " >= " & sParamCode2 & " then 0 else datediff(month, " & sParamCode1 & ", " & sParamCode2 & ") - case when datepart(day, " & sParamCode2 & ") < datepart(day, " & sParamCode1 & ") then 1 else 0 end end"
 
 				Case 27	' Parentheses
 					sCode = sParamCode1
@@ -288,36 +278,28 @@ ErrorTrap:
 					sCode = "(dbo.udf_ASRFn_AbsenceDuration(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & sParamCode4 & "," & strTempTableName & "." & strTempTableID & "))"
 
 				Case 31	' Round down to nearest whole number.
-					sCode = "round(" & sParamCode1 & ", 0, 1)"
+					sCode = String.Format("ROUND({0}, 0, 1)", sParamCode1)
 
 				Case 32	' Year of date.
-					sCode = "datepart(year, " & sParamCode1 & ")"
+					sCode = String.Format("DATEPART(year, {0})", sParamCode1)
 
 				Case 33	' Month of date.
-					sCode = "datepart(month, " & sParamCode1 & ")"
+					sCode = String.Format("DATEPART(month, {0})", sParamCode1)
 
 				Case 34	' Day of date.
-					sCode = "datepart(day, " & sParamCode1 & ")"
+					sCode = String.Format("DATEPART(day, {0})", sParamCode1)
 
 				Case 35	' Nice Date
 					sCode = "datename(day, " & sParamCode1 & ") + ' ' + " & "datename(month, " & sParamCode1 & ") + ' ' + " & "datename(year, " & sParamCode1 & ")"
 
 				Case 36	' Nice Time
-					'sCode = _
-					'"convert(varchar(2), datepart(hour, convert(datetime, " & sParamCode1 & ")) % 12) + ':' " & _
-					'"    + right('00' + datename(minute, convert(datetime, " & sParamCode1 & ")),2)" & _
-					'"    + case" & _
-					'"          when datepart(hour, convert(datetime, " & sParamCode1 & ")) > 11 then ' pm'" & _
-					'"          else ' am'" & _
-					'"      end"
-					' JPD20020618 Fault 3999
-					sCode = "case when len(ltrim(rtrim(" & sParamCode1 & "))) = 0 then ''" & " else case when isdate(" & sParamCode1 & ") = 0 then '***'" & " else (convert(varchar(2),((datepart(hour,convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) + 11) % 12) + 1)" & " + ':' + right('00' + datename(minute, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)),2)" & " + case when datepart(hour, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) > 11 then ' pm'" & " else ' am' end) end end"
+					sCode = "case when len(ltrim(rtrim(" & sParamCode1 & "))) = 0 then '' else case when isdate(" & sParamCode1 & ") = 0 then '***'" & " else (convert(varchar(2),((datepart(hour,convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) + 11) % 12) + 1)" & " + ':' + right('00' + datename(minute, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)),2)" & " + case when datepart(hour, convert(datetime, case when isdate(" & sParamCode1 & ") = 1 then " & sParamCode1 & " else '1:1' end)) > 11 then ' pm'" & " else ' am' end) end end"
 
 				Case 37	' Round Date to Start of nearest month
-					sCode = " case" & "     when datediff(day, (" & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1), " & sParamCode1 & ")" & "         <= datediff(day, " & sParamCode1 & ", (dateadd(month, 1, " & sParamCode1 & ") - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1))" & "         then " & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1" & "     else dateadd(month, 1, " & sParamCode1 & ")" & "         - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1" & " end"
+					sCode = " case when datediff(day, (" & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1), " & sParamCode1 & ")" & "         <= datediff(day, " & sParamCode1 & ", (dateadd(month, 1, " & sParamCode1 & ") - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1))" & "         then " & sParamCode1 & " - datepart(day, " & sParamCode1 & ") + 1" & "     else dateadd(month, 1, " & sParamCode1 & ")" & "         - datepart(day, dateadd(month, 1, " & sParamCode1 & ")) + 1" & " end"
 
 				Case 38	' Is Between
-					sCode = " case" & "     when (" & sParamCode1 & " >= " & sParamCode2 & ")" & "         and (" & sParamCode1 & " <= " & sParamCode3 & ") then 1" & "     else 0" & " end"
+					sCode = " case when (" & sParamCode1 & " >= " & sParamCode2 & ") AND (" & sParamCode1 & " <= " & sParamCode3 & ") then 1 else 0 end"
 
 				Case 39	' Service Years
 					sCode = "   datepart(year, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end)" & " - datepart(year, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & " - case" & "       when datepart(month, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          > datepart(month, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end) then 1" & "      when (datepart(month, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          = datepart(month, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end))" & "       and (datepart(day, case when " & sParamCode1 & " is null then getdate() else " & sParamCode1 & " end)" & "          > datepart(day, case when " & sParamCode2 & " is null then getdate() else " & sParamCode2 & " end)) then 1" & "      else 0" & "  end"
@@ -406,10 +388,10 @@ ErrorTrap:
 										sRtnColumnCode = "CASE"
 									End If
 
-									sRtnColumnCode = sRtnColumnCode & " WHEN NOT " & "lookup_" & iLoop & "." & sRtnColumnName & " IS NULL THEN " & "lookup_" & iLoop & "." & sRtnColumnName
+									sRtnColumnCode = sRtnColumnCode & " WHEN NOT lookup_" & iLoop & "." & sRtnColumnName & " IS NULL THEN lookup_" & iLoop & "." & sRtnColumnName
 								Next iLoop
 
-								sRtnColumnCode = sRtnColumnCode & " ELSE NULL" & " END"
+								sRtnColumnCode = sRtnColumnCode & " ELSE NULL END"
 							End If
 						End If
 
