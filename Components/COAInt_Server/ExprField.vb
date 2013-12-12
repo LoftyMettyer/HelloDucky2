@@ -562,15 +562,7 @@ ErrorTrap:
 			Else
 
 				' Check if the table is a child or parent of the expression's base table.
-				'fParentField = datGeneral.IsAParentOf(mlngTableID, mobjBaseComponent.ParentExpression.BaseTableID)
-				sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mlngTableID)) & " AND childID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID))
-				rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-				With rsInfo
-					fParentField = Not (.EOF And .BOF)
-					.Close()
-				End With
-				'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsInfo = Nothing
+				fParentField = Relations.Exists(Function(n) n.ParentID = mlngTableID And n.ChildID = mobjBaseComponent.ParentExpression.BaseTableID)
 
 				If fParentField Then
 					' The field is from a parent table of the expression's base table.
@@ -1142,7 +1134,6 @@ ErrorTrap:
 
 		End If
 
-TidyUpAndExit:
 		If fOK Then
 			psRuntimeCode = IIf(pfUDFCode, mstrUDFRuntimeCode, sCode)
 		Else
@@ -1151,10 +1142,6 @@ TidyUpAndExit:
 
 		GenerateCode = fOK
 		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
 
 	End Function
 
