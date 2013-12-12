@@ -95,14 +95,12 @@ ErrorTrap:
 	End Property
 
 
-
-	Public Property ComponentType() As Short
+	Public Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type property.
-			ComponentType = miComponentType
-
+			Return miComponentType
 		End Get
-		Set(ByVal Value As Short)
+
+		Set(ByVal Value As ExpressionComponentTypes)
 			' Set the component type property.
 			If miComponentType <> Value Then
 				miComponentType = Value
@@ -156,11 +154,11 @@ ErrorTrap:
 	End Property
 
 
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
 			' Return the component's return type.
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ReturnType = mvComponent.ReturnType
+			Return mvComponent.ReturnType
 
 		End Get
 	End Property

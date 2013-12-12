@@ -135,23 +135,21 @@ ErrorTrap:
 		
 	End Function
 	
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_CALCULATION
-			
+			Return ExpressionComponentTypes.giCOMPONENT_CALCULATION
 		End Get
 	End Property
 	
 	
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
 			' Return the calculation's return type.
 			Dim objCalc As clsExprExpression
-			
+
 			' Instantiate the calculation expression.
 			objCalc = New clsExprExpression
-			
+
 			With objCalc
 				' Construct the calculation expression.
 				.ExpressionID = mlngCalculationID
@@ -159,12 +157,12 @@ ErrorTrap:
 				.ValidateExpression(False)
 				miReturnType = .ReturnType
 			End With
-			
+
 			'UPGRADE_NOTE: Object objCalc may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objCalc = Nothing
-			
-			ReturnType = miReturnType
-			
+
+			Return miReturnType
+
 		End Get
 	End Property
 	

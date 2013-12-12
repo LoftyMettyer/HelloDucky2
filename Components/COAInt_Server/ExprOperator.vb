@@ -35,19 +35,15 @@ Friend Class clsExprOperator
 		End Get
 	End Property
 
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the operator's return type.
-			ReturnType = miReturnType
-
+			Return miReturnType
 		End Get
 	End Property
 
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the Operator component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR
-
+			Return ExpressionComponentTypes.giCOMPONENT_OPERATOR
 		End Get
 	End Property
 

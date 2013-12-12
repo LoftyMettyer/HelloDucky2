@@ -299,40 +299,37 @@ ErrorTrap:
 		End Set
 	End Property
 	
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the Prompted Value component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
-			
+			Return ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
 		End Get
 	End Property
-	
-	
-	Public Property ReturnType() As Short
+
+	Public Property ReturnType() As ExpressionValueTypes
 		Get
 			' Return the return type property.
 			On Error GoTo ErrorTrap
-			
+
 			Dim fOK As Boolean
 			Dim iType As ExpressionValueTypes
 			Dim sSQL As String
 			Dim rsColumn As ADODB.Recordset
-			
+
 			fOK = True
-			
+
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					iType = ExpressionValueTypes.giEXPRVALUE_DATE
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 					' Get the lookup column's return type.
 					sSQL = "SELECT dataType" & " FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(mlngLookupColumnID))
@@ -364,29 +361,29 @@ ErrorTrap:
 					End With
 					'UPGRADE_NOTE: Object rsColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsColumn = Nothing
-					
+
 				Case Else
 					fOK = False
 			End Select
-			
-TidyUpAndExit: 
+
+TidyUpAndExit:
 			If fOK Then
 				ReturnType = iType
 			Else
 				ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 			End If
 			Exit Property
-			
-ErrorTrap: 
+
+ErrorTrap:
 			fOK = False
 			Resume TidyUpAndExit
-			
+
 		End Get
 
-		Set(ByVal Value As Short)
+		Set(ByVal Value As ExpressionValueTypes)
 			' Set the return type.
 			miType = Value
-			
+
 		End Set
 	End Property
 		

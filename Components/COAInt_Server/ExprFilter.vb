@@ -9,7 +9,7 @@ Friend Class clsExprFilter
 	' Component definition variables.
 	Private mlngFilterID As Integer
 	Private msFilterName As String
-	Private miReturnType As Short
+	Private miReturnType As ExpressionValueTypes
 
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
@@ -42,7 +42,6 @@ Friend Class clsExprFilter
 		objFilter = Nothing
 
 	End Function
-
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
 		'Dim Printer As New Printing.PrinterSettings
@@ -90,16 +89,13 @@ ErrorTrap:
 
 	End Function
 
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_FILTER
-
+			Return ExpressionComponentTypes.giCOMPONENT_FILTER
 		End Get
 	End Property
 
-
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
 			' Return the filter's return type.
 			Dim objFilter As clsExprExpression
@@ -118,7 +114,7 @@ ErrorTrap:
 			'UPGRADE_NOTE: Object objFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objFilter = Nothing
 
-			ReturnType = miReturnType
+			Return miReturnType
 
 		End Get
 	End Property

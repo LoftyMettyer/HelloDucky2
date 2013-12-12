@@ -166,11 +166,9 @@ ErrorTrap:
 		
 	End Function
 	
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_VALUE
-			
+			Return ExpressionComponentTypes.giCOMPONENT_VALUE
 		End Get
 	End Property
 	
@@ -259,16 +257,14 @@ ErrorTrap:
 	End Property
 	
 	
-	Public Property ReturnType() As Short
+	Public Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the value type property.
-			ReturnType = miType
-			
+			Return miType
 		End Get
-		Set(ByVal Value As Short)
+		Set(ByVal Value As ExpressionValueTypes)
 			' Set the value type property.
 			miType = Value
-			
+
 		End Set
 	End Property
 	

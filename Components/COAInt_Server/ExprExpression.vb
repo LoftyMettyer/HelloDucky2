@@ -11,7 +11,7 @@ Friend Class clsExprExpression
 	Private mlngExpressionID As Integer
 	Private msExpressionName As String
 	Private mlngBaseTableID As Integer
-	Private miReturnType As Short
+	Private miReturnType As ExpressionValueTypes
 	Private miExpressionType As Short
 	Private mlngParentComponentID As Integer
 	Private msOwner As String
@@ -73,16 +73,12 @@ Friend Class clsExprExpression
 		End Set
 	End Property
 
-	Public Property ReturnType() As Short
+	Public Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the expression's return type.
-			ReturnType = miReturnType
-
+			Return miReturnType
 		End Get
-		Set(ByVal Value As Short)
-			' Set the expression's return type.
+		Set(ByVal Value As ExpressionValueTypes)
 			miReturnType = Value
-
 		End Set
 	End Property
 

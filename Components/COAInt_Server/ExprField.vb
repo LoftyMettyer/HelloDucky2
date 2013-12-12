@@ -100,7 +100,6 @@ ErrorTrap:
 
 	End Function
 
-
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
 		' When editting a component we actually copy the component first
@@ -128,15 +127,11 @@ ErrorTrap:
 
 	End Function
 
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
-
+			Return ExpressionComponentTypes.giCOMPONENT_FIELD
 		End Get
 	End Property
-
-
 
 	Public Property SelectionFilterID() As Integer
 		Get
@@ -269,10 +264,8 @@ ErrorTrap:
 		End Get
 	End Property
 
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the calculation's return type.
-			On Error GoTo ErrorTrap
 
 			Dim fOK As Boolean
 			Dim iType As ExpressionValueTypes
@@ -313,17 +306,11 @@ ErrorTrap:
 				End If
 			End If
 
-TidyUpAndExit:
 			If fOK Then
-				ReturnType = iType
+				Return iType
 			Else
-				ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+				Return ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 			End If
-			Exit Property
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
 
 		End Get
 	End Property
@@ -341,7 +328,6 @@ ErrorTrap:
 		End Set
 	End Property
 
-
 	Public Property SelectionType() As Short
 		Get
 			' Return the selection type.
@@ -352,7 +338,6 @@ ErrorTrap:
 			miSelectionType = Value
 		End Set
 	End Property
-
 
 	Public Property SelectionLine() As Integer
 		Get
@@ -367,7 +352,6 @@ ErrorTrap:
 		End Set
 	End Property
 
-
 	Public Property FieldPassType() As Short
 		Get
 			' Return the field pass type property.
@@ -380,7 +364,6 @@ ErrorTrap:
 
 		End Set
 	End Property
-
 
 	Public Property ColumnID() As Integer
 		Get

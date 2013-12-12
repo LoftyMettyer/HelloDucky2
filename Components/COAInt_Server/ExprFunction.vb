@@ -4,7 +4,7 @@ Option Explicit On
 Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
-Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB
+
 Friend Class clsExprFunction
 
 	' Component definition variables.
@@ -778,11 +778,6 @@ ErrorTrap:
 
 	End Function
 
-
-
-
-
-
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
@@ -825,8 +820,6 @@ ErrorTrap:
 
 	End Function
 
-
-
 	Public ReadOnly Property BadComponent() As clsExprComponent
 		Get
 			' Return the component last caused the function to fail its validity check.
@@ -835,23 +828,17 @@ ErrorTrap:
 		End Get
 	End Property
 
-	Public ReadOnly Property ReturnType() As Short
+	Public ReadOnly Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the function's return type.
-			ReturnType = miReturnType
-
+			Return miReturnType
 		End Get
 	End Property
 
-	Public ReadOnly Property ComponentType() As Short
+	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
-			' Return the 'function' component type.
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_FUNCTION
-
+			Return ExpressionComponentTypes.giCOMPONENT_FUNCTION
 		End Get
 	End Property
-
-
 
 	Public Property BaseComponent() As clsExprComponent
 		Get
