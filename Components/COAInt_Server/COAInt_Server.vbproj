@@ -123,6 +123,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
+    <Compile Include="Enums\RelationType.vb" />
     <Compile Include="Metadata\Link.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />
@@ -265,6 +266,7 @@
     <Compile Include="Structures\ReportColumn.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\ReportSortItem.vb" />
+    <Compile Include="Structures\TableRelation.vb" />
     <Compile Include="Structures\TableScreen.vb" />
     <Compile Include="Metadata\TablePrivilege.vb">
       <SubType>Code</SubType>

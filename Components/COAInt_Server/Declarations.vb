@@ -1,9 +1,8 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Metadata
-Imports System.Collections.ObjectModel
 
 Module Declarations
 
@@ -24,7 +23,7 @@ Module Declarations
 
 	Public Tables As ICollection(Of Table)
 	Public Columns As ICollection(Of Column)
-	Public Relations As ICollection(Of Relation)
+	Public Relations As List(Of Relation)
 	Public ModuleSettings As ICollection(Of ModuleSetting)
 	Public UserSettings As ICollection(Of UserSetting)
 	Public Functions As ICollection(Of Metadata.Function)

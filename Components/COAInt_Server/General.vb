@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Globalization
 Imports ADODB
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
@@ -693,7 +694,7 @@ ErrorTrap:
 
 		Tables = New Collection(Of Table)
 		Columns = New Collection(Of Column)
-		Relations = New Collection(Of Relation)
+		Relations = New List(Of Relation)
 		ModuleSettings = New Collection(Of ModuleSetting)
 		UserSettings = New Collection(Of UserSetting)
 		Functions = New Collection(Of Metadata.Function)

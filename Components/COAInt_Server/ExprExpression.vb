@@ -2,8 +2,10 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprExpression
 
@@ -876,150 +878,145 @@ ErrorTrap:
 		' Apply permissions to the filter code only if the 'pfApplyPermissions' parameter is TRUE.
 		' The filter code is to be used to validate the expression if the 'pfValidating' parameter is TRUE.
 		' This is used to suppress prompting the user for promted values, when we are only validating the expression.
-		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
 		Dim iLoop1 As Short
-		Dim iLoop2 As Short
-		Dim iNextIndex As Short
-		Dim sSQL As String
 		Dim sWhereCode As String
 		Dim sBaseTableSource As String
 		Dim sRuntimeFilterSQL As String
 		Dim alngSourceTables(,) As Integer
-		Dim avRelatedTables(,) As Object
-		Dim rsInfo As Recordset
 		Dim objTableView As TablePrivilege
+		Dim listRelatedTables As New List(Of TableRelation)
+		Dim objTableRelation As TableRelation
 
-		' Check if the 'validating' parameter is set.
-		' If not, set it to FALSE.
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		If IsNothing(pfValidating) Then
-			pfValidating = False
-		End If
+		Try
 
-		' Construct the expression from the database definition.
-		fOK = ConstructExpression()
-
-		If fOK Then
-			sBaseTableSource = msBaseTableName
-			If pfApplyPermissions Then
-				' Get the 'realSource' of the table.
-				objTableView = gcoTablePrivileges.Item(msBaseTableName)
-				If objTableView.TableType = TableTypes.tabChild Then
-					sBaseTableSource = objTableView.RealSource
-				End If
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objTableView = Nothing
+			' Check if the 'validating' parameter is set.
+			' If not, set it to FALSE.
+			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
+			If IsNothing(pfValidating) Then
+				pfValidating = False
 			End If
 
-			sRuntimeFilterSQL = "SELECT DISTINCT " & sBaseTableSource & ".id FROM " & sBaseTableSource & " " & vbNewLine
+			' Construct the expression from the database definition.
+			fOK = ConstructExpression()
 
-			' Create an array of the IDs of the tables/view referred to in the expression.
-			' This is used for joining all of the tables/views used.
-			' Column 1 = 0 if this row is for a table, 1 if it is for a view.
-			' Column 2 = table/view ID.
-			ReDim alngSourceTables(2, 0)
-
-			' Get the filter code.
-			' JPD20020419 Fault 3687
-			fOK = RuntimeCode(sWhereCode, alngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		If fOK Then
-			' Create an array of the tables related to the expression base table.
-			' Used when Joining any other tables/view used.
-			' Column 1 = 'parent' if the expression's base table is the parent of the other table
-			'            'child' if the expression's base table is the child of the other table
-			' Column 2 = ID of the other table
-			ReDim avRelatedTables(2, 0)
-			sSQL = "SELECT 'parent' AS relationship, childID AS tableID FROM ASRSysRelations WHERE parentID = " & Trim(Str(mlngBaseTableID)) & " UNION SELECT 'child' AS relationship, parentID AS tableID FROM ASRSysRelations WHERE childID = " & Trim(Str(mlngBaseTableID))
-			rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-			With rsInfo
-				Do While Not .EOF
-					iNextIndex = UBound(avRelatedTables, 2) + 1
-					ReDim Preserve avRelatedTables(2, iNextIndex)
-					'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avRelatedTables(1, iNextIndex) = .Fields("relationship").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avRelatedTables(2, iNextIndex) = .Fields("TableID").Value
-					.MoveNext()
-				Loop
-				.Close()
-			End With
-			'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsInfo = Nothing
-
-			' Join any other tables/views used.
-			For iLoop1 = 1 To UBound(alngSourceTables, 2)
-				If alngSourceTables(1, iLoop1) = 0 Then
-					objTableView = gcoTablePrivileges.FindTableID(alngSourceTables(2, iLoop1))
-				Else
-					objTableView = gcoTablePrivileges.FindViewID(alngSourceTables(2, iLoop1))
+			If fOK Then
+				sBaseTableSource = msBaseTableName
+				If pfApplyPermissions Then
+					' Get the 'realSource' of the table.
+					objTableView = gcoTablePrivileges.Item(msBaseTableName)
+					If objTableView.TableType = TableTypes.tabChild Then
+						sBaseTableSource = objTableView.RealSource
+					End If
+					'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					objTableView = Nothing
 				End If
 
-				If objTableView.TableID = mlngBaseTableID Then
-					' Join a view on the base table.
-					If Not pfApplyPermissions Then
-						sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id" & vbNewLine
+				sRuntimeFilterSQL = "SELECT DISTINCT " & sBaseTableSource & ".id FROM " & sBaseTableSource & " " & vbNewLine
+
+				' Create an array of the IDs of the tables/view referred to in the expression.
+				' This is used for joining all of the tables/views used.
+				' Column 1 = 0 if this row is for a table, 1 if it is for a view.
+				' Column 2 = table/view ID.
+				ReDim alngSourceTables(2, 0)
+
+				' Get the filter code.
+				' JPD20020419 Fault 3687
+				fOK = RuntimeCode(sWhereCode, alngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+			End If
+
+			If fOK Then
+				' Create an array of the tables related to the expression base table.
+				' Used when Joining any other tables/view used.
+				' Column 1 = 'parent' if the expression's base table is the parent of the other table
+				'            'child' if the expression's base table is the child of the other table
+				' Column 2 = ID of the other table
+
+				For Each objRelation In Relations.FindAll(Function(n) n.ParentID = mlngBaseTableID)
+					objTableRelation = New TableRelation
+					objTableRelation.RelationType = RelationType.Parent
+					objTableRelation.TableID = objRelation.ChildID
+					listRelatedTables.Add(objTableRelation)
+				Next
+
+				For Each objRelation In Relations.FindAll(Function(n) n.ChildID = mlngBaseTableID)
+					objTableRelation = New TableRelation
+					objTableRelation.RelationType = RelationType.Child
+					objTableRelation.TableID = objRelation.ParentID
+					listRelatedTables.Add(objTableRelation)
+				Next
+
+
+				' Join any other tables/views used.
+				For iLoop1 = 1 To UBound(alngSourceTables, 2)
+					If alngSourceTables(1, iLoop1) = 0 Then
+						objTableView = gcoTablePrivileges.FindTableID(alngSourceTables(2, iLoop1))
 					Else
-						sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id" & vbNewLine
+						objTableView = gcoTablePrivileges.FindViewID(alngSourceTables(2, iLoop1))
 					End If
-				Else
-					' Join a table/view on a parent/child related to the base table.
-					For iLoop2 = 1 To UBound(avRelatedTables, 2)
-						'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(2, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If avRelatedTables(2, iLoop2) = objTableView.TableID Then
+
+					If objTableView.TableID = mlngBaseTableID Then
+						' Join a view on the base table.
+						If Not pfApplyPermissions Then
+							sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id" & vbNewLine
+						Else
+							sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id" & vbNewLine
+						End If
+					Else
+						' Join a table/view on a parent/child related to the base table.
+						For Each objTableRelation In listRelatedTables.FindAll(Function(n) n.TableID = objTableView.TableID)
+
 
 							If Not pfApplyPermissions Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If avRelatedTables(1, iLoop2) = "parent" Then
+								If objTableRelation.RelationType = "parent" Then
 									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
 								Else
 									'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id_" & Trim(Str(avRelatedTables(2, iLoop2))) & " = " & objTableView.TableName & ".id " & vbNewLine
+									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.TableName & ".id " & vbNewLine
 								End If
 							Else
 								'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If avRelatedTables(1, iLoop2) = "parent" Then
+								If objTableRelation.RelationType = "parent" Then
 									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
 								Else
 									'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id_" & Trim(Str(avRelatedTables(2, iLoop2))) & " = " & objTableView.RealSource & ".id " & vbNewLine
+									sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.RealSource & ".id " & vbNewLine
 								End If
 							End If
 
 							Exit For
-						End If
-					Next iLoop2
+
+						Next
+					End If
+
+					'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					objTableView = Nothing
+				Next iLoop1
+
+				' Add the filter 'where' clause code.
+				If Len(sWhereCode) > 0 Then
+					sWhereCode = sWhereCode & " = 1"
+
+					sRuntimeFilterSQL = sRuntimeFilterSQL & "WHERE " & vbNewLine & sWhereCode & vbNewLine
 				End If
-
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objTableView = Nothing
-			Next iLoop1
-
-			' Add the filter 'where' clause code.
-			If Len(sWhereCode) > 0 Then
-				sWhereCode = sWhereCode & " = 1"
-
-				sRuntimeFilterSQL = sRuntimeFilterSQL & "WHERE " & vbNewLine & sWhereCode & vbNewLine
 			End If
-		End If
 
-TidyUpAndExit:
+		Catch ex As Exception
+			fOK = False
+
+		End Try
+
+
 		If fOK Then
 			psFilterCode = sRuntimeFilterSQL
 		Else
 			psFilterCode = ""
 		End If
-		RuntimeFilterCode = fOK
 
-		Exit Function
+		Return fOK
 
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
 
 	End Function
 
