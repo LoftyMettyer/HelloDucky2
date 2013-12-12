@@ -307,15 +307,8 @@ ErrorTrap:
 
 	Public Property ReturnType() As ExpressionValueTypes
 		Get
-			' Return the return type property.
-			On Error GoTo ErrorTrap
 
-			Dim fOK As Boolean
-			Dim iType As ExpressionValueTypes
-			Dim sSQL As String
-			Dim rsColumn As ADODB.Recordset
-
-			fOK = True
+			Dim iType As ExpressionValueTypes = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
@@ -331,52 +324,26 @@ ErrorTrap:
 					iType = ExpressionValueTypes.giEXPRVALUE_DATE
 
 				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
-					' Get the lookup column's return type.
-					sSQL = "SELECT dataType" & " FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(mlngLookupColumnID))
-					rsColumn = datGeneral.GetRecords(sSQL)
-					With rsColumn
 
-						fOK = Not (.EOF And .BOF)
+					Select Case Columns.GetById(mlngLookupColumnID).DataType
+						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+							iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						Case SQLDataType.sqlDate
+							iType = ExpressionValueTypes.giEXPRVALUE_DATE
+						Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
+							iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						Case SQLDataType.sqlBoolean
+							iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
+						Case SQLDataType.sqlOle
+							iType = ExpressionValueTypes.giEXPRVALUE_OLE
+						Case SQLDataType.sqlVarBinary
+							iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
+					End Select
 
-						If fOK Then
-							Select Case .Fields("DataType").Value
-								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-									iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
-								Case SQLDataType.sqlDate
-									iType = ExpressionValueTypes.giEXPRVALUE_DATE
-								Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
-									iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
-								Case SQLDataType.sqlBoolean
-									iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
-								Case SQLDataType.sqlOle
-									iType = ExpressionValueTypes.giEXPRVALUE_OLE
-								Case SQLDataType.sqlVarBinary
-									iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
-								Case Else
-									fOK = False
-							End Select
-						End If
-
-						.Close()
-					End With
-					'UPGRADE_NOTE: Object rsColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					rsColumn = Nothing
-
-				Case Else
-					fOK = False
 			End Select
 
-TidyUpAndExit:
-			If fOK Then
-				ReturnType = iType
-			Else
-				ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-			End If
-			Exit Property
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			Return iType
+			
 
 		End Get
 
