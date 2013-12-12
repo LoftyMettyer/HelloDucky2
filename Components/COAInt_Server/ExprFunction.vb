@@ -116,7 +116,7 @@ ErrorTrap:
 		Dim sSrchColumnName As String = ""
 		Dim sRtnColumnName As String = ""
 		Dim sSrchTableName As String
-		Dim rsInfo As ADODB.Recordset
+		Dim rsInfo As Recordset
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim objTableView As TablePrivilege
 		Dim asViews(,) As String
@@ -309,29 +309,14 @@ ErrorTrap:
 
 				Case 42	' Get field from database record.
 					' Get the column parameter definitions.
-					sSQL = "SELECT ASRSysColumns.columnID, ASRSysColumns.columnName, ASRSysTables.tableID, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & " WHERE ASRSysColumns.columnID IN (" & sParamCode1 & ", " & sParamCode3 & ")"
-					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+					Dim objColumnParameter1 = Columns.GetById(CInt(sParamCode1))
+					sSrchColumnName = objColumnParameter1.Name
+					sSrchTableName = objColumnParameter1.TableName
+					lngSrchTableID = objColumnParameter1.TableID
 
-					With rsInfo
-						Do While Not .EOF
-							If Trim(Str(.Fields("ColumnID").Value)) = sParamCode1 Then
-								sSrchColumnName = .Fields("ColumnName").Value
-								sSrchTableName = .Fields("TableName").Value
-								lngSrchTableID = .Fields("TableID").Value
-							End If
-
-							If Trim(Str(.Fields("ColumnID").Value)) = sParamCode3 Then
-								sRtnColumnName = .Fields("ColumnName").Value
-								lngRtnTableID = .Fields("TableID").Value
-							End If
-
-							.MoveNext()
-						Loop
-
-						.Close()
-					End With
-					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					rsInfo = Nothing
+					Dim objColumnParameter2 = Columns.GetById(CInt(sParamCode3))
+					sRtnColumnName = objColumnParameter2.Name
+					lngRtnTableID = objColumnParameter2.TableID
 
 					fOK = ((Len(sSrchColumnName) > 0) And (Len(sRtnColumnName) > 0)) And (lngSrchTableID = lngRtnTableID)
 
