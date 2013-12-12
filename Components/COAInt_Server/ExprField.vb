@@ -1171,7 +1171,7 @@ ErrorTrap:
 		UDFCode = GenerateCode(strUDFCode, palngSourceTables, pfApplyPermissions, pfValidating, "", True, plngFixedExprID, psFixedSQLCode)
 
 		If Len(strUDFCode) > 0 Then
-			ReDim Preserve psRuntimeCode(psRuntimeCode.Length - 1)
+			ReDim Preserve psRuntimeCode(psRuntimeCode.Length)
 			psRuntimeCode(psRuntimeCode.Length - 1) = strUDFCode
 		End If
 
