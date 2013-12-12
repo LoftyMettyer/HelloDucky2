@@ -841,13 +841,9 @@
 									' ----------------------- OUTLOOK LINKS -----------------------------
 									' Create the reference to the DLL
 									Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks									
-
-									' Pass required info to the DLL
-									objOutlookEvents.Username = Session("username")
-									objOutlookEvents.Connection = Session("databaseConnection")
-				
+			
 									Err.Clear()
-									mrstEventData = objOutlookEvents.GetOutlookLinks(False, Now.Date, Now.Date)
+									mrstEventData = objOutlookEvents.GetOutlookLinks()
 
 									If (Err.Number <> 0) Then
 										sErrorDescription = "The Outlook Links Data could not be retrieved." & vbCrLf & FormatError(Err.Description)

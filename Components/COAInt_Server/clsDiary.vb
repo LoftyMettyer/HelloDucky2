@@ -496,10 +496,7 @@ Public Class clsDiary
 		Dim strSQLWhere As String
 		Dim strSQLOrderBy As String
 
-		Dim blnListView As Boolean
 		Dim blnClearedFilter As Boolean
-
-		blnListView = (mintCurrentView = mintVIEWBYLIST)
 
 		'*******************************
 		'* SELECT AND ORDER BY CLAUSES *
@@ -507,12 +504,11 @@ Public Class clsDiary
 		If mintCurrentView = mintVIEWBYMONTH And Not mblnPrinting Then
 			'If month view then only check a maximum of one item per date
 			'(but need to retrieve all the data if printing!)
-			'strSQLSelect = "SELECT DISTINCT EventDate "
 			strSQLSelect = "SELECT DISTINCT convert(datetime,convert(varchar(10),EventDate,101)) as 'EventDate'"
 			strSQLOrderBy = "ORDER BY EventDate"
 
 		Else
-			strSQLSelect = "SELECT DiaryEventsID, Alarm, EventDate, EventTitle, " & "Convert(varchar,EventDate,112) as FindDate "
+			strSQLSelect = "SELECT DiaryEventsID, Alarm, EventDate, EventTitle, Convert(varchar,EventDate,112) as FindDate "
 			strSQLOrderBy = "ORDER BY EventTitle"	' mstrSQLOrderByClause
 
 		End If
@@ -524,7 +520,7 @@ Public Class clsDiary
 			blnClearedFilter = False
 
 			strSQL = "SELECT COUNT(*) " & strSQLFrom & "WHERE " & SQLFilter()
-			rsTables = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+			rsTables = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			mlngRecordCount = rsTables.Fields(0).Value
 
 		Loop While blnClearedFilter = True
@@ -536,7 +532,7 @@ Public Class clsDiary
 			strSQLWhere = "WHERE EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 23:59' AND "
 
 			strSQL = strSQLSelect & strSQLFrom & strSQLWhere & SQLFilter() & strSQLOrderBy
-			GetDiaryData = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			GetDiaryData = datData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CursorLocationEnum.adUseClient)
 		End If
 
 	End Function
