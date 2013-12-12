@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Module modPermissions
 
@@ -15,7 +16,7 @@ Module modPermissions
 		Dim rsInfo As ADODB.Recordset
 		Dim rsViews As ADODB.Recordset
 		Dim rsPermissions As ADODB.Recordset
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim avChildViews(,) As Object
 		Dim lngNextIndex As Integer
@@ -26,7 +27,7 @@ Module modPermissions
 		Dim sColumnName As String
 		Dim iAction As Short
 		Dim iOriginalCursorLocation As Short
-		Dim objItem As CTablePrivilege
+		Dim objItem As TablePrivilege
 		Dim lngBaseTableId As Long
 
 		If Tables Is Nothing Then
@@ -42,7 +43,7 @@ Module modPermissions
 		iOriginalCursorLocation = gADOCon.CursorLocation
 
 		' Instantiate a new collection of table privileges.
-		gcoTablePrivileges = New Collection(Of CTablePrivilege)()
+		gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
 		sSQL = "SELECT system_user AS [name]"
 		rsInfo = New ADODB.Recordset
@@ -94,7 +95,7 @@ Module modPermissions
 
 		' Initialise the collection with items for each TABLE in the system.
 		For Each objTable In Tables
-			objItem = New CTablePrivilege()
+			objItem = New TablePrivilege()
 			objItem.TableName = objTable.Name
 			objItem.TableID = objTable.ID
 			objItem.TableType = objTable.TableType
@@ -114,7 +115,7 @@ Module modPermissions
 			Do While Not .EOF
 				'	objTableView = gcoTablePrivileges.Add(.Fields("TableName").Value, .Fields("TableID").Value, .Fields("TableType").Value, .Fields("DefaultOrderID").Value, .Fields("RecordDescExprID").Value, False, .Fields("ViewID").Value, .Fields("ViewName").Value)
 
-				objItem = New CTablePrivilege()
+				objItem = New TablePrivilege()
 				objItem.TableName = .Fields("TableName").Value
 				objItem.TableID = .Fields("TableID").Value
 				objItem.TableType = .Fields("TableType").Value

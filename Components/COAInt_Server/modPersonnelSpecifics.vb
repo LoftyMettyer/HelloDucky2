@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Module modPersonnelSpecifics
 
@@ -116,7 +117,7 @@ Module modPersonnelSpecifics
 
 	Public Sub ReadPersonnelParameters()
 
-		Dim objTable As CTablePrivilege
+		Dim objTable As TablePrivilege
 
 		' Read the Personnel module parameters from the database.
 		glngPersonnelTableID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))

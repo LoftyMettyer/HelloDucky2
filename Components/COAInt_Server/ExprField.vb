@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Friend Class clsExprField
 
@@ -313,12 +314,12 @@ ErrorTrap:
 			End If
 
 TidyUpAndExit:
-		If fOK Then
-			ReturnType = iType
-		Else
-			ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-		End If
-		Exit Property
+			If fOK Then
+				ReturnType = iType
+			Else
+				ReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+			End If
+			Exit Property
 
 ErrorTrap:
 			fOK = False
@@ -452,14 +453,14 @@ ErrorTrap:
 		Dim asViews() As String
 		Dim avOrderJoinTables(,) As Object
 		Dim objFilterExpr As clsExprExpression
-		Dim objOrderTableView As CTablePrivilege
-		Dim objTableView As CTablePrivilege
+		Dim objOrderTableView As TablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim objOrderColumns As CColumnPrivileges
-		Dim objView As CTablePrivilege
+		Dim objView As TablePrivilege
 		Dim objViewColumns As CColumnPrivileges
-		Dim objBaseTable As CTablePrivilege
+		Dim objBaseTable As TablePrivilege
 		Dim objBaseColumns As CColumnPrivileges
-		Dim objBaseColumn As CColumnPrivilege
+		Dim objBaseColumn As ColumnPrivilege
 		Dim strUDFReturnType As String = ""
 
 		sCode = ""

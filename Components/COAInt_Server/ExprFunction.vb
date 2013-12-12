@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB
 Friend Class clsExprFunction
 
@@ -117,12 +118,12 @@ ErrorTrap:
 		Dim sSrchTableName As String
 		Dim rsInfo As ADODB.Recordset
 		Dim objColumnPrivileges As CColumnPrivileges
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim asViews(,) As String
 		Dim strRemainString As String
 		Dim strTempTableName As String
 		Dim strTempTableID As String
-		Dim objBaseTable As CTablePrivilege
+		Dim objBaseTable As TablePrivilege
 
 		'Currency Conversion Values
 		Dim sCConvTable As String

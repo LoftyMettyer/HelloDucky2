@@ -6,6 +6,7 @@ Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
+Imports HR.Intranet.Server.Metadata
 
 Public Class Report
 
@@ -62,7 +63,7 @@ Public Class Report
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
-	Private mobjTableView As CTablePrivilege
+	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
 	' Strings to hold the SQL statement
@@ -149,18 +150,18 @@ Public Class Report
 	'Runnning report for single record only!
 	Private mlngSingleRecordID As Integer
 
-Public datCustomReportOutput As DataTable
+	Public datCustomReportOutput As DataTable
 
-Private Sub datCustomReportOutput_Start()
-	datCustomReportOutput = New DataTable()
-	datCustomReportOutput.Columns.Add("rowType", GetType(RowType))
-	datCustomReportOutput.Columns.Add("Summary Info", GetType(String))
+	Private Sub datCustomReportOutput_Start()
+		datCustomReportOutput = New DataTable()
+		datCustomReportOutput.Columns.Add("rowType", GetType(RowType))
+		datCustomReportOutput.Columns.Add("Summary Info", GetType(String))
 
-	For Each objItem In ColumnDetails
-		datCustomReportOutput.Columns.Add(objItem.IDColumnName, GetType(String))
-	Next
+		For Each objItem In ColumnDetails
+			datCustomReportOutput.Columns.Add(objItem.IDColumnName, GetType(String))
+		Next
 
-End Sub
+	End Sub
 
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
@@ -1106,7 +1107,7 @@ GetDetailsRecordsets_ERROR:
 		Dim sCalcCode As String
 		Dim alngSourceTables(,) As Integer
 		Dim objCalcExpr As clsExprExpression
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		' Set flags with their starting values
 		pblnOK = True
@@ -1897,8 +1898,8 @@ Error_Trap:
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
-		Dim pobjTableView As CTablePrivilege
-		Dim objChildTable As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
+		Dim objChildTable As TablePrivilege
 		Dim pintLoop As Short
 		Dim sChildJoinCode As String
 		Dim sChildOrderString As String
@@ -2077,8 +2078,8 @@ GenerateSQLJoin_ERROR:
 		Dim sColumnCode As String
 		Dim sCurrentTableViewName As String
 		Dim objColumnPrivileges As CColumnPrivileges
-		Dim pobjOrderCol As CTablePrivilege
-		Dim objTableView As CTablePrivilege
+		Dim pobjOrderCol As TablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim alngTableViews(,) As Integer
 		Dim asViews() As String
 		Dim iTempCounter As Short
@@ -2242,7 +2243,7 @@ DoChildOrderString_ERROR:
 		On Error GoTo GenerateSQLWhere_ERROR
 
 		Dim pintLoop As Short
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 		Dim prstTemp As New Recordset
 		Dim pstrPickListIDs As String
 		Dim blnOK As Boolean
@@ -2827,110 +2828,110 @@ CheckRecordSet_ERROR:
 
 					'If iColumnIndex > 0 Then
 
-						If colColumns.GetByIndex(iColumnIndex).BreakOrPageOnChange Then
-							fBreak = False
+					If colColumns.GetByIndex(iColumnIndex).BreakOrPageOnChange Then
+						fBreak = False
 
-							objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
+						objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
 
-							' The column breaks. Check if its changed.
-							vValue = PopulateGrid_FormatData(objReportItem, mrstCustomReportsOutput.Fields(iColumnIndex).Value, False, False)
+						' The column breaks. Check if its changed.
+						vValue = PopulateGrid_FormatData(objReportItem, mrstCustomReportsOutput.Fields(iColumnIndex).Value, False, False)
 
-							'Now that we store the formatted value in position (11) of the mcolDetails
-							'Comparison made after adjusting the size of the field.
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex).Value) Then
-								fBreak = ("" <> objReportItem.LastValue)
+						'Now that we store the formatted value in position (11) of the mcolDetails
+						'Comparison made after adjusting the size of the field.
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex).Value) Then
+							fBreak = ("" <> objReportItem.LastValue)
+						Else
+							If objReportItem.IsBitColumn Then	'Bit
+								'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(objReportItem.LastValue)))
 							Else
-								If objReportItem.IsBitColumn Then	'Bit
-									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(objReportItem.LastValue)))
-								Else
-									fBreak = Not (vValue = objReportItem.LastValue)
-								End If
-							End If
-
-
-							If objReportItem.IsPageOnChange Then
-								sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
-							End If
-
-							If Not fBreak Then
-								' The value has not changed, but check if we need to do the summary due to another column changing.
-								For iLoop2 = iLoop7 - 1 To 0 Step -1
-									iOtherColumnIndex = 0
-									For Each objItem In ColumnDetails
-										If objItem.ColExprID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
-											otherColumnDetail = objItem
-											Exit For
-										End If
-										iOtherColumnIndex += 1
-									Next
-
-									If Not otherColumnDetail Is Nothing Then
-										If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
-											' The column breaks. Check if its changed.
-											If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
-												' Field value is null but a character data type, so set it to be "".
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												vValue = ""
-
-											ElseIf otherColumnDetail.IsNumeric Then	'Numeric
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
-
-											ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = True) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 1) Then vValue = "Y"
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 0) Then vValue = "N"
-												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then vValue = ""
-
-											Else
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
-
-											End If
-
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then
-												fBreak = ("" <> otherColumnDetail.LastValue)
-											Else
-												If otherColumnDetail.IsBitColumn Then	'Bit
-													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-													'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-													fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(otherColumnDetail.LastValue)))
-												Else
-													'TM23112004 Fault 9072
-													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-													fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value)) <> RTrim(LCase(otherColumnDetail.LastValue)))
-												End If
-											End If
-
-											If (fBreak = True) Then
-												Exit For
-											End If
-										End If
-									End If
-								Next iLoop2
-							End If
-
-							' RH 09/02/01 - Report was doing summary info even when no aggregate was
-							'               selected for the column, so check for aggregate too, and only
-							'               do summary info if its true.
-							If fBreak Then
-								PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop7)
-
-								' Do the page break ?
-
-								If objReportItem.IsPageOnChange Then
-									mblnPageBreak = True
-									mblnReportHasPageBreak = True
-								End If
+								fBreak = Not (vValue = objReportItem.LastValue)
 							End If
 						End If
+
+
+						If objReportItem.IsPageOnChange Then
+							sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
+						End If
+
+						If Not fBreak Then
+							' The value has not changed, but check if we need to do the summary due to another column changing.
+							For iLoop2 = iLoop7 - 1 To 0 Step -1
+								iOtherColumnIndex = 0
+								For Each objItem In ColumnDetails
+									If objItem.ColExprID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
+										otherColumnDetail = objItem
+										Exit For
+									End If
+									iOtherColumnIndex += 1
+								Next
+
+								If Not otherColumnDetail Is Nothing Then
+									If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
+										' The column breaks. Check if its changed.
+										If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
+											' Field value is null but a character data type, so set it to be "".
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											vValue = ""
+
+										ElseIf otherColumnDetail.IsNumeric Then	'Numeric
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
+
+										ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = True) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 1) Then vValue = "Y"
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 0) Then vValue = "N"
+											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then vValue = ""
+
+										Else
+											'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+											vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
+
+										End If
+
+										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+										If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then
+											fBreak = ("" <> otherColumnDetail.LastValue)
+										Else
+											If otherColumnDetail.IsBitColumn Then	'Bit
+												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(otherColumnDetail.LastValue)))
+											Else
+												'TM23112004 Fault 9072
+												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value)) <> RTrim(LCase(otherColumnDetail.LastValue)))
+											End If
+										End If
+
+										If (fBreak = True) Then
+											Exit For
+										End If
+									End If
+								End If
+							Next iLoop2
+						End If
+
+						' RH 09/02/01 - Report was doing summary info even when no aggregate was
+						'               selected for the column, so check for aggregate too, and only
+						'               do summary info if its true.
+						If fBreak Then
+							PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop7)
+
+							' Do the page break ?
+
+							If objReportItem.IsPageOnChange Then
+								mblnPageBreak = True
+								mblnReportHasPageBreak = True
+							End If
+						End If
+					End If
 					'End If
 				Next
 			End If
@@ -2962,7 +2963,7 @@ CheckRecordSet_ERROR:
 				If Not iLoop = (mrstCustomReportsOutput.Fields.Count - 1) Then
 					objNextItem = ColumnDetails.GetByIndex(iLoop)
 
-				' Only suppress values for new records in the Bradford Factor report
+					' Only suppress values for new records in the Bradford Factor report
 					bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
 
 					If objNextItem.IsBitColumn Then	 'Bit
@@ -3065,7 +3066,7 @@ CheckRecordSet_ERROR:
 			If mblnCustomReportsSummaryReport = False Then
 				If Not NEW_AddToArray_Data(RowType.Data, aryAddString) Then
 
-				'If Not AddToArray_Data(sAddString, RowType.Data) Then
+					'If Not AddToArray_Data(sAddString, RowType.Data) Then
 					Return False
 
 				Else
@@ -3179,8 +3180,8 @@ LoadRecords_ERROR:
 
 	End Sub
 
-			Private Function PopulateGrid_FormatData(ByRef objReportItem As ReportDetailItem, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As String
-	'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
+	Private Function PopulateGrid_FormatData(ByRef objReportItem As ReportDetailItem, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As String
+		'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
 		' Purpose : Format the data to the form the user has specified to see it
 		'           in the grid
 		' Input   : None
@@ -3222,36 +3223,36 @@ LoadRecords_ERROR:
 		End If
 
 
-				' SRV ?
-				If Not mbIsBradfordIndexReport Then
-					If mbSuppressRepeated = True Then
-						'check if column value should be repeated or not.
-						If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								vData = ""
-							End If
-
-						ElseIf objReportItem.SuppressRepeated Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								vData = ""
-							End If
-						End If
+		' SRV ?
+		If Not mbIsBradfordIndexReport Then
+			If mbSuppressRepeated = True Then
+				'check if column value should be repeated or not.
+				If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
 					End If
 
-				Else
-					'Bradford Factor does not use the repetition functionality.
-					If mbSuppressRepeated = True Then
-
-						If objReportItem.SuppressRepeated Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-								vData = ""
-							End If
-						End If
+				ElseIf objReportItem.SuppressRepeated Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
 					End If
 				End If
+			End If
+
+		Else
+			'Bradford Factor does not use the repetition functionality.
+			If mbSuppressRepeated = True Then
+
+				If objReportItem.SuppressRepeated Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
+					End If
+				End If
+			End If
+		End If
 
 
 
@@ -3279,8 +3280,8 @@ LoadRecords_ERROR:
 
 		Dim fDoValue As Boolean
 		Dim iLoop As Short
-	'	Dim iLoop2 As Short
-	'	Dim iColumnIndex As Short
+		'	Dim iLoop2 As Short
+		'	Dim iColumnIndex As Short
 		Dim sSQL As String
 		Dim rsTemp As Recordset
 		Dim fHasAverage As Boolean
@@ -3574,7 +3575,7 @@ LoadRecords_ERROR:
 						If fDoValue Then
 							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						Else
-						aryCountAddString.Add("")
+							aryCountAddString.Add("")
 						End If
 						'        End If
 					End If
@@ -3684,8 +3685,8 @@ LoadRecords_ERROR:
 			asBradfordSummaryLine(10) = "Total"
 			asBradfordSummaryLine(12) = CStr(Val(Str(CDbl(asBradfordSummaryLine(12)))))
 			asBradfordSummaryLine(13) = CStr(Val(Str(CDbl(asBradfordSummaryLine(13)))))
-' TODO
-'			sTotalAddString = Join(asBradfordSummaryLine, vbTab)
+			' TODO
+			'			sTotalAddString = Join(asBradfordSummaryLine, vbTab)
 
 
 			' Calculate Bradford index line
@@ -3715,8 +3716,8 @@ LoadRecords_ERROR:
 			End If
 
 			If mbBradfordTotals Then
-			' TODO
-'				AddToArray_Data(sTotalAddString, RowType.Total)
+				' TODO
+				'				AddToArray_Data(sTotalAddString, RowType.Total)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
@@ -3983,7 +3984,7 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 	End Sub
 
-Public Function PopulateGrid_HideColumns() As Boolean
+	Public Function PopulateGrid_HideColumns() As Boolean
 
 		' Purpose : This function hides any columns we don't want the user to see.
 		Dim iCount As Short
@@ -3996,7 +3997,7 @@ Public Function PopulateGrid_HideColumns() As Boolean
 
 		intVisColCount = 0
 		intColCounter = 0
-'		mintVisibleColumnCount = 0
+		'		mintVisibleColumnCount = 0
 		'Hide the pagebreak column regardless
 
 		'If report contains no summary info, hide the column
@@ -4051,7 +4052,7 @@ Public Function PopulateGrid_HideColumns() As Boolean
 
 		Next
 
-	'	mintVisibleColumnCount = intVisColCount - 1
+		'	mintVisibleColumnCount = intVisColCount - 1
 
 		Return True
 
@@ -4399,50 +4400,50 @@ AddError:
 		End Get
 	End Property
 
-'	Public Function OutputGridColumns() As Boolean
+	'	Public Function OutputGridColumns() As Boolean
 
-'		On Error GoTo ErrTrap
+	'		On Error GoTo ErrTrap
 
-'		Dim iLoop As Short
-'		Dim pblnOK As Boolean
-'		Dim intColCounter As Short
+	'		Dim iLoop As Short
+	'		Dim pblnOK As Boolean
+	'		Dim intColCounter As Short
 
-'		pblnOK = True
+	'		pblnOK = True
 
-'		'Pagebreak
-'		intColCounter = 0
+	'		'Pagebreak
+	'		intColCounter = 0
 
-'		AddToArray_Columns("<th class='hiddentablecolumn'>PageBreak</th>")
+	'		AddToArray_Columns("<th class='hiddentablecolumn'>PageBreak</th>")
 
-'		'Summary Info
-'		intColCounter = intColCounter + 1
-'		AddToArray_Columns("<th class='summarytablecolumn'>Summary Info</th>")
+	'		'Summary Info
+	'		intColCounter = intColCounter + 1
+	'		AddToArray_Columns("<th class='summarytablecolumn'>Summary Info</th>")
 
-'		' Now loop through the recordset fields, adding the data columns
-'		For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
+	'		' Now loop through the recordset fields, adding the data columns
+	'		For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
 
-'			intColCounter = intColCounter + 1
+	'			intColCounter = intColCounter + 1
 
-'			If Not mvarColDetails(24, iLoop + 1) Then
-'				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
-'					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-'				Else
-'					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-'				End If
-'			End If
+	'			If Not mvarColDetails(24, iLoop + 1) Then
+	'				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
+	'					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
+	'				Else
+	'					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
+	'				End If
+	'			End If
 
-'		Next iLoop
+	'		Next iLoop
 
-'		OutputGridColumns = True
+	'		OutputGridColumns = True
 
-'		Exit Function
+	'		Exit Function
 
-'ErrTrap:
+	'ErrTrap:
 
-'		OutputGridColumns = False
-'		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
+	'		OutputGridColumns = False
+	'		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
 
-'	End Function
+	'	End Function
 
 	Private Function NEW_AddToArray_Data(ByVal RowType As RowType, data As IEnumerable) As Boolean
 

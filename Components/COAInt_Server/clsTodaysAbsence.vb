@@ -2,11 +2,12 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.Metadata
 
 Public Class clsTodaysAbsence
 	Private mclsData As New clsDataAccess
 
-	Private mobjTableView As CTablePrivilege
+	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 	Private mstrRealSource As String
 	Private mstrSQLString As String
@@ -22,7 +23,7 @@ Public Class clsTodaysAbsence
 	Public Function GetTodaysAbsences(ByRef RecordID As Integer, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As Recordset
 
 		Dim plngEmployeeID As Integer
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim pblnOK As Boolean
 
 		SetupTablesCollection()
@@ -102,7 +103,7 @@ Public Class clsTodaysAbsence
 		Dim sCalcCode As String
 		Dim alngSourceTables() As Integer
 		Dim objCalcExpr As clsExprExpression
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim pintNextColLoop As Short
 
 		' Set flags with their starting values
@@ -294,8 +295,8 @@ GenerateSQLSelect_ERROR:
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
-		Dim pobjTableView As CTablePrivilege
-		Dim objChildTable As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
+		Dim objChildTable As TablePrivilege
 		Dim pintLoop As Short
 		Dim sChildJoinCode As String
 		Dim sReuseJoinCode As String

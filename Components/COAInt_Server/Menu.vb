@@ -4,6 +4,7 @@ Option Explicit On
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Public Class Menu
 
@@ -117,7 +118,7 @@ Public Class Menu
 		Dim rsTables As ADODB.Recordset
 		Dim rsTableScreen As ADODB.Recordset
 		Dim avTableInfo(,) As Object
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		ReDim avTableInfo(12, 0)
 		' Index 1 = table ID
@@ -272,7 +273,7 @@ ErrorTrap:
 		Dim sViewList As String
 		Dim rsScreens As ADODB.Recordset
 		Dim avScreenInfo(,) As Object
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim sTableName As String
 
 		' Create an array with records for each screen for each permitted view on the primary table.
@@ -439,7 +440,7 @@ ErrorTrap:
 					' No select permissions, can we use a view instead ???
 					rsViews = GetQuickEntryViews(.Fields("TableID").Value)
 
-					Dim objTableView As CTablePrivilege
+					Dim objTableView As TablePrivilege
 
 					'Loop through the views, and see if we have permission on these
 					Do While (Not rsViews.EOF) And (Not fCanView)

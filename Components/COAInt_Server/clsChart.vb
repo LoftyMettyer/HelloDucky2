@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Public Class clsChart
 
@@ -12,7 +13,7 @@ Public Class clsChart
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
-	Private mobjTableView As CTablePrivilege
+	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
 	' Classes
@@ -136,7 +137,7 @@ MergeSQLStrings_ERROR:
 		Dim pstrSource As String
 		Dim pintNextIndex As Short
 
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		SetupTablesCollection()
 
@@ -333,7 +334,7 @@ GenerateSQLSelect_ERROR:
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 		Dim pintLoop As Short
 
 		' Get the base table real source
@@ -555,7 +556,7 @@ GenerateSQLOrderBy_ERROR:
 		On Error GoTo GenerateSQLWhere_ERROR
 
 		Dim pintLoop As Short
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 		Dim prstTemp As New Recordset
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String

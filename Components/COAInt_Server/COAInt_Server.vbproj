@@ -129,7 +129,7 @@
     <Compile Include="clsResetPassword.vb" />
     <Compile Include="clsSettings.vb" />
     <Compile Include="clsTodaysAbsence.vb" />
-    <Compile Include="ColumnPrivilege.vb">
+    <Compile Include="Metadata\ColumnPrivilege.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ColumnPrivileges.vb">
@@ -266,7 +266,7 @@
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\ReportSortItem.vb" />
     <Compile Include="Structures\TableScreen.vb" />
-    <Compile Include="TablePrivilege.vb">
+    <Compile Include="Metadata\TablePrivilege.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TablePrivileges.vb">

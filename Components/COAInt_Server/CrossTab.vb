@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Public Class CrossTab
 
@@ -348,7 +349,7 @@ Public Class CrossTab
 			Return mlngCrossTabType
 		End Get
 	End Property
-	
+
 	Public ReadOnly Property OutputPreview() As Boolean
 		Get
 			OutputPreview = mblnOutputPreview
@@ -1006,7 +1007,7 @@ LocalErr:
 
 	Private Sub GetSQL2(ByRef strCol(,) As String)
 
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim sSource As String
 		Dim lngCount As Integer
@@ -1280,7 +1281,7 @@ LocalErr:
 					Exit Sub
 				End If
 
-		 '   .MoveFirst()
+				'   .MoveFirst()
 				Do While Not .EOF
 
 					'MH20010213 Had to make this change so that working pattern would work
@@ -1385,9 +1386,9 @@ LocalErr:
 
 	End Function
 
-Public Function IntersectionTypeValue(ByVal index) As String
-	Return mstrType(index)
-End Function
+	Public Function IntersectionTypeValue(ByVal index) As String
+		Return mstrType(index)
+	End Function
 
 	Public Function BuildTypeArray() As Boolean
 

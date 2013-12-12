@@ -42,34 +42,34 @@ Friend Module Extensions
 	End Function
 
 	<Extension()>
-	Public Function Item(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
+	Public Function Item(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
 		Return items.FirstOrDefault(Function(baseItem) (baseItem.TableName = name And baseItem.IsTable = True) Or (baseItem.ViewName = name And baseItem.IsTable = False))
 	End Function
 
 	<Extension()>
-	Public Function GetItemByTableId(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal id As Long) As T
+	Public Function GetItemByTableId(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal id As Long) As T
 		Return items.FirstOrDefault(Function(baseItem) baseItem.TableID = id)
 	End Function
 
 	<Extension()>
-	Public Function Collection(Of T As CTablePrivilege)(ByVal items As ICollection(Of T)) As ICollection(Of T)
+	Public Function Collection(Of T As TablePrivilege)(ByVal items As ICollection(Of T)) As ICollection(Of T)
 		Return items
 	End Function
 
 	' Don't know exactly what these function do or if they are necessary yet. This is just a proof of concept for speeding up the login process
 
 	<Extension()>
-	Public Function FindTableID(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal id As String) As T
+	Public Function FindTableID(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal id As String) As T
 		Return items.FirstOrDefault(Function(baseItem) baseItem.TableID = id)
 	End Function
 
 	<Extension()>
-	Public Function FindViewID(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
+	Public Function FindViewID(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 		Return items.FirstOrDefault(Function(baseItem) baseItem.ViewID = id)
 	End Function
 
 	<Extension()>
-	Public Function FindRealSource(Of T As CTablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
+	Public Function FindRealSource(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
 		Return items.FirstOrDefault(Function(baseItem) baseItem.RealSource = name)
 	End Function
 

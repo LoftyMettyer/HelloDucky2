@@ -4,6 +4,7 @@ Option Explicit On
 Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports System.Data.OleDb
+Imports HR.Intranet.Server.Metadata
 
 Public Class MailMerge
 
@@ -64,7 +65,7 @@ Public Class MailMerge
 	Private mclsGeneral As clsGeneral
 	Private mobjEventLog As clsEventLog
 
-'	Private mstrOutputArray_Data() As Object
+	'	Private mstrOutputArray_Data() As Object
 	Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
 
@@ -77,13 +78,13 @@ Public Class MailMerge
 	Public ReadOnly Property MergeData As DataTable
 		Get
 
-		Dim objDA As New OleDbDataAdapter()
-		Dim objDT As New DataTable()
+			Dim objDA As New OleDbDataAdapter()
+			Dim objDT As New DataTable()
 
-		mrsMergeData.Requery()
+			mrsMergeData.Requery()
 
-		objDA.Fill(objDT, mrsMergeData)
-		Return objDT
+			objDA.Fill(objDT, mrsMergeData)
+			Return objDT
 
 		End Get
 	End Property
@@ -171,7 +172,7 @@ Public Class MailMerge
 			Return mstrDefOutputFileName
 		End Get
 	End Property
-	
+
 	Public ReadOnly Property DefDocManMapID() As Integer
 		Get
 			Return mlngDocManMapID
@@ -621,7 +622,7 @@ LocalErr:
 		Dim strPicklistFilterSelect As String
 		Dim objExpr As clsExprExpression
 		Dim intIndex As Short
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		fOK = True
 
@@ -773,7 +774,7 @@ LocalErr:
 
 	Private Sub SQLAddColumn(ByRef sColumnList As String, ByVal lngTableID As Integer, ByVal sTableName As String, ByVal sColumnName As String, ByVal strColCode As String)
 
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim fColumnOK As Boolean
 		Dim sSource As String
@@ -988,7 +989,7 @@ LocalErr:
 		Dim sCalcCode As String
 		Dim sSource As String
 		Dim lngTestTableID As Integer
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		ReDim lngCalcViews(2, 0)
 		objCalcExpr = New clsExprExpression

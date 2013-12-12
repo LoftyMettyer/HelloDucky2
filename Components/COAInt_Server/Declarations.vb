@@ -16,7 +16,7 @@ Module Declarations
   Public gsActualLogin As String
   Public gsUserGroup As String
 
-	Public gcoTablePrivileges As ICollection(Of CTablePrivilege)
+	Public gcoTablePrivileges As ICollection(Of TablePrivilege)
 
 	Public gcolColumnPrivilegesCollection As Collection
 	Public gcolLinks As List(Of Link)

@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Friend Class clsExprExpression
 
@@ -892,7 +893,7 @@ ErrorTrap:
 		Dim alngSourceTables(,) As Integer
 		Dim avRelatedTables(,) As Object
 		Dim rsInfo As Recordset
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		' Check if the 'validating' parameter is set.
 		' If not, set it to FALSE.
@@ -1953,7 +1954,7 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim sBaseTableSource As String
 		Dim alngSourceTables(,) As Integer
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		' Check if the 'validating' parameter is set.
 		' If not, set it to FALSE.

@@ -30,7 +30,7 @@ Public Class CalendarReport
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
-	Private mobjTableView As CTablePrivilege
+	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
 	Private mvarEventColumnViews(,) As Object
@@ -3031,25 +3031,25 @@ ErrorTrap:
 					& " ORDER BY [OrderSequence]", mlngCalendarReportID)
 			rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
-		With rsTemp
-			If .BOF And .EOF Then
-				mstrErrorString = "No columns have been defined as a sort order for the specified Calendar Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				Return False
-			End If
-			Do Until .EOF
-				intTemp = UBound(mvarSortOrder, 2) + 1
-				ReDim Preserve mvarSortOrder(2, intTemp)
+			With rsTemp
+				If .BOF And .EOF Then
+					mstrErrorString = "No columns have been defined as a sort order for the specified Calendar Report definition." & vbNewLine & "Please remove this definition and create a new one."
+					Return False
+				End If
+				Do Until .EOF
+					intTemp = UBound(mvarSortOrder, 2) + 1
+					ReDim Preserve mvarSortOrder(2, intTemp)
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(0, intTemp) = .Fields("ColumnID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(1, intTemp) = .Fields("ColumnName").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarSortOrder(2, intTemp) = .Fields("OrderType").Value
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarSortOrder(0, intTemp) = .Fields("ColumnID").Value
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarSortOrder(1, intTemp) = .Fields("ColumnName").Value
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarSortOrder(2, intTemp) = .Fields("OrderType").Value
 
-				.MoveNext()
-			Loop
-		End With
+					.MoveNext()
+				Loop
+			End With
 
 		Catch ex As Exception
 			mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & ex.Message
@@ -3536,7 +3536,7 @@ TidyUpAndExit:
 		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		Dim pblnOK As Object
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 		Dim objExpression As clsExprExpression
 		With rsTemp
 
@@ -3955,7 +3955,7 @@ Error_Trap:
 			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
 					& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
 					& " AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
-				Else
+		Else
 			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
 					& "      " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
 		End If
@@ -4380,7 +4380,7 @@ ErrorTrap:
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
 
-							 mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", lngBaseRecordID, intRecordBHol, Replace(INPUT_STRING, """", "&quot;")))
+							mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", lngBaseRecordID, intRecordBHol, Replace(INPUT_STRING, """", "&quot;")))
 
 							.MoveNext()
 
@@ -5034,7 +5034,7 @@ DisableRegions:
 
 	Private Function CheckPermission_WPInfo() As Boolean
 
-		Dim objTable As CTablePrivilege
+		Dim objTable As TablePrivilege
 		Dim objColumn As CColumnPrivileges
 		Dim pblnColumnOK As Boolean
 		Dim strTableColumn As String
@@ -5939,8 +5939,8 @@ GenerateSQLSelect_ERROR:
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
-		Dim objTableView As CTablePrivilege
-		Dim objChildTable As CTablePrivilege
+		Dim objTableView As TablePrivilege
+		Dim objChildTable As TablePrivilege
 		Dim objEvent As clsCalendarEvent
 
 		Dim sChildJoinCode As String
@@ -6096,7 +6096,7 @@ GenerateSQLJoin_ERROR:
 
 		'*******************************************************************************
 		Dim pintLoop As Short
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 
 		pobjTableView = gcoTablePrivileges.FindTableID(mlngCalendarReportsBaseTable)
 		If pobjTableView.AllowSelect = False Then

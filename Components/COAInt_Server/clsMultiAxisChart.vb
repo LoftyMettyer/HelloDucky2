@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Public Class clsMultiAxisChart
 
@@ -12,7 +13,7 @@ Public Class clsMultiAxisChart
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
-	Private mobjTableView As CTablePrivilege
+	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
 	' Classes
@@ -384,7 +385,7 @@ MergeSQLStrings_ERROR:
 		Dim sCalcCode As String
 		Dim alngSourceTables() As Integer
 		Dim objCalcExpr As clsExprExpression
-		Dim objTableView As CTablePrivilege
+		Dim objTableView As TablePrivilege
 
 		Dim pstrAggregatePrefix As String
 
@@ -696,9 +697,9 @@ GenerateSQLSelect_ERROR:
 	Private Function GenerateSQLFrom(ByRef strTableName As String) As Boolean
 
 		Dim iLoop As Short
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 
-		pobjTableView = New CTablePrivilege
+		pobjTableView = New TablePrivilege
 
 		mstrSQLFrom = gcoTablePrivileges.Item(strTableName).RealSource
 
@@ -722,8 +723,8 @@ GenerateSQLFrom_ERROR:
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
-		Dim pobjTableView As CTablePrivilege
-		Dim objChildTable As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
+		Dim objChildTable As TablePrivilege
 		Dim pintLoop As Short
 		Dim sChildJoinCode As String
 		Dim sReuseJoinCode As String
@@ -929,7 +930,7 @@ GenerateSQLJoin_ERROR:
 		On Error GoTo GenerateSQLWhere_ERROR
 
 		Dim pintLoop As Short
-		Dim pobjTableView As CTablePrivilege
+		Dim pobjTableView As TablePrivilege
 		Dim prstTemp As New ADODB.Recordset
 		Dim pstrPickListIDs As String
 		Dim blnOK As Boolean
@@ -1016,7 +1017,7 @@ GenerateSQLWhere_ERROR:
 		Set(ByVal Value As Object)
 
 			gADOCon = Value
-			
+
 		End Set
 	End Property
 
