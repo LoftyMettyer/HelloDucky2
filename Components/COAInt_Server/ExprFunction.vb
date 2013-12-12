@@ -917,8 +917,6 @@ ErrorTrap:
 		Dim iLoop As Short
 		Dim iValidationCode As ExprValidationCodes
 		Dim iFunctionReturnType As ExpressionValueTypes
-		Dim sSQL As String
-		Dim rsParameters As Recordset
 		Dim aiDummyValues(6) As Short
 		Dim objSubExpression As clsExprExpression
 		Dim objParameter As clsExprComponent
@@ -940,18 +938,7 @@ ErrorTrap:
 				' NB. Reset the sub-expression's return type to that defined by the parameter definition
 				' as it may be changeable. The evaluated return type will be determined when the
 				' sub-expression is validated.
-				sSQL = "SELECT parameterType FROM ASRSysFunctionParameters WHERE functionID = " & Trim(Str(mlngFunctionID)) & " AND parameterIndex = " & Trim(Str(iLoop))
-				rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-				With rsParameters
-					If Not (.BOF And .EOF) Then
-						objSubExpression.ReturnType = .Fields("parameterType").Value
-					End If
-
-					.Close()
-				End With
-				'UPGRADE_NOTE: Object rsParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsParameters = Nothing
+				objSubExpression.ReturnType = Functions.GetById(mlngFunctionID).Parameters.GetByIndex(iLoop - 1).ParameterType
 
 				iValidationCode = .ValidateExpression(False)
 
@@ -995,11 +982,8 @@ TidyUpAndExit:
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objSubExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objSubExpression = Nothing
-		'UPGRADE_NOTE: Object rsParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsParameters = Nothing
-		ValidateFunction = iValidationCode
-		Exit Function
-
+		Return iValidationCode
+		
 BasicErrorTrap:
 		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
 		Resume TidyUpAndExit
