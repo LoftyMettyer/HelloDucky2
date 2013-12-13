@@ -10,42 +10,21 @@ Friend Class clsExprValue
 	Private mdblNumericValue As Double
 	Private msCharacterValue As String
 	Private mfLogicValue As Boolean
-	
-	'MH20010201 Fault 1576
-	'Private mdtDateValue As Date
 	Private mdtDateValue As Object
 	
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
-	
-	
-	
+		
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
-		' Retrun TRUE if the current expression (or any of its sub expressions)
-		' contains the given expression. This ensures no cyclic expressions get created.
-		'JPD 20040507 Fault 8600
-		On Error GoTo ErrorTrap
-		
-		ContainsExpression = False
-		
-TidyUpAndExit: 
-		Exit Function
-		
-ErrorTrap: 
-		ContainsExpression = True
-		Resume TidyUpAndExit
-		
+		Return False
 	End Function
 	
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
-		Dim sCode As String
-
-		fOK = True
-		sCode = ""
+		Dim fOK As Boolean = True
+		Dim sCode As String = ""
 
 		Select Case miType
 			Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
@@ -55,8 +34,6 @@ ErrorTrap:
 			Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 				sCode = IIf(mfLogicValue, "1", "0")
 			Case ExpressionValueTypes.giEXPRVALUE_DATE
-				'MH20010201 Fault 1576
-				'sCode = "convert(datetime, '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
 				'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')")
@@ -69,29 +46,23 @@ TidyUpAndExit:
 			psRuntimeCode = ""
 		End If
 
-		RuntimeCode = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
 
 	End Function
-	
-	
-	
-	
-	
-	
+		
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
 		'Dim Printer As New Printing.PrinterSettings
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
-		
+
 		fOK = True
-		
+
 		' Position the printing.
 		' TODO: Implement printing
 		'With Printer
@@ -99,18 +70,17 @@ ErrorTrap:
 		'	.CurrentY = .CurrentY + giPRINT_YSPACE
 		'	Printer.Print(ComponentDescription)
 		'End With
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		PrintComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
-	
+		
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
@@ -178,42 +148,37 @@ ErrorTrap:
 			' Return the value property.
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Value = msCharacterValue
+					Return msCharacterValue
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Value = mdblNumericValue
+					Return mdblNumericValue
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Value = mfLogicValue
+					Return mfLogicValue
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
-					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Value = mdtDateValue
+					Return mdtDateValue
 				Case Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Value = ""
+					Return ""
 			End Select
 			
 		End Get
-		Set(ByVal Value As Object)
+
+		Set(ByVal pValue As Object)
 			' Set the value property.
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					msCharacterValue = Value
+					msCharacterValue = pValue
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdblNumericValue = Value
+					mdblNumericValue = pValue
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mfLogicValue = Value
+					mfLogicValue = pValue
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdtDateValue = Value
 			End Select
-			
+
 		End Set
 	End Property
 	
@@ -242,35 +207,26 @@ ErrorTrap:
 		End Get
 	End Property
 	
-	
 	Public Property BaseComponent() As clsExprComponent
 		Get
-			' Return the component's base component object.
-			BaseComponent = mobjBaseComponent
-			
+			Return mobjBaseComponent		
 		End Get
-		Set(ByVal Value As clsExprComponent)
-			' Set the component's base component object property.
-			mobjBaseComponent = Value
-			
+		Set(ByVal pValue As clsExprComponent)
+			mobjBaseComponent = pValue
 		End Set
 	End Property
-	
 	
 	Public Property ReturnType() As ExpressionValueTypes
 		Get
 			Return miType
 		End Get
-		Set(ByVal Value As ExpressionValueTypes)
-			' Set the value type property.
-			miType = Value
-
+		Set(ByVal pValue As ExpressionValueTypes)
+			miType = pValue
 		End Set
 	End Property
 	
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-
 		Return True
-
 	End Function
+
 End Class
