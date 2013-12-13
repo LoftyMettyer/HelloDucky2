@@ -145,7 +145,7 @@ Public Class MailMerge
 
 	Public ReadOnly Property DefOutputScreen() As Boolean
 		Get
-			Return mblnDefOutputScreen
+			Return False ' mblnDefOutputScreen
 		End Get
 	End Property
 
@@ -301,90 +301,6 @@ Public Class MailMerge
 		MyBase.Finalize()
 	End Sub
 
-	Private Function CheckHiddenElements() As Boolean
-
-		'Sub created as part of fix for Fault 2656.
-
-		Dim sSQL As String
-		Dim bShowMSG As Boolean
-		Dim rsReport As Recordset
-		Dim rsTemp As Recordset
-		Dim sMessage As String
-		Dim sText As String
-
-		On Error GoTo ErrorTrap
-
-		bShowMSG = False
-
-		sSQL = "SELECT * FROM ASRSysMailMergeName WHERE MailMergeID = " & mlngMailMergeID
-		rsTemp = mclsGeneral.GetRecords(sSQL)
-
-		'Check for hidden picklists.
-		If rsTemp.Fields("PickListID").Value Then
-			sText = IsPicklistValid(rsTemp.Fields("PickListID"))
-			If sText <> vbNullString Then
-				'NO MSGBOX ON THE SERVER ! - MsgBox "You cannot run this Mail Merge definition as it contains a hidden picklist which has been deleted or made hidden by another user.\n" & _
-				'"Please re-visit your definition to remove the hidden picklist.", vbExclamation, App.Title
-				bShowMSG = True
-				CheckHiddenElements = False
-				GoTo TidyUpAndExit
-			End If
-		End If
-
-		'Check if Primary filter is hidden.
-		If rsTemp.Fields("FilterID").Value Then
-			sText = IsFilterValid(rsTemp.Fields("FilterID"))
-			If sText <> vbNullString Then
-				'NO MSGBOX ON THE SERVER ! - MsgBox "You cannot run this Mail Merge definition as it contains a hidden filter which has been deleted or made hidden by another user.\n" & _
-				'"Please re-visit your definition to remove the hidden filter.", vbExclamation, App.Title
-				bShowMSG = True
-				CheckHiddenElements = False
-				GoTo TidyUpAndExit
-			End If
-		End If
-
-		sSQL = String.Format("SELECT * FROM ASRSysMailMergeColumns WHERE MailMergeID = {0} ", mlngMailMergeID)
-		rsReport = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-		'Check if any calculations are hidden.
-		With rsReport
-			If Not (.BOF And .EOF) Then
-				Do Until .EOF
-					'If the the column type in the mail merge is an expression then check the expression
-					'for hidden components / deleted components.
-					If .Fields("Type").Value = "E" Then
-						'If the expression has hidden components and is owned by another user or has been deleted then notify the user.
-						sMessage = IsCalcValid(rsReport.Fields("ColumnID"))
-						If sMessage <> vbNullString Then
-							If Not bShowMSG Then
-								'NO MSGBOX ON THE SERVER ! - MsgBox "You cannot run this Report definition as it contains one or more calculation(s) which have been deleted or made hidden by another user.\n" & _
-								'"Please re-visit your definition to remove the hidden calculations.", vbExclamation, App.Title
-								bShowMSG = True
-							End If
-						End If
-					End If
-					.MoveNext()
-				Loop
-			End If
-			.Close()
-		End With
-
-		CheckHiddenElements = Not bShowMSG
-
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		'UPGRADE_NOTE: Object rsReport may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsReport = Nothing
-		Exit Function
-
-ErrorTrap:
-		CheckHiddenElements = False
-		'NO MSGBOX ON THE SERVER ! - MsgBox "Error validating the Mail Merge definition.", vbOKOnly + vbExclamation, App.Title
-		Resume TidyUpAndExit
-
-	End Function
-
 	Public Function EventLogAddHeader() As Integer
 		mobjEventLog.AddHeader(EventLog_Type.eltMailMerge, mstrDefName)
 		EventLogAddHeader = mobjEventLog.EventLogID
@@ -395,7 +311,7 @@ ErrorTrap:
 		Dim strSQL As String
 
 		On Error GoTo LocalErr
-		strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
+		strSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
 		mrsMergeData = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If mrsMergeData.EOF Then
@@ -602,12 +518,10 @@ LocalErr:
 
 		strSQL1 = "SELECT 'ColExp'   = 'Col',  'ColExpId' = ASRSysColumns.ColumnID, 'TableID'  = ASRSysTables.TableID, 'Table'    = ASRSysTables.Tablename, 'Name'     = ASRSysColumns.ColumnName, 'Type'     = ASRSysColumns.DataType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysColumns.ColumnID = ASRSysMailMergeColumns.ColumnID) JOIN ASRSysTables ON (ASRSysTables.TableID = ASRSysColumns.TableID) WHERE ASRSysMailMergeColumns.Type = 'C' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
 		strSQL2 = "SELECT 'ColExp'   = 'Exp', 'ColExpId' = ASRSysExpressions.ExprID, 'TableID'  = 0, 'Table'    = 'Calculation_', 'Name'     = ASRSysExpressions.Name, 'Type' = ASRSysExpressions.ReturnType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns LEFT OUTER JOIN ASRSysExpressions ON (ASRSysExpressions.ExprID = ASRSysMailMergeColumns.ColumnID) WHERE ASRSysMailMergeColumns.Type = 'E' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
-		strSQL = strSQL1 & vbNewLine & vbNewLine & "UNION" & vbNewLine & vbNewLine & strSQL2 & vbNewLine & vbNewLine & "ORDER BY 'ColExp', 'Table', 'Name'"
+		strSQL = strSQL1 & vbNewLine & "UNION" & vbNewLine & vbNewLine & strSQL2 & vbNewLine & "ORDER BY 'ColExp', 'Table', 'Name'"
 		mrsMailMergeColumns = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
-		SQLGetMergeColumns = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error reading calculation/column definitions."
@@ -708,7 +622,7 @@ LocalErr:
 								objExpr = New clsExprExpression
 								objExpr.ExpressionID = .Fields("ColExpID").Value
 								objExpr.ConstructExpression()
-								objExpr.ValidateExpression(True) 'MH20010508
+								objExpr.ValidateExpression(True)
 
 								Select Case objExpr.ReturnType
 									Case ExpressionValueTypes.giEXPRVALUE_DATE, ExpressionValueTypes.giEXPRVALUE_BYREF_DATE
@@ -731,7 +645,6 @@ LocalErr:
 					If fOK = False Then
 						Exit Function
 					End If
-
 
 					.MoveNext()
 				Loop
@@ -760,14 +673,11 @@ LocalErr:
 		mrsMailMergeColumns = Nothing
 
 		Call SQLOrderByClause()
-		SQLCodeCreate = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error processing calculation/column definitions."
-		fOK = False
-		SQLCodeCreate = fOK
+		Return False
 
 	End Function
 
@@ -978,7 +888,7 @@ LocalErr:
 
 	End Sub
 
-	Private Sub SQLAddCalculation(ByRef lngExpID As Integer, ByRef strColCode As String)
+	Private Sub SQLAddCalculation(ByVal lngExpID As Integer, ByRef strColCode As String)
 
 		Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression
@@ -1206,14 +1116,11 @@ LocalErr:
 			Next iLoop
 		End If
 
-		SetPromptedValues = fOK
-
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		mstrStatusMessage = "Error whilst setting prompted values. " & Err.Description
-		fOK = False
-		SetPromptedValues = False
+		Return False
 
 	End Function
 

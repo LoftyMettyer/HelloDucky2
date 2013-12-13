@@ -713,7 +713,7 @@ LocalErr:
 		IsPicklistValid = IsSelectionValid(varID, "picklist")
 	End Function
 
-	Public Function IsCalcValid(ByRef varID As Object) As String
+	Public Function IsCalcValid(ByVal varID As Object) As String
 		IsCalcValid = IsSelectionValid(varID, "calculation")
 	End Function
 
