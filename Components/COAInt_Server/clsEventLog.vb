@@ -137,20 +137,13 @@ ErrTrap:
 		If Not IsNothing(lngSuccess) And Not IsNothing(lngFailed) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngFailed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngSuccess. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strSQL = " [AsrSysEventLog].[SuccessCount] = " & CStr(lngSuccess) & ", " & " [AsrSysEventLog].[FailCount] = " & CStr(lngFailed) & ", "
+			strSQL = " [SuccessCount] = " & CStr(lngSuccess) & ", " & " [FailCount] = " & CStr(lngFailed) & ", "
 		Else
 			strSQL = vbNullString
 		End If
 
-		'add the EndTime of the event to the log.
-		strSQL = strSQL & " [AsrSysEventLog].[EndTime] = GETDATE(), "
 
-		strSQL = "UPDATE [AsrSysEventLog] SET " & strSQL & " [AsrSysEventLog].[Status] = " & udtStatus & " " & " WHERE [AsrSysEventLog].[ID] = " & mlngEventLogID
-		gADOCon.Execute(strSQL)
-
-
-		'now that the EndTime  is populated calculate the duration.
-		strSQL = "UPDATE [AsrSysEventLog] SET " & " [AsrSysEventLog].[Duration] = DATEDIFF(second, [AsrSysEventLog].[DateTime], [AsrSysEventLog].[EndTime]) " & " WHERE [AsrSysEventLog].[ID] = " & mlngEventLogID
+		strSQL = String.Format("UPDATE [AsrSysEventLog] SET {0} [EndTime] = GETDATE(), [Duration] = DATEDIFF(second, [DateTime],  GETDATE()), Status = {1} WHERE [ID] = {2}", strSQL, CInt(udtStatus), mlngEventLogID)
 		gADOCon.Execute(strSQL)
 
 		Return True
