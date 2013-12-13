@@ -12,9 +12,17 @@
 </style>
 
 <script>
+
 	$(document).ready(function () {
 
-		if ('<%=Model.any()%>' == 'False') {
+
+        // Common logic to show desired ribbon and menu
+	    $("#workframe").attr("data-framesource", "ORGCHART");
+	    showDefaultRibbon();                                  
+	    $("#toolbarHome").click();                             
+
+
+	    if ('<%=Model.any()%>' == 'False') {
 			$('#noData').show();
 		} else {
 			//process the results into unordered list.		
@@ -57,7 +65,10 @@
 		var scrollLeftNewPos = myNodePos - workframeWidth + 380 + 48;
 		
 		$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
+		
 	}
+
+	
 
 </script>
 
