@@ -652,6 +652,7 @@
     <Content Include="Database\UpdateScript8.0.18.sql" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
+    <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Kennedys.pubxml" />
