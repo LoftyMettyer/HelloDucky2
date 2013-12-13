@@ -413,13 +413,13 @@ function goDropLink(sLinkInfo) {
 
 function launchWorkflow(url, name) {
 
-	$('.pageTitle').text(name);
-	$('#externalContentFrame').attr('src', url);
-	$('.DashContent').fadeOut();
-	$('#workflowDisplay').fadeIn();
+	//$('.pageTitle').text(name);
+	//$('#externalContentFrame').attr('src', url);
+	//$('.DashContent').fadeOut();
+	//$('#workflowDisplay').fadeIn();
 
-	//var newWindow = window.open(url);
-	//if (window.focus) {
-	//	newWindow.focus();
-	//}
+	var newWindow = window.open(url);
+	if (window.focus) {
+		newWindow.focus();
+	}
 }
