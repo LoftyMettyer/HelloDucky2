@@ -835,7 +835,7 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		sSQL = "SELECT * FROM ASRSysPickListName WHERE PickListID = " & lngPicklistID
-		rsExpr = datGeneral.GetRecords(sSQL)
+		rsExpr = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 		With rsExpr
 			If .RecordCount > 0 Then

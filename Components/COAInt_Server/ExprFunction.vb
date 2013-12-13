@@ -514,9 +514,7 @@ ErrorTrap:
 					sSQL = vbNullString
 
 					With rsInfo
-						If .RecordCount > 0 Then
-							.MoveLast()
-							.MoveFirst()
+						If Not (.EOF And .BOF) Then
 							Do While Not .EOF
 								sCConvTable = .Fields("TableName").Value
 								Select Case .Fields("ParameterKey").Value

@@ -349,7 +349,7 @@ LocalErr:
 
 	End Function
 
-	Public Function GetRecords(ByRef sSQL As String) As Recordset
+	Friend Function GetRecords(ByRef sSQL As String) As Recordset
 		' Return the required forward-only/read-only recordset.
 		'  Set GetRecords = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
@@ -359,18 +359,15 @@ LocalErr:
 		' The cursor is called a "firehose" cursor because it is the fastest way to retrieve the data.
 		' Unfortunately, a side affect of the cursor is that it only permits one active recordset per connection.
 		' To get around this we'll try using a STATIC cursor.
-		GetRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		GetRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 	End Function
 
-	Public Function GetReadOnlyRecords(ByRef sSQL As String) As Recordset
-		' Return the required dynamic/read-only recordset.
-		'  Set GetReadOnlyRecords = datData.OpenRecordset(sSQL, adOpenDynamic, adLockReadOnly)
+	Friend Function GetReadOnlyRecords(ByRef sSQL As String) As Recordset
 
-		' JPD 7/6/00 Changed the cursor type from dynamic to static.
-		' A dynamic/read-only recordset opened with a sql select statement that includes the 'distinct' parameter,
-		' and returns a single record will automatically be set to be a forwardonly/read-only (firehose) recordet.
-		GetReadOnlyRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		' JDM - 13/12/2003 - Converted to a firehose cursor. This will not reurn a .recordcount so use with caution. 
+		'   If a record count is needed then use a function which uses a static cursor type - be warned of permformance though)
+		GetReadOnlyRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 	End Function
 

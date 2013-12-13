@@ -348,8 +348,7 @@ Public Class MailMerge
 
 		'Check if any calculations are hidden.
 		With rsReport
-			If .RecordCount > 0 Then
-				.MoveFirst()
+			If Not (.BOF And .EOF) Then
 				Do Until .EOF
 					'If the the column type in the mail merge is an expression then check the expression
 					'for hidden components / deleted components.

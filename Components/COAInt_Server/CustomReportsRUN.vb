@@ -2691,7 +2691,7 @@ GenerateSQLOrderBy_ERROR:
 
 		End If
 
-		mrstCustomReportsOutput = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		mrstCustomReportsOutput = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CursorLocationEnum.adUseClient)
 
 		If mrstCustomReportsOutput.BOF And mrstCustomReportsOutput.EOF Then
 			CheckRecordSet = False

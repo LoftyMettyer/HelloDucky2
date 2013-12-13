@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports VB = Microsoft.VisualBasic
@@ -529,12 +530,6 @@ Public Class AbsenceCalendar
 
 		sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
 
-		'    If (gsAbsenceDurationColumnName <> "") And mfCanReadAbsenceDuration Then
-		'      sSQL = sSQL & ", " & gsAbsenceTableName & "." & gsAbsenceDurationColumnName & " as Duration "
-		'    Else
-		'      sSQL = sSQL & ", NULL as Duration "
-		'    End If
-
 		sSQL = sSQL & "FROM " & mstrAbsenceTableRealSource & vbNewLine
 		sSQL = sSQL & "           INNER JOIN " & gsAbsenceTypeTableName & vbNewLine
 		sSQL = sSQL & "           ON " & mstrAbsenceTableRealSource & "." & gsAbsenceTypeColumnName & " = " & gsAbsenceTypeTableName & "." & gsAbsenceTypeTypeColumnName & vbNewLine
@@ -543,18 +538,17 @@ Public Class AbsenceCalendar
 		sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
 		sSQL = sSQL & "ORDER BY 'StartDate' ASC"
 
-		mrstAbsenceRecords = datGeneral.GetRecords(sSQL)
+		mrstAbsenceRecords = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 		' Set amount of absence records found
-		GetAbsenceRecordSet = mrstAbsenceRecords.RecordCount
-		Exit Function
+		Return mrstAbsenceRecords.RecordCount
 
 GetAbsenceRecordSet_ERROR:
 
 		'MsgBox "Error retrieving the Absence recordset." & vbNewLine & Err.Description, vbExclamation + vbOKOnly, App.Title
 		'UPGRADE_NOTE: Object mrstAbsenceRecords may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mrstAbsenceRecords = Nothing
-		GetAbsenceRecordSet = 0
+		Return 0
 
 	End Function
 
@@ -1575,7 +1569,8 @@ Error_FillCalBoxes:
 				End If
 
 				' Now get the rest of the working patterns
-				rstHistoricWPatterns = datGeneral.GetRecords("SELECT " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " ASC")
+				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " ASC")
+				rstHistoricWPatterns = dataAccess.OpenRecordset(sSQLWorkingPatterns, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 				If Not (rstHistoricWPatterns.EOF And rstHistoricWPatterns.BOF) Then
 
