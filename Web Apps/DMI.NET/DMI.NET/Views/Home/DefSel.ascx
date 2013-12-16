@@ -409,7 +409,7 @@ End If
 		        $("#toolbarEventLogFind").parent().hide();
 		        $("#toolbarWFPendingStepsFind").parent().hide();
 		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
+		        menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
 		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
@@ -420,16 +420,10 @@ End If
 		        menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
 		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
-		        //only display the 'close' button for defsel when called from rec edit...
-
-		        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-		            menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-		            menu_toolbarEnableItem('mnutoolCloseReportFind', true);
-		        }
-		        else {
-		            menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
-		        }
-		        // Show and select the tab
+		    		// Only display the 'close' button for defsel when called from rec edit...
+		        menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+		        menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+		    		// Show and select the tab
 		        $("#toolbarReportFind").parent().show();
 		        $("#toolbarReportFind").click();
 		        break;
@@ -440,8 +434,8 @@ End If
 		        $("#toolbarToolsFind").parent().hide();
 		        $("#toolbarEventLogFind").parent().hide();
 		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
+		    		// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
 		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
@@ -452,15 +446,10 @@ End If
 		        menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
 		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
-		        //only display the 'close' button for defsel when called from rec edit...
-		        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-		            menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-		            menu_toolbarEnableItem('mnutoolCloseReportFind', true);
-		        }
-		        else {
-		            menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
-		        }
-		        // Show and select the tab
+		    		// Only display the 'close' button for defsel when called from rec edit...
+		        menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+		        menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+		    		// Show and select the tab
 		        $("#toolbarReportFind").parent().show();
 		        $("#toolbarReportFind").click();
 		        break;
@@ -485,7 +474,7 @@ End If
 
 		        // Enable the buttons
 		        
-		        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted);
+		        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
 		        menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
@@ -497,9 +486,9 @@ End If
 		        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
 
 		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows);
-		        //only display the 'close' button for defsel when called from rec edit...
-		        menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
-		        menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', false);
+ 		    		//only display the 'close' button for defsel when called from rec edit...
+		        menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
+		        menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
 
 		        // Show and select the tab
 		        $("#toolbarUtilitiesFind").parent().show();
@@ -567,8 +556,8 @@ End If
 		        $("#toolbarEventLogFind").parent().hide();
 		        $("#toolbarWFPendingStepsFind").parent().hide();
 		        // Enable the buttons
-		        //fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-		        menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted);
+		    		//fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
 		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
@@ -581,8 +570,8 @@ End If
 
 		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
 		        //only display the 'close' button for defsel when called from rec edit...
-		        menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
-		        menu_toolbarEnableItem('mnutoolCloseReportFind',false);
+	        	menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+	        	menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
 
 		        // Show and select the tab
 		        $("#toolbarReportFind").parent().show();
@@ -843,7 +832,7 @@ End If
             $("#workframe").show();
             $("#toolbarRecord").show();
             $("#toolbarRecord").click();
-
+	        
             menu_refreshMenu();
         }
         else {

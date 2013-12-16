@@ -19,20 +19,27 @@ function stdrpt_def_absence_window_onload() {
         $("#cmdBack").hide();
     }
 
+    showDefaultRibbon();
+
     menu_refreshMenu();
 
     populatePrinters();
     SetReportDefaults();
     display_Absence_Page(1);
     absenceBreakdownRefreshTab3Controls();
-	
     // Disable the menu
     //menu_disableMenu();
-    $("#optionframe").hide();
-    $("#workframe").show();
-}
+		if (frmPostDefinition.txtRecSelCurrentID.value > 0) {
+			$("#workframe").hide();
+			$("#optionframe").show();
+		}
+		else {
+			$("#optionframe").hide();
+			$("#workframe").show();
+		}
+	}
 
-function changeTab1Control() {
+	function changeTab1Control() {
     frmAbsenceUseful.txtChanged.value = 1;
     absenceBreakdownRefreshTab1Controls();
 }
@@ -1311,12 +1318,19 @@ function absencedef_convertLocaleDateToSQL(psDateString)
 
 
 function setcancel() {
-
+  // If we arrived here from RecEdit, switch back to RecEdit
+	if (frmPostDefinition.txtRecSelCurrentID.value > 0) { 
+		$("#workframe").attr("data-framesource", "RECORDEDIT");
+	}
 	refreshData();
+
+	menu_disableMenu();
 
 	$("#optionframe").hide();
 	$("#workframe").show();
 	$("#toolbarRecord").show();
 	$("#toolbarRecord").click();
+
+	menu_refreshMenu();
 
 }

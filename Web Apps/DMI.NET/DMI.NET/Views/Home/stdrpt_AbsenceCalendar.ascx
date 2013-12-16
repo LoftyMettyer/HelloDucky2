@@ -28,8 +28,11 @@
 						$("#optionframe").show();
 				}
 
+				showDefaultRibbon();
+				$("#toolbarHome").click();
+
 				// Disable the menu
-				menu_disableMenu();
+				//menu_disableMenu();
 
 				// Force this combo to be displayed.
 				//cboStartMonth.style.visibility = "visible";
@@ -144,10 +147,14 @@
 
 				refreshData();
 
+				menu_disableMenu();
+
 				$("#optionframe").hide();
 				$("#workframe").show();
 				OpenHR.submitForm(frmRecordEdit);
-		}
+				menu_refreshMenu();
+				$("#toolbarRecord").click();
+			}
 
 		// Prints the screen
 		function PrintGrid() {			
