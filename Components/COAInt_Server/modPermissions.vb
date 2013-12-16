@@ -18,8 +18,6 @@ Module modPermissions
 		Dim rsPermissions As ADODB.Recordset
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
-		Dim avChildViews(,) As Object
-		Dim lngNextIndex As Integer
 		Dim avTablePermissions(,) As Object
 		Dim iLoop2 As Short
 		Dim sTableName As String
@@ -49,35 +47,6 @@ Module modPermissions
 		rsInfo = New ADODB.Recordset
 		rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 		datGeneral.Username = rsInfo.Fields("Name").Value
-		rsInfo.Close()
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
-
-		' Create an array of child view IDs and their associated table names.
-		' Column 1 - child view ID
-		' Column 2 - associated table name
-		' Column 3 - 0=OR, 1=AND
-		ReDim avChildViews(3, 0)
-
-		sSQL = "SELECT ASRSysChildViews2.childViewID, ASRSysTables.tableName, ASRSysChildViews2.type FROM ASRSysChildViews2 INNER JOIN ASRSysTables ON ASRSysChildViews2.tableID = ASRSysTables.tableID" _
-			& " WHERE ASRSysChildViews2.role = '" & Replace(gsUserGroup, "'", "''") & "'"
-
-		rsInfo = New ADODB.Recordset
-		rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
-
-		Do While Not rsInfo.EOF
-			lngNextIndex = UBound(avChildViews, 2) + 1
-			ReDim Preserve avChildViews(3, lngNextIndex)
-			'UPGRADE_WARNING: Couldn't resolve default property of object avChildViews(1, lngNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avChildViews(1, lngNextIndex) = rsInfo.Fields("childViewID").Value
-			'UPGRADE_WARNING: Couldn't resolve default property of object avChildViews(2, lngNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avChildViews(2, lngNextIndex) = rsInfo.Fields("TableName").Value
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object avChildViews(3, lngNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avChildViews(3, lngNextIndex) = IIf(IsDBNull(rsInfo.Fields("Type").Value), 0, rsInfo.Fields("Type").Value)
-
-			rsInfo.MoveNext()
-		Loop
 		rsInfo.Close()
 		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsInfo = Nothing
