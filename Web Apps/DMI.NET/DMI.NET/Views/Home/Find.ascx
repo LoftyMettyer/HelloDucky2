@@ -99,7 +99,9 @@
 					Const AD_STATE_OPEN = 1
 								
 					Dim fCancelDateColumn = True
-					If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) And Len(Session("lineage").ToString()) > 0 Then
+									
+					If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) And Len(NullSafeString(Session("lineage"))) > 0 Then
+						
 						Dim sSubString As String = Session("lineage").ToString()
 						Dim iIndex = InStr(sSubString, "_")
 						sSubString = Mid(sSubString, iIndex + 1)
