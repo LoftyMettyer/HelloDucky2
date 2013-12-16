@@ -1225,7 +1225,7 @@
 			strDateModified = ""
 
 			If Session("optionOLEType") > 1 Then
-				Dim objOLE = Session("OLEObject")
+				Dim objOLE As HR.Intranet.Server.Ole = Session("OLEObject")
 				' The following are now set using getpropertiesfromstream.
 				objOLE.FileName = ""
 				objOLE.TempLocationPhysical = strUploadPath

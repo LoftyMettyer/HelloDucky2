@@ -11,6 +11,7 @@ Public Class Ole
 	Private _mastrOleFilesInThisSession() As String
 	Private mstrTempLocationUNC As String
 
+	Private _msOLEVersionType As String
 	Private _miOLEType As Short
 	Private _mstrDisplayFileName As String
 	Private _mstrFileName As String
@@ -120,143 +121,139 @@ Public Class Ole
 	Public Sub CleanupOleFiles()
 	End Sub
 
-	Public Function CreateOLEDocument(ByRef plngRecordID As Object, ByRef plngColumnID As Object, ByRef pstrRealSource As Object) As Byte()
-
-		On Error GoTo ErrorTrap
+	Public Function CreateOLEDocument(ByRef plngRecordID As Long, ByRef plngColumnID As Long, ByRef pstrRealSource As String) As Byte()
 
 		Dim sSQL As String
 		Dim objDummyConnection As ADODB.Connection
 		Dim rsDocument As ADODB.Recordset
 
 		Dim strTempFile As String
-		Dim strProperties As String
+		Dim strProperties As String = ""
 		Dim strColumnName As String
-		'Dim objTextStream As Scripting.TextStream
 		Dim objTextStream As FileStream
 
 		Dim abtImage As Byte()
-		ReDim abtImage(0)
 		Dim responseFile As Byte()
+		Dim fFileOK As Boolean
+		Dim sErrorMessage As String
 
-		objDummyConnection = New ADODB.Connection
-		'UPGRADE_NOTE: Object mobjStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		_mobjStream = Nothing
+		Try
 
-		' Open a temporary connection string to stream the data
-		objDummyConnection.Open(_mstrDummyConnectionString)
+			objDummyConnection = New ADODB.Connection
+			'UPGRADE_NOTE: Object mobjStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			_mobjStream = Nothing
 
-		' New record - thus no stream will exist
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		If plngRecordID = 0 Then
-			'CreateOLEDocument = ""
-			GoTo TidyUpAndExit
-		End If
+			' Open a temporary connection string to stream the data
+			objDummyConnection.Open(_mstrDummyConnectionString)
 
-		strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
-
-		rsDocument = New ADODB.Recordset
-		rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
-
-		With rsDocument
-			.MoveFirst()
-
-			If _mobjStream Is Nothing Then
-				_mobjStream = New ADODB.Stream
+			' New record - thus no stream will exist
+			If plngRecordID = 0 Then
+				Return Nothing
 			End If
 
-			If _mobjStream.State <> ADODB.ObjectStateEnum.adStateOpen Then
-				_mobjStream.Open()
-				_mobjStream.Type = ADODB.StreamTypeEnum.adTypeBinary
-			End If
+			strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
 
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
-				_mobjStream.Write(rsDocument.Fields(strColumnName).Value)
-			Else
-				'CreateOLEDocument = ""
-				_miOLEType = 3
-				_mstrDisplayFileName = ""
-				GoTo TidyUpAndExit
-			End If
+			sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 
-			If _mobjStream.Size > 0 Then
-				abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
-				Dim fFileOK = (abtImage.GetLength(0) > 0)
+			rsDocument = New ADODB.Recordset
+			rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 
-				strTempFile = GetTmpFName()
+			With rsDocument
+				.MoveFirst()
 
-				_mobjStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
-
-				'objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
-				'strProperties = Trim(objTextStream.Read(400))				
-				objTextStream = File.OpenRead(strTempFile)
-				Dim b As Byte() = New Byte(399) {}
-				' strProperties = Trim(objTextStream.Read(400))				
-				Dim temp As New UTF8Encoding(True)
-				objTextStream.Read(b, 0, b.Length)
-				strProperties &= temp.GetString(b)
-
-				responseFile = New Byte((objTextStream.Length - 1) - 400) {}
-				objTextStream.Read(responseFile, 0, responseFile.Length)
-
-				'Dim outputFile As Byte() = New Byte(responseFile.Length - 400) {}
-				'Array.Copy(responseFile, 400, outputFile, 0, responseFile.Length - 400)
-
-
-				_miOLEType = Val(Mid(strProperties, 9, 2))
-				_mstrDisplayFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-				_mstrFileName = IIf(_miOLEType = 2, GetTmpFName, _mstrDisplayFileName)
-				_mstrPath = Trim(Mid(strProperties, 81, 210))
-				_mstrUnc = Trim(Mid(strProperties, 291, 60))
-				_mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
-				_mstrFileCreateDate = Trim(Mid(strProperties, 361, 20))
-				_mstrFileModifyDate = Trim(Mid(strProperties, 381, 20))
-
-				objTextStream.Close()
-
-				' Generate the file if it's not linked
-				If _miOLEType = 2 Then
-					' TODO: content stream to client - no holding area.
-					' mstrFileName = GenerateDocumentFromStream
-				Else
-					_mstrFileName = _mstrPath & "\" & _mstrFileName
+				If _mobjStream Is Nothing Then
+					_mobjStream = New ADODB.Stream
 				End If
 
+				If _mobjStream.State <> ADODB.ObjectStateEnum.adStateOpen Then
+					_mobjStream.Open()
+					_mobjStream.Type = ADODB.StreamTypeEnum.adTypeBinary
+				End If
+
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
+					_mobjStream.Write(rsDocument.Fields(strColumnName).Value)
+				Else
+					'CreateOLEDocument = ""
+					_miOLEType = 3
+					_mstrDisplayFileName = ""
+					Return Nothing
+				End If
+
+				If _mobjStream.Size > 0 Then
+					abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
+
+					_msOLEVersionType = Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 0, 8)
+
+					If Not _msOLEVersionType = "<<V002>>" Then
+						sErrorMessage = String.Format("Incorrect header version for column {0} in GetPropertiesFromStream ", strColumnName)
+						ProgramError(sErrorMessage, Err, Erl())
+						Return Nothing
+					End If
+
+					fFileOK = (abtImage.GetLength(0) > 0)
+
+					strTempFile = GetTmpFName()
+
+					_mobjStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
+
+					'objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
+					'strProperties = Trim(objTextStream.Read(400))				
+					objTextStream = File.OpenRead(strTempFile)
+					Dim b As Byte() = New Byte(399) {}
+					' strProperties = Trim(objTextStream.Read(400))				
+					Dim temp As New UTF8Encoding(True)
+					objTextStream.Read(b, 0, b.Length)
+					strProperties &= temp.GetString(b)
+
+					responseFile = New Byte((objTextStream.Length - 1) - 400) {}
+					objTextStream.Read(responseFile, 0, responseFile.Length)
+
+					'Dim outputFile As Byte() = New Byte(responseFile.Length - 400) {}
+					'Array.Copy(responseFile, 400, outputFile, 0, responseFile.Length - 400)
+
+
+					_miOLEType = Val(Mid(strProperties, 9, 2))
+					_mstrDisplayFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
+					_mstrFileName = IIf(_miOLEType = 2, GetTmpFName, _mstrDisplayFileName)
+					_mstrPath = Trim(Mid(strProperties, 81, 210))
+					_mstrUnc = Trim(Mid(strProperties, 291, 60))
+					_mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
+					_mstrFileCreateDate = Trim(Mid(strProperties, 361, 20))
+					_mstrFileModifyDate = Trim(Mid(strProperties, 381, 20))
+
+					objTextStream.Close()
+
+					' Generate the file if it's not linked
+					If _miOLEType = 2 Then
+						' TODO: content stream to client - no holding area.
+						' mstrFileName = GenerateDocumentFromStream
+					Else
+						_mstrFileName = _mstrPath & "\" & _mstrFileName
+					End If
+
+				End If
+
+			End With
+
+		Catch ex As Exception
+			_mstrFileName = ""
+			_mstrDisplayFileName = ""
+			ProgramError("GetPropertiesFromStream", Err, Erl())
+
+		Finally
+			If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
+				rsDocument.Close()
 			End If
 
-		End With
+			If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
+				objDummyConnection.Close()
+			End If
 
-TidyUpAndExit:
-		If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
-			rsDocument.Close()
-		End If
+		End Try
 
-		If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
-			objDummyConnection.Close()
-		End If
-
-ExitFunction:
-		'UPGRADE_NOTE: Object rsDocument may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsDocument = Nothing
-		'UPGRADE_NOTE: Object objDummyConnection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objDummyConnection = Nothing
-		'UPGRADE_NOTE: Object objTextStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTextStream = Nothing
-		' CreateOLEDocument = mstrFileName
 
 		Return responseFile
-
-		Exit Function
-
-ErrorTrap:
-		_mstrFileName = ""
-		_mstrDisplayFileName = ""
-		ProgramError("CreateOLEDocument", Err, Erl())
-
-		Resume ExitFunction
 
 	End Function
 
@@ -272,10 +269,10 @@ ErrorTrap:
 		Dim strTempFile As String
 		Dim sSQL As String
 		Dim strColumnName As String
+		Dim sErrorMessage As String
 
 		If plngRecordID = 0 Then
-			GetPropertiesFromStream = ""
-			Exit Function
+			Return ""
 		End If
 
 		objStream = New ADODB.Stream
@@ -302,20 +299,27 @@ ErrorTrap:
 				If Not IsDBNull(rsDocument.Fields(strColumnName).Value) Then
 					objStream.Write(rsDocument.Fields(strColumnName).Value)
 
-					_miOLEType = Val(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 8, 2))	' Val(Mid(strProperties, 9, 2))
-					_mstrDisplayFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	'Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-					_mstrFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))	' Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-					_mstrPath = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 80, 210))	'Trim(Mid(strProperties, 81, 210))
-					_mstrUnc = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 290, 60))	' Trim(Mid(strProperties, 291, 60))
-					_mstrDocumentSize = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 350, 10))	'Trim(Mid(strProperties, 351, 10))
-					_mstrFileCreateDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 360, 20))	'Trim(Mid(strProperties, 361, 20))
-					_mstrFileModifyDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 380, 20))	' Trim(Mid(strProperties, 381, 20))
+					_msOLEVersionType = Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 0, 8)
+
+					If Not _msOLEVersionType = "<<V002>>" Then
+						sErrorMessage = String.Format("Incorrect header version for column {0} in GetPropertiesFromStream ", strColumnName)
+						ProgramError(sErrorMessage, Err, Erl())
+						Return ""
+					Else
+						_miOLEType = Val(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 8, 2))
+						_mstrDisplayFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))
+						_mstrFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 10, 70)))
+						_mstrPath = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 80, 210))
+						_mstrUnc = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 290, 60))
+						_mstrDocumentSize = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 350, 10))
+						_mstrFileCreateDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 360, 20))
+						_mstrFileModifyDate = Trim(Encoding.UTF8.GetString(rsDocument.Fields(strColumnName).Value, 380, 20))
+					End If
 
 				Else
-					GetPropertiesFromStream = ""
-					Exit Function
+					Return ""
 				End If
-				
+
 				If _miOLEType = 2 Then
 					GetPropertiesFromStream = _mstrFileName & "::EMBEDDED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 				Else

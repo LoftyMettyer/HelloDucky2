@@ -854,22 +854,27 @@
 			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & cmdGetRecord.Parameters("recordID").Value & "'>" & vbCrLf)
 			
 			' Loop through the OLE columns that have data in them
-			Dim objOle = Session("OLEObject")
+			Dim objOle As HR.Intranet.Server.Ole = Session("OLEObject")
 			objOle.CleanupOLEFiles()
 			
 			' TODO: reckon this means one ole per record???			
 			For Each item As Object In oleColumnData
 				Dim strDisplayValue = objOle.GetPropertiesFromStream(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource"))
 				
-				' extract file size, and dates first...
-				Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
-				'Added to handle exception
-				
-				If (aDisplayValues(4) = "True") Then
-					' Photo.					
-					Response.Write("<input type='hidden' id='txtData_" & item & "' data-Img='" & objOle.ExtractPhotoToBase64(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource")) & "' name='txtData_" & item & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+				If strDisplayValue = "" Then
+					Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' value=''>" & vbCrLf)
 				Else
-					Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+				
+					' extract file size, and dates first...
+					Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
+					'Added to handle exception
+				
+					If (aDisplayValues(4) = "True") Then
+						' Photo.					
+						Response.Write("<input type='hidden' id='txtData_" & item & "' data-Img='" & objOle.ExtractPhotoToBase64(cmdGetRecord.Parameters("recordID").Value, item, Session("realSource")) & "' name='txtData_" & item & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+					Else
+						Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
+					End If
 				End If
 				
 			Next
