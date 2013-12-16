@@ -3679,7 +3679,7 @@ function menu_loadParent() {
 }
 
 function menu_loadBackPage() {
-	alert("backpage function");
+
 	var frmFindArea;
 	var lngRecordID;
 	var frmWorkArea;
@@ -3708,7 +3708,7 @@ function menu_loadBackPage() {
 		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
 		frmWorkArea.txtGotoPage.value = "recordEdit";
-		OpenHR.submitForm(frmWorkArea.submit);
+		OpenHR.submitForm(frmWorkArea);
 	}
 }
 
