@@ -595,10 +595,6 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>
 
-<form action="" method="POST" id="frmWorkAreaInfo" name="frmWorkAreaInfo">
-		<input type="hidden" id="txtHRProNavigation" name="txtHRProNavigation" value="0">
-</form>
-
 <script type="text/javascript">
 
 	menu_window_onload();

@@ -12,7 +12,6 @@
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
-		var frmWorkAreaInfo = OpenHR.getForm("menuframe", "frmWorkAreaInfo");
 		var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 		var frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
@@ -31,7 +30,7 @@
 	}
 	else {
 		// Do nothing if the menu controls are not yet instantiated.
-		if (frmWorkAreaInfo != null) {
+		if (frmMenuInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
 
 			if (sCurrentWorkPage == "RECORDEDIT") {

@@ -57,7 +57,7 @@
 	function default_window_onload() {		
 		try {			
 		// Do nothing if the menu controls are not yet instantiated.
-		if (OpenHR.getForm("menuframe", "frmWorkAreaInfo") != null) 
+			if (OpenHR.getForm("menuframe", "frmMenuInfo") != null)
 			{
 			//window.parent.document.all.item("workframeset").cols = "*, 0";	
 			$("#workframe").attr("data-framesource", "DEFAULT");

@@ -34,7 +34,8 @@
 			}
 		});
 
-		function recordEdit_window_onload() {			
+		function recordEdit_window_onload() {
+
 			//public variables
 				this.mavIDColumns = new Array();
 				var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -69,265 +70,244 @@
 
 				if (fOK == true) {
 					var frmMenuInfo = document.getElementById('frmMenuInfo');
-						var sKey = new String("photoPath_");
-						sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-						var sPath =OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-						frmRecordEditForm.txtPicturePath.value = sPath;
+					var sKey = new String("photoPath_");
+					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+					var sPath =OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+					frmRecordEditForm.txtPicturePath.value = sPath;
 
-						sKey = new String("imagePath_");
-						sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-						sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-						frmRecordEditForm.txtImagePath.value = sPath;
+					sKey = new String("imagePath_");
+					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+					sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+					frmRecordEditForm.txtImagePath.value = sPath;
 
-						sKey = new String("olePath_");
-						sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-						sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-						frmRecordEditForm.txtOLEServerPath.value = sPath;
+					sKey = new String("olePath_");
+					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+					sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+					frmRecordEditForm.txtOLEServerPath.value = sPath;
 
-						sKey = new String("localolePath_");
-						sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-						sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-						frmRecordEditForm.txtOLELocalPath.value = sPath;
+					sKey = new String("localolePath_");
+					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+					sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+					frmRecordEditForm.txtOLELocalPath.value = sPath;
 
-						// Read and then reset the HR Pro Navigation flag.
-						var HRProNavigationFlagValue;
-						//var HRProNavigationFlag = window.parent.frames("menuframe").document.forms("frmWorkAreaInfo").txtHRProNavigation;            
-						var HRProNavigationFlag = document.getElementById("txtHRProNavigation");
-						HRProNavigationFlagValue = HRProNavigationFlag.value;
-						HRProNavigationFlag.value = 0;
-
-						if (HRProNavigationFlagValue == 0) {
-								var frmGoto = OpenHR.getForm("workframe", "frmGoto");
-								frmGoto.txtGotoTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-								frmGoto.txtGotoViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-								frmGoto.txtGotoScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-								frmGoto.txtGotoOrderID.value = frmRecordEditForm.txtCurrentOrderID.value;
-								frmGoto.txtGotoRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
-								frmGoto.txtGotoParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-								frmGoto.txtGotoParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-								frmGoto.txtGotoPage.value = "recordEdit";
-
-								HRProNavigationFlag.value = 1;
-								//frmGoto.submit();
-								OpenHR.submitForm(frmGoto);
-						} else {		                        
-								// Set the recEdit control properties.               
-								//TODO: initialise clears the recordDMI activeX object and sets the module variables as below.
-								//fOK = recEditCtl.initialise(
-								//    frmRecordEditForm.txtRecEditTableID.value,
-								//    frmRecordEditForm.txtRecEditHeight.value,
-								//    frmRecordEditForm.txtRecEditWidth.value + 1,
-								//    frmRecordEditForm.txtRecEditTabCount.value,
-								//    frmRecordEditForm.txtRecEditTabCaptions.value,
-								//    frmRecordEditForm.txtRecEditFontName.value,
-								//    frmRecordEditForm.txtRecEditFontSize.value,
-								//    frmRecordEditForm.txtRecEditFontBold.value,
-								//    frmRecordEditForm.txtRecEditFontItalic.value,
-								//    frmRecordEditForm.txtRecEditFontUnderline.value,
-								//    frmRecordEditForm.txtRecEditFontStrikethru.value,
-								//    frmRecordEditForm.txtRecEditRealSource.value,
-								//    frmRecordEditForm.txtPicturePath.value,
-								//    frmRecordEditForm.txtRecEditEmpTableID.value,
-								//    frmRecordEditForm.txtRecEditCourseTableID.value,
-								//    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
-								//    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
-								//);
+						// Set the recEdit control properties.               
+						//TODO: initialise clears the recordDMI activeX object and sets the module variables as below.
+						//fOK = recEditCtl.initialise(
+						//    frmRecordEditForm.txtRecEditTableID.value,
+						//    frmRecordEditForm.txtRecEditHeight.value,
+						//    frmRecordEditForm.txtRecEditWidth.value + 1,
+						//    frmRecordEditForm.txtRecEditTabCount.value,
+						//    frmRecordEditForm.txtRecEditTabCaptions.value,
+						//    frmRecordEditForm.txtRecEditFontName.value,
+						//    frmRecordEditForm.txtRecEditFontSize.value,
+						//    frmRecordEditForm.txtRecEditFontBold.value,
+						//    frmRecordEditForm.txtRecEditFontItalic.value,
+						//    frmRecordEditForm.txtRecEditFontUnderline.value,
+						//    frmRecordEditForm.txtRecEditFontStrikethru.value,
+						//    frmRecordEditForm.txtRecEditRealSource.value,
+						//    frmRecordEditForm.txtPicturePath.value,
+						//    frmRecordEditForm.txtRecEditEmpTableID.value,
+						//    frmRecordEditForm.txtRecEditCourseTableID.value,
+						//    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
+						//    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
+						//);
 
 
 
-								//Overview of upgrade from classic ASP for reference.
-								//We used to load the recordDMI activeX control in 3 stages:
-								//  .addControl (created an array of properties), .addControlValues (added option group and DDL options) and .formatScreen (rendered controls onto the form).
-								//  Now the controls are created and set up using the following javascript functions. 
-								//  The addHtmlControl loop below replaces .addControl AND .formatScreen, combining both functions
-								//  The addHTMLControlValues function replaces the addControlValues method.
-								//  NB The controlItemArray is the array that totally replaced the .addControl function.
+						//Overview of upgrade from classic ASP for reference.
+						//We used to load the recordDMI activeX control in 3 stages:
+						//  .addControl (created an array of properties), .addControlValues (added option group and DDL options) and .formatScreen (rendered controls onto the form).
+						//  Now the controls are created and set up using the following javascript functions. 
+						//  The addHtmlControl loop below replaces .addControl AND .formatScreen, combining both functions
+						//  The addHTMLControlValues function replaces the addControlValues method.
+						//  NB The controlItemArray is the array that totally replaced the .addControl function.
 								
-								if (fOK == true) {
-										// Get the recEdit control to instantiate the required controls.                    
-										controlCollection = frmRecordEditForm.elements;
-										if (controlCollection != null) {
-												txtControls = new Array();
-												txtControlsCount = 0;
+						if (fOK == true) {
+								// Get the recEdit control to instantiate the required controls.                    
+								controlCollection = frmRecordEditForm.elements;
+								if (controlCollection != null) {
+										txtControls = new Array();
+										txtControlsCount = 0;
 
-												//two loops here - the controlCollection was growing as controls were added, which didn't help.
-												for (i = 0; i < controlCollection.length; i++) {
-														sControlName = controlCollection.item(i).name;
-														sControlName = sControlName.substr(0, 18);
-														if (sControlName == "txtRecEditControl_") {
-																//fOK = recEditCtl.addControl(controlCollection.item(i).value);
+										//two loops here - the controlCollection was growing as controls were added, which didn't help.
+										for (i = 0; i < controlCollection.length; i++) {
+												sControlName = controlCollection.item(i).name;
+												sControlName = sControlName.substr(0, 18);
+												if (sControlName == "txtRecEditControl_") {
+														//fOK = recEditCtl.addControl(controlCollection.item(i).value);
+														txtControls[txtControlsCount] = controlCollection.item(i).name;
+														txtControlsCount += 1;
+												}
+
+												if (fOK == false) {
+														break;
+												}
+										}
+
+									//Now add the form controls based on the fixed array of txtRecEditControl_ items...                        	                    
+										for (i = 0; i < txtControls.length; i++) {
+												txtControlValue = $("#" + txtControls[i]).val();
+												var txtControlID = $("#" + txtControls[i]).attr("id");
+												AddHtmlControl(txtControlValue, txtControlID, i);
+										}
+
+								}
+						}
+
+						//jQuery Functionality:
+						if (fOK == true) {
+							//add datepicker functionality.
+							$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+							//$(".datepicker").datepicker({
+							//	dateFormat: Date,
+							//	_keyEvent: true
+							//});
+
+								//add spinner functionality
+							$('.spinner').each(function () {
+								var id = $(this).attr('id');
+								var minvalue = $(this).attr('data-minval');	                	
+								var maxvalue = $(this).attr('data-maxval');
+								var increment = $(this).attr('data-increment');
+								var disabledflag = $(this).attr('data-disabled');	                											
+
+								$('#' + id).spinner({
+									min: minvalue,
+									max: maxvalue,
+									step: increment,
+									disabled: disabledflag
+								}).on('input', function () {
+									var val = this.value,
+										$this = $(this),
+										max = $this.spinner('option', 'max'),
+										min = $this.spinner('option', 'min');
+									//if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
+									this.value = val > max ? max : val < min ? min : val;
+								}).blur(function() {
+									if (isNaN(this.value)) this.value = 0;
+								});
+
+							});
+
+							$(".spinner").spinner();
+									
+							//Loop over the "number" fields
+							$(".number").each(function() {
+								var control = $(this);
+								control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
+								$(control).blur(function() { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
+									if ($(this).val() == 0) {
+										$(this).val($(this).attr('data-blankIfZeroValue'));
+									}
+								});
+								$(control).on("keyup", function() {
+									$("#ctlRecordEdit #changed").val("false");
+									enableSaveButton();
+								});
+							});
+						}
+
+
+						if (fOK == true) {
+								// Set the column control values in the recEdit control.
+								var sControlName;
+								controlCollection = frmRecordEditForm.elements;
+								if (controlCollection != null) {
+										var txtControls = new Array();
+										var txtControlsCount = 0;
+
+										for (i = 0; i < controlCollection.length; i++) {
+												sControlName = controlCollection.item(i).name;
+												if (sControlName) {
+														sControlName = sControlName.substr(0, 24);
+														if (sControlName == "txtRecEditControlValues_") {
+																//fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
 																txtControls[txtControlsCount] = controlCollection.item(i).name;
 																txtControlsCount += 1;
 														}
-
-														if (fOK == false) {
-																break;
-														}
 												}
-
-											//Now add the form controls based on the fixed array of txtRecEditControl_ items...                        	                    
-												for (i = 0; i < txtControls.length; i++) {
-														txtControlValue = $("#" + txtControls[i]).val();
-														var txtControlID = $("#" + txtControls[i]).attr("id");
-														AddHtmlControl(txtControlValue, txtControlID, i);
-												}
-
-										}
-								}
-
-								//jQuery Functionality:
-								if (fOK == true) {
-									//add datepicker functionality.
-									$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
-									//$(".datepicker").datepicker({
-									//	dateFormat: Date,
-									//	_keyEvent: true
-									//});
-
-										//add spinner functionality
-									$('.spinner').each(function () {
-										var id = $(this).attr('id');
-										var minvalue = $(this).attr('data-minval');	                	
-										var maxvalue = $(this).attr('data-maxval');
-										var increment = $(this).attr('data-increment');
-										var disabledflag = $(this).attr('data-disabled');	                											
-
-										$('#' + id).spinner({
-											min: minvalue,
-											max: maxvalue,
-											step: increment,
-											disabled: disabledflag
-										}).on('input', function () {
-											var val = this.value,
-												$this = $(this),
-												max = $this.spinner('option', 'max'),
-												min = $this.spinner('option', 'min');
-											//if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
-											this.value = val > max ? max : val < min ? min : val;
-										}).blur(function() {
-											if (isNaN(this.value)) this.value = 0;
-										});
-
-									});
-
-									$(".spinner").spinner();
-									
-									//Loop over the "number" fields
-									$(".number").each(function() {
-										var control = $(this);
-										control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
-										$(control).blur(function() { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
-											if ($(this).val() == 0) {
-												$(this).val($(this).attr('data-blankIfZeroValue'));
-											}
-										});
-										$(control).on("keyup", function() {
-											$("#ctlRecordEdit #changed").val("false");
-											enableSaveButton();
-										});
-									});
-								}
-
-
-								if (fOK == true) {
-										// Set the column control values in the recEdit control.
-										var sControlName;
-										controlCollection = frmRecordEditForm.elements;
-										if (controlCollection != null) {
-												var txtControls = new Array();
-												var txtControlsCount = 0;
-
-												for (i = 0; i < controlCollection.length; i++) {
-														sControlName = controlCollection.item(i).name;
-														if (sControlName) {
-																sControlName = sControlName.substr(0, 24);
-																if (sControlName == "txtRecEditControlValues_") {
-																		//fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
-																		txtControls[txtControlsCount] = controlCollection.item(i).name;
-																		txtControlsCount += 1;
-																}
-														}
-														if (fOK == false) {
-																break;
-														}
-												}
-
-												//Now add the form control values based on the fixed array of txtRecEditControl_ items...
-												for (var i = 0; i < txtControls.length; i++) {
-														var txtControlValue = $("#" + txtControls[i]).val();
-														addHTMLControlValues(txtControlValue);
+												if (fOK == false) {
+														break;
 												}
 										}
-								}
-								
-								if (fOK == true) {
-										//.formatScreen is redundant. the 'addHtmlControl' js function replaces it and amalgamates with addControl.
-										// Get the recEdit control to format itself.
-										//recEditCtl.formatscreen();
 
-										//JPD 20021021 - Added picture functionality.
-										//TODO: NPG
-										if (frmRecordEditForm.txtImagePath.value.length > 0) {
-												var controlCollection = frmRecordEditForm.elements;
-												if (controlCollection != null) {
-														for (i = 0; i < controlCollection.length; i++) {
-																sControlName = controlCollection.item(i).name;
-															if (sControlName) {
-																sControlName = sControlName.substr(0, 18);
-																if (sControlName == "txtRecEditPicture_") {
-																		sControlName = controlCollection.item(i).name;
-																	//var iPictureID = new Number(sControlName.substr(18)); 
-																	// recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
-																}
-																}
-														}
-												}
+										//Now add the form control values based on the fixed array of txtRecEditControl_ items...
+										for (var i = 0; i < txtControls.length; i++) {
+												var txtControlValue = $("#" + txtControls[i]).val();
+												addHTMLControlValues(txtControlValue);
 										}
-								}
-
-								if (fOK == true) {
-										// Get the data.asp to get the required data.
-										//var action = document.getElementById("txtAction");
-										var dataForm = OpenHR.getForm("dataframe", "frmGetData");
-
-										if (((frmRecordEditForm.txtAction.value == "NEW") ||
-														(frmRecordEditForm.txtAction.value == "COPY")) &&
-												(frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
-											// action.value = frmRecordEditForm.txtAction.value;
-											dataForm.txtAction.value = frmRecordEditForm.txtAction.value;
-										} else {
-											dataForm.txtAction.value = "LOAD";
-										}
-
-										if (frmRecordEditForm.txtCurrentOrderID.value != frmRecordEditForm.txtRecEditOrderID.value) {
-												frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
-										}
-
-										dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-										dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-										dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-										dataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
-										dataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
-										dataForm.txtFilterSQL.value = "";
-										dataForm.txtFilterDef.value = "";
-										dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-										dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
-										dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-										dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-										dataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
-
-										//this should be in scope by now.
-										data_refreshData(); //window.parent.frames("dataframe").refreshData();
-								}
-
-								if (fOK != true) {
-										// The recEdit control was not initialised properly.
-										OpenHR.messageBox("Record Edit control not initialised properly.");
-										window.location = "login";
 								}
 						}
-				}
+								
+						if (fOK == true) {
+								//.formatScreen is redundant. the 'addHtmlControl' js function replaces it and amalgamates with addControl.
+								// Get the recEdit control to format itself.
+								//recEditCtl.formatscreen();
 
+								//JPD 20021021 - Added picture functionality.
+								//TODO: NPG
+								if (frmRecordEditForm.txtImagePath.value.length > 0) {
+										var controlCollection = frmRecordEditForm.elements;
+										if (controlCollection != null) {
+												for (i = 0; i < controlCollection.length; i++) {
+														sControlName = controlCollection.item(i).name;
+													if (sControlName) {
+														sControlName = sControlName.substr(0, 18);
+														if (sControlName == "txtRecEditPicture_") {
+																sControlName = controlCollection.item(i).name;
+															//var iPictureID = new Number(sControlName.substr(18)); 
+															// recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
+														}
+														}
+												}
+										}
+								}
+						}
+
+						if (fOK == true) {
+									
+
+								// Get the data.asp to get the required data.
+								//var action = document.getElementById("txtAction");
+								var dataForm = OpenHR.getForm("dataframe", "frmGetData");
+
+								if (((frmRecordEditForm.txtAction.value == "NEW") ||
+												(frmRecordEditForm.txtAction.value == "COPY")) &&
+										(frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
+									// action.value = frmRecordEditForm.txtAction.value;
+									dataForm.txtAction.value = frmRecordEditForm.txtAction.value;
+								} else {
+									dataForm.txtAction.value = "LOAD";
+								}
+
+								if (frmRecordEditForm.txtCurrentOrderID.value != frmRecordEditForm.txtRecEditOrderID.value) {
+										frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
+								}
+
+								dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+								dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+								dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+								dataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
+								dataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
+								dataForm.txtFilterSQL.value = "";
+								dataForm.txtFilterDef.value = "";
+								dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
+								dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+								dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+								dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+								dataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+
+								//this should be in scope by now.
+								data_refreshData(); //window.parent.frames("dataframe").refreshData();
+						}
+
+						if (fOK != true) {
+								// The recEdit control was not initialised properly.
+								OpenHR.messageBox("Record Edit control not initialised properly.");
+								window.location = "login";
+						}
+				}
+	
 				try {
 						//NPG - recedit not resizing. Do it manually.
 						var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);

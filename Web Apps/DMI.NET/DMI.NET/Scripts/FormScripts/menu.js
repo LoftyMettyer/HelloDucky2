@@ -2509,10 +2509,7 @@ function menu_loadRecordEditPage(psToolName) {
 	iIndex = sSubString.indexOf("_");
 	lngViewID = sSubString.substr(0, iIndex);
 	lngScreenID = sSubString.substr(iIndex + 1);
-	var frmWorkAreaInfo = document.getElementById('frmWorkAreaInfo');
-	
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-	
+
 	// Submit the current "workframe" form, and then load the required record Edit page.
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 	frmWorkArea.txtGotoTableID.value = lngTableID;
@@ -2602,12 +2599,9 @@ function menu_loadRecordEditPage(psToolName) {
 function menu_loadFindPage() {
 	var frmWorkArea;
 	var frmRecEdit;
-	var frmWorkAreaInfo;
 	
 	//TODO: ShowWait("Loading find records. Please wait...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
-	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");	
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -2667,9 +2661,6 @@ function menu_loadFindPageFirst(psToolName) {
 	lngViewID = sSubString.substr(0, iIndex);
 	lngScreenID = sSubString.substr(iIndex + 1);
 
-	//frmWorkAreaInfo.txtHRProNavigation.value = 1;
-	$("#txtHRProNavigation").val(1);
-
 	// Submit the current "workframe" form, and then load the required record Edit page.
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");	//  window.parent.frames("workframe").document.forms("frmGoto");
 	frmWorkArea.txtGotoTableID.value = lngTableID;
@@ -2712,12 +2703,9 @@ function menu_loadFindPageFirst(psToolName) {
 function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, psFilterLookupValue) {
 	var frmRecEditArea;
 	var frmOptionArea;
-	var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 	
 	//ShowWait("Loading lookup find records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
-
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -2754,8 +2742,6 @@ function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, pln
 	
 	//ShowWait("Loading link find records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
-
-	document.getElementById("frmWorkAreaInfo").txtHRProNavigation.value = 1;
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -2783,12 +2769,10 @@ function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, pln
 function menu_loadTransferCoursePage(psCourseTitle) {
 	var frmRecEditArea;
 	var frmOptionArea;
-	var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 
 	//ShowWait("Loading matching course records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -2831,8 +2815,6 @@ function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, p
 	}
 
 	menu_disableMenu();
-	var frmWorkAreaInfo = document.getElementById('frmWorkAreaInfo');
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -2881,7 +2863,6 @@ function menu_loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize
 //	
 //	disableMenu();
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 //	
 //	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
 //	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
@@ -3085,9 +3066,6 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 		menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
 		if (psPage == "FIND") {
-			var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
-			
-			frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
 			// Submit the current "workframe" form, and then load the required record Edit page.
 			var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -3476,8 +3454,6 @@ function menu_editRecord() {
 		frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 		frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 
-		frmWorkAreaInfo.txtHRProNavigation.value = 1;
-
 		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
 		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
 		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
@@ -3584,7 +3560,6 @@ function menu_loadParentRecord() {
 	var frmWorkArea;
 	var frmFindArea;
 	var sCurrentWorkPage;
-	var frmWorkAreaInfo;
 	
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
@@ -3599,15 +3574,11 @@ function menu_loadParentRecord() {
 	else {
 		if (sCurrentWorkPage == "FIND") {
 			//TODO: ShowWait("Loading screen. Please wait...");
-
-			frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 			
 			menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
 			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-			
-
-			frmWorkAreaInfo.txtHRProNavigation.value = 1;
+		
 				
 			// Get the table, view and screen info from the tool name.
 			sSubString = frmFindArea.txtLineage.value;
@@ -3660,7 +3631,6 @@ function menu_loadParent() {
 	var sSubString;
 	var sLineage;
 	var frmWorkArea;
-	var frmWorkAreaInfo;
 	var frmRecEditArea;
 	var iIndex;
 
@@ -3669,9 +3639,6 @@ function menu_loadParent() {
 					
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
-			
-	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 				
 	// Get the table, view and screen info from the tool name.
 	sSubString = frmRecEditArea.txtLineage.value;
@@ -3716,19 +3683,16 @@ function menu_loadBackPage() {
 	var frmFindArea;
 	var lngRecordID;
 	var frmWorkArea;
-	var frmWorkAreaInfo;
 	
 	// Submit the current "workframe" form, and then load the required Record Edit page.
 	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 	
 	lngRecordID = frmFindArea.txtCurrentRecordID.value;
 	
 	if (lngRecordID > 0) {
 		//TODO: ShowWait("Loading screen. Please wait...");
 			menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
-		
-		frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
 	
 		// Submit the current "workframe" form, and then load the required record Edit page.
 		frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -4104,8 +4068,6 @@ function menu_selectFolder(psKey, psPath) {
 //	ShowWait("Loading folder list. Please wait...");
 //	disableMenu();
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
 //	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
 
 //	frmOptionArea.txtGotoOptionFile.value = psPath;
