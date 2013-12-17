@@ -857,14 +857,6 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 		
-	if (sToolName == "mnutoolPrintRecord") {
-		// Print the browser display.
-		// Get the data.asp to get the save the current record.
-		OpenHR.getForm("workframe", "frmRecordEditForm");
-		frmRecEditArea.ctlRecordEdit.printScreen();
-		return;
-	}
-		
 		// Calendar Reports  (from record menu)
 	if (sToolName == "mnutoolCalendarReportsRecord") {
 			//if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
@@ -1474,12 +1466,9 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolClearFilterRecord", true);
 		menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		}
-		menu_setVisibleMenuItem("mnutoolPrintRecord", true);
-		menu_toolbarEnableItem("mnutoolPrintRecord", true);
-
 
 		
-						// Standard reports group
+		// Standard reports group
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				(frmMenuInfo.txtUserType.value == 0) &&
@@ -2248,7 +2237,6 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolChangeOrderRecord', false);
 		menu_toolbarEnableItem('mnutoolFilterRecord', false);
 		menu_toolbarEnableItem('mnutoolClearFilterRecord', false);
-		menu_toolbarEnableItem('mnutoolPrintRecord', false);
 
 		menu_toolbarEnableItem('mnutoolCalendarReportsRecord', false);
 		menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecord', false);
@@ -2291,19 +2279,9 @@ function menu_disableFindMenu() {
 		menu_toolbarEnableItem('mnutoolNextRecordFind', false);
 		menu_toolbarEnableItem('mnutoolLastRecordFind', false);
 
-		//menu_toolbarEnableItem('mnutoolFindRecordFind', false);
-		//menu_toolbarEnableItem('mnutoolQuickFindRecordFind', false);
 		menu_toolbarEnableItem('mnutoolChangeOrderRecordFind', false);
 		menu_toolbarEnableItem('mnutoolFilterRecordFind', false);
 		menu_toolbarEnableItem('mnutoolClearFilterRecordFind', false);
-		//menu_toolbarEnableItem('mnutoolPrintRecordFind', false);
-
-		//menu_toolbarEnableItem('mnutoolCalendarReportsRecordFind', false);
-		//menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecordFind', false);
-		//menu_toolbarEnableItem('mnutoolAbsenceCalendarRecordFind', false);
-		//menu_toolbarEnableItem('mnutoolBradfordRecordFind', false);
-
-		//menu_toolbarEnableItem('mnutoolMailMergeRecordFind', false);
 	}
 }
 

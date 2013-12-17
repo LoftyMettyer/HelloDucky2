@@ -373,15 +373,6 @@
 								</a>
 							</div>
 						</li>
-						<li id="mnuSectionOutput"><span>Output</span>
-							<div id="mnutoolPrintRecord" class="button" title="Output">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
-									<i class="icon-print"></i>
-									<h6>Output</h6>
-								</a>
-							</div>
-						</li>
 						<li id="mnuSectionRecordOrder"><span>Order</span>
 							<div id="mnutoolChangeOrderRecord" class="button" title="Change Order">
 								<a href="#" rel="table">
@@ -405,13 +396,6 @@
 									<h6>Clear Filter</h6>
 								</a>
 							</div>
-<%--							<div id="mnutoolPrintRecord" class="button" title="Output">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
-									<i class="icon-print"></i>
-									<h6>Output</h6>
-								</a>
-							</div>--%>
 						</li>
 						<li id="mnuSectionRecordCourseBooking"><span>Course Booking</span>
 							<div id="mnutoolBookCourseRecord" class="button">
