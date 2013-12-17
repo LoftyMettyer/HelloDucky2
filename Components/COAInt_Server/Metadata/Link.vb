@@ -73,7 +73,7 @@ Namespace Metadata
 		Public UtilityType As Short
 		Public UtilityID As Integer
 		Public NewWindow As Boolean
-		Public BaseTable As String
+		Public BaseTableID As Long
 		Public Text1 As String
 		Public Text2 As String
 		Public SingleRecord As Short

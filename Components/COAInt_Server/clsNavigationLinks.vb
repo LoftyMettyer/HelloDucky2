@@ -71,7 +71,7 @@ Public Class clsNavigationLinks
 				objLink = New Link
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.BaseTable = IIf(Not IsDBNull(.Fields("BaseTable").Value), .Fields("BaseTable").Value, "")
+				objLink.BaseTableID = IIf(Not IsDBNull(.Fields("BaseTable").Value), .Fields("BaseTable").Value, 0)
 				objLink.ID = .Fields("ID").Value
 				objLink.DrillDownHidden = .Fields("DrillDownHidden").Value
 				objLink.LinkOrder = .Fields("LinkOrder").Value

@@ -3259,7 +3259,7 @@ Namespace Controllers
 							Do While Not mrstChartData.EOF
 								If TryCast(mrstChartData.Fields(0).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(0).Value, String) <> "No Data" Then
 
-									seriesName = mrstChartData.Fields(3).Value.ToString()
+									seriesName = mrstChartData.Fields(2).Value.ToString()
 									Dim columnName As String = mrstChartData.Fields(1).Value.ToString()
 									Dim yVal As Integer = CInt(mrstChartData.Fields(4).Value)
 

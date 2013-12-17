@@ -86,12 +86,21 @@ Public Class clsMultiAxisChart
 		lngSortOrderID = plngSortOrderID
 		iSortDirection = CShort(piSortDirection)
 
-		strTableName = datGeneral.GetTableName(lngTableID)
-		strColumnName = mclsGeneral.GetColumnName(lngColumnID)
-		strTableName2 = datGeneral.GetTableName(lngTableID2)
-		strColumnName2 = mclsGeneral.GetColumnName(lngColumnID2)
-		strTableName3 = datGeneral.GetTableName(lngTableID3)
-		strColumnName3 = mclsGeneral.GetColumnName(lngColumnID3)
+		If lngTableID > 0 Then
+			strTableName = datGeneral.GetTableName(lngTableID)
+			strColumnName = mclsGeneral.GetColumnName(lngColumnID)
+		End If
+
+		If lngTableID2 > 0 Then
+			strTableName2 = datGeneral.GetTableName(lngTableID2)
+			strColumnName2 = mclsGeneral.GetColumnName(lngColumnID2)
+		End If
+
+		If lngTableID3 > 0 Then
+			strTableName3 = datGeneral.GetTableName(lngTableID3)
+			strColumnName3 = mclsGeneral.GetColumnName(lngColumnID3)
+		End If
+
 		strColourColumnName = mclsGeneral.GetColumnName(lngColourColumnID)
 
 		If datGeneral.IsAChildOf(lngTableID, lngTableID2) = True Then
@@ -381,10 +390,6 @@ MergeSQLStrings_ERROR:
 		Dim pstrSource As String
 		Dim pintNextIndex As Short
 
-		Dim blnOK As Boolean
-		Dim sCalcCode As String
-		Dim alngSourceTables() As Integer
-		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As TablePrivilege
 
 		Dim pstrAggregatePrefix As String

@@ -117,13 +117,11 @@
 								fFirstSeparator = False
 							Else
 							%>
-				</ul>
-			</div>
-			</li> </ul>
+								</ul></div></li> </ul>
 							<%
 							End If
 						
-						iSeparatorNum += 1
+							iSeparatorNum += 1
 				
 							If navlink.Text.Length > 0 Then
 								sText = Html.Encode(navlink.Text)
@@ -131,32 +129,37 @@
 								sText = sText.Replace("'", """")
 							Else
 								sText = ""
-							 End If%>
+							End If
+							%>
 
-					<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
-						<li class="hypertextlink-displaytype">
-							<div class="wrapupcontainer hypertextlinktextseparator">
-								<div class="wrapuptext hypertextlinktextseparator">
-									<p class="hypertextlinkseparator hypertextlinkseparator-font hypertextlinkseparator-colour hypertextlinkseparator-size hypertextlinkseparator-bold hypertextlinkseparator-italics"><%=sText%></p>
-								</div>
-							</div>					
-							<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
-								<ul>
-							<%Else
-									If iRowNum > iMaxRows Then
-										iColNum += 1
-											iRowNum = 1%>
-							<script type="text/javascript">
-								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
-								$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
-							</script>
-							<%End If
+							<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
+								<li class="hypertextlink-displaytype">
+									<div class="wrapupcontainer hypertextlinktextseparator">
+										<div class="wrapuptext hypertextlinktextseparator">
+											<p class="hypertextlinkseparator hypertextlinkseparator-font hypertextlinkseparator-colour hypertextlinkseparator-size hypertextlinkseparator-bold hypertextlinkseparator-italics"><%=sText%></p>
+										</div>
+									</div>					
+									<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
+										<ul>
+							<%
+							Else
+								If iRowNum > iMaxRows Then
+									iColNum += 1
+									iRowNum = 1
+										%>
+										<script type="text/javascript">
+											$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+											$("#hypertextlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+										</script>
+								<%
+								End If
 
 								classIcon = ""
 								sNewWindow = ""
 								
 								Select Case navlink.Element_Type
 									Case ElementType.ButtonLink
+										
 										sURL = NullSafeString(navlink.URL).Replace("'", "\'")
 										sURL = sURL.Replace("&", "&amp;")
 										sURL = sURL.Replace("""", "&quot;")
@@ -169,7 +172,6 @@
 										classIcon = "icon-external-link"
 										If navlink.AppFilePath.Length > 0 Then
 											sOnClick = "goApp('" & sAppFilePath & "', '" & sAppParameters & "')"
-											' sCheckKeyPressed = "CheckKeyPressed('APP', '" & sDestination & "',0,'')"
 										ElseIf navlink.URL.Length > 0 Then
 											If navlink.NewWindow = True Then
 												sNewWindow = "1"
@@ -178,28 +180,29 @@
 											End If
 			
 											sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true)"
-											' sCheckKeyPressed = "CheckKeyPressed('HYPERLINK', '" & sURL & "', " & sNewWindow & ",'')"
+
 										Else
 											Dim sUtilityType = Convert.ToString(navlink.UtilityType)
 											Dim sUtilityID = Convert.ToString(navlink.UtilityID)
 											Dim sUtilityDef = sUtilityType & "_" & sUtilityID
-											Dim sUtilityBaseTable = CStr(navlink.BaseTable)
-
-											sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
-
+											Dim sUtilityBaseTable = CStr(navlink.BaseTableID)
+											sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text.Replace("'", "") & "', " & sUtilityBaseTable & ")"
+										
 										End If
 									
-								Case ElementType.OrgChart
-									sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"
+										
+									Case ElementType.OrgChart
+										sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"
 									
-									
-							End Select%>
-							<li class="hypertextlinktext hypertextlinktext-highlightcolour <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
-								data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
-								<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: navlink.Text %></a>
-								<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
-							</li>
-							<%iRowNum += 1
+								End Select
+								%>
+									<li class="hypertextlinktext hypertextlinktext-highlightcolour <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+										data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
+										<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: navlink.Text %></a>
+										<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
+									</li>
+								<%
+								iRowNum += 1
 							End If
 						tileCount += 1
 					Next
@@ -327,7 +330,7 @@
 											If navlink.UtilityID > 0 Then
 												Dim sUtilityType = CStr(navlink.UtilityType)
 												Dim sUtilityID = CStr(navlink.UtilityID)
-												Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+												Dim sUtilityBaseTable = CStr(navlink.BaseTableID)
 												
 												sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
 											Else
@@ -438,7 +441,7 @@
 									' Drilldown?
 									If navlink.UtilityID > 0 Then
 										' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
-										sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTable & ")"
+										sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTableID & ")"
 									Else
 										sOnClick = ""
 									End If
@@ -1003,7 +1006,7 @@
 							If navlink.UtilityID > 0 Then
 								sUtilityType = CStr(navlink.UtilityType)
 								sUtilityID = CStr(navlink.UtilityID)
-								sUtilityBaseTable = CStr(navlink.BaseTable)
+								sUtilityBaseTable = CStr(navlink.BaseTableID)
 								sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
 				
 								sValue = "2_" & sUtilityDef
