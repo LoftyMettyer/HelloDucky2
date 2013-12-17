@@ -320,7 +320,8 @@ div.officetab li div.button
 	border-top-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 5px;
-
+	padding-bottom: 1px;
+	padding-top: 1px;
 }
 
 .officebar li { list-style: none;}
