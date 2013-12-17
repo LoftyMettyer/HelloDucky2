@@ -13,7 +13,7 @@ Module modPermissions
 		' Read the list of tables the current user has permission to see.
 		Dim fSysSecManager As Boolean
 		Dim sSQL As String
-		Dim sRealSourceList As String
+		Dim aryRealSource As ArrayList
 		Dim sTableViewName As String
 		Dim rsInfo As ADODB.Recordset
 		Dim rsViews As ADODB.Recordset
@@ -21,7 +21,7 @@ Module modPermissions
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim colTablePermissions As IList(Of TablePermission)
-		Dim objTablePermissions As TablePermission
+		Dim objTablePermission As TablePermission
 
 		Dim sLastTableView As String
 		Dim sColumnName As String
@@ -148,35 +148,35 @@ Module modPermissions
 
 			colTablePermissions = New List(Of TablePermission)
 			Do While Not rsPermissions.EOF
-				objTablePermissions = New TablePermission()
-				objTablePermissions.Name = rsPermissions.Fields("Name").Value
-				objTablePermissions.Action = rsPermissions.Fields("Action").Value
-				objTablePermissions.TableID = rsPermissions.Fields("TableID").Value
-				colTablePermissions.Add(objTablePermissions)
+				objTablePermission = New TablePermission()
+				objTablePermission.Name = rsPermissions.Fields("Name").Value
+				objTablePermission.Action = rsPermissions.Fields("Action").Value
+				objTablePermission.TableID = rsPermissions.Fields("TableID").Value
+				colTablePermissions.Add(objTablePermission)
 				rsPermissions.MoveNext()
 			Loop
 			rsPermissions.Close()
 			'UPGRADE_NOTE: Object rsPermissions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsPermissions = Nothing
 
-			For Each objTablePermissions In colTablePermissions
+			For Each objTablePermission In colTablePermissions
 
 				objTableView = Nothing
 
-				If UCase(Left(objTablePermissions.Name, 8)) = "ASRSYSCV" Then
+				If UCase(Left(objTablePermission.Name, 8)) = "ASRSYSCV" Then
 					' Determine which table the child view is for.
-					objTableView = gcoTablePrivileges.FindTableID(objTablePermissions.TableID)
+					objTableView = gcoTablePrivileges.FindTableID(objTablePermission.TableID)
 
 				Else
-					If UCase(Left(objTablePermissions.Name, 6)) <> "ASRSYS" Then
-						objTableView = gcoTablePrivileges.Item(objTablePermissions.Name)
+					If UCase(Left(objTablePermission.Name, 6)) <> "ASRSYS" Then
+						objTableView = gcoTablePrivileges.Item(objTablePermission.Name)
 					End If
 				End If
 
 				If Not objTableView Is Nothing Then
-					objTableView.RealSource = objTablePermissions.Name
+					objTableView.RealSource = objTablePermission.Name
 
-					Select Case objTablePermissions.Action
+					Select Case objTablePermission.Action
 						Case 193 ' Select permission.
 							objTableView.AllowSelect = True
 						Case 195 ' Insert permission.
@@ -191,10 +191,10 @@ Module modPermissions
 		End If
 
 		' Get the column permissions for each table/view.
-		sRealSourceList = ""
+		aryRealSource = New ArrayList()
 		For Each objTableView In gcoTablePrivileges.Collection
 			If Len(objTableView.RealSource) > 0 Then
-				sRealSourceList = sRealSourceList & IIf(Len(sRealSourceList) > 0, ", '", "'") & objTableView.RealSource & "'"
+				aryRealSource.Add(String.Format("'{0}'", objTableView.RealSource))
 			End If
 		Next objTableView
 		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -205,7 +205,7 @@ Module modPermissions
 			Exit Sub
 		End If
 
-		If Len(sRealSourceList) > 0 Then
+		If aryRealSource.Count > 0 Then
 			' Instantiate  the Column Privileges collection if it does not already exist.
 			If gcolColumnPrivilegesCollection Is Nothing Then
 				gcolColumnPrivilegesCollection = New Collection
@@ -248,7 +248,7 @@ Module modPermissions
 
 				sSQL = "SELECT sysobjects.name AS tableViewName, syscolumns.name AS columnName, p.action, CASE p.protectType WHEN 205 THEN 1 WHEN 204 THEN 1 ELSE 0 END AS permission" _
 					& " FROM #SysProtects p INNER JOIN sysobjects ON p.id = sysobjects.id INNER JOIN syscolumns ON p.id = syscolumns.id WHERE (p.action = 193 or p.action = 197)" _
-					& " AND syscolumns.name <> 'timestamp' AND sysobjects.name in (" & sRealSourceList & ") AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0" _
+					& " AND syscolumns.name <> 'timestamp' AND sysobjects.name in (" & String.Join(",", aryRealSource.ToArray) & ") AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0" _
 					& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0) OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0" _
 					& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0)) ORDER BY tableViewName"
 				rsInfo = New ADODB.Recordset
