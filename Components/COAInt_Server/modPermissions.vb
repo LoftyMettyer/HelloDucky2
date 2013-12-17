@@ -2,8 +2,10 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Collections.ObjectModel
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Module modPermissions
 
@@ -18,15 +20,13 @@ Module modPermissions
 		Dim rsPermissions As ADODB.Recordset
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
-		Dim avTablePermissions(,) As Object
-		Dim iLoop2 As Short
-		Dim sTableName As String
+		Dim colTablePermissions As IList(Of TablePermission)
+		Dim objTablePermissions As TablePermission
+
 		Dim sLastTableView As String
 		Dim sColumnName As String
-		Dim iAction As Short
 		Dim iOriginalCursorLocation As Short
 		Dim objItem As TablePrivilege
-		Dim lngBaseTableId As Long
 
 		If Tables Is Nothing Then
 			datGeneral.PopulateMetadata()
@@ -146,51 +146,37 @@ Module modPermissions
 			rsPermissions = New ADODB.Recordset
 			rsPermissions.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
 
-			' JPD20020926 Fault 3980 - Suffered the 'Connection is busy with results for another hstmt'
-			' fault when running ADO queries whilst looping through the permissions recordset.
-			' Not sure why, but reading the permissions into an array, closing the permissions recordset,
-			' and then running ADO queries whilst looping through the permissions array solved the problem.
-			ReDim avTablePermissions(3, 0)
+			colTablePermissions = New List(Of TablePermission)
 			Do While Not rsPermissions.EOF
-				ReDim Preserve avTablePermissions(3, UBound(avTablePermissions, 2) + 1)
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTablePermissions(1, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTablePermissions(1, UBound(avTablePermissions, 2)) = rsPermissions.Fields("Name").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTablePermissions(2, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTablePermissions(2, UBound(avTablePermissions, 2)) = rsPermissions.Fields("Action").Value
-
-				avTablePermissions(3, UBound(avTablePermissions, 2)) = rsPermissions.Fields("TableID").Value
-
+				objTablePermissions = New TablePermission()
+				objTablePermissions.Name = rsPermissions.Fields("Name").Value
+				objTablePermissions.Action = rsPermissions.Fields("Action").Value
+				objTablePermissions.TableID = rsPermissions.Fields("TableID").Value
+				colTablePermissions.Add(objTablePermissions)
 				rsPermissions.MoveNext()
 			Loop
 			rsPermissions.Close()
 			'UPGRADE_NOTE: Object rsPermissions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsPermissions = Nothing
 
+			For Each objTablePermissions In colTablePermissions
 
-			For iLoop2 = 1 To UBound(avTablePermissions, 2)
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTablePermissions(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				sTableName = CStr(avTablePermissions(1, iLoop2))
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTablePermissions(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				iAction = CShort(avTablePermissions(2, iLoop2))
-				lngBaseTableId = CLng(avTablePermissions(3, iLoop2))
-
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objTableView = Nothing
 
-				If UCase(Left(sTableName, 8)) = "ASRSYSCV" Then
+				If UCase(Left(objTablePermissions.Name, 8)) = "ASRSYSCV" Then
 					' Determine which table the child view is for.
-					objTableView = gcoTablePrivileges.FindTableID(lngBaseTableId)
+					objTableView = gcoTablePrivileges.FindTableID(objTablePermissions.TableID)
 
 				Else
-					If UCase(Left(sTableName, 6)) <> "ASRSYS" Then
-						objTableView = gcoTablePrivileges.Item(sTableName)
+					If UCase(Left(objTablePermissions.Name, 6)) <> "ASRSYS" Then
+						objTableView = gcoTablePrivileges.Item(objTablePermissions.Name)
 					End If
 				End If
 
 				If Not objTableView Is Nothing Then
-					objTableView.RealSource = sTableName
+					objTableView.RealSource = objTablePermissions.Name
 
-					Select Case iAction
+					Select Case objTablePermissions.Action
 						Case 193 ' Select permission.
 							objTableView.AllowSelect = True
 						Case 195 ' Insert permission.
@@ -201,7 +187,7 @@ Module modPermissions
 							objTableView.AllowUpdate = True
 					End Select
 				End If
-			Next iLoop2
+			Next
 		End If
 
 		' Get the column permissions for each table/view.

@@ -266,6 +266,7 @@
     <Compile Include="Structures\ReportColumn.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\ReportSortItem.vb" />
+    <Compile Include="Structures\TablePermission.vb" />
     <Compile Include="Structures\TableRelation.vb" />
     <Compile Include="Structures\TableScreen.vb" />
     <Compile Include="Metadata\TablePrivilege.vb">
