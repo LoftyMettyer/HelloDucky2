@@ -123,8 +123,7 @@ Namespace Code
 			dr("startdate") = dStart
 			dr("enddate") = dEnd
 			dr("description") = sEventDescription
-			dr("color") = objRow("eventcolor")
-			dr("resource") = objRow("baseid")
+				dr("resource") = objRow("baseid")
 			dt.Rows.Add(dr)
 
 		Next

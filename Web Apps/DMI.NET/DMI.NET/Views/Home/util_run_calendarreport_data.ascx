@@ -4,6 +4,7 @@
 <%@ Import Namespace="System.Data" %>
 
 <%@ Register Assembly="DayPilot" Namespace="DayPilot.Web.Ui" TagPrefix="DayPilot" %>
+<%@ Import Namespace="System.Drawing" %>
 
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
@@ -143,6 +144,7 @@
 
 <script runat="server">
 	
+	
 	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
 			
 		Dim objCalendar As HR.Intranet.Server.CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), HR.Intranet.Server.CalendarReport)
@@ -195,6 +197,8 @@
 		Dim dStart As Date
 		Dim dEnd As Date
 		
+		Dim iNextColor As Integer = 0
+		
 		If objCalendar.Events Is Nothing Then	'Report contains no records, return empty Data Table
 			Return dt
 		End If
@@ -202,6 +206,11 @@
 		For Each objRow In objCalendar.Events.Rows
 
 			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()
+
+			If sEventDescription = "" Then
+				sEventDescription = objRow(0).ToString()
+			End If
+
 			sDescription = objCalendar.ConvertDescription(objRow("description1").ToString(), objRow("description2").ToString(), objRow("descriptionExpr").ToString())
 
 			' Add to resource collection
@@ -229,7 +238,23 @@
 			dr("startdate") = dStart
 			dr("enddate") = dEnd
 			dr("description") = sEventDescription
-			dr("color") = objRow("eventcolor")
+		
+			Dim sLegendName As String = objRow("LegendName").ToString()
+			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = sLegendName)
+			
+			If Not objLegend Is Nothing Then
+				If objLegend.Count = 0 Then
+					objLegend.Count += 1
+					objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
+					Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
+					iNextColor += 1
+					If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
+					objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0")) Then
+				End If
+			
+				dr("color") = objLegend.HexColor
+			End If
+			
 			dr("resource") = objRow("baseid")
 			dt.Rows.Add(dr)
 			

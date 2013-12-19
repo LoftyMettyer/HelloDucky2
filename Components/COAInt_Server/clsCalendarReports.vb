@@ -6,14 +6,13 @@ Imports ADODB
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports System.Text
-Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports VB = Microsoft.VisualBasic
 Public Class CalendarReport
 
-	Public Legend As ICollection(Of CalendarLegend)
-	Private LegendColors As ICollection(Of LegendColor)
+	Public Legend As List(Of CalendarLegend)
+	Public LegendColors As List(Of LegendColor)
 
 	Public rsCareerChange As Recordset
 
@@ -2991,13 +2990,13 @@ ErrorTrap:
 
 	End Function
 
-	Private Function GenerateSQLEvent(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String, ByVal EventColor As String) As Boolean
+	Private Function GenerateSQLEvent(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
 
 		Dim fOK As Boolean
 
 		fOK = True
 
-		If fOK Then fOK = GenerateSQLSelect(pstrEventKey, pstrDynamicKey, pstrDynamicName, EventColor)
+		If fOK Then fOK = GenerateSQLSelect(pstrEventKey, pstrDynamicKey, pstrDynamicName)
 		If fOK Then fOK = GenerateSQLFrom()
 		If fOK Then fOK = GenerateSQLJoin(pstrEventKey, pstrDynamicKey)
 		If fOK Then fOK = GenerateSQLWhere(pstrEventKey, pstrDynamicKey, pstrDynamicName)
@@ -3173,7 +3172,7 @@ ErrorTrap:
 		mobjEventLog = New clsEventLog
 		mcolBaseDescIndex = New Collection
 
-		Legend = New Collection(Of CalendarLegend)()
+		Legend = New List(Of CalendarLegend)()
 
 		ReDim mvarSortOrder(2, 0)
 		ReDim mlngTableViews(2, 0)
@@ -3189,7 +3188,7 @@ ErrorTrap:
 
 		ReDim mvarEventColumnViews(1, 0)
 
-		LegendColors = New Collection(Of LegendColor)()
+		LegendColors = New List(Of LegendColor)()
 
 		rstData = dataAccess.OpenRecordset("EXEC spASRIntGetCalendarColours", CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 		Do While Not rstData.EOF
@@ -3265,17 +3264,6 @@ ErrorTrap:
 		' Purpose : This function executes the SQL string 'into' a recordset.
 
 		On Error GoTo ExecuteSQL_ERROR
-
-		mstrSQL = String.Format("SELECT DISTINCT [?ID_eventID] AS [key] FROM [{0}] ", mstrTempTableName)
-		mrsCalendarReportsOutput = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		If Not (mrsCalendarReportsOutput.BOF And mrsCalendarReportsOutput.EOF) Then
-			mrsCalendarReportsOutput.MoveFirst()
-			Do While Not mrsCalendarReportsOutput.EOF
-				Legend.GetLegend(mrsCalendarReportsOutput.Fields("key").Value).Count += 1
-				mrsCalendarReportsOutput.MoveNext()
-			Loop
-		End If
-
 
 
 		'  'get all the base & event data into a recordset
@@ -5227,7 +5215,7 @@ DisableWPs:
 			.Close()
 		End With
 
-		GetEventsCollection = True
+		Return True
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -5283,15 +5271,12 @@ Error_Trap:
 						mstrSQLDynamicLegendWhere = vbNullString
 
 						objLegendEvent = New CalendarLegend
-						objLegendEvent.LegendKey = strDynamicKey
+						objLegendEvent.LegendKey = strDynamicName
 						objLegendEvent.Text = strDynamicName
 
-						objColor = Color.FromArgb(LegendColors.GetByIndex(mintDynamicEventCount).ColValue)
-						objLegendEvent.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
-						objLegendEvent.HTMLColorName = LegendColors.GetByIndex(mintDynamicEventCount).ColDesc
 						Legend.Add(objLegendEvent)
 
-						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName, objLegendEvent.HexColor)
+						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName)
 
 						If Not fOK Then
 							GenerateSQL = False
@@ -5313,7 +5298,7 @@ Error_Trap:
 					objLegendEvent.HexColor = "#f3f3f3"
 					Legend.Add(objLegendEvent)
 
-					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString, objLegendEvent.HexColor)
+					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString)
 
 					If Not fOK Then
 						Return False
@@ -5331,7 +5316,7 @@ Error_Trap:
 
 	End Function
 
-	Private Function GenerateSQLSelect(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String, ByVal EventColor As String) As Boolean
+	Private Function GenerateSQLSelect(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
 
 		' Purpose : This function compiles the SQLSelect string looping
 		'           thru the column details recordset.
@@ -5354,8 +5339,8 @@ Error_Trap:
 
 		'Get the Base ID column values so that these can be used in the group by clause when checking
 		'for multiple events in MultipleCheck().
-		mstrSQLCreateTable = mstrSQLCreateTable & "[EventColor] nvarchar(7), [BaseID] [Integer] NOT NULL, "
-		strColList = "'" & EventColor & "' AS [EventColor], [" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
+		mstrSQLCreateTable = "[LegendName] nvarchar(255), [BaseID] [Integer] NOT NULL, "
+		strColList = "'" & pstrDynamicName & "' AS [LegendName], [" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
 
 		If mlngDescription1 > 0 Then
 			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrDescription1, strTableColumn) Then
