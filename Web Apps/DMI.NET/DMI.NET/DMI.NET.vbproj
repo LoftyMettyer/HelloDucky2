@@ -650,9 +650,12 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
     <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
     <Content Include="Database\UpdateScript8.0.18.sql" />
+    <Content Include="Database\UpdateScript8.0.21.sql" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />
+    <None Include="My Project\PublishProfiles\Chestertons.pubxml" />
+    <None Include="My Project\PublishProfiles\Default On 10.14.1.201.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Kennedys.pubxml" />
@@ -676,6 +679,7 @@
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHR.pubxml" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml" />
     <None Include="My Project\PublishProfiles\Stuart Jennings machine.pubxml" />
+    <None Include="My Project\PublishProfiles\Westminster Kingsway.pubxml" />
     <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
     <Content Include="Scripts\jquery.limit-1.2.source.js" />
     <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
