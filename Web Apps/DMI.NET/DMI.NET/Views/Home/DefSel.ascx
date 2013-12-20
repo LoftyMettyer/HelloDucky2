@@ -148,7 +148,7 @@ End If
         if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
             // DblClick triggers Edit.
             menu_MenuClick('mnutoolEditToolsFind')
-            setedit(); 
+            //setedit(); 
            
         }
         else {
