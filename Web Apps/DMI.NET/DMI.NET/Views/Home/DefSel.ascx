@@ -147,8 +147,9 @@ End If
 
         if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
             // DblClick triggers Edit.
-           // setedit(); Commented by mayank to stop reinitiation of form
             menu_MenuClick('mnutoolEditToolsFind')
+            setedit(); 
+           
         }
         else {
             // DblClick triggers Run after prompting for confirmation. 
