@@ -133,8 +133,8 @@ If (Session("defseltype") <> 10) And (Session("defseltype") <> 11) And (Session(
 If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
 	                                                                     			Session("utilTableID") = 0
 End If
-Else 'defseltype=10 or 11 or 12 (picklist, filter or calculation)
-Session("utilTableID") = Session("Personnel_EmpTableID")
+    Else 'defseltype=10 or 11 or 12 (picklist, filter or calculation)
+        Session("utilTableID") = Session("Personnel_EmpTableID")
 End If
 %>
 
@@ -147,7 +147,8 @@ End If
 
         if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
             // DblClick triggers Edit.
-            setedit();
+           // setedit(); Commented by mayank to stop reinitiation of form
+            menu_MenuClick('mnutoolEditToolsFind')
         }
         else {
             // DblClick triggers Run after prompting for confirmation. 
