@@ -138,10 +138,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
-		<table>
+		<table  >
 			<tr>
 				<td>
-					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0" >
 						<tr height="5">
 							<td colspan="3"></td>
 						</tr>
@@ -172,32 +172,32 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="80%"  cellspacing="0" cellpadding="5">
+									<table width="100%" height="80%"  cellspacing="0" cellpadding="5" >
 										<tr valign="top">
 											<td>
-												<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+												<table width="100%" class="invisible" cellspacing="0" cellpadding="0" >
 													<tr>
 														<td colspan="10" height="5"></td>
 													</tr>
 
 													<tr height="10">
-														<td width="5"></td>
-														<td width="10">Name :</td>
-														<td width="5">&nbsp;</td>
+														<td ></td>
+														<td >Name :</td>
+														<td></td>
 														<td style="padding-right:10px">
 															<input id="txtName" name="txtName" maxlength="50" style="width: 100%" class="text"
 																onkeyup="changeTab1Control()">
 														</td>
-														<td width="20"></td>
-														<td width="10">Owner :</td>
-														<td width="5">&nbsp;</td>
-														<td>
-															<input id="txtOwner" name="txtOwner" style="width:100%" 
+														<td></td>
+														<td>Owner :</td>
+														<td><input id="txtOwner" name="txtOwner" style="width:100%" 
 																placeholder="Enter Owner"
 																class="text textdisabled"
-																disabled="disabled">
+																disabled="disabled"></td>
+														<td>
+															
 														</td>
-														<td width="5"></td>
+														<td></td>
 													</tr>
 
 													<tr>
@@ -205,9 +205,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													</tr>
 
 													<tr style="height:150px">
-														<td width="5"></td>
-														<td width="10" nowrap valign="top">Description :</td>
-														<td width="5"></td>
+														<td ></td>
+														<td nowrap valign="top">Description :</td>
+														<td ></td>
 														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
 															<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
 																onkeyup="changeTab1Control()"
@@ -215,26 +215,27 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
 													</textarea>
 														</td>
-														<td width="20" nowrap></td>
+														<td ></td>
 														<td width="10" valign="top" nowrap>Access :</td>
-														<td width="5"></td>
+														
 														<td width="40%" rowspan="1" style="vertical-align: top; height:140px">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%> 
 															
 														</td>
-														<td width="5"></td>
+                                                        
+														<td></td>
 													</tr>
 
 													<tr height="10">
-														<td width="5">&nbsp;</td>
-														<td width="85" nowrap valign="top">Base Table :</td>
-														<td width="5"></td>
-														<td style="width: 40%; vertical-align: top; padding-right: 10px" colspan="1">
+														<td ></td>
+														<td style="vertical-align: top">Base Table :</td>
+														<td ></td>
+														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
 															<select id="cboBaseTable" name="cboBaseTable" style="WIDTH: 100%" class="combo combodisabled"
 																onchange="changeBaseTable()" disabled="disabled">
 															</select>
 														</td>
-														<td width="20" nowrap></td>
+														<td></td>
 														<td width="10" valign="top">Records :</td>
 														<td width="40%" colspan="2">
 															<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -285,19 +286,19 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																		<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
 																	</td>
 																	<td>
-																		<input id="cmdBasePicklist" name="cmdBasePicklist" style="WIDTH: 30px" type="button" disabled="disabled" class="btn btndisabled" value="..."
+																		<input id="cmdBasePicklist" name="cmdBasePicklist"  type="button" disabled="disabled" class="btn btndisabled" value="..."
 																			onclick="selectRecordOptionCalDef('base', 'picklist')"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onblur="try{button_onBlur(this);}catch(e){}" style="WIDTH: 100%"/>
 																	</td>
 																</tr>
 																<tr>
 																	<td colspan="6" height="5"></td>
 																</tr>
 																<tr>
-																	<td width="5" nowrap>
+																	<td width="5" >
 																		<input id="optRecordSelection3" name="optRecordSelection" type="radio"
 																			onclick="changeBaseTableRecordOptions()"
 																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
@@ -320,7 +321,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																		<input id="txtBaseFilter" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
 																	</td>
 																	<td>
-																		<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 30px" type="button" disabled="disabled" value="..." class="btn btndisabled"
+																		<input id="cmdBaseFilter" name="cmdBaseFilter"  type="button" disabled="disabled" value="..." class="btn btndisabled"
 																			onclick="selectRecordOptionCalDef('base', 'filter')"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -330,32 +331,23 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																</tr>
 															</table>
 														</td>
-														<td width="5">&nbsp;</td>
+														<td></td>
 													</tr>
 													<tr>
 														<td colspan="9" height="5"></td>
 													</tr>
-												</table>
-											</td>
-										</tr>
-									</table>
-
-									<table id="DataSection">
-										<tr>
-											<td>
-												<table>
-													<tr>
-														<td style="width: 5px"></td>
-														<td>Description 1 :</td>
+                                                    <tr>
 														<td></td>
-														<td style="vertical-align: top; padding-right: 10px">
+														<td >Description 1 :</td>
+														<td></td>
+														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
 															<select id="cboDescription1" name="cboDescription1" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="changeTab1Control();">
 															</select>
 														</td>
 														<td></td>
 														<td></td>
-														<td style="white-space: nowrap">
+														<td style="white-space: nowrap" colspan="2">
 															<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="0"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
@@ -378,51 +370,58 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td></td>
 													</tr>
 
-													<tr style="height: 3px"></tr>
-
-													<tr>
+                                                    <tr>
 														<td></td>
-														<td style="white-space: nowrap" valign="top">Description 2 :</td>
+														<td>Description 2 :</td>
 														<td></td>
-														<td valign="top" colspan="1">
-															<select id="cboDescription2" name="cboDescription2" style="width: 97%" disabled="disabled" class="combo combodisabled"
+														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1" >
+															<select id="cboDescription2" name="cboDescription2" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
 																onchange="changeTab1Control();">
 															</select>
 														</td>
 														<td></td>
 														<td width="10" valign="top">Region :</td>
 
-														<td>
+														<td colspan ="2">
 															<select id="cboRegion" name="cboRegion" style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
 																onchange="changeTab1Control();refreshTab3Controls();">
 															</select>
 														</td>
-														<td></td>
+														
+                                                        <td></td>
 													</tr>
 
 													<tr>
 														<td></td>
-														<td>Description 3 :</td>
+														<td style="width:10%">Description 3 :</td>
 														<td></td>
-														<td>
-															<input id="txtDescExpr" name="txtDescExpr" disabled="disabled" class="text textdisabled" style="width: 80%">
-															<input id="cmdDescExpr" name="cmdDescExpr" type="button" disabled="disabled" class="btn btndisabled" value="..."
-																onclick="selectCalc('baseDesc', false)"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
+                                                            <table style="width:100%">
+                                                                <tr>
+                                                                    <td style="width:90%">
+															            <input id="txtDescExpr" name="txtDescExpr" disabled="disabled" class="text textdisabled" style="width:100%">
+															        </td>
+                                                                    <td style="width:10%">
+                                                                        <input id="cmdDescExpr" name="cmdDescExpr" style="width:100%" type="button" disabled="disabled" class="btn btndisabled" value="..."
+																        onclick="selectCalc('baseDesc', false)"
+																        onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																        onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																        onfocus="try{button_onFocus(this);}catch(e){}"
+																        onblur="try{button_onBlur(this);}catch(e){}" />
+                                                                     </td>
+                                                                    </tr>
+                                                            </table>
 														</td>
 														<td>
 															
 														</td>
 														<td></td>
-														<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
+														<td style="text-align: left; width: 15px; vertical-align: central" id="qq" colspan ="2">
 															<input valign="center" name="chkGroupByDesc" id="Checkbox1" type="checkbox" disabled="disabled" tabindex="0"
 																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
 																onclick="changeTab1Control(); refreshTab3Controls();" />
-																<label
+                                                            <label
 																for="chkGroupByDesc"
 																class="checkbox checkboxdisabled"
 																tabindex="-1"
@@ -433,9 +432,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
 																Group By Description</label>
 														</td>
-														<td>
-															
+														<td>															
 														</td>
+                                                       													
+																													
+													
 														
 													</tr>
 
@@ -446,7 +447,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td></td>
 														<td></td>
 														<td>Separator :</td>
-														<td> 
+														<td colspan="2"> 
 															<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
 																onchange="changeTab1Control();">
 																<option value="">
@@ -481,6 +482,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 											</td>
 										</tr>
 									</table>
+
+									
+										
+												
+											
+									
 								</div>
 
 								<!-- Second tab -->
@@ -1994,11 +2001,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 		
 		<div>
 			<table>
-				<td width="10"></td>
-				<tr height="10">
-					<td colspan="3"></td>
-				</tr>
-
+				
 				<tr height="10">
 					<td width="10"></td>
 					<td>
@@ -2310,7 +2313,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 					sErrMsg = CType(("'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").value), String)
 				End If
 
-				Response.Write("<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
+	            Response.Write("<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
 				Response.Write("<INPUT type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
 				Response.Write("<INPUT type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
 				Response.Write("<INPUT type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
