@@ -71,6 +71,46 @@ PRINT 'Step - Changes to Shared Table Transfer for PAE Defaults'
 
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Generare sysprotects cache'
+/* ------------------------------------------------------- */
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysProtectsCache]') AND type = N'U')
+		DROP TABLE [dbo].[ASRSysProtectsCache];
+
+	SELECT @NVarCommand = 'CREATE TABLE [dbo].[ASRSysProtectsCache]
+	(
+		[ID] int NOT NULL,
+		[Action] tinyint NOT NULL,
+		[Columns] varbinary(8000),
+		[ProtectType] int NOT NULL,
+		[UID] integer NOT NULL
+	)'
+	EXEC sp_executesql @NVarCommand
+
+	IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[[ASRSysProtectsCache]]') AND name = N'IDX_ProtectsCache_UID')
+		DROP INDEX [IDX_ProtectsCache_UID] ON [dbo].[ASRSysProtectsCache]
+	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_ProtectsCache_UID] ON [dbo].[ASRSysProtectsCache] ([UID] ASC)';
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRPostSystemSave]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [dbo].[spASRPostSystemSave];
+
+	SELECT @NVarCommand = 'CREATE PROCEDURE [dbo].[spASRPostSystemSave]
+		AS
+		BEGIN
+
+			IF OBJECT_ID(''ASRSysProtectsCache'') IS NOT NULL 
+				DELETE FROM ASRSysProtectsCache;
+
+			INSERT ASRSysProtectsCache 
+			SELECT ID, Action, Columns, ProtectType , uid
+			   FROM sysprotects;
+
+		END'
+	EXEC sp_executesql @NVarCommand;
+	EXEC sp_executesql N'spASRPostSystemSave';
+
+
+/* ------------------------------------------------------- */
 PRINT 'Step - Ensure the required permissions are granted'
 /* ------------------------------------------------------- */
 

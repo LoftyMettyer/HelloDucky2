@@ -711,6 +711,7 @@ TidyUpAndExit:
     gobjProgress.UpdateProgress False
     DoEvents
     ApplyDatabaseOwnership
+    ApplyPostSaveProcessing
     
     gobjProgress.UpdateProgress False
     DoEvents
@@ -2291,3 +2292,32 @@ Private Function ConfigureCategories() As Boolean
 
 End Function
 
+Private Function ApplyPostSaveProcessing() As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim cmdPostProcess As New ADODB.Command
+  Dim bOK As Boolean
+
+  bOK = True
+  
+  With cmdPostProcess
+    .CommandText = "spASRPostSystemSave"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+
+    .Execute
+  End With
+
+  Set cmdPostProcess = Nothing
+
+TidyUpAndExit:
+  ApplyPostSaveProcessing = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function

@@ -1342,7 +1342,7 @@ Function ApplyChanges() As Boolean
   ' Apply process admin right to logins if necessary
   If fOK Then
     OutputCurrentProcess "Granting process admin rights"
-    fOK = ApplyProcessAdminToLogins
+    fOK = ApplyPostSaveProcessing
     gobjProgress.UpdateProgress False
   
     ' Flag any errors.
@@ -5604,33 +5604,28 @@ ErrorTrap:
 End Function
 
 
-Private Function ApplyProcessAdminToLogins() As Boolean
+Private Function ApplyPostSaveProcessing() As Boolean
 
   On Error GoTo ErrorTrap
 
-'  Dim cmdMakeProcessAdmin As New ADODB.Command
+  Dim cmdPostProcess As New ADODB.Command
   Dim bOK As Boolean
 
   bOK = True
-'
-'  If Not gfCurrentUserIsSysSecMgr Then
-'    bOK = False
-'    GoTo TidyUpAndExit
-'  End If
-'
-'  With cmdMakeProcessAdmin
-'    .CommandText = "spASRMakeLoginsProcessAdmin"
-'    .CommandType = adCmdStoredProc
-'    .CommandTimeout = 0
-'    Set .ActiveConnection = gADOCon
-'
-'    .Execute
-'  End With
-'
-'  Set cmdMakeProcessAdmin = Nothing
+
+  With cmdPostProcess
+    .CommandText = "spASRPostSystemSave"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+
+    .Execute
+  End With
+
+  Set cmdPostProcess = Nothing
 
 TidyUpAndExit:
-  ApplyProcessAdminToLogins = bOK
+  ApplyPostSaveProcessing = bOK
   Exit Function
 
 ErrorTrap:

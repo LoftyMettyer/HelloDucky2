@@ -634,6 +634,9 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCustomReportDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCustomReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntOrgChart.sql" />
+    <Build Include="Stored Procedures\Web\spASRGetMetadata.sql" />
+    <Build Include="Tables\ASRSysProtectsCache.sql" />
+    <Build Include="Stored Procedures\System Manager\spASRPostSystemSave.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
