@@ -8,13 +8,21 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE	@sViewName		sysname,
+	DECLARE	@iUserGroupID	integer,
+		@sUserGroupName			sysname,
+		@sActualUserName		sysname,
+		@sViewName		sysname,
 		@sCommand			nvarchar(MAX),
 		@sParamDefinition	nvarchar(500),
 		@iRecordID			integer,
 		@iRecordCount		integer, 
 		@fSysSecMgr			bit,
 		@fAccessGranted		bit;
+
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
 		
 	SET @iRecordID = 0;
 	SET @iRecordCount = 0;
@@ -41,10 +49,11 @@ BEGIN
 					WHEN 204 THEN 1
 					ELSE 0
 				END 
-			FROM #sysprotects p
-			INNER JOIN sysobjects ON p.id = sysobjects.id
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
+			FROM ASRSysProtectsCache p
+				INNER JOIN sysobjects ON p.id = sysobjects.id
+				INNER JOIN syscolumns ON p.id = syscolumns.id
+			WHERE p.UID = @iUserGroupID
+				AND p.action = 193 
 				AND syscolumns.name = 'ID'
 				AND sysobjects.name = @sViewName
 				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0

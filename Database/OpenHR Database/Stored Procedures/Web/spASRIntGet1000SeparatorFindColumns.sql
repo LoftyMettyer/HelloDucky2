@@ -92,8 +92,8 @@ BEGIN
 	-- Cached view of sysprotects
 	DECLARE @SysProtects TABLE([ID] int, [ProtectType] tinyint, [Columns] varbinary(8000))
 	INSERT INTO @SysProtects
-		SELECT ID, ProtectType, [Columns] FROM #SysProtects
-		WHERE Action = 193;
+		SELECT ID, ProtectType, [Columns] FROM ASRSysProtectsCache
+		WHERE [UID] = @iUserGroupID AND Action = 193;
 
 	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
 	DECLARE @ColumnPermissions TABLE(

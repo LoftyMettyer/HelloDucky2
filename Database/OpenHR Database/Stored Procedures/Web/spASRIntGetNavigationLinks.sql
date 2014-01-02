@@ -43,6 +43,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
+
 		EXEC dbo.spASRIntGetActualUserDetails
 			@sActualUserName OUTPUT,
 			@sGroupName OUTPUT,
@@ -80,13 +81,14 @@ BEGIN
 		INSERT INTO @readableTables
 			SELECT OBJECT_NAME(p.id)
 			FROM syscolumns
-			INNER JOIN #SysProtects p 
+			INNER JOIN ASRSysProtectsCache p 
 				ON (syscolumns.id = p.id
 					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
 					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0)))
-			WHERE syscolumns.name = 'timestamp'
+			WHERE p.UID = @iActualUserGroupID
+				AND syscolumns.name = 'timestamp'
 				AND (p.ID IN (SELECT id FROM @unionTable))
 				AND p.Action = 193 AND ProtectType IN (204, 205)
 				OPTION (KEEPFIXED PLAN)

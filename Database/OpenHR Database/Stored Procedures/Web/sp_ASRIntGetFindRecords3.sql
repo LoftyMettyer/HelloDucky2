@@ -147,7 +147,7 @@ BEGIN
 								, [Action] tinyint
 								, ProtectType tinyint);
 	INSERT INTO @SysProtects
-	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM #sysprotects p;
+	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM ASRSysProtectsCache p WHERE p.UID = @iUserGroupID;
 	
 	-- Create a temporary table to hold the tables/views that need to be joined.
 	DECLARE @JoinParents TABLE(tableViewName sysname, tableID integer);

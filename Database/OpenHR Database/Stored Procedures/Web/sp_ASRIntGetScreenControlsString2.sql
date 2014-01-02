@@ -64,14 +64,15 @@ BEGIN
 								, [Action] tinyint
 								, ProtectType tinyint)
 	INSERT INTO @SysProtects
-	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM #SysProtects p
+	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM ASRSysProtectsCache p
 		INNER JOIN SysColumns c ON (c.id = p.id
 			AND c.[Name] = 'timestamp'
 			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) != 0)
 			OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) = 0)))
-		WHERE [ProtectType] IN (204, 205)
+		WHERE p.UID = @iUserGroupID
+			AND [ProtectType] IN (204, 205)
 			AND [Action] IN (193, 197);
 
 

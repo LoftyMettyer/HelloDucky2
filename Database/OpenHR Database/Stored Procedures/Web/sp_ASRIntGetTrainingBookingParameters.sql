@@ -128,8 +128,8 @@ BEGIN
 								   [Action]			tinyint,
 								   [ProtectType]	tinyint)
 		INSERT INTO @SysProtects
-		SELECT [ID],[Columns],[Action],[ProtectType] FROM #sysprotects
-			WHERE [Action] IN (193, 195, 196, 197)
+		SELECT [ID], [Columns], [Action], [ProtectType] FROM ASRSysProtectsCache
+			WHERE [UID] = @iUserGroupID AND [Action] IN (193, 195, 196, 197)
 
 		IF @piTBTableID > 0
 		BEGIN

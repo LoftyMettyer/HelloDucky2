@@ -96,9 +96,10 @@ BEGIN
 						WHEN 204 THEN 1
 						ELSE 0
 					END 
-				FROM #SysProtects p
+				FROM ASRSysProtectsCache p
 				INNER JOIN @SummaryColumns sm ON p.id = sm.id
-				WHERE (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+				WHERE p.UID = @iUserGroupID
+					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 					AND (convert(int,substring(p.columns,sm.colid/8+1,1))&power(2,sm.colid&7)) != 0)
 					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 					AND (convert(int,substring(p.columns,sm.colid/8+1,1))&power(2,sm.colid&7)) = 0))
@@ -133,10 +134,11 @@ BEGIN
 					WHEN 204 THEN 1
 					ELSE 0
 				END 
-			FROM #SysProtects p
+			FROM ASRSysProtectsCache p
 			INNER JOIN sysobjects ON p.id = sysobjects.id
 			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE syscolumns.name <> 'timestamp'
+			WHERE p.UID = @iUserGroupID
+				AND syscolumns.name <> 'timestamp'
 				AND sysobjects.name = @sParentRealSource
 				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)

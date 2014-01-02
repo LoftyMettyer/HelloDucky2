@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
@@ -246,13 +247,19 @@ Module modPermissions
 			' If the current user is not a system/security manager then read the column permissions from SQL.
 			If Not fSysSecManager Then
 
-				sSQL = "SELECT sysobjects.name AS tableViewName, syscolumns.name AS columnName, p.action, CASE p.protectType WHEN 205 THEN 1 WHEN 204 THEN 1 ELSE 0 END AS permission" _
-					& " FROM #SysProtects p INNER JOIN sysobjects ON p.id = sysobjects.id INNER JOIN syscolumns ON p.id = syscolumns.id WHERE (p.action = 193 or p.action = 197)" _
-					& " AND syscolumns.name <> 'timestamp' AND sysobjects.name in (" & String.Join(",", aryRealSource.ToArray) & ") AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0" _
-					& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0) OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0" _
-					& " AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0)) ORDER BY tableViewName"
-				rsInfo = New ADODB.Recordset
-				rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+				Dim objCommand As New Command
+				Dim objParmRealSource As ADODB.Parameter
+
+				objCommand.CommandText = "spASRIntGetColumnPermissions"
+				objCommand.CommandType = CommandTypeEnum.adCmdStoredProc
+				objCommand.ActiveConnection = gADOCon
+
+				objParmRealSource = objCommand.CreateParameter("@psSourceArray", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
+				objCommand.Parameters.Append(objParmRealSource)
+				objParmRealSource.Value = String.Join(",", aryRealSource.ToArray)
+
+				Err.Clear()
+				rsInfo = objCommand.Execute()
 
 				sLastTableView = ""
 

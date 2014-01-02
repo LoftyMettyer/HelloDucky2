@@ -205,11 +205,12 @@ BEGIN
 			END,
 			ASRSysColumns.size,
 			ASRSysColumns.decimals				
-		FROM #SysProtects p
+		FROM ASRSysProtectsCache p
 		INNER JOIN sysobjects ON p.id = sysobjects.id
 		INNER JOIN syscolumns ON p.id = syscolumns.id
 		INNER JOIN ASRSysColumns ON syscolumns.name = ASRSysColumns.columnName
 		WHERE p.action = 193 
+			AND p.uid = @iUserGroupID
 			AND ASRSysColumns.tableID = @lngTableID
 			AND ASRSysColumns.columnType <> 4
 			AND ASRSysColumns.columnType <> 3

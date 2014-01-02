@@ -115,9 +115,9 @@ BEGIN
 			/* Get the insert/delete permissions for the realSource. */
 			DECLARE tableInfo_cursor CURSOR LOCAL FAST_FORWARD FOR 
 				SELECT p.action
-				FROM #SysProtects p
+				FROM ASRSysProtectsCache p
 				INNER JOIN sysobjects ON p.id = sysobjects.id
-				WHERE p.action  IN (195, 196)
+				WHERE p.UID = @iUserGroupID AND p.action  IN (195, 196)
 					AND sysobjects.name = @sRealSource
 					AND ProtectType <> 206
 
@@ -158,9 +158,10 @@ BEGIN
 				/* Get appropriate child view if required. */
 				DECLARE tableInfo_cursor CURSOR LOCAL FAST_FORWARD FOR 
 					SELECT p.action
-					FROM #SysProtects p
+					FROM ASRSysProtectsCache p
 					INNER JOIN sysobjects ON p.id = sysobjects.id
 					WHERE sysobjects.name = @sRealSource
+						AND p.UID = @iUserGroupID
 						AND p.Action IN(193, 195, 196)
 						AND ProtectType <> 206
 

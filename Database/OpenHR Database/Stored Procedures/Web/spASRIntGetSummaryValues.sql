@@ -102,8 +102,8 @@ BEGIN
 												WHERE HistoryTableID = @piHistoryTableID);
 
 			INSERT INTO @SysProtects
-				SELECT ID, ProtectType, Columns FROM #SysProtects
-				WHERE Action = 193;
+				SELECT ID, ProtectType, Columns FROM ASRSysProtectsCache
+				WHERE [UID] = @iUserGroupID AND Action = 193;
 
 			-- Generate security context on selected columns
 			INSERT INTO @ColumnPermissions
@@ -142,8 +142,8 @@ BEGIN
 			END
 
 			INSERT INTO @SysProtects
-				SELECT ID, ProtectType, Columns FROM #SysProtects
-				WHERE Action = 193;
+				SELECT ID, ProtectType, Columns FROM ASRSysProtectsCache
+				WHERE [UID] = @iUserGroupID AND Action = 193;
 
 			INSERT INTO @ColumnPermissions
 			SELECT 

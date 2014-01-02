@@ -4,20 +4,6 @@ Module modIntranet
 
 Private mobjGeneral As New clsGeneral
 
-	Public Sub CreateASRDev_SysProtects(ByRef pConn As ADODB.Connection)
-		
-		Dim cmdCreateCache As ADODB.Command
-		
-		' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
-		cmdCreateCache = New ADODB.Command
-		cmdCreateCache.CommandText = "DECLARE @iUserGroupID  integer, " & vbNewLine & " @sUserGroupName   sysname, " & vbNewLine & " @sActualLoginName varchar(250) " & vbNewLine & "-- Get the current user's group ID. " & vbNewLine & "EXEC spASRIntGetActualUserDetails " & vbNewLine & " @sActualLoginName OUTPUT, " & vbNewLine & " @sUserGroupName OUTPUT, " & vbNewLine & " @iUserGroupID OUTPUT " & vbNewLine & "-- Create the SysProtects cache table " & vbNewLine & "IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL" & vbNewLine & " DROP TABLE #SysProtects " & vbNewLine & "CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine & " INSERT #SysProtects " & vbNewLine & " SELECT ID, Action, Columns, ProtectType " & vbNewLine & "       FROM sysprotects " & vbNewLine & "       WHERE uid = @iUserGroupID" & vbNewLine & "CREATE INDEX [IDX_ID] ON #SysProtects(ID)"
-		cmdCreateCache.ActiveConnection = pConn
-		cmdCreateCache.Execute()
-		'UPGRADE_NOTE: Object cmdCreateCache may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdCreateCache = Nothing
-		
-	End Sub
-
 	Public Function UDFFunctions(ByRef pastrUDFFunctions() As String, ByRef pbCreate As Boolean) As Boolean
 		Return mobjGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
 	End Function

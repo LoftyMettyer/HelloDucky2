@@ -191,7 +191,6 @@
     <Build Include="Stored Procedures\Web\spASRIntAllTablePermissions.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCheckSPExists.sql" />
     <Build Include="Stored Procedures\Web\spASRIntClearEventLogPurge.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntCreateCacheTables.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCurrentAccessForRole.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCurrentUserAccess.sql" />
     <Build Include="Stored Procedures\Web\spASRIntDeleteCheck.sql" />
@@ -637,6 +636,7 @@
     <Build Include="Stored Procedures\Web\spASRGetMetadata.sql" />
     <Build Include="Tables\ASRSysProtectsCache.sql" />
     <Build Include="Stored Procedures\System Manager\spASRPostSystemSave.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetColumnPermissions.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
@@ -756,6 +756,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenHR Database.publish.xml" />
-    <None Include="Stored Procedures\Development\GenerateSysProtects.sql" />
   </ItemGroup>
 </Project>

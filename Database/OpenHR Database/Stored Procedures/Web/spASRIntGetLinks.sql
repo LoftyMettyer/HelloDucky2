@@ -8,7 +8,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @iCount			integer,
+	DECLARE @iCount				integer,
 		@iUtilType			integer, 
 		@iUtilID			integer,
 		@iScreenID			integer,
@@ -66,14 +66,15 @@ BEGIN
 		DECLARE @SysProtects TABLE([ID] int PRIMARY KEY CLUSTERED);
 		INSERT INTO @SysProtects
 			SELECT p.[ID] 
-			FROM #sysprotects p
+			FROM ASRSysProtectsCache p
 						INNER JOIN SysColumns c ON (c.id = p.id
 							AND c.[Name] = 'timestamp'
 							AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 							AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) != 0)
 							OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 							AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) = 0)))
-			WHERE p.[ProtectType] IN (204, 205)
+			WHERE p.UID = @iActualUserGroupID
+				AND p.[ProtectType] IN (204, 205)
 				AND p.[Action] = 193			
 				AND p.id IN (SELECT ID FROM @Phase1);
 		-- Readable tables

@@ -488,29 +488,6 @@ Namespace Controllers
 			' Release the ADO command object.
 			cmdLoginCheck = Nothing
 
-			' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure	
-			Dim sString = "DECLARE @iUserGroupID	integer, " & vbNewLine &
-				"	@sUserGroupName		sysname, " & vbNewLine &
-				"	@sActualLoginName	varchar(250) " & vbNewLine &
-				"EXEC spASRIntGetActualUserDetails " & vbNewLine &
-				"	@sActualLoginName OUTPUT, " & vbNewLine &
-				"	@sUserGroupName OUTPUT, " & vbNewLine &
-				"	@iUserGroupID OUTPUT " & vbNewLine &
-				"IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL " & vbNewLine &
-				"	DROP TABLE #SysProtects " & vbNewLine &
-				"CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine &
-				"	INSERT #SysProtects " & vbNewLine &
-				"	SELECT ID, Action, Columns, ProtectType " & vbNewLine &
-				"       FROM sysprotects " & vbNewLine &
-				"       WHERE uid = @iUserGroupID"
-
-			'cmdCreateCache.CommandType = 4 ' Stored Procedure
-			Dim cmdCreateCache = New ADODB.Command
-			cmdCreateCache.ActiveConnection = conX
-			cmdCreateCache.CommandText = sString
-			cmdCreateCache.Execute()
-			cmdCreateCache = Nothing
-
 			' RH 18/04/01 - Put entry in the audit access log
 			Dim cmdAudit = New ADODB.Command
 			cmdAudit.CommandText = "sp_ASRIntAuditAccess"
@@ -1543,26 +1520,6 @@ Namespace Controllers
 
 							Session("databaseConnection") = conX
 						End If
-
-						' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
-						Dim cmdCreateCache = CreateObject("ADODB.Command")
-						cmdCreateCache.CommandText = "DECLARE @iUserGroupID	integer, " & vbNewLine & _
-									"	@sUserGroupName		sysname, " & vbNewLine & _
-									"	@sActualLoginName	varchar(250) " & vbNewLine & _
-									"EXEC spASRIntGetActualUserDetails " & vbNewLine & _
-									"	@sActualLoginName OUTPUT, " & vbNewLine & _
-									"	@sUserGroupName OUTPUT, " & vbNewLine & _
-									"	@iUserGroupID OUTPUT " & vbNewLine &
-									"IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL " & vbNewLine & _
-									"	DROP TABLE #SysProtects " & vbNewLine & _
-									"CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine & _
-									"	INSERT #SysProtects " & vbNewLine & _
-									"	SELECT ID, Action, Columns, ProtectType " & vbNewLine & _
-									"       FROM sysprotects " & vbNewLine & _
-									"       WHERE uid = @iUserGroupID"
-						cmdCreateCache.ActiveConnection = conX
-						cmdCreateCache.execute()
-						cmdCreateCache = Nothing
 
 						Session("MessageTitle") = "Change Password Page"
 						Session("MessageText") = "Password changed successfully."

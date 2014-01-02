@@ -880,29 +880,6 @@ Namespace Controllers
 
 							End If
 
-							' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
-							Dim cmdCreateCache = CreateObject("ADODB.Command")
-							cmdCreateCache.CommandText = "DECLARE @iUserGroupID	integer, " & vbNewLine & _
-															"	@sUserGroupName		sysname, " & vbNewLine & _
-															"	@sActualLoginName	varchar(250) " & vbNewLine & _
-															"-- Get the current user's group ID. " & vbNewLine & _
-															"EXEC spASRIntGetActualUserDetails " & vbNewLine & _
-															"	@sActualLoginName OUTPUT, " & vbNewLine & _
-															"	@sUserGroupName OUTPUT, " & vbNewLine & _
-															"	@iUserGroupID OUTPUT " & vbNewLine & _
-															"-- Create the SysProtects cache table " & vbNewLine & _
-															"IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL " & vbNewLine & _
-															"	DROP TABLE #SysProtects " & vbNewLine & _
-															"CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine & _
-															"	INSERT #SysProtects " & vbNewLine & _
-															"	SELECT ID, Action, Columns, ProtectType " & vbNewLine & _
-															"       FROM sysprotects " & vbNewLine & _
-															"       WHERE uid = @iUserGroupID"
-							'cmdCreateCache.CommandType = 4 ' Stored Procedure
-							cmdCreateCache.ActiveConnection = conX
-							cmdCreateCache.execute()
-							cmdCreateCache = Nothing
-
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "Password changed successfully."

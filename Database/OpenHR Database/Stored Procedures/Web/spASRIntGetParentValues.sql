@@ -72,10 +72,11 @@ BEGIN
 				WHEN 204 THEN 1
 				ELSE 0
 			END 
-		FROM #sysprotects p
+		FROM ASRSysProtectsCache p
 		INNER JOIN sysobjects ON p.id = sysobjects.id
 		INNER JOIN syscolumns ON p.id = syscolumns.id
-		WHERE p.action = 193 
+		WHERE p.UID = @iUserGroupID
+			AND p.action = 193 
 			AND syscolumns.name <> 'timestamp'
 			AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @piParentTableID 
 			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @piParentTableID)

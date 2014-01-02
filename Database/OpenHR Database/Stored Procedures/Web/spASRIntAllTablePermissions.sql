@@ -7,9 +7,18 @@ BEGIN
 
 	SET NOCOUNT ON;
 
+	DECLARE @iUserGroupID		integer,
+		@sUserGroupName				sysname,
+		@sActualUserName			sysname;
+
 	-- Cached view of the objects 
 	DECLARE @SysObjects TABLE([ID]		integer PRIMARY KEY CLUSTERED,
 							  [Name]	sysname);
+		
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
 							  
 	INSERT INTO @SysObjects
 		SELECT [ID], [Name] FROM sysobjects
@@ -29,9 +38,9 @@ BEGIN
 							   [Action]			tinyint,
 							   [ProtectType]	tinyint);
 	INSERT INTO @SysProtects
-	SELECT p.ID, p.Columns, p.Action, p.ProtectType FROM #SysProtects p
+	SELECT p.ID, p.Columns, p.Action, p.ProtectType FROM ASRSysProtectsCache p
 		INNER JOIN @SysObjects o ON p.ID = o.ID
-		WHERE ((p.ProtectType <> 206 AND p.Action <> 193) OR (p.Action = 193 AND p.ProtectType IN (204,205)));
+		WHERE p.UID = @iUserGroupID AND ((p.ProtectType <> 206 AND p.Action <> 193) OR (p.Action = 193 AND p.ProtectType IN (204,205)));
 
 	SELECT o.name, p.action, ISNULL(cv.tableID,0) AS [tableid]
 		FROM @SysProtects p

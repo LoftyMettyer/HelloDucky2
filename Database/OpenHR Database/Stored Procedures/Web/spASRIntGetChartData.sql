@@ -130,8 +130,8 @@ BEGIN
 				SET @sParentRealSource = left(@sParentRealSource, 255);
 			END
 			INSERT INTO @SysProtects
-				SELECT ID, ProtectType, Columns FROM #SysProtects
-				WHERE Action = 193;
+				SELECT ID, ProtectType, Columns FROM ASRSysProtectsCache
+				WHERE [UID] = @iUserGroupID AND Action = 193;
 			INSERT INTO @ColumnPermissions
 			SELECT 
 				@sParentRealSource,
