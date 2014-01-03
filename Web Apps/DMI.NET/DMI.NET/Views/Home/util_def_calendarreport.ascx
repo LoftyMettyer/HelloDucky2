@@ -168,7 +168,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 						</tr>
 
 						<tr>
-							<td width="10"></td>
+							<td></td>
 							<td>
 								<!-- First tab -->
 								<div id="div1">
@@ -393,7 +393,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 													<tr>
 														<td></td>
-														<td style="width:10%">Description 3 :</td>
+														<td style="width:11%">Description 3 :</td>
 														<td></td>
 														<td style="vertical-align: top; width:40%;padding-right: 10px" rowspan="1" colspan="1">
                                                             <table style="width:100%">
