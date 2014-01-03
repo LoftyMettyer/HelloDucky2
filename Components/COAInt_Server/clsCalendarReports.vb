@@ -572,8 +572,6 @@ Public Class CalendarReport
 
 			gADOCon = Value
 
-			ReadPersonnelParameters()
-
 			ReadBankHolidayParameters()
 
 		End Set

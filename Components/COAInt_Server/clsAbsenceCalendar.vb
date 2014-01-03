@@ -560,7 +560,6 @@ GetAbsenceRecordSet_ERROR:
 		fOK = True
 
 		' Read the necessary settings for the calendar to work
-		ReadPersonnelParameters()
 		ReadAbsenceParameters()
 		ReadBankHolidayParameters()
 

@@ -27,9 +27,6 @@ Public Class Expression
 		miType = piType
 		miReturnType = piReturnType
 
-		'JPD 20031017 Fault 7269
-		ReadPersonnelParameters()
-
 TidyUpAndExit:
 		Initialise = fOK
 		Exit Function

@@ -1626,9 +1626,6 @@ ErrorTrap:
 
 		fOK = True
 
-		'JPD 20031110 Fault 7544
-		ReadPersonnelParameters()
-
 		' Do nothing if the expression is already constructed.
 		If mfConstructed Then
 			If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then

@@ -2212,7 +2212,6 @@ LocalErr:
 		ReDim mastrUDFsRequired(0)
 
 		' Read the module parameters
-		ReadPersonnelParameters()
 		ReadAbsenceParameters()
 
 		' Define this cross tab as an absence breakdown

@@ -28,7 +28,6 @@ Public Class clsTodaysAbsence
 
 		' Get the absence table name and Personnel Records ID and name from Module Setup
 		ReadAbsenceParameters()
-		ReadPersonnelParameters()
 
 		' Check the user has permission to read the absence table.
 		For Each objTableView In gcoTablePrivileges.Collection

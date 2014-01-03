@@ -62,6 +62,9 @@ Public Class SessionInfo
 
 		PopulateMetadata()		
 		SetupTablesCollection()
+
+		ReadPersonnelParameters()
+
 		ActiveConnections = 1
 	End Sub
 
