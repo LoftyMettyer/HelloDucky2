@@ -194,18 +194,6 @@ ErrorTrap:
 
 	End Function
 
-	Public Property Username() As String
-		Get
-			Username = gsUsername
-		End Get
-		Set(ByVal Value As String)
-
-			gsUsername = Value
-			GetActualUserDetails()
-
-		End Set
-	End Property
-
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
@@ -280,43 +268,6 @@ LocalErr:
 		prmActutalLogin = Nothing
 		'UPGRADE_NOTE: Object cmdLoginInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		cmdLoginInfo = Nothing
-
-	End Function
-
-	Public Function GetActualUserDetails() As String
-
-		Dim cmdUserInfo As New Command
-		Dim prmActualUser As Parameter
-		Dim prmActualUserGroup As Parameter
-		Dim prmActualUserGroupID As Parameter
-
-		cmdUserInfo.CommandText = "spASRIntGetActualUserDetails"
-		cmdUserInfo.CommandType = 4
-		cmdUserInfo.let_ActiveConnection(gADOCon)
-
-		prmActualUser = cmdUserInfo.CreateParameter("psUsername", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
-		cmdUserInfo.Parameters.Append(prmActualUser)
-
-		prmActualUserGroup = cmdUserInfo.CreateParameter("psUserGroup", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
-		cmdUserInfo.Parameters.Append(prmActualUserGroup)
-
-		prmActualUserGroupID = cmdUserInfo.CreateParameter("piUserGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-		cmdUserInfo.Parameters.Append(prmActualUserGroupID)
-
-		cmdUserInfo.ActiveConnection.Errors.Clear()
-		cmdUserInfo.Execute()
-
-		gsActualLogin = cmdUserInfo.Parameters("psUsername").Value
-		gsUserGroup = cmdUserInfo.Parameters("psUserGroup").Value
-
-		'UPGRADE_NOTE: Object prmActualUser may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prmActualUser = Nothing
-		'UPGRADE_NOTE: Object prmActualUserGroup may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prmActualUserGroup = Nothing
-		'UPGRADE_NOTE: Object prmActualUserGroupID may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prmActualUserGroupID = Nothing
-		'UPGRADE_NOTE: Object cmdUserInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdUserInfo = Nothing
 
 	End Function
 

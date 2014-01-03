@@ -681,7 +681,7 @@ LocalErr:
 		If rsTemp.BOF And rsTemp.EOF Then
 			IsSelectionValid = "The " & strType & " used in this definition has been " & "deleted by another user"
 
-		ElseIf LCase(Trim(rsTemp.Fields("Username").Value)) <> LCase(Trim(datGeneral.Username)) And rsTemp.Fields("Access").Value = "HD" Then
+		ElseIf LCase(Trim(rsTemp.Fields("Username").Value)) <> LCase(Trim(gsUsername)) And rsTemp.Fields("Access").Value = "HD" Then
 			'JPD 20040706 Fault 8781
 			If Not CurrentUserIsSysSecMgr() Then
 				IsSelectionValid = "The " & strType & " used in this definition has been " & "hidden by another user"

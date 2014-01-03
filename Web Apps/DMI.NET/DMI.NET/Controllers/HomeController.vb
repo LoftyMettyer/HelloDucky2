@@ -2957,10 +2957,6 @@ Namespace Controllers
 
 			Dim objChart = New HR.Intranet.Server.clsChart
 
-			' Pass required info to the DLL
-			objChart.Username = CType(Session("username"), String)
-			objChart.Connection = CType(Session("databaseConnection"), Connection)
-
 			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, sortOrderID, sortDirection, colourID)
 
 			If Err.Number <> 0 Then
@@ -3315,18 +3311,18 @@ Namespace Controllers
 			'If Not objServerSession Is Nothing Then
 			'	If objServerSession.ActiveConnections = 1 Then
 
-			Session("databaseConnection") = Nothing
-			Session("avPrimaryMenuInfo") = Nothing
-			Session("avSubMenuInfo") = Nothing
-			Session("avQuickEntryMenuInfo") = Nothing
-			Session("avTableMenuInfo") = Nothing
-
 			Dim objConnection As Connection
 			objConnection = Session("databaseConnection")
 
 			If objConnection.State = 1 Then
 				objConnection.Close()
 			End If
+
+			Session("databaseConnection") = Nothing
+			Session("avPrimaryMenuInfo") = Nothing
+			Session("avSubMenuInfo") = Nothing
+			Session("avQuickEntryMenuInfo") = Nothing
+			Session("avTableMenuInfo") = Nothing
 
 			'	Else
 			'' Other window still connected.

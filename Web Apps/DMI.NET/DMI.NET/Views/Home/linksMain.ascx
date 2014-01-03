@@ -660,11 +660,7 @@
 									
 									' Create the reference to the DLL (Report Class)
 									Dim objChart = New HR.Intranet.Server.clsChart
-
-									' Pass required info to the DLL
-									objChart.Username = CType(Session("username"), String)
-									objChart.Connection = CType(Session("databaseConnection"), Connection)
-				
+			
 									Err.Clear()
 									Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
 																															navlink.Chart_AggregateType, navlink.Element_Type, navlink.Chart_SortOrderID, _

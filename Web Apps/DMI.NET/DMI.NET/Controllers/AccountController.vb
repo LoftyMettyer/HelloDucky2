@@ -100,16 +100,10 @@ Namespace Controllers
 		 iChartSortDirection As Long,
 		 iChartColourID As Long) As String
 
-			Dim objChart = New Global.HR.Intranet.Server.clsChart
+			Dim objChart = New HR.Intranet.Server.clsChart
 
 			' reset the globals
 			objChart.resetGlobals()
-
-
-			' Pass required info to the DLL
-			objChart.Username = Session("username")
-			objChart.Connection = dbConn
-			'Session("databaseConnection")
 
 			Dim mrstDBValueData
 

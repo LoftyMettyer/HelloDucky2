@@ -290,7 +290,7 @@ Public Class clsDiary
 
 		Dim strManualEvents As String
 
-		strManualEvents = "ColumnID = 0 AND (UserName = '" & datGeneral.Username & "'" & IIf(mblnFilterOnlyMine, ")", " OR Access <> 'HD')")
+		strManualEvents = "ColumnID = 0 AND (UserName = '" & gsUsername & "'" & IIf(mblnFilterOnlyMine, ")", " OR Access <> 'HD')")
 
 		Select Case FilterEventType
 			Case 0 'All Manual and System events

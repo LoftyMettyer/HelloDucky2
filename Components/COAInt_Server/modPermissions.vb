@@ -3,7 +3,6 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
-Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
@@ -11,6 +10,10 @@ Imports HR.Intranet.Server.Structures
 Module modPermissions
 
 	Public Sub SetupTablesCollection()
+
+		Const SecurityTable = 0
+		Const ViewTable = 1
+
 		' Read the list of tables the current user has permission to see.
 		Dim fSysSecManager As Boolean
 		Dim sSQL As String
@@ -18,9 +21,9 @@ Module modPermissions
 		Dim aryRealSource As DataTable
 
 		Dim sTableViewName As String
-		Dim rsInfo As Recordset
-		Dim rsViews As DataTable
-		Dim rsPermissions As Recordset
+		Dim dsPermissions As DataSet
+
+		Dim dtInfo As DataTable
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim colTablePermissions As IList(Of TablePermission)
@@ -28,7 +31,6 @@ Module modPermissions
 
 		Dim sLastTableView As String
 		Dim sColumnName As String
-		Dim iOriginalCursorLocation As Short
 		Dim objItem As TablePrivilege
 
 		If Tables Is Nothing Then
@@ -40,30 +42,17 @@ Module modPermissions
 			Exit Sub
 		End If
 
-		' Switch to client cursor for performance reasons.
-		iOriginalCursorLocation = gADOCon.CursorLocation
-
 		' Instantiate a new collection of table privileges.
 		gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
-		sSQL = "SELECT system_user AS [name]"
-		rsInfo = New Recordset
-		rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
-		datGeneral.Username = rsInfo.Fields("Name").Value
-		rsInfo.Close()
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
+		dsPermissions = clsDataAccess.GetDataSet("spASRIntSetupTablesCollection", CommandType.StoredProcedure)
 
-		' Check if the user is a 'system manager' or 'security manager'.
-		' If so then we can save time by applying all table permissions, instead of having to read them first.
-		sSQL = "SELECT count(*) AS recCount FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID" & " INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & " INNER JOIN sysusers a ON ASRSysGroupPermissions.groupName = a.name" & "   AND a.name = '" & gsUserGroup & "'" & " WHERE (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & " OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')" & " AND ASRSysGroupPermissions.permitted = 1" & " AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'"
+		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
+		gsUsername = objSecurityRow("UserName")
+		gsActualLogin = objSecurityRow("ActualLogin")
+		gsUserGroup = objSecurityRow("UserGroup")
+		fSysSecManager = objSecurityRow("IsSysSecMgr")
 
-		rsInfo = New Recordset
-		rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
-		fSysSecManager = (rsInfo.Fields("recCount").Value > 0)
-		rsInfo.Close()
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
 
 		' Initialise the collection with items for each TABLE in the system.
 		For Each objTable In Tables
@@ -80,12 +69,8 @@ Module modPermissions
 			gcoTablePrivileges.Add(objItem)
 		Next
 
-
 		' Initialise the collection with items for each VIEW in the system.
-		sSQL = "SELECT v.viewID, UPPER(v.viewName) AS [viewname], t.tableID, UPPER(t.tableName) AS [tablename], t.tableType, t.defaultOrderID, t.recordDescExprID FROM ASRSysViews v INNER JOIN ASRSysTables t ON v.viewTableID = t.tableID"
-		rsViews = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
-
-		For Each objRow In rsViews.Rows
+		For Each objRow In dsPermissions.Tables(ViewTable).Rows
 			objItem = New TablePrivilege()
 			objItem.TableName = objRow("TableName")
 			objItem.TableID = objRow("TableID")
@@ -113,46 +98,35 @@ Module modPermissions
 			Next
 
 			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
-			rsInfo = New Recordset
-			rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
+			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
-			With rsInfo
-				.MoveFirst()
-				Do While Not .EOF
-					lngTableId = Trim(rsInfo.Fields("tableid").Value)
-					objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
+			For Each objRow In dtInfo.Rows
+				lngTableId = Trim(objRow("tableid"))
+				objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
 
-					If objTableView.TableType = TableTypes.tabChild Then
-						objTableView.RealSource = Left("ASRSysCV" & Trim(Str(.Fields("childViewID").Value)) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(gsUserGroup, " ", "_"), 255)
-					Else
-						objTableView.RealSource = IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName)
-					End If
+				If objTableView.TableType = TableTypes.tabChild Then
+					objTableView.RealSource = Left("ASRSysCV" & Trim(Str(objRow("childViewID"))) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(gsUserGroup, " ", "_"), 255)
+				Else
+					objTableView.RealSource = IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName)
+				End If
 
-					.MoveNext()
-				Loop
-				.Close()
-			End With
+			Next
 
-			objTableView = Nothing
 		Else
 			' If the user is NOT a 'system manager' or 'security manager'
 			' read the table permissions from the server.
 			sSQL = "exec spASRIntAllTablePermissions '" & Replace(gsActualLogin, "'", "''") & "'"
-			rsPermissions = New Recordset
-			rsPermissions.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
+
+			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			colTablePermissions = New List(Of TablePermission)
-			Do While Not rsPermissions.EOF
+			For Each objRow In dtInfo.Rows
 				objTablePermission = New TablePermission()
-				objTablePermission.Name = rsPermissions.Fields("Name").Value
-				objTablePermission.Action = rsPermissions.Fields("Action").Value
-				objTablePermission.TableID = rsPermissions.Fields("TableID").Value
+				objTablePermission.Name = objRow("Name")
+				objTablePermission.Action = objRow("Action")
+				objTablePermission.TableID = objRow("TableID")
 				colTablePermissions.Add(objTablePermission)
-				rsPermissions.MoveNext()
-			Loop
-			rsPermissions.Close()
-			'UPGRADE_NOTE: Object rsPermissions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsPermissions = Nothing
+			Next
 
 			For Each objTablePermission In colTablePermissions
 
@@ -218,45 +192,37 @@ Module modPermissions
 			End If
 
 			' Get the list of all columns in all tables/views.
-			rsInfo = New Recordset
-			gADOCon.CursorLocation = CursorLocationEnum.adUseClient
-			rsInfo.Open("spASRIntGetColumnsFromTablesAndViews", gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdStoredProc)
+			dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
 
+			For Each objRow In dtInfo.Rows
 
-
-			Do While Not rsInfo.EOF
 				' If the current column's collection is NOT already instantiated, instantiate it.
-				If sLastTableView <> rsInfo.Fields("tableviewname").Value Then
-					sLastTableView = rsInfo.Fields("tableviewname").Value
+				If sLastTableView <> objRow("tableviewname") Then
+					sLastTableView = objRow("tableviewname")
 					objColumnPrivileges = New CColumnPrivileges
-					objColumnPrivileges.Tag = rsInfo.Fields("tableviewname").Value
-					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, rsInfo.Fields("tableviewname").Value)
+					objColumnPrivileges.Tag = objRow("tableviewname")
+					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, objRow("tableviewname"))
 				End If
 
-				' JPD20020926 Fault 3980
-				sColumnName = rsInfo.Fields("ColumnName").Value
+				sColumnName = objRow("ColumnName")
 				If Not objColumnPrivileges.IsValid(sColumnName) Then
 					' Add the column object to the collection.
 					' If the current user is a system/security maneger then set column privileges to TRUE,
 					' else set them to FALSE.
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					objColumnPrivileges.Add(fSysSecManager, fSysSecManager, sColumnName, rsInfo.Fields("ColumnType").Value, rsInfo.Fields("DataType").Value, rsInfo.Fields("ColumnID").Value, IIf(IsDBNull(rsInfo.Fields("UniqueCheckType").Value), False, rsInfo.Fields("UniqueCheckType").Value <> 0))
+					objColumnPrivileges.Add(fSysSecManager, fSysSecManager, sColumnName, objRow("ColumnType"), objRow("DataType"), objRow("ColumnID"), IIf(IsDBNull(objRow("UniqueCheckType")), False, objRow("UniqueCheckType") <> 0))
 
 				End If
 
-				rsInfo.MoveNext()
-			Loop
-			rsInfo.Close()
-			'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsInfo = Nothing
+			Next
 
 			' If the current user is not a system/security manager then read the column permissions from SQL.
 			If Not fSysSecManager Then
 
 				sLastTableView = ""
 
-				Dim rsInfo2 = clsDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
-				For Each objRow In rsInfo2.Rows
+				dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
+				For Each objRow In dtInfo.Rows
 
 					If sLastTableView <> objRow("tableviewname") Then
 						sLastTableView = objRow("tableviewname")
@@ -280,9 +246,6 @@ Module modPermissions
 				Next
 			End If
 		End If
-
-		' Restore original cursor location
-		gADOCon.CursorLocation = iOriginalCursorLocation
 
 	End Sub
 
@@ -327,4 +290,5 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
+
 End Module
