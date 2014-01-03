@@ -338,8 +338,6 @@ LocalErr:
 		Dim rsMailMergeDefinition As Recordset
 		Dim strSQL As String
 
-		SetupTablesCollection()
-
 		strSQL = "SELECT ASRSysMailMergeName.*, ASRSysTables.TableName as TableName, ASRSysTables.RecordDescExprID as RecordDescExprID FROM ASRSysMailMergeName JOIN ASRSYSTables ON (ASRSysTables.TableID = ASRSysMailMergeName.TableID) WHERE MailMergeID = " & mlngMailMergeID & " "
 		rsMailMergeDefinition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 

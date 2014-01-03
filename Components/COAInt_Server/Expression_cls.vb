@@ -691,13 +691,6 @@ ErrorTrap:
 		End Set
 	End Property
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
-			gADOCon = Value
-			SetupTablesCollection()
-		End Set
-	End Property
-
 	Public Function ValidateExpression() As Short
 
 		ValidateExpression = mobjBaseExpr.ValidateExpression(True)

@@ -636,8 +636,6 @@ ExecuteSQL_ERROR:
 		Dim strSQL As String
 		Dim i As Short
 
-		SetupTablesCollection()
-
 		mbIsBradfordIndexReport = False
 
 		strSQL = "EXEC spASRIntGetCustomReport " & mlngCustomReportID
@@ -4651,8 +4649,6 @@ CalculateBradfordFactors_ERROR:
 		On Error GoTo GetBradfordReportDefinition_ERROR
 
 		mbIsBradfordIndexReport = True
-
-		SetupTablesCollection()
 
 		' Dates coming in are in American format (if they're not we have a problem)
 		mstrBradfordStartDate = pstrAbsenceFrom

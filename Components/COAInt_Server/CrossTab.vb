@@ -2021,12 +2021,6 @@ LocalErr:
 
 	End Sub
 
-	Public Sub CreateTablesCollection()
-
-		SetupTablesCollection()
-
-	End Sub
-
 	Public Function AbsenceBreakdownRunStoredProcedure() As Boolean
 
 		' Purpose : To re-jig the selected records from the normal cross tab so it can be used in the standard crosstab output.

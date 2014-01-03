@@ -26,8 +26,6 @@ Public Class clsTodaysAbsence
 		Dim objTableView As TablePrivilege
 		Dim pblnOK As Boolean
 
-		SetupTablesCollection()
-
 		' Get the absence table name and Personnel Records ID and name from Module Setup
 		ReadAbsenceParameters()
 		ReadPersonnelParameters()

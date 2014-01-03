@@ -571,7 +571,6 @@ Public Class CalendarReport
 		Set(ByVal Value As Connection)
 
 			gADOCon = Value
-			SetupTablesCollection()
 
 			ReadPersonnelParameters()
 

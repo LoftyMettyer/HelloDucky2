@@ -155,7 +155,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSetting.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSubExpressionsAndComponents.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSummaryFields.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetSystemPermissions.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSystemSetting.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTableName.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTableOrders.sql" />

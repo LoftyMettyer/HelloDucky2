@@ -4492,10 +4492,6 @@ Namespace Controllers
 			' Get the server DLL to save the expression definition
 			objExpression = New HR.Intranet.Server.Expression
 
-			' Pass required info to the DLL
-			objExpression.Username = Session("username")
-			objExpression.Connection = Session("databaseConnection")
-
 			If Request.Form("txtSend_type") = 11 Then
 				iExprType = 11
 				iReturnType = 3

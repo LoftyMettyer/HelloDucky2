@@ -264,9 +264,7 @@
 	fok = true
 	blnNoDefinition = true
 
-	objCrossTab.CreateTablesCollection
-
-		Dim aPrompts
+	Dim aPrompts
 		Dim fModuleOk As Boolean
 		
 	aPrompts = Session("Prompts_" & session("utiltype") & "_" & session("utilid"))

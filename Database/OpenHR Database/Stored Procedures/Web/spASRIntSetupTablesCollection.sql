@@ -26,6 +26,19 @@ BEGIN
 	SELECT @sActualUserName AS [ActualLogin], @sRoleName AS [UserGroup], SYSTEM_USER AS [UserName]
 		, CASE WHEN @SysSecPerms > 0 THEN 1 ELSE 0 END AS [IsSysSecMgr];
 
+		
+	-- Individual system permissions		
+	SELECT ASRSysPermissionCategories.categoryKey + '_' + ASRSysPermissionItems.itemKey AS [key],
+		CASE
+			WHEN NOT ASRSysGroupPermissions.permitted IS NULL THEN ASRSysGroupPermissions.permitted
+			ELSE 0
+		END AS [permitted]
+	FROM ASRSysPermissionItems
+	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+	LEFT OUTER JOIN ASRSysGroupPermissions ON ASRSysPermissionItems.itemID = ASRSysGroupPermissions.itemID
+		AND ASRSysGroupPermissions.groupName = @sRoleName;
+
+
 	-- Views
 	SELECT v.viewID, UPPER(v.viewName) AS [viewname], t.tableID
 		, UPPER(t.tableName) AS [tablename], t.tableType, t.defaultOrderID, t.recordDescExprID

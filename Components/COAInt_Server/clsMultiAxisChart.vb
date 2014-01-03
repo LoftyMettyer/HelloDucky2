@@ -394,8 +394,6 @@ MergeSQLStrings_ERROR:
 
 		Dim pstrAggregatePrefix As String
 
-		SetupTablesCollection()
-
 		' Set flags with their starting values
 		pblnOK = True
 		pblnNoSelect = False

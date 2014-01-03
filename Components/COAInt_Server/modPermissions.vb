@@ -6,13 +6,132 @@ Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
+Imports System.Data.SqlClient
 
 Module modPermissions
 
-	Public Sub SetupTablesCollection()
+	Friend Sub PopulateMetadata()
+
+		Tables = New Collection(Of Table)
+		Columns = New Collection(Of Column)
+		Relations = New List(Of Relation)
+		ModuleSettings = New Collection(Of ModuleSetting)
+		UserSettings = New Collection(Of UserSetting)
+		Functions = New Collection(Of Metadata.Function)
+		Operators = New Collection(Of Metadata.Operator)
+
+		Try
+
+			Dim objData As DataSet = clsDataAccess.GetDataSet("spASRGetMetadata", CommandType.StoredProcedure, New SqlParameter("username", Login.Username))
+
+			For Each objRow In objData.Tables(0).Rows
+				Dim table As New Table
+				table.ID = objRow("TableID")
+				table.TableType = objRow("TableType")
+				table.Name = objRow("TableName")
+				table.DefaultOrderID = objRow("DefaultOrderID")
+				table.RecordDescExprID = objRow("RecordDescExprID")
+				Tables.Add(table)
+			Next
+
+			For Each objRow In objData.Tables(1).Rows
+				Dim column As New Column
+				column.ID = objRow("columnid")
+				column.TableID = objRow("tableid")
+				column.TableName = Tables.GetById(column.TableID).Name
+				column.Name = objRow("columnname")
+				column.DataType = objRow("datatype")
+				column.Use1000Separator = objRow("use1000separator")
+				column.Size = objRow("size")
+				column.Decimals = objRow("decimals")
+				Columns.Add(column)
+			Next
+
+
+			For Each objRow In objData.Tables(2).Rows
+				Dim relation As New Relation
+				relation.ParentID = objRow("parentid")
+				relation.ChildID = objRow("childid")
+				Relations.Add(relation)
+			Next
+
+
+			For Each objRow In objData.Tables(3).Rows
+				Dim moduleSetting As New ModuleSetting
+				moduleSetting.ModuleKey = objRow("ModuleKey")
+				moduleSetting.ParameterKey = objRow("ParameterKey")
+				moduleSetting.ParameterValue = objRow("ParameterValue")
+				moduleSetting.ParameterType = objRow("ParameterType")
+				ModuleSettings.Add(moduleSetting)
+			Next
+
+
+			For Each objRow In objData.Tables(4).Rows
+				Dim userSetting As New UserSetting
+				userSetting.Section = objRow("Section")
+				userSetting.Key = objRow("SettingKey")
+				userSetting.Value = objRow("SettingValue")
+				UserSettings.Add(userSetting)
+			Next
+
+
+			For Each objRow In objData.Tables(5).Rows
+				Dim objFunction = New [Function]
+				objFunction.ID = objRow("functionID")
+				objFunction.Name = objRow("functionName")
+				objFunction.ReturnType = objRow("returnType")
+				objFunction.Parameters = New Collection(Of FunctionParameter)()
+				Functions.Add(objFunction)
+			Next
+
+
+			For Each objRow In objData.Tables(6).Rows
+				Dim objParameter = New [FunctionParameter]
+				objParameter.ParameterIndex = objRow("ParameterIndex")
+				objParameter.ParameterType = objRow("ParameterType")
+				objParameter.Name = objRow("ParameterName")
+				Dim objFunction = Functions.GetById(objRow("functionID"))
+				objFunction.Parameters.Add(objParameter)
+			Next
+
+
+			For Each objRow In objData.Tables(7).Rows
+				Dim objOperator = New [Operator]
+
+				objOperator.ID = objRow("OperatorID")
+				objOperator.Name = objRow("Name")
+				objOperator.ReturnType = objRow("returnType")
+				objOperator.Precedence = objRow("Precedence")
+				objOperator.OperandCount = objRow("OperandCount")
+				objOperator.SPName = objRow("SPName")
+				objOperator.SQLCode = objRow("SQLCode")
+				objOperator.SQLType = objRow("SQLType")
+				objOperator.CheckDivideByZero = objRow("CheckDivideByZero")
+				objOperator.SQLFixedParam1 = objRow("SQLFixedParam1").ToString()
+				objOperator.CastAsFloat = objRow("CastAsFloat")
+				objOperator.Parameters = New Collection(Of OperatorParameter)()
+				Operators.Add(objOperator)
+			Next
+
+
+			For Each objRow In objData.Tables(8).Rows
+				Dim objParameter = New OperatorParameter
+				objParameter.ParameterType = objRow("ParameterType")
+				Operators.GetById(objRow("operatorID")).Parameters.Add(objParameter)
+			Next
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
+	Friend Sub SetupTablesCollection()
 
 		Const SecurityTable = 0
-		Const ViewTable = 1
+		Const SecurityPermissions = 1
+		Const ViewTable = 2
 
 		' Read the list of tables the current user has permission to see.
 		Dim fSysSecManager As Boolean
@@ -33,10 +152,6 @@ Module modPermissions
 		Dim sColumnName As String
 		Dim objItem As TablePrivilege
 
-		If Tables Is Nothing Then
-			datGeneral.PopulateMetadata()
-		End If
-
 		' Don't need to recreate the tables & columns collections if they already exist.
 		If Not gcoTablePrivileges Is Nothing Then
 			Exit Sub
@@ -52,6 +167,16 @@ Module modPermissions
 		gsActualLogin = objSecurityRow("ActualLogin")
 		gsUserGroup = objSecurityRow("UserGroup")
 		fSysSecManager = objSecurityRow("IsSysSecMgr")
+
+
+		' Populate our system settings
+		Permissions = New Collection(Of Permission)
+		For Each objRow In dsPermissions.Tables(SecurityPermissions).Rows
+			Dim objPermissionItem = New Permission
+			objPermissionItem.Key = objRow("key")
+			objPermissionItem.IsPermitted = objRow("permitted")
+			Permissions.Add(objPermissionItem)
+		Next
 
 
 		' Initialise the collection with items for each TABLE in the system.

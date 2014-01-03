@@ -44,8 +44,6 @@
 
 	fok = True
 
-	objCrossTab.CreateTablesCollection()
-
 	aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
 	If fok Then
 		fok = objCrossTab.SetPromptedValues(aPrompts)

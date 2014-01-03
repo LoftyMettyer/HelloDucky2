@@ -59,6 +59,8 @@ Public Class SessionInfo
 		Tables = Nothing
 		gcoTablePrivileges = Nothing
 		gcolColumnPrivilegesCollection = Nothing
+
+		PopulateMetadata()		
 		SetupTablesCollection()
 		ActiveConnections = 1
 	End Sub
