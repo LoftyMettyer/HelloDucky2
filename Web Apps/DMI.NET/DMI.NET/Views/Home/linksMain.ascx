@@ -511,11 +511,7 @@
 												Else
 													objChart = New HR.Intranet.Server.clsChart
 												End If
-
-												' Pass required info to the DLL
-												objChart.Username = CType(Session("username"), String)
-												objChart.Connection = CType(Session("databaseConnection"), Connection)
-				
+			
 												Dim mrstChartData As Recordset
 												Err.Clear()
 			
