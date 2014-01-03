@@ -11,6 +11,7 @@ Imports HR.Intranet.Server
 Imports System.Web.Script.Serialization
 Imports DMI.NET.Models.OrgChart
 Imports DMI.NET.Models
+Imports System.Data.SqlClient
 
 
 Namespace Controllers
@@ -936,37 +937,30 @@ Namespace Controllers
 		' GET: /Home
 		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
 
+			Dim iSingleRecordViewID As Integer = CleanNumeric(Session("SingleRecordViewID"))
+
+			Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
+			prmRecordID.Direction = ParameterDirection.Output
+
+			Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
+			prmRecordCount.Direction = ParameterDirection.Output
+
+			clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", CommandType.StoredProcedure, prmRecordID, prmRecordCount _
+														, New SqlParameter("piViewID", iSingleRecordViewID))
+
 			' Reload the toplevelrecid session variable as linksMain may have reset it.
 			Dim sErrorDescription = ""
-
-			' Get the self-service record ID.
-			Dim cmdSSRecord = New ADODB.Command
-			cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
-			cmdSSRecord.CommandType = 4	' Stored Procedure
-			cmdSSRecord.ActiveConnection = Session("databaseConnection")
-
-			Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
-			cmdSSRecord.Parameters.Append(prmRecordID)
-
-			Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
-			cmdSSRecord.Parameters.Append(prmRecordCount)
-
-			Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
-			cmdSSRecord.Parameters.Append(prmViewID)
-			prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
-
-			cmdSSRecord.Execute()
 
 			If (Err.Number <> 0) Then
 				sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
 			End If
 
 			If Len(sErrorDescription) = 0 Then
-				If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
+				If prmRecordCount.Value = 1 Then
 					' Only one record.
-					Session("TopLevelRecID") = NullSafeInteger(cmdSSRecord.Parameters("@piRecordID").Value)
+					Session("TopLevelRecID") = CLng(prmRecordID.Value)
 				Else
-					If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
+					If prmRecordCount.Value = 0 Then
 						' No personnel record. 
 						Session("TopLevelRecID") = 0
 					Else
@@ -990,7 +984,7 @@ Namespace Controllers
 				' Return RedirectToAction("Loginerror", "Account")
 			End If
 
-			cmdSSRecord = Nothing
+			'	cmdSSRecord = Nothing
 
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
@@ -2013,7 +2007,7 @@ Namespace Controllers
 
 							Dim prmInsertSQL = cmdInsertRecord.CreateParameter("insertSQL", DataTypeEnum.adLongVarChar, ParameterDirection.Input, 2147483646)
 							cmdInsertRecord.Parameters.Append(prmInsertSQL)
-							prmInsertSQL.value = sInsertUpdateDef
+							prmInsertSQL.Value = sInsertUpdateDef
 
 							Dim fDeadlock = True
 							Do While fDeadlock
@@ -2053,7 +2047,7 @@ Namespace Controllers
 											'	(UCase(Left(cmdInsertRecord.ActiveConnection.Errors.Item(iloop - 1).Description, Len(XP_SENDMAIL_MESSAGE))) = XP_SENDMAIL_MESSAGE) Then
 											'"EXECUTE permission denied on object 'xp_sendmail'"
 											'Ignore this error
-										ElseIf cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).nativeerror = 3609 Then
+										ElseIf cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
 											' Ignore the follow on message that says "The transaction ended in the trigger."
 										Else
 											'NHRD 18082011 HRPRO-1572 Removed extra carriage return for this error msg
@@ -2100,7 +2094,7 @@ Namespace Controllers
 
 							Dim prmInsertSQL2 = cmdInsertRecord2.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 							cmdInsertRecord2.Parameters.Append(prmInsertSQL2)
-							prmInsertSQL2.value = Session("Username")
+							prmInsertSQL2.Value = Session("Username")
 
 							Err.Clear()
 							cmdInsertRecord2.Execute()
@@ -2120,23 +2114,23 @@ Namespace Controllers
 
 							Dim prmUpdateSQL = cmdUpdateRecord.CreateParameter("updateSQL", DataTypeEnum.adLongVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
 							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
-							prmUpdateSQL.value = sInsertUpdateDef
+							prmUpdateSQL.Value = sInsertUpdateDef
 
 							Dim prmTableID = cmdUpdateRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmTableID)
-							prmTableID.value = NullSafeInteger(CleanNumeric(lngTableID))
+							prmTableID.Value = NullSafeInteger(CleanNumeric(lngTableID))
 
 							Dim prmRealSource = cmdUpdateRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
 							cmdUpdateRecord.Parameters.Append(prmRealSource)
-							prmRealSource.value = sRealSource
+							prmRealSource.Value = sRealSource
 
 							Dim prmID = cmdUpdateRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmID)
-							prmID.value = CleanNumeric(lngRecordID)
+							prmID.Value = CleanNumeric(lngRecordID)
 
 							Dim prmTimestamp = cmdUpdateRecord.CreateParameter("timestamp", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 							cmdUpdateRecord.Parameters.Append(prmTimestamp)
-							prmTimestamp.value = CleanNumeric(iTimestamp)
+							prmTimestamp.Value = CleanNumeric(iTimestamp)
 
 							Dim fDeadlock = True
 							Do While fDeadlock
@@ -2224,7 +2218,7 @@ Namespace Controllers
 
 							prmUpdateSQL = cmdUpdateRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
-							prmUpdateSQL.value = Session("Username")
+							prmUpdateSQL.Value = Session("Username")
 
 							Err.Clear()
 							cmdUpdateRecord.Execute()
@@ -2246,15 +2240,15 @@ Namespace Controllers
 
 				Dim prmTableID = cmdDeleteRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirection.Input)
 				cmdDeleteRecord.Parameters.Append(prmTableID)
-				prmTableID.value = NullSafeInteger(CleanNumeric(lngTableID))
+				prmTableID.Value = NullSafeInteger(CleanNumeric(lngTableID))
 
 				Dim prmRealSource = cmdDeleteRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirection.Input, 8000)
 				cmdDeleteRecord.Parameters.Append(prmRealSource)
-				prmRealSource.value = CleanString(sRealSource)
+				prmRealSource.Value = CleanString(sRealSource)
 
 				Dim prmID = cmdDeleteRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirection.Input)
 				cmdDeleteRecord.Parameters.Append(prmID)
-				prmID.value = CleanNumeric(lngRecordID)
+				prmID.Value = CleanNumeric(lngRecordID)
 
 				Dim fDeadlock = True
 				Do While fDeadlock
@@ -2288,7 +2282,7 @@ Namespace Controllers
 									sErrorMsg = sErrorMsg & "Another user is deadlocking the database. Try saving again."
 									fOk = False
 								End If
-							ElseIf cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).nativeerror = 3609 Then
+							ElseIf cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
 								' Ignore the follow on message that says "The transaction ended in the trigger."
 							Else
 								sErrorMsg = sErrorMsg & vbCrLf & _
@@ -2329,7 +2323,7 @@ Namespace Controllers
 
 				Dim prmInsertSQL = cmdInsertRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
 				cmdInsertRecord.Parameters.Append(prmInsertSQL)
-				prmInsertSQL.value = Session("Username")
+				prmInsertSQL.Value = Session("Username")
 
 				Err.Clear()
 				cmdInsertRecord.Execute()
@@ -3312,13 +3306,38 @@ Namespace Controllers
 		End Function
 
 		Function LogOff()
+
+			'		Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
+
+			Session("ErrorText") = Nothing
+
+			'' Are we the last window?
+			'If Not objServerSession Is Nothing Then
+			'	If objServerSession.ActiveConnections = 1 Then
+
 			Session("databaseConnection") = Nothing
 			Session("avPrimaryMenuInfo") = Nothing
 			Session("avSubMenuInfo") = Nothing
 			Session("avQuickEntryMenuInfo") = Nothing
 			Session("avTableMenuInfo") = Nothing
 
+			Dim objConnection As Connection
+			objConnection = Session("databaseConnection")
+
+			If objConnection.State = 1 Then
+				objConnection.Close()
+			End If
+
+			'	Else
+			'' Other window still connected.
+			'objServerSession.ActiveConnections = 0
+			''					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+			'	End If
+			'End If
+
+
 			Return RedirectToAction("Login", "Account")
+
 		End Function
 
 		Function PasswordChange() As ActionResult

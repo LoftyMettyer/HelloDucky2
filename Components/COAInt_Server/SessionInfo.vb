@@ -1,11 +1,15 @@
 ﻿Imports System.Collections.Generic
+Imports ADODB
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Public Class SessionInfo
 	'Public Shared gADOCon As ADODB.Connection
 
 	'Public Shared datGeneral As New clsGeneral
 	'Public Shared dataAccess As New clsDataAccess
+
+	Public ActiveConnections As Integer = 0
 
 	Public Property Username() As String
 		Get
@@ -54,6 +58,19 @@ Public Class SessionInfo
 	Public Sub Initialise()
 		Tables = Nothing
 		gcoTablePrivileges = Nothing
+		gcolColumnPrivilegesCollection = Nothing
+		SetupTablesCollection()
+		ActiveConnections = 1
+	End Sub
+
+	Public WriteOnly Property Connection() As Connection
+		Set(ByVal Value As Connection)
+			gADOCon = Value
+		End Set
+	End Property
+
+	Public Sub LoginInfo(value As LoginInfo)
+		Login = value
 	End Sub
 
 End Class

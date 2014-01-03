@@ -2,10 +2,12 @@ Option Strict On
 Option Explicit On
 
 Imports ADODB
+Imports System.Data.SqlClient
+Imports System.ComponentModel
 
-Friend Class clsDataAccess
-	
-	Public Function OpenRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum _
+Public Class clsDataAccess
+
+	Friend Function OpenRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum _
 		, Optional ByVal iCursorLocation As CursorLocationEnum = CursorLocationEnum.adUseServer) As Recordset
 
 		' Open a recordset from the given SQL query, with the given recordset properties.
@@ -37,29 +39,13 @@ Friend Class clsDataAccess
 
 	End Function
 
-	Public Function OpenPersistentRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum) As Recordset
-		' Open a recordset from the given SQL query, with the given recordset properties.
-		Dim rsTemp As Recordset
-
-		rsTemp = New Recordset
-
-		rsTemp.let_ActiveConnection(gADOCon)
-		rsTemp.Properties("Preserve On Commit").Value = True
-		rsTemp.Properties("Preserve On Abort").Value = True
-		rsTemp.Open(sSQL, , CursorType, LockType, CommandTypeEnum.adCmdText)
-
-		OpenPersistentRecordset = rsTemp
-
-	End Function
-
-
-	Public Sub ExecuteSql(ByRef sSQL As String)
+	Friend Sub ExecuteSql(ByRef sSQL As String)
 		' Execute the given SQL statement.
 		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
 
 	End Sub
 
-	Public Function ExecuteSqlReturnAffected(ByRef sSQL As String) As Object
+	Friend Function ExecuteSqlReturnAffected(ByRef sSQL As String) As Object
 		' Execute the given SQL statement, and return the number of rows affected.
 		Dim lngAffected As Object
 
@@ -67,4 +53,107 @@ Friend Class clsDataAccess
 		ExecuteSqlReturnAffected = lngAffected
 
 	End Function
+
+	Public Shared Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
+
+		Try
+			Return GetDataSet(sProcedureName, CommandType, args).Tables(0)
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+		Return Nothing
+
+	End Function
+
+	Public Shared Function GetDataTable(ByVal procedureName As String, ByVal parameterName As String, dataList As DataTable) As DataTable
+
+		Dim strConn As String
+		Dim objDataSet As New DataSet
+		Dim objAdaptor As New SqlDataAdapter
+
+		strConn = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name=OpenHR8", Login.Server, Login.Database, Login.Username, Login.Password)
+
+		Try
+
+			Using sqlConnection As New SqlConnection(strConn)
+				objAdaptor.SelectCommand = New SqlCommand(procedureName, sqlConnection)
+				objAdaptor.SelectCommand.CommandType = CommandType.StoredProcedure
+				objAdaptor.SelectCommand.Parameters.Clear()
+
+				Dim objParameter As SqlParameter = objAdaptor.SelectCommand.Parameters.AddWithValue(parameterName, dataList)
+				objParameter.SqlDbType = SqlDbType.Structured
+
+				objAdaptor.Fill(objDataSet)
+
+			End Using
+
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+		Return objDataSet.Tables(0)
+
+	End Function
+
+	Public Shared Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
+
+		Dim strConn As String
+		Dim objDataSet As New DataSet
+		Dim objAdaptor As New SqlDataAdapter
+
+		strConn = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name=OpenHR8", Login.Server, Login.Database, Login.Username, Login.Password)
+
+		Try
+
+			Using sqlConnection As New SqlConnection(strConn)
+
+				''Dim sqlConnection As New SqlConnection(strConn)
+				'	sqlConnection.Open()
+				objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
+				objAdaptor.SelectCommand.CommandType = CommandType
+
+				objAdaptor.SelectCommand.Parameters.Clear()
+				For Each sqlParm In args
+					objAdaptor.SelectCommand.Parameters.Add(sqlParm)
+				Next
+
+
+				'		objAdaptor.SelectCommand.Parameters.AddWithValue("@begDate", SqlDbType.Date).Value = beg_Date
+
+
+				objAdaptor.Fill(objDataSet)
+
+				' ????
+				'sqlConnection.Close()
+			End Using
+
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+		Return objDataSet
+
+	End Function
+
+	Friend Shared Function CreateTable(Of T)() As DataTable
+		Dim entityType As Type = GetType(T)
+		Dim table As New DataTable(entityType.Name)
+		Dim properties As PropertyDescriptorCollection = TypeDescriptor.GetProperties(entityType)
+
+		For Each prop As PropertyDescriptor In properties
+			' HERE IS WHERE THE ERROR IS THROWN FOR NULLABLE TYPES
+			table.Columns.Add(prop.Name, prop.PropertyType)
+		Next
+
+		Return table
+	End Function
+
+
 End Class

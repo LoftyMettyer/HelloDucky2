@@ -1,7 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%--<%@ Import Namespace="ADODB" %>--%>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%="" %>
 
@@ -986,46 +988,36 @@ End If
 																								<%
 																										On Error Resume Next
 	
+																									If (Len(sErrorDescription) = 0) Then
+																																																			
+																										Err.Clear()
+																										Dim rstTableRecords = clsDataAccess.GetDataTable("sp_ASRIntGetTables", CommandType.StoredProcedure)
+
+																										If (Err.Number <> 0) Then
+																											sErrorDescription = "The table records could not be retrieved." & vbCrLf & FormatError(Err.Description)
+																										End If
+
 																										If (Len(sErrorDescription) = 0) Then
-																												' Get the view records.
-																										Dim cmdTableRecords As New Command
-																												cmdTableRecords.CommandText = "sp_ASRIntGetTables"
-																										cmdTableRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																												cmdTableRecords.ActiveConnection = Session("databaseConnection")
-
-																												Err.Clear()
-																												Dim rstTableRecords = cmdTableRecords.Execute
-
-																												If (Err.Number <> 0) Then
-																														sErrorDescription = "The table records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																												End If
-
-																												If (Len(sErrorDescription) = 0) Then
-																														Do While Not rstTableRecords.EOF
-																																Response.Write("						<OPTION value=" & rstTableRecords.Fields(0).Value)
+																											For Each objRow In rstTableRecords.Rows
+																												
+																												Response.Write("						<option value=" & objRow(0))
 																												If SelectedTableID Is Nothing Or SelectedTableID = "" Then
-																																If rstTableRecords.Fields(0).Value = CLng(Session("utilTableID")) Then
-																																		Response.Write(" SELECTED")
-																																End If
+																													If objRow(0) = CLng(Session("utilTableID")) Then
+																														Response.Write(" SELECTED")
+																													End If
 																												Else
-																													If rstTableRecords.Fields(0).Value = CLng(SelectedTableID) Then
+																													If objRow(0) = CLng(SelectedTableID) Then
 																														Response.Write(" SELECTED")
 																													End If
 																												End If
 
-																																Response.Write(">" & Replace(CStr(rstTableRecords.Fields(1).Value), "_", " ") & "</OPTION>" & vbCrLf)
+																												Response.Write(">" & Replace(CStr(objRow(1)), "_", " ") & "</option>" & vbCrLf)
 
-																																rstTableRecords.MoveNext()
-																														Loop
+																											Next
 					
-																														' Release the ADO recordset object.
-																														rstTableRecords.close()
-																														rstTableRecords = Nothing
-																												End If
-
-																												' Release the ADO command object.
-																												cmdTableRecords = Nothing
 																										End If
+
+																									End If
 																								%>
 																						</select>
 																				</td>
@@ -1051,24 +1043,20 @@ End If
 																		<tr>
 																				<td width="100%">
 																						<%
-																								If Len(sErrorDescription) = 0 Then
-																										' Get the records.
-																								Dim cmdDefSelRecords As New Command
-																										cmdDefSelRecords.CommandText = "sp_ASRIntPopulateDefSel"
-																								cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																										cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
+																							If Len(sErrorDescription) = 0 Then
+																																															
+																								' Get the records.
+																								Dim prmType = New SqlParameter("intType", SqlDbType.Int)
+																								prmType.Direction = ParameterDirection.Input
+																								prmType.Value = CleanNumeric(Session("defseltype"))
+																																															
+																								Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
+																								prmOnlyMine.Direction = ParameterDirection.Input
+																								prmOnlyMine.Value = CleanBoolean(Session("OnlyMine"))
 
-																								Dim prmType = cmdDefSelRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																										cmdDefSelRecords.Parameters.Append(prmType)
-																										prmType.value = CleanNumeric(Session("defseltype"))
-
-																								Dim prmOnlyMine = cmdDefSelRecords.CreateParameter("onlymine", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
-																										cmdDefSelRecords.Parameters.Append(prmOnlyMine)
-																										prmOnlyMine.value = CleanBoolean(Session("OnlyMine")) ' 0 '1
-
-																								Dim prmTableId = cmdDefSelRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																										cmdDefSelRecords.Parameters.Append(prmTableId)
-																								
+																								Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int)
+																								prmTableId.Direction = ParameterDirection.Input
+																							
 																								If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
 																									prmTableId.Value = CleanNumeric(Session("utilTableID"))
 																								Else
@@ -1076,8 +1064,8 @@ End If
 																								End If
 
 																								Err.Clear()
-																								Dim rstDefSelRecords = cmdDefSelRecords.Execute
-
+																								Dim rstDefSelRecords = clsDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+																																													
 																								If (Err.Number <> 0) Then
 																									sErrorDescription = "The Defsel records could not be retrieved." & vbCrLf & FormatError(Err.Description)
 																								End If
@@ -1088,19 +1076,19 @@ End If
 																									Response.Write("<tr class='header'>" & vbCrLf)
 																									Response.Write("<th style='display: none;'>ID</th>")
 																									
-																									For iLoop = 0 To (rstDefSelRecords.Fields.Count - 1)
+																									For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
 								
 																										Dim headerStyle As New StringBuilder
 																										Dim headerCaption As String
-								
-																										If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then
+																																	
+																										If Not rstDefSelRecords.Columns(iLoop).ColumnName = "ID" Then
 																											headerStyle.Append("width: 373px; ")
 								
-																											If rstDefSelRecords.Fields(iLoop).Name <> "Name" Then
+																											If rstDefSelRecords.Columns(iLoop).ColumnName <> "Name" Then
 																												headerStyle.Append("display: none; ")
 																											End If
 
-																											headerCaption = Replace(rstDefSelRecords.Fields(iLoop).Name.ToString(), "_", " ")
+																											headerCaption = Replace(rstDefSelRecords.Columns(iLoop).ColumnName.ToString(), "_", " ")
 																											headerStyle.Append("text-align: left; ")
 						
 																											Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
@@ -1110,40 +1098,35 @@ End If
 																									Response.Write("</tr>")
 						
 																									Dim lngRowCount = 0
-																									Do While Not rstDefSelRecords.EOF
+																									
+																									For Each objRow In rstDefSelRecords.Rows
+																										
 																										Dim sAddString = ""
 																										Dim iLoop As Integer = 0
 
-																										Dim IDRowNumber As Long = rstDefSelRecords.Fields("ID").Value
-								
-
+																										Dim IDRowNumber As Long = CLng(objRow("ID"))
+							
 																										Response.Write("<tr disabled='disabled' id='" & IDRowNumber & "'>")
 																										Response.Write("<td><input type='radio' id='sel' value='" & IDRowNumber & "'></td>")
-																										
-																										For iLoop = 0 To (rstDefSelRecords.Fields.Count - 1)
-																											If Not rstDefSelRecords.Fields(iLoop).Name = "ID" Then
-																												sAddString = CleanStringForHTML(rstDefSelRecords.Fields(iLoop).Value.ToString())
-																												Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.Fields(iLoop).Name & "' type='hidden' value='" & sAddString & "'></td>")
+																																																			
+																										For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
+																											If Not rstDefSelRecords.Columns(iLoop).ColumnName = "ID" Then
+																												sAddString = CleanStringForHTML(objRow(iLoop).ToString())
+																												Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.Columns(iLoop).ColumnName & "' type='hidden' value='" & sAddString & "'></td>")
 																											End If
 																										Next
 
 																										Response.Write("</tr>")
-																										'																										Response.Write("<input type='hidden' id=txtAddString_" & lngRowCount & " name=txtAddString_" & lngRowCount & " value=""" & sAddString & """>" & vbCrLf)
-
 																										lngRowCount = lngRowCount + 1
-																										rstDefSelRecords.MoveNext()
 																
-																									Loop
+																									Next
 
 																									Response.Write("</table>")
 						
-																									' Release the ADO recordset object.
-																									rstDefSelRecords.Close()
-
 																									Response.Write("<input type='hidden' value='" & lngRowCount & "' id='DefSelRecordsCount'>")	'Store the number of records so we can use it later
 																								End If
 							
-																								End If
+																							End If
 																						%>
 	 
 																				</td>

@@ -42,14 +42,14 @@ BEGIN
 		INNER JOIN @SysObjects o ON p.ID = o.ID
 		WHERE p.UID = @iUserGroupID AND ((p.ProtectType <> 206 AND p.Action <> 193) OR (p.Action = 193 AND p.ProtectType IN (204,205)));
 
-	SELECT o.name, p.action, ISNULL(cv.tableID,0) AS [tableid]
+	SELECT UPPER(o.name) AS [name], p.action, ISNULL(cv.tableID,0) AS [tableid]
 		FROM @SysProtects p
 		INNER JOIN @SysObjects o ON p.id = o.id
 		LEFT JOIN ASRSysChildViews2 cv ON cv.childViewID = CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, CHARINDEX('#',o.Name, 0) - 9) ELSE 0 END
 		WHERE p.protectType <> 206
 			AND p.action <> 193
 	UNION
-	SELECT o.name, 193, ISNULL(cv.tableID,0) AS [tableid]
+	SELECT UPPER(o.name) AS [name], 193, ISNULL(cv.tableID,0) AS [tableid]
 		FROM sys.columns c
 		INNER JOIN @SysProtects p ON (c.object_id = p.id
 			AND p.action = 193 
@@ -61,7 +61,6 @@ BEGIN
 		LEFT JOIN ASRSysChildViews2 cv ON cv.childViewID = CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, CHARINDEX('#',o.Name, 0) - 9) ELSE 0 END
 		WHERE (c.name <> 'timestamp' AND c.name <> 'ID')
 			AND p.protectType IN (204, 205) 
-		ORDER BY o.name;
-
+		ORDER BY name;
 
 END

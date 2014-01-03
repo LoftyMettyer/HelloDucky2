@@ -50,13 +50,13 @@
 				conX.Close()
 		End If
 		conX = Nothing
-
+	
 	Session("databaseConnection") = Nothing
-	session("action") = ""
-	session("selectSQL") = ""
-	session("filterSQL") = ""
-	session("filterDef") = ""
-	Session("optionAction") = ""	
+	Session("action") = ""
+	Session("selectSQL") = ""
+	Session("filterSQL") = ""
+	Session("filterDef") = ""
+	Session("optionAction") = ""
 	Session("server") = ""
 	
 	Session("showLoginDetails") = Request.QueryString("Details")
@@ -87,13 +87,13 @@
 		'end if
 		'Response.Write("alert(window.isMobileBrowser);" & vbCrLf)
 		If Request.QueryString("user") <> "" Then
-			Response.Write("    frmLoginForm.txtUserName.value = """ & cleanStringForJavaScript(Request.QueryString("user")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtUserName.value = """ & CleanStringForJavaScript(Request.QueryString("user")) & """;" & vbCrLf)
 			Response.Write("    if(!window.isMobileBrowser) frmLoginForm.txtPassword.focus();" & vbCrLf)
 		ElseIf Request.QueryString("username") <> "" Then
-			Response.Write("    frmLoginForm.txtUserName.value = """ & cleanStringForJavaScript(Request.QueryString("username")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtUserName.value = """ & CleanStringForJavaScript(Request.QueryString("username")) & """;" & vbCrLf)
 			Response.Write("    if(!window.isMobileBrowser) frmLoginForm.txtPassword.focus();" & vbCrLf)
 		ElseIf Session("username") <> "" Then
-			Response.Write("    frmLoginForm.txtUserName.value = """ & cleanStringForJavaScript(Session("username")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtUserName.value = """ & CleanStringForJavaScript(Session("username")) & """;" & vbCrLf)
 			Response.Write("    if(!window.isMobileBrowser) frmLoginForm.txtPassword.focus();" & vbCrLf)
 		Else
 			If Not Request.Cookies("Login") Is Nothing Then
@@ -113,9 +113,9 @@
 		End If
 
 		If Request.QueryString("database") <> "" Then
-			Response.Write("    frmLoginForm.txtDatabase.value = """ & cleanStringForJavaScript(Request.QueryString("database")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtDatabase.value = """ & CleanStringForJavaScript(Request.QueryString("database")) & """;" & vbCrLf)
 		ElseIf Session("database") <> "" Then
-			Response.Write("    frmLoginForm.txtDatabase.value = """ & cleanStringForJavaScript(Session("database")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtDatabase.value = """ & CleanStringForJavaScript(Session("database")) & """;" & vbCrLf)
 			'Else
 			'Response.Write("    sDatabase = getCookie('Intranet_Database');" & vbCrLf)
 			'Response.Write("    if (sDatabase != """" && sDatabase != null && sDatabase != ""undefined"") {" & vbCrLf)
@@ -124,9 +124,9 @@
 		End If
 
 		If Request.QueryString("server") <> "" Then
-			Response.Write("    frmLoginForm.txtServer.value = """ & cleanStringForJavaScript(Request.QueryString("server")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtServer.value = """ & CleanStringForJavaScript(Request.QueryString("server")) & """;" & vbCrLf)
 		ElseIf Session("server") <> "" Then
-			Response.Write("    frmLoginForm.txtServer.value = """ & cleanStringForJavaScript(Session("server")) & """;" & vbCrLf)
+			Response.Write("    frmLoginForm.txtServer.value = """ & CleanStringForJavaScript(Session("server")) & """;" & vbCrLf)
 			'Else
 			' Response.Write("    sServer = getCookie('Intranet_Server');" & vbCrLf)
 			'	Response.Write("    if (sServer != """" && sServer != null && sServer != ""undefined"") {" & vbCrLf)
@@ -136,9 +136,9 @@
 
 		If Request.ServerVariables("LOGON_USER") <> "" Then
 			If Request.QueryString("WindowsAuthentication") <> "" Then
-				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & cleanStringForJavaScript(Request.QueryString("WindowsAuthentication")) & """;" & vbCrLf)
+				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & CleanStringForJavaScript(Request.QueryString("WindowsAuthentication")) & """;" & vbCrLf)
 			ElseIf Session("WindowsAuthentication") <> "" Then
-				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & cleanStringForJavaScript(Session("WindowsAuthentication")) & """;" & vbCrLf)
+				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & CleanStringForJavaScript(Session("WindowsAuthentication")) & """;" & vbCrLf)
 			Else
 				Response.Write("    sWindowsAuthentication = getCookie('Intranet_WindowsAuthentication');" & vbCrLf)
 				Response.Write("    if (sWindowsAuthentication == ""True"" && sWindowsAuthentication != null && sWindowsAuthentication != ""undefined"") {" & vbCrLf)
@@ -158,8 +158,7 @@
 		Response.Write("    }" & vbCrLf)
 
 		Response.Write("}")
-		'Response.Write("-->" & vbCrLf)
-		Response.Write("</SCRIPT>" & vbCrLf)
+		Response.Write("</script>" & vbCrLf)
 	End If
 %>
 

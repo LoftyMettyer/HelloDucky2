@@ -54,13 +54,13 @@
 				Dim sErrorDescription As String = ""
 				Dim sNonFatalErrorDescription As String = ""
 
-			Dim cmdThousandFindColumns As ADODB.Command
+			Dim cmdThousandFindColumns As Command
 			Dim prmError As ADODB.Parameter
 			Dim prmTableID As ADODB.Parameter
 			Dim prmViewID As ADODB.Parameter
 			Dim prmOrderID As ADODB.Parameter
 			Dim prmThousandColumns As ADODB.Parameter
-			Dim cmdGetFindRecords As ADODB.Command
+			Dim cmdGetFindRecords As Command
 				Dim sThousandColumns As String
 			Dim prmReqRecs As ADODB.Parameter
 
@@ -77,7 +77,7 @@
 			Dim prmColumnDecimals As ADODB.Parameter
 			Dim rstFindRecords As ADODB.Recordset
 		
-			Dim cmdGetFilterValue As ADODB.Command
+			Dim cmdGetFilterValue As Command
 			Dim prmScreenID As ADODB.Parameter
 			Dim prmColumnID As ADODB.Parameter
 			Dim prmRecordID As ADODB.Parameter
@@ -94,8 +94,8 @@
 			Dim prmWLRecordID As ADODB.Parameter
 			Dim prmEmpRecordID As ADODB.Parameter
 
-			Dim cmdTransferCourse As ADODB.Command
-			Dim cmdBookCourse As ADODB.Command
+			Dim cmdTransferCourse As Command
+			Dim cmdBookCourse As Command
 			Dim prmStatus As ADODB.Parameter
 				Dim fDeadlock As Boolean
 				Dim sErrMsg As String
@@ -179,9 +179,9 @@
 						' Release the ADO command object.
 						cmdThousandFindColumns = Nothing
 
-				cmdGetFindRecords = New ADODB.Command
+				cmdGetFindRecords = New Command
 						cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
-				cmdGetFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
 						cmdGetFindRecords.CommandTimeout = 180
 			
@@ -1396,7 +1396,7 @@
 				ElseIf Session("optionAction") = "LOADADDFROMWAITINGLIST" Then
 						sThousandColumns = ""
 			
-				cmdThousandFindColumns = New ADODB.Command
+				cmdThousandFindColumns = New Command
 						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
 				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
@@ -1663,9 +1663,7 @@
 						If UCase(Session("optionPageAction")) = "FILTER" Then
 								objUtilities = Session("UtilitiesObject")
 
-								objUtilities.Connection = Session("databaseConnection")
-
-								j = 0
+					j = 0
 								ReDim Preserve aPrompts(1, 0)
 								sPrompts = Session("optionPromptSQL")
 								If Len(Session("optionPromptSQL")) > 0 Then
@@ -1693,7 +1691,7 @@
 								objUtilities = Nothing
 						End If
 
-				cmdBulkBooking = New ADODB.Command
+				cmdBulkBooking = New Command
 						cmdBulkBooking.CommandText = "sp_ASRIntGetBulkBookingRecords"
 				cmdBulkBooking.CommandType = CommandTypeEnum.adCmdStoredProc
 						cmdBulkBooking.CommandTimeout = 180
@@ -1803,8 +1801,6 @@
 				ElseIf Session("optionAction") = "GETPICKLISTSELECTION" Then
 						If UCase(Session("optionPageAction")) = "FILTER" Then
 								objUtilities = Session("UtilitiesObject")
-
-								objUtilities.Connection = Session("databaseConnection")
 
 								j = 0
 								ReDim Preserve aPrompts(1, 0)

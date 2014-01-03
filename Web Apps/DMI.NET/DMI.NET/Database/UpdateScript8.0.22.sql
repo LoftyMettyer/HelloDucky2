@@ -68,6 +68,17 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntCr
 GO
 
 
+IF TYPE_ID(N'DataPermissions') IS NOT NULL
+	DROP TYPE [dbo].[DataPermissions]
+
+GO
+
+CREATE TYPE [dbo].[DataPermissions] AS TABLE
+(
+	name	varchar(255)
+)
+
+GO
 
 
 
@@ -3504,14 +3515,14 @@ BEGIN
 		INNER JOIN @SysObjects o ON p.ID = o.ID
 		WHERE p.UID = @iUserGroupID AND ((p.ProtectType <> 206 AND p.Action <> 193) OR (p.Action = 193 AND p.ProtectType IN (204,205)));
 
-	SELECT o.name, p.action, ISNULL(cv.tableID,0) AS [tableid]
+	SELECT UPPER(o.name) AS [name], p.action, ISNULL(cv.tableID,0) AS [tableid]
 		FROM @SysProtects p
 		INNER JOIN @SysObjects o ON p.id = o.id
 		LEFT JOIN ASRSysChildViews2 cv ON cv.childViewID = CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, CHARINDEX('#',o.Name, 0) - 9) ELSE 0 END
 		WHERE p.protectType <> 206
 			AND p.action <> 193
 	UNION
-	SELECT o.name, 193, ISNULL(cv.tableID,0) AS [tableid]
+	SELECT UPPER(o.name) AS [name], 193, ISNULL(cv.tableID,0) AS [tableid]
 		FROM sys.columns c
 		INNER JOIN @SysProtects p ON (c.object_id = p.id
 			AND p.action = 193 
@@ -3523,10 +3534,10 @@ BEGIN
 		LEFT JOIN ASRSysChildViews2 cv ON cv.childViewID = CASE SUBSTRING(o.Name, 1, 8) WHEN 'ASRSysCV' THEN SUBSTRING(o.Name, 9, CHARINDEX('#',o.Name, 0) - 9) ELSE 0 END
 		WHERE (c.name <> 'timestamp' AND c.name <> 'ID')
 			AND p.protectType IN (204, 205) 
-		ORDER BY o.name;
-
+		ORDER BY name;
 
 END
+
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGet1000SeparatorFindColumns]    Script Date: 02/01/2014 20:52:28 ******/
@@ -4172,15 +4183,15 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	SELECT c.columnName, c.columnType, c.dataType
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
 		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, t.tableName AS tableViewName
+		, UPPER(t.tableName) AS tableViewName
 	FROM dbo.ASRSysColumns c
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID
 	UNION 
-	SELECT c.columnName, c.columnType, c.dataType
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
 		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, v.viewName AS tableViewName 
+		, UPPER(v.viewName) AS tableViewName 
 	FROM dbo.ASRSysColumns c
 	INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
 	LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID 
@@ -5690,7 +5701,7 @@ END
 GO
 
 CREATE PROCEDURE [dbo].[spASRIntGetColumnPermissions]
-	(@psSourceArray varchar(MAX))
+	(@SourceList AS dbo.dataPermissions READONLY)
 AS
 BEGIN
 	
@@ -5706,21 +5717,21 @@ BEGIN
 		@sRoleName OUTPUT,
 		@iUserGroupID OUTPUT;
 
-	SELECT sysobjects.name AS tableViewName, syscolumns.name AS columnName, p.action
-		, CASE p.protectType WHEN 205 THEN 1 WHEN 204 THEN 1 ELSE 0 END AS permission
+	SELECT UPPER(so.name) AS tableViewName, UPPER(syscolumns.name) AS columnName, p.action
+		, CASE p.protectType WHEN 205 THEN 1 WHEN 204 THEN 1 ELSE 0 END AS permission, sl.*
 		FROM ASRSysProtectsCache p
-		INNER JOIN sysobjects ON p.id = sysobjects.id INNER JOIN syscolumns ON p.id = syscolumns.id 
+		INNER JOIN sysobjects so ON p.id = so.id
+		INNER JOIN @SourceList sl ON sl.name = so.name
+		INNER JOIN syscolumns ON p.id = syscolumns.id 
 		WHERE p.uid = @iUserGroupID
 			AND (p.action = 193 OR p.action = 197)
-			AND syscolumns.name <> 'timestamp' AND sysobjects.name IN (@psSourceArray)
+			AND syscolumns.name <> 'timestamp'
 			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 			AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0) OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 			AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
 		ORDER BY tableViewName;
 
 END
-
-
 
 GO
 
@@ -5760,5 +5771,9 @@ BEGIN
 END
 CLOSE curObjects
 DEALLOCATE curObjects
+
+GO
+
+GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 GO

@@ -2,11 +2,13 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Collections.ObjectModel" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%
 	On Error Resume Next
 
+	
+	
+	
 	Dim sErrorDescription As String
 	Dim avPrimaryMenuInfo
 	Dim avSubMenuInfo
@@ -26,13 +28,6 @@
 	
 	objMenu = New HR.Intranet.Server.Menu()
 		
-	objMenu.Username = Session("username")
-	
-	If Session("avPrimaryMenuInfo") Is Nothing Then
-		' only call 'setuptablescollection' if not already done.
-		CallByName(objMenu, "Connection", CallType.Let, Session("databaseConnection"))
-	End If
-	
 	Response.Write(vbCrLf & "<script type=""text/javascript"">" & vbCrLf)
 
 	' ------------------------------------------------------------------------------
@@ -310,7 +305,6 @@
 	objMenu = Nothing
 
 	Dim objUtilities As New HR.Intranet.Server.Utilities
-	CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
 	Session("UtilitiesObject") = objUtilities
 	
 	Dim objOLE As New HR.Intranet.Server.Ole

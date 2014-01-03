@@ -149,7 +149,19 @@ Namespace Controllers
 		End Function
 
 		Function Login() As ActionResult
+
+			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
+
 			Session("ErrorText") = Nothing
+
+			' Are we already logged in on the session?
+			If Not objServerSession Is Nothing Then
+				If objServerSession.ActiveConnections > 0 Then
+					objServerSession.ActiveConnections += 1
+					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+				End If
+			End If
+
 			Return View()
 		End Function
 
@@ -248,8 +260,7 @@ Namespace Controllers
 			sConnectString = sConnectString & ";Persist Security Info=True;"
 
 			' Open a connection to the database.
-			Dim conX As New ADODB.Connection
-
+			Dim conX As New Connection
 			conX.ConnectionTimeout = 60
 
 			Try
@@ -273,7 +284,7 @@ Namespace Controllers
 			conX.CommandTimeout = 0
 
 			' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
-			Dim cmdHit = New ADODB.Command
+			Dim cmdHit = New Command
 			cmdHit.CommandText = "sp_ASRIntPoll"
 			cmdHit.CommandType = 4
 			' Stored Procedure
@@ -300,15 +311,24 @@ Namespace Controllers
 
 			Session("databaseConnection") = conX
 
-			' Track session specific data
+			Dim objLogin As New HR.Intranet.Server.Structures.LoginInfo
 			Dim objServerSession As New HR.Intranet.Server.SessionInfo
+
+			objLogin.Server = sServerName
+			objLogin.Database = sDatabaseName
+			objLogin.Username = sUserName
+			objLogin.Password = sPassword
+
 			objServerSession.Username = sUserName
+			objServerSession.Connection = conX
+			objServerSession.LoginInfo(objLogin)
 			objServerSession.Initialise()
+
 			Session("sessionContext") = objServerSession
 
 			' Successful login.
 			' Get the desktop colour.
-			Dim cmdDesktopColour = New ADODB.Command
+			Dim cmdDesktopColour = New Command
 			cmdDesktopColour.CommandText = "sp_ASRIntGetSetting"
 			cmdDesktopColour.CommandType = 4
 			' Stored procedure.
@@ -414,7 +434,7 @@ Namespace Controllers
 
 
 			' Check that its okay for the user to login.
-			Dim cmdLoginCheck = New ADODB.Command
+			Dim cmdLoginCheck = New Command
 			cmdLoginCheck.CommandText = "sp_ASRIntCheckLogin"
 			cmdLoginCheck.CommandType = 4	' Stored Procedure
 			cmdLoginCheck.ActiveConnection = conX
@@ -472,7 +492,7 @@ Namespace Controllers
 			End If
 
 			' If the users default database is not 'master' then make it so.
-			Dim cmdDefaultDB = New ADODB.Command
+			Dim cmdDefaultDB = New Command
 			cmdDefaultDB.CommandText =
 			 "IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine &
 			 "	EXEC sp_defaultdb [" & sUserName & "], master"
@@ -489,7 +509,7 @@ Namespace Controllers
 			cmdLoginCheck = Nothing
 
 			' RH 18/04/01 - Put entry in the audit access log
-			Dim cmdAudit = New ADODB.Command
+			Dim cmdAudit = New Command
 			cmdAudit.CommandText = "sp_ASRIntAuditAccess"
 			cmdAudit.CommandType = 4
 			' Stored Procedure
@@ -515,7 +535,7 @@ Namespace Controllers
 			cmdAudit = Nothing
 
 			' Get Personnel module parameters		
-			Dim cmdPersonnel = New ADODB.Command
+			Dim cmdPersonnel = New Command
 			cmdPersonnel.CommandText = "sp_ASRIntGetPersonnelParameters"
 			cmdPersonnel.CommandType = 4 ' Stored Procedure
 			cmdPersonnel.ActiveConnection = conX
@@ -538,7 +558,7 @@ Namespace Controllers
 			cmdPersonnel = Nothing
 
 			' Get Workflow module parameters		
-			Dim cmdWorkflow = New ADODB.Command
+			Dim cmdWorkflow = New Command
 			cmdWorkflow.CommandText = "spASRIntGetWorkflowParameters"
 			cmdWorkflow.CommandType = 4
 			' Stored Procedure
@@ -568,7 +588,7 @@ Namespace Controllers
 			Dim iWorkflowRecordCount = 0
 
 			If Session("WF_Enabled") Then
-				cmdWorkflow = New ADODB.Command
+				cmdWorkflow = New Command
 				cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeConfigured"
 				cmdWorkflow.CommandType = 4
 				' Stored Procedure
@@ -587,7 +607,7 @@ Namespace Controllers
 
 				If fWorkflowOutOfOfficeConfigured Then
 					' Check if the current user OutOfOffice
-					cmdWorkflow = New ADODB.Command
+					cmdWorkflow = New Command
 					cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
 					cmdWorkflow.CommandType = 4	' Stored Procedure
 					cmdWorkflow.ActiveConnection = conX
@@ -611,7 +631,7 @@ Namespace Controllers
 			Session("WF_RecordCount") = iWorkflowRecordCount
 
 			' Get Training Booking module parameters		
-			Dim cmdTrainingBooking = New ADODB.Command
+			Dim cmdTrainingBooking = New Command
 			cmdTrainingBooking.CommandText = "sp_ASRIntGetTrainingBookingParameters"
 			cmdTrainingBooking.CommandType = 4	' Stored Procedure
 			cmdTrainingBooking.ActiveConnection = conX
@@ -723,8 +743,6 @@ Namespace Controllers
 			Dim sTempPath As String, sBGImage As String = "", intBGPos As Short = 2, strRepeat As String, strBGPos As String
 
 			Dim objUtilities = New HR.Intranet.Server.Utilities
-			objUtilities.Connection = Session("databaseConnection")
-
 
 			sTempPath = Server.MapPath("~/pictures")
 			sBGImage = objUtilities.GetBackgroundPicture(CStr(sTempPath))
@@ -788,7 +806,7 @@ Namespace Controllers
 			End Select
 
 			' Get the Find Window Block Size.
-			Dim cmdFindSize = New ADODB.Command
+			Dim cmdFindSize = New Command
 			cmdFindSize.CommandText = "sp_ASRIntGetSetting"
 			cmdFindSize.CommandType = 4	' Stored procedure.
 			cmdFindSize.ActiveConnection = Session("databaseConnection")
@@ -825,7 +843,7 @@ Namespace Controllers
 			cmdFindSize = Nothing
 
 			' Get the Primary Record Editing Start Mode.
-			Dim cmdPrimaryStartMode = New ADODB.Command
+			Dim cmdPrimaryStartMode = New Command
 			cmdPrimaryStartMode.CommandText = "sp_ASRIntGetSetting"
 			cmdPrimaryStartMode.CommandType = 4	' Stored procedure.
 			cmdPrimaryStartMode.ActiveConnection = Session("databaseConnection")
@@ -855,7 +873,7 @@ Namespace Controllers
 			cmdPrimaryStartMode = Nothing
 
 			' Get the History Record Editing Start Mode.
-			Dim cmdHistoryStartMode = New ADODB.Command
+			Dim cmdHistoryStartMode = New Command
 			cmdHistoryStartMode.CommandText = "sp_ASRIntGetSetting"
 			cmdHistoryStartMode.CommandType = 4	' Stored procedure.
 			cmdHistoryStartMode.ActiveConnection = Session("databaseConnection")
@@ -915,7 +933,7 @@ Namespace Controllers
 			cmdLookupStartMode = Nothing
 
 			' Get the Quick Access Record Editing Start Mode.
-			Dim cmdQuickAccessStartMode = New ADODB.Command
+			Dim cmdQuickAccessStartMode = New Command
 			cmdQuickAccessStartMode.CommandText = "sp_ASRIntGetSetting"
 			cmdQuickAccessStartMode.CommandType = 4	' Stored procedure.
 			cmdQuickAccessStartMode.ActiveConnection = Session("databaseConnection")
@@ -945,7 +963,7 @@ Namespace Controllers
 			cmdQuickAccessStartMode = Nothing
 
 			' Get the Expression Colour setting.
-			Dim cmdExprColourMode = New ADODB.Command
+			Dim cmdExprColourMode = New Command
 			cmdExprColourMode.CommandText = "sp_ASRIntGetSetting"
 			cmdExprColourMode.CommandType = 4	' Stored procedure.
 			cmdExprColourMode.ActiveConnection = Session("databaseConnection")
@@ -1005,7 +1023,7 @@ Namespace Controllers
 			cmdExprNodeMode = Nothing
 
 			'Support details - tel no
-			Dim cmdSupportInfo = New ADODB.Command
+			Dim cmdSupportInfo = New Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
 			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
@@ -1035,7 +1053,7 @@ Namespace Controllers
 			cmdSupportInfo = Nothing
 
 			'Support details - Fax
-			cmdSupportInfo = New ADODB.Command
+			cmdSupportInfo = New Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
 			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
@@ -1095,7 +1113,7 @@ Namespace Controllers
 			cmdSupportInfo = Nothing
 
 			'Support details - Webpage
-			cmdSupportInfo = New ADODB.Command
+			cmdSupportInfo = New Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
 			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
@@ -1157,7 +1175,7 @@ Namespace Controllers
 			cmdModuleInfo = Nothing
 
 			' Get the configured SSI Welcome info; name, last login date & time. 		
-			cmdModuleInfo = New ADODB.Command
+			cmdModuleInfo = New Command
 			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
 			cmdModuleInfo.CommandType = 4	' Stored Procedure
 			cmdModuleInfo.ActiveConnection = conX
@@ -1187,7 +1205,7 @@ Namespace Controllers
 			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
 
 			' photo
-			cmdModuleInfo = New ADODB.Command
+			cmdModuleInfo = New Command
 			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
 			cmdModuleInfo.CommandType = CommandType.StoredProcedure
 			cmdModuleInfo.ActiveConnection = conX
@@ -1221,7 +1239,7 @@ Namespace Controllers
 
 			Dim cmdSSIWelcomeDetails = Nothing
 
-			cmdSSIWelcomeDetails = New ADODB.Command
+			cmdSSIWelcomeDetails = New Command
 			cmdSSIWelcomeDetails.CommandText = "spASRIntGetSSIWelcomeDetails"
 			cmdSSIWelcomeDetails.CommandType = CommandType.StoredProcedure
 			cmdSSIWelcomeDetails.ActiveConnection = conX

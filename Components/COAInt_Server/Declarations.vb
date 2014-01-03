@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Module Declarations
 
@@ -11,9 +12,11 @@ Module Declarations
   Public datGeneral As New clsGeneral
 	Public dataAccess As New clsDataAccess
 
-  Public gsUsername As String
+	Public gsUsername As String
   Public gsActualLogin As String
   Public gsUserGroup As String
+
+	Public Login As LoginInfo
 
 	Public gcoTablePrivileges As ICollection(Of TablePrivilege)
 

@@ -4,15 +4,15 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	SELECT c.columnName, c.columnType, c.dataType
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
 		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, t.tableName AS tableViewName
+		, UPPER(t.tableName) AS tableViewName
 	FROM dbo.ASRSysColumns c
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID
 	UNION 
-	SELECT c.columnName, c.columnType, c.dataType
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
 		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, v.viewName AS tableViewName 
+		, UPPER(v.viewName) AS tableViewName 
 	FROM dbo.ASRSysColumns c
 	INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
 	LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID 

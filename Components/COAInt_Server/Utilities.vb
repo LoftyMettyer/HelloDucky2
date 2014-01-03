@@ -192,13 +192,6 @@ ErrorTrap:
 
   End Function
 
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-			gADOCon = Value
-			SetupTablesCollection()
-		End Set
-	End Property
-
   Public ReadOnly Property OfficeGetDefaultIndexWord() As Short
     Get
       OfficeGetDefaultIndexWord = mintDefaultIndexWord

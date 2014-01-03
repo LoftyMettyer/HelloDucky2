@@ -14,11 +14,13 @@ Module modPermissions
 		' Read the list of tables the current user has permission to see.
 		Dim fSysSecManager As Boolean
 		Dim sSQL As String
-		Dim aryRealSource As ArrayList
+
+		Dim aryRealSource As DataTable
+
 		Dim sTableViewName As String
-		Dim rsInfo As ADODB.Recordset
-		Dim rsViews As ADODB.Recordset
-		Dim rsPermissions As ADODB.Recordset
+		Dim rsInfo As Recordset
+		Dim rsViews As DataTable
+		Dim rsPermissions As Recordset
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim colTablePermissions As IList(Of TablePermission)
@@ -45,8 +47,8 @@ Module modPermissions
 		gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
 		sSQL = "SELECT system_user AS [name]"
-		rsInfo = New ADODB.Recordset
-		rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+		rsInfo = New Recordset
+		rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
 		datGeneral.Username = rsInfo.Fields("Name").Value
 		rsInfo.Close()
 		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -56,8 +58,8 @@ Module modPermissions
 		' If so then we can save time by applying all table permissions, instead of having to read them first.
 		sSQL = "SELECT count(*) AS recCount FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID" & " INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & " INNER JOIN sysusers a ON ASRSysGroupPermissions.groupName = a.name" & "   AND a.name = '" & gsUserGroup & "'" & " WHERE (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & " OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')" & " AND ASRSysGroupPermissions.permitted = 1" & " AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'"
 
-		rsInfo = New ADODB.Recordset
-		rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+		rsInfo = New Recordset
+		rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
 		fSysSecManager = (rsInfo.Fields("recCount").Value > 0)
 		rsInfo.Close()
 		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -66,7 +68,7 @@ Module modPermissions
 		' Initialise the collection with items for each TABLE in the system.
 		For Each objTable In Tables
 			objItem = New TablePrivilege()
-			objItem.TableName = objTable.Name
+			objItem.TableName = UCase(objTable.Name)
 			objItem.TableID = objTable.ID
 			objItem.TableType = objTable.TableType
 			objItem.DefaultOrderID = objTable.DefaultOrderID
@@ -74,37 +76,29 @@ Module modPermissions
 			objItem.IsTable = True
 			objItem.ViewID = 0
 			objItem.ViewName = ""
-			objItem.RealSource = objTable.Name
+			objItem.RealSource = UCase(objTable.Name)
 			gcoTablePrivileges.Add(objItem)
 		Next
 
 
 		' Initialise the collection with items for each VIEW in the system.
-		rsViews = datGeneral.GetAllViews
-		With rsViews
-			Do While Not .EOF
-				'	objTableView = gcoTablePrivileges.Add(.Fields("TableName").Value, .Fields("TableID").Value, .Fields("TableType").Value, .Fields("DefaultOrderID").Value, .Fields("RecordDescExprID").Value, False, .Fields("ViewID").Value, .Fields("ViewName").Value)
+		sSQL = "SELECT v.viewID, UPPER(v.viewName) AS [viewname], t.tableID, UPPER(t.tableName) AS [tablename], t.tableType, t.defaultOrderID, t.recordDescExprID FROM ASRSysViews v INNER JOIN ASRSysTables t ON v.viewTableID = t.tableID"
+		rsViews = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
-				objItem = New TablePrivilege()
-				objItem.TableName = .Fields("TableName").Value
-				objItem.TableID = .Fields("TableID").Value
-				objItem.TableType = .Fields("TableType").Value
-				objItem.DefaultOrderID = .Fields("DefaultOrderID").Value
-				objItem.RecordDescriptionID = .Fields("RecordDescExprID").Value
-				objItem.IsTable = False
-				objItem.ViewID = .Fields("ViewID").Value
-				objItem.ViewName = .Fields("ViewName").Value
-				objItem.RealSource = .Fields("ViewName").Value
+		For Each objRow In rsViews.Rows
+			objItem = New TablePrivilege()
+			objItem.TableName = objRow("TableName")
+			objItem.TableID = objRow("TableID")
+			objItem.TableType = objRow("TableType")
+			objItem.DefaultOrderID = objRow("DefaultOrderID")
+			objItem.RecordDescriptionID = objRow("RecordDescExprID")
+			objItem.IsTable = False
+			objItem.ViewID = objRow("ViewID")
+			objItem.ViewName = objRow("ViewName")
+			objItem.RealSource = objRow("ViewName")
+			gcoTablePrivileges.Add(objItem)
+		Next
 
-				gcoTablePrivileges.Add(objItem)
-
-
-				.MoveNext()
-			Loop
-			.Close()
-		End With
-		'UPGRADE_NOTE: Object rsViews may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsViews = Nothing
 
 		Dim lngTableId As Long
 
@@ -119,8 +113,8 @@ Module modPermissions
 			Next
 
 			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
-			rsInfo = New ADODB.Recordset
-			rsInfo.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+			rsInfo = New Recordset
+			rsInfo.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
 
 			With rsInfo
 				.MoveFirst()
@@ -144,8 +138,8 @@ Module modPermissions
 			' If the user is NOT a 'system manager' or 'security manager'
 			' read the table permissions from the server.
 			sSQL = "exec spASRIntAllTablePermissions '" & Replace(gsActualLogin, "'", "''") & "'"
-			rsPermissions = New ADODB.Recordset
-			rsPermissions.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+			rsPermissions = New Recordset
+			rsPermissions.Open(sSQL, gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdText)
 
 			colTablePermissions = New List(Of TablePermission)
 			Do While Not rsPermissions.EOF
@@ -164,12 +158,12 @@ Module modPermissions
 
 				objTableView = Nothing
 
-				If UCase(Left(objTablePermission.Name, 8)) = "ASRSYSCV" Then
+				If Left(objTablePermission.Name, 8) = "ASRSYSCV" Then
 					' Determine which table the child view is for.
 					objTableView = gcoTablePrivileges.FindTableID(objTablePermission.TableID)
 
 				Else
-					If UCase(Left(objTablePermission.Name, 6)) <> "ASRSYS" Then
+					If Left(objTablePermission.Name, 6) <> "ASRSYS" Then
 						objTableView = gcoTablePrivileges.Item(objTablePermission.Name)
 					End If
 				End If
@@ -192,10 +186,21 @@ Module modPermissions
 		End If
 
 		' Get the column permissions for each table/view.
-		aryRealSource = New ArrayList()
+		aryRealSource = New DataTable()
+		'	Dim objblah = gcoTablePrivileges.WithRealSource()
+
+		'	aryRealSource = gcoTablePrivileges.WithRealSource()
+
+		aryRealSource.Columns.Add("tablename", Type.GetType("System.String"))
 		For Each objTableView In gcoTablePrivileges.Collection
+
 			If Len(objTableView.RealSource) > 0 Then
-				aryRealSource.Add(String.Format("'{0}'", objTableView.RealSource))
+
+				Dim objRealSourceRow = aryRealSource.NewRow()
+				objRealSourceRow("tablename") = objTableView.RealSource.ToUpper()
+
+				aryRealSource.Rows.Add(objRealSourceRow)
+
 			End If
 		Next objTableView
 		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -206,21 +211,23 @@ Module modPermissions
 			Exit Sub
 		End If
 
-		If aryRealSource.Count > 0 Then
+		If gcoTablePrivileges.Count > 0 Then
 			' Instantiate  the Column Privileges collection if it does not already exist.
 			If gcolColumnPrivilegesCollection Is Nothing Then
 				gcolColumnPrivilegesCollection = New Collection
 			End If
 
 			' Get the list of all columns in all tables/views.
-			rsInfo = New ADODB.Recordset
-			gADOCon.CursorLocation = ADODB.CursorLocationEnum.adUseClient
-			rsInfo.Open("spASRIntGetColumnsFromTablesAndViews", gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdStoredProc)
+			rsInfo = New Recordset
+			gADOCon.CursorLocation = CursorLocationEnum.adUseClient
+			rsInfo.Open("spASRIntGetColumnsFromTablesAndViews", gADOCon, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CommandTypeEnum.adCmdStoredProc)
+
+
 
 			Do While Not rsInfo.EOF
 				' If the current column's collection is NOT already instantiated, instantiate it.
-				If sLastTableView <> UCase(rsInfo.Fields("tableviewname").Value) Then
-					sLastTableView = UCase(rsInfo.Fields("tableviewname").Value)
+				If sLastTableView <> rsInfo.Fields("tableviewname").Value Then
+					sLastTableView = rsInfo.Fields("tableviewname").Value
 					objColumnPrivileges = New CColumnPrivileges
 					objColumnPrivileges.Tag = rsInfo.Fields("tableviewname").Value
 					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, rsInfo.Fields("tableviewname").Value)
@@ -235,7 +242,6 @@ Module modPermissions
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					objColumnPrivileges.Add(fSysSecManager, fSysSecManager, sColumnName, rsInfo.Fields("ColumnType").Value, rsInfo.Fields("DataType").Value, rsInfo.Fields("ColumnID").Value, IIf(IsDBNull(rsInfo.Fields("UniqueCheckType").Value), False, rsInfo.Fields("UniqueCheckType").Value <> 0))
 
-
 				End If
 
 				rsInfo.MoveNext()
@@ -247,48 +253,31 @@ Module modPermissions
 			' If the current user is not a system/security manager then read the column permissions from SQL.
 			If Not fSysSecManager Then
 
-				Dim objCommand As New Command
-				Dim objParmRealSource As ADODB.Parameter
-
-				objCommand.CommandText = "spASRIntGetColumnPermissions"
-				objCommand.CommandType = CommandTypeEnum.adCmdStoredProc
-				objCommand.ActiveConnection = gADOCon
-
-				objParmRealSource = objCommand.CreateParameter("@psSourceArray", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
-				objCommand.Parameters.Append(objParmRealSource)
-				objParmRealSource.Value = String.Join(",", aryRealSource.ToArray)
-
-				Err.Clear()
-				rsInfo = objCommand.Execute()
-
 				sLastTableView = ""
 
-				Do While Not rsInfo.EOF
-					' Get the current column's table/view name.
-					If sLastTableView <> UCase(rsInfo.Fields("tableviewname").Value) Then
-						sLastTableView = UCase(rsInfo.Fields("tableviewname").Value)
+				Dim rsInfo2 = clsDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
+				For Each objRow In rsInfo2.Rows
 
-						objTableView = gcoTablePrivileges.FindRealSource(rsInfo.Fields("tableviewname").Value)
+					If sLastTableView <> objRow("tableviewname") Then
+						sLastTableView = objRow("tableviewname")
+
+						objTableView = gcoTablePrivileges.FindRealSource(objRow("tableviewname"))
 						If objTableView.IsTable Then
 							sTableViewName = objTableView.TableName
 						Else
-							sTableViewName = rsInfo.Fields("tableviewname").Value
+							sTableViewName = objRow("tableviewname")
 						End If
 
 						objColumnPrivileges = gcolColumnPrivilegesCollection.Item(sTableViewName)
 					End If
 
-					If rsInfo.Fields("Action").Value = 193 Then
-						objColumnPrivileges.Item(rsInfo.Fields("ColumnName").Value).AllowSelect = rsInfo.Fields("Permission").Value
+					If objRow("Action") = 193 Then
+						objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect = objRow("Permission")
 					Else
-						objColumnPrivileges.Item(rsInfo.Fields("ColumnName").Value).AllowUpdate = rsInfo.Fields("Permission").Value
+						objColumnPrivileges.Item(objRow("ColumnName")).AllowUpdate = objRow("Permission")
 					End If
 
-					rsInfo.MoveNext()
-				Loop
-				rsInfo.Close()
-				'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsInfo = Nothing
+				Next
 			End If
 		End If
 
