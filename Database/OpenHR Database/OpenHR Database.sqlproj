@@ -639,6 +639,7 @@
     <Build Include="Stored Procedures\Web\spASRIntGetColumnPermissions.sql" />
     <Build Include="Types\DataPermissions.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSetupTablesCollection.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetSessionSettings.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

@@ -3,6 +3,7 @@ Imports System.Web.Configuration
 Imports ADODB
 Imports System.IO
 Imports System.Drawing
+Imports HR.Intranet.Server
 
 Namespace Controllers
 	Public Class AccountController
@@ -320,113 +321,6 @@ Namespace Controllers
 
 			Session("sessionContext") = objServerSession
 
-			' Successful login.
-			' Get the desktop colour.
-			Dim cmdDesktopColour = New Command
-			cmdDesktopColour.CommandText = "sp_ASRIntGetSetting"
-			cmdDesktopColour.CommandType = 4
-			' Stored procedure.
-			cmdDesktopColour.ActiveConnection = Session("databaseConnection")
-
-
-			Dim prmSection = cmdDesktopColour.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
-			cmdDesktopColour.Parameters.Append(prmSection)
-			prmSection.Value = "DesktopSetting"
-
-			Dim prmKey = cmdDesktopColour.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
-			cmdDesktopColour.Parameters.Append(prmKey)
-			prmKey.Value = "BackgroundColour"
-
-			Dim prmDefault = cmdDesktopColour.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
-			cmdDesktopColour.Parameters.Append(prmDefault)
-			prmDefault.Value = "2147483660"
-
-			Dim prmUserSetting = cmdDesktopColour.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
-			cmdDesktopColour.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 0
-
-			Dim prmResult = cmdDesktopColour.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
-			cmdDesktopColour.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdDesktopColour.Execute()
-			Session("DesktopColour") = CLng(cmdDesktopColour.Parameters("result").Value)
-
-			cmdDesktopColour = Nothing
-
-			' Convert the read Desktop colour into a value that can be used by the BODY tag.
-			Select Case CStr(Session("DesktopColour"))
-				Case "-2147483648"
-					Session("ConvertedDesktopColour") = "scrollbar"
-				Case "-2147483647"
-					Session("ConvertedDesktopColour") = "background"
-				Case "-2147483646"
-					Session("ConvertedDesktopColour") = "activecaption"
-				Case "-2147483645"
-					Session("ConvertedDesktopColour") = "inactivecaption"
-				Case "-2147483644"
-					Session("ConvertedDesktopColour") = "menu"
-				Case "-2147483643"
-					Session("ConvertedDesktopColour") = "window"
-				Case "-2147483642"
-					Session("ConvertedDesktopColour") = "windowframe"
-				Case "-2147483641"
-					Session("ConvertedDesktopColour") = "menutext"
-				Case "-2147483640"
-					Session("ConvertedDesktopColour") = "windowtext"
-				Case "-2147483639"
-					Session("ConvertedDesktopColour") = "captiontext"
-				Case "-2147483638"
-					Session("ConvertedDesktopColour") = "activeborder"
-				Case "-2147483637"
-					Session("ConvertedDesktopColour") = "inactiveborder"
-				Case "-2147483636"
-					Session("ConvertedDesktopColour") = "appworkspace"
-				Case "-2147483635"
-					Session("ConvertedDesktopColour") = "highlight"
-				Case "-2147483634"
-					Session("ConvertedDesktopColour") = "highlighttext"
-				Case "-2147483633"
-					Session("ConvertedDesktopColour") = "threedface"
-				Case "-2147483632"
-					Session("ConvertedDesktopColour") = "threedshadow"
-				Case "-2147483631"
-					Session("ConvertedDesktopColour") = "graytext"
-				Case "-2147483630"
-					Session("ConvertedDesktopColour") = "buttontext"
-				Case "-2147483629"
-					Session("ConvertedDesktopColour") = "inactivecaptiontext"
-				Case "-2147483628"
-					Session("ConvertedDesktopColour") = "threedhighlight"
-				Case "-2147483627"
-					Session("ConvertedDesktopColour") = "threeddarkshadow"
-				Case "-2147483626"
-					Session("ConvertedDesktopColour") = "threedlightshadow"
-				Case "-2147483625"
-					Session("ConvertedDesktopColour") = "infotext"
-				Case "-2147483624"
-					Session("ConvertedDesktopColour") = "infobackground"
-				Case Else
-					Dim sColour = Hex(CLng(Session("DesktopColour")))
-
-					Do While (Len(sColour) < 6)
-						sColour = "0" & sColour
-					Loop
-
-					Dim sConvertedColour = "#"
-					sConvertedColour = sConvertedColour & Mid(sColour, 5, 2)
-					sConvertedColour = sConvertedColour & Mid(sColour, 3, 2)
-					sConvertedColour = sConvertedColour & Mid(sColour, 1, 2)
-
-					Session("ConvertedDesktopColour") = sConvertedColour
-			End Select
-
-
 			' Check that its okay for the user to login.
 			Dim cmdLoginCheck = New Command
 			cmdLoginCheck.CommandText = "sp_ASRIntCheckLogin"
@@ -502,6 +396,7 @@ Namespace Controllers
 			' Release the ADO command object.
 			cmdLoginCheck = Nothing
 
+
 			' RH 18/04/01 - Put entry in the audit access log
 			Dim cmdAudit = New Command
 			cmdAudit.CommandText = "sp_ASRIntAuditAccess"
@@ -527,6 +422,93 @@ Namespace Controllers
 			End If
 
 			cmdAudit = Nothing
+
+
+			' Successful login.
+			Dim dtSettings = clsDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
+			Dim rowSettings = dtSettings.Rows(0)
+
+			Session("FindRecords") = CLng(rowSettings("BlockSize"))
+			Session("PrimaryStartMode") = CInt(rowSettings("PrimaryStartMode"))
+			Session("HistoryStartMode") = CInt(rowSettings("HistoryStartMode"))
+			Session("LookupStartMode") = CInt(rowSettings("LookupStartMode"))
+			Session("QuickAccessStartMode") = CInt(rowSettings("QuickAccessStartMode"))
+			Session("ExprColourMode") = CLng(rowSettings("ExprColourMode"))
+			Session("ExprNodeMode") = CLng(rowSettings("ExprNodeMode"))
+			Session("SupportTelNo") = rowSettings("SupportTelNo")
+			Session("SupportFax") = rowSettings("SupportFax")
+			Session("SupportEmail") = rowSettings("SupportEmail")
+			Session("SupportWebpage") = rowSettings("SupportWebpage")
+			Session("DesktopColour") = rowSettings("DesktopColour")
+
+
+			' Convert the read Desktop colour into a value that can be used by the BODY tag.
+			Select Case CStr(Session("DesktopColour"))
+				Case "-2147483648"
+					Session("ConvertedDesktopColour") = "scrollbar"
+				Case "-2147483647"
+					Session("ConvertedDesktopColour") = "background"
+				Case "-2147483646"
+					Session("ConvertedDesktopColour") = "activecaption"
+				Case "-2147483645"
+					Session("ConvertedDesktopColour") = "inactivecaption"
+				Case "-2147483644"
+					Session("ConvertedDesktopColour") = "menu"
+				Case "-2147483643"
+					Session("ConvertedDesktopColour") = "window"
+				Case "-2147483642"
+					Session("ConvertedDesktopColour") = "windowframe"
+				Case "-2147483641"
+					Session("ConvertedDesktopColour") = "menutext"
+				Case "-2147483640"
+					Session("ConvertedDesktopColour") = "windowtext"
+				Case "-2147483639"
+					Session("ConvertedDesktopColour") = "captiontext"
+				Case "-2147483638"
+					Session("ConvertedDesktopColour") = "activeborder"
+				Case "-2147483637"
+					Session("ConvertedDesktopColour") = "inactiveborder"
+				Case "-2147483636"
+					Session("ConvertedDesktopColour") = "appworkspace"
+				Case "-2147483635"
+					Session("ConvertedDesktopColour") = "highlight"
+				Case "-2147483634"
+					Session("ConvertedDesktopColour") = "highlighttext"
+				Case "-2147483633"
+					Session("ConvertedDesktopColour") = "threedface"
+				Case "-2147483632"
+					Session("ConvertedDesktopColour") = "threedshadow"
+				Case "-2147483631"
+					Session("ConvertedDesktopColour") = "graytext"
+				Case "-2147483630"
+					Session("ConvertedDesktopColour") = "buttontext"
+				Case "-2147483629"
+					Session("ConvertedDesktopColour") = "inactivecaptiontext"
+				Case "-2147483628"
+					Session("ConvertedDesktopColour") = "threedhighlight"
+				Case "-2147483627"
+					Session("ConvertedDesktopColour") = "threeddarkshadow"
+				Case "-2147483626"
+					Session("ConvertedDesktopColour") = "threedlightshadow"
+				Case "-2147483625"
+					Session("ConvertedDesktopColour") = "infotext"
+				Case "-2147483624"
+					Session("ConvertedDesktopColour") = "infobackground"
+				Case Else
+					Dim sColour = Hex(CLng(Session("DesktopColour")))
+
+					Do While (Len(sColour) < 6)
+						sColour = "0" & sColour
+					Loop
+
+					Dim sConvertedColour = "#"
+					sConvertedColour = sConvertedColour & Mid(sColour, 5, 2)
+					sConvertedColour = sConvertedColour & Mid(sColour, 3, 2)
+					sConvertedColour = sConvertedColour & Mid(sColour, 1, 2)
+
+					Session("ConvertedDesktopColour") = sConvertedColour
+			End Select
+
 
 			' Get Personnel module parameters		
 			Dim cmdPersonnel = New Command
@@ -799,346 +781,10 @@ Namespace Controllers
 
 			End Select
 
-			' Get the Find Window Block Size.
-			Dim cmdFindSize = New Command
-			cmdFindSize.CommandText = "sp_ASRIntGetSetting"
-			cmdFindSize.CommandType = 4	' Stored procedure.
-			cmdFindSize.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdFindSize.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmSection)
-			prmSection.Value = "IntranetFindWindow"
-
-			prmKey = cmdFindSize.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmKey)
-			prmKey.Value = "BlockSize"
-
-			prmDefault = cmdFindSize.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmDefault)
-			prmDefault.Value = "1000"
-
-			prmUserSetting = cmdFindSize.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdFindSize.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdFindSize.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdFindSize.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdFindSize.Execute()
-
-			Dim sResult = Trim(cmdFindSize.Parameters("result").Value)
-			Session("FindRecords") = 1000
-			If (IsNumeric(sResult)) Then
-				If (CLng(sResult) > 0) Then
-					Session("FindRecords") = CLng(sResult)
-				End If
-			End If
-			cmdFindSize = Nothing
-
-			' Get the Primary Record Editing Start Mode.
-			Dim cmdPrimaryStartMode = New Command
-			cmdPrimaryStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdPrimaryStartMode.CommandType = 4	' Stored procedure.
-			cmdPrimaryStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdPrimaryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmSection)
-			prmSection.Value = "RecordEditing"
-
-			prmKey = cmdPrimaryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmKey)
-			prmKey.Value = "Primary"
-
-			prmDefault = cmdPrimaryStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "3"
-
-			prmUserSetting = cmdPrimaryStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdPrimaryStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdPrimaryStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdPrimaryStartMode.Execute()
-			Session("PrimaryStartMode") = CLng(cmdPrimaryStartMode.Parameters("result").Value)
-			cmdPrimaryStartMode = Nothing
-
-			' Get the History Record Editing Start Mode.
-			Dim cmdHistoryStartMode = New Command
-			cmdHistoryStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdHistoryStartMode.CommandType = 4	' Stored procedure.
-			cmdHistoryStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdHistoryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmSection)
-			prmSection.Value = "RecordEditing"
-
-			prmKey = cmdHistoryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmKey)
-			prmKey.Value = "History"
-
-			prmDefault = cmdHistoryStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "3"
-
-			prmUserSetting = cmdHistoryStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdHistoryStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdHistoryStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdHistoryStartMode.Execute()
-			Session("HistoryStartMode") = CLng(cmdHistoryStartMode.Parameters("result").Value)
-			cmdHistoryStartMode = Nothing
-
-			' Get the Lookup Record Editing Start Mode.
-			Dim cmdLookupStartMode = New ADODB.Command
-			cmdLookupStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdLookupStartMode.CommandType = 4 ' Stored procedure.
-			cmdLookupStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdLookupStartMode.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmSection)
-			prmSection.Value = "RecordEditing"
-
-			prmKey = cmdLookupStartMode.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmKey)
-			prmKey.Value = "LookUp"
-
-			prmDefault = cmdLookupStartMode.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "2"
-
-			prmUserSetting = cmdLookupStartMode.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdLookupStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdLookupStartMode.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdLookupStartMode.Execute()
-			Session("LookupStartMode") = CLng(cmdLookupStartMode.Parameters("result").Value)
-			cmdLookupStartMode = Nothing
-
-			' Get the Quick Access Record Editing Start Mode.
-			Dim cmdQuickAccessStartMode = New Command
-			cmdQuickAccessStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdQuickAccessStartMode.CommandType = 4	' Stored procedure.
-			cmdQuickAccessStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdQuickAccessStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmSection)
-			prmSection.Value = "RecordEditing"
-
-			prmKey = cmdQuickAccessStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmKey)
-			prmKey.Value = "QuickAccess"
-
-			prmDefault = cmdQuickAccessStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "1"
-
-			prmUserSetting = cmdQuickAccessStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdQuickAccessStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdQuickAccessStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdQuickAccessStartMode.Execute()
-			Session("QuickAccessStartMode") = CLng(cmdQuickAccessStartMode.Parameters("result").Value)
-			cmdQuickAccessStartMode = Nothing
-
-			' Get the Expression Colour setting.
-			Dim cmdExprColourMode = New Command
-			cmdExprColourMode.CommandText = "sp_ASRIntGetSetting"
-			cmdExprColourMode.CommandType = 4	' Stored procedure.
-			cmdExprColourMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdExprColourMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmSection)
-			prmSection.Value = "ExpressionBuilder"
-
-			prmKey = cmdExprColourMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmKey)
-			prmKey.Value = "ViewColours"
-
-			prmDefault = cmdExprColourMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "1"
-
-			prmUserSetting = cmdExprColourMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdExprColourMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdExprColourMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdExprColourMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdExprColourMode.Execute()
-			Session("ExprColourMode") = CLng(cmdExprColourMode.Parameters("result").Value)
-			cmdExprColourMode = Nothing
-
-			' Get the Expression Node Expansion setting.
-			Dim cmdExprNodeMode = New ADODB.Command
-			cmdExprNodeMode.CommandText = "sp_ASRIntGetSetting"
-			cmdExprNodeMode.CommandType = 4	' Stored procedure.
-			cmdExprNodeMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdExprNodeMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmSection)
-			prmSection.Value = "ExpressionBuilder"
-
-			prmKey = cmdExprNodeMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmKey)
-			prmKey.Value = "NodeSize"
-
-			prmDefault = cmdExprNodeMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmDefault)
-			prmDefault.Value = "1"
-
-			prmUserSetting = cmdExprNodeMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdExprNodeMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 1
-
-			prmResult = cmdExprNodeMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdExprNodeMode.Execute()
-			Session("ExprNodeMode") = CLng(cmdExprNodeMode.Parameters("result").Value)
-			cmdExprNodeMode = Nothing
-
-			'Support details - tel no
-			Dim cmdSupportInfo = New Command
-			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4 ' Stored procedure.
-			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmSection)
-			prmSection.Value = "Support"
-
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmKey)
-			prmKey.Value = "Telephone No"
-
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmDefault)
-			prmDefault.Value = "+44 (0)1582 714820"
-
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdSupportInfo.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 0
-
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdSupportInfo.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdSupportInfo.Execute()
-			Session("SupportTelNo") = cmdSupportInfo.Parameters("result").Value
-			cmdSupportInfo = Nothing
-
-			'Support details - Fax
-			cmdSupportInfo = New Command
-			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4 ' Stored procedure.
-			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmSection)
-			prmSection.Value = "Support"
-
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmKey)
-			prmKey.Value = "Fax"
-
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmDefault)
-			prmDefault.Value = "+44 (0)1582 714814 "
-
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdSupportInfo.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 0
-
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdSupportInfo.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdSupportInfo.Execute()
-			Session("SupportFax") = cmdSupportInfo.Parameters("result").Value
-			cmdSupportInfo = Nothing
-
-			'Support details - Email
-			cmdSupportInfo = New ADODB.Command
-			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4 ' Stored procedure.
-			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmSection)
-			prmSection.Value = "Support"
-
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmKey)
-			prmKey.Value = "Email"
-
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmDefault)
-			prmDefault.Value = "service.delivery@advancedcomputersoftware.com"
-
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdSupportInfo.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 0
-
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdSupportInfo.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdSupportInfo.Execute()
-			Session("SupportEmail") = cmdSupportInfo.Parameters("result").Value
-			cmdSupportInfo = Nothing
-
-			'Support details - Webpage
-			cmdSupportInfo = New Command
-			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4 ' Stored procedure.
-			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmSection)
-			prmSection.Value = "Support"
-
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmKey)
-			prmKey.Value = "Webpage"
-
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdSupportInfo.Parameters.Append(prmDefault)
-			prmDefault.Value = "service.delivery@advancedcomputersoftware.com"
-
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdSupportInfo.Parameters.Append(prmUserSetting)
-			prmUserSetting.Value = 0
-
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdSupportInfo.Parameters.Append(prmResult)
-
-			Err.Number = 0
-			cmdSupportInfo.Execute()
-			Session("SupportWebpage") = cmdSupportInfo.Parameters("result").Value
-			cmdSupportInfo = Nothing
 
 
 			' Get the configured Single record view ID. 	For the dashboard.
-			Dim cmdModuleInfo = New ADODB.Command
+			Dim cmdModuleInfo = New Command
 			cmdModuleInfo.CommandText = "spASRIntGetSingleRecordViewID"
 			cmdModuleInfo.CommandType = 4	' Stored Procedure
 			cmdModuleInfo.ActiveConnection = conX
@@ -1313,7 +959,7 @@ Namespace Controllers
 
 			If fForcePasswordChange = True Then
 				' Force password change only if there are no other users logged in with the same name.
-				Dim cmdCheckUserSessions = New ADODB.Command
+				Dim cmdCheckUserSessions = New Command
 				cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
 				cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
 				cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
