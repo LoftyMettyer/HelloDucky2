@@ -107,7 +107,7 @@ Public Class Menu
 		' Index 12 = view screen picture ID
 
 		' Get a recordset of the primary tables in the database.
-		sSQL = "SELECT ASRSysTables.tableID, UPPER(ASRSysTables.tableName) AS [tablename], COUNT(DISTINCT ASRSysScreens.name) AS tableScreenCount FROM ASRSysTables INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0)) GROUP BY ASRSysTables.tableID, ASRSysTables.tableName, ASRSysTables.tableType HAVING ASRSysTables.tableType = 1 ORDER BY ASRSysTables.tableName DESC"
+		sSQL = "SELECT ASRSysTables.tableID, ASRSysTables.tableName AS [tablename], COUNT(DISTINCT ASRSysScreens.name) AS tableScreenCount FROM ASRSysTables INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0)) GROUP BY ASRSysTables.tableID, ASRSysTables.tableName, ASRSysTables.tableType HAVING ASRSysTables.tableType = 1 ORDER BY ASRSysTables.tableName DESC"
 		rsTables = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
 		For Each objRow In rsTables.Rows
