@@ -75,6 +75,10 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGetSessionSettings]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetMetadata]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRGetMetadata]
+GO
+
 
 -- Redundant stored procedures
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
@@ -5889,6 +5893,34 @@ BEGIN
 		, @SupportEmail			AS [SupportEmail]
 		, @SupportWebpage		AS [SupportWebpage]
 		, @DesktopColour		AS [DesktopColour];
+
+
+END
+
+GO
+
+CREATE PROCEDURE [dbo].[spASRGetMetadata] (@Username varchar(255))
+AS
+BEGIN
+
+
+	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM ASRSysTables;
+
+	SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM ASRSysColumns;
+
+	SELECT ParentID, ChildID FROM ASRSysRelations;
+
+	SELECT ModuleKey, ParameterKey, ISNULL(ParameterValue,'') AS ParameterValue, ParameterType FROM ASRSysModuleSetup;
+
+	SELECT * FROM ASRSysUserSettings WHERE Username = @Username;
+
+	SELECT functionID, functionName, returnType FROM ASRSysFunctions;
+
+	SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex;
+
+	SELECT * FROM ASRSysOperators;
+
+	SELECT * FROM ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex;
 
 
 END
