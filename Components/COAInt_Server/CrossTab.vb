@@ -1,6 +1,7 @@
 Option Strict Off
 Option Explicit On
 
+Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
@@ -821,12 +822,7 @@ LocalErr:
 			End If
 
 			'Get list of IDs from Filter
-			fOK = datGeneral.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If fOK Then
-				datGeneral.FilterUDFs(lngFilterID, mastrUDFsRequired)
-			End If
+			fOK = datGeneral.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.
@@ -834,7 +830,7 @@ LocalErr:
 			End If
 
 			'MH20020704 Fault 4022
-			rsTemp = mclsData.OpenRecordset("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+			rsTemp = mclsData.OpenRecordset("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID), CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Fields("Name").Value & ")"
 			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

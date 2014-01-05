@@ -19,7 +19,7 @@ Friend Class clsExprField
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
-	Private mstrUDFRuntimeCode As String
+	Private mstrUDFRuntimeCode As String = ""
 
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		' Retrun TRUE if the current expression (or any of its sub expressions)
@@ -412,12 +412,16 @@ ErrorTrap:
 		miFieldPassType = FieldPassTypes.giPASSBY_VALUE
 
 	End Sub
+
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
 	End Sub
 
-	Public Function GenerateCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, ByRef pfUDFCode As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Private Function GenerateCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean _
+															 , ByRef pavPromptedValues As Object, ByRef psUDFs() As String _
+															 , Optional ByRef plngFixedExprID As Integer = 0 _
+															 , Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		Dim fOK As Boolean
 		Dim fFound As Boolean
@@ -700,7 +704,7 @@ ErrorTrap:
 									' we must reverse the ASC/DESC options.
 									sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & .Fields("TableName").Value & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
 
-									If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID) Or pfUDFCode) Then
+									If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
 
 										' Check if the table has already been added to the array of tables used in the order.
 										fFound = False
@@ -732,7 +736,7 @@ ErrorTrap:
 										' Column can be read directly from the table.
 										sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & objOrderTableView.RealSource & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
 
-										If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID) Or pfUDFCode) Then
+										If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
 
 											' Check if the table has already been added to the array of tables used in the order.
 											fFound = False
@@ -847,7 +851,7 @@ ErrorTrap:
 								objFilterExpr = New clsExprExpression
 								objFilterExpr.ExpressionID = mlngSelFilterID
 								objFilterExpr.ConstructExpression()
-								fOK = objFilterExpr.RuntimeFilterCode(sFilterCode, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+								fOK = objFilterExpr.RuntimeFilterCode(sFilterCode, pfApplyPermissions, psUDFs, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
 								'UPGRADE_NOTE: Object objFilterExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 								objFilterExpr = Nothing
 							End If
@@ -1134,33 +1138,25 @@ ErrorTrap:
 
 		End If
 
-		If fOK Then
-			psRuntimeCode = IIf(pfUDFCode, mstrUDFRuntimeCode, sCode)
-		Else
-			psRuntimeCode = ""
+
+		If mstrUDFRuntimeCode.Length > 0 Then
+			ReDim Preserve psUDFs(psUDFs.Length)
+			psUDFs(psUDFs.Length - 1) = mstrUDFRuntimeCode
 		End If
 
-		GenerateCode = fOK
-		Exit Function
+		psRuntimeCode = sCode
+
+		Return fOK
 
 	End Function
 
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
+															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
+															, ByRef psUDFs() As String _
+															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
-		RuntimeCode = GenerateCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, False, plngFixedExprID, psFixedSQLCode)
-
-	End Function
-
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-
-		Dim strUDFCode As String = ""
-
-		UDFCode = GenerateCode(strUDFCode, palngSourceTables, pfApplyPermissions, pfValidating, "", True, plngFixedExprID, psFixedSQLCode)
-
-		If Len(strUDFCode) > 0 Then
-			ReDim Preserve psRuntimeCode(psRuntimeCode.Length)
-			psRuntimeCode(psRuntimeCode.Length - 1) = strUDFCode
-		End If
+		RuntimeCode = GenerateCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs, plngFixedExprID, psFixedSQLCode)
 
 	End Function
+
 End Class

@@ -12,6 +12,9 @@ Public Class Expression
 	Private miType As Short
 	Private miReturnType As Short
 	Private mvarPrompts(,) As Object
+	Private mastrUDFsRequired() As String
+
+	Private mobjGeneral As New clsGeneral
 
 	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As Short) As Boolean
 		' Initialise the expression object.
@@ -62,17 +65,21 @@ ErrorTrap:
 	End Function
 
 	Public Function RuntimeFilterCode() As String
-		Dim strSQL As String
+		Dim strSQL As String = ""
 		Dim strFilterCode As String
 		Dim fOK As Boolean
 
-		fOK = mobjBaseExpr.RuntimeFilterCode(strFilterCode, True, False, mvarPrompts)
+		If mastrUDFsRequired Is Nothing Then
+			ReDim mastrUDFsRequired(0)
+		End If
+
+		fOK = mobjBaseExpr.RuntimeFilterCode(strFilterCode, True, mastrUDFsRequired, False, mvarPrompts)
 
 		If fOK And gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).AllowSelect Then
 			strSQL = "SELECT COUNT(ID) FROM " & gcoTablePrivileges.Item((mobjBaseExpr.BaseTableName)).RealSource & " WHERE ID IN (" & strFilterCode & ")"
 		End If
 
-		RuntimeFilterCode = strSQL
+		Return strSQL
 
 	End Function
 
@@ -706,52 +713,8 @@ ErrorTrap:
 		Return mobjBaseExpr.ValidityMessage(piValidityCode)
 	End Function
 
-	Public Sub UDFFilterCode(ByRef pbCreate As Boolean)
-
-		Dim iCount As Short
-		Dim strDropCode As String
-		Dim strFunctionName As String
-		Dim sUDFCode As String
-		Dim varUDFs() As String
-		Dim iStart As Short
-		Dim iEnd As Short
-		Dim strFunctionNumber As String
-
-		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-		ReDim varUDFs(0)
-
-		Try
-
-			' Create the UDFs
-			mobjBaseExpr.UDFFilterCode(varUDFs, pbCreate)
-
-			For iCount = 0 To varUDFs.Length - 1
-
-				If Not varUDFs(iCount) Is Nothing Then
-					iStart = InStr(varUDFs(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-					iEnd = InStr(1, Mid(varUDFs(iCount), 1, 1000), "(@Pers")
-					strFunctionNumber = Mid(varUDFs(iCount), iStart, iEnd - iStart)
-					strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-
-					'Drop existing function (could exist if the expression is used more than once in a report)
-					strDropCode = "IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "') AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-
-					gADOCon.Execute(strDropCode)
-
-					' Create the new function
-					If pbCreate Then
-						sUDFCode = varUDFs(iCount)
-
-						gADOCon.Execute(sUDFCode)
-					End If
-				End If
-			Next iCount
-
-		Catch ex As Exception
-			Throw
-
-		End Try
-
-	End Sub
+	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+	End Function
 
 End Class

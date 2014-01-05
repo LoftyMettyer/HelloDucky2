@@ -181,14 +181,9 @@ ErrorTrap:
 
 		ReDim mastrUDFsRequired(0)
 
-    blnOK = datGeneral.FilteredIDs(plngExprID, sIDSQL, avPrompts)
+		blnOK = datGeneral.FilteredIDs(plngExprID, sIDSQL, mastrUDFsRequired, avPrompts)
 
-    ' Generate any UDFs that are used in this filter
-		If blnOK Then
-			datGeneral.FilterUDFs(plngExprID, mastrUDFsRequired)
-		End If
-
-    GetFilteredIDs = sIDSQL
+		Return sIDSQL
 
   End Function
 

@@ -3772,12 +3772,7 @@ TidyUpAndExit:
 				rsIDs = Nothing
 
 			ElseIf mlngCalendarReportsFilterID > 0 Then
-				blnOK = datGeneral.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mvarPrompts)
-
-				' Generate any UDFs that are used in this filter
-				If blnOK Then
-					datGeneral.FilterUDFs(mlngCalendarReportsFilterID, mastrUDFsRequired)
-				End If
+				blnOK = datGeneral.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					blnOK = UDFFunctions(mastrUDFsRequired, True)
@@ -5830,11 +5825,7 @@ GenerateSQLSelect_ERROR:
 		objCalcExpr = New clsExprExpression
 		blnOK = objCalcExpr.Initialise(plngBaseTableID, plngExprID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 		If blnOK Then
-			blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
-
-			If blnOK Then
-				blnOK = objCalcExpr.UDFCalculationCode(alngSourceTables, mastrUDFsRequired, True)
-			End If
+			blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
 		End If
 
 		'The "SELECT ... INTO..." statement errors when it trys to create a column for
@@ -6000,14 +5991,9 @@ GenerateSQLSelect_ERROR:
 						If mblnHasEventFilterIDs Then
 							blnOK = True
 						Else
-							blnOK = datGeneral.FilteredIDs((objEvent.FilterID), strFilterIDs, mvarPrompts)
+							blnOK = datGeneral.FilteredIDs((objEvent.FilterID), strFilterIDs, mastrUDFsRequired, mvarPrompts)
 							mblnHasEventFilterIDs = blnOK
 							mstrEventFilterIDs = strFilterIDs
-						End If
-
-						' Generate any UDFs that are used in this filter
-						If blnOK Then
-							datGeneral.FilterUDFs((objEvent.FilterID), mastrUDFsRequired)
 						End If
 
 						If blnOK Then
@@ -6171,12 +6157,7 @@ GenerateSQLJoin_ERROR:
 			mstrSQLBaseDateClause = mstrSQLBaseDateClause & " AND (" & mstrSQLBaseStartDateColumn & " IS NOT NULL)"
 
 			If objEvent.FilterID > 0 Then
-				blnOK = datGeneral.FilteredIDs((objEvent.FilterID), strFilterIDs, mvarPrompts)
-
-				' Generate any UDFs that are used in this filter
-				If blnOK Then
-					datGeneral.FilterUDFs((objEvent.FilterID), mastrUDFsRequired)
-				End If
+				blnOK = datGeneral.FilteredIDs(objEvent.FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & strFilterIDs & ")"

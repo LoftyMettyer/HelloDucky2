@@ -189,11 +189,7 @@
 		
 	' Get the server DLL to test the expression definition
 		objExpression = New HR.Intranet.Server.Expression
-
-	' Pass required info to the DLL
-		objExpression.Username = Session("username")
-		CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
-		
+	
 	if fok then 
 		if Request.form("type") = 11 then
 			iExprType = 11
@@ -256,7 +252,7 @@
 		sFilterCode = objExpression.RuntimeFilterCode
 
 		' Create dynamic User defined functions
-objExpression.UDFFilterCode(True)
+objExpression.UDFFunctions(True)
 		
 		iRecCount = 0
 		
@@ -282,8 +278,8 @@ objExpression.UDFFilterCode(True)
 			end if
 		end if
 
-		' Create dynamic User defined functions
-objExpression.UDFFilterCode(False)
+' Remove dynamic User defined functions
+objExpression.UDFFunctions(False)
 
 				
 Response.Write("			  <tr>" & vbCrLf)

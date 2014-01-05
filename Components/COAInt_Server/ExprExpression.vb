@@ -31,7 +31,6 @@ Friend Class clsExprExpression
 	Private mcolComponents As Collection
 	Private mobjBadComponent As clsExprComponent
 	Private mobjBaseComponent As clsExprComponent
-	Private mobjGeneral As New clsGeneral
 
 	Private msErrorMessage As String
 
@@ -273,6 +272,7 @@ Friend Class clsExprExpression
 		mcolComponents = New Collection
 		mfConstructed = False
 		mbExpandedNode = False
+		ReDim mastrUDFsRequired(0)
 
 	End Sub
 	Public Sub New()
@@ -619,7 +619,11 @@ ErrorTrap:
 
 	End Function
 
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
+															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
+															, ByRef psUDFs() As String _
+															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		' Return the SQL code that defines the expression.
 		' Used when creating the 'where clause' for view definitions.
 		On Error GoTo ErrorTrap
@@ -666,7 +670,7 @@ ErrorTrap:
 
 				' JPD20020419 Fault 3687
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().RuntimeCode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				fOK = .RuntimeCode(sComponentCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+				fOK = .RuntimeCode(sComponentCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs, plngFixedExprID, psFixedSQLCode)
 
 				If fOK Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -872,7 +876,9 @@ ErrorTrap:
 
 
 
-	Public Function RuntimeFilterCode(ByRef psFilterCode As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeFilterCode(ByRef psFilterCode As String, ByRef pfApplyPermissions As Boolean _
+																		, ByRef psUDFs() As String _
+																		, Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return TRUE if the filter code was created okay.
 		' Return the runtime filter SQL code in the parameter 'psFilterCode'.
 		' Apply permissions to the filter code only if the 'pfApplyPermissions' parameter is TRUE.
@@ -921,9 +927,8 @@ ErrorTrap:
 				' Column 2 = table/view ID.
 				ReDim alngSourceTables(2, 0)
 
-				' Get the filter code.
-				' JPD20020419 Fault 3687
-				fOK = RuntimeCode(sWhereCode, alngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+				' Get the filter code.				
+				fOK = RuntimeCode(sWhereCode, alngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs, plngFixedExprID, psFixedSQLCode)
 			End If
 
 			If fOK Then
@@ -1020,7 +1025,8 @@ ErrorTrap:
 
 	End Function
 
-	Friend Function RuntimeCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode As String, ByRef pfApplyPermissions As Boolean _
+	Friend Function RuntimeCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode As String, ByRef pastrUDFsRequired() As String _
+																				 , ByRef pfApplyPermissions As Boolean _
 																				 , Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing _
 																				 , Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return TRUE if the Calculation code was created okay.
@@ -1047,9 +1053,9 @@ ErrorTrap:
 			'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
 			If IsNothing(pavPromptedValues) Then
 				ReDim avDummyPrompts(1, 0)
-				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
+				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, avDummyPrompts, pastrUDFsRequired, plngFixedExprID, psFixedSQLCode)
 			Else
-				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+				fOK = RuntimeCode(sRuntimeSQL, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, pastrUDFsRequired, plngFixedExprID, psFixedSQLCode)
 			End If
 		End If
 
@@ -1451,7 +1457,7 @@ ErrorTrap:
 			mfConstructed = True
 
 			If ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER)) Then
-				If RuntimeFilterCode(sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
+				If RuntimeFilterCode(sSQLCode, False, mastrUDFsRequired, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
 
 					On Error GoTo SQLCodeErrorTrap
 
@@ -1459,7 +1465,7 @@ ErrorTrap:
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-					gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
+					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
 
 					datGeneral.DropUniqueSQLObject(sProcName, 4)
 
@@ -1471,7 +1477,7 @@ ErrorTrap:
 
 			If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Then
 				ReDim lngCalcViews(2, 0)
-				If RuntimeCalculationCode(lngCalcViews, sSQLCode, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
+				If RuntimeCalculationCode(lngCalcViews, sSQLCode, mastrUDFsRequired, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode) Then
 					' Add the required views to the JOIN code.
 					strJoinCode = vbNullString
 					For intCount = 1 To UBound(lngCalcViews, 2)
@@ -1493,7 +1499,7 @@ ErrorTrap:
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-					gADOCon.Execute(sSPCode, , ADODB.CommandTypeEnum.adCmdText)
+					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
 
 					' Drop the test stored procedure.
 					datGeneral.DropUniqueSQLObject(sProcName, 4)
@@ -1516,7 +1522,7 @@ ErrorTrap:
 					' Column 2 = table/view ID.
 					ReDim alngSourceTables(2, 0)
 
-					RuntimeCode(sSQLCode, alngSourceTables, False, True, avDummyPrompts, plngFixedExprID, psFixedSQLCode)
+					RuntimeCode(sSQLCode, alngSourceTables, False, True, avDummyPrompts, mastrUDFsRequired, plngFixedExprID, psFixedSQLCode)
 					sOriginalSQLCode = sSQLCode
 				Else
 					lngOriginalExprID = plngFixedExprID
@@ -1858,142 +1864,5 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-
-	' Creates a UDF for this expression if its required
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-
-		Dim iLoop1 As Short
-		Dim fOK As Boolean
-
-		fOK = True
-
-		For iLoop1 = 1 To mcolComponents.Count()
-			With mcolComponents.Item(iLoop1)
-
-				' Add the created UDFs to the total list
-				'JPD 20040227 Fault 8146
-				'fOK = .UDFCode(psRuntimeCode(), palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents().UDFCode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				fOK = .UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, True, plngFixedExprID, psFixedSQLCode)
-
-			End With
-
-			If Not fOK Then
-				Exit For
-			End If
-
-		Next iLoop1
-
-		UDFCode = fOK
-
-	End Function
-
-
-	Public Function UDFCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode() As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		' Return TRUE if the Calculation code was created okay.
-		' Return the runtime Calculation SQL code in the parameter 'psCalcCode'.
-		' Apply permissions to the Calculation code only if the 'pfApplyPermissions' parameter is TRUE.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
-
-		' Check if the 'validating' parameter is set.
-		' If not, set it to FALSE.
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		If IsNothing(pfValidating) Then
-			pfValidating = False
-		End If
-
-		' Construct the expression from the database definition.
-		fOK = ConstructExpression()
-
-		If fOK Then
-			' Get the Calculation code.
-			' JPD20020419 Fault 3687
-			fOK = UDFCode(psCalcCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		If fOK Then
-			If pfApplyPermissions Then
-				fOK = (ValidateExpression(True) = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
-			End If
-		End If
-
-TidyUpAndExit:
-		If Not fOK Then
-			psCalcCode(UBound(psCalcCode)) = ""
-		End If
-		UDFCalculationCode = fOK
-
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
-
-	End Function
-
-	Public Function UDFFilterCode(ByRef pastrFilterCode() As String, ByRef pfApplyPermissions As Boolean, Optional ByRef pfValidating As Boolean = False, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		' Return TRUE if the filter code was created okay.
-		' Return the runtime filter SQL code in the parameter 'pastrFilterCode'.
-		' Apply permissions to the filter code only if the 'pfApplyPermissions' parameter is TRUE.
-		' The filter code is to be used to validate the expression if the 'pfValidating' parameter is TRUE.
-		' This is used to suppress prompting the user for promted values, when we are only validating the expression.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
-		Dim sBaseTableSource As String
-		Dim alngSourceTables(,) As Integer
-		Dim objTableView As TablePrivilege
-
-		' Check if the 'validating' parameter is set.
-		' If not, set it to FALSE.
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		If IsNothing(pfValidating) Then
-			pfValidating = False
-		End If
-
-		' Construct the expression from the database definition.
-		fOK = ConstructExpression()
-
-		If fOK Then
-			sBaseTableSource = msBaseTableName
-			If pfApplyPermissions Then
-				' Get the 'realSource' of the table.
-				objTableView = gcoTablePrivileges.Item(msBaseTableName)
-				If objTableView.TableType = TableTypes.tabChild Then
-					sBaseTableSource = objTableView.RealSource
-				End If
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objTableView = Nothing
-			End If
-
-			' Create an array of the IDs of the tables/view referred to in the expression.
-			' This is used for joining all of the tables/views used.
-			' Column 1 = 0 if this row is for a table, 1 if it is for a view.
-			' Column 2 = table/view ID.
-			ReDim alngSourceTables(2, 0)
-
-			' Get the filter code.
-			fOK = UDFCode(pastrFilterCode, alngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-TidyUpAndExit:
-		If Not fOK Then
-			pastrFilterCode(UBound(pastrFilterCode)) = ""
-		End If
-		UDFFilterCode = fOK
-
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
-
-	End Function
-
-	Public Sub UDFFunctions(ByRef pbCreate As Boolean)
-		mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
-	End Sub
 
 End Class

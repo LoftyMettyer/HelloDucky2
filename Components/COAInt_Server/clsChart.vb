@@ -590,12 +590,7 @@ GenerateSQLOrderBy_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = datGeneral.FilteredIDs(lngFilterID, strFilterIDs, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If blnOK Then
-				datGeneral.FilterUDFs(lngFilterID, mastrUDFsRequired)
-			End If
+			blnOK = datGeneral.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"

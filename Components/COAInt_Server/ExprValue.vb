@@ -19,7 +19,10 @@ Friend Class clsExprValue
 		Return False
 	End Function
 	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
+															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
+															, ByRef psUDFs() As String _
+															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
 
@@ -53,7 +56,7 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-		
+
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
 		'Dim Printer As New Printing.PrinterSettings
 		' Print the component definition to the printer object.
@@ -80,39 +83,39 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-		
+
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
 		Dim sSQL As String
-		
+
 		fOK = True
-		
+
 		'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type," & " valueType, valueCharacter, valueNumeric, valueLogic, valuedate)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_VALUE)) & "," & " " & Trim(Str(miType)) & "," & " '" & Replace(msCharacterValue, "'", "''") & "'," & " " & Trim(Str(mdblNumericValue)) & "," & " " & IIf(mfLogicValue, "1", "0") & "," & " " & IIf(IsDBNull(mdtDateValue), "null", "'" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "'") & ")"
-		
+
 		'MH20010201 Fault 1576
 		'" '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
-		
-		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
-		
-TidyUpAndExit: 
+
+		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+
+TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		WriteComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		'  If ASRDEVELOPMENT Then
 		'    MsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
 		'  End If
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
+
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
 		' When editting a component we actually copy the component first
@@ -120,29 +123,29 @@ ErrorTrap:
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
 		Dim objValueCopy As New clsExprValue
-		
+
 		' Copy the component's basic properties.
 		With objValueCopy
 			.ReturnType = miType
 			'UPGRADE_WARNING: Couldn't resolve default property of object Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			.Value = Value
 		End With
-		
+
 		CopyComponent = objValueCopy
-		
+
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objValueCopy may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objValueCopy = Nothing
-		
+
 	End Function
-	
+
 	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
 			Return ExpressionComponentTypes.giCOMPONENT_VALUE
 		End Get
 	End Property
-	
-	
+
+
 	Public Property Value() As Object
 		Get
 			' Return the value property.
@@ -158,7 +161,7 @@ ErrorTrap:
 				Case Else
 					Return ""
 			End Select
-			
+
 		End Get
 
 		Set(ByVal pValue As Object)
@@ -181,7 +184,7 @@ ErrorTrap:
 
 		End Set
 	End Property
-	
+
 	Public ReadOnly Property ComponentDescription() As String
 		Get
 			' Return the component description.
@@ -203,19 +206,19 @@ ErrorTrap:
 				Case Else
 					ComponentDescription = ""
 			End Select
-			
+
 		End Get
 	End Property
-	
+
 	Public Property BaseComponent() As clsExprComponent
 		Get
-			Return mobjBaseComponent		
+			Return mobjBaseComponent
 		End Get
 		Set(ByVal pValue As clsExprComponent)
 			mobjBaseComponent = pValue
 		End Set
 	End Property
-	
+
 	Public Property ReturnType() As ExpressionValueTypes
 		Get
 			Return miType
@@ -224,9 +227,5 @@ ErrorTrap:
 			miType = pValue
 		End Set
 	End Property
-	
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		Return True
-	End Function
 
 End Class

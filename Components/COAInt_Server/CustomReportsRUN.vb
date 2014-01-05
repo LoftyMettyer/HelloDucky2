@@ -1107,6 +1107,7 @@ GetDetailsRecordsets_ERROR:
 		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As TablePrivilege
 
+
 		' Set flags with their starting values
 		pblnOK = True
 		pblnNoSelect = False
@@ -1305,11 +1306,8 @@ GetDetailsRecordsets_ERROR:
 				objCalcExpr = New clsExprExpression
 				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(objReportItem.ColExprID), ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				If blnOK Then
-					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, True, False, mvarPrompts)
+					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
 
-					If blnOK Then
-						blnOK = objCalcExpr.UDFCalculationCode(alngSourceTables, mastrUDFsRequired, True)
-					End If
 
 				End If
 
@@ -2020,12 +2018,7 @@ Error_Trap:
 						' is the child filtered ?
 
 						If lngTempFilterID > 0 Then
-							blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
-
-							' Generate any UDFs that are used in this filter
-							If blnOK Then
-								datGeneral.FilterUDFs(lngTempFilterID, mastrUDFsRequired)
-							End If
+							blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 							If blnOK Then
 								sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
@@ -2300,13 +2293,7 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
 		ElseIf mlngCustomReportsParent1FilterID > 0 Then
-			blnOK = True
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If blnOK Then
-				datGeneral.FilterUDFs(mlngCustomReportsParent1FilterID, mastrUDFsRequired)
-			End If
+			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
@@ -2339,13 +2326,7 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
 		ElseIf mlngCustomReportsParent2FilterID > 0 Then
-			blnOK = True
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If blnOK Then
-				datGeneral.FilterUDFs(mlngCustomReportsParent2FilterID, mastrUDFsRequired)
-			End If
+			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
@@ -2388,12 +2369,7 @@ DoChildOrderString_ERROR:
 
 		ElseIf mlngCustomReportsFilterID > 0 Then
 
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If blnOK Then
-				datGeneral.FilterUDFs(mlngCustomReportsFilterID, mastrUDFsRequired)
-			End If
+			blnOK = datGeneral.FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"

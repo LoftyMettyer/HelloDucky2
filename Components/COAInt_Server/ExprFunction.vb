@@ -92,7 +92,11 @@ ErrorTrap:
 
 	End Function
 
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
+															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
+															, ByRef psUDFs() As String _
+															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
 
@@ -134,25 +138,25 @@ ErrorTrap:
 		' Get the first parameter's runtime code if required.
 		If mcolParameters.Count() >= 1 Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(1).Component.RuntimeCode(sParamCode1, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
+			fOK = mcolParameters.Item(1).Component.RuntimeCode(sParamCode1, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs)
 		End If
 
 		' Get the second parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 2) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(2).Component.RuntimeCode(sParamCode2, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
+			fOK = mcolParameters.Item(2).Component.RuntimeCode(sParamCode2, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs)
 		End If
 
 		' Get the third parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 3) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(3).Component.RuntimeCode(sParamCode3, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
+			fOK = mcolParameters.Item(3).Component.RuntimeCode(sParamCode3, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs)
 		End If
 
 		' Get the fourth parameter's runtime code if required.
 		If fOK And (mcolParameters.Count() >= 4) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(4).Component.RuntimeCode(sParamCode4, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues)
+			fOK = mcolParameters.Item(4).Component.RuntimeCode(sParamCode4, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs)
 		End If
 
 		If fOK Then
@@ -1175,42 +1179,5 @@ ErrorTrap:
 		MyBase.Finalize()
 	End Sub
 
-	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
-		Dim sParamCode1 As String
-		Dim sParamCode2 As String
-		Dim sParamCode3 As String
-		Dim sParamCode4 As String
-		Dim fOK As Boolean
-
-		'JPD 20031031 Fault 7440
-		fOK = True
-
-		' Get the first parameter's runtime code if required.
-		If mcolParameters.Count() >= 1 Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(1).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		' Get the second parameter's runtime code if required.
-		If fOK And (mcolParameters.Count() >= 2) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(2).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		' Get the third parameter's runtime code if required.
-		If fOK And (mcolParameters.Count() >= 3) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(3).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		' Get the fourth parameter's runtime code if required.
-		If fOK And (mcolParameters.Count() >= 4) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = mcolParameters.Item(4).Component.UDFCode(psRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, plngFixedExprID, psFixedSQLCode)
-		End If
-
-		UDFCode = fOK
-
-	End Function
 End Class

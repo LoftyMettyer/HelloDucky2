@@ -476,12 +476,7 @@ LocalErr:
 			End If
 
 			'Get list of IDs from Filter
-			fOK = mclsGeneral.FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mvarPrompts)
-
-			' Generate any UDFs that are used in this filter
-			If fOK Then
-				mclsGeneral.FilterUDFs(mlngDefFilterID, mastrUDFsRequired)
-			End If
+			fOK = mclsGeneral.FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.
@@ -902,12 +897,7 @@ LocalErr:
 		objCalcExpr = New clsExprExpression
 		fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 		If fOK Then
-			fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, True, False, mvarPrompts)
-
-			If fOK Then
-				fOK = objCalcExpr.UDFCalculationCode(lngCalcViews, mastrUDFsRequired, True)
-			End If
-
+			fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
 		End If
 
 		If fOK = False Then

@@ -27,9 +27,11 @@ Friend Class clsExprPromptedValue
 		Return False
 	End Function
 	
-	
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
-		' Return the SQL code for the component.
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
+															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
+															, ByRef psUDFs() As String _
+															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean

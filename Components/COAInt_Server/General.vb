@@ -125,32 +125,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function FilterUDFs(ByRef plngFilterID As Integer, ByRef pastrUDFs() As String) As Boolean
-
-		On Error GoTo ErrorTrap
-
-		' Return a string describing the record IDs from the given table
-		' that satisfy the given criteria.
-		Dim fOK As Boolean
-		Dim objExpr As clsExprExpression = New clsExprExpression
-
-		fOK = True
-
-		With objExpr
-			.Initialise(0, plngFilterID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
-			.UDFFilterCode(pastrUDFs, True, True)
-		End With
-		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objExpr = Nothing
-
-		FilterUDFs = fOK
-
-TidyUpAndExit:
-		Exit Function
-ErrorTrap:
-
-	End Function
-
 	Public Function GetRecordsInTransaction(ByRef sSQL As String) As Recordset
 		' Return the required STATIC/read-only recordset.
 		' This is useful when getting a recordset in the middle of a transaction.
@@ -160,7 +134,7 @@ ErrorTrap:
 
 	End Function
 
-	Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
+	Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
 		Dim fOK As Boolean
@@ -171,14 +145,14 @@ ErrorTrap:
 			fOK = .Initialise(0, plngExprID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
 
 			If fOK Then
-				fOK = objExpr.RuntimeFilterCode(psIDSQL, True, False, paPrompts)
+				fOK = objExpr.RuntimeFilterCode(psIDSQL, True, psUDFs, False, paPrompts)
 			End If
 
 		End With
 		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objExpr = Nothing
 
-		FilteredIDs = fOK
+		Return fOK
 
 	End Function
 
@@ -225,7 +199,7 @@ ErrorTrap:
 			fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 
 			If fOK Then
-				fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, True, False, pvarPrompts)
+				fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, Nothing, True, False, pvarPrompts)
 			End If
 
 			If fOK Then
