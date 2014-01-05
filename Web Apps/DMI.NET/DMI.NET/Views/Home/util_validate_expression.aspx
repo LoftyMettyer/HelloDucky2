@@ -669,11 +669,7 @@
 	If Request.Form("validatePass") = 2 Then
 		' Get the server DLL to validate the expression definition
 		objExpression = New HR.Intranet.Server.Expression
-
-		' Pass required info to the DLL
-		objExpression.Username = Session("username")
-		CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
-				
+			
 		If Request.Form("validateUtilType") = 11 Then
 			iExprType = 11
 			iReturnType = 3
