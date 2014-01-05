@@ -342,170 +342,125 @@ ErrorTrap:
 
 	End Sub
 
-	Public Function ConstructComponent(ByRef prsComponents As ADODB.Recordset) As Boolean
-		' Read the component definition from the database.
-		On Error GoTo ErrorTrap
+	Public Function ConstructComponent(ByRef prsComponents As DataRow) As Boolean
+		' Read the component definition from the datarow.
 
-		Dim fOK As Boolean
+		Dim fOK As Boolean = True
 
-		fOK = True
+		Try
 
-		' Initialise the component with the definition from the database.
-		ComponentType = prsComponents.Fields("Type").Value
+			' Initialise the component with the definition from the database.
+			ComponentType = prsComponents("Type")
 
-		With mvComponent
-			Select Case miComponentType
-				Case ExpressionComponentTypes.giCOMPONENT_FIELD
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.TableID = prsComponents.Fields("fieldTableID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ColumnID = prsComponents.Fields("fieldColumnID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.FieldPassType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.FieldPassType = prsComponents.Fields("fieldPassBy").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.SelectionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.SelectionType = prsComponents.Fields("fieldSelectionRecord").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.SelectionLine. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.SelectionLine = prsComponents.Fields("fieldSelectionLine").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.SelectionOrderID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.SelectionOrderID = prsComponents.Fields("fieldSelectionOrderID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.SelectionFilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.SelectionFilterID = prsComponents.Fields("FieldSelectionFilter").Value
+			With mvComponent
+				Select Case miComponentType
+					Case ExpressionComponentTypes.giCOMPONENT_FIELD
+						.TableID = prsComponents("fieldTableID")
+						.ColumnID = prsComponents("fieldColumnID")
+						.FieldPassType = prsComponents("fieldPassBy")
+						.SelectionType = prsComponents("fieldSelectionRecord")
+						.SelectionLine = prsComponents("fieldSelectionLine")
+						.SelectionOrderID = prsComponents("fieldSelectionOrderID")
+						.SelectionFilterID = prsComponents("FieldSelectionFilter")
 
-				Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.FunctionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.FunctionID = prsComponents.Fields("FunctionID").Value
+					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+						.FunctionID = prsComponents("FunctionID")
 
-					' Allow user preference of how expression builder initially loads
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ExpandedNode = IIf(IsDBNull(prsComponents.Fields("ExpandedNode").Value), False, prsComponents.Fields("ExpandedNode").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ExpandedNode. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Me.ExpandedNode = .ExpandedNode
+					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+						.CalculationID = prsComponents("CalculationID")
 
-				Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.CalculationID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.CalculationID = prsComponents.Fields("CalculationID").Value
+					Case ExpressionComponentTypes.giCOMPONENT_VALUE
+						.ReturnType = prsComponents("ValueType")
+						Select Case prsComponents("ValueType")
+							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
+							Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueNumeric")), 0, prsComponents("valueNumeric"))
+							Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueLogic")), True, prsComponents("valueLogic"))
+							Case ExpressionValueTypes.giEXPRVALUE_DATE
+								.Value = prsComponents("valueDate")
+						End Select
 
-				Case ExpressionComponentTypes.giCOMPONENT_VALUE
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ReturnType = prsComponents.Fields("ValueType").Value
-					Select Case prsComponents.Fields("ValueType").Value
-						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_DATE
+					Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
+						.OperatorID = prsComponents("OperatorID")
 
-							'MH20010201 Fault 1576
-							'.Value = IIf(IsNull(prsComponents!valueDate), Date, prsComponents!valueDate)
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							.Value = prsComponents.Fields("valueDate").Value
-					End Select
+					Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
+						' Do nothing as Table Value components are treated as Value components.
+						.TableID = prsComponents("LookupTableID")
+						.ColumnID = prsComponents("LookupColumnID")
+						.ReturnType = prsComponents("ValueType")
 
-				Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.OperatorID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.OperatorID = prsComponents.Fields("OperatorID").Value
+						Select Case prsComponents("ValueType")
+							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
+							Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueNumeric")), 0, prsComponents("valueNumeric"))
+							Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.Value = IIf(IsDBNull(prsComponents("valueLogic")), True, prsComponents("valueLogic"))
+							Case ExpressionValueTypes.giEXPRVALUE_DATE
+								.Value = prsComponents("valueDate")
+						End Select
 
-				Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
-					' Do nothing as Table Value components are treated as Value components.
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.TableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.TableID = prsComponents.Fields("LookupTableID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ColumnID = prsComponents.Fields("LookupColumnID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.ReturnType = prsComponents.Fields("ValueType").Value
+					Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.Prompt = IIf(IsDBNull(prsComponents("promptDescription")), "", prsComponents("promptDescription"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.ValueType = IIf(IsDBNull(prsComponents("ValueType")), ExpressionValueTypes.giEXPRVALUE_CHARACTER, prsComponents("ValueType"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.ReturnSize = IIf(IsDBNull(prsComponents("promptSize")), 1, prsComponents("promptSize"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.ReturnDecimals = IIf(IsDBNull(prsComponents("promptDecimals")), 0, prsComponents("promptDecimals"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.ValueFormat = IIf(IsDBNull(prsComponents("promptMask")), "", prsComponents("promptMask"))
 
-					Select Case prsComponents.Fields("ValueType").Value
-						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.Value = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), True, prsComponents.Fields("valueLogic").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_DATE
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Value. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							.Value = prsComponents.Fields("valueDate").Value
-					End Select
+						Select Case prsComponents("ValueType")
+							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.DefaultValue = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
+							Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.DefaultValue = IIf(IsDBNull(prsComponents("valueNumeric")), 0, prsComponents("valueNumeric"))
+							Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.DefaultValue = IIf(IsDBNull(prsComponents("valueLogic")), False, prsComponents("valueLogic"))
+							Case ExpressionValueTypes.giEXPRVALUE_DATE
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.DefaultValue = IIf(IsDBNull(prsComponents("valueDate")), Today, prsComponents("valueDate"))
+							Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
+								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+								.DefaultValue = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
+						End Select
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						.LookupColumn = IIf(IsDBNull(prsComponents("fieldColumnID")), 0, prsComponents("fieldColumnID"))
 
-				Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.Prompt. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.Prompt = IIf(IsDBNull(prsComponents.Fields("promptDescription").Value), "", prsComponents.Fields("promptDescription").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ValueType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ValueType = IIf(IsDBNull(prsComponents.Fields("ValueType").Value), ExpressionValueTypes.giEXPRVALUE_CHARACTER, prsComponents.Fields("ValueType").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnSize. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ReturnSize = IIf(IsDBNull(prsComponents.Fields("promptSize").Value), 1, prsComponents.Fields("promptSize").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ReturnDecimals. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ReturnDecimals = IIf(IsDBNull(prsComponents.Fields("promptDecimals").Value), 0, prsComponents.Fields("promptDecimals").Value)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ValueFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.ValueFormat = IIf(IsDBNull(prsComponents.Fields("promptMask").Value), "", prsComponents.Fields("promptMask").Value)
+					Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
+						' Not required.
 
-					Select Case prsComponents.Fields("ValueType").Value
-						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueNumeric").Value), 0, prsComponents.Fields("valueNumeric").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueLogic").Value), False, prsComponents.Fields("valueLogic").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_DATE
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueDate").Value), Today, prsComponents.Fields("valueDate").Value)
-						Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.DefaultValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							.DefaultValue = IIf(IsDBNull(prsComponents.Fields("valueCharacter").Value), "", prsComponents.Fields("valueCharacter").Value)
-					End Select
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.LookupColumn. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					.LookupColumn = IIf(IsDBNull(prsComponents.Fields("fieldColumnID").Value), 0, prsComponents.Fields("fieldColumnID").Value)
+					Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+						' Sub-expressions are handled via the Function component class.
 
-				Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
-					' Not required.
+					Case ExpressionComponentTypes.giCOMPONENT_FILTER
+						' Load information for filters
+						.FilterID = prsComponents("FilterID")
 
-				Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-					' Sub-expressions are handled via the Function component class.
+				End Select
 
-				Case ExpressionComponentTypes.giCOMPONENT_FILTER
-					' Load information for filters
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.FilterID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					.FilterID = prsComponents.Fields("FilterID").Value
+			End With
 
-			End Select
+		Catch ex As Exception
+			fOK = False
 
-		End With
+		End Try
 
-TidyUpAndExit:
-		ConstructComponent = fOK
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		Return fOK
 
 	End Function
 

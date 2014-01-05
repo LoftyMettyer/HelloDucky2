@@ -6,6 +6,7 @@ Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
+Imports System.Data.SqlClient
 
 Friend Class clsExprExpression
 
@@ -927,7 +928,7 @@ ErrorTrap:
 				' Column 2 = table/view ID.
 				ReDim alngSourceTables(2, 0)
 
-				' Get the filter code.				
+				' Get the filter code.
 				fOK = RuntimeCode(sWhereCode, alngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs, plngFixedExprID, psFixedSQLCode)
 			End If
 
@@ -1616,19 +1617,17 @@ ErrorTrap:
 	End Function
 
 
-
-
-
 	Public Function ConstructExpression() As Boolean
 		' Read the expression definition from the database and
 		' construct the hierarchy of component class objects.
 		On Error GoTo ErrorTrap
 
+		Dim dsExpression As DataSet
+
 		Dim fOK As Boolean
 		Dim sSQL As String
 		Dim objComponent As clsExprComponent
 		Dim rsExpression As Recordset
-		Dim rsComponents As Recordset
 
 		fOK = True
 
@@ -1656,88 +1655,52 @@ ErrorTrap:
 			End If
 		Else
 
-			' Get the expression definition.
-			If miExpressionType = ExpressionTypes.giEXPR_UTILRUNTIMEFILTER Then
-				' Utility runtime filters are not tied to a base table.
-				sSQL = "SELECT name, 0 AS tableID, returnType, type, parentComponentID, Username," _
-					& " access, description, ViewInColour, CONVERT(integer, timestamp) AS intTimestamp, '' AS tableName FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngExpressionID))
+			dsExpression = clsDataAccess.GetDataSet("spASRIntGetExpressionAndComponents", CommandType.StoredProcedure _
+					, New SqlParameter("ExpressionID", mlngExpressionID), New SqlParameter("ExpressionType", miExpressionType))
 
-			ElseIf miExpressionType = ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC Then
-				sSQL = "SELECT ASRSysExpressions.name, ASRSysExpressions.TableID, ASRSysExpressions.returnType, ASRSysExpressions.type, ASRSysExpressions.parentComponentID," _
-					& " ASRSysExpressions.Username, ASRSysExpressions.access, ASRSysExpressions.description, ASRSysExpressions.ViewInColour," _
-					& " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp, ASRSysTables.tableName FROM ASRSysExpressions" _
-					& " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID WHERE exprID = " & Trim(Str(mlngExpressionID))
+			Dim rowExpression = dsExpression.Tables(0).Rows(0)
 
+			If rowExpression Is Nothing Then
+				InitialiseExpression()
 			Else
-				sSQL = "SELECT ASRSysExpressions.name, ASRSysExpressions.TableID, ASRSysExpressions.returnType, ASRSysExpressions.type, ASRSysExpressions.parentComponentID," _
-					& " ASRSysExpressions.Username, ASRSysExpressions.access, ASRSysExpressions.description, ASRSysExpressions.ViewInColour," _
-					& " CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp, ASRSysTables.tableName FROM ASRSysExpressions" _
-					& " LEFT OUTER JOIN ASRSysTables ON ASRSysExpressions.TableID = ASRSysTables.tableID WHERE exprID = " & Trim(Str(mlngExpressionID))
-			End If
 
-			rsExpression = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-			With rsExpression
-				fOK = Not (.EOF And .BOF)
-				If fOK Then
-					' Read the expression's properties.
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					msExpressionName = IIf(IsDBNull(.Fields("Name").Value), "", .Fields("Name").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngBaseTableID = IIf(IsDBNull(.Fields("TableID").Value), 0, .Fields("TableID").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					miReturnType = IIf(IsDBNull(.Fields("ReturnType").Value), ExpressionValueTypes.giEXPRVALUE_UNDEFINED, .Fields("ReturnType").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					miExpressionType = IIf(IsDBNull(.Fields("Type").Value), ExpressionTypes.giEXPR_UNKNOWNTYPE, .Fields("Type").Value)
+				msExpressionName = rowExpression("Name")
+				mlngBaseTableID = rowExpression("TableID")
+				miReturnType = rowExpression("ReturnType")
+				miExpressionType = rowExpression("Type")
 
-					If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
-						miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-					End If
-
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngParentComponentID = IIf(IsDBNull(.Fields("ParentComponentID").Value), 0, .Fields("ParentComponentID").Value)
-					'msOwner = IIf(IsNull(!Owner), gsUserName, !Owner)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					msOwner = IIf(IsDBNull(.Fields("Username").Value), gsUsername, .Fields("Username").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					msAccess = IIf(IsDBNull(.Fields("Access").Value), "RW", .Fields("Access").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					msDescription = IIf(IsDBNull(.Fields("Description").Value), "", .Fields("Description").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngTimeStamp = IIf(IsDBNull(.Fields("intTimestamp").Value), 0, .Fields("intTimestamp").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					msBaseTableName = IIf(IsDBNull(.Fields("TableName").Value), "", .Fields("TableName").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mbViewInColour = IIf(IsDBNull(.Fields("ViewInColour").Value), False, .Fields("ViewInColour").Value)
-
-				Else
-					' Initialise the expression.
-					InitialiseExpression()
+				If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
+					miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 				End If
 
-				.Close()
-			End With
-			'UPGRADE_NOTE: Object rsExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsExpression = Nothing
+				mlngParentComponentID = rowExpression("ParentComponentID")
+				msOwner = rowExpression("Username")
+				msAccess = rowExpression("Access")
+				msDescription = rowExpression("Description")
+				mlngTimeStamp = rowExpression("intTimestamp")
+				msBaseTableName = rowExpression("TableName")
+				mbViewInColour = rowExpression("ViewInColour")
+
+			End If
+
 
 			If fOK Then
 				' Clear the expressions collection of components.
 				ClearComponents()
 
 				' Get the expression definition.
-				sSQL = String.Format("SELECT * FROM ASRSysExprComponents WHERE exprID = {0} ORDER BY componentID", mlngExpressionID)
-				rsComponents = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+				For Each objRow As DataRow In dsExpression.Tables(1).Rows
 
-				Do While (Not rsComponents.EOF) And fOK
 					' Instantiate a new component object.
 					objComponent = New clsExprComponent
 
 					With objComponent
 						' Initialise the new component's properties.
 						.ParentExpression = Me
-						.ComponentID = rsComponents.Fields("ComponentID").Value
+						.ComponentID = objRow("ComponentID")
 
 						' Instruct the new component to read it's own definition from the database.
-						fOK = .ConstructComponent(rsComponents)
+						fOK = .ConstructComponent(objRow)
 					End With
 
 					If fOK Then
@@ -1750,10 +1713,8 @@ ErrorTrap:
 					'UPGRADE_NOTE: Object objComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objComponent = Nothing
 
-					rsComponents.MoveNext()
-				Loop
+				Next
 
-				rsComponents.Close()
 			End If
 		End If
 
@@ -1761,12 +1722,9 @@ TidyUpAndExit:
 		mfConstructed = fOK
 		'UPGRADE_NOTE: Object rsExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsExpression = Nothing
-		'UPGRADE_NOTE: Object rsComponents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsComponents = Nothing
 		'UPGRADE_NOTE: Object objComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objComponent = Nothing
-		ConstructExpression = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False
@@ -1800,23 +1758,9 @@ ErrorTrap:
 
 
 	Public Sub ClearComponents()
-		' Clear the expression's component collection.
-		On Error GoTo ErrorTrap
 
-		' Remove all components from the collection.
-		Do While mcolComponents.Count() > 0
-			mcolComponents.Remove(1)
-		Loop
-		'UPGRADE_NOTE: Object mcolComponents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolComponents = Nothing
-
-		' Re-instantiate the collection.
+		mcolComponents.Clear()
 		mcolComponents = New Collection
-
-		Exit Sub
-
-ErrorTrap:
-		Err.Number = False
 
 	End Sub
 

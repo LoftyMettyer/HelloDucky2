@@ -1027,13 +1027,11 @@ ErrorTrap:
 		' and create an array of components to represent the parameters.
 		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
+		Dim fOK As Boolean = True
 		Dim iIndex As Short
 		Dim sSQL As String
 
 		Dim objNewParameter As clsExprComponent
-
-		fOK = True
 
 		' Clear the parameter collection.
 		ClearParameters()
@@ -1057,64 +1055,57 @@ ErrorTrap:
 
 		Next
 
-		Dim rsParameters As Recordset
+		Dim rsParameters As DataTable
 
 		' Get the customised function parameter definitions if they exist.
-		If (mobjBaseComponent.ComponentID > 0) Then
+		If mobjBaseComponent.ComponentID > 0 And mcolParameters.Count > 0 Then
 
 			iIndex = 1
-			sSQL = "SELECT * FROM ASRSysExpressions WHERE parentComponentID = " & Trim(Str(mobjBaseComponent.ComponentID)) & " ORDER BY exprID"
-			rsParameters = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			sSQL = "SELECT ExprID FROM ASRSysExpressions WHERE parentComponentID = " & Trim(Str(mobjBaseComponent.ComponentID)) & " ORDER BY exprID"
 
-			With rsParameters
-				Do While (Not .EOF) And fOK
+			rsParameters = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+			For Each objRow As DataRow In rsParameters.Rows
 
-					' Instantiate a new component object.
-					objNewParameter = New clsExprComponent
+				' Instantiate a new component object.
+				objNewParameter = New clsExprComponent
 
-					' Construct the hierarchy of objects that define the parameter.
-					objNewParameter.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objNewParameter.Component.ExpressionID = .Fields("ExprID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.BaseTableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objNewParameter.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
+				' Construct the hierarchy of objects that define the parameter.
+				objNewParameter.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
+				'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				objNewParameter.Component.ExpressionID = objRow("ExprID")
+				'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.BaseTableID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				objNewParameter.Component.BaseTableID = mobjBaseComponent.ParentExpression.BaseTableID
 
-					' JDM - 06/11/2003 - Fault 7193 - Get field from database record not working
+				' JDM - 06/11/2003 - Fault 7193 - Get field from database record not working
+				'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				objNewParameter.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
+
+				'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ConstructExpression. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				fOK = objNewParameter.Component.ConstructExpression
+
+				If fOK Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					objNewParameter.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ConstructExpression. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					fOK = objNewParameter.Component.ConstructExpression
+					' Reset the new expression's return type.
+					'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					objNewParameter.Component.ReturnType = mcolParameters.Item(iIndex).Component.ReturnType
 
-					If fOK Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ExpressionType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						objNewParameter.Component.ExpressionType = mobjBaseComponent.ParentExpression.ExpressionType
-
-						' Reset the new expression's return type.
-						'UPGRADE_WARNING: Couldn't resolve default property of object objNewParameter.Component.ReturnType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						objNewParameter.Component.ReturnType = mcolParameters.Item(iIndex).Component.ReturnType
-
-						'JDM - 16/03/01 - Fault 1935 - Load previous view
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						objNewParameter.ExpandedNode = IIf(IsDBNull(.Fields("ExpandedNode").Value), False, .Fields("ExpandedNode").Value)
-
-						' Insert the new expression into the function's parameter array.
-						mcolParameters.Remove(iIndex)
-						If mcolParameters.Count() >= iIndex Then
-							mcolParameters.Add(objNewParameter, , iIndex)
-						Else
-							mcolParameters.Add(objNewParameter)
-						End If
+					' Insert the new expression into the function's parameter array.
+					mcolParameters.Remove(iIndex)
+					If mcolParameters.Count() >= iIndex Then
+						mcolParameters.Add(objNewParameter, , iIndex)
+					Else
+						mcolParameters.Add(objNewParameter)
 					End If
+				End If
 
-					iIndex = iIndex + 1
-					'UPGRADE_NOTE: Object objNewParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					objNewParameter = Nothing
+				iIndex = iIndex + 1
+				'UPGRADE_NOTE: Object objNewParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				objNewParameter = Nothing
 
-					.MoveNext()
-				Loop
-			End With
+			Next
 		End If
 
 TidyUpAndExit:
@@ -1132,35 +1123,18 @@ ErrorTrap:
 	End Function
 
 	Public Sub ClearParameters()
-		' Clear the function's parameter collection.
-		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
-
-		' Remove all components from the collection.
-		Do While mcolParameters.Count() > 0
-			mcolParameters.Remove(1)
-		Loop
-		'UPGRADE_NOTE: Object mcolParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolParameters = Nothing
-
-		' Re-instantiate the collection.
+		mcolParameters.Clear()
 		mcolParameters = New Collection
-		Exit Sub
-
-ErrorTrap:
-		fOK = False
 
 	End Sub
-
-
 
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Create a new collection to hold the function's parameters.
 		mcolParameters = New Collection
-
 	End Sub
+
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
