@@ -135,7 +135,11 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Shared Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
+	Public Shared Function GetDataSet(ByVal sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
+		Return GetDataSet(sProcedureName, CommandType.StoredProcedure, args)
+	End Function
+
+	Private Shared Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
 
 		Dim strConn As String = GetConnectionString(Login)
 		Dim objDataSet As New DataSet

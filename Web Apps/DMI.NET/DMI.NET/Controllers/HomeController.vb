@@ -945,7 +945,7 @@ Namespace Controllers
 			Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
 			prmRecordCount.Direction = ParameterDirection.Output
 
-			clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", CommandType.StoredProcedure, prmRecordID, prmRecordCount _
+			clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
 														, New SqlParameter("piViewID", iSingleRecordViewID))
 
 			' Reload the toplevelrecid session variable as linksMain may have reset it.

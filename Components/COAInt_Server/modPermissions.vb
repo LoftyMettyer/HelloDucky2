@@ -22,7 +22,7 @@ Module modPermissions
 
 		Try
 
-			Dim objData As DataSet = clsDataAccess.GetDataSet("spASRGetMetadata", CommandType.StoredProcedure, New SqlParameter("username", Login.Username))
+			Dim objData As DataSet = clsDataAccess.GetDataSet("spASRGetMetadata", New SqlParameter("username", Login.Username))
 
 			For Each objRow In objData.Tables(0).Rows
 				Dim table As New Table
@@ -160,7 +160,7 @@ Module modPermissions
 		' Instantiate a new collection of table privileges.
 		gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
-		dsPermissions = clsDataAccess.GetDataSet("spASRIntSetupTablesCollection", CommandType.StoredProcedure)
+		dsPermissions = clsDataAccess.GetDataSet("spASRIntSetupTablesCollection")
 
 		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
 		gsUsername = objSecurityRow("UserName")
