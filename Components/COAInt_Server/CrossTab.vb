@@ -845,26 +845,22 @@ LocalErr:
 
 	Private Function GetFormat(ByVal lngColumnID As Integer) As String
 
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
+		Dim objColumn = Columns.GetById(lngColumnID)
+		Dim sFormat As String = ""
 
-		strSQL = "SELECT DataType, Size, Decimals FROM ASRSysColumns Where ColumnID = " & CStr(lngColumnID)
-		rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-		Select Case rsTemp.Fields("DataType").Value
+		Select Case objColumn.DataType
 			Case SQLDataType.sqlNumeric
-				GetFormat = New String("#", rsTemp.Fields("Size").Value - 1) & "0"
-				If rsTemp.Fields("Decimals").Value > 0 Then
-					GetFormat = GetFormat & "." & New String("0", rsTemp.Fields("Decimals").Value)
+				sFormat = New String("#", objColumn.Size - 1) & "0"
+				If objColumn.Decimals > 0 Then
+					sFormat = sFormat & "." & New String("0", objColumn.Decimals)
 				End If
 
 			Case SQLDataType.sqlInteger
-				GetFormat = New String("#", 9) & "0"
+				sFormat = New String("#", 9) & "0"
 
 		End Select
 
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
+		Return sFormat
 
 	End Function
 
