@@ -4,6 +4,7 @@ Imports ADODB
 Imports System.IO
 Imports System.Drawing
 Imports HR.Intranet.Server
+Imports System.Data.SqlClient
 
 Namespace Controllers
 	Public Class AccountController
@@ -1027,6 +1028,46 @@ Namespace Controllers
 			End If
 
 			Return RedirectToAction("login", "account")
+		End Function
+
+		Public Function LogOff()
+
+			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
+			Dim objConnection As Connection
+
+			Session("ErrorText") = Nothing
+
+			Try
+
+				Dim prmLogIn = New SqlParameter("blnLoggingIn", SqlDbType.Bit, 1, ParameterDirection.Input)
+				prmLogIn.Value = False
+
+				Dim prmUserName = New SqlParameter("strUsername", SqlDbType.VarChar, 1000, ParameterDirection.Input)
+				prmUserName.Value = Replace(Session("Username"), "'", "''")
+
+				clsDataAccess.ExecuteSP("sp_ASRIntAuditAccess", prmLogIn, prmUserName)
+
+				objConnection = Session("databaseConnection")
+
+				If objConnection.State = 1 Then
+					objConnection.Close()
+				End If
+
+				Session("databaseConnection") = Nothing
+				Session("avPrimaryMenuInfo") = Nothing
+				Session("avSubMenuInfo") = Nothing
+				Session("avQuickEntryMenuInfo") = Nothing
+				Session("avTableMenuInfo") = Nothing
+
+				objServerSession.ActiveConnections -= 1
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return RedirectToAction("Login", "Account")
+
 		End Function
 
 		<HttpPost()>

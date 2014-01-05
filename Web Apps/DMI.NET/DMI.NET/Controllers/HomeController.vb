@@ -3301,41 +3301,6 @@ Namespace Controllers
 
 		End Function
 
-		Function LogOff()
-
-			'		Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
-
-			Session("ErrorText") = Nothing
-
-			'' Are we the last window?
-			'If Not objServerSession Is Nothing Then
-			'	If objServerSession.ActiveConnections = 1 Then
-
-			Dim objConnection As Connection
-			objConnection = Session("databaseConnection")
-
-			If objConnection.State = 1 Then
-				objConnection.Close()
-			End If
-
-			Session("databaseConnection") = Nothing
-			Session("avPrimaryMenuInfo") = Nothing
-			Session("avSubMenuInfo") = Nothing
-			Session("avQuickEntryMenuInfo") = Nothing
-			Session("avTableMenuInfo") = Nothing
-
-			'	Else
-			'' Other window still connected.
-			'objServerSession.ActiveConnections = 0
-			''					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
-			'	End If
-			'End If
-
-
-			Return RedirectToAction("Login", "Account")
-
-		End Function
-
 		Function PasswordChange() As ActionResult
 			Return View()
 		End Function

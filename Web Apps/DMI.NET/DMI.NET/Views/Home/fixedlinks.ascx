@@ -1062,7 +1062,7 @@
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
-						<a href="<%: Url.Action("LogOff", "Home") %>">
+						<a href="<%: Url.Action("LogOff", "Account")%>">
 							<span>Log Off</span>
 						</a>
 					</li>

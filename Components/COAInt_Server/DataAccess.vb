@@ -4,6 +4,7 @@ Option Explicit On
 Imports ADODB
 Imports System.Data.SqlClient
 Imports System.ComponentModel
+Imports HR.Intranet.Server.Structures
 
 Public Class clsDataAccess
 
@@ -54,6 +55,41 @@ Public Class clsDataAccess
 
 	End Function
 
+
+	Private Shared Function GetConnectionString(ByVal LoginDetail As LoginInfo) As String
+		Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4}" _
+												 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, "OpenHR")
+	End Function
+
+	Public Shared Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)
+
+		Dim strConn As String = GetConnectionString(Login)
+
+		Try
+
+			Using sqlConnection As New SqlConnection(strConn)
+				Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
+
+					objCommand.CommandType = CommandType.StoredProcedure
+
+					objCommand.Parameters.Clear()
+					For Each sqlParm As SqlParameter In args
+						objCommand.Parameters.Add(sqlParm)
+					Next
+
+					sqlConnection.Open()
+					objCommand.ExecuteNonQuery()
+				End Using
+
+			End Using
+
+		Catch
+			Throw
+
+		End Try
+
+	End Sub
+
 	Public Shared Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
 
 		Try
@@ -70,11 +106,10 @@ Public Class clsDataAccess
 
 	Public Shared Function GetDataTable(ByVal procedureName As String, ByVal parameterName As String, dataList As DataTable) As DataTable
 
-		Dim strConn As String
+		Dim strConn As String = GetConnectionString(Login)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 
-		strConn = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name=OpenHR8", Login.Server, Login.Database, Login.Username, Login.Password)
 
 		Try
 
@@ -102,11 +137,9 @@ Public Class clsDataAccess
 
 	Public Shared Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
 
-		Dim strConn As String
+		Dim strConn As String = GetConnectionString(Login)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
-
-		strConn = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name=OpenHR8", Login.Server, Login.Database, Login.Username, Login.Password)
 
 		Try
 
