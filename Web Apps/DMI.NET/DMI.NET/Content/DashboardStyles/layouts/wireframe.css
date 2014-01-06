@@ -336,15 +336,17 @@ div.officetab div.panel > span { display: none;}
 	background-image: none!important;
 }
 
+/*
 #findGridRow td {
 	font-size: 14pt;
-	padding: 4px 4px 4px 4px;	
+	padding: 4px 4px 4px 4px;
 }
 
 .ui-jqgrid tr.jqgfirstrow td {
-	/* Gets rid of the empty first row issue TFS 2574 */
+	Gets rid of the empty first row issue TFS 2574 
 	display: none;
 }
+*/
 
 .pageTitleDiv {
 	 height: 50px;

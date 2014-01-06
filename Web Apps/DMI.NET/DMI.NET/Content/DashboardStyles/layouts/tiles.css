@@ -397,16 +397,16 @@ div.officetab div.panel > span { display: none;}
 	margin-left: 20px;
 }
 
+/*
 #findGridRow td {
 	font-size: 14pt;
 	padding: 8px 0 8px 8px;	
 }
 
-
 .ui-jqgrid tr.jqgfirstrow td {
-	/* Gets rid of the empty first row issue TFS 2574 */
 	display: none;
 }
+*/
 
 #row3 td { color: white;}
 
