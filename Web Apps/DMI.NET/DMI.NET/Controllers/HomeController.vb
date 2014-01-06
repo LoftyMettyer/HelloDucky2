@@ -2597,7 +2597,7 @@ Namespace Controllers
 
 
 			If (NullSafeInteger(Session("SSILinkTableID")) = NullSafeInteger(Session("SingleRecordTableID"))) _
-	And (NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))) Then
+				And (NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))) Then
 
 				' Ripped from AcctController
 				Try
@@ -2612,7 +2612,7 @@ Namespace Controllers
 					Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
 					prmRecordCount.Direction = ParameterDirection.Output
 
-					clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
+					clsDataAccess.ExecuteSP("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
 																, New SqlParameter("piViewID", CleanNumeric(Session("SingleRecordViewID"))))
 
 
@@ -2636,40 +2636,31 @@ Namespace Controllers
 						End If
 					End If
 
-
+					Err.Clear()
 
 					' Are we displaying the Workflow Out of Office Hyperlink for this view?
 					Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
 					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
 					Dim fShowOOOHyperlink As Boolean = False
 
-					Dim cmdShowOOOLink As Command = New Command
-					cmdShowOOOLink.CommandText = "spASRIntShowOutOfOfficeHyperlink"
-					cmdShowOOOLink.CommandType = CommandTypeEnum.adCmdStoredProc
-					cmdShowOOOLink.ActiveConnection = Session("databaseConnection")
-
-					Dim prmTableID2 = cmdShowOOOLink.CreateParameter("TableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdShowOOOLink.Parameters.Append(prmTableID2)
+					Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
 					prmTableID2.Value = lngSSILinkTableID
 
-					Dim prmViewID2 = cmdShowOOOLink.CreateParameter("ViewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdShowOOOLink.Parameters.Append(prmViewID2)
+					Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
 					prmViewID2.Value = lngSSILinkViewID
 
-					Dim prmDisplayHyperlink = cmdShowOOOLink.CreateParameter("DisplayHyperlink", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
-					cmdShowOOOLink.Parameters.Append(prmDisplayHyperlink)
+					Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
+					prmDisplayHyperlink.Direction = ParameterDirection.Output
 
-					Err.Clear()
-					cmdShowOOOLink.Execute()
+					clsDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
 
 					If (Err.Number() <> 0) Then
 						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
 					Else
-						fShowOOOHyperlink = cmdShowOOOLink.Parameters("DisplayHyperlink").Value
+						fShowOOOHyperlink = prmDisplayHyperlink.Value
 					End If
 
 					Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-					cmdShowOOOLink = Nothing
 
 				Catch ex As Exception
 
@@ -2682,6 +2673,8 @@ Namespace Controllers
 				' End Ripped
 			End If
 
+			Dim sViewDescription As String
+			Dim sViewName As String
 
 			' For SSI, subordinate views
 			If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) Then
@@ -2689,118 +2682,30 @@ Namespace Controllers
 				Try
 
 					' Get the record description.
-					Dim sErrorDescription As String = ""
-					Dim cmdGetRecordDesc As Command = New Command
+					Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int)
+					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))
 
-					cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-					cmdGetRecordDesc.CommandType = CommandTypeEnum.adCmdStoredProc
-					cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
-
-					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdGetRecordDesc.Parameters.Append(prmTableID)
-					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
-
-					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdGetRecordDesc.Parameters.Append(prmRecordID)
+					Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
 					prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
 
-					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdGetRecordDesc.Parameters.Append(prmParentTableID)
+					Dim prmParentTableID = New SqlParameter("piParentTableID", SqlDbType.Int)
 					prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
 
-					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
+					Dim prmParentRecordID = New SqlParameter("piParentRecordID", SqlDbType.Int)
 					prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
 
-					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-					cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
+					Dim prmRecordDesc = New SqlParameter("psRecDesc", SqlDbType.VarChar, 255, ParameterDirection.Output)
+					prmRecordDesc.Value = ""
 
-					Const DEADLOCK_ERRORNUMBER = -2147467259
-					Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
-					Const DEADLOCK_MESSAGEEND =
-					 ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
-					Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
-					Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
+					clsDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription", prmTableID, prmRecordID, prmParentTableID, prmParentRecordID, prmRecordDesc)
 
-					Dim sErrMsg As String = ""
-					Dim fOK = True
-					Dim fDeadlock = True
-					Dim iRetryCount = 0
-					Dim iRETRIES = 0
-					Dim sViewDescription As String = ""
+					sViewDescription = prmRecordDesc.Value
 
-					Do While fDeadlock
-						fDeadlock = False
 
-						cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-						cmdGetRecordDesc.Execute()
-
-						If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
-							For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-								sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-								If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And
-								 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And
-								 (UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or
-									((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And
-								 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-									' The error is for a deadlock.
-									' Sorry about having to use the err.description to trap the error but the err.number
-									' is not specific and MSDN suggests using the err.description.
-									If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
-										iRetryCount = iRetryCount + 1
-										fDeadlock = True
-									Else
-										If Len(sErrorDescription) > 0 Then
-											sErrorDescription = sErrorDescription & vbCrLf
-										End If
-										sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-										fOK = False
-									End If
-								Else
-									sErrorDescription = sErrorDescription & vbCrLf &
-										FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-									fOK = False
-								End If
-							Next
-
-							cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-							If Not fOK Then
-								sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
-							End If
-						End If
-					Loop
-
-					If Len(sErrorDescription) = 0 Then
-						sViewDescription = cmdGetRecordDesc.Parameters("recordDesc").Value
-					Else
-						Session("ErrorTitle") = "Login Page"
-						Session("ErrorText") =
-						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-						Response.Redirect("FormError")
-					End If
-
-					cmdGetRecordDesc = Nothing
+					Dim rowViewName = clsDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
+					sViewName = rowViewName(0).ToString()
 
 					' get the view name, and append it.
-					Dim sViewName As String
-					sViewName = ""
-					Dim cmdSSRecord = New Command
-
-					cmdSSRecord.CommandText = "SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID")
-					cmdSSRecord.ActiveConnection = Session("databaseConnection")
-
-					Dim objRs = cmdSSRecord.Execute()
-
-					Do While Not objRs.EOF
-						sViewName = CType(objRs.Fields(0).Value, String)
-						objRs.MoveNext()
-					Loop
-
-					cmdSSRecord = Nothing
-
 					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & " view - " & sViewDescription
 
 					Session("ViewDescription") = sViewDescription
