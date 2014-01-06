@@ -4,7 +4,6 @@
 	Response.Expires = -1%>
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of HR.Intranet.Server.NavLinksViewModel)" %>
 <%@Import namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server.Interfaces" %>
@@ -790,38 +789,33 @@
 												' Create the reference to the DLL
 												Dim objDiaryEvents As HR.Intranet.Server.clsDiary = New HR.Intranet.Server.clsDiary
 
-												' Pass required info to the DLL
-												objDiaryEvents.Username = CType(Session("username"), String)
-												objDiaryEvents.Connection = CType(Session("databaseConnection"), Connection)
-				
+			
 												Err.Clear()
-												Dim mrstEventData As Recordset = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
-													
-												
+												Dim mrstEventData = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
+																									
 												If (Err.Number() <> 0) Then
 													sErrorDescription = "The Event Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
 												End If
 												iRecNum = 0
 												
 												If sErrorDescription.Length = 0 Then
-													If Not (mrstEventData.EOF And mrstEventData.BOF) Then
+													If mrstEventData.Rows.Count Then
 											%>
 											<tr>
 												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Diary Links</td>
 											</tr>
-											<%       
-												Do While Not mrstEventData.EOF
+											<%    
+												For Each objRow As DataRow In mrstEventData.Rows
+													
 											%>
 											<tr>
-												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=mrstEventData.fields(3).value %></td>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=objRow(3).ToString%></td>
 											</tr>
 											<%                
-												mrstEventData.MoveNext()
 												iRecNum = iRecNum + 1
-											Loop
+											Next
 										End If
 
-										mrstEventData.close()
 									End If
 											
 									iNumberOfEvents += iRecNum
@@ -839,25 +833,22 @@
 									iRecNum = 0
 											
 									If Len(sErrorDescription) = 0 Then
-										If Not (mrstEventData.EOF And mrstEventData.BOF) Then
+										If mrstEventData.Rows.Count > 0 Then
 											%>
 											<tr>
 												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
 											</tr>
 											<%
-												
-												Do While Not mrstEventData.EOF
+												For Each objRow As DataRow In mrstEventData.Rows													
 											%>
 											<tr>
-												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=trim(mrstEventData.fields(2).value)%></td>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=Trim(objRow(2).ToString())%></td>
 											</tr>
 											<%
-												mrstEventData.movenext()
-												iRecNum = iRecNum + 1
-											Loop
+												iRecNum += 1
+											Next
 										End If
 
-										mrstEventData.close()
 
 									End If
 									
@@ -866,12 +857,8 @@
 
 									' ----------------------- TODAY'S ABSENCES -----------------------------
 									' Create the reference to the DLL
-									Dim objTodaysEvents As HR.Intranet.Server.clsTodaysAbsence = New HR.Intranet.Server.clsTodaysAbsence
+									Dim objTodaysEvents As clsTodaysAbsence = New clsTodaysAbsence
 						
-
-									' Pass required info to the DLL
-									objTodaysEvents.Username = Session("username")
-									objTodaysEvents.Connection = Session("databaseConnection")
 				
 									Err.Clear()
 									mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
@@ -882,27 +869,25 @@
 									iRecNum = 0
 											
 									If Len(sErrorDescription) = 0 Then
-										If Not (mrstEventData.EOF And mrstEventData.bof) Then
+										If mrstEventData.Rows.Count > 0 Then
 											%>
 											<tr>
 												<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Today's Absences</td>
 											</tr>
 											<%             
 												
-												Do While Not mrstEventData.EOF
+												For Each objRow As DataRow In mrstEventData.Rows
+													
 											%>
 											<tr>
-												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=trim(mrstEventData.fields(0).value) %></td>
+												<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=Trim(objRow(0).ToString)%></td>
 											</tr>
 											<%                
-												mrstEventData.movenext()
 												iRecNum = iRecNum + 1
-											Loop
+											Next
 										End If
 										iNumberOfEvents += iRecNum
-											
-										mrstEventData.close()
-																					
+																																
 									End If
 											%>
 

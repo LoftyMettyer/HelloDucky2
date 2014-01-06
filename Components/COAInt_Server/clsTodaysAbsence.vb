@@ -1,11 +1,9 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.Metadata
 
 Public Class clsTodaysAbsence
-	Private mclsData As New clsDataAccess
 
 	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
@@ -20,7 +18,7 @@ Public Class clsTodaysAbsence
 	Private mstrSQL As String
 	Private mstrAbsenceRealSource As String
 
-	Public Function GetTodaysAbsences(ByRef RecordID As Integer, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As Recordset
+	Public Function GetTodaysAbsences(ByRef RecordID As Integer, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As DataTable
 
 		Dim plngEmployeeID As Integer
 		Dim objTableView As TablePrivilege
@@ -40,8 +38,6 @@ Public Class clsTodaysAbsence
 		objTableView = Nothing
 
 		If Not pblnOK Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetTodaysAbsences. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetTodaysAbsences = ""
 			mstrErrorString = "You do not have permission to read the base table either directly or through any views."
 			Exit Function
 		End If
@@ -53,28 +49,12 @@ Public Class clsTodaysAbsence
 		If pblnOK Then pblnOK = GenerateSQLSelect()
 		If pblnOK Then pblnOK = GenerateSQLFrom(gsPersonnelTableName)
 		If pblnOK Then pblnOK = GenerateSQLJoin(glngPersonnelTableID)
-		'UPGRADE_WARNING: Couldn't resolve default property of object RecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		If pblnOK Then pblnOK = GenerateSQLWhere(glngPersonnelTableID, plngEmployeeID, RecordID)
-		'If pblnOK Then pblnOK = GenerateSQLOrderBy(lngSortOrderID, iSortDirection)
 		If pblnOK Then pblnOK = MergeSQLStrings()
 
-		GetTodaysAbsences = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
-
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-			gADOCon = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-			' Username passed in from the asp page
-			gsUsername = Value
-		End Set
-	End Property
-
 
 	Private Function GenerateSQLSelect() As Boolean
 
@@ -86,28 +66,19 @@ Public Class clsTodaysAbsence
 
 		Dim pblnOK As Boolean
 		Dim pblnColumnOK As Boolean
-		Dim iLoop1 As Short
 		Dim pblnNoSelect As Boolean
 		Dim pblnFound As Boolean
 
-		Dim pintLoop As Short
 		Dim pstrColumnList As String
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
-		Dim pintNextIndex As Short
-
-		Dim blnOK As Boolean
-		Dim sCalcCode As String
-		Dim alngSourceTables() As Integer
-		Dim objCalcExpr As clsExprExpression
+		Dim pintNextIndex As Integer
 		Dim objTableView As TablePrivilege
 		Dim pintNextColLoop As Short
 
 		' Set flags with their starting values
 		pblnOK = True
 		pblnNoSelect = False
-
-		Dim mastrUDFsRequired(0) As Object
 
 		' JPD20030219 Fault 5068
 		' Check the user has permission to read the base table.
@@ -160,9 +131,6 @@ Public Class clsTodaysAbsence
 
 				' this column can be read direct from the tbl/view or from a parent table
 				pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, " + ' ' + ", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
-
-
-
 
 				' If the table isnt the base table (or its realsource) then
 				' Check if it has already been added to the array. If not, add it.
@@ -293,23 +261,7 @@ GenerateSQLSelect_ERROR:
 		On Error GoTo GenerateSQLJoin_ERROR
 
 		Dim pobjTableView As TablePrivilege
-		Dim objChildTable As TablePrivilege
-		Dim pintLoop As Short
-		Dim sChildJoinCode As String
-		Dim sReuseJoinCode As String
-		Dim sChildOrderString As String
-		Dim rsTemp As ADODB.Recordset
-		Dim strFilterIDs As String
-		Dim blnOK As Boolean
-		Dim pblnChildUsed As Boolean
-		Dim sChildJoin As String
-		Dim lngTempChildID As Integer
-		Dim lngTempMaxRecords As Integer
-		Dim lngTempFilterID As Integer
-		Dim lngTempOrderID As Integer
-		Dim i As Short
-		Dim sOtherParentJoinCode As String
-		Dim iLoop2 As Short
+		Dim pintLoop As Integer
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom
@@ -336,26 +288,15 @@ GenerateSQLSelect_ERROR:
 
 		Next pintLoop
 
-		' NPG20110126 Fault HRPRO-
-
-		'  If pobjTableView Is Nothing Then
-		' Full table access
 		' Append the absence table
 		mstrSQLJoin = mstrSQLJoin & " JOIN " & mstrAbsenceRealSource & " ON " & mstrAbsenceRealSource & ".ID_" & CStr(glngPersonnelTableID) & " = " & mstrBaseTableRealSource & ".ID"
-		'  Else
-		'    ' Append the absence table
-		'    mstrSQLJoin = mstrSQLJoin & _
-		''    " JOIN " & mstrAbsenceRealSource & _
-		''    " ON " & mstrAbsenceRealSource & ".ID_" & CStr(glngPersonnelTableID) & " = " & pobjTableView.RealSource & ".ID"
-		'  End If
 
-		GenerateSQLJoin = True
-		Exit Function
+		Return True
 
 GenerateSQLJoin_ERROR:
 
-		GenerateSQLJoin = False
 		mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
+		Return False
 
 	End Function
 
@@ -399,28 +340,16 @@ GenerateSQLJoin_ERROR:
 
 		mstrSQLWhere = mstrSQLWhere & pstrSQL
 
-		GenerateSQLWhere = True
-		Exit Function
-
-GenerateSQLWhere_ERROR:
-
-		GenerateSQLWhere = False
-		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
 	Private Function MergeSQLStrings() As Boolean
-		Dim pstrAggregate As String
-
-		On Error GoTo MergeSQLStrings_ERROR
 
 		mstrSQL = "SELECT DISTINCT " & mstrSQLString & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " ORDER BY 1"
 
-		MergeSQLStrings = True
-		Exit Function
+		Return True
 
-MergeSQLStrings_ERROR:
-		MergeSQLStrings = False
 
 	End Function
 End Class
