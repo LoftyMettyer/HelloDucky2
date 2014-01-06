@@ -2830,7 +2830,6 @@ Namespace Controllers
 
 
 			Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
-			objNavigation.Connection = Session("databaseConnection")
 			objNavigation.ClearLinks()
 
 			objNavigation.SSITableID = Session("SSILinkTableID")

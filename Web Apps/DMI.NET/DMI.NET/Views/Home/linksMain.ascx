@@ -208,7 +208,6 @@
 					Next
 								
 					Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
-					objNavigation.Connection = Session("databaseConnection")
 								
 					' Get the navigation hypertext links.
 							

@@ -4,6 +4,7 @@ Option Explicit On
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports System.Data.SqlClient
 
 Public Class clsNavigationLinks
 
@@ -32,14 +33,6 @@ Public Class clsNavigationLinks
 		End Set
 	End Property
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
-
-			gADOCon = Value
-
-		End Set
-	End Property
-
 	Public Sub ClearLinks()
 
 		'UPGRADE_NOTE: Object gcolLinks may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -52,143 +45,137 @@ Public Class clsNavigationLinks
 	' Loads all of the links and documents for this user session
 	Public Sub LoadLinks()
 
-		Dim rsLinks As ADODB.Recordset
-		Dim sSQL As String
-		Dim objLink As Link
-
 		If Not gcolLinks Is Nothing Then
 			Exit Sub
 		End If
 
+		Dim objLink As Link
 		gcolLinks = New List(Of Link)
 
-		sSQL = "EXEC spASRIntGetLinks " & mlngSSITableID & ", " & mlngSSIViewID
-		rsLinks = New ADODB.Recordset
-		rsLinks.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+		Dim prmTableID = New SqlParameter("plngTableID", SqlDbType.Int)
+		Dim prmViewID = New SqlParameter("plngViewID", SqlDbType.Int)
 
-		With rsLinks
-			Do While Not (.EOF Or .BOF)
+		prmTableID.Value = mlngSSITableID
+		prmViewID.Value = mlngSSIViewID
+
+		Using rsLinks = clsDataAccess.GetDataTable("spASRIntGetLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
+
+			For Each objRow As DataRow In rsLinks.Rows
+
 				objLink = New Link
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.BaseTableID = IIf(Not IsDBNull(.Fields("BaseTable").Value), .Fields("BaseTable").Value, 0)
-				objLink.ID = .Fields("ID").Value
-				objLink.DrillDownHidden = .Fields("DrillDownHidden").Value
-				objLink.LinkOrder = .Fields("LinkOrder").Value
-				objLink.LinkType = .Fields("LinkType").Value
-				objLink.NewWindow = .Fields("NewWindow").Value
-				objLink.PageTitle = .Fields("PageTitle").Value
-				objLink.Prompt = .Fields("Prompt").Value
-				objLink.ScreenID = .Fields("ScreenID").Value
-				objLink.Text = .Fields("Text").Value
-				objLink.URL = .Fields("URL").Value
-				objLink.UtilityID = .Fields("UtilityID").Value
-				objLink.UtilityType = .Fields("UtilityType").Value
-				objLink.EmailAddress = .Fields("EmailAddress").Value
-				objLink.EmailSubject = .Fields("EmailSubject").Value
+				objLink.BaseTableID = IIf(Not IsDBNull(objRow("BaseTable")), objRow("BaseTable"), 0)
+				objLink.ID = CInt(objRow("ID"))
+				objLink.DrillDownHidden = CBool(objRow("DrillDownHidden"))
+				objLink.LinkOrder = CShort(objRow("LinkOrder"))
+				objLink.LinkType = CShort(objRow("LinkType"))
+				objLink.NewWindow = CBool(objRow("NewWindow"))
+				objLink.PageTitle = objRow("PageTitle").ToString()
+				objLink.Prompt = objRow("Prompt").ToString()
+				objLink.ScreenID = CInt(objRow("ScreenID"))
+				objLink.Text = objRow("Text").ToString()
+				objLink.URL = objRow("URL").ToString()
+				objLink.UtilityID = CInt(objRow("UtilityID"))
+				objLink.UtilityType = CShort(objRow("UtilityType"))
+				objLink.EmailAddress = objRow("EmailAddress").ToString()
+				objLink.EmailSubject = objRow("EmailSubject").ToString()
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.AppFilePath = IIf(IsDBNull(.Fields("AppFilePath").Value), "", .Fields("AppFilePath").Value)
+				objLink.AppFilePath = IIf(IsDBNull(objRow("AppFilePath")), "", objRow("AppFilePath"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.AppParameters = IIf(IsDBNull(.Fields("AppParameters").Value), "", .Fields("AppParameters").Value)
+				objLink.AppParameters = IIf(IsDBNull(objRow("AppParameters")), "", objRow("AppParameters"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.DocumentFilePath = IIf(IsDBNull(.Fields("DocumentFilePath").Value), "", .Fields("DocumentFilePath").Value)
+				objLink.DocumentFilePath = IIf(IsDBNull(objRow("DocumentFilePath")), "", objRow("DocumentFilePath"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.DisplayDocumentHyperlink = IIf(IsDBNull(.Fields("DisplayDocumentHyperlink").Value), False, .Fields("DisplayDocumentHyperlink").Value)
-				' objLink.IsSeparator = IIf(IsNull(.Fields("IsSeparator").Value), False, .Fields("IsSeparator").Value)
+				objLink.DisplayDocumentHyperlink = IIf(IsDBNull(objRow("DisplayDocumentHyperlink")), False, objRow("DisplayDocumentHyperlink"))
+				' objLink.IsSeparator = IIf(IsNull(objRow("IsSeparator")), False, objRow("IsSeparator"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.SeparatorOrientation = IIf(IsDBNull(.Fields("SeparatorOrientation").Value), 0, .Fields("SeparatorOrientation").Value)
+				objLink.SeparatorOrientation = IIf(IsDBNull(objRow("SeparatorOrientation")), 0, objRow("SeparatorOrientation"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.PictureID = IIf(IsDBNull(.Fields("PictureID").Value), 0, .Fields("PictureID").Value)
+				objLink.PictureID = IIf(IsDBNull(objRow("PictureID")), 0, objRow("PictureID"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ShowLegend = IIf(IsDBNull(.Fields("Chart_ShowLegend").Value), False, .Fields("Chart_ShowLegend").Value)
-				objLink.Chart_Type = .Fields("Chart_Type").Value
+				objLink.Chart_ShowLegend = IIf(IsDBNull(objRow("Chart_ShowLegend")), False, objRow("Chart_ShowLegend"))
+				objLink.Chart_Type = objRow("Chart_Type")
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ShowGrid = IIf(IsDBNull(.Fields("Chart_ShowGrid").Value), False, .Fields("Chart_ShowGrid").Value)
+				objLink.Chart_ShowGrid = IIf(IsDBNull(objRow("Chart_ShowGrid")), False, objRow("Chart_ShowGrid"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_StackSeries = IIf(IsDBNull(.Fields("Chart_StackSeries").Value), False, .Fields("Chart_StackSeries").Value)
-				objLink.Chart_ViewID = .Fields("Chart_ViewID").Value
-				objLink.Chart_TableID = .Fields("Chart_TableID").Value
-				objLink.Chart_ColumnID = .Fields("Chart_ColumnID").Value
-				objLink.Chart_FilterID = .Fields("Chart_FilterID").Value
-				objLink.Chart_AggregateType = .Fields("Chart_AggregateType").Value
-				objLink.Element_Type = .Fields("Element_Type").Value
+				objLink.Chart_StackSeries = IIf(IsDBNull(objRow("Chart_StackSeries")), False, objRow("Chart_StackSeries"))
+				objLink.Chart_ViewID = CInt(objRow("Chart_ViewID"))
+				objLink.Chart_TableID = CInt(objRow("Chart_TableID"))
+				objLink.Chart_ColumnID = CInt(objRow("Chart_ColumnID"))
+				objLink.Chart_FilterID = CInt(objRow("Chart_FilterID"))
+				objLink.Chart_AggregateType = objRow("Chart_AggregateType")
+				objLink.Element_Type = objRow("Element_Type")
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ShowValues = IIf(IsDBNull(.Fields("Chart_ShowValues").Value), False, .Fields("Chart_ShowValues").Value)
+				objLink.Chart_ShowValues = IIf(IsDBNull(objRow("Chart_ShowValues")), False, objRow("Chart_ShowValues"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.UseFormatting = IIf(IsDBNull(.Fields("UseFormatting").Value), False, .Fields("UseFormatting").Value)
-				objLink.Formatting_DecimalPlaces = .Fields("Formatting_DecimalPlaces").Value
+				objLink.UseFormatting = IIf(IsDBNull(objRow("UseFormatting")), False, objRow("UseFormatting"))
+				objLink.Formatting_DecimalPlaces = objRow("Formatting_DecimalPlaces")
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Formatting_Use1000Separator = IIf(IsDBNull(.Fields("Formatting_Use1000Separator").Value), False, .Fields("Formatting_Use1000Separator").Value)
+				objLink.Formatting_Use1000Separator = IIf(IsDBNull(objRow("Formatting_Use1000Separator")), False, objRow("Formatting_Use1000Separator"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Formatting_Prefix = IIf(IsDBNull(.Fields("Formatting_Prefix").Value), "", .Fields("Formatting_Prefix").Value)
+				objLink.Formatting_Prefix = IIf(IsDBNull(objRow("Formatting_Prefix")), "", objRow("Formatting_Prefix"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Formatting_Suffix = IIf(IsDBNull(.Fields("Formatting_Suffix").Value), "", .Fields("Formatting_Suffix").Value)
+				objLink.Formatting_Suffix = IIf(IsDBNull(objRow("Formatting_Suffix")), "", objRow("Formatting_Suffix"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.UseConditionalFormatting = IIf(IsDBNull(.Fields("UseConditionalFormatting").Value), False, .Fields("UseConditionalFormatting").Value)
+				objLink.UseConditionalFormatting = IIf(IsDBNull(objRow("UseConditionalFormatting")), False, objRow("UseConditionalFormatting"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Operator_1 = IIf(IsDBNull(.Fields("ConditionalFormatting_Operator_1").Value), "", .Fields("ConditionalFormatting_Operator_1").Value)
+				objLink.ConditionalFormatting_Operator_1 = IIf(IsDBNull(objRow("ConditionalFormatting_Operator_1")), "", objRow("ConditionalFormatting_Operator_1"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Value_1 = IIf(IsDBNull(.Fields("ConditionalFormatting_Value_1").Value), "", .Fields("ConditionalFormatting_Value_1").Value)
+				objLink.ConditionalFormatting_Value_1 = IIf(IsDBNull(objRow("ConditionalFormatting_Value_1")), "", objRow("ConditionalFormatting_Value_1"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Style_1 = IIf(IsDBNull(.Fields("ConditionalFormatting_Style_1").Value), "", .Fields("ConditionalFormatting_Style_1").Value)
+				objLink.ConditionalFormatting_Style_1 = IIf(IsDBNull(objRow("ConditionalFormatting_Style_1")), "", objRow("ConditionalFormatting_Style_1"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Colour_1 = IIf(IsDBNull(.Fields("ConditionalFormatting_Colour_1").Value), "", .Fields("ConditionalFormatting_Colour_1").Value)
+				objLink.ConditionalFormatting_Colour_1 = IIf(IsDBNull(objRow("ConditionalFormatting_Colour_1")), "", objRow("ConditionalFormatting_Colour_1"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Operator_2 = IIf(IsDBNull(.Fields("ConditionalFormatting_Operator_2").Value), "", .Fields("ConditionalFormatting_Operator_2").Value)
+				objLink.ConditionalFormatting_Operator_2 = IIf(IsDBNull(objRow("ConditionalFormatting_Operator_2")), "", objRow("ConditionalFormatting_Operator_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Value_2 = IIf(IsDBNull(.Fields("ConditionalFormatting_Value_2").Value), "", .Fields("ConditionalFormatting_Value_2").Value)
+				objLink.ConditionalFormatting_Value_2 = IIf(IsDBNull(objRow("ConditionalFormatting_Value_2")), "", objRow("ConditionalFormatting_Value_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Style_2 = IIf(IsDBNull(.Fields("ConditionalFormatting_Style_2").Value), "", .Fields("ConditionalFormatting_Style_2").Value)
+				objLink.ConditionalFormatting_Style_2 = IIf(IsDBNull(objRow("ConditionalFormatting_Style_2")), "", objRow("ConditionalFormatting_Style_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Colour_2 = IIf(IsDBNull(.Fields("ConditionalFormatting_Colour_2").Value), "", .Fields("ConditionalFormatting_Colour_2").Value)
+				objLink.ConditionalFormatting_Colour_2 = IIf(IsDBNull(objRow("ConditionalFormatting_Colour_2")), "", objRow("ConditionalFormatting_Colour_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Operator_3 = IIf(IsDBNull(.Fields("ConditionalFormatting_Operator_3").Value), "", .Fields("ConditionalFormatting_Operator_3").Value)
+				objLink.ConditionalFormatting_Operator_3 = IIf(IsDBNull(objRow("ConditionalFormatting_Operator_3")), "", objRow("ConditionalFormatting_Operator_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Value_3 = IIf(IsDBNull(.Fields("ConditionalFormatting_Value_3").Value), "", .Fields("ConditionalFormatting_Value_3").Value)
+				objLink.ConditionalFormatting_Value_3 = IIf(IsDBNull(objRow("ConditionalFormatting_Value_3")), "", objRow("ConditionalFormatting_Value_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Style_3 = IIf(IsDBNull(.Fields("ConditionalFormatting_Style_3").Value), "", .Fields("ConditionalFormatting_Style_3").Value)
+				objLink.ConditionalFormatting_Style_3 = IIf(IsDBNull(objRow("ConditionalFormatting_Style_3")), "", objRow("ConditionalFormatting_Style_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.ConditionalFormatting_Colour_3 = IIf(IsDBNull(.Fields("ConditionalFormatting_Colour_3").Value), "", .Fields("ConditionalFormatting_Colour_3").Value)
+				objLink.ConditionalFormatting_Colour_3 = IIf(IsDBNull(objRow("ConditionalFormatting_Colour_3")), "", objRow("ConditionalFormatting_Colour_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.SeparatorColour = IIf(IsDBNull(.Fields("SeparatorColour").Value), "", .Fields("SeparatorColour").Value)
+				objLink.SeparatorColour = IIf(IsDBNull(objRow("SeparatorColour")), "", objRow("SeparatorColour"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColumnName = IIf(IsDBNull(.Fields("Chart_ColumnName").Value), "", .Fields("Chart_ColumnName").Value)
+				objLink.Chart_ColumnName = IIf(IsDBNull(objRow("Chart_ColumnName")), "", objRow("Chart_ColumnName"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColumnName_2 = datGeneral.GetColumnName(CInt(IIf(IsDBNull(.Fields("Chart_ColumnID_2").Value), 0, .Fields("Chart_ColumnID_2").Value)))
+				objLink.Chart_ColumnName_2 = datGeneral.GetColumnName(CInt(IIf(IsDBNull(objRow("Chart_ColumnID_2")), 0, objRow("Chart_ColumnID_2"))))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.InitialDisplayMode = IIf(IsDBNull(.Fields("InitialDisplayMode").Value), 0, .Fields("InitialDisplayMode").Value)
+				objLink.InitialDisplayMode = IIf(IsDBNull(objRow("InitialDisplayMode")), 0, objRow("InitialDisplayMode"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_TableID_2 = IIf(IsDBNull(.Fields("Chart_TableID_2").Value), 0, .Fields("Chart_TableID_2").Value)
+				objLink.Chart_TableID_2 = IIf(IsDBNull(objRow("Chart_TableID_2")), 0, objRow("Chart_TableID_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColumnID_2 = IIf(IsDBNull(.Fields("Chart_ColumnID_2").Value), 0, .Fields("Chart_ColumnID_2").Value)
+				objLink.Chart_ColumnID_2 = IIf(IsDBNull(objRow("Chart_ColumnID_2")), 0, objRow("Chart_ColumnID_2"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_TableID_3 = IIf(IsDBNull(.Fields("Chart_TableID_3").Value), 0, .Fields("Chart_TableID_3").Value)
+				objLink.Chart_TableID_3 = IIf(IsDBNull(objRow("Chart_TableID_3")), 0, objRow("Chart_TableID_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColumnID_3 = IIf(IsDBNull(.Fields("Chart_ColumnID_3").Value), 0, .Fields("Chart_ColumnID_3").Value)
+				objLink.Chart_ColumnID_3 = IIf(IsDBNull(objRow("Chart_ColumnID_3")), 0, objRow("Chart_ColumnID_3"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_SortOrderID = IIf(IsDBNull(.Fields("Chart_SortOrderID").Value), 0, .Fields("Chart_SortOrderID").Value)
+				objLink.Chart_SortOrderID = IIf(IsDBNull(objRow("Chart_SortOrderID")), 0, objRow("Chart_SortOrderID"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_SortDirection = IIf(IsDBNull(.Fields("Chart_SortDirection").Value), 0, .Fields("Chart_SortDirection").Value)
+				objLink.Chart_SortDirection = IIf(IsDBNull(objRow("Chart_SortDirection")), 0, objRow("Chart_SortDirection"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColourID = IIf(IsDBNull(.Fields("Chart_ColourID").Value), 0, .Fields("Chart_ColourID").Value)
+				objLink.Chart_ColourID = IIf(IsDBNull(objRow("Chart_ColourID")), 0, objRow("Chart_ColourID"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ShowPercentages = IIf(IsDBNull(.Fields("Chart_ShowPercentages").Value), False, .Fields("Chart_ShowPercentages").Value)
+				objLink.Chart_ShowPercentages = IIf(IsDBNull(objRow("Chart_ShowPercentages")), False, objRow("Chart_ShowPercentages"))
 				gcolLinks.Add(objLink)
-				.MoveNext()
-			Loop
-		End With
+			Next
 
-		rsLinks.Close()
-		'UPGRADE_NOTE: Object rsLinks may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsLinks = Nothing
-
+		End Using
 	End Sub
 
 	' Loads all of the navigation links for this user session
 	Public Sub LoadNavigationLinks()
 
-		Dim rsLinks As ADODB.Recordset
-		Dim sSQL As String
 		Dim objLink As Link
 
 		If Not gcolNavigationLinks Is Nothing Then
@@ -197,32 +184,30 @@ Public Class clsNavigationLinks
 
 		gcolNavigationLinks = New List(Of Link)
 
-		sSQL = "EXEC spASRIntGetNavigationLinks " & mlngSSITableID & ", " & mlngSSIViewID
-		rsLinks = New ADODB.Recordset
-		rsLinks.Open(sSQL, gADOCon, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+		Dim prmTableID = New SqlParameter("plngTableID", SqlDbType.Int)
+		Dim prmViewID = New SqlParameter("plngViewID", SqlDbType.Int)
 
-		With rsLinks
-			Do While Not (.EOF Or .BOF)
+		prmTableID.Value = mlngSSITableID
+		prmViewID.Value = mlngSSIViewID
+
+		Using rsLinks = clsDataAccess.GetDataTable("spASRIntGetNavigationLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
+
+			For Each objRow As DataRow In rsLinks.Rows
 				objLink = New Link
-
-				objLink.LinkType = .Fields("LinkType").Value
-				objLink.Text1 = .Fields("Text1").Value
-				objLink.Text2 = .Fields("Text2").Value
-				objLink.SingleRecord = .Fields("SingleRecord").Value
-				objLink.LinkToFind = .Fields("LinkToFind").Value
-				objLink.TableID = .Fields("TableID").Value
-				objLink.ViewID = .Fields("ViewID").Value
-				objLink.PrimarySequence = .Fields("PrimarySequence").Value
-				objLink.SecondarySequence = .Fields("SecondarySequence").Value
-				objLink.FindPage = .Fields("FindPage").Value
+				objLink.LinkType = CShort(objRow("LinkType"))
+				objLink.Text1 = objRow("Text1").ToString()
+				objLink.Text2 = objRow("Text2").ToString()
+				objLink.SingleRecord = CShort(objRow("SingleRecord"))
+				objLink.LinkToFind = CShort(objRow("LinkToFind"))
+				objLink.TableID = CInt(objRow("TableID"))
+				objLink.ViewID = CInt(objRow("ViewID"))
+				objLink.PrimarySequence = CShort(objRow("PrimarySequence"))
+				objLink.SecondarySequence = CShort(objRow("SecondarySequence"))
+				objLink.FindPage = CShort(objRow("FindPage"))
 				gcolNavigationLinks.Add(objLink)
-				.MoveNext()
-			Loop
-		End With
 
-		rsLinks.Close()
-		'UPGRADE_NOTE: Object rsLinks may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsLinks = Nothing
+			Next
+		End Using
 
 	End Sub
 
