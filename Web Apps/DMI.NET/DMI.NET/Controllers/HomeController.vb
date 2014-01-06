@@ -2,14 +2,11 @@
 Imports System.Web.UI.DataVisualization.Charting
 Imports System.IO
 Imports System.Web
-Imports System.Web.Services.Description
 Imports ADODB
 Imports System.Drawing
 Imports DMI.NET.Code
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
-Imports System.Web.Script.Serialization
-Imports DMI.NET.Models.OrgChart
 Imports DMI.NET.Models
 Imports System.Data.SqlClient
 
@@ -2938,12 +2935,12 @@ Namespace Controllers
 
 			Err.Clear()
 
-			Dim mrstChartData As Recordset
+			Dim mrstChartData As DataTable
 			Dim sErrorDescription As String
 
 			Dim objChart = New HR.Intranet.Server.clsChart
 
-			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, sortOrderID, sortDirection, colourID)
+			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, 0, 0, 0, 0, sortOrderID, sortDirection, colourID)
 
 			If Err.Number <> 0 Then
 				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -2952,15 +2949,16 @@ Namespace Controllers
 			End If
 
 			If Not mrstChartData Is Nothing Then
-				If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+				If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
 			End If
 
 			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
 
-				If Not (mrstChartData.EOF And mrstChartData.BOF) Then
-					mrstChartData.MoveFirst()
-					If mrstChartData.Fields(0).Value.ToString() <> "No Access" Then
-						If mrstChartData.Fields(0).Value.ToString() <> "No Data" Then
+				If mrstChartData.Rows.Count > 0 Then
+					Dim objRow1 = mrstChartData.Rows(0)
+
+					If objRow1(0).ToString() <> "No Access" Then
+						If objRow1(0).ToString() <> "No Data" Then
 
 							Dim chart1 As New Chart()
 
@@ -3065,14 +3063,13 @@ Namespace Controllers
 
 							End Select
 
-							Do While Not mrstChartData.EOF
-								If mrstChartData.Fields(0).Value.ToString() <> "No Access" And mrstChartData.Fields(0).Value.ToString() <> "No Data" Then
+							For Each objRow As DataRow In mrstChartData.Rows
+								If objRow(0).ToString() <> "No Access" And objRow(0).ToString() <> "No Data" Then
 
-									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = mrstChartData.Fields(0).Value, .YValues = New Double() {mrstChartData.Fields(1).Value}})
+									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}})
 
 								End If
-								mrstChartData.MoveNext()
-							Loop
+							Next
 
 							Using ms = New MemoryStream()
 								chart1.SaveImage(ms, ChartImageFormat.Png)
@@ -3118,7 +3115,7 @@ Namespace Controllers
 
 			Err.Clear()
 
-			Dim mrstChartData As Recordset
+			Dim mrstChartData As DataTable
 			Dim sErrorDescription As String
 
 			Dim objChart = New HR.Intranet.Server.clsMultiAxisChart
@@ -3136,16 +3133,18 @@ Namespace Controllers
 			End If
 
 			If Not mrstChartData Is Nothing Then
-				If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+				If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
 			End If
 
 			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
 				Dim seriesName As String
 
-				If Not (mrstChartData.EOF And mrstChartData.BOF) Then
-					mrstChartData.MoveFirst()
-					If TryCast(mrstChartData.Fields(0).Value, String) <> "No Access" Then
-						If TryCast(mrstChartData.Fields(0).Value, String) <> "No Data" Then
+				If mrstChartData.Rows.Count > 0 Then
+
+					Dim objRow1 = mrstChartData.Rows(0)
+
+					If TryCast(objRow1(0), String) <> "No Access" Then
+						If TryCast(objRow1(0), String) <> "No Data" Then
 
 							Dim chart1 As New Chart()
 
@@ -3209,12 +3208,13 @@ Namespace Controllers
 
 							Dim seriesNames As String = ""
 
-							Do While Not mrstChartData.EOF
-								If TryCast(mrstChartData.Fields(0).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(0).Value, String) <> "No Data" Then
+							For Each objRow As DataRow In mrstChartData.Rows
 
-									seriesName = mrstChartData.Fields(2).Value.ToString()
-									Dim columnName As String = mrstChartData.Fields(1).Value.ToString()
-									Dim yVal As Integer = CInt(mrstChartData.Fields(4).Value)
+								If TryCast(objRow(0), String) <> "No Access" And TryCast(objRow(0), String) <> "No Data" Then
+
+									seriesName = objRow(2).ToString()
+									Dim columnName As String = objRow(1).ToString()
+									Dim yVal As Integer = CInt(objRow(4))
 
 									If Not seriesNames.Contains("<" & seriesName & ">") Then
 										' Add the series - ONLY if not already added.
@@ -3258,9 +3258,8 @@ Namespace Controllers
 									chart1.Series(seriesName).Points.AddXY(columnName, yVal)
 
 								End If
-								mrstChartData.MoveNext()
 
-							Loop
+							Next
 
 							chart1.ApplyPaletteColors()
 
@@ -3501,13 +3500,6 @@ Namespace Controllers
 			strEmailSubject = objReport.OutputEmailSubject
 			strEmailAttachAs = objReport.OutputEmailAttachAs
 			strFileName = objReport.OutputFilename
-
-			Dim cmdEmailAddr As Command
-			Dim prmEmailGroupID As ADODB.Parameter
-			Dim rstEmailAddr As Recordset
-			Dim sErrorDescription As String = ""
-			Dim iLoop As Integer
-			Dim sEmailAddresses As String = ""
 
 			'If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
 

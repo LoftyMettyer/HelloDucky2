@@ -1,11 +1,12 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Interfaces
 
 Public Class clsMultiAxisChart
+	Implements IChart
 
 	Private mastrUDFsRequired() As String
 	Private mvarPrompts() As Object
@@ -37,16 +38,14 @@ Public Class clsMultiAxisChart
 	Private mlngBaseTableID As Integer
 	Private mstrBaseTableName As String
 
-	' Recordset to store the final data from SQL
-	'Private mrstChartDataOutput As New adodb.Recordset
-
 	' Recordset to store legend data from sQL
-	Private mrstChartLegendData As New Recordset
+	Private mrstChartLegendData As New DataTable
 
 	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
-															 ByRef piAggregateType As Long, ByRef piElementType As ElementType, ByRef plngTableID_2 As Long,
-															 ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
-															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
+															 ByRef piAggregateType As Long, ByRef piElementType As ElementType,
+															 ByRef plngTableID_2 As Long, ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
+															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As DataTable Implements IChart.GetChartData
+
 
 		Dim fOK As Boolean
 		Dim strTableName As String
@@ -150,7 +149,7 @@ Public Class clsMultiAxisChart
 		End If
 
 		' Execute the SQL and store in recordset
-		Return mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
 
@@ -172,44 +171,36 @@ Public Class clsMultiAxisChart
 			pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectVerticalID & ") AS [VERTICAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " ORDER BY 1 "
 
 			' Execute the SQL and store in recordset
-			mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			mrstChartLegendData = clsDataAccess.GetDataTable(pstrSQL, CommandType.Text)
 			pstrCaseStatements = ""
 
 			' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.
-			If mrstChartLegendData.BOF And mrstChartLegendData.EOF Then
+			If mrstChartLegendData.Rows.Count = 0 Then
 				mstrErrorString = "No Data"
 				Return False
 			End If
 
+			piCount = 1
+			pfNullFlag = False
 
-			With mrstChartLegendData
-				piCount = 1
-				.MoveFirst()
+			For Each objRow As DataRow In mrstChartLegendData.Rows
 
-				' Fault HRPRO-1354
-				' Null flag is set to true if the dataset has a null value in it. This will add an 'ELSE' clause to the 'WHEN'.
-				pfNullFlag = False
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If IsDBNull(objRow("VERTICAL_ID")) Then
+					' set the flag and store the value
+					pfNullFlag = True
+					piNull_ID = piCount
+				Else
+					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID"))
+					pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
 
-				' loop through
-				Do Until .EOF
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(.Fields("VERTICAL_ID").Value) Then
-						' set the flag and store the value
-						pfNullFlag = True
-						piNull_ID = piCount
-					Else
-						pstrVerticalIDColumn = Trim(.Fields("VERTICAL_ID").Value)
-						pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
-
-						If mclsGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
-							pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
-						End If
-						pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'") & " THEN " & CStr(piCount)
+					If mclsGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+						pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 					End If
-					piCount = piCount + 1
-					.MoveNext()
-				Loop
-			End With
+					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'") & " THEN " & CStr(piCount)
+				End If
+				piCount = piCount + 1
+			Next
 
 			' append the 'end' statement (and 'ELSE' statement if required)
 			If pfNullFlag = True And piNull_ID > 0 Then
@@ -248,43 +239,37 @@ SQLSelectVerticalID_ERROR:
 		pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectHorizontalID & ") AS [HORIZONTAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & pstrSQLOrderBy
 
 		' Execute the SQL and store in recordset
-		mrstChartLegendData = mclsData.OpenRecordset(pstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		mrstChartLegendData = clsDataAccess.GetDataTable(pstrSQL, CommandType.Text)
 		pstrCaseStatements = ""
 
 		' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.
-		If mrstChartLegendData.BOF And mrstChartLegendData.EOF Then
+		If mrstChartLegendData.Rows.Count = 0 Then
 			mstrErrorString = "No Data"
 			Exit Function
 		End If
 
-		With mrstChartLegendData
-			piCount = 1
-			.MoveFirst()
+		piCount = 1
+		pfNullFlag = False
 
-			' Fault HRPRO-1354
-			' Null flag is set to true if the dataset has a null value in it. This will add an 'ELSE' clause to the 'WHEN'.
-			pfNullFlag = False
+		' loop through
+		For Each objRow As DataRow In mrstChartLegendData.Rows
 
-			' loop through
-			Do Until .EOF
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(.Fields("HORIZONTAL_ID").Value) Then
-					' set the flag and store the value
-					pfNullFlag = True
-					piNull_ID = piCount
-				Else
-					pstrHorizontalIDColumn = Trim(.Fields("HORIZONTAL_ID").Value)
-					pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			If IsDBNull(objRow("HORIZONTAL_ID")) Then
+				' set the flag and store the value
+				pfNullFlag = True
+				piNull_ID = piCount
+			Else
+				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID"))
+				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
-					If mclsGeneral.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
-						pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
-					End If
-					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'") & " THEN " & CStr(piCount)
+				If mclsGeneral.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
+					pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 				End If
-				piCount = piCount + 1
-				.MoveNext()
-			Loop
-		End With
+				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'") & " THEN " & CStr(piCount)
+			End If
+			piCount += 1
+		Next
 
 		' append the 'end' statement (and 'ELSE' statement if required)
 		If pfNullFlag = True And piNull_ID > 0 Then
@@ -727,23 +712,7 @@ GenerateSQLFrom_ERROR:
 		On Error GoTo GenerateSQLJoin_ERROR
 
 		Dim pobjTableView As TablePrivilege
-		Dim objChildTable As TablePrivilege
 		Dim pintLoop As Short
-		Dim sChildJoinCode As String
-		Dim sReuseJoinCode As String
-		Dim sChildOrderString As String
-		Dim rsTemp As ADODB.Recordset
-		Dim strFilterIDs As String
-		Dim blnOK As Boolean
-		Dim pblnChildUsed As Boolean
-		Dim sChildJoin As String
-		Dim lngTempChildID As Integer
-		Dim lngTempMaxRecords As Integer
-		Dim lngTempFilterID As Integer
-		Dim lngTempOrderID As Integer
-		Dim i As Short
-		Dim sOtherParentJoinCode As String
-		Dim iLoop2 As Short
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom
@@ -934,13 +903,8 @@ GenerateSQLJoin_ERROR:
 
 		Dim pintLoop As Short
 		Dim pobjTableView As TablePrivilege
-		Dim prstTemp As New ADODB.Recordset
-		Dim pstrPickListIDs As String
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
-		Dim objExpr As clsExprExpression
-		Dim pstrParent1PickListIDs As String
-		Dim pstrParent2PickListIDs As String
 
 		pobjTableView = gcoTablePrivileges.FindTableID(lngTableID)
 		If pobjTableView.AllowSelect = False Then
@@ -985,11 +949,7 @@ GenerateSQLJoin_ERROR:
 			End If
 		End If
 
-		'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstTemp = Nothing
-
-		GenerateSQLWhere = True
-		Exit Function
+		Return True
 
 GenerateSQLWhere_ERROR:
 
@@ -1065,4 +1025,5 @@ GenerateSQLWhere_ERROR:
 		ReverseDateTextField = Mid(pDateValue, InStrRev(pDateValue, "/") + 1, 4) & "/" & Mid(pDateValue, InStr(pDateValue, "/") + 1, 2) & "/" & Left(pDateValue, 2)
 
 	End Function
+
 End Class

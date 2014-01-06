@@ -45,7 +45,7 @@ Namespace Controllers
 							If collectionItem.ID = widgetID Then
 
 								' sDBValue = DBValue(dbConn, 1, 163, 16771, 1, 4, 0, 0, 0)
-								sDBValue = DBValue(dbConn, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID,
+								sDBValue = DBValue(collectionItem.Chart_TableID, collectionItem.Chart_ColumnID,
 								 collectionItem.Chart_FilterID,
 								 collectionItem.Chart_AggregateType, collectionItem.Element_Type,
 								 collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection,
@@ -92,8 +92,7 @@ Namespace Controllers
 			Return (From collectionItem As Object In objButtonInfo Select New navigationLinks(collectionItem.linkType, collectionItem.linkOrder, collectionItem.prompt, collectionItem.text, collectionItem.element_Type, collectionItem.ID)).ToList()
 		End Function
 
-		Function DBValue(dbConn As Object,
-		 iChartTableID As Long,
+		Function DBValue(iChartTableID As Long,
 		 iChartColumnID As Long,
 		 iChartFilterID As Long,
 		 iChartAggregateType As Long,
@@ -107,10 +106,10 @@ Namespace Controllers
 			' reset the globals
 			objChart.resetGlobals()
 
-			Dim mrstDBValueData
+			Dim mrstDBValueData As DataTable
 
 			mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,
-				iChartElementType, iChartSortOrderID, iChartSortDirection, iChartColourID)
+				iChartElementType, 0, 0, 0, 0, iChartSortOrderID, iChartSortDirection, iChartColourID)
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -121,15 +120,12 @@ Namespace Controllers
 
 			If Len(Session("ErrorTitle")) = 0 Then
 				Try
-					If Not (mrstDBValueData.EOF And mrstDBValueData.bof) Then
-						Dim iRecNum = 1
-						Do While Not mrstDBValueData.EOF
-							sText = mrstDBValueData.fields(0).value
-							mrstDBValueData.movenext()
-							iRecNum = iRecNum + 1
-						Loop
-						mrstDBValueData.close()
-						'mrstDBValueData = Nothing
+
+					If mrstDBValueData.Rows.Count > 0 Then
+						For Each objRow As DataRow In mrstDBValueData.Rows
+							sText = objRow(0).ToString()
+						Next
+
 					Else ' no results - return zero
 						sText = "No Data"
 					End If
@@ -137,9 +133,7 @@ Namespace Controllers
 					sText = "No Data"
 				End Try
 
-
 			End If
-
 
 			Return sText
 		End Function

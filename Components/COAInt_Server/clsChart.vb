@@ -1,11 +1,12 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Interfaces
 
 Public Class clsChart
+	Implements IChart
 
 	Private mastrUDFsRequired() As String
 	Private mvarPrompts() As Object
@@ -18,7 +19,6 @@ Public Class clsChart
 
 	' Classes
 	Private mclsGeneral As clsGeneral
-	Private mclsData As clsDataAccess
 
 	' Strings to hold the SQL statement
 	Private mstrSQLSelect As String
@@ -30,8 +30,10 @@ Public Class clsChart
 	Private mstrSQL As String
 	Private mstrErrorString As String
 
-	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long, ByRef piAggregateType As Long, ByRef piElementType As ElementType _
-	, ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As Recordset
+	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
+															 ByRef piAggregateType As Long, ByRef piElementType As ElementType,
+															 ByRef plngTableID_2 As Long, ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
+															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As DataTable Implements IChart.GetChartData
 
 		Dim fOK As Boolean
 		Dim strTableName As String
@@ -78,7 +80,7 @@ Public Class clsChart
 		End If
 
 		' Execute the SQL and store in recordset
-		Return mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
 
@@ -555,7 +557,6 @@ GenerateSQLOrderBy_ERROR:
 
 		Dim pintLoop As Short
 		Dim pobjTableView As TablePrivilege
-		Dim prstTemp As New Recordset
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
 
@@ -602,11 +603,7 @@ GenerateSQLOrderBy_ERROR:
 			End If
 		End If
 
-		'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstTemp = Nothing
-
-		GenerateSQLWhere = True
-		Exit Function
+		Return True
 
 GenerateSQLWhere_ERROR:
 
@@ -618,7 +615,6 @@ GenerateSQLWhere_ERROR:
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Initialise the the classes/arrays to be used
-		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
 		' ReDim mvarSortOrder(2, 0)
 
@@ -631,8 +627,7 @@ GenerateSQLWhere_ERROR:
 	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Terminate_Renamed()
 		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
+
 		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsGeneral = Nothing
 	End Sub
@@ -663,4 +658,5 @@ GenerateSQLWhere_ERROR:
 		gcolColumnPrivilegesCollection = Nothing
 
 	End Sub
+
 End Class

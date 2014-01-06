@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
     <Compile Include="Enums\RelationType.vb" />
+    <Compile Include="Interfaces\IChart.vb" />
     <Compile Include="Metadata\Link.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />

@@ -6,6 +6,8 @@
 <%@Import namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server.Interfaces" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -501,7 +503,7 @@
 												</th>
 											</tr>
 											<%
-												Dim objChart As Object
+												Dim objChart As IChart
 												Dim sErrorDescription As String = ""
 												' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
 																								
@@ -511,13 +513,13 @@
 													objChart = New HR.Intranet.Server.clsChart
 												End If
 			
-												Dim mrstChartData As Recordset
+												Dim mrstChartData As DataTable
 												Err.Clear()
 			
 												If fMultiAxis = True Then
 													mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
 												Else
-													mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+													mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, 0, 0, 0, 0, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
 												End If
 
 												If (Err.Number <> 0) Then
@@ -525,49 +527,51 @@
 												End If
 			
 												If Not mrstChartData Is Nothing Then
-													If mrstChartData.RecordCount > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+													If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
 												End If
 										
-												If Not (mrstChartData.EOF And mrstChartData.BOF) Then
-													mrstChartData.MoveFirst()
 								
-													Do While Not mrstChartData.EOF
+												If mrstChartData.Rows.Count > 0 Then
+
+													For Each objRow As DataRow In mrstChartData.Rows
+													
+
 														%>
 											<tr>
 												<td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
 													<%If fMultiAxis Then%>
-													<%=Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))%>
+													<%=Trim(Left(NullSafeString(objRow(1)), 50))%>
 													<%Else%>
-													<%=Trim(Left(NullSafeString(mrstChartData.Fields(0).Value), 50))%>
+													<%=Trim(Left(NullSafeString(objRow(0)), 50))%>
 													<%End If%>
 												</td>
 												<%If fMultiAxis Then%>
 												<td class="bordered" style="text-align: left; white-space: nowrap">
 													<div style="width: 150px; white-space: nowrap">
-														<%=Trim(Left(NullSafeString(mrstChartData.Fields(3).Value), 50))%>
+														<%=Trim(Left(NullSafeString(objRow(3)), 50))%>
 													</div>
 												</td>
 												<%End If%>
 												<td class="bordered" style="text-align: right; vertical-align: top; padding-bottom: 0; white-space: nowrap; overflow: hidden">
 													<%If fMultiAxis Then%>
-													<%If navlink.UseFormatting = True And (TryCast(mrstChartData.Fields(4).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(4).Value, String) <> "No Data") Then%>
-													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(mrstChartData.Fields(4).Value), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
+													<%If navlink.UseFormatting = True And (TryCast(objRow(4), String) <> "No Access" And TryCast(objRow(4), String) <> "No Data") Then%>
+													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(objRow(4)), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
 													<%Else%>
-													<%=Trim(Left(NullSafeString(mrstChartData.Fields(4).Value), 50))%>
+													<%=Trim(Left(NullSafeString(objRow(4)), 50))%>
 													<%End If
 																	 Else
-														If navlink.UseFormatting = True And (TryCast(mrstChartData.Fields(1).Value, String) <> "No Access" And TryCast(mrstChartData.Fields(1).Value, String) <> "No Data") Then%>
-													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
+														If navlink.UseFormatting = True And (TryCast(objRow(1), String) <> "No Access" And TryCast(objRow(1), String) <> "No Data") Then%>
+													<%=FormatNumber(CDbl(Trim(Left(NullSafeString(objRow(1)), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
 													<%Else%>
-													<%=Trim(Left(NullSafeString(mrstChartData.Fields(1).Value), 50))%>
+													<%=Trim(Left(NullSafeString(objRow(1)), 50))%>
 													<%
 														End If
 														 End If%>
 												</td>
 											</tr>
 											<%    
-												mrstChartData.MoveNext()
-											Loop
+											
+											Next
 										Else
 											%>
 											<tr>
@@ -658,7 +662,7 @@
 			
 									Err.Clear()
 									Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
-																															navlink.Chart_AggregateType, navlink.Element_Type, navlink.Chart_SortOrderID, _
+																															navlink.Chart_AggregateType, navlink.Element_Type, 0, 0, 0, 0, navlink.Chart_SortOrderID, _
 																															navlink.Chart_SortDirection, navlink.Chart_ColourID)
 
 									If Err.Number <> 0 Then
@@ -666,11 +670,11 @@
 									End If
 									
 									If Len(sErrorDescription) = 0 Then
-										If Not (mrstDbValueData.EOF And mrstDbValueData.BOF) Then
-											Do While Not mrstDbValueData.EOF
-												sText = CType(mrstDbValueData.Fields(0).Value, String)
-												mrstDbValueData.MoveNext()
-											Loop
+
+										For Each objRow As DataRow In mrstDbValueData.Rows
+											sText = objRow(0).ToString()
+										Next
+
 											Dim fDoFormatting As Boolean
 											
 											If fUseConditionalFormatting = True Then
@@ -720,8 +724,6 @@
 										Else	 ' no results - return zero
 											sText = "No Data"
 										End If
-										mrstDbValueData.Close()
-									End If
 								
 									If sText <> "No Data" And sCFVisible = True Then
 									
