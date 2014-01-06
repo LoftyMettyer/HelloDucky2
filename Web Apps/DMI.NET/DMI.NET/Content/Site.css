@@ -174,6 +174,9 @@ textarea
 	background-color: rgb(7, 55, 99);
 
 	/*background-image: url("../Content/images/OpenHRLogo2.png");*/
+	background-image: url("../Content/images/ABSLogo/OpenHRLogo1024x768.png");
+	background-image: url("../Content/images/ABSLogo/swirlsgreyscaleopacity26.png");
+	
 	background-repeat: no-repeat;
 	background-position: center center;
 	vertical-align: middle;

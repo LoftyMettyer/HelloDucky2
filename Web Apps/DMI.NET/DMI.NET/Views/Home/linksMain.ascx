@@ -452,7 +452,7 @@
 										<%
 											If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
 												%>
-										<img src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="float: right; cursor: pointer; width: 16; height: 16; vertical-align: bottom;" alt="Drilldown..." title="Drill down to data..."
+										<img src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Drilldown..." title="Drill down to data..."
 											onclick="<%=sOnClick %>" />
 										<%
 										End If
