@@ -476,16 +476,16 @@
 									<div class="widgetplaceholder datagrid">
 										<table cellspacing="0" cellpadding="5" rules="all" frame="box" style="width:100%;vertical-align:top;border:3px solid lightgray">
 											<tr>
-												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: left">
+												<th onclick="fsort();" style="font-weight: normal; text-align: left">
 													<%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
 												</th>
 												<%If fMultiAxis Then%>
-												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: left">
+												<th onclick="fsort();" style=" font-weight: normal; text-align: left">
 													<%=Trim(Left(NullSafeString(navlink.Chart_ColumnName_2), 50))%>
 												</th>
-												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: right">
+												<th onclick="fsort();" style=" font-weight: normal; text-align: right">
 													<%Else%>
-												<th onclick="fsort();" style="font-size: 10pt; font-weight: normal; text-align: right">
+												<th onclick="fsort();" style=" font-weight: normal; text-align: right">
 													<%End If%>
 													<%If navlink.Chart_AggregateType = 0 Then%>
 														Count
