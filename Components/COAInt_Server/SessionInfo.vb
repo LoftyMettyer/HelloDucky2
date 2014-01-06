@@ -46,6 +46,10 @@ Public Class SessionInfo
 		Return Declarations.Permissions.GetByKey(sKey)
 	End Function
 
+	Public Function IsModuleEnabled(ByVal name As String) As Boolean
+		Return Modules.GetByKey(name).Enabled
+	End Function
+
 	Public Function GetUserSetting(ByVal Section As String, ByVal Key As String, ByVal DefaultValue As Object) As Object
 
 		Dim objSetting As UserSetting = UserSettings.GetUserSetting(Section, Key)

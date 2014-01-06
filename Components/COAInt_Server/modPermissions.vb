@@ -19,6 +19,7 @@ Module modPermissions
 		UserSettings = New Collection(Of UserSetting)
 		Functions = New Collection(Of Metadata.Function)
 		Operators = New Collection(Of Metadata.Operator)
+		Modules = New List(Of ModuleSetting)
 
 		Try
 
@@ -118,6 +119,14 @@ Module modPermissions
 				Dim objParameter = New OperatorParameter
 				objParameter.ParameterType = objRow("ParameterType").ToString()
 				Operators.GetById(CInt(objRow("operatorID"))).Parameters.Add(objParameter)
+			Next
+
+
+			For Each objRow As DataRow In objData.Tables(9).Rows
+				Dim objModule = New ModuleSetting
+				objModule.ModuleKey = objRow("Name").ToString()
+				objModule.Enabled = CBool(objRow("Enabled"))
+				Modules.Add(objModule)
 			Next
 
 		Catch ex As Exception
@@ -374,7 +383,6 @@ Module modPermissions
 		End If
 
 	End Sub
-
 
 	Public Function GetColumnPrivileges(ByRef psTableViewName As String) As CColumnPrivileges
 		' Return the column privileges collection for the given table.

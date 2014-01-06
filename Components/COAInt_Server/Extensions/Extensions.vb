@@ -121,6 +121,11 @@ Friend Module Extensions
 	End Function
 
 	<Extension()>
+	Public Function GetByKey(Of T As ModuleSetting)(ByVal items As List(Of T), ByVal key As String) As T
+		Return items.FirstOrDefault(Function(item) item.ModuleKey = key)
+	End Function
+
+	<Extension()>
 	Public Function ToDataTable(Of T)(list As ICollection(Of T)) As DataTable
 		Dim table As DataTable = clsDataAccess.CreateTable(Of T)()
 		Dim entityType As Type = GetType(T)

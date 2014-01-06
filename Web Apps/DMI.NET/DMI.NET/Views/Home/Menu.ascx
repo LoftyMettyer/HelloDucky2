@@ -299,33 +299,9 @@
 			
 	Next
 	
+	Dim bAbsenceEnabled = objSession.IsModuleEnabled("ABSENCE")
 
-	Dim iAbsenceEnabled = 0
-	If Len(sErrorDescription) = 0 Then
-		Dim cmdAbsenceModule = New ADODB.Command
-		cmdAbsenceModule.CommandText = "spASRIntActivateModule"
-		cmdAbsenceModule.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdAbsenceModule.ActiveConnection = Session("databaseConnection")
-		cmdAbsenceModule.CommandTimeout = 300
-
-		Dim prmModuleKey = cmdAbsenceModule.CreateParameter("moduleKey", 200, 1, 50) '200=varchar, 1=input, 50=size
-		cmdAbsenceModule.Parameters.Append(prmModuleKey)
-		prmModuleKey.Value = "ABSENCE"
-
-		Dim prmEnabled = cmdAbsenceModule.CreateParameter("enabled", 11, 2)	' 11=bit, 2=output
-		cmdAbsenceModule.Parameters.Append(prmEnabled)
-
-		Err.Clear()
-		cmdAbsenceModule.Execute()
-
-		iAbsenceEnabled = CInt(cmdAbsenceModule.Parameters("enabled").Value)
-		If iAbsenceEnabled < 0 Then
-			iAbsenceEnabled = 1
-		End If
-		cmdAbsenceModule = Nothing
-	End If
-
-	Response.Write("<input type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & iAbsenceEnabled & ">")
+	Response.Write("<input type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & IIf(bAbsenceEnabled, "1", "0") & ">")
 	Response.Write("<input type='hidden' id=txtCustomReportsGranted name=txtCustomReportsGranted value=" & iCustomReportsGranted & ">")
 	Response.Write("<input type='hidden' id=txtCrossTabsGranted name=txtCrossTabsGranted value=" & iCrossTabsGranted & ">")
 	Response.Write("<input type='hidden' id=txtCalendarReportsGranted name=txtCalendarReportsGranted value=" & iCalendarReportsGranted & ">")

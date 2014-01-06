@@ -1,33 +1,17 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_mailmerge")%>" type="text/javascript"></script>
 
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <%  
-	'Dim iVersionOneEnabled = 0
-	Dim cmdVersionOneModule = CreateObject("ADODB.Command")
-	cmdVersionOneModule.CommandText = "spASRIntActivateModule"
-	cmdVersionOneModule.CommandType = 4	' Stored Procedure
-	cmdVersionOneModule.ActiveConnection = Session("databaseConnection")
-	cmdVersionOneModule.CommandTimeout = 300
+	
+	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+	Dim bVersionOneEnabled = objSession.IsModuleEnabled("VERSIONONE")
 
-	Dim prmModuleKey = cmdVersionOneModule.CreateParameter("moduleKey", 200, 1, 50)	'200=varchar, 1=input, 50=size
-	cmdVersionOneModule.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "VERSIONONE"
 
-	Dim prmEnabled = cmdVersionOneModule.CreateParameter("enabled", 11, 2) ' 11=bit, 2=output
-	cmdVersionOneModule.Parameters.Append(prmEnabled)
-
-	Err.Clear()
-	cmdVersionOneModule.Execute()
-
-	Dim iVersionOneEnabled = CInt(cmdVersionOneModule.Parameters("enabled").Value)
-	If iVersionOneEnabled < 0 Then
-		iVersionOneEnabled = 1
-	End If
-	cmdVersionOneModule = Nothing
 %>
 
 <div <%=session("BodyTag")%>>
@@ -782,7 +766,7 @@
 																				<td width="5px">&nbsp;</td>
 
 																			</tr>
-																			<%If iVersionOneEnabled = 0 Then%>
+																			<%If Not bVersionOneEnabled Then%>
 																			<tr style="height: 20px; visibility: hidden; display: none">
 																				<%Else%>
 																			<tr style="height: 20px;">
@@ -1351,12 +1335,13 @@
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("utilid")%>'>
 	<input type="hidden" id="txtEmailPermission" name="txtEmailPermission">
 	<%
+				
 		Dim cmdDefinition = CreateObject("ADODB.Command")
 		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 		cmdDefinition.CommandType = 4	' Stored procedure.
 		cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
+		Dim prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 		cmdDefinition.Parameters.Append(prmModuleKey)
 		prmModuleKey.value = "MODULE_PERSONNEL"
 

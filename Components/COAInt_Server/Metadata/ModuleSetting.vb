@@ -7,5 +7,6 @@ Namespace Metadata
 		Public ParameterKey As String
 		Public ParameterValue As String
 		Public ParameterType As String
+		Public Enabled As Boolean
 	End Class
 End Namespace

@@ -32,6 +32,8 @@ Module Declarations
 	Public Functions As ICollection(Of Metadata.Function)
 	Public Operators As ICollection(Of Metadata.Operator)
 
+	Public Modules As List(Of ModuleSetting)
+
 	Public Permissions As ICollection(Of Permission)
 
 End Module
