@@ -57,8 +57,19 @@ Public Class clsDataAccess
 
 
 	Private Shared Function GetConnectionString(ByVal LoginDetail As LoginInfo) As String
-		Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4}" _
-												 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, "OpenHR")
+
+		Const _AppName As String = "OpenHR"
+
+		If LoginDetail.TrustedConnection Then
+			Return String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=yes;Application Name={2}" _
+													 , LoginDetail.Server, LoginDetail.Database, _AppName)
+
+		Else
+			Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4}" _
+													 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, _AppName)
+
+		End If
+
 	End Function
 
 	Public Shared Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)

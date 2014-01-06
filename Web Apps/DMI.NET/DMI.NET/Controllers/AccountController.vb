@@ -181,7 +181,7 @@ Namespace Controllers
 			Dim sLocaleThousandSeparator As String
 			Dim fForcePasswordChange As Boolean
 			Dim sConnectString As String
-			Dim bWindowsAuthentication As String
+			Dim bWindowsAuthentication As Boolean = False
 
 			fForcePasswordChange = False
 			Session("ConvertedDesktopColour") = "#f9f7fb"
@@ -192,7 +192,9 @@ Namespace Controllers
 				sPassword = Request.Form("txtPassword")
 				sDatabaseName = Request.Form("txtDatabase")
 				sServerName = Request.Form("txtServer")
-				bWindowsAuthentication = Request.Form("chkWindowsAuthentication")
+				If Request.Form("chkWindowsAuthentication") = "on" Then
+					bWindowsAuthentication = True
+				End If
 				sLocaleDateFormat = Request.Form("txtLocaleDateFormat")
 				sLocaleDateSeparator = Request.Form("txtLocaleDateSeparator")
 
@@ -208,7 +210,7 @@ Namespace Controllers
 				sDatabaseName = widgetDatabase
 				sServerName = ".\sql2012"
 				' widgetServer
-				bWindowsAuthentication = ""
+				bWindowsAuthentication = False
 				sLocaleDateFormat = "ddmmYYYY"
 				sLocaleDateSeparator = "/"
 
@@ -246,11 +248,11 @@ Namespace Controllers
 			objSettings = Nothing
 
 			' Different connection string depending if use are using Windows Authentication
-			If Not bWindowsAuthentication = "on" Then
-				sConnectString = sConnectString & ";User ID=" & sUserName & ";Password=" & sPassword
-			Else
+			If bWindowsAuthentication Then
 				sConnectString = sConnectString & ";Trusted_Connection=yes;"
 				sConnectString = sConnectString & ";Integrated Security=SSPI;"
+			Else
+				sConnectString = sConnectString & ";User ID=" & sUserName & ";Password=" & sPassword
 			End If
 
 			sConnectString = sConnectString & ";Persist Security Info=True;"
@@ -314,6 +316,7 @@ Namespace Controllers
 			objLogin.Database = sDatabaseName
 			objLogin.Username = sUserName
 			objLogin.Password = sPassword
+			objLogin.TrustedConnection = bWindowsAuthentication
 
 			objServerSession.Username = sUserName
 			objServerSession.Connection = conX
@@ -392,7 +395,7 @@ Namespace Controllers
 			' Put the username in a session variable	
 			Session("Server") = sServerName
 			Session("Database") = sDatabaseName
-			Session("WinAuth") = (bWindowsAuthentication = "on")
+			Session("WinAuth") = bWindowsAuthentication
 
 			' Release the ADO command object.
 			cmdLoginCheck = Nothing
