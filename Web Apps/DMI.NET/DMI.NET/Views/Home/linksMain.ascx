@@ -8,6 +8,8 @@
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server.Interfaces" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -28,23 +30,18 @@
 	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 	Dim _StepCount As Integer = 0
 	Dim _WorkflowGood As Boolean = True
-		
-	'Get the pendings workflow steps from the database
-	Dim _cmdDefSelRecords = New Command
-	_cmdDefSelRecords.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-	_cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-	_cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
-
-	Dim prmKeyParameter = _cmdDefSelRecords.CreateParameter("screenID", 200, 1, 8000)	
-	_cmdDefSelRecords.Parameters.Append(prmKeyParameter)
-	prmKeyParameter.Value = Session("username")
 
 	Err.Clear()
-	Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
+
+	'Get the pendings workflow steps from the database
+	Dim prmUser As New SqlParameter("psKeyParameter", SqlDbType.VarChar, 255)
+	prmUser.Value = Session("username")
+	
+	Dim _rstDefSelRecords = clsDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
 		
 	If (Err.Number <> 0) Then		
-	' Workflow not licensed or configured. Go to default page.
-	_WorkflowGood = False
+		' Workflow not licensed or configured. Go to default page.
+		_WorkflowGood = False
 	Else
 	With _PendingWorkflowStepsHTMLTable
 			.Append("<table id=""PendingStepsTable_Dash"">")
@@ -54,28 +51,23 @@
 		.Append("<th id=""NameHeader"">URL</th>")
 		.Append("</tr>")
 	End With
-	'Loop over the records
-	Do Until _rstDefSelRecords.eof
-		_StepCount += 1
-		With _PendingWorkflowStepsHTMLTable
-			.Append("<tr>")
-			.Append("<td>" & _rstDefSelRecords.Fields("description").Value & "</td>")
-			.Append("<td>" & _rstDefSelRecords.Fields("url").Value & "</td>")
-			.Append("<td>" & _rstDefSelRecords.Fields("name").Value & "</td>")
-			.Append("</tr>")
-		End With
-		_rstDefSelRecords.movenext()
-	Loop
+		'Loop over the records
+		For Each objRow As DataRow In _rstDefSelRecords.Rows
+			
+			_StepCount += 1
+			With _PendingWorkflowStepsHTMLTable
+				.Append("<tr>")
+				.Append("<td>" & objRow("description").ToString() & "</td>")
+				.Append("<td>" & objRow("url").ToString() & "</td>")
+				.Append("<td>" & objRow("name").ToString() & "</td>")
+				.Append("</tr>")
+			End With
+		Next
 						
-	_PendingWorkflowStepsHTMLTable.Append("</table>")
+		_PendingWorkflowStepsHTMLTable.Append("</table>")
 						
-	_rstDefSelRecords.close()
-	_rstDefSelRecords = Nothing
 	End If
 				
-	' Release the ADO command object.
-	_cmdDefSelRecords = Nothing
-
 %>
 
 	<div id="" class="DashContent" style="display: block;">
