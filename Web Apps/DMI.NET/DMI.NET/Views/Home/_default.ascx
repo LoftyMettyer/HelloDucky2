@@ -1,4 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
 	on error resume next
@@ -6,45 +9,27 @@
 	Dim iOutOfOffice = 0
 	Dim iRecordCount = 0
 
-	if Session("action") = "WORKFLOWOUTOFOFFICE_CHECK" then
-		Dim cmdWorkflow = CreateObject("ADODB.Command")
-		cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
-		cmdWorkflow.CommandType = 4	' Stored procedure
-		cmdWorkflow.CommandTimeout = 180
-		cmdWorkflow.ActiveConnection = Session("databaseConnection")
-					
-		Dim prmOutOfOffice = cmdWorkflow.CreateParameter("OutOfOffice", 11, 2) ' 11=boolean, 2=output
-		cmdWorkflow.Parameters.Append(prmOutOfOffice)
+	If Session("action") = "WORKFLOWOUTOFOFFICE_CHECK" Then
+		
+		Dim prmOutOfOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+		prmOutOfOffice.Direction = ParameterDirection.Output
 
-		Dim prmRecordCount = cmdWorkflow.CreateParameter("RecordCount", 3, 2)	' 3=integer, 2=output
-		cmdWorkflow.Parameters.Append(prmRecordCount)
+		Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int)
+		prmRecordCount.Direction = ParameterDirection.Output
 
-		Err.Clear()
-		cmdWorkflow.Execute()
+		clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
 
-		If cmdWorkflow.Parameters("OutOfOffice").Value Then
-			iOutOfOffice = 1
-		End If
-		iRecordCount = CInt(cmdWorkflow.Parameters("RecordCount").Value)
-			
-		cmdWorkflow = Nothing
+		iOutOfOffice = CInt(prmOutOfOffice.Value)
+		iRecordCount = CInt(prmRecordCount.Value)		
+		
 	End If
 	
 	If Session("action") = "WORKFLOWOUTOFOFFICE_SET" Then
-		Dim cmdOutOfOffice = CreateObject("ADODB.Command")
-		cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
-		cmdOutOfOffice.CommandType = 4 ' Stored Procedure
-		cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
-
-		Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)	' 11=bit, 1=input
-		cmdOutOfOffice.Parameters.Append(prmValue)
-		prmValue.value = Session("reset")
-
-		Err.Clear()
-		cmdOutOfOffice.Execute()
-				
-		cmdOutOfOffice = Nothing
-
+		
+		Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+		prmSetOffice.Value = CBool(Session("reset"))
+		clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
+		
 		Session("reset") = 0
 		
 		' JIRA 3286 - reset the session variable, as we revisit this page as part of main.ascx refresh.

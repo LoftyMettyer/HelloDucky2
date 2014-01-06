@@ -587,23 +587,17 @@ Namespace Controllers
 
 				If fWorkflowOutOfOfficeConfigured Then
 					' Check if the current user OutOfOffice
-					cmdWorkflow = New Command
-					cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
-					cmdWorkflow.CommandType = 4	' Stored Procedure
-					cmdWorkflow.ActiveConnection = conX
+					Dim prmOutOfOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+					prmOutOfOffice.Direction = ParameterDirection.Output
 
-					Dim prmWFOutOfOffice = cmdWorkflow.CreateParameter("wfOutOfOffice", 11, 2) ' 11=boolean, 2=output
-					cmdWorkflow.Parameters.Append(prmWFOutOfOffice)
-					Dim prmWFRecordCount = cmdWorkflow.CreateParameter("wfRecordCount", 3, 2)	' 3=integer, 2=output
-					cmdWorkflow.Parameters.Append(prmWFRecordCount)
+					Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int)
+					prmRecordCount.Direction = ParameterDirection.Output
 
-					Err.Number = 0
-					cmdWorkflow.Execute()
+					clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
 
-					fWorkflowOutOfOffice = cmdWorkflow.Parameters("wfOutOfOffice").Value
-					iWorkflowRecordCount = cmdWorkflow.Parameters("wfRecordCount").Value
+					fWorkflowOutOfOffice = prmOutOfOffice.Value
+					iWorkflowRecordCount = prmRecordCount.Value
 
-					cmdWorkflow = Nothing
 				End If
 			End If
 			Session("WF_OutOfOfficeConfigured") = fWorkflowOutOfOfficeConfigured

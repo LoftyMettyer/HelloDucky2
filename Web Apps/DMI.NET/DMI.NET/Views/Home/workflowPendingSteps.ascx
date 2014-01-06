@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -84,25 +87,19 @@
 </script>
 
 <script runat="server">
-		Private _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
+		Private ReadOnly _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 		Private _StepCount As Integer = 0
 		Private _WorkflowGood As Boolean = True
 		
 		Private Sub GetPendingWorkflowSteps
 				'Get the pendings workflow steps from the database
-				Dim _cmdDefSelRecords = CreateObject("ADODB.Command")
-				
-				_cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
-				_cmdDefSelRecords.CommandType = 4 ' Stored Procedure
-				_cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
-
-				Err.Clear()
-				Dim _rstDefSelRecords = _cmdDefSelRecords.Execute
-
-				If Err.Number <> 0 Then
-						' Workflow not licensed or configured. Go to default page.
-						_WorkflowGood = False
-				Else
+		Dim _rstDefSelRecords = clsDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
+					
+		If Err.Number <> 0 Then
+			
+			' Workflow not licensed or configured. Go to default page.
+			_WorkflowGood = False
+		Else
 			With _PendingWorkflowStepsHTMLTable
 				.Append("<table id=""PendingStepsTable"">")
 				.Append("<tr>")
@@ -110,26 +107,23 @@
 				.Append("<th id=""URL"">URL</th>")
 				.Append("</tr>")
 			End With
-						'Loop over the records
-						Do Until _rstDefSelRecords.eof
-								_StepCount += 1
-								With _PendingWorkflowStepsHTMLTable
-										.Append("<tr>")
-										.Append("<td>" & _rstDefSelRecords.Fields("description").Value & "</td>")
-										.Append("<td>" & _rstDefSelRecords.Fields("url").Value & "</td>")
-										.Append("</tr>")
-								End With
-								_rstDefSelRecords.movenext()
-						Loop
-						
-						_PendingWorkflowStepsHTMLTable.Append("</table>")
-						
-						_rstDefSelRecords.close()
-						_rstDefSelRecords = Nothing
-				End If
+			'Loop over the records
+			For Each objRow As DataRow In _rstDefSelRecords.Rows
 				
-				' Release the ADO command object.
-			_cmdDefSelRecords = Nothing
+				_StepCount += 1
+				With _PendingWorkflowStepsHTMLTable
+					.Append("<tr>")
+					.Append("<td>" & objRow("description").ToString() & "</td>")
+					.Append("<td>" & objRow("url").ToString() & "</td>")
+					.Append("</tr>")
+				End With
+			Next
+						
+			_PendingWorkflowStepsHTMLTable.Append("</table>")
+						
+		End If
+			
+
 	End Sub
 		
 		Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
@@ -139,26 +133,16 @@
 </script>
 
 <form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
-	<%On Error Resume Next
+	<%
 
 		Response.Expires = -1
 	
 		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
-			' Reset the Workflow OutOfOffice flag.
-			Dim cmdOutOfOffice = CreateObject("ADODB.Command")
-			cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
-			cmdOutOfOffice.CommandType = 4 ' Stored Procedure
-			cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
-			Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)		' 11=bit, 1=input
-			cmdOutOfOffice.Parameters.Append(prmValue)
-			prmValue.value = 0
-
-			Err.Clear()
-			cmdOutOfOffice.Execute()
-
-			cmdOutOfOffice = Nothing
-
+			Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+			prmSetOffice.Value = 0
+			clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
+			
 			Session("reset") = 0
 		End If
 	%>
