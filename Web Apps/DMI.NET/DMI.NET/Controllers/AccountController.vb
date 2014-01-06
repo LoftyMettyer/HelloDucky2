@@ -1058,6 +1058,7 @@ Namespace Controllers
 				Session("avSubMenuInfo") = Nothing
 				Session("avQuickEntryMenuInfo") = Nothing
 				Session("avTableMenuInfo") = Nothing
+				Session("avTableHistoryMenuInfo") = Nothing
 
 				objServerSession.ActiveConnections -= 1
 

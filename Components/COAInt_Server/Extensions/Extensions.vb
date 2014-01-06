@@ -91,7 +91,7 @@ Friend Module Extensions
 	' Don't know exactly what these function do or if they are necessary yet. This is just a proof of concept for speeding up the login process
 
 	<Extension()>
-	Public Function FindTableID(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal id As String) As T
+	Public Function FindTableID(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 		Return items.FirstOrDefault(Function(baseItem) baseItem.TableID = id)
 	End Function
 

@@ -10,11 +10,9 @@ Friend Class CColumnPrivileges
 	Private mCol As Collection
 	Private msTag As String
 
-	Public Function IsValid(ByVal pvIndexKey As Object) As Boolean
+	Public Function IsValid(ByVal pvIndexKey As String) As Boolean
 		Return mCol.Contains(pvIndexKey)
 	End Function
-
-
 
 	Public Function Add(ByVal pfSelect As Boolean, ByVal pfUpdate As Boolean, ByVal psColumnName As String, ByVal piColumnType As Short, ByVal piDataType As Short, ByVal plngColumnID As Integer, ByVal pfUniqueCheck As Boolean) As ColumnPrivilege
 		'create a new object
@@ -58,7 +56,7 @@ Friend Class CColumnPrivileges
 
 	Default Public ReadOnly Property Item(ByVal vntIndexKey As Object) As ColumnPrivilege
 		Get
-			Item = mCol.Item(vntIndexKey)
+			Return mCol.Item(vntIndexKey)
 
 		End Get
 	End Property

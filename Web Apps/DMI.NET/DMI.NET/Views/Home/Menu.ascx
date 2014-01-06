@@ -2,22 +2,17 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Collections.ObjectModel" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%
 	On Error Resume Next
 
-	
-	
-	
 	Dim sErrorDescription As String
-	Dim avPrimaryMenuInfo
-	Dim avSubMenuInfo
-	Dim avQuickEntryMenuInfo
-	Dim avTableMenuInfo As Collection(Of HR.Intranet.Server.Structures.TableScreen)
-	Dim avHistoryMenuInfo As Collection(Of HR.Intranet.Server.Structures.HistoryScreen)
+	Dim avPrimaryMenuInfo As List(Of MenuInfo)
+	Dim avQuickEntryMenuInfo As List(Of MenuInfo)
+	Dim avTableMenuInfo As List(Of TableScreen)
+	Dim avHistoryMenuInfo As List(Of HR.Intranet.Server.Structures.HistoryScreen)
 	Dim iLoop As Integer
-	Dim iLoop2 As Integer
-	Dim iCount As Integer
 	Dim objMenu As HR.Intranet.Server.Menu
 	Dim sToolCaption As String
 	Dim sToolID As String
@@ -53,56 +48,48 @@
 		avPrimaryMenuInfo = Session("avPrimaryMenuInfo")
 	End If
 	
-	For iLoop = 1 To UBound(avPrimaryMenuInfo, 2)
-		If avPrimaryMenuInfo(4, iLoop) > 0 Then
+	For Each objMenuItem In avPrimaryMenuInfo
+		
+		If objMenuItem.TableScreenID > 0 Then
 			' The user has 'read' permission on the table, and no views on the table.
 			' There is only one screen defined for the table.
 				
 			' Add a menu option to call up the primary table screen.
 			' new method to insert a new menu item.
-			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "..." & "', 'PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avPrimaryMenuInfo(4, iLoop)) & "');" & vbCrLf & vbCrLf)
-		ElseIf avPrimaryMenuInfo(7, iLoop) > 0 Then
+			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'PT_" & objMenuItem.TableID & "_0_" & objMenuItem.TableScreenID & "');" & vbCrLf)
+		ElseIf objMenuItem.ViewID > 0 Then
 			' The user does NOT have 'read' permission on the table, but does have
 			' 'read' permission on one view of the table.
 			' There is only one screen defined for the view.
 			' new method to insert a new menu item.
-			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & " (" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(8, iLoop), "_", " ")) & " view)..." & "', 'PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(7, iLoop)) & "_" & CleanStringForJavaScript(avPrimaryMenuInfo(10, iLoop)) & "');" & vbCrLf & vbCrLf)
-		ElseIf (avPrimaryMenuInfo(9, iLoop) > 0) Or ((avPrimaryMenuInfo(5, iLoop) = True) And (avPrimaryMenuInfo(3, iLoop) > 0)) Then
+			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & " (" & CleanStringForJavaScript(Replace(objMenuItem.ViewName, "_", " ")) & " view)..." & "', 'PV_" & objMenuItem.TableID & "_" & objMenuItem.ViewID & "_" & objMenuItem.ViewScreenID & "');" & vbCrLf)
+		ElseIf (objMenuItem.ViewScreenCount > 0) Or ((objMenuItem.TableReadable = True) And (objMenuItem.TableScreenCount > 0)) Then
 			' The user has 'read' permission on the table, and the table has more than one screen defined for it.
 			' Or there are views on the table.
 			'Instantiate the submenu heading tool and set properties
 
 			' new method to insert a new submenu item.
-			Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "', 'PS_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "', 'mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "');" & vbCrLf & vbCrLf)
+			Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "', 'PS_" & objMenuItem.TableID & "', 'mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "');" & vbCrLf & vbCrLf)
 			
-			' Add the submenu.
-			'If Session("avSubMenuInfo") Is Nothing Then
-			avSubMenuInfo = objMenu.GetPrimaryTableSubMenu(CLng(avPrimaryMenuInfo(1, iLoop)))
-			'Session("avSubMenuInfo") = avSubMenuInfo
-			'Else
-			'avSubMenuInfo = Session("avSubMenuInfo")
-			'End If
-			
+			' Add the submenu.			
 			Response.Write("  lngLastScreenID = 0;" & vbCrLf)
 			Response.Write("  sLastToolName = """";" & vbCrLf)
 			
-			For iLoop2 = 1 To UBound(avSubMenuInfo, 2)
-				sToolCaption = ""
-				sToolID = ""
-				
-				If avSubMenuInfo(3, iLoop2) > 0 Then
-					sToolID = "PV_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_" & CleanStringForJavaScript(avSubMenuInfo(3, iLoop2)) & "_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2))
-					sToolCaption = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" & CleanStringForJavaScript(Replace(avSubMenuInfo(4, iLoop2), "_", " ")) & " view..."
+			For Each objSubMenu In objMenuItem.SubItems
+						
+				If objSubMenu.ViewID > 0 Then
+					sToolID = "PV_" & objMenuItem.TableID & "_" & objSubMenu.ViewID & "_" & objSubMenu.TableScreenID
+					sToolCaption = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" & CleanStringForJavaScript(Replace(objSubMenu.ViewName, "_", " ")) & " view..."
 				Else
-					sToolID = "PT_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "_0_" & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2))
-					sToolCaption = CleanStringForJavaScript(Replace(avSubMenuInfo(2, iLoop2), "_", " ")) & "..."
+					sToolID = "PT_" & objMenuItem.TableID & "_0_" & objSubMenu.TableScreenID
+					sToolCaption = CleanStringForJavaScript(Replace(objSubMenu.ScreenName, "_", " ")) & "..."
 				End If
 
-				Response.Write("  lngLastScreenID = " & CleanStringForJavaScript(avSubMenuInfo(1, iLoop2)) & ";" & vbCrLf & vbCrLf)
+				Response.Write("  lngLastScreenID = " & objSubMenu.TableScreenID & ";" & vbCrLf)
 				Response.Write("	sLastToolName = '" & sToolID & "'" & vbCrLf)
 
 				' new method to insert a new menu item.
-				Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "', '" & sToolCaption & "', '" & sToolID & "','someClass');" & vbCrLf & vbCrLf)
+				Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "', '" & sToolCaption & "', '" & sToolID & "','someClass');" & vbCrLf & vbCrLf)
 			Next
 		End If
 	Next
@@ -117,11 +104,7 @@
 	Response.Write("  var objFileTool;" & vbCrLf)
 	Response.Write("  var lngQuickEntryCount;" & vbCrLf & vbCrLf)
 	Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
-	Response.Write("  if (frmMenuInfo.txtDoneQuickEntryMenu.value == 1) {" & vbCrLf)
-	Response.Write("	//  return;" & vbCrLf)
-	Response.Write("  }" & vbCrLf & vbCrLf)
 	Response.Write("  frmMenuInfo.txtDoneQuickEntryMenu.value = 1;" & vbCrLf & vbCrLf)
-	Response.Write("  //lngQuickEntryCount = 0;" & vbCrLf)
 	
 	If Session("avQuickEntryMenuInfo") Is Nothing Then
 		avQuickEntryMenuInfo = objMenu.GetQuickEntryScreens
@@ -130,40 +113,18 @@
 		avQuickEntryMenuInfo = Session("avQuickEntryMenuInfo")
 	End If
 	
-	For iCount = 1 To UBound(avQuickEntryMenuInfo, 2)
-		Response.Write("  //lngQuickEntryCount = lngQuickEntryCount + 1;" & vbCrLf)
-		Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""QE_" & CleanStringForJavaScript(avQuickEntryMenuInfo(1, iCount)) & "_0_" & CleanStringForJavaScript(avQuickEntryMenuInfo(3, iCount)) & """);" & vbCrLf)
-		Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avQuickEntryMenuInfo(2, iCount), "_", " ")) & "..."";" & vbCrLf)
-		Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-
-		Response.Write("    //iIndex = -1;" & vbCrLf)
-		Response.Write("    //for (iLoop2=0; iLoop2 < abMainMenu.Bands(""mnubandQuickEntry"").Tools.Count(); iLoop2++) {" & vbCrLf)
-		Response.Write("		//	sCaption1 = abMainMenu.Bands(""mnubandQuickEntry"").Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
-		Response.Write("		//	sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
-		Response.Write("		//	sCaption2 = objFileTool.Caption.toLowerCase();" & vbCrLf)
-		Response.Write("		//	sCaption2 = sCaption2.substr(0, sCaption2.length - 3);" & vbCrLf)
-		Response.Write("    //  if (sCaption1 > sCaption2) {" & vbCrLf)
-		Response.Write("    //    iIndex = iLoop2;" & vbCrLf)
-		Response.Write("    //    break;" & vbCrLf)
-		Response.Write("    //  }" & vbCrLf)
-		Response.Write("    //}" & vbCrLf)
-		Response.Write("    //abMainMenu.Bands(""mnubandQuickEntry"").Tools.Insert(iIndex, objFileTool);" & vbCrLf & vbCrLf)
-		
-		' new method to insert a new menu item.
-		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(avQuickEntryMenuInfo(2, iCount), "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(avQuickEntryMenuInfo(1, iCount)) & "_0_" & CleanStringForJavaScript(avQuickEntryMenuInfo(3, iCount)) & "');" & vbCrLf & vbCrLf)
-		
+	For Each objMenuItem In avQuickEntryMenuInfo
+		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(objMenuItem.TableID) & "_0_" & CleanStringForJavaScript(objMenuItem.TableScreenID) & "');" & vbCrLf)		
 	Next
-
+	
 	Response.Write("  if (lngQuickEntryCount == 0) {" & vbCrLf)
-	Response.Write("	//	abMainMenu.Bands(""mnubandDatabase"").Tools(""mnutoolQuickEntry"").enabled = false;" & vbCrLf)
 	Response.Write("  }" & vbCrLf)
 
 	' Sort the items.
 	Response.Write("	menu_sortULMenuItems('mnubandQuickEntry');")
 	
 	Response.Write("}" & vbCrLf & vbCrLf)
-	
-	
+		
 	
 	' ------------------------------------------------------------------------------
 	' Create the sub-routine to populate the table screens menu.
@@ -187,17 +148,9 @@
 
 	For Each objTableScreen In avTableMenuInfo
 		Response.Write("  lngTableScreensCount = lngTableScreensCount + 1;" & vbCrLf)
-		Response.Write("  //objFileTool = abMainMenu.Tools.add(0, ""TS_" & CleanStringForJavaScript(objTableScreen.TableID) & "_0_" & CleanStringForJavaScript(objTableScreen.ScreenID) & """);" & vbCrLf)
-		Response.Write("  //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(objTableScreen.TableName, "_", " ")) & "..."";" & vbCrLf)
-		Response.Write("  //objFileTool.Style = 0;" & vbCrLf)
-		Response.Write("  //abMainMenu.Bands(""mnubandTableScreens"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
 		Response.Write("  menu_insertMenuItem('mnubandTableScreens', '" & CleanStringForJavaScript(Replace(objTableScreen.TableName, "_", " ")) & "..." & "', 'TS_" & CleanStringForJavaScript(objTableScreen.TableID) & "_0_" & CleanStringForJavaScript(objTableScreen.ScreenID) & "');" & vbCrLf & vbCrLf)
 	Next
 	
-	Response.Write("  if (lngTableScreensCount == 0) {" & vbCrLf)
-	Response.Write("	//	abMainMenu.Bands(""mnubandDatabase"").Tools(""mnutoolTableScreens"").enabled = false;" & vbCrLf)
-	Response.Write("  }" & vbCrLf)
-
 	Response.Write("}" & vbCrLf & vbCrLf)
 	
 	' ------------------------------------------------------------------------------
@@ -216,7 +169,12 @@
 	Dim iNextChildTableID As Integer = 0
 	Dim sBand As String = ""
 		
-	avHistoryMenuInfo = objMenu.GetHistoryScreens
+	If Session("avTableHistoryMenuInfo") Is Nothing Then
+		avHistoryMenuInfo = objMenu.GetHistoryScreens
+		Session("avTableHistoryMenuInfo") = avHistoryMenuInfo
+	Else
+		avHistoryMenuInfo = Session("avTableHistoryMenuInfo")
+	End If
 	
 	iLoop = 0
 	For Each objHistoryScreen In avHistoryMenuInfo.OrderBy(Function(n) n.parentScreenID)
@@ -267,7 +225,7 @@
 			Else
 				' The current screen is for a different table/view to the next and last screens
 				' added to the menu so just add this screen to the main menu as normal.
-				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)			
+				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
 			End If
 		End If
 
@@ -312,39 +270,7 @@
 	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 	Session("OLEObject") = objOLE
 	objOLE = Nothing
-	
-	If Len(sErrorDescription) = 0 Then
-		Dim prm1 As ADODB.Parameter
-		Dim prm2 As ADODB.Parameter
-		Dim prm3 As ADODB.Parameter
-		Dim prm4 As ADODB.Parameter
-		
-		Dim cmdMisc = New ADODB.Command
-		cmdMisc.CommandText = "spASRIntGetMiscParameters"
-		cmdMisc.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdMisc.ActiveConnection = Session("databaseConnection")
-
-		prm1 = cmdMisc.CreateParameter("param1", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdMisc.Parameters.Append(prm1)
-
-		prm2 = cmdMisc.CreateParameter("param2", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdMisc.Parameters.Append(prm2)
-
-		prm3 = cmdMisc.CreateParameter("param3", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdMisc.Parameters.Append(prm3)
-		
-		prm4 = cmdMisc.CreateParameter("param4", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdMisc.Parameters.Append(prm4)
-		
-		Err.Clear()
-		cmdMisc.Execute()
-		
-		Response.Write("<input TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").Value & "'>" & vbCrLf)
-		Response.Write("<input TYPE=Hidden NAME=txtCFG_BA ID=txtCFG_BA VALUE='" & cmdMisc.Parameters("param2").Value & "'>" & vbCrLf)
-		Response.Write("<input TYPE=Hidden NAME=txtCFG_LD ID=txtCFG_LD VALUE='" & cmdMisc.Parameters("param3").Value & "'>" & vbCrLf)
-		Response.Write("<input TYPE=Hidden NAME=txtCFG_RT ID=txtCFG_RT VALUE='" & cmdMisc.Parameters("param4").Value & "'>" & vbCrLf)
-	End If
-		
+			
 	' ------------------------------------------------------------------------------
 	' Check what permissions the user has.
 	' ------------------------------------------------------------------------------

@@ -89,6 +89,9 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemPermissions]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntGetMiscParameters]
+GO
 
 
 

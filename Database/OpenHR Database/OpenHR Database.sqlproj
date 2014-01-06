@@ -229,7 +229,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetLookupFindRecords.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLookupFindRecords2.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLookupViews.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetMiscParameters.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetNavigationLinks.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetOpFuncShortcuts.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetPageTitle.sql" />

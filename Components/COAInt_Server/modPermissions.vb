@@ -24,100 +24,100 @@ Module modPermissions
 
 			Dim objData As DataSet = clsDataAccess.GetDataSet("spASRGetMetadata", New SqlParameter("username", Login.Username))
 
-			For Each objRow In objData.Tables(0).Rows
+			For Each objRow As DataRow In objData.Tables(0).Rows
 				Dim table As New Table
-				table.ID = objRow("TableID")
+				table.ID = CInt(objRow("TableID"))
 				table.TableType = objRow("TableType")
-				table.Name = objRow("TableName")
-				table.DefaultOrderID = objRow("DefaultOrderID")
-				table.RecordDescExprID = objRow("RecordDescExprID")
+				table.Name = objRow("TableName").ToString()
+				table.DefaultOrderID = CInt(objRow("DefaultOrderID"))
+				table.RecordDescExprID = CInt(objRow("RecordDescExprID"))
 				Tables.Add(table)
 			Next
 
-			For Each objRow In objData.Tables(1).Rows
+			For Each objRow As DataRow In objData.Tables(1).Rows
 				Dim column As New Column
-				column.ID = objRow("columnid")
-				column.TableID = objRow("tableid")
+				column.ID = CInt(objRow("columnid"))
+				column.TableID = CInt(objRow("tableid"))
 				column.TableName = Tables.GetById(column.TableID).Name
-				column.Name = objRow("columnname")
+				column.Name = objRow("columnname").ToString()
 				column.DataType = objRow("datatype")
-				column.Use1000Separator = objRow("use1000separator")
-				column.Size = objRow("size")
-				column.Decimals = objRow("decimals")
+				column.Use1000Separator = CBool(objRow("use1000separator"))
+				column.Size = CLng(objRow("size"))
+				column.Decimals = CShort(objRow("decimals"))
 				Columns.Add(column)
 			Next
 
 
-			For Each objRow In objData.Tables(2).Rows
+			For Each objRow As DataRow In objData.Tables(2).Rows
 				Dim relation As New Relation
-				relation.ParentID = objRow("parentid")
-				relation.ChildID = objRow("childid")
+				relation.ParentID = CInt(objRow("parentid"))
+				relation.ChildID = CInt(objRow("childid"))
 				Relations.Add(relation)
 			Next
 
 
-			For Each objRow In objData.Tables(3).Rows
+			For Each objRow As DataRow In objData.Tables(3).Rows
 				Dim moduleSetting As New ModuleSetting
-				moduleSetting.ModuleKey = objRow("ModuleKey")
-				moduleSetting.ParameterKey = objRow("ParameterKey")
-				moduleSetting.ParameterValue = objRow("ParameterValue")
-				moduleSetting.ParameterType = objRow("ParameterType")
+				moduleSetting.ModuleKey = objRow("ModuleKey").ToString()
+				moduleSetting.ParameterKey = objRow("ParameterKey").ToString()
+				moduleSetting.ParameterValue = objRow("ParameterValue").ToString()
+				moduleSetting.ParameterType = objRow("ParameterType").ToString()
 				ModuleSettings.Add(moduleSetting)
 			Next
 
 
-			For Each objRow In objData.Tables(4).Rows
+			For Each objRow As DataRow In objData.Tables(4).Rows
 				Dim userSetting As New UserSetting
-				userSetting.Section = objRow("Section")
-				userSetting.Key = objRow("SettingKey")
+				userSetting.Section = objRow("Section").ToString()
+				userSetting.Key = objRow("SettingKey").ToString()
 				userSetting.Value = objRow("SettingValue")
 				UserSettings.Add(userSetting)
 			Next
 
 
-			For Each objRow In objData.Tables(5).Rows
+			For Each objRow As DataRow In objData.Tables(5).Rows
 				Dim objFunction = New [Function]
-				objFunction.ID = objRow("functionID")
-				objFunction.Name = objRow("functionName")
-				objFunction.ReturnType = objRow("returnType")
+				objFunction.ID = CInt(objRow("functionID"))
+				objFunction.Name = objRow("functionName").ToString()
+				objFunction.ReturnType = CInt(objRow("returnType"))
 				objFunction.Parameters = New Collection(Of FunctionParameter)()
 				Functions.Add(objFunction)
 			Next
 
 
-			For Each objRow In objData.Tables(6).Rows
+			For Each objRow As DataRow In objData.Tables(6).Rows
 				Dim objParameter = New [FunctionParameter]
-				objParameter.ParameterIndex = objRow("ParameterIndex")
-				objParameter.ParameterType = objRow("ParameterType")
-				objParameter.Name = objRow("ParameterName")
-				Dim objFunction = Functions.GetById(objRow("functionID"))
+				objParameter.ParameterIndex = CInt(objRow("ParameterIndex"))
+				objParameter.ParameterType = objRow("ParameterType").ToString()
+				objParameter.Name = objRow("ParameterName").ToString()
+				Dim objFunction = Functions.GetById(CInt(objRow("functionID")))
 				objFunction.Parameters.Add(objParameter)
 			Next
 
 
-			For Each objRow In objData.Tables(7).Rows
+			For Each objRow As DataRow In objData.Tables(7).Rows
 				Dim objOperator = New [Operator]
 
-				objOperator.ID = objRow("OperatorID")
-				objOperator.Name = objRow("Name")
+				objOperator.ID = CInt(objRow("OperatorID"))
+				objOperator.Name = objRow("Name").ToString()
 				objOperator.ReturnType = objRow("returnType")
-				objOperator.Precedence = objRow("Precedence")
-				objOperator.OperandCount = objRow("OperandCount")
-				objOperator.SPName = objRow("SPName")
-				objOperator.SQLCode = objRow("SQLCode")
-				objOperator.SQLType = objRow("SQLType")
-				objOperator.CheckDivideByZero = objRow("CheckDivideByZero")
+				objOperator.Precedence = CInt(objRow("Precedence"))
+				objOperator.OperandCount = CInt(objRow("OperandCount"))
+				objOperator.SPName = objRow("SPName").ToString()
+				objOperator.SQLCode = objRow("SQLCode").ToString()
+				objOperator.SQLType = objRow("SQLType").ToString()
+				objOperator.CheckDivideByZero = CBool(objRow("CheckDivideByZero"))
 				objOperator.SQLFixedParam1 = objRow("SQLFixedParam1").ToString()
-				objOperator.CastAsFloat = objRow("CastAsFloat")
+				objOperator.CastAsFloat = CBool(objRow("CastAsFloat"))
 				objOperator.Parameters = New Collection(Of OperatorParameter)()
 				Operators.Add(objOperator)
 			Next
 
 
-			For Each objRow In objData.Tables(8).Rows
+			For Each objRow As DataRow In objData.Tables(8).Rows
 				Dim objParameter = New OperatorParameter
-				objParameter.ParameterType = objRow("ParameterType")
-				Operators.GetById(objRow("operatorID")).Parameters.Add(objParameter)
+				objParameter.ParameterType = objRow("ParameterType").ToString()
+				Operators.GetById(CInt(objRow("operatorID"))).Parameters.Add(objParameter)
 			Next
 
 		Catch ex As Exception
@@ -163,18 +163,18 @@ Module modPermissions
 		dsPermissions = clsDataAccess.GetDataSet("spASRIntSetupTablesCollection")
 
 		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
-		gsUsername = objSecurityRow("UserName")
-		gsActualLogin = objSecurityRow("ActualLogin")
-		gsUserGroup = objSecurityRow("UserGroup")
-		fSysSecManager = objSecurityRow("IsSysSecMgr")
+		gsUsername = objSecurityRow("UserName").ToString()
+		gsActualLogin = objSecurityRow("ActualLogin").ToString()
+		gsUserGroup = objSecurityRow("UserGroup").ToString()
+		fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
 
 
 		' Populate our system settings
 		Permissions = New Collection(Of Permission)
-		For Each objRow In dsPermissions.Tables(SecurityPermissions).Rows
+		For Each objRow As DataRow In dsPermissions.Tables(SecurityPermissions).Rows
 			Dim objPermissionItem = New Permission
-			objPermissionItem.Key = objRow("key")
-			objPermissionItem.IsPermitted = objRow("permitted")
+			objPermissionItem.Key = objRow("key").ToString()
+			objPermissionItem.IsPermitted = CBool(objRow("permitted"))
 			Permissions.Add(objPermissionItem)
 		Next
 
@@ -195,17 +195,17 @@ Module modPermissions
 		Next
 
 		' Initialise the collection with items for each VIEW in the system.
-		For Each objRow In dsPermissions.Tables(ViewTable).Rows
+		For Each objRow As DataRow In dsPermissions.Tables(ViewTable).Rows
 			objItem = New TablePrivilege()
-			objItem.TableName = objRow("TableName")
-			objItem.TableID = objRow("TableID")
+			objItem.TableName = objRow("TableName").ToString()
+			objItem.TableID = CInt(objRow("TableID"))
 			objItem.TableType = objRow("TableType")
-			objItem.DefaultOrderID = objRow("DefaultOrderID")
-			objItem.RecordDescriptionID = objRow("RecordDescExprID")
+			objItem.DefaultOrderID = CInt(objRow("DefaultOrderID"))
+			objItem.RecordDescriptionID = CInt(objRow("RecordDescExprID"))
 			objItem.IsTable = False
-			objItem.ViewID = objRow("ViewID")
-			objItem.ViewName = objRow("ViewName")
-			objItem.RealSource = objRow("ViewName")
+			objItem.ViewID = CInt(objRow("ViewID"))
+			objItem.ViewName = objRow("ViewName").ToString()
+			objItem.RealSource = objRow("ViewName").ToString()
 			gcoTablePrivileges.Add(objItem)
 		Next
 
@@ -225,14 +225,15 @@ Module modPermissions
 			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
 			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
-			For Each objRow In dtInfo.Rows
-				lngTableId = Trim(objRow("tableid"))
+			For Each objRow As DataRow In dtInfo.Rows
+				lngTableId = CInt(objRow("tableid"))
 				objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
 
 				If objTableView.TableType = TableTypes.tabChild Then
-					objTableView.RealSource = Left("ASRSysCV" & Trim(Str(objRow("childViewID"))) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(gsUserGroup, " ", "_"), 255)
+					objTableView.RealSource = Left("ASRSysCV" & Trim(objRow("childViewID").ToString) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(gsUserGroup, " ", "_"), 255)
 				Else
-					objTableView.RealSource = IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName)
+					objTableView.RealSource = CStr(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
+
 				End If
 
 			Next
@@ -245,11 +246,11 @@ Module modPermissions
 			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			colTablePermissions = New List(Of TablePermission)
-			For Each objRow In dtInfo.Rows
+			For Each objRow As DataRow In dtInfo.Rows
 				objTablePermission = New TablePermission()
-				objTablePermission.Name = objRow("Name")
-				objTablePermission.Action = objRow("Action")
-				objTablePermission.TableID = objRow("TableID")
+				objTablePermission.Name = objRow("Name").ToString()
+				objTablePermission.Action = CInt(objRow("Action"))
+				objTablePermission.TableID = CInt(objRow("TableID"))
 				colTablePermissions.Add(objTablePermission)
 			Next
 
@@ -319,17 +320,17 @@ Module modPermissions
 			' Get the list of all columns in all tables/views.
 			dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
 
-			For Each objRow In dtInfo.Rows
+			For Each objRow As DataRow In dtInfo.Rows
 
 				' If the current column's collection is NOT already instantiated, instantiate it.
-				If sLastTableView <> objRow("tableviewname") Then
-					sLastTableView = objRow("tableviewname")
+				If sLastTableView <> objRow("tableviewname").ToString() Then
+					sLastTableView = objRow("tableviewname").ToString()
 					objColumnPrivileges = New CColumnPrivileges
-					objColumnPrivileges.Tag = objRow("tableviewname")
-					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, objRow("tableviewname"))
+					objColumnPrivileges.Tag = objRow("tableviewname").ToString()
+					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, objRow("tableviewname").ToString())
 				End If
 
-				sColumnName = objRow("ColumnName")
+				sColumnName = objRow("ColumnName").ToString()
 				If Not objColumnPrivileges.IsValid(sColumnName) Then
 					' Add the column object to the collection.
 					' If the current user is a system/security maneger then set column privileges to TRUE,
@@ -347,25 +348,25 @@ Module modPermissions
 				sLastTableView = ""
 
 				dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
-				For Each objRow In dtInfo.Rows
+				For Each objRow As DataRow In dtInfo.Rows
 
-					If sLastTableView <> objRow("tableviewname") Then
-						sLastTableView = objRow("tableviewname")
+					If sLastTableView <> objRow("tableviewname").ToString() Then
+						sLastTableView = objRow("tableviewname").ToString()
 
-						objTableView = gcoTablePrivileges.FindRealSource(objRow("tableviewname"))
+						objTableView = gcoTablePrivileges.FindRealSource(objRow("tableviewname").ToString())
 						If objTableView.IsTable Then
 							sTableViewName = objTableView.TableName
 						Else
-							sTableViewName = objRow("tableviewname")
+							sTableViewName = objRow("tableviewname").ToString()
 						End If
 
 						objColumnPrivileges = gcolColumnPrivilegesCollection.Item(sTableViewName)
 					End If
 
-					If objRow("Action") = 193 Then
-						objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect = objRow("Permission")
+					If CInt(objRow("Action")) = 193 Then
+						objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect = CBool(objRow("Permission"))
 					Else
-						objColumnPrivileges.Item(objRow("ColumnName")).AllowUpdate = objRow("Permission")
+						objColumnPrivileges.Item(objRow("ColumnName")).AllowUpdate = CBool(objRow("Permission"))
 					End If
 
 				Next
@@ -380,7 +381,7 @@ Module modPermissions
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim iLoop As Short
+		Dim iLoop As Integer
 		Dim objColumnPrivileges As CColumnPrivileges
 
 		fOK = True
@@ -395,8 +396,7 @@ Module modPermissions
 		For iLoop = 1 To gcolColumnPrivilegesCollection.Count()
 			'UPGRADE_WARNING: Couldn't resolve default property of object gcolColumnPrivilegesCollection().Tag. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If UCase(gcolColumnPrivilegesCollection.Item(iLoop).Tag) = UCase(psTableViewName) Then
-				GetColumnPrivileges = gcolColumnPrivilegesCollection.Item(iLoop)
-				Exit Function
+				Return gcolColumnPrivilegesCollection.Item(iLoop)
 			End If
 		Next iLoop
 
