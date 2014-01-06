@@ -541,8 +541,8 @@
 %>
 					</td>
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
-					<TD width=80 height=10>
-						<input type="button" id=cmdAdd name=cmdAdd value="Add" style="WIDTH: 100px" width="100" class="btn"  
+					<TD width=100 height=10>
+						<input type="button" id=cmdAdd name=cmdAdd value="Add" style="WIDTH: 100%" class="btn"  
 								onclick="add()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -558,7 +558,7 @@
 		
 				<TR>
 					<TD height=10>
-						<input type="button" name=cmdAddFilter id=cmdAddFilter value="Filtered Add" style="WIDTH: 100px" width="100" class="btn"
+						<input type="button" name=cmdAddFilter id=cmdAddFilter value="Filtered Add" style="WIDTH: 100%; text-align:center"class="btn"
 								onclick="filteredAdd()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -573,7 +573,7 @@
 		
 				<TR>
 					<TD height=10>
-						<input type="button" name=cmdAddPicklist id=cmdAddPicklist value="Picklist Add" style="WIDTH: 100px" width="100" class="btn"
+						<input type="button" name=cmdAddPicklist id=cmdAddPicklist value="Picklist Add" style="WIDTH: 100%; text-align:center"  class="btn"
 								onclick="addPicklist()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -588,7 +588,7 @@
 
 				<TR>
 					<TD height=10>
-						<input type="button" name=cmdRemove value="Remove" style="WIDTH: 100px" width="100" class="btn"
+						<input type="button" name=cmdRemove value="Remove" style="WIDTH: 100%"  class="btn"
 								onclick="remove()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -603,7 +603,7 @@
 
 				<TR>
 					<TD height=10>
-						<input type="button" name=cmdRemoveAll value="Remove All" style="WIDTH: 100px" width="100" class="btn"
+						<input type="button" name=cmdRemoveAll value="Remove All" style="WIDTH: 100%"  class="btn"
 								onclick="removeAll()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -618,7 +618,7 @@
 
 				<TR>
 					<TD height=10>
-						<input type="button" name=cmdOK value="OK" style="WIDTH: 100px" width="100" id=cmdOK class="btn"
+						<input type="button" name=cmdOK value="OK" style="WIDTH: 100%"  id=cmdOK class="btn"
 								onclick="ok()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -633,7 +633,7 @@
 
 				<TR>
 					<TD height=10>
-						<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 100px" width="100" class="btn"
+						<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
 								onclick="cancel()" 
 														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 														onmouseout="try{button_onMouseOut(this);}catch(e){}"
