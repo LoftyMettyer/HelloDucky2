@@ -46,6 +46,14 @@ Friend Module Extensions
 	End Function
 
 	<Extension()>
+	Public Function GetSetting(Of T As UserSetting)(ByVal items As ICollection(Of T), ByVal section As String, ByVal Key As String, ByVal [Default] As Object) As T
+
+		'TODO If not found return one with default default set
+
+		Return items.FirstOrDefault(Function(item) item.Section = section And item.Key = Key)
+	End Function
+
+	<Extension()>
 	Public Function Item(Of T As TablePrivilege)(ByVal items As ICollection(Of T), ByVal name As String) As T
 		Return items.FirstOrDefault(Function(baseItem) (baseItem.TableName = name.ToUpper() And baseItem.IsTable = True) Or (baseItem.ViewName = name And baseItem.IsTable = False))
 	End Function

@@ -27,30 +27,38 @@ Public Class clsTodaysAbsence
 		' Get the absence table name and Personnel Records ID and name from Module Setup
 		ReadAbsenceParameters()
 
-		' Check the user has permission to read the absence table.
-		For Each objTableView In gcoTablePrivileges.Collection
-			If (objTableView.TableID = glngAbsenceTableID) And (objTableView.AllowSelect) Then
-				pblnOK = True
-				Exit For
+		Try
+
+
+			' Check the user has permission to read the absence table.
+			For Each objTableView In gcoTablePrivileges.Collection
+				If (objTableView.TableID = glngAbsenceTableID) And (objTableView.AllowSelect) Then
+					pblnOK = True
+					Exit For
+				End If
+			Next objTableView
+			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			objTableView = Nothing
+
+			If Not pblnOK Then
+				mstrErrorString = "You do not have permission to read the base table either directly or through any views."
+				Exit Function
 			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
 
-		If Not pblnOK Then
-			mstrErrorString = "You do not have permission to read the base table either directly or through any views."
-			Exit Function
-		End If
+			' Store the absence view name
+			mstrAbsenceRealSource = gcoTablePrivileges.Item("Absence").RealSource
 
-		' Store the absence view name
-		mstrAbsenceRealSource = gcoTablePrivileges.Item("Absence").RealSource
+			' Build the Personnel Select string
+			If pblnOK Then pblnOK = GenerateSQLSelect()
+			If pblnOK Then pblnOK = GenerateSQLFrom(gsPersonnelTableName)
+			If pblnOK Then pblnOK = GenerateSQLJoin(glngPersonnelTableID)
+			If pblnOK Then pblnOK = GenerateSQLWhere(glngPersonnelTableID, plngEmployeeID, RecordID)
+			If pblnOK Then pblnOK = MergeSQLStrings()
 
-		' Build the Personnel Select string
-		If pblnOK Then pblnOK = GenerateSQLSelect()
-		If pblnOK Then pblnOK = GenerateSQLFrom(gsPersonnelTableName)
-		If pblnOK Then pblnOK = GenerateSQLJoin(glngPersonnelTableID)
-		If pblnOK Then pblnOK = GenerateSQLWhere(glngPersonnelTableID, plngEmployeeID, RecordID)
-		If pblnOK Then pblnOK = MergeSQLStrings()
+		Catch ex As Exception
+			Throw
+
+		End Try
 
 		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
 
@@ -307,18 +315,13 @@ GenerateSQLJoin_ERROR:
 		Dim strPM_Start As String
 		Dim strCurrentSession As String
 
-		' NPG20110126 Fault HRPRO-1343
-		'  mstrSQLWhere = "WHERE ((" & mstrAbsenceRealSource & ".ID_" & CStr(glngPersonnelTableID) & " = " & lngRecordID & " OR " & mstrAbsenceRealSource & ".ID_" & CStr(glngPersonnelTableID) & " IN (" & _
-		''      "SELECT ID FROM dbo.udf_ASRFn_ByID_IsPersonnelSubordinateOfUser(" & lngRecordID & ")))"
-
 		mstrSQLWhere = "WHERE "
 
 
 		' Get the start and end session variables and compare to local time.
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		strAM_End = GetSystemSetting("outlook", "amendtime", "12:30")
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		strPM_Start = GetSystemSetting("outlook", "pmstarttime", "13:30")
+		strAM_End = SystemSettings.GetSetting("outlook", "amendtime", "12:30").Value
+		strPM_Start = SystemSettings.GetSetting("outlook", "pmstarttime", "13:30").Value
+
 
 		If TimeOfDay < CDate(strPM_Start) And TimeOfDay > CDate(strAM_End) Then
 			strCurrentSession = ""

@@ -787,7 +787,7 @@
 												Dim iNumberOfEvents As Integer = 0
 												
 												' Create the reference to the DLL
-												Dim objDiaryEvents As HR.Intranet.Server.clsDiary = New HR.Intranet.Server.clsDiary
+												Dim objDiaryEvents As clsDiary = New clsDiary
 
 			
 												Err.Clear()
@@ -862,10 +862,6 @@
 				
 									Err.Clear()
 									mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
-
-									If (Err.Number <> 0) Then
-										sErrorDescription = "Todays Absence Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
-									End If
 									iRecNum = 0
 											
 									If Len(sErrorDescription) = 0 Then

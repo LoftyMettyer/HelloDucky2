@@ -29,6 +29,7 @@ Module Declarations
 	Public Relations As List(Of Relation)
 	Public ModuleSettings As ICollection(Of ModuleSetting)
 	Public UserSettings As ICollection(Of UserSetting)
+	Public SystemSettings As IList(Of UserSetting)
 	Public Functions As ICollection(Of Metadata.Function)
 	Public Operators As ICollection(Of Metadata.Operator)
 

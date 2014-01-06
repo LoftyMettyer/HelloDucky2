@@ -16,8 +16,7 @@ Module modSettings
     Dim lngOldMethodID As Integer 'SELECT MAX ID
 
     lngOldMethodID = UniqueColumnValue(strTable, strColumn)
-    'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    lngNewMethodID = GetSystemSetting("AutoID", strSetting, 0) + 1
+		lngNewMethodID = SystemSettings.GetSetting("AutoID", strSetting, 0).Value + 1
 
     GetUniqueID = IIf(lngOldMethodID > lngNewMethodID, lngOldMethodID, lngNewMethodID)
     SaveSystemSetting("AutoID", strSetting, GetUniqueID)
@@ -62,47 +61,9 @@ Module modSettings
 
   End Function
 
-  Public Function GetSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
-
-    Dim datData As clsDataAccess
-    Dim rsTemp As ADODB.Recordset
-    Dim strSQL As String
-
-    On Error GoTo LocalErr
-
-    datData = New clsDataAccess
-
-    strSQL = "SELECT SettingValue FROM ASRSysSystemSettings " & " WHERE Section = '" & LCase(strSection) & "'" & " AND SettingKey = '" & LCase(strKey) & "'"
-    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-    With rsTemp
-      If Not .BOF And Not .EOF Then
-        'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        GetSystemSetting = rsTemp.Fields("SettingValue").Value
-        'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If IsDBNull(GetSystemSetting) Then GetSystemSetting = vbNullString
-      Else
-        'UPGRADE_WARNING: Couldn't resolve default property of object varDefault. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        GetSystemSetting = varDefault
-      End If
-    End With
-
-    rsTemp.Close()
-
-    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    rsTemp = Nothing
-    'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    datData = Nothing
-
-    Exit Function
-
-LocalErr:
-    'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    GetSystemSetting = vbNullString
-
-  End Function
+	Public Function GetSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
+		Return SystemSettings.GetSetting(strSection, strKey, varDefault).Value
+	End Function
 
   Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
     ' Return the value of the given parameter.

@@ -5916,23 +5916,23 @@ BEGIN
 	EXEC [dbo].[sp_ASRIntGetSystemSetting] 'Licence', 'Key', 'moduleCode', @licenseKey OUTPUT, 0, 0;
 
 
-	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM ASRSysTables;
+	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
-	SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM ASRSysColumns;
+	SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM dbo.ASRSysColumns;
 
-	SELECT ParentID, ChildID FROM ASRSysRelations;
+	SELECT ParentID, ChildID FROM dbo.ASRSysRelations;
 
-	SELECT ModuleKey, ParameterKey, ISNULL(ParameterValue,'') AS ParameterValue, ParameterType FROM ASRSysModuleSetup;
+	SELECT ModuleKey, ParameterKey, ISNULL(ParameterValue,'') AS ParameterValue, ParameterType FROM dbo.ASRSysModuleSetup;
 
-	SELECT * FROM ASRSysUserSettings WHERE Username = @Username;
+	SELECT * FROM dbo.ASRSysUserSettings WHERE Username = @Username;
 
-	SELECT functionID, functionName, returnType FROM ASRSysFunctions;
+	SELECT functionID, functionName, returnType FROM dbo.ASRSysFunctions;
 
-	SELECT * FROM ASRSysFunctionParameters ORDER BY functionID, parameterIndex;
+	SELECT * FROM dbo.ASRSysFunctionParameters ORDER BY functionID, parameterIndex;
 
-	SELECT * FROM ASRSysOperators;
+	SELECT * FROM dbo.ASRSysOperators;
 
-	SELECT * FROM ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex;
+	SELECT * FROM dbo.ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex;
 	
 	-- Which modules are enabled?
 	SELECT 'WORKFLOW' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,1024) AS [enabled]
@@ -5944,6 +5944,12 @@ BEGIN
 	SELECT 'TRAINING' AS [name],  dbo.udfASRNetIsModuleLicensed(@licenseKey,8) AS [enabled]
 	UNION
 	SELECT  'VERSIONONE' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,2048) AS [enabled];
+
+
+	-- Selected system settings
+	SELECT * FROM ASRSysSystemSettings;
+
+
 
 END
 

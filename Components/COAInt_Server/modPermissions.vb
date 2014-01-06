@@ -17,6 +17,7 @@ Module modPermissions
 		Relations = New List(Of Relation)
 		ModuleSettings = New Collection(Of ModuleSetting)
 		UserSettings = New Collection(Of UserSetting)
+		SystemSettings = New List(Of UserSetting)
 		Functions = New Collection(Of Metadata.Function)
 		Operators = New Collection(Of Metadata.Operator)
 		Modules = New List(Of ModuleSetting)
@@ -128,6 +129,15 @@ Module modPermissions
 				objModule.Enabled = CBool(objRow("Enabled"))
 				Modules.Add(objModule)
 			Next
+
+			For Each objRow As DataRow In objData.Tables(10).Rows
+				Dim systemSetting As New UserSetting
+				systemSetting.Section = objRow("Section").ToString()
+				systemSetting.Key = objRow("SettingKey").ToString()
+				systemSetting.Value = objRow("SettingValue")
+				SystemSettings.Add(systemSetting)
+			Next
+
 
 		Catch ex As Exception
 			Throw
