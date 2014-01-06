@@ -937,54 +937,54 @@ Namespace Controllers
 		' GET: /Home
 		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
 
-			Dim iSingleRecordViewID As Integer = CleanNumeric(Session("SingleRecordViewID"))
+			'Dim iSingleRecordViewID As Integer = CleanNumeric(Session("SingleRecordViewID"))
 
-			Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
-			prmRecordID.Direction = ParameterDirection.Output
+			'Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
+			'prmRecordID.Direction = ParameterDirection.Output
 
-			Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
-			prmRecordCount.Direction = ParameterDirection.Output
+			'Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
+			'prmRecordCount.Direction = ParameterDirection.Output
 
-			clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
-														, New SqlParameter("piViewID", iSingleRecordViewID))
+			'clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
+			'											, New SqlParameter("piViewID", iSingleRecordViewID))
 
-			' Reload the toplevelrecid session variable as linksMain may have reset it.
-			Dim sErrorDescription = ""
+			'' Reload the toplevelrecid session variable as linksMain may have reset it.
+			'Dim sErrorDescription = ""
 
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
-			End If
+			'If (Err.Number <> 0) Then
+			'	sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
+			'End If
 
-			If Len(sErrorDescription) = 0 Then
-				If prmRecordCount.Value = 1 Then
-					' Only one record.
-					Session("TopLevelRecID") = CLng(prmRecordID.Value)
-				Else
-					If prmRecordCount.Value = 0 Then
-						' No personnel record. 
-						Session("TopLevelRecID") = 0
-					Else
-						' More than one personnel record.
-						sErrorDescription = "You have access to more than one record in the defined Single-record view."
+			'If Len(sErrorDescription) = 0 Then
+			'	If prmRecordCount.Value = 1 Then
+			'		' Only one record.
+			'		Session("TopLevelRecID") = CLng(prmRecordID.Value)
+			'	Else
+			'		If prmRecordCount.Value = 0 Then
+			'			' No personnel record. 
+			'			Session("TopLevelRecID") = 0
+			'		Else
+			'			' More than one personnel record.
+			'			sErrorDescription = "You have access to more than one record in the defined Single-record view."
 
-						Session("ErrorTitle") = "Login Page"
-						Session("ErrorText") =
-						 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
+			'			Session("ErrorTitle") = "Login Page"
+			'			Session("ErrorText") =
+			'			 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
 
-						Response.Redirect("FormError")
+			'			Response.Redirect("FormError")
 
-						' Return RedirectToAction("Loginerror", "Account")
-					End If
-				End If
-			Else
-				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") =
-				 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-				Response.Redirect("FormError")
-				' Return RedirectToAction("Loginerror", "Account")
-			End If
+			'			' Return RedirectToAction("Loginerror", "Account")
+			'		End If
+			'	End If
+			'Else
+			'	Session("ErrorTitle") = "Login Page"
+			'	Session("ErrorText") =
+			'	 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
+			'	Response.Redirect("FormError")
+			'	' Return RedirectToAction("Loginerror", "Account")
+			'End If
 
-			'	cmdSSRecord = Nothing
+			''	cmdSSRecord = Nothing
 
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
@@ -2608,55 +2608,37 @@ Namespace Controllers
 					Dim sErrorDescription = ""
 
 					' Get the self-service record ID.
-					Dim cmdSSRecord = New Command
-					cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
-					cmdSSRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-					cmdSSRecord.ActiveConnection = Session("databaseConnection")
 
-					Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-					cmdSSRecord.Parameters.Append(prmRecordID)
+					Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
+					prmRecordID.Direction = ParameterDirection.Output
 
-					Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-					cmdSSRecord.Parameters.Append(prmRecordCount)
+					Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
+					prmRecordCount.Direction = ParameterDirection.Output
 
-					Dim prmViewID = cmdSSRecord.CreateParameter("@piViewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-					cmdSSRecord.Parameters.Append(prmViewID)
-					prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
+					clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
+																, New SqlParameter("piViewID", CleanNumeric(Session("SingleRecordViewID"))))
 
-					cmdSSRecord.Execute()
 
-					If (Err.Number <> 0) Then
-						sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
-					End If
-
-					If Len(sErrorDescription) = 0 Then
-						If cmdSSRecord.Parameters("@piRecordCount").Value = 1 Then
-							' Only one record.
-							Session("TopLevelRecID") = NullSafeInteger(cmdSSRecord.Parameters("@piRecordID").Value)
-						Else
-							If cmdSSRecord.Parameters("@piRecordCount").Value = 0 Then
-								' No personnel record. 
-								Session("TopLevelRecID") = 0
-							Else
-								' More than one personnel record.
-								sErrorDescription = "You have access to more than one record in the defined Single-record view."
-
-								Session("ErrorTitle") = "Login Page"
-								Session("ErrorText") =
-								 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
-
-								Response.Redirect("FormError")
-
-							End If
-						End If
+					If prmRecordCount.Value = 1 Then
+						' Only one record.
+						Session("TopLevelRecID") = NullSafeInteger(prmRecordID.Value)
 					Else
-						Session("ErrorTitle") = "Login Page"
-						Session("ErrorText") =
-						 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-						Response.Redirect("FormError")
+						If prmRecordCount.Value = 0 Then
+							' No personnel record. 
+							Session("TopLevelRecID") = 0
+						Else
+							' More than one personnel record.
+							sErrorDescription = "You have access to more than one record in the defined Single-record view."
+
+							Session("ErrorTitle") = "Login Page"
+							Session("ErrorText") =
+							 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
+
+							Response.Redirect("FormError")
+
+						End If
 					End If
 
-					cmdSSRecord = Nothing
 
 
 					' Are we displaying the Workflow Out of Office Hyperlink for this view?
@@ -2693,7 +2675,12 @@ Namespace Controllers
 					cmdShowOOOLink = Nothing
 
 				Catch ex As Exception
-					' TODO: SHow an error message
+
+					Session("ErrorTitle") = "Login Page"
+					Session("ErrorText") =
+					 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & ex.Message & "<p>" & vbCrLf
+					Response.Redirect("FormError")
+
 				End Try
 				' End Ripped
 			End If

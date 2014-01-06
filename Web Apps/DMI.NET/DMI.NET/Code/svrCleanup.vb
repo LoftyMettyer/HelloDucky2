@@ -26,23 +26,23 @@ Public Module svrCleanup
 		CleanString = sCleaned
 	End Function
 
-  Function CleanNumeric(pNumber)
-    Dim lngCleaned
+	Function CleanNumeric(pNumber) As Long
+		Dim lngCleaned
 
-    lngCleaned = CLng(0)
+		lngCleaned = CLng(0)
 
-    If IsNumeric("" & pNumber) Then
-      If (CDbl(pNumber) > -2147483647) And (CDbl(pNumber) < 2147483648) Then
-        If InStr(1, "" & pNumber, ",") > 0 Then
-          lngCleaned = 0
-        Else
-          lngCleaned = CLng(pNumber)
-        End If
-      End If
-    End If
+		If IsNumeric("" & pNumber) Then
+			If (CDbl(pNumber) > -2147483647) And (CDbl(pNumber) < 2147483648) Then
+				If InStr(1, "" & pNumber, ",") > 0 Then
+					lngCleaned = 0
+				Else
+					lngCleaned = CLng(pNumber)
+				End If
+			End If
+		End If
 
-    CleanNumeric = lngCleaned
-  End Function
+		Return lngCleaned
+	End Function
 
   Function CleanBoolean(pValue)
     Dim lngCleaned
