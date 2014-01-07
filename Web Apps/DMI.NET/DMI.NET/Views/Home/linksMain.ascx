@@ -999,12 +999,12 @@
 				</script>
 				<%End If%>
 				<li class="dropdownlinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-					data-sizey="1">
+					data-sizey="1" onclick="<%=sOnclick%>">
 					<p class="dropdownlinktileIcon">
 						<i class="icon-external-link"></i>
 					</p>
 					<p>
-						<a href="#" data-DDLValue="<%=sValue%>" onclick="<%=sOnclick%>">
+						<a href="#" data-DDLValue="<%=sValue%>" >
 							<%: navlink.Text %></a>
 					</p>
 				</li>
