@@ -292,7 +292,8 @@ input.textwarning
 }
 
 input[disabled=""], input[disabled="disabled"] {
-	color: gray;
+	color: black;
+	background-color: lightgray;
 }
 
 input.textinformation
