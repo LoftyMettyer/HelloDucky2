@@ -387,6 +387,13 @@
 				//TODO: check this; fires change too.....
 				enableSaveButton();				
 			});
+			
+			//Dropdown lists
+			$('select[id^="FI_"]').on("change", function () {
+				$("#ctlRecordEdit #changed").val("false");
+				enableSaveButton();
+			});
+
 		}
 	
 		function GoBack() {
