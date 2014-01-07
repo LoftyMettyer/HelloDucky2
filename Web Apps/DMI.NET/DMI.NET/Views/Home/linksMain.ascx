@@ -664,70 +664,68 @@
 
 										For Each objRow As DataRow In mrstDbValueData.Rows
 											sText = objRow(0).ToString()
-										Next
-
-											Dim fDoFormatting As Boolean
-											
-											If fUseConditionalFormatting = True Then
-												For jnCount = 0 To 2
-													fDoFormatting = False
-													If sCFValue(jnCount) <> vbNullString Then
-														Select Case sCFOperator(jnCount)
-															Case "is equal to"
-																If CType(sText, Int32) = CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-															Case "is not equal to"
-																If CType(sText, Int32) <> CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-															Case "is less than or equal to"
-																If CType(sText, Int32) <= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-															Case "is greater than or equal to"
-																If CType(sText, Int32) >= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-															Case "is less than"
-																If CType(sText, Int32) < CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-															Case "is greater than"
-																If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-														End Select
+										Next									
+										Dim fDoFormatting As Boolean																				
+										If fUseConditionalFormatting = True Then
+											For jnCount = 0 To 2
+												fDoFormatting = False
+												If sCFValue(jnCount) <> vbNullString Then
+													Select Case sCFOperator(jnCount)
+														Case "is equal to"
+															If CType(sText, Int32) = CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+														Case "is not equal to"
+															If CType(sText, Int32) <> CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+														Case "is less than or equal to"
+															If CType(sText, Int32) <= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+														Case "is greater than or equal to"
+															If CType(sText, Int32) >= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+														Case "is less than"
+															If CType(sText, Int32) < CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+														Case "is greater than"
+															If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
+													End Select
 														
-														If fDoFormatting Then
-															sCFForeColor = sCFColour(jnCount)
-															Select Case sCFStyle(jnCount)
-																Case "Bold"
-																	sCFFontBold = "font-weight:bold"
-																Case "Italic"
-																	sCFFontItalic = "font-style:italic"
-																Case "Bold & Italic"
-																	sCFFontItalic = "font-weight:bold;font-style:italic"
-																Case "Hidden"
-																	sCFVisible = False
-																Case "Normal"
-																	fFormattingApplies = True
-																Case Else
-																	fFormattingApplies = False
-															End Select
-															Exit For
-														End If
+													If fDoFormatting Then
+														sCFForeColor = sCFColour(jnCount)
+														Select Case sCFStyle(jnCount)
+															Case "Bold"
+																sCFFontBold = "font-weight:bold"
+															Case "Italic"
+																sCFFontItalic = "font-style:italic"
+															Case "Bold & Italic"
+																sCFFontItalic = "font-weight:bold;font-style:italic"
+															Case "Hidden"
+																sCFVisible = False
+															Case "Normal"
+																fFormattingApplies = True
+															Case Else
+																fFormattingApplies = False
+														End Select
+														Exit For
 													End If
-												Next
-											Else
-												fFormattingApplies = False
-											End If
-
-
-										Else	 ' no results - return zero
-											sText = "No Data"
+												End If
+											Next
+										Else
+											fFormattingApplies = False
 										End If
+
+
+									Else	 ' no results - return zero
+										sText = "No Data"
+									End If
 								
-									If sText <> "No Data" And sCFVisible = True Then
+						If sText <> "No Data" And sCFVisible = True Then
 									
-										If fFormattingApplies Then
+							If fFormattingApplies Then
 							%>
 							<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 								data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 									<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
 											<%If fUseFormatting = True Then%>
-										 <%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%>
+										 <span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
 										<%Else%>
-										<%: sText %>
+										<span class="DBVSpan"><%: sText %></span>
 										<%end if %>
 									</p>
 								</div>
@@ -744,9 +742,9 @@
 								<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 									<p class="DBValue" id="DBV<%: navlink.id %>">
 											<%If fUseFormatting = True Then%>
-										 <%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%>
+										 <span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
 										<%Else%>
-										<%: sText %>
+										<span class="DBVSpan"><%: sText %></span>
 										<%end if %>
 									</p>
 								</div>
@@ -1115,7 +1113,7 @@
 
 	$(".sp-container.sp-hidden").css("display", "none"); //The color picker plugin sometimes leaves visible bits; remove them
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$("#fixedlinksframe").show();
 
@@ -1135,21 +1133,31 @@
 
 		if (window.currentLayout == "tiles") {
 			setupTiles();
+			
+			//Reduce the dbvalue text size to fit its tile if too big.
+			$('.DBValue').each(function () {
+				var originalFontSize = 26;
+				var sectionWidth = $(this).width();
+				var spanWidth = $(this).find('span').width();
+				var newFontSize = (sectionWidth / spanWidth) * originalFontSize;
+				if (newFontSize < originalFontSize) {
+					$(this).find('span').css({ "font-size": newFontSize, "line-height": newFontSize / 1.2 + "px" });
+				}
+			});
+
 		} else {
 			// for wireframe layout, convert the dropdownlinks to a <select> element
-			$(function () {
-				$('ul.DropDownListMenu').each(function () {
+			$(function() {
+				$('ul.DropDownListMenu').each(function() {
 					var $select = $('<select class="DropdownlistSelect"/>');
 
-					$(this).find('a').each(function () {
+					$(this).find('a').each(function() {
 						var $option = $('<option />');
 						$option.attr('value', $(this).attr('data-DDLValue')).html($(this).html());
 						$select.append($option);
 					});
 
 					$(this).replaceWith($select);
-
-
 
 
 				});
@@ -1196,37 +1204,35 @@
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 		if ('<%=session("isMobileDevice")%>' != "True") {
-		setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
-	}
+			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
+		}
 
 
 		//resize columns that have wide tiles
-	$("li[data-sizex='2']").each(function () {
+		$("li[data-sizex='2']").each(function() {
 
-		var ulelement = $(this).closest('.linkspagebuttonseparatorframe');
+			var ulelement = $(this).closest('.linkspagebuttonseparatorframe');
 
-		if ($(ulelement).hasClass('cols2')) {
-			$(ulelement).removeClass('cols2');
-			$(ulelement).addClass('cols3');
-		}
-		else if ($(ulelement).hasClass('cols3')) {
-			$(ulelement).removeClass('cols3');
-			$(ulelement).addClass('cols4');
-		}
-		else if ($(ulelement).hasClass('cols4')) {
-			$(ulelement).removeClass('cols4');
-			$(ulelement).addClass('cols5');
-		} else {
-			//no cols class, so add one.
-			$(ulelement).addClass('cols2');
-		}
+			if ($(ulelement).hasClass('cols2')) {
+				$(ulelement).removeClass('cols2');
+				$(ulelement).addClass('cols3');
+			} else if ($(ulelement).hasClass('cols3')) {
+				$(ulelement).removeClass('cols3');
+				$(ulelement).addClass('cols4');
+			} else if ($(ulelement).hasClass('cols4')) {
+				$(ulelement).removeClass('cols4');
+				$(ulelement).addClass('cols5');
+			} else {
+				//no cols class, so add one.
+				$(ulelement).addClass('cols2');
+			}
 
-	});
+		});
 
 
 		//display view details
-	$('.ViewDescription p').text('<%=Session("ViewDescription")%>');
+		$('.ViewDescription p').text('<%=Session("ViewDescription")%>');
 
 	});
-
+	
 </script>
