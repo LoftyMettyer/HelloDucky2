@@ -2,9 +2,22 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <script runat="server">
+	Private UITheme As String = ""
+	
+	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+		Select Case Request.Cookies("Intranet_Layout").Value
+			Case "winkit"
+				UITheme = Session("ui-theme").ToString
+			Case "wireframe"
+				UITheme = Session("ui-wireframe-theme").ToString
+			Case Else 'Tiles
+				UITheme = "jMetro"
+		End Select
+	End Sub
+	
 	Private Function GetEmailSelection() As String
 		Dim emailSelectionHtmlTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
-        
+
 		'Get the records.
 		Dim cmdDefSelRecords = CreateObject("ADODB.Command")
 		cmdDefSelRecords.CommandText = "spASRIntGetEmailGroups"
@@ -21,7 +34,7 @@
 			.Append("<th id=""NameHeader"">Name</th>")
 			.Append("</tr>")
 		End With
-        
+
 		'Populate the table
 		Dim i As Integer = 1
 		Do While Not rstDefSelRecords.EOF
@@ -34,15 +47,15 @@
 			End With
 			rstDefSelRecords.MoveNext()
 		Loop
-        
+
 		emailSelectionHtmlTable.Append("</table>")
-        
+
 		rstDefSelRecords.close()
 		rstDefSelRecords = Nothing
-        
+
 		' Release the ADO command object.
 		cmdDefSelRecords = Nothing
-        
+
 		Return emailSelectionHtmlTable.ToString
 	End Function
 </script>
@@ -59,10 +72,10 @@
 	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.Content("~/Content/Site.css?v=8.0.8.0")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/themes/Redmond/jquery-ui.min.css?v=8.0.8.0") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.Content("~/Content/themes/" & UITheme & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.Content("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & UITheme & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
