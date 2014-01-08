@@ -484,12 +484,12 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtBasePicklist" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
-																	</td>
-																	<td width="30">
-																		<input id="cmdBasePicklist" name="cmdBasePicklist" style="WIDTH: 100%" type="button" disabled="disabled" value="..." class="btn btndisabled"
+																		<input id="txtBasePicklist" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="WIDTH: 85%">
+																	
+																		<input id="cmdBasePicklist" name="cmdBasePicklist" style="WIDTH: 10%" type="button" disabled="disabled" value="..." class="btn btndisabled"
 																			onclick="selectRecordOption('base', 'picklist')" />
 																	</td>
+                                                                    <td></td>
 																</tr>
 																<tr>
 																	<td colspan="6" height="5"></td>
@@ -510,15 +510,15 @@
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td>
-																		<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
-																	</td>
-																	<td width="30">
-																		<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 100%" type="button" class="btn btndisabled" disabled="disabled" value="..."
+																		<input id="txtBaseFilter" name="txtBaseFilter" disabled="disabled" class="text textdisabled" style="WIDTH: 85%">
+																	
+																		<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 10%" type="button" class="btn btndisabled" disabled="disabled" value="..."
 																			onclick="selectRecordOption('base', 'filter')" />
 																	</td>
+                                                                    <td></td>
 																</tr>
 															</table>
-														</td>
+														<%--</td>--%>
 														<td width="5">&nbsp;</td>
 													</tr>
 
@@ -1124,13 +1124,13 @@
 																				<td align="left" nowrap>File name : </td>
 																				<td>
 																					<input id="txtFilename" name="txtFilename"
-																						style="width: 100%;"
+																						style="width: 85%;"
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
-																				</td>
-																				<td style="padding-left: 2px;width: 25px">
+																				
 																					<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value='...' disabled="disabled"
-																						onclick="saveFile(); changeTab3Control();" />
+																						onclick="saveFile(); changeTab3Control();" style="width: 12%;" />
 																				</td>
+                                                                                <td></td>
 																				<td></td>
 																			</tr>
 
@@ -1167,19 +1167,20 @@
 																				<td style="white-space: nowrap;text-align: left">Email group :   </td>
 																				<td>
 																					<input id="txtEmailGroup" name="txtEmailGroup"
-																						style="width: 100%;"
+																						style="width: 85%;"
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
-																					<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden" 
-																						class="text textdisabled" disabled="disabled" tabindex="-1">
-																				</td>
-																				<td style="padding-left: 2px;width: 25px">
+																					
+																				
 																					<input id="cmdEmailGroup" name="cmdEmailGroup" 
 																						type="button" 
 																						value='...' 
 																						disabled="disabled" 
 																						class="btn"
-																						onclick="selectEmailGroup(); changeTab3Control();"/>
+																						onclick="selectEmailGroup(); changeTab3Control();" style="width:12%;"/>
+                                                                                    <input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden" 
+																						class="text textdisabled" disabled="disabled" tabindex="-1" style="width:0px;"/>
 																				</td>
+                                                                                <td></td>
 																				<td></td>
 																			</tr>
 																			<tr>
