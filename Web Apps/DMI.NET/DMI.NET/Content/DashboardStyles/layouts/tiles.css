@@ -493,6 +493,10 @@ div.officetab div.panel > span { display: none;}
 	float: left;
 }
 
+#divFindForm .pageTitle  {
+	color: black;
+}
+
 
 .pageTitleIcon:hover {
 	color: orange;

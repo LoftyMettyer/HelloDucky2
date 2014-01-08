@@ -40,9 +40,9 @@
 			//$("#optionframe").show();
 			$("#optionframe").dialog({
 				autoOpen: true,
-				modal: true,
+				modal: false,
 				width: 750,
-				height: 600,
+				height: 800,
 				close: function() {
 					CancelLookup();
 				}
