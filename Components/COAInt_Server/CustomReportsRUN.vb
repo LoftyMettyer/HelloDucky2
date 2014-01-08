@@ -1,13 +1,13 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.BaseClasses
+Imports System.Data.SqlClient
 
 Public Class Report
 	Inherits BaseForDMI
@@ -53,10 +53,9 @@ Public Class Report
 	Private mlngCustomReportsParent2PickListID As Integer
 
 	' Recordsets to store the definition and column information
-	Private mrstCustomReportsDetails As New Recordset
+	Private mrstCustomReportsDetails As DataTable
 
 	' Classes
-	Private mclsData As clsDataAccess
 	Private mclsGeneral As clsGeneral
 	Private mobjEventLog As clsEventLog
 
@@ -95,8 +94,7 @@ Public Class Report
 	Private mstrTempTableName As String
 
 	' Recordset to store the final data from the temp table
-	Private mrstCustomReportsOutput As New Recordset
-	'Private datCustomReportsOutput As DataTable
+	Private mrstCustomReportsOutput As DataTable
 
 	'Does the report generate no records ?
 	Private mblnNoRecords As Boolean
@@ -525,7 +523,6 @@ ErrorTrap:
 	Private Sub Class_Initialize_Renamed()
 
 		' Initialise the the classes/arrays to be used
-		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
 		mobjEventLog = New clsEventLog
 
@@ -552,8 +549,6 @@ ErrorTrap:
 	Private Sub Class_Terminate_Renamed()
 
 		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
 		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsGeneral = Nothing
 		'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -602,7 +597,7 @@ AddTempTableToSQL_ERROR:
 
 		On Error GoTo ExecuteSQL_ERROR
 
-		mclsData.ExecuteSql(mstrSQL)
+		DB.ExecuteSql(mstrSQL)
 
 		Return True
 
@@ -619,88 +614,90 @@ ExecuteSQL_ERROR:
 
 		On Error GoTo GetCustomReportDefinition_ERROR
 
-		Dim rsDefinition As Recordset
-		Dim strSQL As String
+		Dim objData As DataSet
+		Dim rsDefinition As DataTable
+		Dim prmID As New SqlParameter("ReportID", SqlDbType.Int)
+		'		Dim strSQL As String
 		Dim i As Short
 
 		mbIsBradfordIndexReport = False
 
-		strSQL = "EXEC spASRIntGetCustomReport " & mlngCustomReportID
-		rsDefinition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		prmID.Value = mlngCustomReportID
+		objData = DB.GetDataSet("spASRIntGetCustomReport", prmID)
+		rsDefinition = objData.Tables(0)
 
 		With rsDefinition
 
 			' Dont run if its been deleted by another user.
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been deleted by another user."
 				Exit Function
 			End If
 
+			Dim rowData = rsDefinition.Rows(0)
+
 			' RH 29/05/01 - Dont run if its been made hidden by another user.
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+			If LCase(rowData("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
 				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function
 			End If
 
-			mstrCustomReportsName = .Fields("Name").Value
-			mlngCustomReportsBaseTable = .Fields("BaseTable").Value
-			mstrCustomReportsBaseTableName = .Fields("TableName").Value
-			mlngCustomReportsPickListID = .Fields("picklist").Value
-			mlngCustomReportsFilterID = .Fields("Filter").Value
-			mlngCustomReportsParent1Table = .Fields("parent1table").Value
-			mlngCustomReportsParent1FilterID = .Fields("parent1filter").Value
-			mlngCustomReportsParent2Table = .Fields("parent2table").Value
-			mlngCustomReportsParent2FilterID = .Fields("parent2filter").Value
+			mstrCustomReportsName = rowData("Name")
+			mlngCustomReportsBaseTable = rowData("BaseTable")
+			mstrCustomReportsBaseTableName = rowData("TableName")
+			mlngCustomReportsPickListID = rowData("picklist")
+			mlngCustomReportsFilterID = rowData("Filter")
+			mlngCustomReportsParent1Table = rowData("parent1table")
+			mlngCustomReportsParent1FilterID = rowData("parent1filter")
+			mlngCustomReportsParent2Table = rowData("parent2table")
+			mlngCustomReportsParent2FilterID = rowData("parent2filter")
 
-			mblnCustomReportsSummaryReport = .Fields("Summary").Value
-			mblnIgnoreZerosInAggregates = .Fields("IgnoreZeros").Value
-			mblnCustomReportsPrintFilterHeader = .Fields("PrintFilterHeader").Value
-			mlngCustomReportsParent1PickListID = .Fields("parent1Picklist").Value
-			mlngCustomReportsParent2PickListID = .Fields("parent2Picklist").Value
+			mblnCustomReportsSummaryReport = rowData("Summary")
+			mblnIgnoreZerosInAggregates = rowData("IgnoreZeros")
+			mblnCustomReportsPrintFilterHeader = rowData("PrintFilterHeader")
+			mlngCustomReportsParent1PickListID = rowData("parent1Picklist")
+			mlngCustomReportsParent2PickListID = rowData("parent2Picklist")
 
 			'New Default Output Variables
-			mblnOutputPreview = .Fields("OutputPreview").Value
-			mlngOutputFormat = .Fields("OutputFormat").Value
-			mblnOutputScreen = .Fields("OutputScreen").Value
-			mblnOutputPrinter = .Fields("OutputPrinter").Value
-			mstrOutputPrinterName = .Fields("OutputPrinterName").Value
-			mblnOutputSave = .Fields("OutputSave").Value
-			mlngOutputSaveExisting = .Fields("OutputSaveExisting").Value
-			mblnOutputEmail = .Fields("OutputEmail").Value
-			mlngOutputEmailID = .Fields("OutputEmailAddr").Value
-			mstrOutputEmailName = .Fields("EmailGroupName").Value
-			mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
-			mstrOutputEmailAttachAs = .Fields("OutputEmailAttachAs").Value
-			mstrOutputFilename = .Fields("OutputFilename").Value
-			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = rowData("OutputPreview")
+			mlngOutputFormat = rowData("OutputFormat")
+			mblnOutputScreen = rowData("OutputScreen")
+			mblnOutputPrinter = rowData("OutputPrinter")
+			mstrOutputPrinterName = rowData("OutputPrinterName")
+			mblnOutputSave = rowData("OutputSave")
+			mlngOutputSaveExisting = rowData("OutputSaveExisting")
+			mblnOutputEmail = rowData("OutputEmail")
+			mlngOutputEmailID = rowData("OutputEmailAddr")
+			mstrOutputEmailName = rowData("EmailGroupName")
+			mstrOutputEmailSubject = rowData("OutputEmailSubject")
+			mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs")
+			mstrOutputFilename = rowData("OutputFilename")
+			mblnOutputPreview = (rowData("OutputPreview") Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 		End With
 
 		' Child data recordset
-		rsDefinition = rsDefinition.NextRecordset()
+		rsDefinition = objData.Tables(1)
 
 		i = 0
-		With rsDefinition
-			Do Until .EOF
-				ReDim Preserve mvarChildTables(5, i)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(0, i) = .Fields("ChildTable").Value	'Childs Table ID
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(1, i) = .Fields("childFilter").Value 'Childs Filter ID (if any)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(2, i) = .Fields("ChildMaxRecords").Value 'Number of records to take from child
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(3, i) = .Fields("TableName").Value 'Child Table Name
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(5, i) = .Fields("ChildOrder").Value	'Childs Order ID (if any)
-				i = i + 1
-				.MoveNext()
-			Loop
-		End With
+		For Each rowData As DataRow In rsDefinition.Rows
+			ReDim Preserve mvarChildTables(5, i)
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(0, i) = rowData("ChildTable")	'Childs Table ID
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(1, i) = rowData("childFilter") 'Childs Filter ID (if any)
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(2, i) = rowData("ChildMaxRecords") 'Number of records to take from child
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(3, i) = rowData("TableName") 'Child Table Name
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(5, i) = rowData("ChildOrder")	'Childs Order ID (if any)
+			i = i + 1
+		Next
 
 		miChildTablesCount = i
 
@@ -740,7 +737,7 @@ GetCustomReportDefinition_ERROR:
 
 		Dim strTempSQL As String
 		Dim intTemp As Short
-		Dim prstCustomReportsSortOrder As Recordset
+		Dim prstCustomReportsSortOrder As DataTable
 		Dim lngTableID As Integer
 		Dim sMask As String
 		Dim objReportItemDetail As ReportDetailItem
@@ -748,12 +745,11 @@ GetCustomReportDefinition_ERROR:
 
 		' Get the column information from the Details table, in order
 		strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
-		mrstCustomReportsDetails = mclsData.OpenRecordset(strTempSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
+		mrstCustomReportsDetails = DB.GetDataTable((strTempSQL))
 
 		Dim objExpr As clsExprExpression
 		With mrstCustomReportsDetails
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				GetDetailsRecordsets = False
 				mstrErrorString = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
 				Exit Function
@@ -764,7 +760,8 @@ GetCustomReportDefinition_ERROR:
 				Exit Function
 			End If
 
-			Do Until .EOF
+
+			For Each objRow As DataRow In mrstCustomReportsDetails.Rows
 				objReportItemDetail = New ReportDetailItem
 
 				ReDim Preserve mstrExcelFormats(intTemp) 'MH20010307
@@ -778,38 +775,38 @@ GetCustomReportDefinition_ERROR:
 				'What twats!!!...Fault 10211.
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False) Then
-					objReportItemDetail.IDColumnName = "?ID_HD_" & .Fields("Type").Value & "_" & .Fields("ColExprID").Value
+				If IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False) Then
+					objReportItemDetail.IDColumnName = "?ID_HD_" & objRow("Type") & "_" & objRow("ColExprID")
 				Else
-					objReportItemDetail.IDColumnName = .Fields("Heading").Value
+					objReportItemDetail.IDColumnName = objRow("Heading")
 				End If
 
 				'*************************************************************************
 
-				objReportItemDetail.Size = .Fields("Size").Value
-				objReportItemDetail.Decimals = .Fields("dp").Value
-				objReportItemDetail.IsNumeric = .Fields("IsNumeric").Value
-				objReportItemDetail.IsAverage = .Fields("Avge").Value
-				objReportItemDetail.IsCount = .Fields("cnt").Value
-				objReportItemDetail.IsTotal = .Fields("tot").Value
-				objReportItemDetail.IsBreakOnChange = .Fields("boc").Value
-				objReportItemDetail.IsPageOnChange = .Fields("poc").Value
-				objReportItemDetail.IsValueOnChange = .Fields("voc").Value
-				objReportItemDetail.SuppressRepeated = .Fields("srv").Value
+				objReportItemDetail.Size = objRow("Size")
+				objReportItemDetail.Decimals = objRow("dp")
+				objReportItemDetail.IsNumeric = objRow("IsNumeric")
+				objReportItemDetail.IsAverage = objRow("Avge")
+				objReportItemDetail.IsCount = objRow("cnt")
+				objReportItemDetail.IsTotal = objRow("tot")
+				objReportItemDetail.IsBreakOnChange = objRow("boc")
+				objReportItemDetail.IsPageOnChange = objRow("poc")
+				objReportItemDetail.IsValueOnChange = objRow("voc")
+				objReportItemDetail.SuppressRepeated = objRow("srv")
 				objReportItemDetail.LastValue = ""
-				objReportItemDetail.ColExprID = .Fields("ColExprID").Value
-				objReportItemDetail.ID = .Fields("ColExprID").Value
+				objReportItemDetail.ColExprID = objRow("ColExprID")
+				objReportItemDetail.ID = objRow("ColExprID")
 
-				objReportItemDetail.Type = .Fields("Type").Value
+				objReportItemDetail.Type = objRow("Type")
 
-				lngTableID = IIf(IsDBNull(.Fields("TableID").Value), 0, .Fields("TableID").Value)
+				lngTableID = IIf(IsDBNull(objRow("TableID")), 0, objRow("TableID"))
 				objReportItemDetail.TableID = lngTableID
-				objReportItemDetail.TableName = .Fields("TableName").Value
+				objReportItemDetail.TableName = objRow("TableName")
 
-				If .Fields("Type").Value = "C" Then
-					objReportItemDetail.ColumnName = .Fields("ColumnName").Value
-					objReportItemDetail.IsDateColumn = .Fields("IsDateColumn").Value
-					objReportItemDetail.IsBitColumn = .Fields("IsBooleanColumn").Value
+				If objRow("Type") = "C" Then
+					objReportItemDetail.ColumnName = objRow("ColumnName")
+					objReportItemDetail.IsDateColumn = objRow("IsDateColumn")
+					objReportItemDetail.IsBitColumn = objRow("IsBooleanColumn")
 
 				Else
 					objReportItemDetail.ColumnName = ""
@@ -817,7 +814,7 @@ GetCustomReportDefinition_ERROR:
 					'MH20010307
 					objExpr = New clsExprExpression
 
-					objExpr.ExpressionID = CInt(.Fields("ColExprID").Value)
+					objExpr.ExpressionID = CInt(objRow("ColExprID"))
 					objExpr.ConstructExpression()
 					objExpr.ValidateExpression(True)
 
@@ -829,16 +826,16 @@ GetCustomReportDefinition_ERROR:
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objExpr = Nothing
 
-					objReportItemDetail.IsDateColumn = mclsGeneral.DateColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
-					objReportItemDetail.IsBitColumn = mclsGeneral.BitColumn(.Fields("Type").Value, lngTableID, .Fields("ColExprID").Value)
+					objReportItemDetail.IsDateColumn = mclsGeneral.DateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					objReportItemDetail.IsBitColumn = mclsGeneral.BitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
 
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objReportItemDetail.IsHidden = IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False)
+				objReportItemDetail.IsHidden = IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False)
 				objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
-				objReportItemDetail.Repetition = IIf(.Fields("repetition").Value = 1, True, False)
-				objReportItemDetail.Use1000Separator = .Fields("Use1000separator").Value
+				objReportItemDetail.Repetition = IIf(objRow("repetition") = 1, True, False)
+				objReportItemDetail.Use1000Separator = objRow("Use1000separator")
 
 				' Format for this numeric column
 				If objReportItemDetail.IsNumeric Then
@@ -849,14 +846,11 @@ GetCustomReportDefinition_ERROR:
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objReportItemDetail.GroupWithNextColumn = IIf((IsDBNull(.Fields("GroupWithNextColumn").Value) Or (Not .Fields("GroupWithNextColumn").Value)), False, True)
-
-				.MoveNext()
+				objReportItemDetail.GroupWithNextColumn = IIf((IsDBNull(objRow("GroupWithNextColumn")) Or (Not objRow("GroupWithNextColumn"))), False, True)
 
 				ColumnDetails.Add(objReportItemDetail)
 
-			Loop
-			.MoveFirst()
+			Next
 		End With
 
 		'******************************************************************************
@@ -998,24 +992,24 @@ GetCustomReportDefinition_ERROR:
 		' Get those columns defined as a SortOrder and load into array
 
 		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
-		prstCustomReportsSortOrder = mclsGeneral.GetReadOnlyRecords(strTempSQL)
+		prstCustomReportsSortOrder = DB.GetDataTable(strTempSQL)
 
 		colSortOrder = New Collection(Of ReportSortItem)
 
 		With prstCustomReportsSortOrder
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				GetDetailsRecordsets = False
 				mstrErrorString = "No columns have been defined as a sort order for the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
 				Exit Function
 			End If
-			Do Until .EOF
+
+			For Each objRow As DataRow In .Rows
 				objSortItem = New ReportSortItem
-				objSortItem.TableID = GetTableIDFromColumn(.Fields("ColExprID").Value)
-				objSortItem.ColExprID = .Fields("ColExprID").Value
-				objSortItem.AscDesc = .Fields("SortOrder").Value
+				objSortItem.TableID = GetTableIDFromColumn(CInt(objRow("ColExprID")))
+				objSortItem.ColExprID = objRow("ColExprID")
+				objSortItem.AscDesc = objRow("SortOrder")
 				colSortOrder.Add(objSortItem)
-				.MoveNext()
-			Loop
+			Next
 		End With
 
 		'UPGRADE_NOTE: Object prstCustomReportsSortOrder may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1438,7 +1432,7 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function GetMostChildsForParent(ByRef avChildRecs(,) As Recordset, ByRef iParentCount As Short) As Short
+	Private Function GetMostChildsForParent(ByRef avChildRecs(,) As DataTable, ByRef iParentCount As Short) As Short
 
 		Dim i As Short
 		Dim iMostChildRecords As Short
@@ -1450,22 +1444,20 @@ GenerateSQLSelect_ERROR:
 		iChildRecordCount = 0
 
 		For i = 0 To UBound(avChildRecs, 2) Step 1
-			If (avChildRecs(iParentCount, i).BOF) And (avChildRecs(iParentCount, i).EOF) Then
+			If (avChildRecs(iParentCount, i).Rows.Count = 0) Then
 				iChildRecordCount = 0
 			Else
-				iChildRecordCount = avChildRecs(iParentCount, i).RecordCount
+				iChildRecordCount = avChildRecs(iParentCount, i).Rows.Count
 			End If
 			If iChildRecordCount > iMostChildRecords Then
 				iMostChildRecords = iChildRecordCount
 			End If
 		Next i
 
-		GetMostChildsForParent = iMostChildRecords
-
-		Exit Function
+		Return iMostChildRecords
 
 Error_Trap:
-		GetMostChildsForParent = 0
+		Return 0
 
 	End Function
 
@@ -1503,13 +1495,12 @@ Error_Trap:
 		Dim sMCTempTable As String
 		Dim sSQL As String
 		Dim sParentSelectSQL As String
-		Dim rsParent As Recordset
+		Dim rsParent As DataTable
 		Dim lngColumnID As Integer
 		Dim lngTableID As Integer
 		Dim iChildCount As Short
-		Dim rsChild As Recordset
 		Dim iParentCount As Short
-		Dim avChildRecordsets(,) As Recordset
+		Dim avChildRecordsets(,) As DataTable
 		Dim sChildSelectSQL As String
 		Dim sChildWhereSQL As String
 		Dim iFields As Short
@@ -1529,10 +1520,10 @@ Error_Trap:
 		sMCTempTable = datGeneral.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
 
 		sSQL = "SELECT * INTO [" & sMCTempTable & "] FROM [" & mstrTempTableName & "]"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 		sSQL = "DELETE FROM [" & sMCTempTable & "]"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 
 		'************** Get the Parent SELECT SQL statment ******************************
@@ -1551,7 +1542,7 @@ Error_Trap:
 		'Order the Parent recorset
 		sSQL = sSQL & OrderBy(mlngCustomReportsBaseTable)
 
-		rsParent = datGeneral.GetRecords(sSQL)
+		rsParent = DB.GetDataTable(sSQL)
 
 		lngColumnID = 0
 		lngTableID = 0
@@ -1561,7 +1552,7 @@ Error_Trap:
 		With rsParent
 
 			'TM20020802 Fault 4273
-			If (.BOF And .EOF) Then
+			If (.Rows.Count = 0) Then
 				mstrErrorString = "No records meet selection criteria"
 				CreateMutipleChildTempTable = False
 				mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
@@ -1572,18 +1563,15 @@ Error_Trap:
 				'      Set rsTemp = Nothing
 				'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsParent = Nothing
-				'UPGRADE_NOTE: Object rsChild may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsChild = Nothing
 				Exit Function
 			End If
 
-			.MoveFirst()
 			iParentCount = 0
 			lngSequenceCount = 1
 
 			mbUseSequence = True
 
-			Do Until .EOF
+			For Each objRow As DataRow In .Rows
 
 				iParentCount = iParentCount + 1
 
@@ -1593,8 +1581,6 @@ Error_Trap:
 					lngCurrentTableID = mvarChildTables(0, iChildCount)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					If mvarChildTables(4, iChildCount) Then	'is the child table used???
-						'UPGRADE_NOTE: Object rsChild may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						rsChild = Nothing
 
 						For Each objItem In ColumnDetails
 							lngTableID = objItem.TableID
@@ -1608,7 +1594,7 @@ Error_Trap:
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sChildWhereSQL = sChildWhereSQL & "[?ID_" & mvarChildTables(0, iChildCount) & "] = "
-						sChildWhereSQL = sChildWhereSQL & .Fields("?ID").Value
+						sChildWhereSQL = sChildWhereSQL & objRow("?ID")
 
 						sSQL = "SELECT DISTINCT " & sChildSelectSQL & " FROM [" & mstrTempTableName & "] WHERE " & sChildWhereSQL
 
@@ -1618,11 +1604,9 @@ Error_Trap:
 						sChildSelectSQL = vbNullString
 						sChildWhereSQL = vbNullString
 
-						rsChild = datGeneral.GetRecords(sSQL)
-
 						'Add the child tables recordset to the array of child tables.
-						avChildRecordsets(0, iChildUsed) = rsChild
-						iChildUsed = iChildUsed + 1
+						avChildRecordsets(0, iChildUsed) = DB.GetDataTable(sSQL)
+						iChildUsed += 1
 					End If
 				Next iChildCount
 
@@ -1637,30 +1621,30 @@ Error_Trap:
 						SQLSTRING = vbNullString
 
 						'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
-						For iFields = 0 To rsParent.Fields.Count - 1 Step 1
-							'              .Fields(rsParent.Fields(iFields).Name) = rsParent.Fields(iFields).Value
+						For iFields = 0 To rsParent.Columns.Count - 1 Step 1
 
-							sFIELDS = sFIELDS & "[" & rsParent.Fields(iFields).Name & "],"
+							sFIELDS = sFIELDS & "[" & rsParent.Columns(iFields).ColumnName & "],"
 
-							Select Case rsParent.Fields(iFields).Type
-								Case DataTypeEnum.adNumeric, DataTypeEnum.adInteger, DataTypeEnum.adSingle, DataTypeEnum.adDouble
-									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-									sVALUES = sVALUES & IIf(IsDBNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
-								Case DataTypeEnum.adDBTimeStamp, DataTypeEnum.adDate, DataTypeEnum.adDBDate, DataTypeEnum.adDBTime
-									'TM20030124 Fault 4974
-									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-									If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-										sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "MM/dd/yyyy") & "',"
+							Select Case rsParent.Columns(iFields).DataType.Name.ToLower()
+								Case "int32"
+									'	'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
+
+								Case "datetime"
+									If Not IsDBNull(objRow(iFields)) Then
+										sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
 									Else
 										sVALUES = sVALUES & "NULL,"
 									End If
-								Case DataTypeEnum.adBoolean
-									sVALUES = sVALUES & IIf(rsParent.Fields(iFields).Value, 1, 0) & ","
+
+								Case "boolean"
+									sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
+
 								Case Else
 									'MH20021119 Fault 4315
 									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-									If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-										sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
+									If Not IsDBNull(objRow(iFields)) Then
+										sVALUES = sVALUES & "'" & Replace(objRow(iFields), "'", "''") & "',"
 									Else
 										sVALUES = sVALUES & "'',"
 									End If
@@ -1669,39 +1653,41 @@ Error_Trap:
 						Next iFields
 
 						For iChildCount = 0 To UBound(avChildRecordsets, 2) Step 1
-							If Not avChildRecordsets(0, iChildCount).EOF Then
+
+							If avChildRecordsets(0, iChildCount).Rows.Count > 0 Then
+
+								Dim rowFirstRow = avChildRecordsets(0, iChildCount).Rows(0)
+
 								'<<<<<<<<<<<<<<<<<<< Add Values To Child Fields >>>>>>>>>>>>>>>>>>>>>>>
-								For iFields = 0 To avChildRecordsets(0, iChildCount).Fields.Count - 1 Step 1
-									'                  .Fields(avChildRecordsets(0, iChildCount).Fields(iFields).Name) = avChildRecordsets(0, iChildCount).Fields(iFields).Value
+								For iFields = 0 To avChildRecordsets(0, iChildCount).Columns.Count - 1 Step 1
+									sFIELDS = sFIELDS & "[" & avChildRecordsets(0, iChildCount).Columns(iFields).ColumnName & "],"
 
-									sFIELDS = sFIELDS & "[" & avChildRecordsets(0, iChildCount).Fields(iFields).Name & "],"
-
-									Select Case avChildRecordsets(0, iChildCount).Fields(iFields).Type
-										Case DataTypeEnum.adNumeric, DataTypeEnum.adInteger, DataTypeEnum.adSingle, DataTypeEnum.adDouble
+									Select Case avChildRecordsets(0, iChildCount).Columns(iFields).DataType.Name.ToLower()
+										Case "int32"
 											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											sVALUES = sVALUES & IIf(IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value), 0, avChildRecordsets(0, iChildCount).Fields(iFields).Value) & ","
-										Case DataTypeEnum.adDBTimeStamp, DataTypeEnum.adDate, DataTypeEnum.adDBDate, DataTypeEnum.adDBTime
+											sVALUES = sVALUES & IIf(IsDBNull(rowFirstRow(iFields)), 0, rowFirstRow(iFields)) & ","
+										Case "datetime"
 											'TM20030124 Fault 4974
 											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If Not IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
-												sVALUES = sVALUES & "'" & VB6.Format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "MM/dd/yyyy") & "',"
+											If Not IsDBNull(rowFirstRow(iFields)) Then
+												sVALUES = sVALUES & "'" & VB6.Format(rowFirstRow(iFields), "MM/dd/yyyy") & "',"
 											Else
 												sVALUES = sVALUES & "NULL,"
 											End If
-										Case DataTypeEnum.adBoolean
-											sVALUES = sVALUES & IIf(avChildRecordsets(0, iChildCount).Fields(iFields).Value, 1, 0) & ","
+										Case "boolean"
+											sVALUES = sVALUES & IIf(rowFirstRow(iFields), 1, 0) & ","
 										Case Else
 											'MH20021119 Fault 4315
 											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If Not IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
-												sVALUES = sVALUES & "'" & Replace(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "'", "''") & "',"
+											If Not IsDBNull(rowFirstRow(iFields)) Then
+												sVALUES = sVALUES & "'" & Replace(rowFirstRow(iFields), "'", "''") & "',"
 											Else
 												sVALUES = sVALUES & "'',"
 											End If
 									End Select
 
 								Next iFields
-								avChildRecordsets(0, iChildCount).MoveNext()
+
 							End If
 						Next iChildCount
 
@@ -1716,7 +1702,7 @@ Error_Trap:
 						SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
 						SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
 
-						gADOCon.Execute(SQLSTRING)
+						DB.ExecuteSql(SQLSTRING)
 
 						'            .Update
 					Next i
@@ -1728,31 +1714,31 @@ Error_Trap:
 					SQLSTRING = vbNullString
 
 					'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
-					For iFields = 0 To rsParent.Fields.Count - 1 Step 1
-						'            .Fields(rsParent.Fields(iFields).Name) = rsParent.Fields(iFields).Value
+					For iFields = 0 To rsParent.Columns.Count - 1 Step 1
 
-						sFIELDS = sFIELDS & "[" & rsParent.Fields(iFields).Name & "],"
+						sFIELDS = sFIELDS & "[" & rsParent.Columns(iFields).ColumnName & "],"
 
-						Select Case rsParent.Fields(iFields).Type
-							Case DataTypeEnum.adNumeric, DataTypeEnum.adInteger, DataTypeEnum.adSingle, DataTypeEnum.adDouble
+						Select Case rsParent.Columns(iFields).DataType.Name.ToLower()
+
+							Case "int32"
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								sVALUES = sVALUES & IIf(IsDBNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
-							Case DataTypeEnum.adDBTimeStamp, DataTypeEnum.adDate, DataTypeEnum.adDBDate, DataTypeEnum.adDBTime
+								sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
+							Case "datetime"
 								'TM20030124 Fault 4974
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-									sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "MM/dd/yyyy") & "',"
+								If Not IsDBNull(objRow(iFields)) Then
+									sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
 								Else
 									sVALUES = sVALUES & "NULL,"
 								End If
-							Case DataTypeEnum.adBoolean
-								sVALUES = sVALUES & IIf(rsParent.Fields(iFields).Value, 1, 0) & ","
+							Case "boolean"
+								sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
 							Case Else
 								'MH20021119 Fault 4315
 								'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-									sVALUES = sVALUES & "'" & Replace(CStr(rsParent.Fields(iFields).Value), "'", "''") & "',"
+								If Not IsDBNull(objRow(iFields)) Then
+									sVALUES = sVALUES & "'" & Replace(CStr(objRow(iFields)), "'", "''") & "',"
 								Else
 									sVALUES = sVALUES & "'',"
 								End If
@@ -1771,24 +1757,24 @@ Error_Trap:
 					SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
 					SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
 
-					gADOCon.Execute(SQLSTRING)
+					DB.ExecuteSql(SQLSTRING)
 
 					'          .Update
 				End If
 				'      End With
-				.MoveNext()
+
 				iChildUsed = 0
-			Loop
+			Next
 		End With
 
 		'************ Re-Order the data using the defined sort orders. ******************
 		sSQL = "DELETE FROM [" & mstrTempTableName & "]"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 		sSQL = "INSERT INTO [" & mstrTempTableName & "] SELECT * FROM [" & sMCTempTable & "]"
 		' Order the entire recordset.
 		sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 
 		'***************** Drop the multiple child temp table. **************************
@@ -1817,15 +1803,12 @@ Error_Trap:
 
 
 		'********************************************************************************
-		CreateMutipleChildTempTable = True
 
 		sMCTempTable = vbNullString
 		'  Set rsTemp = Nothing
 		'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsParent = Nothing
-		'UPGRADE_NOTE: Object rsChild may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsChild = Nothing
-		Exit Function
+		Return True
 
 Error_Trap:
 		CreateMutipleChildTempTable = False
@@ -1833,8 +1816,6 @@ Error_Trap:
 		'  Set rsTemp = Nothing
 		'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsParent = Nothing
-		'UPGRADE_NOTE: Object rsChild may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsChild = Nothing
 
 		mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & Err.Number & vbNewLine & Err.Description
 
@@ -1886,7 +1867,7 @@ Error_Trap:
 		Dim pintLoop As Short
 		Dim sChildJoinCode As String
 		Dim sChildOrderString As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim strFilterIDs As String
 		Dim blnOK As Boolean
 		Dim pblnChildUsed As Boolean
@@ -1989,9 +1970,9 @@ Error_Trap:
 						' Now the child order by bit - done here in case tables need to be joined.
 						'          Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(mlngCustomReportsChildTable))
 						If lngTempOrderID > 0 Then
-							rsTemp = datGeneral.GetOrderDefinition(lngTempOrderID)
+							rsTemp = GetOrderDefinition(lngTempOrderID)
 						Else
-							rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(lngTempChildID))
+							rsTemp = GetOrderDefinition(datGeneral.GetDefaultOrder(lngTempChildID))
 						End If
 
 						sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
@@ -2040,7 +2021,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function DoChildOrderString(ByRef rsTemp As Recordset, ByRef psJoinCode As String, ByRef plngChildID As Integer) As String
+	Private Function DoChildOrderString(ByRef rsTemp As DataTable, ByRef psJoinCode As String, ByRef plngChildID As Integer) As String
 
 		' This function loops through the child tables default order
 		' checking if the user has privileges. If they do, add to the order string
@@ -2072,26 +2053,27 @@ GenerateSQLJoin_ERROR:
 		'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		pobjOrderCol = Nothing
 
-		Do Until rsTemp.EOF
-			If rsTemp.Fields("Type").Value = "O" Then
+		For Each objRow As DataRow In rsTemp.Rows
+
+			If objRow("Type") = "O" Then
 				' Check if the user can read the column.
-				pobjOrderCol = gcoTablePrivileges.FindTableID(rsTemp.Fields("TableID").Value)
+				pobjOrderCol = gcoTablePrivileges.FindTableID(objRow("TableID"))
 				objColumnPrivileges = GetColumnPrivileges((pobjOrderCol.TableName))
-				fColumnOK = objColumnPrivileges.Item(rsTemp.Fields("ColumnName").Value).AllowSelect
+				fColumnOK = objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect
 				'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objColumnPrivileges = Nothing
 
 				If fColumnOK Then
 					'        If rsTemp!TableID = mlngCustomReportsChildTable Then
-					If rsTemp.Fields("TableID").Value = plngChildID Then
-						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & pobjOrderCol.RealSource & "." & rsTemp.Fields("ColumnName").Value & IIf(rsTemp.Fields("Ascending").Value, "", " DESC")
+					If objRow("TableID") = plngChildID Then
+						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & pobjOrderCol.RealSource & "." & objRow("ColumnName") & IIf(objRow("Ascending"), "", " DESC")
 					Else
 						' If the column comes from a parent table, then add the table to the Join code.
 						' Check if the table has already been added to the join code.
 						fFound = False
 						iTempCounter = 0
 						For iNextIndex = 1 To UBound(alngTableViews, 2)
-							If alngTableViews(1, iNextIndex) = 0 And alngTableViews(2, iNextIndex) = rsTemp.Fields("TableID").Value Then
+							If alngTableViews(1, iNextIndex) = 0 And alngTableViews(2, iNextIndex) = objRow("TableID") Then
 								iTempCounter = iNextIndex
 								fFound = True
 								Exit For
@@ -2103,24 +2085,24 @@ GenerateSQLJoin_ERROR:
 							iNextIndex = UBound(alngTableViews, 2) + 1
 							ReDim Preserve alngTableViews(2, iNextIndex)
 							alngTableViews(1, iNextIndex) = 0
-							alngTableViews(2, iNextIndex) = rsTemp.Fields("TableID").Value
+							alngTableViews(2, iNextIndex) = objRow("TableID")
 
 							iTempCounter = iNextIndex
 
-							psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(rsTemp.Fields("TableID").Value)) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+							psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(("TableID"))) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
 						End If
 
-						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & rsTemp.Fields("ColumnName").Value & IIf(rsTemp.Fields("Ascending").Value, "", " DESC")
+						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & objRow("ColumnName").ToString() & IIf(objRow("Ascending"), "", " DESC")
 					End If
 				Else
 					' The column cannot be read from the base table/view, or directly from a parent table.
 					' If it is a column from a prent table, then try to read it from the views on the parent table.
 					'        If rsTemp!TableID <> mlngCustomReportsChildTable Then
-					If rsTemp.Fields("TableID").Value <> plngChildID Then
+					If objRow("TableID") <> plngChildID Then
 						' Loop through the views on the column's table, seeing if any have 'read' permission granted on them.
 						ReDim asViews(0)
 						For Each objTableView In gcoTablePrivileges.Collection
-							If (Not objTableView.IsTable) And (objTableView.TableID = rsTemp.Fields("TableID").Value) And (objTableView.AllowSelect) Then
+							If (Not objTableView.IsTable) And (objTableView.TableID = objRow("TableID")) And (objTableView.AllowSelect) Then
 
 								sSource = objTableView.ViewName
 								sRealSource = gcoTablePrivileges.Item(sSource).RealSource
@@ -2128,8 +2110,8 @@ GenerateSQLJoin_ERROR:
 								' Get the column permission for the view.
 								objColumnPrivileges = GetColumnPrivileges(sSource)
 
-								If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName").Value) Then
-									If objColumnPrivileges.Item(rsTemp.Fields("ColumnName").Value).AllowSelect Then
+								If objColumnPrivileges.IsValid(objRow("ColumnName").ToString()) Then
+									If objColumnPrivileges.Item(objRow("ColumnName").ToString()).AllowSelect Then
 										' Add the view info to an array to be put into the column list or order code below.
 										iNextIndex = UBound(asViews) + 1
 										ReDim Preserve asViews(iNextIndex)
@@ -2177,14 +2159,14 @@ GenerateSQLJoin_ERROR:
 									sColumnCode = "CASE "
 								End If
 
-								sColumnCode = sColumnCode & " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp.Fields("ColumnName").Value & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp.Fields("ColumnName").Value
+								sColumnCode = sColumnCode & " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString()
 							Next iNextIndex
 
 							If Len(sColumnCode) > 0 Then
 								sColumnCode = sColumnCode & " ELSE NULL" & " END"
 
 								' Add the column to the order string.
-								DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ", ", "") & sColumnCode & IIf(rsTemp.Fields("Ascending").Value, "", " DESC")
+								DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ", ", "") & sColumnCode & IIf(objRow("Ascending").ToString(), "", " DESC")
 							End If
 						End If
 					End If
@@ -2194,8 +2176,7 @@ GenerateSQLJoin_ERROR:
 				pobjOrderCol = Nothing
 			End If
 
-			rsTemp.MoveNext()
-		Loop
+		Next
 
 		' JIRA 3180 - Force the ID to be part of the sort order because the UDFs sort by ID too
 		DoChildOrderString = DoChildOrderString & "," & sCurrentTableViewName & ".ID"
@@ -2222,7 +2203,7 @@ DoChildOrderString_ERROR:
 
 		Dim pintLoop As Short
 		Dim pobjTableView As TablePrivilege
-		Dim prstTemp As New Recordset
+		Dim prstTemp As DataTable
 		Dim pstrPickListIDs As String
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
@@ -2261,22 +2242,18 @@ DoChildOrderString_ERROR:
 		' Parent 1 filter and picklist
 		If mlngCustomReportsParent1PickListID > 0 Then
 			pstrParent1PickListIDs = ""
-			prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent1PickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent1PickListID)
 
-			If prstTemp.BOF And prstTemp.EOF Then
+			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The first parent table picklist contains no records."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
 
-			Do While Not prstTemp.EOF
-				pstrParent1PickListIDs = pstrParent1PickListIDs & IIf(Len(pstrParent1PickListIDs) > 0, ", ", "") & prstTemp.Fields(0).Value
-				prstTemp.MoveNext()
-			Loop
+			For Each objRow As DataRow In prstTemp.Rows
+				pstrParent1PickListIDs = pstrParent1PickListIDs & IIf(Len(pstrParent1PickListIDs) > 0, ", ", "") & objRow(0)
+			Next
 
-			prstTemp.Close()
-			'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstTemp = Nothing
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
 		ElseIf mlngCustomReportsParent1FilterID > 0 Then
@@ -2294,22 +2271,17 @@ DoChildOrderString_ERROR:
 		' Parent 2 filter and picklist
 		If mlngCustomReportsParent2PickListID > 0 Then
 			pstrParent2PickListIDs = ""
-			prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent2PickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent2PickListID)
 
-			If prstTemp.BOF And prstTemp.EOF Then
+			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The second parent table picklist contains no records."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
 
-			Do While Not prstTemp.EOF
-				pstrParent2PickListIDs = pstrParent2PickListIDs & IIf(Len(pstrParent2PickListIDs) > 0, ", ", "") & prstTemp.Fields(0).Value
-				prstTemp.MoveNext()
-			Loop
-
-			prstTemp.Close()
-			'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstTemp = Nothing
+			For Each objRow As DataRow In prstTemp.Rows
+				pstrParent2PickListIDs = pstrParent2PickListIDs & IIf(Len(pstrParent2PickListIDs) > 0, ", ", "") & objRow(0)
+			Next
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
 		ElseIf mlngCustomReportsParent2FilterID > 0 Then
@@ -2330,22 +2302,17 @@ DoChildOrderString_ERROR:
 		ElseIf mlngCustomReportsPickListID > 0 Then
 			' Now if we are using a picklist, add a where clause for that
 			'Get List of IDs from Picklist
-			prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID)
 
-			If prstTemp.BOF And prstTemp.EOF Then
+			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The selected picklist contains no records."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
 
-			Do While Not prstTemp.EOF
-				pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & prstTemp.Fields(0).Value
-				prstTemp.MoveNext()
-			Loop
-
-			prstTemp.Close()
-			'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstTemp = Nothing
+			For Each objRow As DataRow In prstTemp.Rows
+				pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & objRow(0).Value
+			Next
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & pstrPickListIDs & ")"
 
@@ -2652,9 +2619,9 @@ GenerateSQLOrderBy_ERROR:
 
 		End If
 
-		mrstCustomReportsOutput = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly, CursorLocationEnum.adUseClient)
+		mrstCustomReportsOutput = DB.GetDataTable(sSQL)
 
-		If mrstCustomReportsOutput.BOF And mrstCustomReportsOutput.EOF Then
+		If mrstCustomReportsOutput.Rows.Count = 0 Then
 			CheckRecordSet = False
 			mstrErrorString = "No records meet selection criteria"
 			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
@@ -2664,7 +2631,7 @@ GenerateSQLOrderBy_ERROR:
 		End If
 
 		If mlngColumnLimit > 0 Then
-			If mrstCustomReportsOutput.Fields.Count > mlngColumnLimit Then
+			If mrstCustomReportsOutput.Columns.Count > mlngColumnLimit Then
 				CheckRecordSet = False
 				mstrErrorString = "Report contains more than " & mlngColumnLimit & " columns. It is not possible to run this report via the intranet."
 				mobjEventLog.AddDetailEntry("Failed. " & mstrErrorString)
@@ -2748,18 +2715,16 @@ CheckRecordSet_ERROR:
 
 		datCustomReportOutput_Start()
 
-		'Ensure we are at the beginning of the output recordset
-		mrstCustomReportsOutput.MoveFirst()
+		For Each objRow As DataRow In mrstCustomReportsOutput.Rows
 
-		Do Until mrstCustomReportsOutput.EOF
 
 			aryAddString = New ArrayList()
 
 			'bRecordChanged used for repetition funcionality.
 			If Not mbIsBradfordIndexReport Then
-				If mrstCustomReportsOutput.Fields("?ID").Value <> lngCurrentRecordID Then
+				If objRow("?ID") <> lngCurrentRecordID Then
 					bBaseRecordChanged = True
-					lngCurrentRecordID = mrstCustomReportsOutput.Fields("?ID").Value
+					lngCurrentRecordID = objRow("?ID")
 				Else
 					bBaseRecordChanged = False
 				End If
@@ -2795,12 +2760,12 @@ CheckRecordSet_ERROR:
 						objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
 
 						' The column breaks. Check if its changed.
-						vValue = PopulateGrid_FormatData(objReportItem, mrstCustomReportsOutput.Fields(iColumnIndex).Value, False, False)
+						vValue = PopulateGrid_FormatData(objReportItem, objRow(iColumnIndex), False, False)
 
 						'Now that we store the formatted value in position (11) of the mcolDetails
 						'Comparison made after adjusting the size of the field.
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex).Value) Then
+						If IsDBNull(vValue) Or IsDBNull(objRow(iColumnIndex)) Then
 							fBreak = ("" <> objReportItem.LastValue)
 						Else
 							If objReportItem.IsBitColumn Then	'Bit
@@ -2831,33 +2796,33 @@ CheckRecordSet_ERROR:
 								If Not otherColumnDetail Is Nothing Then
 									If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
 										' The column breaks. Check if its changed.
-										If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
+										If IsDBNull(objRow(iOtherColumnIndex)) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
 											' Field value is null but a character data type, so set it to be "".
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											vValue = ""
 
 										ElseIf otherColumnDetail.IsNumeric Then	'Numeric
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
+											vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
 
 										ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = True) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 1) Then vValue = "Y"
+											If (objRow(iOtherColumnIndex) = True) Or (objRow(iOtherColumnIndex) = 1) Then vValue = "Y"
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value = 0) Then vValue = "N"
+											If (objRow(iOtherColumnIndex) = False) Or (objRow(iOtherColumnIndex) = 0) Then vValue = "N"
 											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then vValue = ""
+											If IsDBNull(objRow(iOtherColumnIndex)) Then vValue = ""
 
 										Else
 											'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											vValue = Left(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value, otherColumnDetail.Size)
+											vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
 
 										End If
 
 										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-										If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value) Then
+										If IsDBNull(vValue) Or IsDBNull(objRow(iOtherColumnIndex)) Then
 											fBreak = ("" <> otherColumnDetail.LastValue)
 										Else
 											If otherColumnDetail.IsBitColumn Then	'Bit
@@ -2867,7 +2832,7 @@ CheckRecordSet_ERROR:
 											Else
 												'TM23112004 Fault 9072
 												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												fBreak = (RTrim(LCase(mrstCustomReportsOutput.Fields(iOtherColumnIndex).Value)) <> RTrim(LCase(otherColumnDetail.LastValue)))
+												fBreak = (RTrim(LCase(objRow(iOtherColumnIndex))) <> RTrim(LCase(otherColumnDetail.LastValue)))
 											End If
 										End If
 
@@ -2909,10 +2874,10 @@ CheckRecordSet_ERROR:
 
 			intColCounter = 1
 			' Loop thru each field, adding to the string to add to the grid
-			For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
+			For iLoop = 0 To (mrstCustomReportsOutput.Columns.Count - 1)
 
 				intColCounter = intColCounter + 1
-				isHiddenColumn = (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?")		' there should be a cleaner way of deciding if this is an ID column, but would need more bigger changes. This will have to do for the moment. Sorry
+				isHiddenColumn = (mrstCustomReportsOutput.Columns(iLoop).ColumnName.Substring(0, 1) = "?")		' there should be a cleaner way of deciding if this is an ID column, but would need more bigger changes. This will have to do for the moment. Sorry
 
 				' yet another hack beacsue this is an over complex array instead of an easily modifyable class
 				If mbIsBradfordIndexReport And iLoop > 12 Then
@@ -2921,7 +2886,7 @@ CheckRecordSet_ERROR:
 
 				Dim objSkippedItem As ReportDetailItem = ColumnDetails.GetByIndex(intSkippedIndex + 1)
 
-				If Not iLoop = (mrstCustomReportsOutput.Fields.Count - 1) Then
+				If Not iLoop = (mrstCustomReportsOutput.Columns.Count - 1) Then
 					objNextItem = ColumnDetails.GetByIndex(iLoop)
 
 					' Only suppress values for new records in the Bradford Factor report
@@ -2929,46 +2894,46 @@ CheckRecordSet_ERROR:
 
 					If objNextItem.IsBitColumn Then	 'Bit
 						'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
+						If IsDBNull(objRow(iLoop)) Then
 							vDisplayData = ""
 						Else
 							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then vDisplayData = "Y"
+							If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then vDisplayData = "Y"
 							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then vDisplayData = "N"
+							If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then vDisplayData = "N"
 						End If
 
 					Else
 						' Get the formatted data to display in the grid
 						'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vDisplayData = PopulateGrid_FormatData(objNextItem, mrstCustomReportsOutput.Fields(iLoop).Value, bSuppress, bBaseRecordChanged)
+						vDisplayData = PopulateGrid_FormatData(objNextItem, objRow(iLoop), bSuppress, bBaseRecordChanged)
 					End If
 
 					If blnSkipped Then
 						' Store the ACTUAL data in the array (previous value dimension)
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) And (Not objSkippedItem.IsNumeric) And (Not objSkippedItem.IsDateColumn) And (Not objSkippedItem.IsBitColumn) Then
+						If IsDBNull(objRow(intSkippedIndex)) And (Not objSkippedItem.IsNumeric) And (Not objSkippedItem.IsDateColumn) And (Not objSkippedItem.IsBitColumn) Then
 							' Field value is null but a character data type, so set it to be "".
 							objSkippedItem.LastValue = ""
 
 						Else
 							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
 							If objSkippedItem.IsDateColumn Then	'Date
-								objSkippedItem.LastValue = VB6.Format(mrstCustomReportsOutput.Fields(intSkippedIndex).Value, DateFormat)
+								objSkippedItem.LastValue = VB6.Format(objRow(intSkippedIndex), DateFormat)
 
 							ElseIf objSkippedItem.IsNumeric Then	'Numeric
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								objSkippedItem.LastValue = IIf(IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
+								objSkippedItem.LastValue = IIf(IsDBNull(objRow(intSkippedIndex)), "", objRow(intSkippedIndex))
 
 							ElseIf (objSkippedItem.IsBitColumn) Then	 'Bit
-								If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "True") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 1) Then objSkippedItem.LastValue = "Y"
-								If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "False") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 0) Then objSkippedItem.LastValue = "N"
+								If (objRow(intSkippedIndex) = "True") Or (objRow(intSkippedIndex) = 1) Then objSkippedItem.LastValue = "Y"
+								If (objRow(intSkippedIndex) = "False") Or (objRow(intSkippedIndex) = 0) Then objSkippedItem.LastValue = "N"
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) Then objSkippedItem.LastValue = ""
+								If IsDBNull(objRow(intSkippedIndex)) Then objSkippedItem.LastValue = ""
 
 							Else 'Varchar
-								objSkippedItem.LastValue = mrstCustomReportsOutput.Fields(intSkippedIndex).Value
+								objSkippedItem.LastValue = objRow(intSkippedIndex)
 							End If
 
 						End If
@@ -2976,28 +2941,28 @@ CheckRecordSet_ERROR:
 					Else
 						' Store the ACTUAL data in the array (previous value dimension)
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) And (Not objNextItem.IsNumeric) And (Not objNextItem.IsDateColumn) And (Not objNextItem.IsBitColumn) Then
+						If IsDBNull(objRow(iLoop)) And (Not objNextItem.IsNumeric) And (Not objNextItem.IsDateColumn) And (Not objNextItem.IsBitColumn) Then
 							' Field value is null but a character data type, so set it to be "".
 							objNextItem.LastValue = ""
 						Else
 
 							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
 							If objNextItem.IsDateColumn Then	'Date
-								objNextItem.LastValue = VB6.Format(mrstCustomReportsOutput.Fields(iLoop).Value, DateFormat)
+								objNextItem.LastValue = VB6.Format(objRow(iLoop), DateFormat)
 
 							ElseIf objNextItem.IsNumeric Then	'Numeric
-								objNextItem.LastValue = IIf(IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
+								objNextItem.LastValue = IIf(IsDBNull(objRow(iLoop)), "", objRow(iLoop))
 
 							ElseIf objNextItem.IsBitColumn Then	 'Bit
-								If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then
+								If IsDBNull(objRow(iLoop)) Then
 									objNextItem.LastValue = ""
 								Else
-									If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then objNextItem.LastValue = "Y"
-									If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then objNextItem.LastValue = "N"
+									If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then objNextItem.LastValue = "Y"
+									If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then objNextItem.LastValue = "N"
 								End If
 
 							Else 'Varchar
-								objNextItem.LastValue = mrstCustomReportsOutput.Fields(iLoop).Value
+								objNextItem.LastValue = objRow(iLoop)
 							End If
 						End If
 					End If
@@ -3057,9 +3022,7 @@ CheckRecordSet_ERROR:
 
 			fNotFirstTime = True
 
-			' Move to next row in the grid
-			mrstCustomReportsOutput.MoveNext()
-		Loop
+		Next
 
 		mblnPageBreak = False
 
@@ -3244,7 +3207,7 @@ LoadRecords_ERROR:
 		'	Dim iLoop2 As Short
 		'	Dim iColumnIndex As Short
 		Dim sSQL As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim fHasAverage As Boolean
 		Dim fHasCount As Boolean
 		Dim fHasTotal As Boolean
@@ -3436,11 +3399,13 @@ LoadRecords_ERROR:
 				sSQL = sSQL & " FROM " & mstrTempTableName & IIf(Len(sFromCode) > 0, sFromCode, "") & IIf(Len(sWhereCode) > 0, sWhereCode, "")
 			End If
 
-			rsTemp = datGeneral.GetRecords(sSQL)
+			rsTemp = DB.GetDataTable(sSQL)
 
 			iLoop = 0
 			For Each objReportItem In ColumnDetails
 				intColCounter = intColCounter + 1
+
+				Dim rowData As DataRow = rsTemp.Rows(0)
 
 				If Not objReportItem.IDColumnName.ToString().Substring(0, 3) = "?ID" Then
 
@@ -3451,18 +3416,18 @@ LoadRecords_ERROR:
 						End If
 
 						' Average.
-						If IsDBNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
+						If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
 							strAggrValue = "0"
 							'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 							'do not format the data, show it as it is.
 						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-							strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
+							strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 						ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
-							strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
+							strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "#0")
 						ElseIf objReportItem.Decimals = 0 Then
-							strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
+							strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 						Else
-							strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
+							strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
 						End If
 
 						If objReportItem.Use1000Separator Then
@@ -3511,11 +3476,11 @@ LoadRecords_ERROR:
 
 						'JDM - Make a note of count the Bradford Index Report
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If mbIsBradfordIndexReport Then miAmountOfRecords = IIf(Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, 0)
+						If mbIsBradfordIndexReport Then miAmountOfRecords = IIf(Not IsDBNull(rowData("cnt_" & Trim(Str(iLoop)))), rowData("cnt_" & Trim(Str(iLoop))), 0)
 
 						' Count.
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						aryCountAddString.Add(IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")))
+						aryCountAddString.Add(IIf(IsDBNull(rowData("cnt_" & Trim(Str(iLoop)))), "0", Format(rowData("cnt_" & Trim(Str(iLoop))), "0")))
 					Else
 
 						' Display the value ?
@@ -3549,14 +3514,14 @@ LoadRecords_ERROR:
 						End If
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
+						If IsDBNull(rowData("ttl_" & Trim(Str(iLoop)))) Then
 							strAggrValue = "0"
 						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-							strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value
+							strAggrValue = rowData("ttl_" & Trim(Str(iLoop)))
 						ElseIf objReportItem.Decimals = 0 Then
-							strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
+							strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0")
 						Else
-							strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
+							strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
 						End If
 
 						If objReportItem.Use1000Separator Then
@@ -3604,7 +3569,6 @@ LoadRecords_ERROR:
 				iLoop += 1
 			Next
 
-			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 		End If
@@ -3700,7 +3664,7 @@ LoadRecords_ERROR:
 		On Error GoTo PopulateGrid_DoGrandSummary_ERROR
 
 		Dim iLoop As Short
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 
 		Dim aryAverageAddString As New ArrayList
 		Dim aryCountAddString As New ArrayList
@@ -3804,7 +3768,8 @@ LoadRecords_ERROR:
 		If Len(sSQL) > 0 Then
 			sSQL = "SELECT " & Right(sSQL, Len(sSQL) - 1)
 
-			rsTemp = datGeneral.GetRecords(sSQL)
+			rsTemp = DB.GetDataTable(sSQL)
+			Dim rowData As DataRow = rsTemp.Rows(0)
 
 			For Each objReportItem In ColumnDetails
 
@@ -3820,18 +3785,18 @@ LoadRecords_ERROR:
 					End If
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
+					If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
 						strAggrValue = "0"
 						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 						'do not format the data, show it as it is.
 					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-						strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
+						strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 					ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
-						strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
+						strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "#0")
 					ElseIf objReportItem.Decimals = 0 Then
-						strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
+						strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 					Else
-						strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
+						strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
 					End If
 
 					If objReportItem.Use1000Separator Then
@@ -3862,7 +3827,7 @@ LoadRecords_ERROR:
 					End If
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					aryCountAddString.Add(IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")))
+					aryCountAddString.Add(IIf(IsDBNull(rowData("cnt_" & Trim(Str(iLoop)))), "0", Format(rowData("cnt_" & Trim(Str(iLoop))), "0")))
 				Else
 					aryCountAddString.Add("")
 				End If
@@ -3876,16 +3841,16 @@ LoadRecords_ERROR:
 					End If
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
+					If IsDBNull(rowData("ttl_" & Trim(Str(iLoop)))) Then
 						strAggrValue = "0"
 						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
 						'do not format the data, show it as it is.
 					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-						strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value
+						strAggrValue = rowData("ttl_" & Trim(Str(iLoop)))
 					ElseIf objReportItem.Decimals = 0 Then
-						strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
+						strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0")
 					Else
-						strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", objReportItem.Decimals))
+						strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
 					End If
 
 					If objReportItem.Use1000Separator Then
@@ -3904,7 +3869,6 @@ LoadRecords_ERROR:
 
 			Next
 
-			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 		End If
@@ -4074,9 +4038,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 		mstrSQL = vbNullString
 
 		' Class references
-
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
 		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsGeneral = Nothing
 
@@ -4118,7 +4079,7 @@ ClearUp_ERROR:
 
 	Private Function IsRecordSelectionValid() As Boolean
 		Dim sSQL As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 		Dim i As Short
@@ -4247,68 +4208,60 @@ ClearUp_ERROR:
 			If Len(mstrErrorString) = 0 Then
 				sSQL = "SELECT * FROM ASRSYSCustomReportsDetails " & "WHERE CustomReportID = " & mlngCustomReportID & " AND LOWER(Type) = 'e' "
 
-				rsTemp = mclsGeneral.GetRecords(sSQL)
-				With rsTemp
-					If Not (.EOF And .BOF) Then
-						.MoveFirst()
-						Do Until .EOF
-							iResult = ValidateCalculation(.Fields("ColExprID").Value)
-							Select Case iResult
-								Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
-									mstrErrorString = "A calculation used in this definition has been deleted by another user."
-								Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
-									mstrErrorString = "A calculation used in this definition is invalid."
-								Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
-									If Not fCurrentUserIsSysSecMgr Then
-										mstrErrorString = "A calculation used in this definition has been made hidden by another user."
-									End If
-							End Select
+				rsTemp = DB.GetDataTable(sSQL)
+				For Each objRow As DataRow In rsTemp.Rows
 
-							If Len(mstrErrorString) > 0 Then
-								Exit Do
+					iResult = ValidateCalculation(CInt(objRow("ColExprID")))
+					Select Case iResult
+						Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+							mstrErrorString = "A calculation used in this definition has been deleted by another user."
+						Case RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+							mstrErrorString = "A calculation used in this definition is invalid."
+						Case RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+							If Not fCurrentUserIsSysSecMgr Then
+								mstrErrorString = "A calculation used in this definition has been made hidden by another user."
 							End If
+					End Select
 
-							.MoveNext()
-						Loop
+					If Len(mstrErrorString) > 0 Then
+						Exit For
 					End If
-				End With
 
-				'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsTemp = Nothing
+				Next
 			End If
+
+			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			rsTemp = Nothing
 		End If
 
-		IsRecordSelectionValid = (Len(mstrErrorString) = 0)
+		Return (Len(mstrErrorString) = 0)
 
 	End Function
 
 	Private Function CheckCalcsStillExist() As Boolean
 
 		Dim pstrBadCalcs As String
-		Dim prstTemp As Recordset
+		Dim prstTemp As DataTable
 
 		On Error GoTo Check_ERROR
 
-		Do Until mrstCustomReportsDetails.EOF
-			If mrstCustomReportsDetails.Fields("Type").Value = "E" Then
-				prstTemp = mclsGeneral.GetReadOnlyRecords("SELECT * FROM AsrSysExpressions WHERE ExprID = " & mrstCustomReportsDetails.Fields("ColExprID").Value)
-				If prstTemp.BOF And prstTemp.EOF Then
+		For Each objRow As DataRow In mrstCustomReportsDetails.Rows
+
+			If objRow("Type").ToString() = "E" Then
+				prstTemp = DB.GetDataTable("SELECT * FROM AsrSysExpressions WHERE ExprID = " & objRow("ColExprID"))
+				If prstTemp.Rows.Count = 0 Then
 					pstrBadCalcs = "One or more calculation(s) used in this report have been deleted" & vbNewLine & "by another user."
-					Exit Do
+					Exit For
 				End If
 			End If
-			mrstCustomReportsDetails.MoveNext()
-		Loop
+		Next
 
 		If Len(pstrBadCalcs) > 0 Then
 			mstrErrorString = pstrBadCalcs
-			CheckCalcsStillExist = False
-			Exit Function
+			Return False
 		End If
 
-		CheckCalcsStillExist = True
-		mrstCustomReportsDetails.MoveFirst()
-		Exit Function
+		Return True
 
 Check_ERROR:
 
@@ -4576,21 +4529,21 @@ GenerateSQLBradford_ERROR:
 		' Merge the absence records if the continuous field is defined.
 		If Not Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)) = CDbl("0") Then
 			sSQL = "EXECUTE sp_ASR_Bradford_MergeAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
-			mclsData.ExecuteSql(sSQL)
+			DB.ExecuteSql(sSQL)
 		End If
 
 		' Delete unwanted absences from the table.
 		sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 		' Calculate the included durations for the absences.
 		sSQL = "EXECUTE sp_ASR_Bradford_CalculateDurations '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
-		mclsData.ExecuteSql(sSQL)
+		DB.ExecuteSql(sSQL)
 
 		' Remove absences that are below the required Bradford Factor
 		If mbMinBradford Then
 			sSQL = "DELETE FROM " & mstrTempTableName & " WHERE personnel_id IN (SELECT personnel_id FROM " & mstrTempTableName & " GROUP BY personnel_id HAVING((count(duration)*count(duration))*sum(duration)) < " & Str(mlngMinBradfordAmount) & ")"
-			mclsData.ExecuteSql(sSQL)
+			DB.ExecuteSql(sSQL)
 		End If
 
 		CalculateBradfordFactors = True
@@ -5098,6 +5051,16 @@ GetBradfordRecordSet_ERROR:
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
 		Return mclsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+	End Function
+
+	Private Function GetOrderDefinition(ByRef plngOrderID As Integer) As DataTable
+		' Return a recordset of the order items (both Find Window and Sort Order columns)
+		' for the given order.
+		Dim prmID As New SqlParameter("piOrderID", SqlDbType.Int)
+		prmID.Value = plngOrderID
+
+		Return DB.GetDataTable("sp_ASRGetOrderDefinition", CommandType.StoredProcedure, prmID)
+
 	End Function
 
 

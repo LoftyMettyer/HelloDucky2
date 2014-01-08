@@ -156,18 +156,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function GetOrderDefinition(ByRef plngOrderID As Integer) As Recordset
-		' Return a recordset of the order items (both Find Window and Sort Order columns)
-		' for the given order.
-		Dim sSQL As String
-		Dim rsInfo As Recordset
-
-		sSQL = "EXEC sp_ASRGetOrderDefinition " & plngOrderID
-		rsInfo = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		GetOrderDefinition = rsInfo
-
-	End Function
-
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
