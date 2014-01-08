@@ -172,7 +172,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 							<td>
 								<!-- First tab -->
 								<div id="div1">
-									<table width="100%" height="80%"  cellspacing="0" cellpadding="5" >
+									<table width="1000px" height="80%"  cellspacing="0" cellpadding="5" >
 										<tr valign="top">
 											<td>
 												<table width="100%" class="invisible" cellspacing="0" cellpadding="0" >
@@ -283,7 +283,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	</td>
 																	<td width="5">&nbsp;</td>
 																	<td width="100%">
-																		<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
+																		<input id="txtBasePicklist" name="txtBasePicklist" disabled="disabled" class="text textdisabled" style="WIDTH: 98%">
 																	</td>
 																	<td>
 																		<input id="cmdBasePicklist" name="cmdBasePicklist"  type="button" disabled="disabled" class="btn btndisabled" value="..."
@@ -318,7 +318,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	</td>
 																	<td width="5"></td>
 																	<td width="100%">
-																		<input id="txtBaseFilter" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
+																		<input id="txtBaseFilter" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="WIDTH: 98%">
 																	</td>
 																	<td>
 																		<input id="cmdBaseFilter" name="cmdBaseFilter"  type="button" disabled="disabled" value="..." class="btn btndisabled"
@@ -1847,19 +1847,19 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td align="left" nowrap>File name : </td>
 
-																				<td>
+																				<td align="right">
 																					<input id="txtFilename" name="txtFilename"
-																						style="width: 100%;"
+																						style="width: 84%;vertical-align:central;"
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
-																				</td>
-																				<td width="25">
+																				
 																					<input id="cmdFilename" name="cmdFilename" class="btn btndisabled" type="button" value='...' disabled="disabled"
 																						onclick="saveFile(); changeTab5Control();"
 																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" />
+																						onblur="try{button_onBlur(this);}catch(e){}" style="width: 12%;"/>
 																				</td>
+                                                                                <td></td>
 																				<td></td>
 																			</tr>
 
@@ -1902,21 +1902,21 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td></td>
 																				<td align="left" nowrap>Email group :   </td>
-																				<td>
+																				<td <%--align="right"--%>>
 																					<input id="txtEmailGroup" name="txtEmailGroup"
-																						style="width: 100%;"
-																						class="text textdisabled" disabled="disabled" tabindex="-1">
+																						style="width: 84%; vertical-align:central;"
+																						class="text textdisabled" disabled="disabled" tabindex="-1" >
 																					<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden" class="text textdisabled" disabled="disabled" tabindex="-1">
-																				</td>
-																				<td style="width: 25px;">
+																				
 																					<input id="cmdEmailGroup" name="cmdEmailGroup" type="button" value='...' disabled="disabled" class="btn btndisabled"
 																						onclick="selectEmailGroup(); changeTab5Control();"
 																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" />
+																						onblur="try{button_onBlur(this);}catch(e){}" style="width: 12%;" />
 																				</td>
 																				<td></td>
+                                                                                <td></td>
 																			</tr>
 																			<tr>
 																				<td></td>
