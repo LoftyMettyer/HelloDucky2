@@ -265,6 +265,7 @@ End If
             ondblClickRow: function (rowID) {
                 ssOleDBGridDefSelRecords_dblClick();
             },
+            ignoreCase: true,
             rowNum: 1000    //TODO set this to blocksize...
         });
 
