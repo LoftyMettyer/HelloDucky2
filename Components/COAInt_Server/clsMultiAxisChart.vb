@@ -19,10 +19,6 @@ Public Class clsMultiAxisChart
 	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
-	' Classes
-	Private mclsGeneral As clsGeneral
-	Private mclsData As clsDataAccess
-
 	' Strings to hold the SQL statement
 	Private mstrSQLSelect As String
 
@@ -88,24 +84,24 @@ Public Class clsMultiAxisChart
 		iSortDirection = CShort(piSortDirection)
 
 		If lngTableID > 0 Then
-			strTableName = datGeneral.GetTableName(lngTableID)
-			strColumnName = mclsGeneral.GetColumnName(lngColumnID)
+			strTableName = General.GetTableName(lngTableID)
+			strColumnName = General.GetColumnName(lngColumnID)
 		End If
 
 		If lngTableID2 > 0 Then
-			strTableName2 = datGeneral.GetTableName(lngTableID2)
-			strColumnName2 = mclsGeneral.GetColumnName(lngColumnID2)
+			strTableName2 = General.GetTableName(lngTableID2)
+			strColumnName2 = General.GetColumnName(lngColumnID2)
 		End If
 
 		If lngTableID3 > 0 Then
-			strTableName3 = datGeneral.GetTableName(lngTableID3)
-			strColumnName3 = mclsGeneral.GetColumnName(lngColumnID3)
+			strTableName3 = General.GetTableName(lngTableID3)
+			strColumnName3 = General.GetColumnName(lngColumnID3)
 		End If
 
-		strColourColumnName = mclsGeneral.GetColumnName(lngColourColumnID)
+		strColourColumnName = General.GetColumnName(lngColourColumnID)
 
-		If datGeneral.IsAChildOf(lngTableID, lngTableID2) = True Then
-			If datGeneral.IsAChildOf(lngTableID, lngTableID3) = True Then
+		If General.IsAChildOf(lngTableID, lngTableID2) = True Then
+			If General.IsAChildOf(lngTableID, lngTableID3) = True Then
 				' 1 is base
 				mlngBaseTableID = lngTableID
 			Else
@@ -113,7 +109,7 @@ Public Class clsMultiAxisChart
 				mlngBaseTableID = lngTableID3
 			End If
 		Else
-			If datGeneral.IsAChildOf(lngTableID2, lngTableID3) = True Then
+			If General.IsAChildOf(lngTableID2, lngTableID3) = True Then
 				' 2 is base
 				mlngBaseTableID = lngTableID2
 			Else
@@ -122,7 +118,7 @@ Public Class clsMultiAxisChart
 			End If
 		End If
 
-		mstrBaseTableName = datGeneral.GetTableName(CInt(mlngBaseTableID))
+		mstrBaseTableName = General.GetTableName(CInt(mlngBaseTableID))
 
 		' Fault HRPRO 1354 - Default column 3 name to 'ID' if no column is
 		' set in the database and aggregate is count. This is for tables
@@ -196,7 +192,7 @@ Public Class clsMultiAxisChart
 					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID"))
 					pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
 
-					If mclsGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+					If General.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 						pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 					End If
 					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'") & " THEN " & CStr(piCount)
@@ -265,7 +261,7 @@ SQLSelectVerticalID_ERROR:
 				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID"))
 				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
-				If mclsGeneral.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
+				If General.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
 					pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 				End If
 				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'") & " THEN " & CStr(piCount)
@@ -744,7 +740,7 @@ GenerateSQLFrom_ERROR:
 				End If
 			Else
 				If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
-					If datGeneral.IsAChildOf((pobjTableView.TableID), lngTableID) = True Then
+					If General.IsAChildOf((pobjTableView.TableID), lngTableID) = True Then
 						mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & pobjTableView.RealSource & ".ID_" & lngTableID & " = " & mstrBaseTableRealSource & ".ID"
 					Else
 						'
@@ -833,11 +829,11 @@ GenerateSQLFrom_ERROR:
 		'''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 		''
 		''          ' Now the child order by bit - done here in case tables need to be joined.
-		'''          Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(mlngCustomReportsChildTable))
+		'''          Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(mlngCustomReportsChildTable))
 		''          If lngTempOrderID > 0 Then
-		''            Set rsTemp = datGeneral.GetOrderDefinition(lngTempOrderID)
+		''            Set rsTemp = General.GetOrderDefinition(lngTempOrderID)
 		''          Else
-		''            Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(lngTempChildID))
+		''            Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(lngTempChildID))
 		''          End If
 		''
 		''          sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
@@ -853,12 +849,12 @@ GenerateSQLFrom_ERROR:
 		''
 		''  '        If mlngCustomReportsChildFilterID > 0 Then
 		''          If lngTempFilterID > 0 Then
-		'''            blnOK = datGeneral.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
-		''            blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
+		'''            blnOK = General.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
+		''            blnOK = General.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
 		''
 		''            ' Generate any UDFs that are used in this filter
 		''            If blnOK Then
-		''              datGeneral.FilterUDFs lngTempFilterID, mastrUDFsRequired()
+		''              General.FilterUDFs lngTempFilterID, mastrUDFsRequired()
 		''            End If
 		''
 		''            If blnOK Then
@@ -866,8 +862,8 @@ GenerateSQLFrom_ERROR:
 		'''                objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 		''            Else
 		''              ' Permission denied on something in the filter.
-		'''              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
-		''              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
+		'''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
+		''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
 		''              GenerateSQLJoin = False
 		''              Exit Function
 		''            End If
@@ -939,13 +935,13 @@ GenerateSQLJoin_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = datGeneral.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
 			Else
 				' Permission denied on something in the filter.
-				mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngFilterID) & "' filter."
+				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngFilterID) & "' filter."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
@@ -972,31 +968,6 @@ GenerateSQLWhere_ERROR:
 			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
 		Next i
 	End Function
-
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-		' Initialise the the classes/arrays to be used
-		mclsData = New clsDataAccess
-		mclsGeneral = New clsGeneral
-
-	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
-	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
 
 	Private Function ReverseDateTextField(ByRef pDateValue As String) As String
 

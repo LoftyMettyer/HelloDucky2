@@ -105,7 +105,6 @@ Public Class CrossTab
 	' Classes
 	Private mclsData As clsDataAccess
 	Private mobjEventLog As clsEventLog
-	Private mobjGeneral As New clsGeneral
 
 	Private mlngType As Integer
 
@@ -654,23 +653,23 @@ ErrorTrap:
 			mdblMin(HOR) = Val(objRow("HorizontalStart"))
 			mdblMax(HOR) = Val(objRow("HorizontalStop"))
 			mdblStep(HOR) = Val(objRow("HorizontalStep"))
-			mstrColName(HOR) = datGeneral.GetColumnName(mlngColID(HOR))
-			mlngColDataType(HOR) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(HOR)))
+			mstrColName(HOR) = General.GetColumnName(mlngColID(HOR))
+			mlngColDataType(HOR) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(HOR)))
 			mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
 			mlngColID(VER) = objRow("VerticalColID")
 			mdblMin(VER) = Val(objRow("VerticalStart"))
 			mdblMax(VER) = Val(objRow("VerticalStop"))
 			mdblStep(VER) = Val(objRow("VerticalStep"))
-			mstrColName(VER) = datGeneral.GetColumnName(mlngColID(VER))
-			mlngColDataType(VER) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(VER)))
+			mstrColName(VER) = General.GetColumnName(mlngColID(VER))
+			mlngColDataType(VER) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(VER)))
 			mstrFormat(VER) = GetFormat(mlngColID(VER))
 
 			mlngColID(PGB) = objRow("PageBreakColID")
 			mblnPageBreak = (mlngColID(PGB) > 0)
 			If mblnPageBreak Then
-				mstrColName(PGB) = datGeneral.GetColumnName(mlngColID(PGB))
-				mlngColDataType(PGB) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(PGB)))
+				mstrColName(PGB) = General.GetColumnName(mlngColID(PGB))
+				mlngColDataType(PGB) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(PGB)))
 				mstrFormat(PGB) = GetFormat(mlngColID(PGB))
 				mdblMin(PGB) = Val(objRow("PageBreakStart"))
 				mdblMax(PGB) = Val(objRow("PageBreakStop"))
@@ -800,11 +799,11 @@ LocalErr:
 			End If
 
 			'Get list of IDs from Filter
-			fOK = datGeneral.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
+			fOK = General.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.
-				mstrStatusMessage = "You do not have permission to use the '" & datGeneral.GetFilterName(lngFilterID) & "' filter."
+				mstrStatusMessage = "You do not have permission to use the '" & General.GetFilterName(lngFilterID) & "' filter."
 			End If
 
 			'MH20020704 Fault 4022
@@ -928,7 +927,7 @@ LocalErr:
 			Exit Function
 		End If
 
-		mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
+		mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
 		mstrSQLSelect = mstrSQLSelect & ", " & "space(255) as 'RecDesc' INTO " & mstrTempTableName
 
 		strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & vbNewLine & mstrSQLJoin & vbNewLine & mstrSQLWhere
@@ -1263,8 +1262,8 @@ LocalErr:
 								strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
 
 							Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
-								strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(objRow(0), mstrFormat(lngLoop)))
-								strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(objRow(0))
+								strHeading(lngCount) = General.ConvertNumberForDisplay(Format(objRow(0), mstrFormat(lngLoop)))
+								strSearch(lngCount) = strColumnName & " = " & General.ConvertNumberForSQL(objRow(0))
 
 							Case Else
 								strHeading(lngCount) = FormatString(objRow(0))
@@ -1289,9 +1288,9 @@ LocalErr:
 			strSearch(0) = strColumnName & " IS NULL"
 
 			'Second element of range for those less than minimum value of range...
-			strHeading(1) = "< " & datGeneral.ConvertNumberForDisplay(Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
+			strHeading(1) = "< " & General.ConvertNumberForDisplay(Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
 			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(1) = "Convert(float," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
+			strSearch(1) = "Convert(float," & strColumnName & ") < " & General.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
 
 			dblUnit = GetSmallestUnit(lngLoop)
 
@@ -1306,9 +1305,9 @@ LocalErr:
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
-				strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & datGeneral.ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
+				strHeading(lngCount) = General.ConvertNumberForDisplay(Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & General.ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
 				'MH20010411 Fault 1978 Convert to int stops overflow error !
-				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & datGeneral.ConvertNumberForSQL(CStr(dblGroup)) & " AND " & datGeneral.ConvertNumberForSQL(CStr(dblGroupMax))
+				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & General.ConvertNumberForSQL(CStr(dblGroup)) & " AND " & General.ConvertNumberForSQL(CStr(dblGroupMax))
 
 				lngCount = lngCount + 1
 			Next
@@ -1316,9 +1315,9 @@ LocalErr:
 			ReDim Preserve strHeading(lngCount)
 			ReDim Preserve strSearch(lngCount)
 			'Last element of range for those more than maximum value of range...
-			strHeading(lngCount) = "> " & datGeneral.ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
+			strHeading(lngCount) = "> " & General.ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
 			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & datGeneral.ConvertNumberForSQL(CStr(dblGroup - dblUnit))
+			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & General.ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
 			lngCount = lngCount + 1
 		End If
@@ -1338,7 +1337,7 @@ LocalErr:
 		intFound = InStr(mstrFormat(lngLoop), ".")
 		If intFound > 0 Then
 			strTemp = Mid(mstrFormat(lngLoop), intFound, Len(mstrFormat(lngLoop)) - intFound) & "1"
-			GetSmallestUnit = CDbl(datGeneral.ConvertNumberForDisplay(strTemp))
+			GetSmallestUnit = CDbl(General.ConvertNumberForDisplay(strTemp))
 		Else
 			GetSmallestUnit = 1
 		End If
@@ -1442,7 +1441,7 @@ LocalErr:
 				If IsDBNull(objRow("INS")) Then
 					dblThisIntersectionVal = 0
 				Else
-					dblThisIntersectionVal = Val(datGeneral.ConvertNumberForSQL(objRow("INS")))
+					dblThisIntersectionVal = Val(General.ConvertNumberForSQL(objRow("INS")))
 				End If
 
 
@@ -1576,7 +1575,7 @@ LocalErr:
 
 					Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If UCase(mvarHeadings(Index)(lngCount)) = datGeneral.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
+						If UCase(mvarHeadings(Index)(lngCount)) = General.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							GetGroupNumber = lngCount
 							Exit For
@@ -2177,7 +2176,7 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object pdtEndDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object pdtStartDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: DateDiff behavior may be different. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6B38EC3F-686D-4B2E-B5A5-9E8E7A762E32"'
-		If DateDiff(Microsoft.VisualBasic.DateInterval.Day, datGeneral.ConvertSQLDateToSystemFormat(CStr(pdtStartDate)), datGeneral.ConvertSQLDateToSystemFormat(CStr(pdtEndDate))) < 0 Then
+		If DateDiff(Microsoft.VisualBasic.DateInterval.Day, General.ConvertSQLDateToSystemFormat(CStr(pdtStartDate)), General.ConvertSQLDateToSystemFormat(CStr(pdtEndDate))) < 0 Then
 			mstrStatusMessage = "The report end date is before the report start date."
 			fOK = False
 			Exit Function
@@ -2185,9 +2184,9 @@ LocalErr:
 
 
 		mlngBaseTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))
-		mstrBaseTable = datGeneral.GetTableName(mlngBaseTableID)
+		mstrBaseTable = General.GetTableName(mlngBaseTableID)
 
-		mlngRecordDescExprID = CInt(datGeneral.GetRecDescExprID(mlngBaseTableID))
+		mlngRecordDescExprID = CInt(General.GetRecDescExprID(mlngBaseTableID))
 
 		' Add the different reason types
 		msAbsenceBreakdownTypes = "(" & IIf(Len(strIncludedTypes) = 0, "''", strIncludedTypes) & ")"
@@ -2204,13 +2203,13 @@ LocalErr:
 		End If
 
 		mlngColID(HOR) = lngHorColID
-		mstrColName(HOR) = datGeneral.GetColumnName(lngHorColID)
-		mlngColDataType(HOR) = CStr(datGeneral.GetDataType(mlngBaseTableID, lngHorColID))
+		mstrColName(HOR) = General.GetColumnName(lngHorColID)
+		mlngColDataType(HOR) = CStr(General.GetDataType(mlngBaseTableID, lngHorColID))
 		mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
 		mlngColID(VER) = lngVerColID
-		mstrColName(VER) = datGeneral.GetColumnName(lngVerColID)
-		mlngColDataType(VER) = CStr(datGeneral.GetDataType(mlngBaseTableID, lngVerColID))
+		mstrColName(VER) = General.GetColumnName(lngVerColID)
+		mlngColDataType(VER) = CStr(General.GetDataType(mlngBaseTableID, lngVerColID))
 		mstrFormat(VER) = GetFormat(mlngColID(VER))
 
 		mlngIntersectionDecimals = 2
@@ -2301,7 +2300,7 @@ LocalErr:
 	End Function
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 	Public Sub GetPivotRecordset()

@@ -4,14 +4,20 @@ Option Explicit On
 Imports System.Globalization
 Imports ADODB
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
 Imports System.Data.SqlClient
+Imports HR.Intranet.Server.Structures
 
 Public Class clsGeneral
 
 	Private datData As New clsDataAccess
+
+	Public Sub New(ByVal LoginInfo As LoginInfo)
+		datData = New clsDataAccess(LoginInfo)
+	End Sub
 
 	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
 

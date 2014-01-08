@@ -61,7 +61,7 @@ Public Class clsChart
 		iSortDirection = CShort(piSortDirection)
 		lngColourID = plngChart_ColourID
 
-		strTableName = datGeneral.GetTableName(lngTableID)
+		strTableName = General.GetTableName(lngTableID)
 		strColumnName = mclsGeneral.GetColumnName(lngColumnID)
 		strColourColumnName = mclsGeneral.GetColumnName(lngColourID)
 
@@ -451,11 +451,11 @@ GenerateSQLSelect_ERROR:
 		'''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 		''
 		''          ' Now the child order by bit - done here in case tables need to be joined.
-		'''          Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(mlngCustomReportsChildTable))
+		'''          Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(mlngCustomReportsChildTable))
 		''          If lngTempOrderID > 0 Then
-		''            Set rsTemp = datGeneral.GetOrderDefinition(lngTempOrderID)
+		''            Set rsTemp = General.GetOrderDefinition(lngTempOrderID)
 		''          Else
-		''            Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(lngTempChildID))
+		''            Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(lngTempChildID))
 		''          End If
 		''
 		''          sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
@@ -471,12 +471,12 @@ GenerateSQLSelect_ERROR:
 		''
 		''  '        If mlngCustomReportsChildFilterID > 0 Then
 		''          If lngTempFilterID > 0 Then
-		'''            blnOK = datGeneral.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
-		''            blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
+		'''            blnOK = General.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
+		''            blnOK = General.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
 		''
 		''            ' Generate any UDFs that are used in this filter
 		''            If blnOK Then
-		''              datGeneral.FilterUDFs lngTempFilterID, mastrUDFsRequired()
+		''              General.FilterUDFs lngTempFilterID, mastrUDFsRequired()
 		''            End If
 		''
 		''            If blnOK Then
@@ -484,8 +484,8 @@ GenerateSQLSelect_ERROR:
 		'''                objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 		''            Else
 		''              ' Permission denied on something in the filter.
-		'''              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
-		''              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
+		'''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
+		''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
 		''              GenerateSQLJoin = False
 		''              Exit Function
 		''            End If
@@ -593,13 +593,13 @@ GenerateSQLOrderBy_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = datGeneral.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
 			Else
 				' Permission denied on something in the filter.
-				mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngFilterID) & "' filter."
+				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngFilterID) & "' filter."
 				GenerateSQLWhere = False
 				Exit Function
 			End If

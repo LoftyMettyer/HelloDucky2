@@ -620,7 +620,7 @@ GetAbsenceRecordSet_ERROR:
 		Dim strHexColour As String
 
 		strColourKeySQL = "SELECT DISTINCT " & gsAbsenceTypeTypeColumnName & " AS Type, " & gsAbsenceTypeCalCodeColumnName & " AS CalCode," & gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName
-		rstColourKey = datGeneral.GetRecords(strColourKeySQL)
+		rstColourKey = General.GetRecords(strColourKeySQL)
 
 		If rstColourKey.BOF And rstColourKey.EOF Then
 			'MsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
@@ -924,7 +924,7 @@ errLoadColourKey:
 			sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
 			' Get the start and leaving date
-			prstPersonnelData = datGeneral.GetRecords(sSQL)
+			prstPersonnelData = General.GetRecords(sSQL)
 
 			If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -956,10 +956,10 @@ errLoadColourKey:
 					End If
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-				prstPersonnelData = datGeneral.GetRecords(sSQL)
+				prstPersonnelData = General.GetRecords(sSQL)
 			Else
 				' Its a historic region, so get topmost from the history
-				prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				prstPersonnelData = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
 			End If
 
 			If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
@@ -994,11 +994,11 @@ errLoadColourKey:
 					End If
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-				prstPersonnelData = datGeneral.GetRecords(sSQL)
+				prstPersonnelData = General.GetRecords(sSQL)
 
 			Else
 				' Its a historic working pattern, so get topmost from the history
-				prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+				prstPersonnelData = General.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
 																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
 			End If
 
@@ -1554,7 +1554,7 @@ Error_FillCalBoxes:
 			If gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
 
 				' Get the wpattern for the start of the absence period
-				rstHistoricWPatterns = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				rstHistoricWPatterns = General.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
 
 				If Not (rstHistoricWPatterns.BOF And rstHistoricWPatterns.EOF) Then
 
@@ -1629,7 +1629,7 @@ Error_FillCalBoxes:
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
-				rstHistoricWPatterns = datGeneral.GetRecords(sSQL)
+				rstHistoricWPatterns = General.GetRecords(sSQL)
 
 				' Stuff the working pattern into array
 				If Not (rstHistoricWPatterns.EOF And rstHistoricWPatterns.BOF) Then
@@ -1669,7 +1669,7 @@ Error_FillCalBoxes:
 			If grtRegionType = RegionType.rtHistoricRegion Then
 
 				' Get the first region for this employee within this calendar year
-				rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
 
 				' Was there a region at the start of the calendar
 				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
@@ -1680,7 +1680,7 @@ Error_FillCalBoxes:
 				End If
 
 				' Get the second region for this employee within this calendar year
-				rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+				rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
 				' Was there a region at the start of the calendar
 				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
@@ -1701,7 +1701,7 @@ Error_FillCalBoxes:
 
 						'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
 						' Find the employees region for this date
-						rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+						rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
 						If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
 
@@ -1714,7 +1714,7 @@ Error_FillCalBoxes:
 							bNewRegionFound = True
 
 							' Now get the next change date
-							rstBankHolRegion = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Fields("Date").Value, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+							rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Fields("Date").Value, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 							If rstBankHolRegion.EOF Then
 								dtmNextChangeDate = CDate("31/12/9999")
 							Else
@@ -1760,7 +1760,7 @@ Error_FillCalBoxes:
 							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
 							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
 							sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
-							rstBankHolRegion = datGeneral.GetRecords(sSQL)
+							rstBankHolRegion = General.GetRecords(sSQL)
 
 							' Cycle through the recordset checking for the current day
 							If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
@@ -1813,7 +1813,7 @@ Error_FillCalBoxes:
 					sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
 					sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC" & vbNewLine
 
-					rstBankHolRegion = datGeneral.GetRecords(sSQL)
+					rstBankHolRegion = General.GetRecords(sSQL)
 
 					' Cycle through the recordset checking for the current day
 					If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then

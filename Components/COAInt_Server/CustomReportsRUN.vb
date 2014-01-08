@@ -56,7 +56,7 @@ Public Class Report
 	Private mrstCustomReportsDetails As DataTable
 
 	' Classes
-	Private mclsGeneral As clsGeneral
+	'Private mclsGeneral As clsGeneral
 	Private mobjEventLog As clsEventLog
 
 	' TableViewsGuff
@@ -523,7 +523,6 @@ ErrorTrap:
 	Private Sub Class_Initialize_Renamed()
 
 		' Initialise the the classes/arrays to be used
-		mclsGeneral = New clsGeneral
 		mobjEventLog = New clsEventLog
 
 		ReDim mlngTableViews(2, 0)
@@ -549,8 +548,7 @@ ErrorTrap:
 	Private Sub Class_Terminate_Renamed()
 
 		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
+
 		'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		'mclsUI = Nothing
 		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -570,7 +568,7 @@ ErrorTrap:
 
 		On Error GoTo AddTempTableToSQL_ERROR
 
-		mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
+		mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
 
 		mstrSQLSelect = mstrSQLSelect & " INTO [" & mstrTempTableName & "]"
 
@@ -826,8 +824,8 @@ GetCustomReportDefinition_ERROR:
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objExpr = Nothing
 
-					objReportItemDetail.IsDateColumn = mclsGeneral.DateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
-					objReportItemDetail.IsBitColumn = mclsGeneral.BitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					objReportItemDetail.IsDateColumn = General.DateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					objReportItemDetail.IsBitColumn = General.BitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
 
 				End If
 
@@ -875,7 +873,7 @@ GetCustomReportDefinition_ERROR:
 		objReportItemDetail.ColExprID = -1
 		objReportItemDetail.Type = "C"
 		objReportItemDetail.TableID = mlngCustomReportsBaseTable
-		objReportItemDetail.TableName = datGeneral.GetTableName(CInt(objReportItemDetail.TableID))
+		objReportItemDetail.TableName = General.GetTableName(CInt(objReportItemDetail.TableID))
 		objReportItemDetail.IDColumnName = "?ID"
 		objReportItemDetail.ColumnName = "ID"
 		objReportItemDetail.IsDateColumn = False
@@ -1517,7 +1515,7 @@ Error_Trap:
 		On Error GoTo Error_Trap
 
 		'******************* Create multiple child temp table ***************************
-		sMCTempTable = datGeneral.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
+		sMCTempTable = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
 
 		sSQL = "SELECT * INTO [" & sMCTempTable & "] FROM [" & mstrTempTableName & "]"
 		DB.ExecuteSql(sSQL)
@@ -1783,7 +1781,7 @@ Error_Trap:
 		'    mclsData.ExecuteSql ("IF EXISTS(SELECT * FROM sysobjects WHERE name = '" & sMCTempTable & "') " & _
 		''                      "DROP TABLE [" & sMCTempTable & "]")
 		'  End If
-		datGeneral.DropUniqueSQLObject(sMCTempTable, 3)
+		General.DropUniqueSQLObject(sMCTempTable, 3)
 		sMCTempTable = vbNullString
 
 
@@ -1912,7 +1910,7 @@ Error_Trap:
 							' included in the report, but referred to by a child table calculation.
 							For iLoop2 = 1 To UBound(mlngTableViews, 2)
 								If mlngTableViews(1, iLoop2) = 0 Then
-									If mclsGeneral.IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
+									If General.IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
 										objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, iLoop2))
 
 										sOtherParentJoinCode = sOtherParentJoinCode & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & objChildTable.RealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
@@ -1972,7 +1970,7 @@ Error_Trap:
 						If lngTempOrderID > 0 Then
 							rsTemp = GetOrderDefinition(lngTempOrderID)
 						Else
-							rsTemp = GetOrderDefinition(datGeneral.GetDefaultOrder(lngTempChildID))
+							rsTemp = GetOrderDefinition(General.GetDefaultOrder(lngTempChildID))
 						End If
 
 						sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
@@ -1986,13 +1984,13 @@ Error_Trap:
 						' is the child filtered ?
 
 						If lngTempFilterID > 0 Then
-							blnOK = datGeneral.FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+							blnOK = General.FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 							If blnOK Then
 								sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 							Else
 								' Permission denied on something in the filter.
-								mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
+								mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
 								GenerateSQLJoin = False
 								Exit Function
 							End If
@@ -2257,12 +2255,12 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
 		ElseIf mlngCustomReportsParent1FilterID > 0 Then
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
 			Else
-				mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
+				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
@@ -2285,12 +2283,12 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
 		ElseIf mlngCustomReportsParent2FilterID > 0 Then
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
 			Else
-				mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
+				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
@@ -2323,13 +2321,13 @@ DoChildOrderString_ERROR:
 
 		ElseIf mlngCustomReportsFilterID > 0 Then
 
-			blnOK = datGeneral.FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
 			Else
 				' Permission denied on something in the filter.
-				mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsFilterID) & "' filter."
+				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsFilterID) & "' filter."
 				GenerateSQLWhere = False
 				Exit Function
 			End If
@@ -4025,7 +4023,7 @@ PopulateGrid_DoGrandSummary_ERROR:
 		'    mclsData.ExecuteSql ("IF EXISTS(SELECT * FROM sysobjects WHERE name = '" & mstrTempTableName & "') " & _
 		''                      "DROP TABLE " & mstrTempTableName)
 		'  End If
-		datGeneral.DropUniqueSQLObject(mstrTempTableName, 3)
+		General.DropUniqueSQLObject(mstrTempTableName, 3)
 		mstrTempTableName = vbNullString
 
 		' SQL strings
@@ -4036,13 +4034,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 		mstrSQLJoin = vbNullString
 		mstrSQLOrderBy = vbNullString
 		mstrSQL = vbNullString
-
-		' Class references
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
-
-		' Clear the connection reference
-		'Set gADOCon = Nothing
 
 		' Arrays
 
@@ -4297,9 +4288,9 @@ AddError:
 
 				If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID = 0) Then
 					If (mlngCustomReportsFilterID > 0) Then
-						sCaption = sCaption & " (Base Table filter : " & datGeneral.GetFilterName(mlngCustomReportsFilterID) & ")"
+						sCaption = sCaption & " (Base Table filter : " & General.GetFilterName(mlngCustomReportsFilterID) & ")"
 					ElseIf (mlngCustomReportsPickListID > 0) Then
-						sCaption = sCaption & " (Base Table picklist : " & datGeneral.GetPicklistName(mlngCustomReportsPickListID) & ")"
+						sCaption = sCaption & " (Base Table picklist : " & General.GetPicklistName(mlngCustomReportsPickListID) & ")"
 					Else
 						sCaption = sCaption & " (All records)"
 					End If
@@ -4433,7 +4424,7 @@ AddError:
 		Dim objBradfordDetail As ReportDetailItem
 
 		' Get the absence start/end field details
-		strAbsenceType = mstrAbsenceRealSource & "." & datGeneral.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
+		strAbsenceType = mstrAbsenceRealSource & "." & General.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
 
 		' Force the inputted string into an array
 		'UPGRADE_WARNING: Couldn't resolve default property of object pstrIncludeTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4587,7 +4578,7 @@ CalculateBradfordFactors_ERROR:
 		mstrCustomReportsName = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
 
 		mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
-		mstrCustomReportsBaseTableName = datGeneral.GetTableName(mlngCustomReportsBaseTable)
+		mstrCustomReportsBaseTableName = General.GetTableName(mlngCustomReportsBaseTable)
 		mlngCustomReportsParent1Table = 0
 		mlngCustomReportsParent1FilterID = 0
 		mlngCustomReportsParent2Table = 0
@@ -4603,7 +4594,7 @@ CalculateBradfordFactors_ERROR:
 		mvarChildTables(2, 0) = 0	'Number of records to take from child
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(3, 0) = datGeneral.GetTableName(mvarChildTables(0, 0)) 'Child Table Name
+		mvarChildTables(3, 0) = General.GetTableName(mvarChildTables(0, 0))	'Child Table Name
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mvarChildTables(4, 0) = True 'Boolean - True if table is used, False if not
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4790,17 +4781,17 @@ GetBradfordReportDefinition_ERROR:
 
 						If lngTableID = mlngCustomReportsBaseTable Then
 							'Personnel
-							objReportItem.IDColumnName = mstrSQLFrom & "." & datGeneral.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrSQLFrom & "." & General.GetColumnName(lngColumnID)
 						Else
 							'Absence
-							objReportItem.IDColumnName = mstrRealSource & "." & datGeneral.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrRealSource & "." & General.GetColumnName(lngColumnID)
 						End If
 
 				End Select
 
 				objReportItem.Size = 99
 				objReportItem.Decimals = IIf(iCount = 12 Or iCount = 13, 1, 0)	'Decimals
-				objReportItem.IsNumeric = IIf(datGeneral.GetDataType(lngTableID, lngColumnID) = 2, True, False)	'Is Numeric
+				objReportItem.IsNumeric = IIf(General.GetDataType(lngTableID, lngColumnID) = 2, True, False)	'Is Numeric
 				objReportItem.IsAverage = False	'Average
 				objReportItem.IsCount = IIf(iCount = 12 Or iCount = 13, True, False)	'Count
 				objReportItem.IsTotal = IIf(iCount = 12 Or iCount = 13, True, False)	'Total
@@ -4822,13 +4813,13 @@ GetBradfordReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.TableID = lngTableID
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.TableName = datGeneral.GetTableName(CInt(lngTableID))
+				objReportItem.TableName = General.GetTableName(CInt(lngTableID))
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.Type = "C" Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objReportItem.ColumnName = datGeneral.GetColumnName(CInt(objReportItem.ColExprID))
+					objReportItem.ColumnName = General.GetColumnName(CInt(objReportItem.ColExprID))
 
 					'MH20010307
 					Select Case objReportItem.ColExprID
@@ -4869,12 +4860,12 @@ GetBradfordReportDefinition_ERROR:
 				End If
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.IsDateColumn = datGeneral.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
+				objReportItem.IsDateColumn = General.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.IsBitColumn = datGeneral.BitColumn("C", lngTableID, lngColumnID)
+				objReportItem.IsBitColumn = General.BitColumn("C", lngTableID, lngColumnID)
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.Use1000Separator = datGeneral.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
+				objReportItem.Use1000Separator = General.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
 
 				'Adjust the size of the field if digit separator is used
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -5050,7 +5041,7 @@ GetBradfordRecordSet_ERROR:
 	End Function
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return mclsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 	Private Function GetOrderDefinition(ByRef plngOrderID As Integer) As DataTable

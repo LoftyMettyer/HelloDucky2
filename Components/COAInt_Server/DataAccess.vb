@@ -51,7 +51,26 @@ Public Class clsDataAccess
 
 	Friend Sub ExecuteSql(ByRef sSQL As String)
 		' Execute the given SQL statement.
-		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
+		Dim strConn As String = GetConnectionString(_objLogin)
+
+		Try
+
+			Using sqlConnection As New SqlConnection(strConn)
+				Using objCommand = New SqlCommand(sSQL, sqlConnection)
+
+					objCommand.CommandType = CommandType.Text
+
+					objCommand.Parameters.Clear()
+					sqlConnection.Open()
+					objCommand.ExecuteNonQuery()
+				End Using
+
+			End Using
+
+		Catch
+			Throw
+
+		End Try
 
 	End Sub
 
