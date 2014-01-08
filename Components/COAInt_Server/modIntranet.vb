@@ -34,7 +34,7 @@ Module modIntranet
 		Try
 
 			strSQL = "SELECT Name FROM ASRSysEmailGroupName " & "WHERE EmailGroupID = " & CStr(lngGroupID)
-			rsTemp = clsDataAccess.GetDataTable(strSQL, CommandType.Text)
+			rsTemp = dataAccess.GetDataTable(strSQL, CommandType.Text)
 
 			For Each objRow In rsTemp.Rows
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'

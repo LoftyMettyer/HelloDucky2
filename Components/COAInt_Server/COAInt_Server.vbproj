@@ -110,6 +110,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
     <Compile Include="clsBankHolidays.vb" />

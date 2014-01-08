@@ -117,7 +117,10 @@
 
 								<%
 									Dim fDisplay As Boolean = False
-	
+									
+									Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+									Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
 									Dim prmUtilName As New SqlParameter("psUtilName", SqlDbType.VarChar, 255)
 									Dim prmUtilID As New SqlParameter("piUtilID", SqlDbType.Int)
 									Dim prmTimestamp As New SqlParameter("piTimestamp", SqlDbType.Int)
@@ -135,7 +138,7 @@
 										prmErrorMsg.Direction = ParameterDirection.Output
 										prmErrorCode.Direction = ParameterDirection.Output
 
-										clsDataAccess.ExecuteSP("sp_ASRIntValidatePicklist", prmUtilName, prmUtilID, prmTimestamp, prmAccess, prmErrorMsg, prmErrorCode)
+										objDataAccess.ExecuteSP("sp_ASRIntValidatePicklist", prmUtilName, prmUtilID, prmTimestamp, prmAccess, prmErrorMsg, prmErrorCode)
 
 										If prmErrorCode.Value = 1 Then
 											fDisplay = True
@@ -227,7 +230,7 @@
 								prmErrorMsg.Direction = ParameterDirection.Output
 								prmErrorCode.Direction = ParameterDirection.Output
 
-								clsDataAccess.ExecuteSP("sp_ASRIntValidatePicklist2", prmUtilName, prmUtilID, prmAccess, prmBaseTableID, prmErrorMsg, prmErrorCode)
+								objDataAccess.ExecuteSP("sp_ASRIntValidatePicklist2", prmUtilName, prmUtilID, prmAccess, prmBaseTableID, prmErrorMsg, prmErrorCode)
 
 								If prmErrorCode.Value = 1 Then
 									fDisplay = True

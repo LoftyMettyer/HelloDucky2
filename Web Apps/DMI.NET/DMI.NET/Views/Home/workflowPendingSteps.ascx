@@ -91,9 +91,13 @@
 		Private _StepCount As Integer = 0
 		Private _WorkflowGood As Boolean = True
 		
-		Private Sub GetPendingWorkflowSteps
-				'Get the pendings workflow steps from the database
-		Dim _rstDefSelRecords = clsDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
+	Private Sub GetPendingWorkflowSteps()
+		
+		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
+		'Get the pendings workflow steps from the database
+		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
 					
 		If Err.Number <> 0 Then
 			
@@ -139,9 +143,12 @@
 	
 		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
 
+			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
 			Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
 			prmSetOffice.Value = 0
-			clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
+			objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
 			
 			Session("reset") = 0
 		End If

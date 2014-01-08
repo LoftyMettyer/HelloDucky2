@@ -2,9 +2,11 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Metadata
 
 Public Class clsDiary
+	Inherits BaseForDMI
 
 	Private Const mintVIEWBYDAY As Short = 0
 	Private Const mintVIEWBYWEEK As Short = 1
@@ -391,7 +393,7 @@ Public Class clsDiary
 
 			strSQL = "SELECT COUNT(*) " & strSQLFrom & "WHERE " & SQLFilter()
 
-			rsTables = clsDataAccess.GetDataTable(strSQL, CommandType.Text)
+			rsTables = DB.GetDataTable(strSQL, CommandType.Text)
 			mlngRecordCount = CLng(rsTables.Rows(0)(0))
 
 		Loop While blnClearedFilter = True
@@ -403,7 +405,7 @@ Public Class clsDiary
 			strSQLWhere = "WHERE EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 23:59' AND "
 
 			strSQL = strSQLSelect & strSQLFrom & strSQLWhere & SQLFilter() & strSQLOrderBy
-			Return clsDataAccess.GetDataTable(strSQL, CommandType.Text)
+			Return DB.GetDataTable(strSQL, CommandType.Text)
 		End If
 
 	End Function
@@ -421,7 +423,7 @@ Public Class clsDiary
 	End Sub
 
 	Public Function GetCurrentRecord() As DataTable
-		Return clsDataAccess.GetDataTable("SELECT ASRSysDiaryEvents.*, CONVERT(integer,ASRSysDiaryEvents.TimeStamp) AS intTimeStamp FROM ASRSysDiaryEvents " & SQLWhereCurrentEvent(), CommandType.Text)
+		Return DB.GetDataTable("SELECT ASRSysDiaryEvents.*, CONVERT(integer,ASRSysDiaryEvents.TimeStamp) AS intTimeStamp FROM ASRSysDiaryEvents " & SQLWhereCurrentEvent(), CommandType.Text)
 	End Function
 
 	Public Function FilterText() As String
@@ -457,7 +459,7 @@ Public Class clsDiary
 		strSQL = "SELECT COUNT(DiaryEventsID) AS recCount FROM ASRSysDiaryEvents WHERE " & strEventDateMatch & "Alarm = '" & CStr(intAlarmSetting) & "' AND " & SQLFilter()
 
 		'Set rsAlarmCount = datGeneral.GetRecords(strSQL)
-		rsAlarmCount = clsDataAccess.GetDataTable(strSQL, CommandType.Text)
+		rsAlarmCount = DB.GetDataTable(strSQL, CommandType.Text)
 
 		Return CLng(rsAlarmCount.Rows(0)("recCount"))
 
@@ -530,7 +532,7 @@ LocalErr:
 		Dim strColList As String
 
 		strSQL = "SELECT DISTINCT t.TableID, t.TableName, c.ColumnID, c.ColumnName FROM ASRSysDiaryLinks d JOIN ASRSysColumns c ON d.ColumnID = c.ColumnID JOIN ASRSysTables t ON c.TableID = t.TableID"
-		rsTemp = clsDataAccess.GetDataTable(strSQL, CommandType.Text)
+		rsTemp = dataAccess.GetDataTable(strSQL, CommandType.Text)
 
 		If rsTemp.Rows.Count = 0 Then
 			'Can't find any links !!!

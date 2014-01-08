@@ -32,11 +32,14 @@
 
 	Err.Clear()
 
+	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+	
 	'Get the pendings workflow steps from the database
 	Dim prmUser As New SqlParameter("psKeyParameter", SqlDbType.VarChar, 255)
 	prmUser.Value = Session("username")
 	
-	Dim _rstDefSelRecords = clsDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
+	Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
 		
 	If (Err.Number <> 0) Then		
 		' Workflow not licensed or configured. Go to default page.
@@ -200,7 +203,8 @@
 						tileCount += 1
 					Next
 								
-					Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
+							Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
+							objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 								
 					' Get the navigation hypertext links.
 							
@@ -503,7 +507,9 @@
 												Else
 													objChart = New HR.Intranet.Server.clsChart
 												End If
-			
+
+												objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
 												Dim mrstChartData As DataTable
 												Err.Clear()
 			
@@ -650,6 +656,7 @@
 									
 									' Create the reference to the DLL (Report Class)
 									Dim objChart = New HR.Intranet.Server.clsChart
+									objChart.SessionInfo = objSession
 			
 									Err.Clear()
 									Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
@@ -786,7 +793,7 @@
 												
 												' Create the reference to the DLL
 												Dim objDiaryEvents As clsDiary = New clsDiary
-
+												objDiaryEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 			
 												Err.Clear()
 												Dim mrstEventData = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
@@ -820,7 +827,8 @@
 											
 									' ----------------------- OUTLOOK LINKS -----------------------------
 									' Create the reference to the DLL
-									Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks									
+									Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks
+									objOutlookEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 			
 									Err.Clear()
 									mrstEventData = objOutlookEvents.GetOutlookLinks()
@@ -856,7 +864,7 @@
 									' ----------------------- TODAY'S ABSENCES -----------------------------
 									' Create the reference to the DLL
 									Dim objTodaysEvents As clsTodaysAbsence = New clsTodaysAbsence
-						
+									objTodaysEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 				
 									Err.Clear()
 									mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
@@ -1137,7 +1145,8 @@
 			//Reduce the dbvalue text size to fit its tile if too big.
 			$('.DBValue').each(function () {
 				var originalFontSize = 26;
-				var sectionWidth = $(this).width();
+				var sectionWidth = $(this).width();
+
 				var spanWidth = $(this).find('span').width();
 				var newFontSize = (sectionWidth / spanWidth) * originalFontSize;
 				if (newFontSize < originalFontSize) {

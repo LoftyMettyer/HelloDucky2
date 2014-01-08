@@ -4,12 +4,15 @@ Option Explicit On
 Imports System.Globalization
 Imports ADODB
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports System.Text
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports VB = Microsoft.VisualBasic
+
 Public Class CalendarReport
+	Inherits BaseForDMI
 
 	Public Legend As List(Of CalendarLegend)
 	Public LegendColors As List(Of LegendColor)
@@ -557,23 +560,6 @@ Public Class CalendarReport
 		End Get
 		Set(ByVal Value As String)
 			mstrErrorString = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-			' Username passed in from the asp page
-			gsUsername = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-
-			gADOCon = Value
-
-			ReadBankHolidayParameters()
-
 		End Set
 	End Property
 
@@ -3187,7 +3173,7 @@ ErrorTrap:
 
 		LegendColors = New List(Of LegendColor)()
 
-		rstData = dataAccess.OpenRecordset("EXEC spASRIntGetCalendarColours", CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rstData = DB.OpenRecordset("EXEC spASRIntGetCalendarColours", CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 		Do While Not rstData.EOF
 			Dim objItem = New LegendColor
 			objItem.ColOrder = rstData.Fields("colorder").Value.ToString
@@ -3334,7 +3320,7 @@ ExecuteSQL_ERROR:
 
 		sSQL = "SELECT [BaseID], [Description1], [Description2], [DescriptionExpr], [StartDate], [StartSession], [EndDate], [EndSession] " _
 			& "FROM [" & gsUsername & "].[" & mstrTempTableName & "] " & mstrSQLOrderBy & vbNewLine
-		rsMultiple = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsMultiple = DB.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		If Not rsMultiple Is Nothing Then
 			With rsMultiple
@@ -4118,7 +4104,7 @@ ErrorTrap:
 
 		strSQLCC = strSQLCC & "ORDER BY " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
 				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " "
-		rsCC = dataAccess.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsCC = DB.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		lngBaseRecordID = -1
 		blnNewBaseRecord = False
@@ -4321,7 +4307,7 @@ ErrorTrap:
 				strSQLOrder = " ORDER BY 'ID', 'Region' " & vbNewLine
 				strSQLAllBHols = strSQLAllBHols & strSQLOrder
 
-				rsPersonnelBHols = dataAccess.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+				rsPersonnelBHols = DB.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 				lngBaseRecordID = -1
 				blnNewBaseRecord = False
@@ -4496,7 +4482,7 @@ ErrorTrap:
 		End If
 
 		strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] ON [Base].Region = [RegionInfo].Region ORDER BY [Base].ID "
-		rsPersonnelBHols = dataAccess.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsPersonnelBHols = DB.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
 
 		lngBaseRecordID = -1
 

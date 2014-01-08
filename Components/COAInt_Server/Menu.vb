@@ -3,11 +3,13 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 
 Public Class Menu
+	Inherits BaseForDMI
 
 	Public Function GetHistoryScreens() As List(Of HistoryScreen)
 		' Return an array of information that can be used to format the History tables menu for the current user.
@@ -19,7 +21,7 @@ Public Class Menu
 		Dim objHistory As HistoryScreen
 
 		sSQL = "SELECT ASRSysTables.tableName AS [childTableName], childScreens.tableID AS [childTableID], childScreens.screenID AS [childScreenID], childScreens.name AS [childScreenName], parentScreen.screenid AS [parentScreenID] FROM ASRSysScreens parentScreen INNER JOIN ASRSysHistoryScreens ON parentScreen.screenID = ASRSysHistoryScreens.parentScreenID INNER JOIN ASRSysScreens childScreens ON ASRSysHistoryScreens.historyScreenID = childScreens.screenID INNER JOIN ASRSysTables ON childScreens.tableID = ASRSysTables.tableID WHERE childScreens.quickEntry = 0 ORDER BY parentScreen.screenid, ASRSysTables.tableName DESC, childScreens.Name DESC"
-		rsTableScreens = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		rsTableScreens = DB.GetDataTable(sSQL, CommandType.Text)
 
 		For Each objRow As DataRow In rsTableScreens.Rows
 			If gcoTablePrivileges.Item(objRow("childTableName").ToString()).AllowSelect Then
@@ -91,7 +93,7 @@ Public Class Menu
 
 			' Get a recordset of the primary tables in the database.
 			sSQL = "SELECT ASRSysTables.tableID, ASRSysTables.tableName AS [tablename], COUNT(DISTINCT ASRSysScreens.name) AS tableScreenCount FROM ASRSysTables INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0)) GROUP BY ASRSysTables.tableID, ASRSysTables.tableName, ASRSysTables.tableType HAVING ASRSysTables.tableType = 1 ORDER BY ASRSysTables.tableName DESC"
-			rsTables = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+			rsTables = DB.GetDataTable(sSQL, CommandType.Text)
 
 			For Each objRow As DataRow In rsTables.Rows
 				objMenuInfo = New MenuInfo()
@@ -123,7 +125,7 @@ Public Class Menu
 
 				' Get view information for the current table.
 				sSQL = "SELECT ASRSysViews.viewName, COUNT (ASRSysViewScreens.ScreenID) AS viewScreenCount FROM ASRSysViews LEFT OUTER JOIN ASRSysViewScreens ON ASRSysViews.viewID = ASRSysViewScreens.viewID GROUP BY ASRSysViews.viewName, ASRSysViews.viewID HAVING ASRSysViews.viewID IN (" & sViewList & ")"
-				rsViews = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+				rsViews = DB.GetDataTable(sSQL, CommandType.Text)
 				For Each objViewRow As DataRow In rsViews.Rows
 					If CInt(objViewRow("viewScreenCount")) > 0 Then
 						objMenuInfo.TableViewCount += 1
@@ -139,7 +141,7 @@ Public Class Menu
 					If (iTotalViewScreenCount = 1) And (objMenuInfo.TableReadable = False Or objMenuInfo.TableScreenCount = 0) Then
 
 						sSQL = "SELECT ASRSysViews.viewID, ASRSysViews.viewName, ASRSysViewScreens.screenID, ASRSysScreens.pictureID FROM ASRSysViews INNER JOIN ASRSysViewScreens ON ASRSysViews.viewID = ASRSysViewScreens.viewID INNER JOIN ASRSysScreens ON ASRSysViewScreens.screenID = ASRSysScreens.screenID WHERE ASRSysViews.viewid IN (" & sViewList & ")"
-						rsViewScreen = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+						rsViewScreen = DB.GetDataTable(sSQL, CommandType.Text)
 
 						If rsViewScreen.Rows.Count > 0 Then
 
@@ -155,7 +157,7 @@ Public Class Menu
 				If (objMenuInfo.TableScreenCount = 1) And (iTotalViewScreenCount = 0) And objMenuInfo.TableReadable = True Then
 					sSQL = "SELECT ASRSysScreens.screenID, ASRSysScreens.pictureID FROM ASRSysScreens WHERE ASRSysScreens.tableID = " & Trim(objRow("TableID").ToString()) & "   AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0))"
 
-					rsTableScreen = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+					rsTableScreen = DB.GetDataTable(sSQL, CommandType.Text)
 					If rsTableScreen.Rows.Count > 0 Then
 						Dim objTableScreenRow = rsTableScreen.Rows(0)
 						objMenuInfo.TableScreenID = CInt(objTableScreenRow("ScreenID"))
@@ -215,7 +217,7 @@ Public Class Menu
 		End If
 
 		sSQL = sSQL & " ORDER BY ASRSysScreens.name DESC, viewName DESC"
-		rsScreens = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		rsScreens = DB.GetDataTable(sSQL, CommandType.Text)
 
 		For Each objRow As DataRow In rsScreens.Rows
 			objSubMenu = New MenuInfo
@@ -251,7 +253,7 @@ Public Class Menu
 			" OR (ASRSysScreens.quickEntry = 0))" & _
 			" ORDER BY ASRSysTables.tableName DESC", gsUserGroup, Trim(Str(TableTypes.tabLookup)))
 
-		rsTableScreens = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		rsTableScreens = DB.GetDataTable(sSQL, CommandType.Text)
 		For Each objRow As DataRow In rsTableScreens.Rows
 			If CInt(objRow("Result")) = 0 Then
 				objTableScreen = New TableScreen
@@ -273,7 +275,7 @@ Public Class Menu
 		Dim objMenuItem As MenuInfo
 
 		sSQL = "SELECT ASRSysScreens.screenID, ASRSysScreens.name, UPPER(ASRSysTables.tableName) AS [tablename], ASRSysTables.tableID FROM ASRSysScreens INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID WHERE ASRSysScreens.quickEntry = 1"
-		Using rsScreens = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		Using rsScreens = DB.GetDataTable(sSQL, CommandType.Text)
 
 			For Each objRow As DataRow In rsScreens.Rows
 				'First see if we have privileges to see this table
@@ -355,14 +357,14 @@ ErrorTrap:
 		' Return a recordset of all the table id's of the controls which aren't related to the base table
 		' in the given screen.
 		Dim sSQL As String = "exec sp_ASRGetQuickEntryTables " & plngScreenID
-		Return clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		Return DB.GetDataTable(sSQL, CommandType.Text)
 
 	End Function
 
 	Private Function GetQuickEntryViews(ByVal plngTableID As Integer) As DataTable
 		' Return a recordset of the user defined views on the given table.
 		Dim sSQL As String = "SELECT viewID, viewName FROM ASRSysViews WHERE viewTableID = " & Trim(Str(plngTableID))
-		Return clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+		Return DB.GetDataTable(sSQL, CommandType.Text)
 
 	End Function
 

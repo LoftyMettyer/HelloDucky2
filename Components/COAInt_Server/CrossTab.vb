@@ -2,10 +2,12 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
 Public Class CrossTab
+	Inherits BaseForDMI
 
 	Private mstrSQLSelect As String
 	Private mstrSQLFrom As String
@@ -125,12 +127,6 @@ Public Class CrossTab
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
 
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
-			gADOCon = Value
-		End Set
-	End Property
-
 	Public WriteOnly Property CustomReportID() As Integer
 		Set(ByVal Value As Integer)
 			mlngCrossTabID = Value
@@ -164,13 +160,6 @@ Public Class CrossTab
 	Public WriteOnly Property CrossTabID() As Integer
 		Set(ByVal Value As Integer)
 			mlngCrossTabID = Value
-		End Set
-	End Property
-
-
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-			gsUsername = Value
 		End Set
 	End Property
 

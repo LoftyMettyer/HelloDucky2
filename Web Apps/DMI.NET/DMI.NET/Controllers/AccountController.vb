@@ -102,6 +102,7 @@ Namespace Controllers
 		 iChartColourID As Long) As String
 
 			Dim objChart = New HR.Intranet.Server.clsChart
+			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			' reset the globals
 			objChart.resetGlobals()
@@ -314,10 +315,12 @@ Namespace Controllers
 
 			objServerSession.Username = sUserName
 			objServerSession.Connection = conX
-			objServerSession.LoginInfo(objLogin)
+			objServerSession.LoginInfo = objLogin
 			objServerSession.Initialise()
 
 			Session("sessionContext") = objServerSession
+
+			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 
 			' Check that its okay for the user to login.
 			Dim cmdLoginCheck = New Command
@@ -421,9 +424,8 @@ Namespace Controllers
 
 			cmdAudit = Nothing
 
-
 			' Successful login.
-			Dim dtSettings = clsDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
+			Dim dtSettings = objDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
 			Dim rowSettings = dtSettings.Rows(0)
 
 			Session("FindRecords") = CLng(rowSettings("BlockSize"))
@@ -587,7 +589,7 @@ Namespace Controllers
 					Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int)
 					prmRecordCount.Direction = ParameterDirection.Output
 
-					clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
+					objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
 
 					fWorkflowOutOfOffice = prmOutOfOffice.Value
 					iWorkflowRecordCount = prmRecordCount.Value
@@ -1026,6 +1028,8 @@ Namespace Controllers
 			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
 			Dim objConnection As Connection
 
+			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
+
 			Session("ErrorText") = Nothing
 
 			Try
@@ -1036,7 +1040,7 @@ Namespace Controllers
 				Dim prmUserName = New SqlParameter("strUsername", SqlDbType.VarChar, 1000, ParameterDirection.Input)
 				prmUserName.Value = Replace(Session("Username"), "'", "''")
 
-				clsDataAccess.ExecuteSP("sp_ASRIntAuditAccess", prmLogIn, prmUserName)
+				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess", prmLogIn, prmUserName)
 
 				objConnection = Session("databaseConnection")
 

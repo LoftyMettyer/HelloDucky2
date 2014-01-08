@@ -1,11 +1,13 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Interfaces
 
 Public Class clsChart
+	Inherits BaseForDMI
 	Implements IChart
 
 	Private mastrUDFsRequired() As String
@@ -80,7 +82,7 @@ Public Class clsChart
 		End If
 
 		' Execute the SQL and store in recordset
-		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
+		Return DB.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
 
@@ -658,5 +660,14 @@ GenerateSQLWhere_ERROR:
 		gcolColumnPrivilegesCollection = Nothing
 
 	End Sub
+
+	Public Shadows Property SessionInfo As SessionInfo Implements IChart.SessionInfo
+		Set(value As SessionInfo)
+			MyBase.SessionInfo = value
+		End Set
+		Get
+			Return MyBase.SessionInfo
+		End Get
+	End Property
 
 End Class

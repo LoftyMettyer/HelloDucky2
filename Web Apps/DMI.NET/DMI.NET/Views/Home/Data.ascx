@@ -1117,11 +1117,7 @@
 		' Get the server DLL to test the expression definition
 		Dim objExpression = New HR.Intranet.Server.Expression
 				
-
-		' Pass required info to the DLL
-		objExpression.Username = Session("username").ToString()
-		CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
-				
+		' Pass required info to the DLL			
 		Do While Len(sParam1) > 0
 			iCharIndex = InStr(sParam1, ",")
 

@@ -3,10 +3,13 @@ Option Explicit On
 
 Imports System.Globalization
 Imports ADODB
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports VB = Microsoft.VisualBasic
+
 Public Class AbsenceCalendar
+	Inherits BaseForDMI
 
 	Private Const CELLSIZE As Integer = 17
 	Private Const FULL_WP As String = "SSMMTTWWTTFFSS"
@@ -538,7 +541,7 @@ Public Class AbsenceCalendar
 		sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
 		sSQL = sSQL & "ORDER BY 'StartDate' ASC"
 
-		mrstAbsenceRecords = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		mrstAbsenceRecords = DB.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 		' Set amount of absence records found
 		Return mrstAbsenceRecords.RecordCount
@@ -1568,7 +1571,7 @@ Error_FillCalBoxes:
 
 				' Now get the rest of the working patterns
 				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " ASC")
-				rstHistoricWPatterns = dataAccess.OpenRecordset(sSQLWorkingPatterns, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+				rstHistoricWPatterns = DB.OpenRecordset(sSQLWorkingPatterns, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
 
 				If Not (rstHistoricWPatterns.EOF And rstHistoricWPatterns.BOF) Then
 

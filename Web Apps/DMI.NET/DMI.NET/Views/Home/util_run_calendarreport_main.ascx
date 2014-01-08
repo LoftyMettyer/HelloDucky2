@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
 	Dim fok As Boolean
@@ -25,10 +26,9 @@
 	If fok Then
 		' Create the reference to the DLL (Report Class)
 		objCalendar = New HR.Intranet.Server.CalendarReport
-				
+		objCalendar.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+					
 		' Pass required info to the DLL
-		objCalendar.Username = Session("username")
-		CallByName(objCalendar, "Connection", CallType.Let, Session("databaseConnection"))
 		objCalendar.CalendarReportID = Session("utilid")
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")

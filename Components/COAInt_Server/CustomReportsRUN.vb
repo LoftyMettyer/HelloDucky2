@@ -7,8 +7,10 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.BaseClasses
 
 Public Class Report
+	Inherits BaseForDMI
 
 	' To hold Properties
 	Private mlngCustomReportID As Integer
@@ -332,21 +334,6 @@ Public Class Report
 			OutputArray_ExcelFormats = VB6.CopyArray(avTemp)
 
 		End Get
-	End Property
-
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-			gADOCon = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-
-			' Username passed in from the asp page
-			gsUsername = Value
-
-		End Set
 	End Property
 
 	Public WriteOnly Property CustomReportID() As Integer

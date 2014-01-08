@@ -2580,6 +2580,9 @@ Namespace Controllers
 			' Get dashboard items
 			Dim sParameters As String = psScreenInfo
 
+			Dim objSession = CType(Session("SessionContext"), SessionInfo)
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
 			If sParameters.Length > 0 Then
 
 				ResetSessionVars()
@@ -2612,7 +2615,7 @@ Namespace Controllers
 					Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
 					prmRecordCount.Direction = ParameterDirection.Output
 
-					clsDataAccess.ExecuteSP("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
+					objDataAccess.ExecuteSP("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
 																, New SqlParameter("piViewID", CleanNumeric(Session("SingleRecordViewID"))))
 
 
@@ -2652,7 +2655,7 @@ Namespace Controllers
 					Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
 					prmDisplayHyperlink.Direction = ParameterDirection.Output
 
-					clsDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
+					objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
 
 					If (Err.Number() <> 0) Then
 						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
@@ -2697,12 +2700,12 @@ Namespace Controllers
 					Dim prmRecordDesc = New SqlParameter("psRecDesc", SqlDbType.VarChar, 255, ParameterDirection.Output)
 					prmRecordDesc.Value = ""
 
-					clsDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription", prmTableID, prmRecordID, prmParentTableID, prmParentRecordID, prmRecordDesc)
+					objDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription", prmTableID, prmRecordID, prmParentTableID, prmParentRecordID, prmRecordDesc)
 
 					sViewDescription = prmRecordDesc.Value
 
 
-					Dim rowViewName = clsDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
+					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
 					sViewName = rowViewName(0).ToString()
 
 					' get the view name, and append it.
@@ -2719,6 +2722,8 @@ Namespace Controllers
 
 
 			Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
+			objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
 			objNavigation.ClearLinks()
 
 			objNavigation.SSITableID = Session("SSILinkTableID")
@@ -2844,6 +2849,7 @@ Namespace Controllers
 			Dim sErrorDescription As String
 
 			Dim objChart = New HR.Intranet.Server.clsChart
+			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, 0, 0, 0, 0, sortOrderID, sortDirection, colourID)
 
@@ -3024,11 +3030,9 @@ Namespace Controllers
 			Dim sErrorDescription As String
 
 			Dim objChart = New HR.Intranet.Server.clsMultiAxisChart
+			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			' Pass required info to the DLL
-			objChart.Username = CType(Session("username"), String)
-			objChart.Connection = CType(Session("databaseConnection"), Connection)
-
 			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID_2, columnID_2, tableID_3, columnID_3, sortOrderID, sortDirection, colourID)
 
 			If Err.Number <> 0 Then

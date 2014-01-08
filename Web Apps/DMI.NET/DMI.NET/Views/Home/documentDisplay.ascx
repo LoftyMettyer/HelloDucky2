@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
 
@@ -52,6 +53,8 @@
 			<% 
 				' Get the Documents collection
 				Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
+				objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
 				Dim iCount As Integer = 0
 												
 				For Each objLink In objNavigation.GetLinks(LinkType.DocumentDisplay)

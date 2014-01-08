@@ -1655,7 +1655,7 @@ ErrorTrap:
 			End If
 		Else
 
-			dsExpression = clsDataAccess.GetDataSet("spASRIntGetExpressionAndComponents" _
+			dsExpression = dataAccess.GetDataSet("spASRIntGetExpressionAndComponents" _
 					, New SqlParameter("ExpressionID", mlngExpressionID), New SqlParameter("ExpressionType", miExpressionType))
 
 			Dim rowExpression = dsExpression.Tables(0).Rows(0)

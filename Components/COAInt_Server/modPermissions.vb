@@ -10,7 +10,7 @@ Imports System.Data.SqlClient
 
 Module modPermissions
 
-	Friend Sub PopulateMetadata()
+	Friend Sub PopulateMetadata(ByVal Login As LoginInfo)
 
 		Tables = New Collection(Of Table)
 		Columns = New Collection(Of Column)
@@ -24,7 +24,7 @@ Module modPermissions
 
 		Try
 
-			Dim objData As DataSet = clsDataAccess.GetDataSet("spASRGetMetadata", New SqlParameter("username", Login.Username))
+			Dim objData As DataSet = dataAccess.GetDataSet("spASRGetMetadata", New SqlParameter("username", Login.Username))
 
 			For Each objRow As DataRow In objData.Tables(0).Rows
 				Dim table As New Table
@@ -179,7 +179,7 @@ Module modPermissions
 		' Instantiate a new collection of table privileges.
 		gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
-		dsPermissions = clsDataAccess.GetDataSet("spASRIntSetupTablesCollection")
+		dsPermissions = dataAccess.GetDataSet("spASRIntSetupTablesCollection")
 
 		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
 		gsUsername = objSecurityRow("UserName").ToString()
@@ -242,7 +242,7 @@ Module modPermissions
 			Next
 
 			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
-			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+			dtInfo = dataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			For Each objRow As DataRow In dtInfo.Rows
 				lngTableId = CInt(objRow("tableid"))
@@ -262,7 +262,7 @@ Module modPermissions
 			' read the table permissions from the server.
 			sSQL = "exec spASRIntAllTablePermissions '" & Replace(gsActualLogin, "'", "''") & "'"
 
-			dtInfo = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+			dtInfo = dataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			colTablePermissions = New List(Of TablePermission)
 			For Each objRow As DataRow In dtInfo.Rows
@@ -337,7 +337,7 @@ Module modPermissions
 			End If
 
 			' Get the list of all columns in all tables/views.
-			dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
+			dtInfo = dataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
 
 			For Each objRow As DataRow In dtInfo.Rows
 
@@ -366,7 +366,7 @@ Module modPermissions
 
 				sLastTableView = ""
 
-				dtInfo = clsDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
+				dtInfo = dataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
 				For Each objRow As DataRow In dtInfo.Rows
 
 					If sLastTableView <> objRow("tableviewname").ToString() Then

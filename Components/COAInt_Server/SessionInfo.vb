@@ -9,6 +9,8 @@ Public Class SessionInfo
 	'Public Shared datGeneral As New clsGeneral
 	'Public Shared dataAccess As New clsDataAccess
 
+	Private _objLogin As LoginInfo
+
 	Public ActiveConnections As Integer = 0
 
 	Public Property Username() As String
@@ -64,7 +66,7 @@ Public Class SessionInfo
 		gcoTablePrivileges = Nothing
 		gcolColumnPrivilegesCollection = Nothing
 
-		PopulateMetadata()		
+		PopulateMetadata(_objLogin)
 		SetupTablesCollection()
 
 		ReadPersonnelParameters()
@@ -72,14 +74,26 @@ Public Class SessionInfo
 		ActiveConnections = 1
 	End Sub
 
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-			gADOCon = Value
+	Public Property Connection() As Connection
+		Get
+			Return gADOCon
+		End Get
+		Set(value As Connection)
+			gADOCon = value
 		End Set
 	End Property
 
-	Public Sub LoginInfo(value As LoginInfo)
-		Login = value
-	End Sub
+	Public Property LoginInfo() As LoginInfo
+		Get
+			Return _objLogin
+		End Get
+		Set(value As LoginInfo)
+
+			_objLogin = value
+			dataAccess = New clsDataAccess(value)
+
+		End Set
+	End Property
+
 
 End Class

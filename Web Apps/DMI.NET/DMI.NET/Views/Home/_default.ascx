@@ -9,6 +9,9 @@
 	Dim iOutOfOffice = 0
 	Dim iRecordCount = 0
 
+	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
 	If Session("action") = "WORKFLOWOUTOFOFFICE_CHECK" Then
 		
 		Dim prmOutOfOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
@@ -17,7 +20,7 @@
 		Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int)
 		prmRecordCount.Direction = ParameterDirection.Output
 
-		clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
+		objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
 
 		iOutOfOffice = CInt(prmOutOfOffice.Value)
 		iRecordCount = CInt(prmRecordCount.Value)		
@@ -28,7 +31,7 @@
 		
 		Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
 		prmSetOffice.Value = CBool(Session("reset"))
-		clsDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
+		objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
 		
 		Session("reset") = 0
 		

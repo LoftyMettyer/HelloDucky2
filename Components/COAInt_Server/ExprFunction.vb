@@ -1063,7 +1063,7 @@ ErrorTrap:
 			iIndex = 1
 			sSQL = "SELECT ExprID FROM ASRSysExpressions WHERE parentComponentID = " & Trim(Str(mobjBaseComponent.ComponentID)) & " ORDER BY exprID"
 
-			rsParameters = clsDataAccess.GetDataTable(sSQL, CommandType.Text)
+			rsParameters = dataAccess.GetDataTable(sSQL, CommandType.Text)
 			For Each objRow As DataRow In rsParameters.Rows
 
 				' Instantiate a new component object.

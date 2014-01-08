@@ -4,8 +4,11 @@
 
 Imports System.IO
 Imports System.Text
+Imports HR.Intranet.Server.BaseClasses
 
 Public Class Ole
+	Inherits BaseForDMI
+
 	Private _mstrTempLocationPhysical As String
 	' Holds the names of the OLE files for this record session
 	Private _mastrOleFilesInThisSession() As String
@@ -399,7 +402,7 @@ Public Class Ole
 					Exit Function
 				End If
 
-				If _miOLEType = 2 Then					
+				If _miOLEType = 2 Then
 					'Dim base64String As String					
 					Dim abtImage = CType(rsDocument.Fields(strColumnName).Value, Byte())
 					Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}

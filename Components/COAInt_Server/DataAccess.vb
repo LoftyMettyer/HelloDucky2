@@ -8,6 +8,15 @@ Imports HR.Intranet.Server.Structures
 
 Public Class clsDataAccess
 
+	Private _objLogin As LoginInfo
+
+	Public Sub New()
+	End Sub
+
+	Public Sub New(ByVal value As LoginInfo)
+		_objLogin = value
+	End Sub
+
 	Friend Function OpenRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum _
 		, Optional ByVal iCursorLocation As CursorLocationEnum = CursorLocationEnum.adUseServer) As Recordset
 
@@ -56,7 +65,7 @@ Public Class clsDataAccess
 	End Function
 
 
-	Private Shared Function GetConnectionString(ByVal LoginDetail As LoginInfo) As String
+	Private Function GetConnectionString(ByVal LoginDetail As LoginInfo) As String
 
 		Const _AppName As String = "OpenHR"
 
@@ -72,9 +81,9 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Shared Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)
+	Public Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)
 
-		Dim strConn As String = GetConnectionString(Login)
+		Dim strConn As String = GetConnectionString(_objLogin)
 
 		Try
 
@@ -101,7 +110,7 @@ Public Class clsDataAccess
 
 	End Sub
 
-	Public Shared Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
+	Public Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
 
 		Try
 			Return GetDataSet(sProcedureName, CommandType, args).Tables(0)
@@ -115,9 +124,9 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Shared Function GetDataTable(ByVal procedureName As String, ByVal parameterName As String, dataList As DataTable) As DataTable
+	Public Function GetDataTable(ByVal procedureName As String, ByVal parameterName As String, dataList As DataTable) As DataTable
 
-		Dim strConn As String = GetConnectionString(Login)
+		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 
@@ -146,13 +155,13 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Shared Function GetDataSet(ByVal sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
+	Public Function GetDataSet(ByVal sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
 		Return GetDataSet(sProcedureName, CommandType.StoredProcedure, args)
 	End Function
 
-	Private Shared Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
+	Private Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
 
-		Dim strConn As String = GetConnectionString(Login)
+		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 

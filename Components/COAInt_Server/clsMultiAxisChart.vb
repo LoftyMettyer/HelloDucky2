@@ -1,11 +1,13 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Interfaces
 
 Public Class clsMultiAxisChart
+	Inherits BaseForDMI
 	Implements IChart
 
 	Private mastrUDFsRequired() As String
@@ -149,7 +151,7 @@ Public Class clsMultiAxisChart
 		End If
 
 		' Execute the SQL and store in recordset
-		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
+		Return DB.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
 
@@ -171,7 +173,7 @@ Public Class clsMultiAxisChart
 			pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectVerticalID & ") AS [VERTICAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " ORDER BY 1 "
 
 			' Execute the SQL and store in recordset
-			mrstChartLegendData = clsDataAccess.GetDataTable(pstrSQL, CommandType.Text)
+			mrstChartLegendData = DB.GetDataTable(pstrSQL, CommandType.Text)
 			pstrCaseStatements = ""
 
 			' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.
@@ -239,7 +241,7 @@ SQLSelectVerticalID_ERROR:
 		pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectHorizontalID & ") AS [HORIZONTAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & pstrSQLOrderBy
 
 		' Execute the SQL and store in recordset
-		mrstChartLegendData = clsDataAccess.GetDataTable(pstrSQL, CommandType.Text)
+		mrstChartLegendData = DB.GetDataTable(pstrSQL, CommandType.Text)
 		pstrCaseStatements = ""
 
 		' Now we've a recordset of unique values to add to the case when statement. Replacing the <$> placeholder.
@@ -971,23 +973,6 @@ GenerateSQLWhere_ERROR:
 		Next i
 	End Function
 
-	Public WriteOnly Property Connection() As Object
-		Set(ByVal Value As Object)
-
-			gADOCon = Value
-
-		End Set
-	End Property
-
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-
-			' Username passed in from the asp page
-			gsUsername = Value
-
-		End Set
-	End Property
-
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 		' Initialise the the classes/arrays to be used
@@ -1025,5 +1010,14 @@ GenerateSQLWhere_ERROR:
 		ReverseDateTextField = Mid(pDateValue, InStrRev(pDateValue, "/") + 1, 4) & "/" & Mid(pDateValue, InStr(pDateValue, "/") + 1, 2) & "/" & Left(pDateValue, 2)
 
 	End Function
+
+	Public Shadows Property SessionInfo As SessionInfo Implements IChart.SessionInfo
+		Set(value As SessionInfo)
+			MyBase.SessionInfo = value
+		End Set
+		Get
+			Return MyBase.SessionInfo
+		End Get
+	End Property
 
 End Class

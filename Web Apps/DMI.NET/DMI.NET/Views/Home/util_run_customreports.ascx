@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -135,12 +136,10 @@
 
 	' Create the reference to the DLL (Report Class)
 	objReport = New HR.Intranet.Server.Report
-				
-	' Pass required info to the DLL
+	objReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-				CallByName(objReport, "Connection", CallType.Let, Session("databaseConnection"))
-				objReport.Username = Session("username")
 				
+	' Pass required info to the DLL			
 	objReport.CustomReportID = session("utilid")
 	objReport.ClientDateFormat = session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")

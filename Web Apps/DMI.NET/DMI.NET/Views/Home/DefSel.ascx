@@ -13,6 +13,7 @@
 	Dim sTemp As String
 
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 	
 	Session("objCalendar" & Session("UtilID")) = Nothing
 	
@@ -989,10 +990,11 @@ End If
 																								<%
 																										On Error Resume Next
 	
+
 																									If (Len(sErrorDescription) = 0) Then
 																																																			
 																										Err.Clear()
-																										Dim rstTableRecords = clsDataAccess.GetDataTable("sp_ASRIntGetTables", CommandType.StoredProcedure)
+																										Dim rstTableRecords = objDataAccess.GetDataTable("sp_ASRIntGetTables", CommandType.StoredProcedure)
 
 																										If (Err.Number <> 0) Then
 																											sErrorDescription = "The table records could not be retrieved." & vbCrLf & FormatError(Err.Description)
@@ -1065,7 +1067,7 @@ End If
 																								End If
 
 																								Err.Clear()
-																								Dim rstDefSelRecords = clsDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+																								Dim rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
 																																													
 																								If (Err.Number <> 0) Then
 																									sErrorDescription = "The Defsel records could not be retrieved." & vbCrLf & FormatError(Err.Description)

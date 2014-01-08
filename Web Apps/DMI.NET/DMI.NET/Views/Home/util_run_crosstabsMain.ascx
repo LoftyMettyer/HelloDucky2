@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
 
@@ -33,11 +34,11 @@
 
 	' Create the reference to the DLL (Report Class)
 	objCrossTab = New HR.Intranet.Server.CrossTab
+	objCrossTab.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	
 	Session("objCrossTab" & Session("UtilID")) = Nothing
 
 	' Pass required info to the DLL
-	objCrossTab.Username = Session("username").ToString()
-	CallByName(objCrossTab, "Connection", CallType.Let, Session("databaseConnection"))
 	objCrossTab.CrossTabID = Session("utilid")
 	objCrossTab.ClientDateFormat = Session("LocaleDateFormat")
 	objCrossTab.LocalDecimalSeparator = Session("LocaleDecimalSeparator")

@@ -16,7 +16,7 @@ Module Declarations
   Public gsActualLogin As String
   Public gsUserGroup As String
 
-	Public Login As LoginInfo
+	'Public Login As LoginInfo
 
 	Public gcoTablePrivileges As ICollection(Of TablePrivilege)
 

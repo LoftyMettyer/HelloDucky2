@@ -2,11 +2,13 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports System.Data.SqlClient
 
 Public Class clsNavigationLinks
+	Inherits BaseForDMI
 
 	Private mlngSSITableID As Integer
 	Private mlngSSIViewID As Integer
@@ -58,7 +60,7 @@ Public Class clsNavigationLinks
 		prmTableID.Value = mlngSSITableID
 		prmViewID.Value = mlngSSIViewID
 
-		Using rsLinks = clsDataAccess.GetDataTable("spASRIntGetLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
+		Using rsLinks = DB.GetDataTable("spASRIntGetLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
 
 			For Each objRow As DataRow In rsLinks.Rows
 
@@ -190,7 +192,7 @@ Public Class clsNavigationLinks
 		prmTableID.Value = mlngSSITableID
 		prmViewID.Value = mlngSSIViewID
 
-		Using rsLinks = clsDataAccess.GetDataTable("spASRIntGetNavigationLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
+		Using rsLinks = DB.GetDataTable("spASRIntGetNavigationLinks", CommandType.StoredProcedure, prmTableID, prmViewID)
 
 			For Each objRow As DataRow In rsLinks.Rows
 				objLink = New Link
@@ -226,5 +228,5 @@ Public Class clsNavigationLinks
 	Public Function GetAllLinks() As List(Of Link)
 		Return gcolLinks
 	End Function
-	
+
 End Class

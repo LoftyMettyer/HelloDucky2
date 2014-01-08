@@ -22,6 +22,7 @@
 	sErrorDescription = ""
 	
 	objMenu = New HR.Intranet.Server.Menu()
+	objMenu.SessionInfo = objSession
 		
 	Response.Write(vbCrLf & "<script type=""text/javascript"">" & vbCrLf)
 
@@ -266,7 +267,8 @@
 	Session("UtilitiesObject") = objUtilities
 	
 	Dim objOLE As New HR.Intranet.Server.Ole
-	CallByName(objOLE, "Connection", CallType.Let, Session("databaseConnection"))
+	objOLE.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
 	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 	Session("OLEObject") = objOLE
 	objOLE = Nothing

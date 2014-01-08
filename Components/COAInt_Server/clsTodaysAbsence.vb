@@ -1,9 +1,11 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Metadata
 
 Public Class clsTodaysAbsence
+	Inherits BaseForDMI
 
 	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
@@ -60,7 +62,7 @@ Public Class clsTodaysAbsence
 
 		End Try
 
-		Return clsDataAccess.GetDataTable(mstrSQL, CommandType.Text)
+		Return DB.GetDataTable(mstrSQL, CommandType.Text)
 
 	End Function
 
