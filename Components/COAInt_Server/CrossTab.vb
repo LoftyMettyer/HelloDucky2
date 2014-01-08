@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -14,10 +13,7 @@ Public Class CrossTab
 	Private mstrSQLJoin As String
 	Private mstrSQLWhere As String
 
-	Private mrsCrossTabColumns As ADODB.Recordset
-	Private mrsMergeData As ADODB.Recordset
 	Private mlngCrossTabID As Integer
-	Private mblnBatchMode As Boolean
 	Private mblnNoRecords As Boolean
 
 	Private fOK As Boolean
@@ -26,11 +22,10 @@ Public Class CrossTab
 
 	Private mlngCrossTabType As CrossTabType
 	Private mstrTempTableName As String
-	Private mcmdUpdateRecDescs As ADODB.Command
 
 	Private mstrBaseTable As String
 	Private mlngBaseTableID As Integer
-	Private rsCrossTabData As ADODB.Recordset
+	Private rsCrossTabData As DataTable
 	Private mblnIntersection As Boolean
 	Private mblnPageBreak As Boolean
 	Private mblnShowAllPagesTogether As Boolean
@@ -68,9 +63,6 @@ Public Class CrossTab
 	Private mstrOutputEmailAttachAs As String
 	Private mstrOutputFilename As String
 	Private mstrOutputPivotArray() As String
-
-	Private mlngTableViews() As Integer
-	Private mstrWhereIDs As String
 
 	Private Const HOR As Short = 0 'Horizontal
 	Private Const VER As Short = 1 'Vertical
@@ -599,7 +591,7 @@ ErrorTrap:
 
 		On Error GoTo LocalErr
 
-		Dim rsCrossTabDefinition As ADODB.Recordset
+		Dim rsCrossTabDefinition As DataTable
 		Dim strSQL As String
 
 		ReDim mastrUDFsRequired(0)
@@ -607,10 +599,10 @@ ErrorTrap:
 		' Define this cross tab as a normal one
 		mlngCrossTabType = Enums.CrossTabType.cttNormal
 
-		strSQL = "SELECT ASRSysCrossTab.*, " & "'TableName' = ASRSysTables.TableName, " & "'RecordDescExprID' = ASRSysTables.RecordDescExprID, " & "'IntersectionColName' = ASRSysColumns.ColumnName, " & "'IntersectionDecimals' = ASRSysColumns.Decimals " & "FROM ASRSysCrossTab " & "JOIN ASRSysTables ON ASRSysCrossTab.TableID = ASRSysTables.TableID " & "LEFT OUTER JOIN ASRSysColumns ON ASRSysCrossTab.IntersectionColID = ASRSysColumns.ColumnID " & "WHERE CrossTabID = " & CStr(mlngCrossTabID)
+		strSQL = "SELECT ASRSysCrossTab.*, 'TableName' = ASRSysTables.TableName, 'RecordDescExprID' = ASRSysTables.RecordDescExprID, 'IntersectionColName' = ASRSysColumns.ColumnName, " & "'IntersectionDecimals' = ASRSysColumns.Decimals " & "FROM ASRSysCrossTab " & "JOIN ASRSysTables ON ASRSysCrossTab.TableID = ASRSysTables.TableID " & "LEFT OUTER JOIN ASRSysColumns ON ASRSysCrossTab.IntersectionColID = ASRSysColumns.ColumnID " & "WHERE CrossTabID = " & CStr(mlngCrossTabID)
 
-		rsCrossTabDefinition = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		If rsCrossTabDefinition.BOF And rsCrossTabDefinition.EOF Then
+		rsCrossTabDefinition = DB.GetDataTable(strSQL)
+		If rsCrossTabDefinition.Rows.Count = 0 Then
 			'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsCrossTabDefinition = Nothing
 			mstrStatusMessage = "This definition has been deleted by another user"
@@ -618,9 +610,10 @@ ErrorTrap:
 			Exit Function
 		End If
 
+		Dim objRow = rsCrossTabDefinition.Rows(0)
 		With rsCrossTabDefinition
 
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+			If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
 				'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsCrossTabDefinition = Nothing
 				mstrStatusMessage = "This definition has been made hidden by another user."
@@ -628,82 +621,82 @@ ErrorTrap:
 				Exit Function
 			End If
 
-			mlngBaseTableID = .Fields("TableID").Value
-			mstrBaseTable = .Fields("TableName").Value
-			mlngRecordDescExprID = .Fields("RecordDescExprID").Value
-			mstrCrossTabName = .Fields("Name").Value
-			mblnChkPicklistFilter = .Fields("PrintFilterHeader").Value
+			mlngBaseTableID = objRow("TableID")
+			mstrBaseTable = objRow("TableName")
+			mlngRecordDescExprID = objRow("RecordDescExprID")
+			mstrCrossTabName = objRow("Name")
+			mblnChkPicklistFilter = objRow("PrintFilterHeader")
 
-			mblnShowPercentage = .Fields("Percentage").Value
-			mblnPercentageofPage = .Fields("PercentageOfPage").Value
-			mblnSuppressZeros = .Fields("SuppressZeros").Value
-			mbUse1000Separator = .Fields("ThousandSeparators").Value
+			mblnShowPercentage = objRow("Percentage")
+			mblnPercentageofPage = objRow("PercentageOfPage")
+			mblnSuppressZeros = objRow("SuppressZeros")
+			mbUse1000Separator = objRow("ThousandSeparators")
 
-			mblnOutputPreview = .Fields("OutputPreview").Value
-			mlngOutputFormat = .Fields("OutputFormat").Value
-			mblnOutputScreen = .Fields("OutputScreen").Value
-			mblnOutputPrinter = .Fields("OutputPrinter").Value
-			mstrOutputPrinterName = .Fields("OutputPrinterName").Value
-			mblnOutputSave = .Fields("OutputSave").Value
-			mlngOutputSaveExisting = .Fields("OutputSaveExisting").Value
-			mblnOutputEmail = .Fields("OutputEmail").Value
-			mlngOutputEmailID = .Fields("OutputEmailAddr").Value
+			mblnOutputPreview = objRow("OutputPreview")
+			mlngOutputFormat = objRow("OutputFormat")
+			mblnOutputScreen = objRow("OutputScreen")
+			mblnOutputPrinter = objRow("OutputPrinter")
+			mstrOutputPrinterName = objRow("OutputPrinterName")
+			mblnOutputSave = objRow("OutputSave")
+			mlngOutputSaveExisting = objRow("OutputSaveExisting")
+			mblnOutputEmail = objRow("OutputEmail")
+			mlngOutputEmailID = objRow("OutputEmailAddr")
 			'mstrOutputEmailAddr = GetEmailGroupAddresses(!OutputEmailAddr)
-			mstrOutputEmailName = GetEmailGroupName(.Fields("OutputEmailAddr").Value)
-			mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
+			mstrOutputEmailName = GetEmailGroupName(objRow("OutputEmailAddr"))
+			mstrOutputEmailSubject = objRow("OutputEmailSubject")
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
-			mstrOutputFilename = .Fields("OutputFilename").Value
+			mstrOutputEmailAttachAs = IIf(IsDBNull(objRow("OutputEmailAttachAs")), vbNullString, objRow("OutputEmailAttachAs"))
+			mstrOutputFilename = objRow("OutputFilename")
 
-			mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = (objRow("OutputPreview") Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
-			mlngColID(HOR) = .Fields("HorizontalColID").Value
-			mdblMin(HOR) = Val(.Fields("HorizontalStart").Value)
-			mdblMax(HOR) = Val(.Fields("HorizontalStop").Value)
-			mdblStep(HOR) = Val(.Fields("HorizontalStep").Value)
+			mlngColID(HOR) = objRow("HorizontalColID")
+			mdblMin(HOR) = Val(objRow("HorizontalStart"))
+			mdblMax(HOR) = Val(objRow("HorizontalStop"))
+			mdblStep(HOR) = Val(objRow("HorizontalStep"))
 			mstrColName(HOR) = datGeneral.GetColumnName(mlngColID(HOR))
 			mlngColDataType(HOR) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(HOR)))
 			mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
-			mlngColID(VER) = .Fields("VerticalColID").Value
-			mdblMin(VER) = Val(.Fields("VerticalStart").Value)
-			mdblMax(VER) = Val(.Fields("VerticalStop").Value)
-			mdblStep(VER) = Val(.Fields("VerticalStep").Value)
+			mlngColID(VER) = objRow("VerticalColID")
+			mdblMin(VER) = Val(objRow("VerticalStart"))
+			mdblMax(VER) = Val(objRow("VerticalStop"))
+			mdblStep(VER) = Val(objRow("VerticalStep"))
 			mstrColName(VER) = datGeneral.GetColumnName(mlngColID(VER))
 			mlngColDataType(VER) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(VER)))
 			mstrFormat(VER) = GetFormat(mlngColID(VER))
 
-			mlngColID(PGB) = .Fields("PageBreakColID").Value
+			mlngColID(PGB) = objRow("PageBreakColID")
 			mblnPageBreak = (mlngColID(PGB) > 0)
 			If mblnPageBreak Then
 				mstrColName(PGB) = datGeneral.GetColumnName(mlngColID(PGB))
 				mlngColDataType(PGB) = CStr(datGeneral.GetDataType(mlngBaseTableID, mlngColID(PGB)))
 				mstrFormat(PGB) = GetFormat(mlngColID(PGB))
-				mdblMin(PGB) = Val(.Fields("PageBreakStart").Value)
-				mdblMax(PGB) = Val(.Fields("PageBreakStop").Value)
-				mdblStep(PGB) = Val(.Fields("PageBreakStep").Value)
+				mdblMin(PGB) = Val(objRow("PageBreakStart"))
+				mdblMax(PGB) = Val(objRow("PageBreakStop"))
+				mdblStep(PGB) = Val(objRow("PageBreakStep"))
 			End If
 
-			mblnIntersection = (.Fields("IntersectionColID").Value > 0)
+			mblnIntersection = (objRow("IntersectionColID") > 0)
 			If mblnIntersection Then
-				mlngType = .Fields("IntersectionType").Value
-				mlngColID(INS) = .Fields("IntersectionColID").Value
-				mstrColName(INS) = .Fields("IntersectionColName").Value
-				mlngIntersectionDecimals = CInt(.Fields("IntersectionDecimals").Value)
+				mlngType = objRow("IntersectionType")
+				mlngColID(INS) = objRow("IntersectionColID")
+				mstrColName(INS) = objRow("IntersectionColName")
+				mlngIntersectionDecimals = CInt(objRow("IntersectionDecimals"))
 				mstrIntersectionMask = New String("#", 20) & "0"
-				If CInt(.Fields("IntersectionDecimals").Value) > 0 Then
-					mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(.Fields("IntersectionDecimals").Value))
+				If CInt(objRow("IntersectionDecimals")) > 0 Then
+					mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(objRow("IntersectionDecimals")))
 				End If
 			Else
 				mlngType = 0
 			End If
 
-			fOK = IsRecordSelectionValid(.Fields("PickListID").Value, .Fields("FilterID").Value)
+			fOK = IsRecordSelectionValid(objRow("PickListID"), objRow("FilterID"))
 			If fOK = False Then
 				Exit Function
 			End If
 
-			mstrPicklistFilter = GetPicklistFilterSelect(.Fields("PickListID").Value, .Fields("FilterID").Value)
+			mstrPicklistFilter = GetPicklistFilterSelect(objRow("PickListID"), objRow("FilterID"))
 			If fOK = False Then
 				Exit Function
 			End If
@@ -766,38 +759,34 @@ LocalErr:
 
 	Private Function GetPicklistFilterSelect(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As String
 
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As DataTable
 
 		If lngPicklistID > 0 Then
 
 			mstrStatusMessage = IsPicklistValid(lngPicklistID)
 			If mstrStatusMessage <> vbNullString Then
-				fOK = False
-				Exit Function
+				Return False
 			End If
 
 			'Get List of IDs from Picklist
-			rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & lngPicklistID, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			fOK = Not (rsTemp.BOF And rsTemp.EOF)
+			rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & lngPicklistID)
+			fOK = Not (rsTemp.Rows.Count > 0)
 
 			If Not fOK Then
 				mstrStatusMessage = "The base table picklist contains no records."
 			Else
 				GetPicklistFilterSelect = vbNullString
-				Do While Not rsTemp.EOF
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & rsTemp.Fields(0).Value
-					rsTemp.MoveNext()
-				Loop
+				For Each objRow As DataRow In rsTemp.Rows
+					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & objRow(0)
+				Next
 			End If
 
-			rsTemp.Close()
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 
 			'MH20020704 Fault 4022
-			rsTemp = mclsData.OpenRecordset("SELECT name from ASRSysPicklistName WHERE PicklistID = " & CStr(lngPicklistID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Fields("Name").Value & ")"
-			rsTemp.Close()
+			rsTemp = DB.GetDataTable("SELECT name from ASRSysPicklistName WHERE PicklistID = " & CStr(lngPicklistID))
+			mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Rows(0)("Name") & ")"
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 
@@ -819,9 +808,9 @@ LocalErr:
 			End If
 
 			'MH20020704 Fault 4022
-			rsTemp = mclsData.OpenRecordset("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID), CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Fields("Name").Value & ")"
-			rsTemp.Close()
+			rsTemp = DB.GetDataTable("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID))
+			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Rows(0)("Name") & ")"
+
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 
@@ -950,12 +939,9 @@ LocalErr:
 		mclsData.ExecuteSqlReturnAffected(strSQL)
 
 		strSQL = "SELECT * FROM " & mstrTempTableName
+		rsCrossTabData = DB.GetDataTable(strSQL)
 
-		rsCrossTabData = New ADODB.Recordset
-		rsCrossTabData.let_ActiveConnection(gADOCon)
-		rsCrossTabData = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
-
-		If rsCrossTabData.EOF Then
+		If rsCrossTabData.Rows.Count = 0 Then
 			mstrStatusMessage = "No records meet selection criteria"
 			mblnNoRecords = True
 			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
@@ -966,13 +952,7 @@ LocalErr:
 		'Check if we might need record description...
 		'If mblnBatchMode = False And mlngRecordDescExprID > 0 Then
 		If fOK Then
-			mcmdUpdateRecDescs = New ADODB.Command
-			mcmdUpdateRecDescs.let_ActiveConnection(gADOCon)
-			mcmdUpdateRecDescs.CommandText = "EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID)
-			mcmdUpdateRecDescs.CommandTimeout = 0
-
-			mcmdUpdateRecDescs.Execute()
-
+			DB.ExecuteSql("EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID))
 		End If
 
 		CreateTempTable = fOK
@@ -1216,7 +1196,7 @@ LocalErr:
 
 	Private Sub GetHeadingsAndSearchesForColumns(ByRef lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
 
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As DataTable
 		Dim strSQL As String
 		Dim strFieldValue As String
 		Dim lngCount As Integer
@@ -1254,21 +1234,20 @@ LocalErr:
 				strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & " FROM " & mstrTempTableName & " ORDER BY 1"
 			End If
 
-			rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+			rsTemp = DB.GetDataTable(strSQL)
 
 			With rsTemp
 
-				If .BOF And .EOF Then
+				If .Rows.Count = 0 Then
 					Exit Sub
 				End If
 
-				'   .MoveFirst()
-				Do While Not .EOF
+				For Each objRow As DataRow In rsTemp.Rows
 
 					'MH20010213 Had to make this change so that working pattern would work
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					strFieldValue = IIf(IsDBNull(.Fields(0).Value), vbNullString, .Fields(0).Value)
+					strFieldValue = IIf(IsDBNull(objRow(0)), vbNullString, objRow(0))
 
 					If Trim(strFieldValue) <> vbNullString Then
 						ReDim Preserve strHeading(lngCount)
@@ -1276,19 +1255,19 @@ LocalErr:
 
 						Select Case mlngColDataType(lngLoop)
 							Case CStr(SQLDataType.sqlDate)
-								strHeading(lngCount) = VB6.Format(.Fields(0).Value, mstrClientDateFormat)
-								strSearch(lngCount) = strColumnName & " = '" & VB6.Format(.Fields(0).Value, "MM/dd/yyyy") & "'"
+								strHeading(lngCount) = VB6.Format(objRow(0), mstrClientDateFormat)
+								strSearch(lngCount) = strColumnName & " = '" & VB6.Format(objRow(0), "MM/dd/yyyy") & "'"
 
 							Case CStr(SQLDataType.sqlBoolean)
-								strHeading(lngCount) = IIf(.Fields(0).Value, "True", "False")
-								strSearch(lngCount) = strColumnName & " = " & IIf(.Fields(0).Value, "1", "0")
+								strHeading(lngCount) = IIf(objRow(0), "True", "False")
+								strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
 
 							Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
-								strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(.Fields(0).Value, mstrFormat(lngLoop)))
-								strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(.Fields(0).Value)
+								strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(objRow(0), mstrFormat(lngLoop)))
+								strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(objRow(0))
 
 							Case Else
-								strHeading(lngCount) = FormatString(.Fields(0).Value)
+								strHeading(lngCount) = FormatString(objRow(0))
 								strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
 
 						End Select
@@ -1297,8 +1276,7 @@ LocalErr:
 
 					End If
 
-					.MoveNext()
-				Loop
+				Next
 			End With
 
 		Else
@@ -1427,119 +1405,113 @@ LocalErr:
 		ReDim mdblPageTotal(lngNumPages, 4)
 		ReDim mdblGrandTotal(4)
 
-		With rsCrossTabData
+		For Each objRow In rsCrossTabData.Rows
 
-			.MoveFirst()
-			Do While Not .EOF
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR"), vbNullString)
+			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			lngCol = GetGroupNumber(strTempValue, HOR)
+
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER"), vbNullString)
+			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			lngRow = GetGroupNumber(strTempValue, VER)
+
+			If mblnPageBreak Then
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				strTempValue = IIf(Not IsDBNull(objRow("PGB")), objRow("PGB"), vbNullString)
+				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				lngPage = GetGroupNumber(strTempValue, PGB)
+			Else
+				lngPage = 0
+			End If
+
+			'Count
+			mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) + 1
+			mdblHorTotal(lngCol, lngPage, TYPECOUNT) = mdblHorTotal(lngCol, lngPage, TYPECOUNT) + 1
+			mdblVerTotal(lngRow, lngPage, TYPECOUNT) = mdblVerTotal(lngRow, lngPage, TYPECOUNT) + 1
+			mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = mdblPgbTotal(lngCol, lngRow, TYPECOUNT) + 1
+			mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) + 1
+			mdblPageTotal(lngPage, TYPECOUNT) = mdblPageTotal(lngPage, TYPECOUNT) + 1
+			mdblGrandTotal(TYPECOUNT) = mdblGrandTotal(TYPECOUNT) + 1
+
+			'If mblnIntersection And IsNull(objRow(.Fields.Count - 1)) = False Then
+			If mblnIntersection Then
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				strTempValue = IIf(Not IsDBNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngCol = GetGroupNumber(strTempValue, HOR)
-
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				strTempValue = IIf(Not IsDBNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngRow = GetGroupNumber(strTempValue, VER)
-
-				If mblnPageBreak Then
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					strTempValue = IIf(Not IsDBNull(.Fields("PGB").Value), .Fields("PGB").Value, vbNullString)
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					lngPage = GetGroupNumber(strTempValue, PGB)
+				If IsDBNull(objRow("INS")) Then
+					dblThisIntersectionVal = 0
 				Else
-					lngPage = 0
+					dblThisIntersectionVal = Val(datGeneral.ConvertNumberForSQL(objRow("INS")))
 				End If
 
-				'Count
-				mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) + 1
-				mdblHorTotal(lngCol, lngPage, TYPECOUNT) = mdblHorTotal(lngCol, lngPage, TYPECOUNT) + 1
-				mdblVerTotal(lngRow, lngPage, TYPECOUNT) = mdblVerTotal(lngRow, lngPage, TYPECOUNT) + 1
-				mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = mdblPgbTotal(lngCol, lngRow, TYPECOUNT) + 1
-				mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) + 1
-				mdblPageTotal(lngPage, TYPECOUNT) = mdblPageTotal(lngPage, TYPECOUNT) + 1
-				mdblGrandTotal(TYPECOUNT) = mdblGrandTotal(TYPECOUNT) + 1
 
-				'If mblnIntersection And IsNull(.Fields(.Fields.Count - 1)) = False Then
-				If mblnIntersection Then
+				'Total
+				mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) = mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) + dblThisIntersectionVal
+				mdblHorTotal(lngCol, lngPage, TYPETOTAL) = mdblHorTotal(lngCol, lngPage, TYPETOTAL) + dblThisIntersectionVal
+				mdblVerTotal(lngRow, lngPage, TYPETOTAL) = mdblVerTotal(lngRow, lngPage, TYPETOTAL) + dblThisIntersectionVal
+				mdblPgbTotal(lngCol, lngRow, TYPETOTAL) = mdblPgbTotal(lngCol, lngRow, TYPETOTAL) + dblThisIntersectionVal
+				mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) + dblThisIntersectionVal
+				mdblPageTotal(lngPage, TYPETOTAL) = mdblPageTotal(lngPage, TYPETOTAL) + dblThisIntersectionVal
+				mdblGrandTotal(TYPETOTAL) = mdblGrandTotal(TYPETOTAL) + dblThisIntersectionVal
 
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(.Fields("INS").Value) Then
-						dblThisIntersectionVal = 0
-					Else
-						dblThisIntersectionVal = Val(datGeneral.ConvertNumberForSQL(.Fields("INS").Value))
+				'Average
+				mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) / mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT)
+				mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPETOTAL) / mdblHorTotal(lngCol, lngPage, TYPECOUNT)
+				mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPETOTAL) / mdblVerTotal(lngRow, lngPage, TYPECOUNT)
+				mdblPgbTotal(lngCol, lngRow, TYPEAVERAGE) = mdblPgbTotal(lngCol, lngRow, TYPETOTAL) / mdblPgbTotal(lngCol, lngRow, TYPECOUNT)
+				mdblPgbTotal(lngCol, lngNumRows + 1, TYPEAVERAGE) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) / mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT)
+				mdblPageTotal(lngPage, TYPEAVERAGE) = mdblPageTotal(lngPage, TYPETOTAL) / mdblPageTotal(lngPage, TYPECOUNT)
+				mdblGrandTotal(TYPEAVERAGE) = mdblGrandTotal(TYPETOTAL) / mdblGrandTotal(TYPECOUNT)
+
+				'Minimum
+				If dblThisIntersectionVal < mdblDataArray(lngCol, lngRow, lngPage, TYPEMINIMUM) Or mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = 1 Then
+					mdblDataArray(lngCol, lngRow, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
+					If dblThisIntersectionVal < mdblHorTotal(lngCol, lngPage, TYPEMINIMUM) Or mdblHorTotal(lngCol, lngPage, TYPECOUNT) = 1 Then
+						mdblHorTotal(lngCol, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
 					End If
-
-
-					'Total
-					mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) = mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) + dblThisIntersectionVal
-					mdblHorTotal(lngCol, lngPage, TYPETOTAL) = mdblHorTotal(lngCol, lngPage, TYPETOTAL) + dblThisIntersectionVal
-					mdblVerTotal(lngRow, lngPage, TYPETOTAL) = mdblVerTotal(lngRow, lngPage, TYPETOTAL) + dblThisIntersectionVal
-					mdblPgbTotal(lngCol, lngRow, TYPETOTAL) = mdblPgbTotal(lngCol, lngRow, TYPETOTAL) + dblThisIntersectionVal
-					mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) + dblThisIntersectionVal
-					mdblPageTotal(lngPage, TYPETOTAL) = mdblPageTotal(lngPage, TYPETOTAL) + dblThisIntersectionVal
-					mdblGrandTotal(TYPETOTAL) = mdblGrandTotal(TYPETOTAL) + dblThisIntersectionVal
-
-					'Average
-					mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPETOTAL) / mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT)
-					mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPETOTAL) / mdblHorTotal(lngCol, lngPage, TYPECOUNT)
-					mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPETOTAL) / mdblVerTotal(lngRow, lngPage, TYPECOUNT)
-					mdblPgbTotal(lngCol, lngRow, TYPEAVERAGE) = mdblPgbTotal(lngCol, lngRow, TYPETOTAL) / mdblPgbTotal(lngCol, lngRow, TYPECOUNT)
-					mdblPgbTotal(lngCol, lngNumRows + 1, TYPEAVERAGE) = mdblPgbTotal(lngCol, lngNumRows + 1, TYPETOTAL) / mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT)
-					mdblPageTotal(lngPage, TYPEAVERAGE) = mdblPageTotal(lngPage, TYPETOTAL) / mdblPageTotal(lngPage, TYPECOUNT)
-					mdblGrandTotal(TYPEAVERAGE) = mdblGrandTotal(TYPETOTAL) / mdblGrandTotal(TYPECOUNT)
-
-					'Minimum
-					If dblThisIntersectionVal < mdblDataArray(lngCol, lngRow, lngPage, TYPEMINIMUM) Or mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = 1 Then
-						mdblDataArray(lngCol, lngRow, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
-						If dblThisIntersectionVal < mdblHorTotal(lngCol, lngPage, TYPEMINIMUM) Or mdblHorTotal(lngCol, lngPage, TYPECOUNT) = 1 Then
-							mdblHorTotal(lngCol, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal < mdblVerTotal(lngRow, lngPage, TYPEMINIMUM) Or mdblVerTotal(lngRow, lngPage, TYPECOUNT) = 1 Then
-							mdblVerTotal(lngRow, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal < mdblPgbTotal(lngCol, lngRow, TYPEMINIMUM) Or mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = 1 Then
-							mdblPgbTotal(lngCol, lngRow, TYPEMINIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal < mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMINIMUM) Or mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = 1 Then
-							mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMINIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal < mdblPageTotal(lngPage, TYPEMINIMUM) Or mdblPageTotal(lngPage, TYPECOUNT) = 1 Then
-							mdblPageTotal(lngPage, TYPEMINIMUM) = dblThisIntersectionVal
-							If dblThisIntersectionVal < mdblGrandTotal(TYPEMINIMUM) Or mdblGrandTotal(TYPECOUNT) = 1 Then
-								mdblGrandTotal(TYPEMINIMUM) = dblThisIntersectionVal
-							End If
-						End If
+					If dblThisIntersectionVal < mdblVerTotal(lngRow, lngPage, TYPEMINIMUM) Or mdblVerTotal(lngRow, lngPage, TYPECOUNT) = 1 Then
+						mdblVerTotal(lngRow, lngPage, TYPEMINIMUM) = dblThisIntersectionVal
 					End If
-
-					'Maximum
-					If dblThisIntersectionVal > mdblDataArray(lngCol, lngRow, lngPage, TYPEMAXIMUM) Or mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = 1 Then
-						mdblDataArray(lngCol, lngRow, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
-						If dblThisIntersectionVal > mdblHorTotal(lngCol, lngPage, TYPEMAXIMUM) Or mdblHorTotal(lngCol, lngPage, TYPECOUNT) = 1 Then
-							mdblHorTotal(lngCol, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal > mdblVerTotal(lngRow, lngPage, TYPEMAXIMUM) Or mdblVerTotal(lngRow, lngPage, TYPECOUNT) = 1 Then
-							mdblVerTotal(lngRow, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal > mdblPgbTotal(lngCol, lngRow, TYPEMAXIMUM) Or mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = 1 Then
-							mdblPgbTotal(lngCol, lngRow, TYPEMAXIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal > mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMAXIMUM) Or mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = 1 Then
-							mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMAXIMUM) = dblThisIntersectionVal
-						End If
-						If dblThisIntersectionVal > mdblPageTotal(lngPage, TYPEMAXIMUM) Or mdblPageTotal(lngPage, TYPECOUNT) = 1 Then
-							mdblPageTotal(lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
-							If dblThisIntersectionVal > mdblGrandTotal(TYPEMAXIMUM) Or mdblGrandTotal(TYPECOUNT) = 1 Then
-								mdblGrandTotal(TYPEMAXIMUM) = dblThisIntersectionVal
-							End If
+					If dblThisIntersectionVal < mdblPgbTotal(lngCol, lngRow, TYPEMINIMUM) Or mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = 1 Then
+						mdblPgbTotal(lngCol, lngRow, TYPEMINIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal < mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMINIMUM) Or mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = 1 Then
+						mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMINIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal < mdblPageTotal(lngPage, TYPEMINIMUM) Or mdblPageTotal(lngPage, TYPECOUNT) = 1 Then
+						mdblPageTotal(lngPage, TYPEMINIMUM) = dblThisIntersectionVal
+						If dblThisIntersectionVal < mdblGrandTotal(TYPEMINIMUM) Or mdblGrandTotal(TYPECOUNT) = 1 Then
+							mdblGrandTotal(TYPEMINIMUM) = dblThisIntersectionVal
 						End If
 					End If
 				End If
 
-				.MoveNext()
-			Loop
+				'Maximum
+				If dblThisIntersectionVal > mdblDataArray(lngCol, lngRow, lngPage, TYPEMAXIMUM) Or mdblDataArray(lngCol, lngRow, lngPage, TYPECOUNT) = 1 Then
+					mdblDataArray(lngCol, lngRow, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
+					If dblThisIntersectionVal > mdblHorTotal(lngCol, lngPage, TYPEMAXIMUM) Or mdblHorTotal(lngCol, lngPage, TYPECOUNT) = 1 Then
+						mdblHorTotal(lngCol, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal > mdblVerTotal(lngRow, lngPage, TYPEMAXIMUM) Or mdblVerTotal(lngRow, lngPage, TYPECOUNT) = 1 Then
+						mdblVerTotal(lngRow, lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal > mdblPgbTotal(lngCol, lngRow, TYPEMAXIMUM) Or mdblPgbTotal(lngCol, lngRow, TYPECOUNT) = 1 Then
+						mdblPgbTotal(lngCol, lngRow, TYPEMAXIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal > mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMAXIMUM) Or mdblPgbTotal(lngCol, lngNumRows + 1, TYPECOUNT) = 1 Then
+						mdblPgbTotal(lngCol, lngNumRows + 1, TYPEMAXIMUM) = dblThisIntersectionVal
+					End If
+					If dblThisIntersectionVal > mdblPageTotal(lngPage, TYPEMAXIMUM) Or mdblPageTotal(lngPage, TYPECOUNT) = 1 Then
+						mdblPageTotal(lngPage, TYPEMAXIMUM) = dblThisIntersectionVal
+						If dblThisIntersectionVal > mdblGrandTotal(TYPEMAXIMUM) Or mdblGrandTotal(TYPECOUNT) = 1 Then
+							mdblGrandTotal(TYPEMAXIMUM) = dblThisIntersectionVal
+						End If
+					End If
+				End If
+			End If
 
-		End With
+		Next
 
 		'UPGRADE_NOTE: Object rsCrossTabData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsCrossTabData = Nothing
@@ -1578,7 +1550,6 @@ LocalErr:
 		Dim dblValue As Double
 		Dim lngCount As Integer
 		Dim dblLoop As Double
-		Dim rsTemp As ADODB.Recordset
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		GetGroupNumber = 0
@@ -1898,7 +1869,7 @@ LocalErr:
 
 	Public Sub BuildBreakdownStrings(ByRef lngHOR As Integer, ByRef lngVER As Integer, ByRef lngPGB As Integer)
 
-		Dim rsTemp As ADODB.Recordset
+		Dim rsTemp As DataTable
 		Dim strSQL As String
 		Dim strOutput As String
 
@@ -1936,64 +1907,59 @@ LocalErr:
 		End Select
 		strSQL = strSQL & "RecDesc"
 
-		rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
+		rsTemp = DB.GetDataTable(strSQL)
 
 		ReDim mstrOutput(0)
 		lngCount = 0
 
-		With rsTemp
-			If Not .EOF Then .MoveFirst()
-			Do While Not .EOF
+		For Each objRow As DataRow In rsTemp.Rows
 
-				strOutput = .Fields("RecDesc").Value
+			strOutput = objRow("RecDesc")
 
-				' Build output string for absence breakdown
-				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
+			' Build output string for absence breakdown
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 
+				strOutput = strOutput & vbTab
+
+				' Add absence start date
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If IsDBNull(objRow("Start_Date")) Then
 					strOutput = strOutput & vbTab
-
-					' Add absence start date
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(.Fields("Start_Date").Value) Then
-						strOutput = strOutput & vbTab
-					Else
-						strOutput = strOutput & VB6.Format(.Fields("Start_Date").Value, mstrClientDateFormat) & vbTab
-					End If
-
-					' Add absence end date
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(.Fields("End_Date").Value) Then
-						strOutput = strOutput & vbTab
-					Else
-						strOutput = strOutput & VB6.Format(.Fields("End_Date").Value, mstrClientDateFormat) & vbTab
-					End If
-
-					' Add occurences
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(.Fields("Value").Value) Then
-						strOutput = strOutput & vbTab
-					Else
-						'MH20040128 Fault 7995 - Round average to 2 decimal places
-						strOutput = strOutput & Format(.Fields("Value").Value, "0.00") & vbTab
-					End If
-
+				Else
+					strOutput = strOutput & VB6.Format(objRow("Start_Date"), mstrClientDateFormat) & vbTab
 				End If
 
-				If mblnIntersection Then
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If Not IsDBNull(.Fields("Ins").Value) Then
-						strOutput = strOutput & vbTab & Format(.Fields("Ins").Value, mstrIntersectionMask)
-					End If
+				' Add absence end date
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If IsDBNull(objRow("End_Date")) Then
+					strOutput = strOutput & vbTab
+				Else
+					strOutput = strOutput & VB6.Format(objRow("End_Date"), mstrClientDateFormat) & vbTab
 				End If
 
-				lngCount = lngCount + 1
-				ReDim Preserve mstrOutput(lngCount)
-				mstrOutput(lngCount) = FormatString(strOutput)
+				' Add occurences
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If IsDBNull(objRow("Value")) Then
+					strOutput = strOutput & vbTab
+				Else
+					'MH20040128 Fault 7995 - Round average to 2 decimal places
+					strOutput = strOutput & Format(objRow("Value"), "0.00") & vbTab
+				End If
 
-				.MoveNext()
-			Loop
-		End With
+			End If
+
+			If mblnIntersection Then
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If Not IsDBNull(objRow("Ins")) Then
+					strOutput = strOutput & vbTab & Format(objRow("Ins"), mstrIntersectionMask)
+				End If
+			End If
+
+			lngCount = lngCount + 1
+			ReDim Preserve mstrOutput(lngCount)
+			mstrOutput(lngCount) = FormatString(strOutput)
+
+		Next
 
 		Exit Sub
 
@@ -2008,22 +1974,17 @@ LocalErr:
 
 		On Error GoTo LocalErr
 
-		Dim datData As clsDataAccess
+		Dim rsCrossTabDataLocal As DataTable
 		Dim sSQL As String
-
-		datData = New clsDataAccess
 
 		'Fire off the stored procedure to turn the current data into something the crosstab code will like.
 		sSQL = "EXECUTE sp_ASR_AbsenceBreakdown_Run '" & mstrReportStartDate & "','" & mstrReportEndDate & "','" & mstrTempTableName & "'"
-		datData.ExecuteSql((sSQL))
+		DB.ExecuteSql(sSQL)
 
 		' Check that records exist (in case there's no working pattern and such like)
-		Dim rsCrossTabDataLocal As ADODB.Recordset
-		rsCrossTabDataLocal = New ADODB.Recordset
-		rsCrossTabDataLocal.let_ActiveConnection(gADOCon)
-		rsCrossTabDataLocal.Open("Select * From " & mstrTempTableName, , ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)
+		rsCrossTabDataLocal = DB.GetDataTable("Select * From " & mstrTempTableName)
 
-		If rsCrossTabDataLocal.EOF Then
+		If rsCrossTabDataLocal.Rows.Count = 0 Then
 			mstrStatusMessage = "No records meet selection criteria"
 			mblnNoRecords = True
 			fOK = False
@@ -2032,22 +1993,16 @@ LocalErr:
 		' Fault 2422 - Switch days into language of client machine (server independant)
 		' JDM - 19/06/01 - Fault 2472 - Whoops, missed out some error checking...
 		If fOK Then
-			With rsCrossTabDataLocal
-				.MoveFirst()
-				Do While Not .EOF
+			For Each objRow As DataRow In rsCrossTabDataLocal.Rows
 
-					If .Fields("Day_Number").Value < 8 Then
-						.Fields("HOR").Value = WeekdayName(.Fields("Day_Number").Value, False, FirstDayOfWeek.Monday)
-					End If
+				If objRow("Day_Number") < 8 Then
+					objRow("HOR") = WeekdayName(objRow("Day_Number"), False, FirstDayOfWeek.Monday)
+				End If
 
-					.MoveNext()
-				Loop
-
-			End With
+			Next
 		End If
 
-		AbsenceBreakdownRunStoredProcedure = True
-		Exit Function
+		Return True
 
 LocalErr:
 		mstrStatusMessage = "Error running stored procedure in database"
@@ -2080,57 +2035,47 @@ LocalErr:
 		ReDim mdblGrandTotal(4)
 
 		' Because the stored procedure has run we need to requery the recordset
-		rsCrossTabData.Requery()
 
-		With rsCrossTabData
+		If rsCrossTabData.Rows.Count = 0 Then
+			AbsenceBreakdownBuildDataArrays = False
+			Exit Function
+		End If
 
-			If .BOF And .EOF Then
-				AbsenceBreakdownBuildDataArrays = False
-				Exit Function
-			End If
+		For Each objRow As DataRow In rsCrossTabData.Rows
 
-			.MoveFirst()
-			Do While Not .EOF
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR"), vbNullString)
+			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			lngCol = GetGroupNumber(strTempValue, HOR)
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				strTempValue = IIf(Not IsDBNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngCol = GetGroupNumber(strTempValue, HOR)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER"), vbNullString)
+			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			lngRow = GetGroupNumber(strTempValue, VER)
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				strTempValue = IIf(Not IsDBNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngRow = GetGroupNumber(strTempValue, VER)
+			'Count
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+			mdblHorTotal(lngCol, 0, TYPECOUNT) = mdblHorTotal(lngCol, 0, TYPECOUNT) + 1
+			mdblVerTotal(lngRow, 0, TYPECOUNT) = mdblVerTotal(lngRow, 0, TYPECOUNT) + 1
 
-				'Count
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
-				mdblHorTotal(lngCol, 0, TYPECOUNT) = mdblHorTotal(lngCol, 0, TYPECOUNT) + 1
-				mdblVerTotal(lngRow, 0, TYPECOUNT) = mdblVerTotal(lngRow, 0, TYPECOUNT) + 1
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+		Next
 
-				.MoveNext()
-			Loop
-
-		End With
-
-		'UPGRADE_NOTE: Object rsCrossTabData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsCrossTabData = Nothing
-
-		AbsenceBreakdownBuildDataArrays = True
+		Return True
 		Exit Function
 
 LocalErr:
@@ -2361,7 +2306,7 @@ LocalErr:
 
 	Public Sub GetPivotRecordset()
 
-		Dim rsPivot As ADODB.Recordset
+		Dim rsPivot As DataTable
 		Dim strSQL As String
 
 		Dim strOutput(,) As String
@@ -2380,7 +2325,7 @@ LocalErr:
 			strSQL = strSQL & " ORDER BY PGB"
 		End If
 
-		rsPivot = datGeneral.GetReadOnlyRecords(strSQL)
+		rsPivot = DB.GetDataTable(strSQL)
 
 		'------------
 
@@ -2390,17 +2335,16 @@ LocalErr:
 
 			If Not mblnPageBreak Then
 				lngRow = 1
-				ReDim strOutput(.Fields.Count - 1, 0)
-				For lngCol = 0 To .Fields.Count - 1
-					strOutput(lngCol, 0) = .Fields(lngCol).Name
+				ReDim strOutput(.Columns.Count - 1, 0)
+				For lngCol = 0 To .Columns.Count - 1
+					strOutput(lngCol, 0) = rsPivot.Columns(lngCol).ColumnName
 				Next
 			End If
 
-			.MoveFirst()
-			Do While Not .EOF
+			For Each objRow As DataRow In rsPivot.Rows
 
 				If mblnPageBreak Then
-					If strPageValue <> .Fields("Page Break").Value Then
+					If strPageValue <> objRow("Page Break") Then
 
 						If strPageValue <> vbNullString Then
 
@@ -2415,12 +2359,12 @@ LocalErr:
 							PivotAddToArray("  ClientDLL.DataArray();")
 
 						End If
-						strPageValue = .Fields("Page Break").Value
+						strPageValue = objRow("Page Break").Value
 
 						lngRow = 1
-						ReDim strOutput(.Fields.Count - 1, 0)
-						For lngCol = 0 To .Fields.Count - 1
-							strOutput(lngCol, 0) = .Fields(lngCol).Name
+						ReDim strOutput(.Columns.Count - 1, 0)
+						For lngCol = 0 To .Columns.Count - 1
+							strOutput(lngCol, 0) = objRow(lngCol).Name
 						Next
 
 					End If
@@ -2429,23 +2373,22 @@ LocalErr:
 
 				End If
 
-				ReDim Preserve strOutput(.Fields.Count - 1, lngRow)
-				For lngCol = 0 To .Fields.Count - 1
+				ReDim Preserve strOutput(.Columns.Count - 1, lngRow)
+				For lngCol = 0 To .Columns.Count - 1
 
 					If lngCol < 2 Or (lngCol = 2 And mblnPageBreak) Then
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						lngGroupNum = GetGroupNumber(CStr(IIf(IsDBNull(.Fields(lngCol).Value), vbNullString, .Fields(lngCol).Value)), CShort(lngCol))
+						lngGroupNum = GetGroupNumber(CStr(IIf(IsDBNull(objRow(lngCol)), vbNullString, objRow(lngCol))), CShort(lngCol))
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strOutput(lngCol, lngRow) = mvarHeadings(lngCol)(lngGroupNum)
 					Else
-						strOutput(lngCol, lngRow) = .Fields(lngCol).Value
+						strOutput(lngCol, lngRow) = objRow(lngCol)
 					End If
 				Next
 				lngRow = lngRow + 1
-				.MoveNext()
-			Loop
+			Next
 		End With
 
 		PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
@@ -2459,7 +2402,6 @@ LocalErr:
 
 		PivotAddToArray("  ClientDLL.DataArray();")
 
-		rsPivot.Close()
 		'UPGRADE_NOTE: Object rsPivot may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsPivot = Nothing
 

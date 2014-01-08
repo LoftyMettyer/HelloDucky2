@@ -251,13 +251,13 @@
 	end if
 
 	' Create the reference to the DLL (Report Class)
-		objCrossTab = New CrossTab()
-		Session("objCrossTab" & Session("utilid")) = Nothing
+	objCrossTab = New CrossTab()
+	objCrossTab.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+	Session("objCrossTab" & Session("utilid")) = Nothing
 
 	' Pass required info to the DLL
-	objCrossTab.Username = session("username")
-	objCrossTab.Connection = session("databaseConnection")
-	objCrossTab.CrossTabID = session("utilid")
+	objCrossTab.CrossTabID = Session("utilid")
 	objCrossTab.ClientDateFormat = session("localedateformat")
 	objCrossTab.LocalDecimalSeparator = session("LocaleDecimalSeparator")
 

@@ -110,6 +110,22 @@ Public Class clsDataAccess
 
 	End Sub
 
+	Public Function GetDataTable(ByVal sProcedureName As String) As DataTable
+
+		Try
+			Return GetDataTable(sProcedureName, CommandType.Text)
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+		Return Nothing
+
+
+	End Function
+
+
 	Public Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
 
 		Try

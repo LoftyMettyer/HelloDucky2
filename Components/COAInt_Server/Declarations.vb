@@ -7,9 +7,9 @@ Imports HR.Intranet.Server.Structures
 
 Module Declarations
 
-  Public gADOCon As ADODB.Connection
+	Public gADOCon As ADODB.Connection
 
-  Public datGeneral As New clsGeneral
+	Public datGeneral As New clsGeneral
 	Public dataAccess As New clsDataAccess
 
 	Public gsUsername As String
