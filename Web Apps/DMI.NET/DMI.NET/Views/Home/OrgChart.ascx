@@ -104,7 +104,8 @@
 	<div id="noData" class="ui-widget-content" style="width: 50%; margin: 0 auto; padding: 20px; border: none;display: none;">
 		<h2 class="centered">Cannot display the Organisation Chart</h2>
 		<br />
-		<p class="centered">Please contact your system administrator</p>
+		<p class="centered"><%=Session("ErrorText")%></p>		
+		<p class="centered">Please contact your system administrator.</p>
 	</div>
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">

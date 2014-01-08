@@ -29,6 +29,7 @@ Namespace Models
 			prmRootID.value = CleanNumeric(HttpContext.Current.Session("TopLevelRecID"))
 
 			Err.Clear()
+			HttpContext.Current.Session("ErrorText") = ""
 
 			Dim rstHierarchyRecords As ADODB.Recordset
 			Dim sErrorDescription = ""
@@ -46,64 +47,73 @@ Namespace Models
 				If rstHierarchyRecords.state = adStateOpen Then
 					Dim additionalClasses As String
 
-					Do While Not rstHierarchyRecords.EOF
-						additionalClasses = " ui-corner-all"
+					If rstHierarchyRecords.EOF And rstHierarchyRecords.BOF Then
+						' No records returned
+						sErrorDescription = "Error generating Organisation Chart. No matching records found."
+					Else
+						Do While Not rstHierarchyRecords.EOF
+							additionalClasses = " ui-corner-all"
 
-						' highlight the current user's node
-						If CType(rstHierarchyRecords.fields(0).value, String) = CType(HttpContext.Current.Session("TopLevelRecID"), String) Then
-							additionalClasses &= " ui-state-active"
-						Else
-							additionalClasses &= " ui-state-default"
-						End If
-
-						' resize Photos to 48x48px
-						Dim photoSource As String = ""
-
-						If Not IsDBNull(rstHierarchyRecords.fields(7).value) Then
-							Dim oleType As Short = Val(Encoding.UTF8.GetString(rstHierarchyRecords.fields(7).value, 8, 2))
-							If oleType = 2 Then	'Embeded
-								Dim abtImage = CType(rstHierarchyRecords.fields(7).value, Byte())
-								Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
-								Try
-									Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
-									'Create an image based on the embeded (Base64) image and resize it to 48x48
-
-									Dim ms As New MemoryStream(binaryData)
-									Dim img As Drawing.Image = Drawing.Image.FromStream(ms, True)
-
-									img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
-									photoSource = "data:image/jpeg;base64," & ImageToBase64String(img)
-								Catch exp As ArgumentNullException
-									photoSource = "../Content/images/anonymous.png"
-								End Try
-							ElseIf oleType = 3 Then	'Link
-								Dim unc As String = Trim(Encoding.UTF8.GetString(rstHierarchyRecords.fields(7).value, 290, 60))
-								Dim fileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(rstHierarchyRecords.fields(7).value, 10, 70))).Replace("\", "/")
-								Dim fullPath As String = Trim(Encoding.UTF8.GetString(rstHierarchyRecords.fields(7).value, 80, 210)).Replace("\", "/")
-								photoSource = "file:///" & unc & "/" & fullPath & "/" & fileName
+							' highlight the current user's node
+							If CType(rstHierarchyRecords.Fields(0).Value, String) = CType(HttpContext.Current.Session("TopLevelRecID"), String) Then
+								additionalClasses &= " ui-state-active"
+							Else
+								additionalClasses &= " ui-state-default"
 							End If
-						Else 'No picture is defined for user, use anonymous one
-							photoSource = "../Content/images/anonymous.png"
-						End If
+
+							' resize Photos to 48x48px
+							Dim photoSource As String = ""
+
+							If Not IsDBNull(rstHierarchyRecords.Fields(7).Value) Then
+								Dim oleType As Short = Val(Encoding.UTF8.GetString(rstHierarchyRecords.Fields(7).Value, 8, 2))
+								If oleType = 2 Then	'Embeded
+									Dim abtImage = CType(rstHierarchyRecords.Fields(7).Value, Byte())
+									Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
+									Try
+										Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
+										'Create an image based on the embeded (Base64) image and resize it to 48x48
+
+										Dim ms As New MemoryStream(binaryData)
+										Dim img As Drawing.Image = Drawing.Image.FromStream(ms, True)
+
+										img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
+										photoSource = "data:image/jpeg;base64," & ImageToBase64String(img)
+									Catch exp As ArgumentNullException
+										photoSource = "../Content/images/anonymous.png"
+									End Try
+								ElseIf oleType = 3 Then	'Link
+									Dim unc As String = Trim(Encoding.UTF8.GetString(rstHierarchyRecords.Fields(7).Value, 290, 60))
+									Dim fileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(rstHierarchyRecords.Fields(7).Value, 10, 70))).Replace("\", "/")
+									Dim fullPath As String = Trim(Encoding.UTF8.GetString(rstHierarchyRecords.Fields(7).Value, 80, 210)).Replace("\", "/")
+									photoSource = "file:///" & unc & "/" & fullPath & "/" & fileName
+								End If
+							Else 'No picture is defined for user, use anonymous one
+								photoSource = "../Content/images/anonymous.png"
+							End If
 
 
-						orgCharts.Add(New OrgChart() With {
-							.EmployeeID = rstHierarchyRecords.fields(0).value,
-							.EmployeeForenames = rstHierarchyRecords.fields(1).value,
-							.EmployeeSurname = rstHierarchyRecords.fields(2).value,
-							.EmployeeStaffNo = rstHierarchyRecords.fields(3).value,
-							.LineManagerStaffNo = rstHierarchyRecords.fields(4).value,
-							.EmployeeJobTitle = rstHierarchyRecords.fields(5).value,
-							.HierarchyLevel = rstHierarchyRecords.fields(6).value,
-							.PhotoPath = photoSource,
-							.AbsenceTypeClass = rstHierarchyRecords.fields(8).value & additionalClasses & " " &
-															 rstHierarchyRecords.fields(9).value & " " &
-															 rstHierarchyRecords.fields(10).value & " "})
+							orgCharts.Add(New OrgChart() With {
+								.EmployeeID = rstHierarchyRecords.Fields(0).Value,
+								.EmployeeForenames = rstHierarchyRecords.Fields(1).Value,
+								.EmployeeSurname = rstHierarchyRecords.Fields(2).Value,
+								.EmployeeStaffNo = rstHierarchyRecords.Fields(3).Value,
+								.LineManagerStaffNo = rstHierarchyRecords.Fields(4).Value,
+								.EmployeeJobTitle = rstHierarchyRecords.Fields(5).Value,
+								.HierarchyLevel = rstHierarchyRecords.Fields(6).Value,
+								.PhotoPath = photoSource,
+								.AbsenceTypeClass = rstHierarchyRecords.Fields(8).Value & additionalClasses & " " &
+																 rstHierarchyRecords.Fields(9).Value & " " &
+																 rstHierarchyRecords.Fields(10).Value & " "})
 
-						rstHierarchyRecords.moveNext()
-					Loop
+							rstHierarchyRecords.MoveNext()
+						Loop
+					End If
 
 				End If
+			End If
+
+			If sErrorDescription.Length > 0 Then
+				HttpContext.Current.Session("ErrorText") = sErrorDescription
 			End If
 
 			Return orgCharts
