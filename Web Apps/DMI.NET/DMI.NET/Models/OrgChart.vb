@@ -1,4 +1,7 @@
 ﻿Imports System.IO
+Imports System.Data.SqlClient
+Imports ADODB
+Imports HR.Intranet.Server
 
 Namespace Models
 
@@ -18,6 +21,28 @@ Namespace Models
 
 			Const adStateOpen = 1
 
+
+			Dim iTopLevelRecID As Integer = CleanNumeric(HttpContext.Current.Session("TopLevelRecID"))
+
+			If iTopLevelRecID = 0 Then
+				Dim iSingleRecordViewID As Integer = CleanNumeric(HttpContext.Current.Session("SingleRecordViewID"))
+
+				Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
+				prmRecordID.Direction = ParameterDirection.Output
+
+				Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
+				prmRecordCount.Direction = ParameterDirection.Output
+
+				Err.Clear()
+				clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount, New SqlParameter("piViewID", iSingleRecordViewID))
+
+				If Err.Number = 0 And prmRecordCount.Value = 1 Then
+					' Only one record.
+					iTopLevelRecID = CLng(prmRecordID.Value)
+				End If
+			End If
+
+
 			Dim cmdThousandFindColumns = CreateObject("ADODB.Command")
 			cmdThousandFindColumns.CommandText = "spASRIntOrgChart"
 			cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
@@ -26,7 +51,7 @@ Namespace Models
 
 			Dim prmRootID = cmdThousandFindColumns.CreateParameter("RootID", 3, 1)
 			cmdThousandFindColumns.Parameters.Append(prmRootID)
-			prmRootID.value = CleanNumeric(HttpContext.Current.Session("TopLevelRecID"))
+			prmRootID.value = iTopLevelRecID
 
 			Err.Clear()
 			HttpContext.Current.Session("ErrorText") = ""
@@ -40,11 +65,11 @@ Namespace Models
 				rstHierarchyRecords = Nothing
 				sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
 			End Try
-			
+
 			Dim orgCharts = New List(Of OrgChart)
 
 			If Len(sErrorDescription) = 0 Then
-				If rstHierarchyRecords.state = adStateOpen Then
+				If rstHierarchyRecords.State = adStateOpen Then
 					Dim additionalClasses As String
 
 					If rstHierarchyRecords.EOF And rstHierarchyRecords.BOF Then
@@ -55,7 +80,7 @@ Namespace Models
 							additionalClasses = " ui-corner-all"
 
 							' highlight the current user's node
-							If CType(rstHierarchyRecords.Fields(0).Value, String) = CType(HttpContext.Current.Session("TopLevelRecID"), String) Then
+							If CType(rstHierarchyRecords.Fields(0).Value, String) = CType(iTopLevelRecID, String) Then
 								additionalClasses &= " ui-state-active"
 							Else
 								additionalClasses &= " ui-state-default"
@@ -64,7 +89,7 @@ Namespace Models
 							' resize Photos to 48x48px
 							Dim photoSource As String = ""
 
-							If Not IsDBNull(rstHierarchyRecords.Fields(7).Value) Then
+							If Not IsDBNull(rstHierarchyRecords.Fields(7).Value) And rstHierarchyRecords.Fields(7).Type = DataTypeEnum.adVarBinary Then
 								Dim oleType As Short = Val(Encoding.UTF8.GetString(rstHierarchyRecords.Fields(7).Value, 8, 2))
 								If oleType = 2 Then	'Embeded
 									Dim abtImage = CType(rstHierarchyRecords.Fields(7).Value, Byte())
@@ -93,17 +118,17 @@ Namespace Models
 
 
 							orgCharts.Add(New OrgChart() With {
-								.EmployeeID = rstHierarchyRecords.Fields(0).Value,
-								.EmployeeForenames = rstHierarchyRecords.Fields(1).Value,
-								.EmployeeSurname = rstHierarchyRecords.Fields(2).Value,
-								.EmployeeStaffNo = rstHierarchyRecords.Fields(3).Value,
-								.LineManagerStaffNo = rstHierarchyRecords.Fields(4).Value,
-								.EmployeeJobTitle = rstHierarchyRecords.Fields(5).Value,
-								.HierarchyLevel = rstHierarchyRecords.Fields(6).Value,
+									.EmployeeID = rstHierarchyRecords.Fields(0).Value,
+									.EmployeeForenames = rstHierarchyRecords.Fields(1).Value,
+									.EmployeeSurname = rstHierarchyRecords.Fields(2).Value,
+									.EmployeeStaffNo = rstHierarchyRecords.Fields(3).Value,
+									.LineManagerStaffNo = rstHierarchyRecords.Fields(4).Value,
+									.EmployeeJobTitle = rstHierarchyRecords.Fields(5).Value,
+									.HierarchyLevel = rstHierarchyRecords.Fields(6).Value,
 								.PhotoPath = photoSource,
-								.AbsenceTypeClass = rstHierarchyRecords.Fields(8).Value & additionalClasses & " " &
-																 rstHierarchyRecords.Fields(9).Value & " " &
-																 rstHierarchyRecords.Fields(10).Value & " "})
+									.AbsenceTypeClass = rstHierarchyRecords.Fields(8).Value & additionalClasses & " " &
+																	 rstHierarchyRecords.Fields(9).Value & " " &
+																	 rstHierarchyRecords.Fields(10).Value & " "})
 
 							rstHierarchyRecords.MoveNext()
 						Loop
