@@ -55,10 +55,6 @@ Public Class Report
 	' Recordsets to store the definition and column information
 	Private mrstCustomReportsDetails As DataTable
 
-	' Classes
-	'Private mclsGeneral As clsGeneral
-	Private mobjEventLog As clsEventLog
-
 	' TableViewsGuff
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
@@ -235,7 +231,7 @@ Public Class Report
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			End If
 
 		End Set
@@ -243,7 +239,7 @@ Public Class Report
 
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal Value As String)
-			mobjEventLog.AddDetailEntry(Value)
+			Logs.AddDetailEntry(Value)
 		End Set
 	End Property
 
@@ -252,9 +248,9 @@ Public Class Report
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsCancelled)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsCancelled)
 			Else
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			End If
 
 		End Set
@@ -436,10 +432,10 @@ Public Class Report
 
 	Public Property EventLogID() As Integer
 		Get
-			EventLogID = mobjEventLog.EventLogID
+			EventLogID = Logs.EventLogID
 		End Get
 		Set(ByVal Value As Integer)
-			mobjEventLog.EventLogID = Value
+			Logs.EventLogID = Value
 		End Set
 	End Property
 
@@ -513,17 +509,14 @@ Public Class Report
 
 ErrorTrap:
 		mstrErrorString = "Error setting prompted values." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		SetPromptedValues = False
 
 	End Function
 
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
-
-		' Initialise the the classes/arrays to be used
-		mobjEventLog = New clsEventLog
 
 		ReDim mlngTableViews(2, 0)
 		ReDim mstrViews(0)
@@ -544,26 +537,6 @@ ErrorTrap:
 		Class_Initialize_Renamed()
 	End Sub
 
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-
-		' Clear references to classes and clear collection objects
-
-		'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'mclsUI = Nothing
-		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjEventLog = Nothing
-		' JPD20030313 Do not drop the tables & columns collections as they can be reused.
-		'Set gcoTablePrivileges = Nothing
-		'Set gcolColumnPrivilegesCollection = Nothing
-
-	End Sub
-
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
-
 	Public Function AddTempTableToSQL() As Boolean
 
 		On Error GoTo AddTempTableToSQL_ERROR
@@ -579,8 +552,8 @@ AddTempTableToSQL_ERROR:
 
 		AddTempTableToSQL = False
 		mstrErrorString = "Error retrieving unique temp table name." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -602,8 +575,8 @@ AddTempTableToSQL_ERROR:
 ExecuteSQL_ERROR:
 
 		mstrErrorString = "Error executing SQL statement." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Return False
 
 	End Function
@@ -706,7 +679,7 @@ ExecuteSQL_ERROR:
 
 		GetCustomReportDefinition = True
 
-		mobjEventLog.AddHeader(EventLog_Type.eltCustomReport, mstrCustomReportsName)
+		Logs.AddHeader(EventLog_Type.eltCustomReport, mstrCustomReportsName)
 
 TidyAndExit:
 
@@ -719,8 +692,8 @@ GetCustomReportDefinition_ERROR:
 
 		GetCustomReportDefinition = False
 		mstrErrorString = "Error reading the Custom Report definition !" & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Resume TidyAndExit
 
 	End Function
@@ -1020,8 +993,8 @@ GetDetailsRecordsets_ERROR:
 
 		GetDetailsRecordsets = False
 		mstrErrorString = "Error retrieving the details recordsets'." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1407,8 +1380,8 @@ GenerateSQLSelect_ERROR:
 
 		GenerateSQLSelect = False
 		mstrErrorString = "Error generating SQL Select statement." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1553,8 +1526,8 @@ Error_Trap:
 			If (.Rows.Count = 0) Then
 				mstrErrorString = "No records meet selection criteria"
 				CreateMutipleChildTempTable = False
-				mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 				mblnNoRecords = True
 
 				sMCTempTable = vbNullString
@@ -1821,8 +1794,8 @@ Error_Trap:
 			mstrErrorString = mstrErrorString & "Err.Number = " & gADOCon.Errors(i).Number & " Err.Desc = " & gADOCon.Errors(i).Description
 		Next i
 
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2014,8 +1987,8 @@ GenerateSQLJoin_ERROR:
 
 		GenerateSQLJoin = False
 		mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2187,8 +2160,8 @@ DoChildOrderString_ERROR:
 		pobjOrderCol = Nothing
 		mstrErrorString = "Error while generating child order string" & vbNewLine & Err.Description
 		DoChildOrderString = ""
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2343,8 +2316,8 @@ GenerateSQLWhere_ERROR:
 
 		GenerateSQLWhere = False
 		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2563,8 +2536,8 @@ GenerateSQLOrderBy_ERROR:
 
 		GenerateSQLOrderBy = False
 		mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2622,8 +2595,8 @@ GenerateSQLOrderBy_ERROR:
 		If mrstCustomReportsOutput.Rows.Count = 0 Then
 			CheckRecordSet = False
 			mstrErrorString = "No records meet selection criteria"
-			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrErrorString)
-			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+			Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			mblnNoRecords = True
 			Exit Function
 		End If
@@ -2632,8 +2605,8 @@ GenerateSQLOrderBy_ERROR:
 			If mrstCustomReportsOutput.Columns.Count > mlngColumnLimit Then
 				CheckRecordSet = False
 				mstrErrorString = "Report contains more than " & mlngColumnLimit & " columns. It is not possible to run this report via the intranet."
-				mobjEventLog.AddDetailEntry("Failed. " & mstrErrorString)
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+				Logs.AddDetailEntry("Failed. " & mstrErrorString)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 				mblnNoRecords = False
 				Exit Function
 			End If
@@ -2646,8 +2619,8 @@ CheckRecordSet_ERROR:
 
 		mstrErrorString = "Error while checking returned recordset." & vbNewLine & "(" & Err.Description & ")"
 		CheckRecordSet = False
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -3087,8 +3060,8 @@ CheckRecordSet_ERROR:
 LoadRecords_ERROR:
 
 		mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Number & " - " & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Return False
 
 	End Function
@@ -4567,8 +4540,8 @@ CalculateBradfordFactors_ERROR:
 
 		If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
 			mstrErrorString = "The report end date is before the report start date."
-			mobjEventLog.AddDetailEntry(mstrErrorString)
-			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			GetBradfordReportDefinition = False
 			Exit Function
 		End If
@@ -4613,7 +4586,7 @@ CalculateBradfordFactors_ERROR:
 		End If
 
 		GetBradfordReportDefinition = True
-		mobjEventLog.AddHeader(EventLog_Type.eltStandardReport, "Bradford Factor")
+		Logs.AddHeader(EventLog_Type.eltStandardReport, "Bradford Factor")
 
 TidyAndExit:
 
@@ -4623,8 +4596,8 @@ GetBradfordReportDefinition_ERROR:
 
 		GetBradfordReportDefinition = False
 		mstrErrorString = "Error whilst reading the Bradford Factor Report definition !" & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		Resume TidyAndExit
 
 	End Function

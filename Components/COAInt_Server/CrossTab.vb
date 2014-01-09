@@ -104,7 +104,7 @@ Public Class CrossTab
 
 	' Classes
 	Private mclsData As clsDataAccess
-	Private mobjEventLog As clsEventLog
+	'Private mobjEventLog As clsEventLog
 
 	Private mlngType As Integer
 
@@ -126,7 +126,7 @@ Public Class CrossTab
 
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal value As String)
-			mobjEventLog.AddDetailEntry(value)
+			Logs.AddDetailEntry(value)
 		End Set
 	End Property
 
@@ -168,10 +168,10 @@ Public Class CrossTab
 
 	Public Property EventLogID() As Integer
 		Get
-			EventLogID = mobjEventLog.EventLogID
+			EventLogID = Logs.EventLogID
 		End Get
 		Set(ByVal value As Integer)
-			mobjEventLog.EventLogID = value
+			Logs.EventLogID = value
 		End Set
 	End Property
 
@@ -469,16 +469,16 @@ Public Class CrossTab
 
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-			mobjEventLog.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
+			Logs.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
 		Else
-			mobjEventLog.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
+			Logs.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
 		End If
 
-		EventLogAddHeader = mobjEventLog.EventLogID
+		EventLogAddHeader = Logs.EventLogID
 	End Function
 
 	Public Sub EventLogChangeHeaderStatus(ByRef lngStatus As Integer)
-		mobjEventLog.ChangeHeaderStatus(lngStatus)
+		Logs.ChangeHeaderStatus(lngStatus)
 	End Sub
 
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
@@ -486,7 +486,6 @@ Public Class CrossTab
 
 		' Initialise the the classes/arrays to be used
 		mclsData = New clsDataAccess
-		mobjEventLog = New clsEventLog
 
 		ReDim mstrOutputArray_Data(0)
 
@@ -502,8 +501,6 @@ Public Class CrossTab
 		' Clear references to classes and clear collection objects
 		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsData = Nothing
-		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjEventLog = Nothing
 
 	End Sub
 	Protected Overrides Sub Finalize()
@@ -943,8 +940,8 @@ LocalErr:
 		If rsCrossTabData.Rows.Count = 0 Then
 			mstrStatusMessage = "No records meet selection criteria"
 			mblnNoRecords = True
-			mobjEventLog.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
-			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+			Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			fOK = False
 		End If
 

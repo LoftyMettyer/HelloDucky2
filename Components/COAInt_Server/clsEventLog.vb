@@ -1,35 +1,19 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
+Imports System.Data.SqlClient
 
 Public Class clsEventLog
 
+	Private ReadOnly DB As New clsDataAccess
+
+	Public Sub New(ByVal LoginInfo As LoginInfo)
+		DB = New clsDataAccess(LoginInfo)
+	End Sub
+
 	Private mlngEventLogID As Integer
-	Private mstrBatchName As String = ""
-	Private mlngBatchRunID As Integer
-	Private mlngBatchJobID As Integer
-
-	Public WriteOnly Property BatchMode() As Boolean
-		Set(ByVal Value As Boolean)
-			mlngBatchRunID = GetBatchRunID()
-		End Set
-	End Property
-
-	Public WriteOnly Property BatchJobName() As String
-		Set(ByVal Value As String)
-			' When the batch job name is passed into the class module, the BatchRunID is
-			' allocated automatically. Process is complete hidden from the utilities.
-			mstrBatchName = Value
-		End Set
-	End Property
-
-	Public WriteOnly Property BatchJobID() As Integer
-		Set(ByVal Value As Integer)
-			mlngBatchJobID = Value
-		End Set
-	End Property
 
 	Public Property EventLogID() As Integer
 		Get
@@ -40,162 +24,95 @@ Public Class clsEventLog
 		End Set
 	End Property
 
-	Public Sub TidyUp()
-
-		' Must be called from batchjobs when the batch has finished, otherwise all
-		' subsequent functions in the users current session will be logged as being
-		' in the batch job
-		mstrBatchName = vbNullString
-		mlngBatchRunID = 0
-		mlngBatchJobID = 0
-
-	End Sub
-
 	Public Function AddHeader(ByRef udtType As EventLog_Type, ByRef strName As String) As Boolean
 
-		On Error GoTo ErrTrap
+		Try
 
-		Dim cmdAddHeader As New Command
-		Dim prmNewID As Parameter
-		Dim prmType As Parameter
-		Dim prmName As Parameter
-		Dim prmUserName As Parameter
-		Dim prmBatchName As Parameter
-		Dim prmBatchRunID As Parameter
-		Dim prmBatchJobID As Parameter
-		Dim sErrorMsg As String = ""
-		Dim iLoop As Short
+			Dim prmNewID As New SqlParameter("piNewRecordID", SqlDbType.Int)
+			prmNewID.Direction = ParameterDirection.Output
 
-		cmdAddHeader.CommandText = "sp_ASRIntAddEventLogHeader"
-		cmdAddHeader.CommandType = 4
-		cmdAddHeader.let_ActiveConnection(gADOCon)
+			Dim prmType As New SqlParameter("piType", SqlDbType.Int)
+			prmType.Value = udtType
 
-		prmNewID = cmdAddHeader.CreateParameter("newID", 3, 2)
-		cmdAddHeader.Parameters.Append(prmNewID)
+			Dim prmName As New SqlParameter("psName", SqlDbType.VarChar, 150)
+			prmName.Value = strName
 
-		prmType = cmdAddHeader.CreateParameter("type", 3, 1)
-		cmdAddHeader.Parameters.Append(prmType)
-		prmType.Value = udtType
+			Dim prmUserName = New SqlParameter("psUserName", SqlDbType.VarChar, 50)
+			prmUserName.Value = StrConv(gsUsername, VbStrConv.ProperCase)
 
-		prmName = cmdAddHeader.CreateParameter("name", 200, 1, 150)
-		cmdAddHeader.Parameters.Append(prmName)
-		prmName.Value = strName
+			Dim prmBatchName = New SqlParameter("psBatchName", SqlDbType.VarChar, 50)
+			prmBatchName.Value = ""
 
-		prmUserName = cmdAddHeader.CreateParameter("userName", 200, 1, 50)
-		cmdAddHeader.Parameters.Append(prmUserName)
-		prmUserName.Value = StrConv(gsUsername, VbStrConv.ProperCase)
+			Dim prmBatchRunID = New SqlParameter("piBatchRunID", SqlDbType.Int)
+			prmBatchRunID.Value = 0
 
-		prmBatchName = cmdAddHeader.CreateParameter("batchName", 200, 1, 50)
-		cmdAddHeader.Parameters.Append(prmBatchName)
-		prmBatchName.Value = mstrBatchName
+			Dim prmBatchJobID = New SqlParameter("piBatchJobID", SqlDbType.Int)
+			prmBatchJobID.Value = 0
 
-		prmBatchRunID = cmdAddHeader.CreateParameter("batchRunID", 3, 1)
-		cmdAddHeader.Parameters.Append(prmBatchRunID)
-		prmBatchRunID.Value = mlngBatchRunID
+			DB.ExecuteSP("sp_ASRIntAddEventLogHeader", prmNewID, prmType, prmName, prmUserName, prmBatchName, prmBatchRunID, prmBatchJobID)
+			mlngEventLogID = CInt(prmNewID.Value)
 
-		prmBatchJobID = cmdAddHeader.CreateParameter("batchJobID", 3, 1)
-		cmdAddHeader.Parameters.Append(prmBatchJobID)
-		prmBatchJobID.Value = mlngBatchJobID
-
-		cmdAddHeader.ActiveConnection.Errors.Clear()
-
-		cmdAddHeader.Execute()
-
-		If cmdAddHeader.ActiveConnection.Errors.Count > 0 Then
-			For iLoop = 1 To cmdAddHeader.ActiveConnection.Errors.Count
-				sErrorMsg = sErrorMsg & vbNewLine & (cmdAddHeader.ActiveConnection.Errors.Item(iLoop - 1).Description)
-			Next
-			cmdAddHeader.ActiveConnection.Errors.Clear()
+		Catch ex As Exception
 			mlngEventLogID = 0
-			AddHeader = False
-			Exit Function
-		Else
-			mlngEventLogID = cmdAddHeader.Parameters("newID").Value
-		End If
+			Return False
 
-		'UPGRADE_NOTE: Object cmdAddHeader may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdAddHeader = Nothing
+		End Try
 
 		Return True
-
-ErrTrap:
-
-		Return False
 
 	End Function
 
-	Public Function ChangeHeaderStatus(ByRef udtStatus As EventLog_Status, Optional ByRef lngSuccess As Object = Nothing, Optional ByRef lngFailed As Object = Nothing) As Boolean
-
-		'NOTE: lngSuccess and lngFailed need to be variants in order to
-		'use the ISMISSING function ?
+	Public Function ChangeHeaderStatus(ByRef udtStatus As EventLog_Status, ByVal lngSuccess As Integer, ByVal lngFailed As Integer) As Boolean
 
 		Dim strSQL As String
 
-		On Error GoTo ErrTrap
+		Try
 
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		If Not IsNothing(lngSuccess) And Not IsNothing(lngFailed) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngFailed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngSuccess. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strSQL = " [SuccessCount] = " & CStr(lngSuccess) & ", " & " [FailCount] = " & CStr(lngFailed) & ", "
-		Else
-			strSQL = vbNullString
-		End If
+			strSQL = String.Format("UPDATE [AsrSysEventLog] SET [EndTime] = GETDATE(), [Duration] = DATEDIFF(second, [DateTime],  GETDATE()), Status = {1}, [SuccessCount] = {2},  [FailCount] = {3} WHERE [ID] = {0}" _
+														 , mlngEventLogID, CInt(udtStatus), lngSuccess, lngFailed)
+			DB.ExecuteSql(strSQL)
+			Return True
 
+		Catch ex As Exception
+			Return False
 
-		strSQL = String.Format("UPDATE [AsrSysEventLog] SET {0} [EndTime] = GETDATE(), [Duration] = DATEDIFF(second, [DateTime],  GETDATE()), Status = {1} WHERE [ID] = {2}", strSQL, CInt(udtStatus), mlngEventLogID)
-		gADOCon.Execute(strSQL)
+		End Try
 
-		Return True
+	End Function
 
-ErrTrap:
-		Return False
+	Public Function ChangeHeaderStatus(ByRef udtStatus As EventLog_Status) As Boolean
+
+		Dim strSQL As String
+
+		Try
+
+			strSQL = String.Format("UPDATE [AsrSysEventLog] SET [EndTime] = GETDATE(), [Duration] = DATEDIFF(second, [DateTime],  GETDATE()), Status = {0} WHERE [ID] = {1}" _
+														 , CInt(udtStatus), mlngEventLogID)
+			DB.ExecuteSql(strSQL)
+			Return True
+
+		Catch ex As Exception
+			Return False
+
+		End Try
 
 	End Function
 
 	Public Function AddDetailEntry(ByRef pstrNotes As String) As Boolean
 
-		On Error GoTo ErrTrap
+		Try
+			If mlngEventLogID > 0 Then
+				DB.ExecuteSql("INSERT INTO AsrSysEventLogDetails (EventLogID, Notes) VALUES (" & mlngEventLogID & ", '" & Replace(pstrNotes, "'", "''") & "')")
+			End If
 
-		If mlngEventLogID > 0 Then
-			gADOCon.Execute("INSERT INTO AsrSysEventLogDetails (" & "EventLogID," & "Notes) " & "VALUES(" & mlngEventLogID & "," & "'" & Replace(pstrNotes, "'", "''") & "')")
 			Return True
-		End If
 
-ErrTrap:
-		Return False
+		Catch ex As Exception
+			Return False
 
-	End Function
+		End Try
 
-	Private Function GetBatchRunID() As Integer
-
-		On Error GoTo ErrTrap
-
-		Dim prstRowAdded As Recordset
-
-		' Start a transaction
-		gADOCon.BeginTrans()
-
-		' Retrieve the previous max id
-		prstRowAdded = gADOCon.Execute("SELECT MAX(BatchRunID) FROM AsrSysEventLog")
-
-		' Set function return to the id just added
-		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		GetBatchRunID = IIf(IsDBNull(prstRowAdded.Fields(0).Value), 0, prstRowAdded.Fields(0).Value) + 1
-
-		' Commit the transaction
-		gADOCon.CommitTrans()
-
-		' Tidy up
-		'UPGRADE_NOTE: Object prstRowAdded may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstRowAdded = Nothing
-
-		Exit Function
-
-ErrTrap:
-
-		GetBatchRunID = -1
-		'NO MSGBOX ON THE SERVER ! - MsgBox "Warning : Error whilst retrieving the maximum BatchRunID." & vbNewLine & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Event Log Error"
 
 	End Function
+
 End Class

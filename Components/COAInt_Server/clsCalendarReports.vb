@@ -140,9 +140,6 @@ Public Class CalendarReport
 	Private mstrSQLBaseEndSessionColumn As String
 	Private mstrSQLBaseDurationColumn As String
 
-	' Classes
-	Private mobjEventLog As clsEventLog
-
 	'Array holding the columns to sort the report by
 	Private mvarSortOrder(,) As Object
 	Private mvarPrompts(,) As Object
@@ -329,10 +326,10 @@ Public Class CalendarReport
 
 	Public Property EventLogID() As Integer
 		Get
-			EventLogID = mobjEventLog.EventLogID
+			EventLogID = Logs.EventLogID
 		End Get
 		Set(ByVal Value As Integer)
-			mobjEventLog.EventLogID = Value
+			Logs.EventLogID = Value
 		End Set
 	End Property
 
@@ -341,9 +338,9 @@ Public Class CalendarReport
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsCancelled)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsCancelled)
 			Else
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			End If
 
 		End Set
@@ -354,7 +351,7 @@ Public Class CalendarReport
 
 			' Connection object passed in from the asp page
 			If Value = True Then
-				mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			End If
 
 		End Set
@@ -362,7 +359,7 @@ Public Class CalendarReport
 
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal Value As String)
-			mobjEventLog.AddDetailEntry(Value)
+			Logs.AddDetailEntry(Value)
 		End Set
 	End Property
 
@@ -3077,8 +3074,8 @@ ErrorTrap:
 
 ErrorTrap:
 		mstrErrorString = "Error setting prompted values." & vbNewLine & Err.Description
-		mobjEventLog.AddDetailEntry(mstrErrorString)
-		mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Logs.AddDetailEntry(mstrErrorString)
+		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 		SetPromptedValues = False
 
 	End Function
@@ -3114,7 +3111,6 @@ ErrorTrap:
 		'           used for table usage information
 
 		Dim rstData As DataTable
-		mobjEventLog = New clsEventLog
 		mcolBaseDescIndex = New Collection
 
 		Legend = New List(Of CalendarLegend)()
@@ -3216,8 +3212,8 @@ ErrorTrap:
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
-			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-			mobjEventLog.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+			Logs.AddDetailEntry(mstrErrorString)
 			Exit Function
 		End If
 
@@ -3230,8 +3226,8 @@ ErrorTrap:
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
-			mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-			mobjEventLog.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+			Logs.AddDetailEntry(mstrErrorString)
 			Exit Function
 		End If
 
@@ -3477,7 +3473,7 @@ TidyUpAndExit:
 			End If
 
 			mstrCalendarReportsName = rowDefinition("Name").ToString
-			mobjEventLog.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
+			Logs.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
 			mlngCalendarReportsBaseTable = CInt(rowDefinition("BaseTable"))
 			mstrCalendarReportsBaseTableName = General.GetTableName(mlngCalendarReportsBaseTable)
 
@@ -3694,8 +3690,8 @@ TidyUpAndExit:
 				rsIDs = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID)
 
 				If rsIDs.Rows.Count = 0 Then
-					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-					mobjEventLog.AddDetailEntry(mstrErrorString)
+					Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+					Logs.AddDetailEntry(mstrErrorString)
 					mstrErrorString = "The selected picklist contains no records."
 					Return False
 				End If
@@ -3716,8 +3712,8 @@ TidyUpAndExit:
 
 					If rsIDs.Rows.Count = 0 Then
 						mstrErrorString = "The base table filter returned no records."
-						mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-						mobjEventLog.AddDetailEntry(mstrErrorString)
+						Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+						Logs.AddDetailEntry(mstrErrorString)
 						mblnNoRecords = True
 						Return False
 					End If
@@ -3731,8 +3727,8 @@ TidyUpAndExit:
 				Else
 					' Permission denied on something in the filter.
 					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCalendarReportsFilterID) & "' filter."
-					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-					mobjEventLog.AddDetailEntry(mstrErrorString)
+					Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+					Logs.AddDetailEntry(mstrErrorString)
 					Return False
 				End If
 
@@ -6132,8 +6128,6 @@ GenerateSQLWhere_ERROR:
 		mintDynamicEventCount = 0
 
 		' Class references
-		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjEventLog = Nothing
 		'UPGRADE_NOTE: Object mcolBaseDescIndex may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolBaseDescIndex = Nothing
 		'UPGRADE_NOTE: Object mcolEvents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

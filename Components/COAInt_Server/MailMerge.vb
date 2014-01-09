@@ -269,7 +269,6 @@ Public Class MailMerge
 		' Initialise the the classes/arrays to be used
 		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
-		mobjEventLog = New clsEventLog
 		ReDim mlngTableViews(2, 0)
 
 		fOK = True
@@ -1038,6 +1037,8 @@ LocalErr:
 
 	Public Sub EventLogChangeHeaderStatus(ByRef lngStatus As Integer)
 		mobjEventLog.ChangeHeaderStatus(lngStatus, mlngSuccessCount, mlngFailCount)
+
+
 	End Sub
 
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean

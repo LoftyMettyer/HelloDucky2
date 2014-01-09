@@ -2,6 +2,7 @@
 Imports System.IO
 Imports Aspose.Email.Mail
 Imports System.ComponentModel
+Imports HR.Intranet.Server
 
 Namespace Code
 
@@ -28,7 +29,10 @@ Namespace Code
 			Dim strToEmail As String
 			Dim objStream As MemoryStream
 			Dim objOptions As New MailMessageLoadOptions
-			Dim objErrorLog As New HR.Intranet.Server.clsEventLog
+
+			Dim context As HttpContext = HttpContext.Current
+
+			Dim objErrorLog As New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 
 			Dim config = Web.Configuration.WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath)
 			mailClient = New Aspose.Email.Mail.SmtpClient(config)
@@ -83,7 +87,7 @@ Namespace Code
 				Else
 
 					If objErrorLog.EventLogID = 0 Then
-						objErrorLog = New HR.Intranet.Server.clsEventLog
+						objErrorLog = New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 						objErrorLog.AddHeader(HR.Intranet.Server.Enums.EventLog_Type.eltMailMerge, Name)
 					End If
 
