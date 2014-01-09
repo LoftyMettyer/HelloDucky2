@@ -1,4 +1,4 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
@@ -42,11 +42,11 @@ Friend Class clsExprValue
 			Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 				sCode = Trim(Str(mdblNumericValue))
 			Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-				sCode = IIf(mfLogicValue, "1", "0")
+				sCode = IIf(mfLogicValue, "1", "0").ToString()
 			Case ExpressionValueTypes.giEXPRVALUE_DATE
 				'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')")
+				sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')").ToString()
 		End Select
 
 TidyUpAndExit:
@@ -93,33 +93,20 @@ ErrorTrap:
 
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
 		Dim sSQL As String
 
-		fOK = True
+		Try
+			sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, valueType, valueCharacter, valueNumeric, valueLogic, valuedate)" _
+				& " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & ", " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & ", " _
+				& Trim(Str(ExpressionComponentTypes.giCOMPONENT_VALUE)) & ", " & Trim(Str(miType)) & ", '" & Replace(msCharacterValue, "'", "''") & "', " & Trim(Str(mdblNumericValue)) & ", " _
+				& IIf(mfLogicValue, "1", "0").ToString() & ", " & IIf(IsDBNull(mdtDateValue), "null", "'" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "'").ToString() & ")"
+			DB.ExecuteSql(sSQL)
+			Return True
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type," & " valueType, valueCharacter, valueNumeric, valueLogic, valuedate)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_VALUE)) & "," & " " & Trim(Str(miType)) & "," & " '" & Replace(msCharacterValue, "'", "''") & "'," & " " & Trim(Str(mdblNumericValue)) & "," & " " & IIf(mfLogicValue, "1", "0") & "," & " " & IIf(IsDBNull(mdtDateValue), "null", "'" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "'") & ")"
+		Catch ex As Exception
+			Return False
 
-		'MH20010201 Fault 1576
-		'" '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
-
-		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
-
-TidyUpAndExit:
-		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		WriteComponent = fOK
-		Exit Function
-
-ErrorTrap:
-		'  If ASRDEVELOPMENT Then
-		'    MsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
-		'  End If
-		fOK = False
-		Resume TidyUpAndExit
+		End Try
 
 	End Function
 
@@ -176,13 +163,13 @@ ErrorTrap:
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					msCharacterValue = pValue
+					msCharacterValue = pValue.ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdblNumericValue = pValue
+					mdblNumericValue = CDbl(pValue)
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mfLogicValue = pValue
+					mfLogicValue = CBool(pValue)
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -203,13 +190,13 @@ ErrorTrap:
 					'ComponentDescription = Trim(Str(mdblNumericValue))
 					ComponentDescription = General.ConvertNumberForDisplay(CStr(mdblNumericValue))
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-					ComponentDescription = IIf(mfLogicValue, "True", "False")
+					ComponentDescription = IIf(mfLogicValue, "True", "False").ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'MH20010201 Fault 1576
 					'ComponentDescription = Format(mdtDateValue, "Long Date")
 					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					ComponentDescription = IIf(IsDBNull(mdtDateValue), "Empty Date", VB6.Format(mdtDateValue, "Long Date"))
+					ComponentDescription = IIf(IsDBNull(mdtDateValue), "Empty Date", VB6.Format(mdtDateValue, "Long Date")).ToString()
 				Case Else
 					ComponentDescription = ""
 			End Select

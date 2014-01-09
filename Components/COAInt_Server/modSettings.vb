@@ -10,18 +10,7 @@ Module modSettings
   Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Integer, ByVal lpTempFileName As String) As Integer
   Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Integer, ByVal lpBuffer As String) As Integer
 
-  Public Function GetUniqueID(ByRef strSetting As String, ByRef strTable As String, ByRef strColumn As String) As Integer
 
-    Dim lngNewMethodID As Integer 'From ASRSysSettings
-    Dim lngOldMethodID As Integer 'SELECT MAX ID
-
-    lngOldMethodID = UniqueColumnValue(strTable, strColumn)
-		lngNewMethodID = SystemSettings.GetSetting("AutoID", strSetting, 0).Value + 1
-
-    GetUniqueID = IIf(lngOldMethodID > lngNewMethodID, lngOldMethodID, lngNewMethodID)
-    SaveSystemSetting("AutoID", strSetting, GetUniqueID)
-
-  End Function
 
   Public Function SaveUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varSetting As Object) As Boolean
 

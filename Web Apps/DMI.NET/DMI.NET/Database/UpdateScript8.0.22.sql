@@ -91,6 +91,11 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRUniq
 	DROP PROCEDURE [dbo].[sp_ASRUniqueObjectName]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetUniqueExpressionID]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntGetUniqueExpressionID]
+GO
+
+
 -- Redundant stored procedures
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
 	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemPermissions]
@@ -6071,6 +6076,26 @@ BEGIN
 	SET @sCommandString = 'SELECT @psUniqueObjectName = ''' + @NewObj + '''';
 	SET @sParamDefinition = N'@psUniqueObjectName sysname output';
 	EXECUTE sp_executesql @sCommandString, @sParamDefinition, @psUniqueObjectName output;
+
+END
+
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetUniqueExpressionID](
+	@settingkey AS varchar(50),
+	@settingvalue AS integer OUTPUT)
+AS
+BEGIN
+
+	SELECT @settingvalue = [SettingValue] FROM [asrsyssystemsettings] WHERE [Section] = 'AUTOID' AND [SettingKey] = @settingkey;
+
+	IF @settingvalue IS NULL
+		INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES ('AUTOID', @settingkey, 1);	
+	ELSE
+	BEGIN
+		SET @settingvalue = @settingvalue + 1
+		UPDATE ASRSysSystemSettings SET [SettingValue] = @settingvalue  WHERE [Section] ='AUTOID' AND [SettingKey] = @settingkey;
+	END
 
 END
 

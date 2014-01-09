@@ -1,4 +1,4 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
@@ -11,7 +11,7 @@ Friend Class clsExprCalculation
 	' Component definition variables.
 	Private mlngCalculationID As Integer
 	Private msCalculationName As String
-	Private miReturnType As Short
+	Private miReturnType As ExpressionValueTypes
 
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
@@ -70,10 +70,6 @@ ErrorTrap:
 		End If
 
 	End Function
-
-
-
-
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
 		'Dim Printer As New Printing.PrinterSettings
@@ -152,10 +148,6 @@ ErrorTrap:
 		End Get
 	End Property
 
-
-
-
-
 	Public Property BaseComponent() As clsExprComponent
 		Get
 			' Return the component's base component object.
@@ -177,9 +169,6 @@ ErrorTrap:
 		End Get
 	End Property
 
-
-
-
 	Public Property CalculationID() As Integer
 		Get
 			' Return the calculation ID property.
@@ -195,30 +184,20 @@ ErrorTrap:
 		End Set
 	End Property
 
-
-
-
-
 	Public Function WriteComponent() As Object
 		' Write the component definition to the component recordset.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
 		Dim sSQL As String
 
-		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, calculationID, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_CALCULATION)) & "," & " " & Trim(Str(mlngCalculationID)) & ", " & " 0)"
-		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+		Try
+			sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, calculationID, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_CALCULATION)) & "," & " " & Trim(Str(mlngCalculationID)) & ", " & " 0)"
+			DB.ExecuteSql(sSQL)
+			Return True
 
-TidyUpAndExit:
-		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		WriteComponent = fOK
-		Exit Function
+		Catch ex As Exception
+			Return False
 
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		End Try
 
 	End Function
 
@@ -228,24 +207,24 @@ ErrorTrap:
 
 		Dim fOK As Boolean
 		Dim sSQL As String
-		Dim rsCalculation As ADODB.Recordset
+		Dim rsCalculation As DataTable
+		Dim objRow As DataRow
 
 		' Set default values.
 		msCalculationName = "<unknown>"
 
 		' Get the calculation definition.
-		sSQL = "SELECT name, returnType" & " FROM ASRSysExpressions" & " WHERE exprID = " & Trim(Str(mlngCalculationID))
-		rsCalculation = General.GetRecords(sSQL)
-		With rsCalculation
-			fOK = Not (.EOF And .BOF)
+		sSQL = "SELECT name, returnType FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngCalculationID))
+		rsCalculation = DB.GetDataTable(sSQL)
 
-			If fOK Then
-				msCalculationName = .Fields("Name").Value
-				miReturnType = .Fields("ReturnType").Value
-			End If
+		fOK = (rsCalculation.Rows.Count > 0)
 
-			.Close()
-		End With
+		If fOK Then
+			objRow = rsCalculation.Rows(0)
+			msCalculationName = objRow("Name").ToString()
+			miReturnType = CType(objRow("ReturnType"), ExpressionValueTypes)
+		End If
+
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsCalculation may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

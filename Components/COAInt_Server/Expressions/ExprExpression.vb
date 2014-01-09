@@ -510,15 +510,6 @@ ErrorTrap:
 
 		If mlngExpressionID = 0 Then
 
-			'MH20010712 Need keep manual record of allocated IDs incase users
-			'in SYS MGR have created expressions but not yet saved changes
-			'ExpressionID = UniqueColumnValue("ASRSysExpressions", "exprID")
-			'ExpressionID = GetUniqueID("Expressions", "ASRSysExpressions", "exprID")
-
-			'JPD20010911 Setting ExpressionID clears the mfConstructed flag, which we don't want.
-			' So just set the mlngExpressionID variable. NB. The mfConstructed flag is only reset
-			' when the code is stepped through, not when run without breakpoints. So no real
-			' runtime error, but it just didn't make logical sense.
 			mlngExpressionID = GetUniqueID("Expressions", "ASRSysExpressions", "exprID")
 
 			' Add a record for the new expression.
