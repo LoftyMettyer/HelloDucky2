@@ -1,11 +1,14 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Imports VB = Microsoft.VisualBasic
+
 Friend Class clsExprPromptedValue
-	
+	Inherits BaseExpressionComponent
+
 	' Component definition variables.
 	Private msPrompt As String
 	Private miType As ExpressionValueTypes
@@ -13,20 +16,20 @@ Friend Class clsExprPromptedValue
 	Private miReturnDecimals As Short
 	Private msFormat As String
 	Private mlngLookupColumnID As Integer
-	
+
 	Private msDefaultCharacterValue As String
 	Private mdblDefaultNumericValue As Double
 	Private mfDefaultLogicValue As Boolean
 	Private mdtDefaultDateValue As Date?
 	Private miDefaultDateType As Short
-	
+
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		Return False
 	End Function
-	
+
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
 															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
 															, ByRef psUDFs() As String _
@@ -103,17 +106,17 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-	
+
 
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
 		'Dim Printer As New Printing.PrinterSettings
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
-		
+
 		Dim fOK As Boolean
-		
+
 		fOK = True
-		
+
 		' Position the printing.
 		' TODO: Implement printing
 		'With Printer
@@ -121,17 +124,17 @@ ErrorTrap:
 		'	.CurrentY = .CurrentY + giPRINT_YSPACE
 		'	Printer.Print(ComponentDescription)
 		'End With
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		PrintComponent = fOK
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		fOK = False
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
+
 	Public Function WriteComponent() As Boolean
 		' Write the component definition to the component recordset.
 
@@ -156,9 +159,9 @@ ErrorTrap:
 		Return fOK
 
 	End Function
-	
-	
-	
+
+
+
 	Public Function CopyComponent() As Object
 		' Copies the selected component.
 		' When editing a component we actually copy the component first
@@ -166,7 +169,7 @@ ErrorTrap:
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
 		Dim objPromptedValueCopy As New clsExprPromptedValue
-		
+
 		' Copy the component's basic properties.
 		With objPromptedValueCopy
 			.Prompt = msPrompt
@@ -179,43 +182,43 @@ ErrorTrap:
 			.LookupColumn = mlngLookupColumnID
 			.DefaultDateType = miDefaultDateType
 		End With
-		
+
 		CopyComponent = objPromptedValueCopy
-		
+
 		' Disassociate object variables.
 		'UPGRADE_NOTE: Object objPromptedValueCopy may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objPromptedValueCopy = Nothing
-		
+
 	End Function
-	
-	
+
+
 	Public Property LookupColumn() As Integer
 		Get
 			' Return the Lookup Column ID.
 			LookupColumn = mlngLookupColumnID
-			
+
 		End Get
 		Set(ByVal Value As Integer)
 			' Set the Lookup Column ID.
 			mlngLookupColumnID = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property ValueFormat() As String
 		Get
 			' Return the ValueFormat property.
 			ValueFormat = msFormat
-			
+
 		End Get
 		Set(ByVal Value As String)
 			' Set the ValueFormat property.
 			msFormat = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public Property DefaultValue() As Object
 		Get
 
@@ -291,7 +294,7 @@ ErrorTrap:
 
 		End Set
 	End Property
-	
+
 	Public Property DefaultDateType() As Short
 		Get
 			DefaultDateType = miDefaultDateType
@@ -300,7 +303,7 @@ ErrorTrap:
 			miDefaultDateType = Value
 		End Set
 	End Property
-	
+
 	Public ReadOnly Property ComponentType() As ExpressionComponentTypes
 		Get
 			Return ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
@@ -345,7 +348,7 @@ ErrorTrap:
 			End Select
 
 			Return iType
-			
+
 
 		End Get
 
@@ -355,108 +358,108 @@ ErrorTrap:
 
 		End Set
 	End Property
-		
+
 	Public Property ReturnDecimals() As Short
 		Get
 			' Return the return number of decimals.
 			ReturnDecimals = miReturnDecimals
-			
+
 		End Get
 		Set(ByVal Value As Short)
 			' Set the return number of decimals.
 			miReturnDecimals = Value
-			
+
 		End Set
 	End Property
-	
-	
-	
+
+
+
 	Public Property ValueType() As Short
 		Get
 			' Return the type property.
 			ValueType = miType
-			
+
 		End Get
 		Set(ByVal Value As Short)
 			' Set the type property.
 			miType = Value
-			
+
 		End Set
 	End Property
-	
-	
+
+
 	Public Property ReturnSize() As Short
 		Get
 			' Return the return size.
 			ReturnSize = miReturnSize
-			
+
 		End Get
 		Set(ByVal Value As Short)
 			' Set the return size.
 			miReturnSize = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public ReadOnly Property ComponentDescription() As String
 		Get
 			' Return the component description.
 			Dim sDescription As String
-			
+
 			sDescription = msPrompt & " : "
-			
+
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					sDescription = sDescription & "<string>"
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					sDescription = sDescription & "<numeric>"
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					sDescription = sDescription & "<logic>"
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					sDescription = sDescription & "<date>"
-					
+
 				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 					sDescription = sDescription & "<table value>"
 			End Select
-			
+
 			ComponentDescription = sDescription
-			
+
 		End Get
 	End Property
-	
-	
-	
-	
-	
+
+
+
+
+
 	Public Property BaseComponent() As clsExprComponent
 		Get
 			' Return the component's base component object.
 			BaseComponent = mobjBaseComponent
-			
+
 		End Get
 		Set(ByVal Value As clsExprComponent)
 			' Set the component's base component object property.
 			mobjBaseComponent = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public Property Prompt() As String
 		Get
 			' Return the Prompt property.
 			Prompt = msPrompt
-			
+
 		End Get
 		Set(ByVal Value As String)
 			' Set the Prompt property.
 			msPrompt = Value
-			
+
 		End Set
 	End Property
-	
+
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 
 		Return True

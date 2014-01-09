@@ -3,12 +3,14 @@ Option Explicit On
 
 Imports ADODB
 Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports System.Data.SqlClient
 
 Friend Class clsExprExpression
+	Inherits BaseExpressionComponent
 
 	' Expression definition variables.
 	Private mlngExpressionID As Integer

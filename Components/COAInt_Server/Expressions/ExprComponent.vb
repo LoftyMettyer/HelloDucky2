@@ -1,9 +1,11 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsExprComponent
+	Inherits BaseExpressionComponent
 
 	' Component definition variables.
 	Private mlngComponentID As Integer

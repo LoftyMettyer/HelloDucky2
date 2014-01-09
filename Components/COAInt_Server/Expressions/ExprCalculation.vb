@@ -1,43 +1,45 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsExprCalculation
-	
+	Inherits BaseExpressionComponent
+
 	' Component definition variables.
 	Private mlngCalculationID As Integer
 	Private msCalculationName As String
 	Private miReturnType As Short
-	
+
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
-	
-	
+
+
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		' Retrun TRUE if the current expression (or any of its sub expressions)
 		' contains the given expression. This ensures no cyclic expressions get created.
 		'JPD 20040507 Fault 8600
 		On Error GoTo ErrorTrap
-		
+
 		' Check if the calc component IS the one we're checking for.
 		ContainsExpression = (plngExprID = mlngCalculationID)
-		
+
 		If Not ContainsExpression Then
 			' The calc component IS NOT the one we're checking for.
 			' Check if it contains the one we're looking for.
 			ContainsExpression = HasExpressionComponent(mlngCalculationID, plngExprID)
 		End If
-		
-TidyUpAndExit: 
+
+TidyUpAndExit:
 		Exit Function
-		
-ErrorTrap: 
+
+ErrorTrap:
 		ContainsExpression = True
 		Resume TidyUpAndExit
-		
+
 	End Function
-	
+
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
 															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
 															, ByRef psUDFs() As String _

@@ -5,7 +5,7 @@ Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Public Class Expression
-	Inherits BaseForDMI
+	Inherits BaseExpressionComponent
 
 	Private mobjBaseExpr As clsExprExpression
 

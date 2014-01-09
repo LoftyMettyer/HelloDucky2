@@ -110,6 +110,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
@@ -184,40 +185,40 @@
     <Compile Include="ExClientCode\cSetDfltPrinter.vb" />
     <Compile Include="ExClientCode\modIntClient.vb" />
     <Compile Include="ExClientCode\modUserSettings.vb" />
-    <Compile Include="ExprCalculation.vb">
+    <Compile Include="Expressions\ExprCalculation.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprComponent.vb">
+    <Compile Include="Expressions\ExprComponent.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Expression_bas.vb">
+    <Compile Include="Expressions\Expression_bas.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Expression_cls.vb">
+    <Compile Include="Expressions\Expression_cls.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprExpression.vb">
+    <Compile Include="Expressions\ExprExpression.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprField.vb">
+    <Compile Include="Expressions\ExprField.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprFilter.vb">
+    <Compile Include="Expressions\ExprFilter.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprFunction.vb">
+    <Compile Include="Expressions\ExprFunction.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprOperator.vb">
+    <Compile Include="Expressions\ExprOperator.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprPromptedValue.vb">
+    <Compile Include="Expressions\ExprPromptedValue.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprTableLookup.vb">
+    <Compile Include="Expressions\ExprTableLookup.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExprValue.vb">
+    <Compile Include="Expressions\ExprValue.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\Extensions.vb" />

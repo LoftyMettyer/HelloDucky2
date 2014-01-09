@@ -1,10 +1,12 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsExprValue
-	
+	Inherits BaseExpressionComponent
+
 	' Component definition variables.
 	Private miType As ExpressionValueTypes
 	Private mdblNumericValue As Double

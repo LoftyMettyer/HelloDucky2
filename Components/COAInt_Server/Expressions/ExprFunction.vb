@@ -2,10 +2,12 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
 Friend Class clsExprFunction
+	Inherits BaseExpressionComponent
 
 	' Component definition variables.
 	Private mlngFunctionID As Integer
@@ -985,7 +987,7 @@ TidyUpAndExit:
 		'UPGRADE_NOTE: Object objSubExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objSubExpression = Nothing
 		Return iValidationCode
-		
+
 BasicErrorTrap:
 		iValidationCode = ExprValidationCodes.giEXPRVALIDATION_UNKNOWNERROR
 		Resume TidyUpAndExit

@@ -2,9 +2,11 @@ Option Strict Off
 Option Explicit On
 
 Imports ADODB
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsExprOperator
+	Inherits BaseExpressionComponent
 
 	' Component definition variables.
 	Private mlngOperatorID As Integer
