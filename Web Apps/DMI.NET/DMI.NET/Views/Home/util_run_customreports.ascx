@@ -346,7 +346,8 @@
 			End If
 		End If
 	
-	'objReport.ClearUp()
+	
+	objReport.ClearUp()
 
 		
 		If fok Then

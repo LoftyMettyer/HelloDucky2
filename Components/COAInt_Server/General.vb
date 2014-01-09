@@ -338,18 +338,6 @@ LocalErr:
 		Return Tables.GetById(plngTableID).DefaultOrderID
 	End Function
 
-	Public Function GetOrder(ByVal lOrderID As Integer) As Recordset
-
-		Dim sSQL As String
-		Dim rsOrder As Recordset
-
-		sSQL = "SELECT * FROM ASRSysOrders WHERE OrderID=" & lOrderID
-		rsOrder = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-		GetOrder = rsOrder
-
-	End Function
-
 	Public Function GetColumnName(ByVal plngColumnID As Integer) As String
 		If plngColumnID = 0 Then
 			Return ""
@@ -358,7 +346,7 @@ LocalErr:
 		End If
 	End Function
 
-	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+	Friend Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
 		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
 	End Function
 
@@ -373,85 +361,48 @@ LocalErr:
 
 	End Function
 
-	Public Function UniqueSQLObjectName(ByRef strPrefix As String, ByRef intType As Short) As String
+	Friend Function UniqueSQLObjectName(ByRef strPrefix As String, ByRef intType As Integer) As String
 
-		'TM20020530 Fault 3756 - function altered as the sp needs to insert a record into a table
-		'before returning a value, so collect the returned parameter rather than a recordset.
+		Try
 
-		Dim cmdUniqObj As New Command
-		Dim pmADO As Parameter
+			Dim prmName As New SqlParameter("psUniqueObjectName", SqlDbType.NVarChar, 128)
+			prmName.Direction = ParameterDirection.Output
 
-		With cmdUniqObj
-			.CommandText = "sp_ASRUniqueObjectName"
-			.CommandType = CommandTypeEnum.adCmdStoredProc
-			.CommandTimeout = 0
-			.ActiveConnection = gADOCon
+			Dim prmPrefix As New SqlParameter("Prefix", SqlDbType.NVarChar, 128)
+			prmPrefix.Value = strPrefix
 
-			pmADO = .CreateParameter("UniqueObjectName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 255)
-			.Parameters.Append(pmADO)
+			Dim prmType As New SqlParameter("Type", SqlDbType.Int)
+			prmType.Value = intType
 
-			pmADO = .CreateParameter("Prefix", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
-			.Parameters.Append(pmADO)
-			pmADO.Value = strPrefix
+			datData.ExecuteSP("sp_ASRUniqueObjectName", prmName, prmPrefix, prmType)
 
-			pmADO = .CreateParameter("Type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			.Parameters.Append(pmADO)
-			pmADO.Value = intType
+			Return prmName.Value
 
-			'UPGRADE_NOTE: Object pmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			pmADO = Nothing
+		Catch ex As Exception
+			Return ""
 
-			.Execute()
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			UniqueSQLObjectName = IIf(IsDBNull(.Parameters(0).Value), vbNullString, .Parameters(0).Value)
-
-		End With
-
-		'UPGRADE_NOTE: Object cmdUniqObj may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdUniqObj = Nothing
+		End Try
 
 	End Function
 
 	Public Function DropUniqueSQLObject(ByVal sSQLObjectName As String, ByRef iType As Short) As Boolean
 
-		On Error GoTo ErrorTrap
+		Try
 
-		Dim cmdUniqObj As New Command
-		Dim pmADO As Parameter
+			Dim prmName As New SqlParameter("psUniqueObjectName", SqlDbType.NVarChar, 128)
+			prmName.Value = sSQLObjectName
 
-		If Len(sSQLObjectName) > 0 Then
-			With cmdUniqObj
-				.CommandText = "sp_ASRDropUniqueObject"
-				.CommandType = CommandTypeEnum.adCmdStoredProc
-				.CommandTimeout = 0
-				.ActiveConnection = gADOCon
+			Dim prmType As New SqlParameter("piType", SqlDbType.Int)
+			prmType.Value = iType
 
-				pmADO = .CreateParameter("UniqueObjectName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
-				.Parameters.Append(pmADO)
-				pmADO.Value = sSQLObjectName
+			datData.ExecuteSP("sp_ASRDropUniqueObject", prmName, prmType)
 
-				pmADO = .CreateParameter("Type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-				.Parameters.Append(pmADO)
-				pmADO.Value = iType
+		Catch ex As Exception
+			Throw
 
-				'UPGRADE_NOTE: Object pmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				pmADO = Nothing
+		End Try
 
-				.Execute()
-			End With
-		End If
-
-		DropUniqueSQLObject = True
-
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object cmdUniqObj may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdUniqObj = Nothing
-		Exit Function
-
-ErrorTrap:
-		DropUniqueSQLObject = False
-		GoTo TidyUpAndExit
+		Return True
 
 	End Function
 
