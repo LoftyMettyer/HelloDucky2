@@ -55,7 +55,13 @@
 			frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
 		}
 
-		frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
+		var outputFilename = frmExport.txtFileName.value;
+
+		if (outputFilename != '') {
+			outputFilename = outputFilename.substr(outputFilename.lastIndexOf("\\") + 1);
+		}
+
+		frmOutputDef.txtFilename.value = outputFilename;
 		outputOptionsRefreshControls();
 
 	}
@@ -87,8 +93,33 @@
 	function outputOptionsRefreshControls() {
 		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
-		
+		var optOutputFormat0 = document.getElementById('optOutputFormat0');
+		var optOutputFormat1 = document.getElementById('optOutputFormat1');
+		var optOutputFormat2 = document.getElementById('optOutputFormat2');
+		var optOutputFormat3 = document.getElementById('optOutputFormat3');
+		var optOutputFormat4 = document.getElementById('optOutputFormat4');
+		var optOutputFormat5 = document.getElementById('optOutputFormat5');
+		var optOutputFormat6 = document.getElementById('optOutputFormat6');
+
+		var chkDestination0 = document.getElementById('chkDestination0');
+		var chkDestination1 = document.getElementById('chkDestination1');
+		var chkDestination2 = document.getElementById('chkDestination2');
+		var chkDestination3 = document.getElementById('chkDestination3');
+
+		var txtFilename = document.getElementById('txtFilename');
+		var txtEmailSubject = document.getElementById('txtEmailSubject');
+		var txtEmailAttachAs = document.getElementById('txtEmailAttachAs');
+		var txtEmailGroup = document.getElementById('txtEmailGroup');
+
+		var cmdFilename = document.getElementById('cmdFilename');
+
 		with (frmOutputDef) {
+			
+			if ((optOutputFormat0.checked == true) || (optOutputFormat1.checked == true) || (optOutputFormat2.checked == true) || (optOutputFormat3.checked == true)) {
+				optOutputFormat4.checked = true;
+			}
+		
+
 			if (optOutputFormat0.checked == true)		//Data Only
 			{
 				//disable display on screen options FOR OUTPUT SCREEN ONLY
@@ -268,50 +299,68 @@
 					(optOutputFormat5.checked == true) ||
 					(optOutputFormat6.checked == true)) {
 				//enable display on screen options
-				checkbox_disable(chkDestination0, false);
-
+				//checkbox_disable(chkDestination0, false);
+				$('#frmOutputDef #chkDestination0').prop('disabled', false).next().removeClass('ui-state-disabled');
 				//enable-disable printer options
-				checkbox_disable(chkDestination1, false);
-				if (chkDestination1.checked == true) {
-					populatePrinters();
-					combo_disable(cboPrinterName, false);
-				}
-				else {
-					cboPrinterName.length = 0;
-					combo_disable(cboPrinterName, true);
-				}
+				//if (chkDestination1.checked == true) {
+				//	populatePrinters();
+				//	combo_disable(cboPrinterName, false);
+				//}
+				//else {
+				//	cboPrinterName.length = 0;
+				//	combo_disable(cboPrinterName, true);
+				//}
 
 				//enable-disable save options
-				checkbox_disable(chkDestination2, false);
+				//checkbox_disable(chkDestination2, false);
+				$('#frmOutputDef #chkDestination2').prop('disabled', false).next().removeClass('ui-state-disabled');
 				if (chkDestination2.checked == true) {
 					populateSaveExisting();
-					combo_disable(cboSaveExisting, false);
-					//text_disable(txtFilename, false);
+					//combo_disable(cboSaveExisting, false);
+					text_disable(txtFilename, false);
+					$('#frmOutputDef #txtFilename').removeClass('ui-state-disabled');
+					$('#frmOutputDef #lblFilename').removeClass('ui-state-disabled');
 					button_disable(cmdFilename, false);
 				}
 				else {
-					cboSaveExisting.length = 0;
-					combo_disable(cboSaveExisting, true);
-					//text_disable(txtFilename, true);
+					//cboSaveExisting.length = 0;
+					//combo_disable(cboSaveExisting, true);
+					text_disable(txtFilename, true);
+					$('#frmOutputDef #txtFilename').addClass('ui-state-disabled');
+					$('#frmOutputDef #lblFilename').addClass('ui-state-disabled');
 					txtFilename.value = '';
 					button_disable(cmdFilename, true);
 				}
-
+				
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					//text_disable(txtEmailGroup, false);
+					text_disable(txtEmailGroup, false);
+					$('#frmOutputDef #txtEmailGroup').removeClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailGroup').removeClass('ui-state-disabled');
+					$('#frmOutputDef #cmdEmailGroup').removeClass('ui-state-disabled');
 					text_disable(txtEmailSubject, false);
+					$('#frmOutputDef #txtEmailSubject').removeClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailSubject').removeClass('ui-state-disabled');
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
+					$('#frmOutputDef #txtEmailAttachAs').removeClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
 				}
 				else {
-					//text_disable(txtEmailGroup, true);
-					txtEmailGroup.value = '';
-					txtEmailGroupID.value = 0;
+					text_disable(txtEmailGroup, true);
+					$('#frmOutputDef #txtEmailGroup').val('');
+					$('#frmOutputDef #txtEmailGroupID').val(0);
 					button_disable(cmdEmailGroup, true);
+					$('#frmOutputDef #txtEmailGroup').addClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailGroup').addClass('ui-state-disabled');
+					$('#frmOutputDef #cmdEmailGroup').addClass('ui-state-disabled');
 					text_disable(txtEmailSubject, true);
+					$('#frmOutputDef #txtEmailSubject').addClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailSubject').addClass('ui-state-disabled');
 					text_disable(txtEmailAttachAs, true);
+					$('#frmOutputDef #txtEmailAttachAs').addClass('ui-state-disabled');
+					$('#frmOutputDef #lblEmailAttachAs').addClass('ui-state-disabled');
 				}
 			}
 			else {
@@ -330,7 +379,7 @@
 
 				if (txtEmailAttachAs.value == '') {
 					if (txtFilename.value != '') {
-						sAttachmentName = new String(txtFilename.value);
+						var sAttachmentName = new String(txtFilename.value);
 						txtEmailAttachAs.value = sAttachmentName.substr(sAttachmentName.lastIndexOf("\\") + 1);
 					}
 				}
@@ -571,7 +620,7 @@
 						<td height=10 align=left valign=top>
 							<strong>Output Format : </strong><BR><BR>
 							<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left width=15>
 									<input type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat0 value=0 onClick="outputOptionsFormatClick(0);" />
@@ -585,11 +634,11 @@
 																					
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=4></td>
 								</tr>
 <% if Session("utilType") <> 17 and Session("utilType") <> 16 then %>																	
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left width=15>
 									<input type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat1 value=1 onClick="outputOptionsFormatClick(1);" />
@@ -603,11 +652,11 @@
 																					
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=4></td>
 								</tr>
 <% end if %>
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left width=15>																		
 									<input type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat2 value=2 onClick="outputOptionsFormatClick(2);" />
@@ -621,10 +670,10 @@
 																					
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=4></td>
 								</tr>
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left width=15>
 									<input type=radio width=20 style="WIDTH: 20px" name=optOutputFormat id=optOutputFormat3 value=3 onClick="outputOptionsFormatClick(3);" />
@@ -637,7 +686,7 @@
 										Word Document
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=4></td>
 								</tr>
 								<tr height=20>
@@ -786,7 +835,7 @@
 						<td height=10 align=left valign=top>
 							<strong>Output Destination(s) : </strong><BR><BR>
 							<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left colspan=6 nowrap>
 									<input name=chkDestination0 id=chkDestination0 type=checkbox disabled="disabled" tabindex="0" onClick="outputOptionsRefreshControls();"/>
@@ -799,10 +848,10 @@
 									</td>
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left nowrap>																	
 									<input name=chkDestination1 id=chkDestination1 type=checkbox disabled="disabled" tabindex="0" onClick="outputOptionsRefreshControls();"/>
@@ -823,7 +872,7 @@
 									</td>
 									<td width=5>&nbsp</td>
 								</tr>
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
 								<tr height=20>
@@ -833,22 +882,20 @@
 										<label 
 											for="chkDestination2"
 											class="checkbox"
-											tabindex="-1" />																			
-									Save to file 
-																																				
+											tabindex="-1">Save to file</label>
 									</td>
-									<td width=30 nowrap>&nbsp</td>
+									<td width=30 nowrap>&nbsp;</td>
 									<td align=left nowrap>
-										File name :
+										<span id="lblFilename">File name :</span>
 									</td>
-									<td width=15 nowrap>&nbsp</td>
+									<td width=15 nowrap>&nbsp;</td>
 									<td colspan=2>
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 											<tr>
 												<td>
 													<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 100%">
 												</td>
-												<td width="25">
+												<td width="25" class="hidden">
 													<input type="button" id="cmdFilename" name="cmdFilename" value="..." style="WIDTH: 100%" class="btn" onclick="saveFile()" />
 												</td>
 											</tr>
@@ -861,7 +908,7 @@
 									<td colspan=8></td>
 								</tr>
 
-								<tr height=20>
+								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left nowrap>
 									</td>
@@ -876,26 +923,25 @@
 									<td width=5>&nbsp</td>
 								</tr>
 
-								<tr height=10> 
+								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
 								<tr height=20>
 									<td width=5>&nbsp</td>
 									<td align=left nowrap>
 									<input name=chkDestination3 id=chkDestination3 type=checkbox disabled="disabled" tabindex="0" onClick="outputOptionsRefreshControls();"/>
-									<label 
-												for="chkDestination3"
-												class="checkbox"
-												tabindex="-1">
-																			
-									Send as email
-									</label>																		
+										<label
+											for="chkDestination3"
+											class="checkbox"
+											tabindex="-1">
+											Send as email
+										</label>
 									</td>
-									<td width=30 nowrap>&nbsp</td>
+									<td width=30 nowrap>&nbsp;</td>
 									<td align=left nowrap>
-										Email group :   
+										<span id="lblEmailGroup">Email group :</span>
 									</td>
-									<td width=15 nowrap>&nbsp</td>
+									<td width=15 nowrap>&nbsp;</td>
 									<td colspan="2">
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 											<tr>
@@ -904,44 +950,44 @@
 													<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
 												</td>
 												<td width="25">
-													<input type="button" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%" class="btn" onclick="selectEmailGroup()" />
+													<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%" class="btn" onclick="selectEmailGroup()" />
 												</td>
 											</tr>
 										</table>
 									</td>
-									<td width=5>&nbsp</td>
+									<td width=5>&nbsp;</td>
 								</tr>
 								<tr height=10> 
 									<td colspan=8></td>
 								</tr>
 								<tr height=20>
-									<td width=5>&nbsp</td>
-									<td align=left>&nbsp</td>
-									<td width=30 nowrap>&nbsp</td>
+									<td width=5>&nbsp;</td>
+									<td align=left>&nbsp;</td>
+									<td width=30 nowrap>&nbsp;</td>
 									<td align=left nowrap>
-										Email subject :   
+										<span id="lblEmailSubject">Email subject :</span>
 									</td>
-									<td width=15>&nbsp</td>
+									<td width=15>&nbsp;</td>
 									<td colspan="2" width="100%" nowrap>
-										<input id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject" style="WIDTH: 100%">
+										<input id="txtEmailSubject" name="txtEmailSubject" class="text textdisabled" maxlength="255" disabled="disabled" style="WIDTH: 100%">
 									</td>
-									<td width=5>&nbsp</td>
+									<td width="5">&nbsp;</td>
 								</tr>
 								<tr height=10> 
 									<td colspan=8></td>
 								</tr>
 								<tr height=20>
-									<td width=5>&nbsp</td>
-									<td align=left>&nbsp</td>
-									<td width=30 nowrap>&nbsp</td>
+									<td width=5>&nbsp;</td>
+									<td align=left>&nbsp;</td>
+									<td width=30 nowrap>&nbsp;</td>
 									<td align=left nowrap>
-										Attach as :   
+										<span id="lblEmailAttachAs">Attach as :</span>
 									</td>
-									<td width=15>&nbsp</td>
+									<td width=15>&nbsp;</td>
 									<td colspan="2" width="100%" nowrap>
 										<input id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs" style="WIDTH: 100%">
 									</td>
-									<td width=5>&nbsp</td>
+									<td width=5>&nbsp;</td>
 								</tr>
 								<tr height=10> 
 									<td colspan=8></td>

@@ -1038,37 +1038,40 @@ LocalErr:
 			If _mblnSave Then
 				_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
 
-				strFormat = GetOfficeSaveAsFormat(_mstrFileName, OfficeVersion, OfficeApp.oaExcel)
-				If strFormat = "" Then
-					_mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
-					GoTo TidyAndExit
-				End If
+				'strFormat = GetOfficeSaveAsFormat(_mstrFileName, OfficeVersion, OfficeApp.oaExcel)
+				'If strFormat = "" Then
+				'	_mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
+				'	GoTo TidyAndExit
+				'End If
 
 				' calculate the appropriate output type
 				aryFileBits = Split(_mstrFileName, ".")
 				strExtension = aryFileBits(UBound(aryFileBits))
 
-				'Select Case UCase(strExtension)
-				'	Case "XLSX"
-				'		mxlWorkBook.SaveAs(mstrFileName, FileFormat:=Val(strFormat))
-				'	Case "XLS"
-				'		mxlWorkBook.SaveAs(mstrFileName, FileFormat:=Val(strFormat))
-				'	Case "HTML"
-				'		mxlWorkBook.SaveAs(mstrFileName, FileFormat:=Val(CStr(Microsoft.Office.Interop.Excel.XlFileFormat.xlHtml)))
-				'End Select
-				' NOTE: no longer saving automatically
-				_mxlWorkBook.Save(_mstrFileName)
+				Select Case UCase(strExtension)
+					Case "XLSX"
+						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
+					Case "XLS"
+						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
+					Case "HTML"
+						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
+					Case "PDF"
+						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
+					Case "CSV"
+						_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
+				End Select
+
 			End If
 
 			'EMAIL
 			If _mblnEmail Then
 				_mstrErrorMessage = "Error sending email"
 
-				strFormat = GetOfficeSaveAsFormat((_mobjParent.EmailAttachAs), OfficeVersion, OfficeApp.oaExcel)
-				If strFormat = "" Then
-					_mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
-					GoTo TidyAndExit
-				End If
+				'strFormat = GetOfficeSaveAsFormat((_mobjParent.EmailAttachAs), OfficeVersion, OfficeApp.oaExcel)
+				'If strFormat = "" Then
+				'	_mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+				'	GoTo TidyAndExit
+				'End If
 
 				strTempFile = _mobjParent.GetTempFileName((_mobjParent.EmailAttachAs))
 				' mxlWorkBook.SaveAs(strTempFile, Val(strFormat))

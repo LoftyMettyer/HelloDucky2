@@ -20,7 +20,7 @@ BEGIN
 		, ISNULL(e.Name, '') AS EmailGroupName
 		FROM dbo.ASRSYSCustomReportsName c
 			INNER JOIN ASRSysTables t ON t.tableid = c.BaseTable
-			LEFT JOIN ASRSysEmailGroupName e ON c.OutputEmail = e.EmailGroupID
+			LEFT JOIN ASRSysEmailGroupName e ON c.OutputEmailAddr = e.EmailGroupID
 		WHERE c.ID = @ReportID;
 
 	-- Child Report info

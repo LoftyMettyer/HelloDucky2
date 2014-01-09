@@ -14,12 +14,12 @@
 	Session("CALREP_ShowWeekends") = 0
 	Session("CALREP_ChangeOptions") = 0
 	
-		Session("EmailGroupID") = 0
-		Session("OutputOptions_Format") = 0
-		Session("OutputOptions_Screen") = "true"
-		Session("OutputOptions_Printer") = "false"
-		Session("OutputOptions_Save") = "false"
-		Session("OutputOptions_SaveExisting") = 0
+	Session("EmailGroupID") = 0
+	Session("OutputOptions_Format") = 0
+	Session("OutputOptions_Screen") = "true"
+	Session("OutputOptions_Printer") = "false"
+	Session("OutputOptions_Save") = "false"
+	Session("OutputOptions_SaveExisting") = 0
 		
 	' following sessions vars:
 	'
@@ -56,7 +56,7 @@
 						aPrompts(1, j) = Replace(Request.Form.Item(i), CType(Session("LocaleDecimalSeparator"), String), ".")
 					Case "4"
 						' Date. Reformat to match SQL's mm/dd/yyyy format.
-						aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
+						aPrompts(1, j) = ConvertLocaleDateToSQL(Request.Form.Item(i))
 					Case Else
 						aPrompts(1, j) = Request.Form.Item(i)
 				End Select
@@ -83,7 +83,7 @@
 		self.close();
 		return;
 	}
-	
+
 	function pausecomp(millis) {
 		var date = new Date();
 		var curDate;
@@ -130,6 +130,18 @@
 
 	}
 
+	function outputOptionsPrintClick() {
+
+		var divToPrint = document.getElementById('tdOutputMSG');
+		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no, width=1, height=1, visible=none', "");
+		newWin.document.write(divToPrint.innerHTML);
+		newWin.document.close();
+		newWin.focus();
+		newWin.print();
+		newWin.close();
+	}
+
+
 	function ExportDataPrompt() {
 
 		//var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
@@ -138,7 +150,7 @@
 		$("#reportworkframe").hide();
 		$("#reportbreakdownframe").hide();
 		$("#outputoptions").show();
-		
+
 		$("#cmdOK").show();
 		$("#cmdCancel").show();
 		$("#cmdOutput").hide();
@@ -182,11 +194,11 @@
 							End If
 						End If
 					End If
-			 	%>
+				%>
 			</span>
 		</div>
-		
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow-y:scroll; overflow-x: scroll">
+
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow-y: scroll; overflow-x: scroll">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -221,11 +233,11 @@
 
 		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
 			<div style="float: right;">
+				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="Print" onclick="outputOptionsPrintClick()" />
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
 				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
-				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();"
-				/>
+				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 			</div>
 		</div>
 
@@ -238,7 +250,7 @@
 
 	<%
 	If Session("utiltype") = "17" Then
-		If Session("CalendarReports_FailedOrNoRecords") = True Then 'We need a smaller popup window because the report failed or has no records
+		If Session("CalendarReports_FailedOrNoRecords") = True Then	'We need a smaller popup window because the report failed or has no records
 	%>
 	$(".popup").dialog({ width: 750, height: 400, resizable: true });
 	<%Else%>
@@ -255,7 +267,7 @@ End If
 	%>
 
 	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
-	
+
 	//$('.popup').css({ top: '50%', left: '50%', margin: '-' + ($('.popup').height() / 2) + 'px 0 0 -' + ($('.popup').width() / 2) + 'px' });
 
 	$('.popup').bind('dialogclose', function (event) {

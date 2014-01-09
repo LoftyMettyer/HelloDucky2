@@ -3328,8 +3328,8 @@ Namespace Controllers
 			Dim bBradfordFactor As Boolean
 			Dim strDesiredFileName As String
 
-			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace("tmp", "xlsx")
-			strDesiredFileName = Path.GetFileName(objReport.OutputFilename)
+			strDesiredFileName = Request("txtFilename")	' Path.GetFileName(objReport.OutputFilename)
+			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace(".tmp", Path.GetExtension(strDesiredFileName))
 
 			ClientDLL.ResetColumns()
 			ClientDLL.ResetStyles()
@@ -3621,17 +3621,17 @@ Namespace Controllers
 			ClientDLL.Complete()
 
 			' Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
-			Try
-				If IO.File.Exists(objReport.OutputFilename) Then
+			If IO.File.Exists(objReport.OutputFilename) Then
+				Try
 					Response.ClearContent()
 					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDesiredFileName)
 					Response.TransmitFile(objReport.OutputFilename)
 					Response.Flush()
-				End If
-			Catch ex As Exception
-			Finally
-				IO.File.Delete(objReport.OutputFilename)
-			End Try
+				Catch ex As Exception
+				Finally
+					IO.File.Delete(objReport.OutputFilename)
+				End Try
+			End If
 
 
 		End Function
