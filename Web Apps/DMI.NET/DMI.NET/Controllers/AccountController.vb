@@ -320,7 +320,15 @@ Namespace Controllers
 
 			Session("sessionContext") = objServerSession
 
+
+			Dim objDatabase As New Database
+			objDatabase.SessionInfo = objServerSession
+			Session("DatabaseFunctions") = objDatabase
+
+
 			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
+
+
 
 			' Check that its okay for the user to login.
 			Dim cmdLoginCheck = New Command

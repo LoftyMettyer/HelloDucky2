@@ -1,8 +1,8 @@
 ﻿c<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %><%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
-	
 	
 	Dim fok As Boolean = True
 	Dim blnSuccess As Boolean
@@ -15,10 +15,9 @@
 
 	' Create the reference to the DLL (Report Class)
 	objMailMerge = New HR.Intranet.Server.MailMerge
+	objMailMerge.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 	' Pass required info to the DLL
-	objMailMerge.Username = Session("username").ToString()
-	objMailMerge.Connection = Session("databaseConnection")
 	objMailMerge.MailMergeID = Session("utilid")
 	objMailMerge.ClientDateFormat = Session("localedateformat")
 	objMailMerge.SingleRecordID = Session("singleRecordID")

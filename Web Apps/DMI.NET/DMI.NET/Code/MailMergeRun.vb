@@ -33,13 +33,12 @@ Namespace Code
 			Dim context As HttpContext = HttpContext.Current
 
 			Dim objErrorLog As New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
+			Dim objDatabase As Database = CType(context.Session("DatabaseFunctions"), Database)
 
 			Dim config = Web.Configuration.WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath)
 			mailClient = New Aspose.Email.Mail.SmtpClient(config)
 
 			objOptions.MessageFormat = MessageFormat.Mht
-
-			'AddHandler mailClient.SendCompleted, AddressOf SendCompletedCallback
 
 			For Each objRow In MergeData.Rows
 				doc = New Document(TemplateName)
@@ -75,7 +74,7 @@ Namespace Code
 				message.From = New Aspose.Email.Mail.MailAddress("todo@company.com", "OpenHR")
 
 				' TODO - Alter this to read with initial dataset - would speed up performance
-				strToEmail = HR.Intranet.Server.MailMerge.GetEmailAddress(objRow("ID").ToString(), EmailCalculationID)
+				strToEmail = objDatabase.GetEmailAddress(objRow("ID").ToString(), EmailCalculationID)
 
 				If strToEmail.Length > 0 Then
 					message.To.Add(strToEmail)

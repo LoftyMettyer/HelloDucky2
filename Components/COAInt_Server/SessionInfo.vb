@@ -2,6 +2,7 @@
 Imports ADODB
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
+Imports System.Data.SqlClient
 
 Public Class SessionInfo
 	'Public Shared gADOCon As ADODB.Connection
@@ -22,22 +23,6 @@ Public Class SessionInfo
 		End Set
 	End Property
 
-	'Public Shared gsActualLogin As String
-	'Public Shared gsUserGroup As String
-
-	'Public gcoTablePrivileges As ICollection(Of CTablePrivilege)
-
-	'Friend gcolColumnPrivilegesCollection As Collection
-	'Friend gcolLinks As Collection
-	'Friend gcolNavigationLinks As Collection
-
-	'Public Tables As ICollection(Of Metadata.Table)
-	'Public Columns As ICollection(Of Metadata.Column)
-	'Public Relations As ICollection(Of Metadata.Relation)
-	'Public ModuleSettings As ICollection(Of Metadata.ModuleSetting)
-	'Public UserSettings As ICollection(Of Metadata.UserSetting)
-	'Public Functions As ICollection(Of Metadata.Function)
-	'Public Operators As ICollection(Of Metadata.Operator)
 	Public ReadOnly Property Permissions() As ICollection(Of Permission)
 		Get
 			Return Declarations.Permissions

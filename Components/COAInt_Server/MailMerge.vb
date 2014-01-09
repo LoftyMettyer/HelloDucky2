@@ -1,15 +1,15 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
-Imports System.Data.OleDb
 Imports HR.Intranet.Server.Metadata
 
 Public Class MailMerge
+	Inherits BaseForDMI
 
-	Private mrsMailMergeColumns As Recordset
-	Private mrsMergeData As Recordset
+	Private mrsMailMergeColumns As DataTable
+	Private mrsMergeData As DataTable
 	Private mlngMailMergeID As Integer
 	Private mblnNoRecords As Boolean
 
@@ -60,11 +60,6 @@ Public Class MailMerge
 	Private mlngTableViews(,) As Integer
 	Private mstrWhereIDs As String
 
-	' Classes
-	Private mclsData As clsDataAccess
-	Private mclsGeneral As clsGeneral
-	Private mobjEventLog As clsEventLog
-
 	'	Private mstrOutputArray_Data() As Object
 	Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
@@ -77,15 +72,7 @@ Public Class MailMerge
 	' Modify this after we convert the actual SQL code to pull a datatable back directly
 	Public ReadOnly Property MergeData As DataTable
 		Get
-
-			Dim objDA As New OleDbDataAdapter()
-			Dim objDT As New DataTable()
-
-			mrsMergeData.Requery()
-
-			objDA.Fill(objDT, mrsMergeData)
-			Return objDT
-
+			Return mrsMergeData
 		End Get
 	End Property
 
@@ -185,12 +172,6 @@ Public Class MailMerge
 		End Get
 	End Property
 
-	Public WriteOnly Property Connection() As Connection
-		Set(ByVal Value As Connection)
-			gADOCon = Value
-		End Set
-	End Property
-
 	Public WriteOnly Property CustomReportID() As Integer
 		Set(ByVal Value As Integer)
 			mlngMailMergeID = Value
@@ -199,7 +180,7 @@ Public Class MailMerge
 
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal Value As String)
-			mobjEventLog.AddDetailEntry(Value)
+			Logs.AddDetailEntry(Value)
 		End Set
 	End Property
 
@@ -221,12 +202,6 @@ Public Class MailMerge
 		End Set
 	End Property
 
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-			gsUsername = Value
-		End Set
-	End Property
-
 	Public ReadOnly Property ErrorString() As String
 		Get
 			ErrorString = mstrStatusMessage
@@ -241,7 +216,7 @@ Public Class MailMerge
 
 	Public WriteOnly Property EventLogID() As Integer
 		Set(ByVal Value As Integer)
-			mobjEventLog.EventLogID = Value
+			Logs.EventLogID = Value
 		End Set
 	End Property
 
@@ -266,11 +241,7 @@ Public Class MailMerge
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
-		' Initialise the the classes/arrays to be used
-		mclsData = New clsDataAccess
-		mclsGeneral = New clsGeneral
 		ReDim mlngTableViews(2, 0)
-
 		fOK = True
 
 	End Sub
@@ -280,53 +251,36 @@ Public Class MailMerge
 		Class_Initialize_Renamed()
 	End Sub
 
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-
-		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
-		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjEventLog = Nothing
-		' JPD20030313 Do not drop the tables & columns collections as they can be reused.
-		'Set gcoTablePrivileges = Nothing
-		'Set gcolColumnPrivilegesCollection = Nothing
-
-	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
-
 	Public Function EventLogAddHeader() As Integer
-		mobjEventLog.AddHeader(EventLog_Type.eltMailMerge, mstrDefName)
-		EventLogAddHeader = mobjEventLog.EventLogID
+		Logs.AddHeader(EventLog_Type.eltMailMerge, mstrDefName)
+		EventLogAddHeader = Logs.EventLogID
 	End Function
 
 	Public Function SQLGetMergeData() As Boolean
 
 		Dim strSQL As String
 
-		On Error GoTo LocalErr
-		strSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
-		mrsMergeData = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		Try
 
-		If mrsMergeData.EOF Then
-			mstrStatusMessage = "No records meet selection criteria"
-			mblnNoRecords = True
+			strSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine & mstrSQLOrder & vbNewLine
+			mrsMergeData = DB.GetDataTable(strSQL)
+
+			If mrsMergeData.Rows.Count = 0 Then
+				mstrStatusMessage = "No records meet selection criteria"
+				mblnNoRecords = True
+				fOK = False
+			Else
+				mblnNoRecords = False
+			End If
+
+			Return fOK
+
+		Catch ex As Exception
 			fOK = False
-		Else
-			mblnNoRecords = False
-		End If
+			mstrStatusMessage = "Error retrieving merge data " & ex.Message
+			Return fOK
 
-		Return fOK
-
-LocalErr:
-		fOK = False
-		mstrStatusMessage = "Error retrieving merge data"
-		Return False
+		End Try
 
 	End Function
 
@@ -334,80 +288,80 @@ LocalErr:
 
 		On Error GoTo LocalErr
 
-		Dim rsMailMergeDefinition As Recordset
+		Dim rsMailMergeDefinition As DataTable
 		Dim strSQL As String
+		Dim objRow As DataRow
 
 		strSQL = "SELECT ASRSysMailMergeName.*, ASRSysTables.TableName as TableName, ASRSysTables.RecordDescExprID as RecordDescExprID FROM ASRSysMailMergeName JOIN ASRSYSTables ON (ASRSysTables.TableID = ASRSysMailMergeName.TableID) WHERE MailMergeID = " & mlngMailMergeID & " "
-		rsMailMergeDefinition = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsMailMergeDefinition = DB.GetDataTable(strSQL)
 
-		If rsMailMergeDefinition.BOF And rsMailMergeDefinition.EOF Then
+		If rsMailMergeDefinition.Rows.Count = 0 Then
 			'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsMailMergeDefinition = Nothing
 			mstrStatusMessage = "This definition has been deleted by another user."
 			fOK = False
+			Return fOK
+		End If
+
+		objRow = rsMailMergeDefinition.Rows(0)
+
+		If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
+			'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			rsMailMergeDefinition = Nothing
+			mstrStatusMessage = "This definition has been made hidden by another user."
+			fOK = False
 			GoTo TidyAndExit
 		End If
 
-		With rsMailMergeDefinition
+		mstrDefName = objRow("Name")
+		mlngDefBaseTableID = objRow("TableID")
+		mstrDefBaseTable = objRow("TableName")
+		mlngDefPickListID = objRow("PickListID")
+		mlngDefFilterID = objRow("FilterID")
 
-			If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
-				'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsMailMergeDefinition = Nothing
-				mstrStatusMessage = "This definition has been made hidden by another user."
-				fOK = False
-				GoTo TidyAndExit
-			End If
+		mstrDefTemplateFile = objRow("TemplateFileName")
+		mblnDefSuppressBlankLines = objRow("SuppressBlanks")
+		mblnDefPauseBeforeMerge = objRow("PauseBeforeMerge")
 
-			mstrDefName = .Fields("Name").Value
-			mlngDefBaseTableID = .Fields("TableID").Value
-			mstrDefBaseTable = .Fields("TableName").Value
-			mlngDefPickListID = .Fields("PickListID").Value
-			mlngDefFilterID = .Fields("FilterID").Value
+		mlngDefEmailAddrCalc = 0
+		'mstrEmailAddr = vbNullString
 
-			mstrDefTemplateFile = .Fields("TemplateFileName").Value
-			mblnDefSuppressBlankLines = .Fields("SuppressBlanks").Value
-			mblnDefPauseBeforeMerge = .Fields("PauseBeforeMerge").Value
+		mintDefOutputFormat = objRow("OutputFormat")
+		Select Case mintDefOutputFormat
+			Case MailMergeOutputTypes.WordDocument
+				mblnDefOutputScreen = objRow("OutputScreen")
+				mblnDefOutputPrinter = objRow("OutputPrinter")
+				mstrDefOutputPrinterName = objRow("OutputPrinterName")
+				mblnDefOutputSave = objRow("OutputSave")
+				mstrDefOutputFileName = objRow("OutputFilename")
 
-			mlngDefEmailAddrCalc = 0
-			'mstrEmailAddr = vbNullString
+			Case MailMergeOutputTypes.IndividualEmail
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				If IIf(IsDBNull(objRow("EmailAddrID")), 0, objRow("EmailAddrID")) = 0 Then
+					mstrStatusMessage = "No destination email address selected"
+					'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					rsMailMergeDefinition = Nothing
+					fOK = False
+					GoTo TidyAndExit
+				End If
 
-			mintDefOutputFormat = .Fields("OutputFormat").Value
-			Select Case mintDefOutputFormat
-				Case MailMergeOutputTypes.WordDocument
-					mblnDefOutputScreen = .Fields("OutputScreen").Value
-					mblnDefOutputPrinter = .Fields("OutputPrinter").Value
-					mstrDefOutputPrinterName = .Fields("OutputPrinterName").Value
-					mblnDefOutputSave = .Fields("OutputSave").Value
-					mstrDefOutputFileName = .Fields("OutputFilename").Value
+				mstrDefEMailSubject = objRow("EmailSubject")
+				mlngDefEmailAddrCalc = objRow("EmailAddrID")
+				mblnDefEMailAttachment = objRow("EMailAsAttachment")
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mstrDefAttachmentName = IIf(IsDBNull(objRow("EmailAttachmentName")), "", objRow("EmailAttachmentName"))
 
-				Case MailMergeOutputTypes.IndividualEmail
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IIf(IsDBNull(.Fields("EmailAddrID").Value), 0, .Fields("EmailAddrID").Value) = 0 Then
-						mstrStatusMessage = "No destination email address selected"
-						'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						rsMailMergeDefinition = Nothing
-						fOK = False
-						GoTo TidyAndExit
-					End If
+			Case MailMergeOutputTypes.DocumentManagement
+				mblnDefOutputPrinter = True
+				mblnDefOutputScreen = objRow("OutputScreen")
+				mstrDefOutputPrinterName = objRow("OutputPrinterName")
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mlngDocManMapID = IIf(IsDBNull(objRow("DocumentMapID")), 0, objRow("DocumentMapID"))
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mblnDocManManualHeader = IIf(IsDBNull(objRow("ManualDocManHeader")), 0, objRow("ManualDocManHeader"))
 
-					mstrDefEMailSubject = .Fields("EmailSubject").Value
-					mlngDefEmailAddrCalc = .Fields("EmailAddrID").Value
-					mblnDefEMailAttachment = .Fields("EMailAsAttachment").Value
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mstrDefAttachmentName = IIf(IsDBNull(.Fields("EmailAttachmentName").Value), "", .Fields("EmailAttachmentName").Value)
+		End Select
 
-				Case MailMergeOutputTypes.DocumentManagement
-					mblnDefOutputPrinter = True
-					mblnDefOutputScreen = .Fields("OutputScreen").Value
-					mstrDefOutputPrinterName = .Fields("OutputPrinterName").Value
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngDocManMapID = IIf(IsDBNull(.Fields("DocumentMapID").Value), 0, .Fields("DocumentMapID").Value)
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mblnDocManManualHeader = IIf(IsDBNull(.Fields("ManualDocManHeader").Value), 0, .Fields("ManualDocManHeader").Value)
-
-			End Select
-
-		End With
 
 		fOK = IsRecordSelectionValid()
 
@@ -418,21 +372,18 @@ LocalErr:
 TidyAndExit:
 		'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsMailMergeDefinition = Nothing
-		SQLGetMergeDefinition = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 		mstrStatusMessage = "Error reading Mail Merge definition"
-		'mstrStatusMessage = mstrStatusMessage & "  (" & Err.Description & ")"
 		fOK = False
-		Resume TidyAndExit
+		Return fOK
 
 	End Function
 
 	Private Function GetPicklistFilterSelect() As String
 
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 
 		On Error GoTo LocalErr
 
@@ -447,24 +398,21 @@ LocalErr:
 				Exit Function
 			End If
 
-
 			'Get List of IDs from Picklist
-			rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-			fOK = Not (rsTemp.BOF And rsTemp.EOF)
+			rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID)
+			fOK = Not (rsTemp.Rows.Count > 0)
 
 			If Not fOK Then
 				mstrStatusMessage = "The base table picklist contains no records."
 			Else
 				GetPicklistFilterSelect = vbNullString
-				Do While Not rsTemp.EOF
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & rsTemp.Fields(0).Value
-					rsTemp.MoveNext()
-				Loop
+
+				For Each objRow As DataRow In rsTemp.Rows
+					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & objRow(0).ToString()
+
+				Next
 			End If
 
-			rsTemp.Close()
-			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsTemp = Nothing
 
 		ElseIf mlngDefFilterID > 0 Then
 
@@ -475,11 +423,11 @@ LocalErr:
 			End If
 
 			'Get list of IDs from Filter
-			fOK = mclsGeneral.FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
+			fOK = General.FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.
-				mstrStatusMessage = "You do not have permission to use the '" & mclsGeneral.GetFilterName(mlngDefFilterID) & "' filter."
+				mstrStatusMessage = "You do not have permission to use the '" & General.GetFilterName(mlngDefFilterID) & "' filter."
 			End If
 
 		End If
@@ -511,7 +459,7 @@ LocalErr:
 		strSQL1 = "SELECT 'ColExp'   = 'Col',  'ColExpId' = ASRSysColumns.ColumnID, 'TableID'  = ASRSysTables.TableID, 'Table'    = ASRSysTables.Tablename, 'Name'     = ASRSysColumns.ColumnName, 'Type'     = ASRSysColumns.DataType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysColumns.ColumnID = ASRSysMailMergeColumns.ColumnID) JOIN ASRSysTables ON (ASRSysTables.TableID = ASRSysColumns.TableID) WHERE ASRSysMailMergeColumns.Type = 'C' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
 		strSQL2 = "SELECT 'ColExp'   = 'Exp', 'ColExpId' = ASRSysExpressions.ExprID, 'TableID'  = 0, 'Table'    = 'Calculation_', 'Name'     = ASRSysExpressions.Name, 'Type' = ASRSysExpressions.ReturnType, 'Size'     = ASRSysMailMergeColumns.Size, 'Decimals' = ASRSysMailMergeColumns.Decimals FROM ASRSysMailMergeColumns LEFT OUTER JOIN ASRSysExpressions ON (ASRSysExpressions.ExprID = ASRSysMailMergeColumns.ColumnID) WHERE ASRSysMailMergeColumns.Type = 'E' AND ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " "
 		strSQL = strSQL1 & vbNewLine & "UNION" & vbNewLine & vbNewLine & strSQL2 & vbNewLine & "ORDER BY 'ColExp', 'Table', 'Name'"
-		mrsMailMergeColumns = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		mrsMailMergeColumns = DB.GetDataTable(strSQL)
 
 		Return fOK
 
@@ -568,10 +516,10 @@ LocalErr:
 		mstrSQLSelect = mstrSQLFrom & ".ID, '' AS [?Receipt]"
 
 		With mrsMailMergeColumns
-			fOK = Not (.BOF And .EOF)
+			fOK = (.Rows.Count > 0)
 			If fOK Then
 
-				Do While Not .EOF
+				For Each objRow As DataRow In .Rows
 
 					'01/08/2001 MH Fault 2125
 					intIndex = intIndex + 1
@@ -580,18 +528,18 @@ LocalErr:
 					ReDim Preserve mintDecimals(intIndex)
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngSize(intIndex) = IIf(IsDBNull(.Fields("Size").Value), 0, .Fields("Size").Value)
+					mlngSize(intIndex) = IIf(IsDBNull(objRow("Size")), 0, objRow("Size"))
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mintDecimals(intIndex) = IIf(IsDBNull(.Fields("Decimals").Value), 0, .Fields("Decimals").Value)
+					mintDecimals(intIndex) = IIf(IsDBNull(objRow("Decimals")), 0, objRow("Decimals"))
 
-					Select Case .Fields("ColExp").Value
+					Select Case objRow("ColExp")
 						Case "Col"
-							Call SQLAddColumn(mstrSQLSelect, .Fields("TableID").Value, .Fields("Table").Value, .Fields("Name").Value, .Fields("Table").Value & "_" & .Fields("Name").Value)
-							mintType(intIndex) = .Fields("Type").Value
+							Call SQLAddColumn(mstrSQLSelect, objRow("TableID"), objRow("Table"), objRow("Name"), objRow("Table") & "_" & objRow("Name"))
+							mintType(intIndex) = objRow("Type")
 
 						Case "Exp"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If IsDBNull(.Fields("Name").Value) Then
+							If IsDBNull(objRow("Name")) Then
 								'MH20011127
 								'mstrStatusMessage = _
 								'"This definition contains one or more calculation(s) which" & vbNewLine & _
@@ -600,7 +548,7 @@ LocalErr:
 								fOK = False
 								Exit Function
 
-							ElseIf IsCalcValid(.Fields("ColExpID").Value) <> vbNullString Then
+							ElseIf IsCalcValid(objRow("ColExpID")) <> vbNullString Then
 								'MH20011127
 								'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
 								'"Please re-visit your definition to remove the hidden calculations." & vbNewLine
@@ -609,10 +557,10 @@ LocalErr:
 								Exit Function
 
 							Else
-								Call SQLAddCalculation(.Fields("ColExpID").Value, .Fields("Table").Value & .Fields("Name").Value)
+								Call SQLAddCalculation(objRow("ColExpID"), objRow("Table") & objRow("Name"))
 
 								objExpr = New clsExprExpression
-								objExpr.ExpressionID = .Fields("ColExpID").Value
+								objExpr.ExpressionID = objRow("ColExpID")
 								objExpr.ConstructExpression()
 								objExpr.ValidateExpression(True)
 
@@ -638,8 +586,7 @@ LocalErr:
 						Exit Function
 					End If
 
-					.MoveNext()
-				Loop
+				Next
 
 			End If
 		End With
@@ -660,7 +607,6 @@ LocalErr:
 			mstrSQLWhere = " WHERE " & mstrSQLWhere
 		End If
 
-		mrsMailMergeColumns.Close()
 		'UPGRADE_NOTE: Object mrsMailMergeColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mrsMailMergeColumns = Nothing
 
@@ -844,25 +790,25 @@ LocalErr:
 
 	Private Sub SQLOrderByClause()
 
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim strSQL As String
 
 		On Error GoTo LocalErr
 
 		strSQL = "SELECT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName, ASRSysMailMergeColumns.SortOrder FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " AND SortOrderSequence > 0 ORDER BY SortOrderSequence"
-		rsTemp = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsTemp = DB.GetDataTable(strSQL)
 
 		With rsTemp
-			Do While Not .EOF
-				Call SQLAddColumn(mstrSQLOrder, .Fields("TableID").Value, .Fields("TableName").Value, .Fields("ColumnName").Value, vbNullString)
+			For Each objRow As DataRow In .Rows
 
-				mstrSQLOrder = mstrSQLOrder & IIf(Left(.Fields("SortOrder").Value, 1) = "A", " ASC", " DESC")
+				Call SQLAddColumn(mstrSQLOrder, objRow("TableID"), objRow("TableName"), objRow("ColumnName"), vbNullString)
+
+				mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder"), 1) = "A", " ASC", " DESC")
 
 				If fOK = False Then
 					Exit Sub
 				End If
-				.MoveNext()
-			Loop
+			Next
 		End With
 
 		If mstrSQLOrder <> vbNullString Then
@@ -991,54 +937,8 @@ LocalErr:
 
 	End Sub
 
-	Public Shared Function GetEmailAddress(ByRef lngRecordID As Integer, lngEmailAddrCalc As Integer) As String
-
-		' Return TRUE if the user has been granted the given permission.
-		Dim cmADO As Command
-		Dim pmADO As Parameter
-
-		On Error GoTo LocalErr
-
-		' Check if the user can create New instances of the given category.
-		cmADO = New Command
-		With cmADO
-			.CommandText = "dbo.spASRSysEmailAddr"
-			.CommandType = CommandTypeEnum.adCmdStoredProc
-			.CommandTimeout = 0
-			.ActiveConnection = gADOCon
-
-			pmADO = .CreateParameter("Result", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-			.Parameters.Append(pmADO)
-
-			pmADO = .CreateParameter("EmailID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			.Parameters.Append(pmADO)
-			pmADO.Value = lngEmailAddrCalc
-
-			pmADO = .CreateParameter("RecordID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			.Parameters.Append(pmADO)
-			pmADO.Value = lngRecordID
-
-			cmADO.Execute()
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			GetEmailAddress = IIf(IsDBNull(.Parameters(0).Value), vbNullString, .Parameters(0).Value)
-		End With
-		'UPGRADE_NOTE: Object cmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmADO = Nothing
-
-		Exit Function
-
-LocalErr:
-		'MsgBox "Error reading email details" & vbCr & "(" & Err.Description & ")", vbExclamation
-		'UPGRADE_NOTE: Object cmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmADO = Nothing
-
-	End Function
-
 	Public Sub EventLogChangeHeaderStatus(ByRef lngStatus As Integer)
-		mobjEventLog.ChangeHeaderStatus(lngStatus, mlngSuccessCount, mlngFailCount)
-
-
+		Logs.ChangeHeaderStatus(lngStatus, mlngSuccessCount, mlngFailCount)
 	End Sub
 
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
@@ -1116,7 +1016,7 @@ ErrorTrap:
 	Private Function IsRecordSelectionValid() As Boolean
 
 		Dim sSQL As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
 
@@ -1153,12 +1053,13 @@ ErrorTrap:
 		If Len(mstrStatusMessage) = 0 Then
 			sSQL = "SELECT * FROM ASRSysMailMergeColumns WHERE MailMergeID = " & mlngMailMergeID & " AND LOWER(Type) = 'e' "
 
-			rsTemp = mclsGeneral.GetRecords(sSQL)
+			rsTemp = DB.GetDataTable(sSQL)
 			With rsTemp
-				If Not (.EOF And .BOF) Then
-					.MoveFirst()
-					Do Until .EOF
-						iResult = ValidateCalculation(.Fields("ColumnID").Value)
+				If .Rows.Count > 0 Then
+
+					For Each objRow As DataRow In .Rows
+
+						iResult = ValidateCalculation(objRow("ColumnID"))
 						Select Case iResult
 							Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 								mstrStatusMessage = "A calculation used in this definition has been deleted by another user."
@@ -1171,11 +1072,10 @@ ErrorTrap:
 						End Select
 
 						If Len(mstrStatusMessage) > 0 Then
-							Exit Do
+							Exit For
 						End If
 
-						.MoveNext()
-					Loop
+					Next
 				End If
 			End With
 
@@ -1188,7 +1088,7 @@ ErrorTrap:
 	End Function
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return mclsGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 End Class
