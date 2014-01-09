@@ -191,16 +191,16 @@ ErrorTrap:
 			If lngOriginalExprID = 0 Then
 				Select Case mobjBaseExpr.ExpressionType
 					Case ExpressionTypes.giEXPR_RUNTIMECALCULATION
-						Call UtilCreated(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
+						AccessLog.UtilCreated(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
 					Case ExpressionTypes.giEXPR_RUNTIMEFILTER
-						Call UtilCreated(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
+						AccessLog.UtilCreated(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
 				End Select
 			Else
 				Select Case mobjBaseExpr.ExpressionType
 					Case ExpressionTypes.giEXPR_RUNTIMECALCULATION
-						Call UtilUpdateLastSaved(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
+						AccessLog.UtilUpdateLastSaved(UtilityType.utlCalculation, (mobjBaseExpr.ExpressionID))
 					Case ExpressionTypes.giEXPR_RUNTIMEFILTER
-						Call UtilUpdateLastSaved(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
+						AccessLog.UtilUpdateLastSaved(UtilityType.utlFilter, (mobjBaseExpr.ExpressionID))
 				End Select
 			End If
 		End If

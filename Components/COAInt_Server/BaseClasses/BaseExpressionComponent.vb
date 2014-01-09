@@ -11,11 +11,13 @@ Namespace BaseClasses
 		Protected ReadOnly Login As LoginInfo
 		Protected General As New clsGeneral
 		Protected DB As New clsDataAccess
+		Protected AccessLog As AccessLog
 
 		Public Sub New(ByVal Value As LoginInfo)
 			Login = Value
 			DB = New clsDataAccess(Login)
 			General = New clsGeneral(Login)
+			AccessLog = New AccessLog(Login)
 		End Sub
 
 		' keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes

@@ -11,6 +11,7 @@ Namespace BaseClasses
 		Protected DB As clsDataAccess
 		Protected General As clsGeneral
 		Protected Logs As clsEventLog
+		Protected AccessLog As AccessLog
 
 		Private _sessionInfo As SessionInfo
 		Private _login As LoginInfo
@@ -26,6 +27,7 @@ Namespace BaseClasses
 				DB = New clsDataAccess(_sessionInfo.LoginInfo)
 				General = New clsGeneral(_sessionInfo.LoginInfo)
 				Logs = New clsEventLog(_sessionInfo.LoginInfo)
+				AccessLog = New AccessLog(_sessionInfo.LoginInfo)
 
 				' Tempry one for expressions as there's a lot of code in module and not classes - yuck!
 				dataAccess = New clsDataAccess(_sessionInfo.LoginInfo)

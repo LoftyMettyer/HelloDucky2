@@ -366,7 +366,7 @@ Public Class MailMerge
 		fOK = IsRecordSelectionValid()
 
 		If fOK Then
-			Call UtilUpdateLastRun(UtilityType.utlMailMerge, mlngMailMergeID)
+			AccessLog.UtilUpdateLastRun(UtilityType.utlMailMerge, mlngMailMergeID)
 		End If
 
 TidyAndExit:

@@ -3964,7 +3964,7 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 		On Error GoTo ClearUp_ERROR
 
-		Call UtilUpdateLastRun(UtilityType.utlCustomReport, mlngCustomReportID)
+		AccessLog.UtilUpdateLastRun(UtilityType.utlCustomReport, mlngCustomReportID)
 
 		mlngCustomReportID = 0
 		mstrCustomReportsName = vbNullString

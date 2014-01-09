@@ -2081,7 +2081,7 @@ ErrorTrap:
 
 	Public Sub SetLastRun()
 
-		Call UtilUpdateLastRun(UtilityType.utlCalendarReport, mlngCalendarReportID)
+		AccessLog.UtilUpdateLastRun(UtilityType.utlCalendarReport, mlngCalendarReportID)
 
 	End Sub
 

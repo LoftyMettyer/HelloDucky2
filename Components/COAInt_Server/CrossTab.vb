@@ -699,7 +699,7 @@ ErrorTrap:
 
 		End With
 
-		Call UtilUpdateLastRun(UtilityType.utlCrossTab, mlngCrossTabID)
+		AccessLog.UtilUpdateLastRun(UtilityType.utlCrossTab, mlngCrossTabID)
 
 TidyAndExit:
 		RetreiveDefinition = fOK

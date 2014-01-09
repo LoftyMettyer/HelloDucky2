@@ -256,7 +256,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modTrainingBookingSpecifics.vb" />
-    <Compile Include="modUtilAccessLog.vb">
+    <Compile Include="AccessLog.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modUtilityAccess.vb">
