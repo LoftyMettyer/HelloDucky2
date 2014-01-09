@@ -3648,10 +3648,7 @@ Namespace Controllers
 			Dim objCalendar As HR.Intranet.Server.CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), HR.Intranet.Server.CalendarReport)
 			Dim intEventID As Int32 = Request.Form("txtBaseIndex").ToString()
 
-			Dim rsEvents As Recordset
-			rsEvents = objCalendar.EventsRecordset
-
-			Dim datEvent As DataTable = RecordSetToDataTable(rsEvents)
+			Dim datEvent As DataTable = objCalendar.EventsRecordset
 
 			sSQL = "ID =" & intEventID
 			Dim objRow As DataRow = datEvent.Select(sSQL).FirstOrDefault()
@@ -3668,7 +3665,7 @@ Namespace Controllers
 			objCalendarEvent.Region = objRow.Item("Region").ToString()
 			objCalendarEvent.CalendarCode = objRow.Item("Legend").ToString()
 
-			Dim datWorkingPatterns As DataTable = RecordSetToDataTable(objCalendar.rsCareerChange)
+			Dim datWorkingPatterns As DataTable = objCalendar.rsCareerChange
 			sSQL = String.Format("BaseID = {0} AND [WP_Date] <= '{1}'", objCalendarEvent.BaseID, objCalendarEvent.StartDate)
 			objRow = datWorkingPatterns.Select(sSQL, "[WP_Date]").FirstOrDefault()
 			objCalendarEvent.WorkingPattern = objRow.Item("WP_Pattern").ToString()

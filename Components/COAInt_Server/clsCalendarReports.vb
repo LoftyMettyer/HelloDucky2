@@ -2,7 +2,6 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
-Imports ADODB
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
@@ -17,7 +16,7 @@ Public Class CalendarReport
 	Public Legend As List(Of CalendarLegend)
 	Public LegendColors As List(Of LegendColor)
 
-	Public rsCareerChange As Recordset
+	Public rsCareerChange As DataTable
 
 	Private mstrSQLSelect_RegInfoRegion As String
 	Private mstrSQLSelect_BankHolDate As String
@@ -108,8 +107,8 @@ Public Class CalendarReport
 	Private mstrOutputFilename As String
 
 	'Recordset to store the final data from the temp table
-	Private mrsCalendarReportsOutput As Recordset
-	Private mrsCalendarBaseInfo As Recordset
+	Private mrsCalendarReportsOutput As DataTable
+	Private mrsCalendarBaseInfo As DataTable
 
 	Private mstrClientDateFormat As String
 	Private mstrLocalDecimalSeparator As String
@@ -142,7 +141,6 @@ Public Class CalendarReport
 	Private mstrSQLBaseDurationColumn As String
 
 	' Classes
-	Private mclsData As clsDataAccess
 	Private mobjEventLog As clsEventLog
 
 	'Array holding the columns to sort the report by
@@ -185,7 +183,7 @@ Public Class CalendarReport
 	Private mavOutputDateIndex(,) As Object
 
 	Private mintFirstDayOfMonth_Output As Short
-	Private mintDaysInMonth_Output As Short
+	Private mintDaysInMonth_Output As Integer
 
 	Private mintRangeStartIndex_Output As Short
 	Private mintRangeEndIndex_Output As Short
@@ -271,7 +269,7 @@ Public Class CalendarReport
 
 		Dim strDateSeparator As String
 
-		Dim i As Short
+		Dim i As Integer
 
 		' eg. DateFormat = "MM/dd/yyyy"
 		'     Calendar   = "dd/mm/yyyy"
@@ -681,9 +679,9 @@ Public Class CalendarReport
 		Get
 			If mblnCustomReportsPrintFilterHeader Then
 				If (mlngCalendarReportsFilterID > 0) Then
-					CalendarReportTitle = mstrCalendarReportsName & " (Base Table filter : " & datGeneral.GetFilterName(mlngCalendarReportsFilterID) & ")"
+					CalendarReportTitle = mstrCalendarReportsName & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
 				ElseIf (mlngCalendarReportsPickListID > 0) Then
-					CalendarReportTitle = mstrCalendarReportsName & " (Base Table picklist : " & datGeneral.GetPicklistName(mlngCalendarReportsPickListID) & ")"
+					CalendarReportTitle = mstrCalendarReportsName & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
 				End If
 			Else
 				CalendarReportTitle = mstrCalendarReportsName
@@ -700,13 +698,13 @@ Public Class CalendarReport
 	Public Events As DataTable
 
 
-	Public ReadOnly Property EventsRecordset() As Recordset
+	Public ReadOnly Property EventsRecordset() As DataTable
 		Get
 			Return mrsCalendarReportsOutput
 		End Get
 	End Property
 
-	Public ReadOnly Property BaseRecordset() As Recordset
+	Public ReadOnly Property BaseRecordset() As DataTable
 		Get
 			Return mrsCalendarBaseInfo
 		End Get
@@ -829,9 +827,9 @@ Public Class CalendarReport
 		Dim strSQL As String
 
 		Try
-			mstrTempTableName = datGeneral.UniqueSQLObjectName("ASRSysTempCalendarReport", 3)
+			mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCalendarReport", 3)
 			strSQL = String.Format("CREATE TABLE [{0}] ({1})", mstrTempTableName, mstrSQLCreateTable)
-			mclsData.ExecuteSql(strSQL)
+			DB.ExecuteSql(strSQL)
 			mblnTempTableCreated = True
 
 		Catch ex As Exception
@@ -851,15 +849,15 @@ Public Class CalendarReport
 		'get the datatype/properties for the desc1 column
 		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 		If (plngColumnID > 0) And (Not IsDBNull(pvarValue)) Then
-			If datGeneral.DoesColumnUseSeparators(plngColumnID) Then
-				iDecimals = datGeneral.GetDecimalsSize(plngColumnID)
+			If General.DoesColumnUseSeparators(plngColumnID) Then
+				iDecimals = General.GetDecimalsSize(plngColumnID)
 				strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 				strTempEventDesc = Format(pvarValue, strFormat)
 
-			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
+			ElseIf General.GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
 				strTempEventDesc = pvarValue
 
-			ElseIf datGeneral.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+			ElseIf General.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 				strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
 
 			Else
@@ -886,13 +884,13 @@ Public Class CalendarReport
 
 		'get the datatype/properties for the desc1 column
 		If (mlngDescription1 > 0) Then
-			If datGeneral.DoesColumnUseSeparators(mlngDescription1) Then
+			If General.DoesColumnUseSeparators(mlngDescription1) Then
 				mintType_BaseDesc1 = 3
-				iDecimals = datGeneral.GetDecimalsSize(mlngDescription1)
+				iDecimals = General.GetDecimalsSize(mlngDescription1)
 				mstrFormat_BaseDesc1 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
-			ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+			ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 				mintType_BaseDesc1 = 2
-			ElseIf datGeneral.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+			ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 				mintType_BaseDesc1 = 1
 			Else
 				mintType_BaseDesc1 = 0
@@ -900,13 +898,13 @@ Public Class CalendarReport
 		End If
 		'get the datatype/properties for the desc2 column
 		If (mlngDescription2 > 0) Then
-			If datGeneral.DoesColumnUseSeparators(mlngDescription2) Then
+			If General.DoesColumnUseSeparators(mlngDescription2) Then
 				mintType_BaseDesc2 = 3
-				iDecimals = datGeneral.GetDecimalsSize(mlngDescription2)
+				iDecimals = General.GetDecimalsSize(mlngDescription2)
 				mstrFormat_BaseDesc2 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
-			ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+			ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 				mintType_BaseDesc2 = 2
-			ElseIf datGeneral.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+			ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 				mintType_BaseDesc2 = 1
 			Else
 				mintType_BaseDesc2 = 0
@@ -914,9 +912,9 @@ Public Class CalendarReport
 		End If
 		'get the datatype/properties for the descexpr column
 		If (mlngDescriptionExpr > 0) Then
-			If datGeneral.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+			If General.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 				mintType_BaseDescExpr = 2
-			ElseIf datGeneral.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+			ElseIf General.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 				mintType_BaseDescExpr = 1
 			Else
 				mintType_BaseDescExpr = 0
@@ -951,9 +949,9 @@ Public Class CalendarReport
 		End If
 
 		strSQL = "INSERT INTO [" & mstrTempTableName & "] " & pstrSelectString
-		mclsData.ExecuteSql(strSQL)
+		DB.ExecuteSql(strSQL)
 
-		InsertIntoTempTable = True
+		Return True
 
 TidyUpAndExit:
 		Exit Function
@@ -1095,7 +1093,7 @@ AddError:
 
 	End Function
 
-	Private Function DaysInMonth(ByRef pdtMonth As Date) As Short
+	Private Function DaysInMonth(ByRef pdtMonth As Date) As Integer
 
 		'Return the number of days in the month
 
@@ -1109,7 +1107,7 @@ AddError:
 	Public Function OutputReport(ByRef blnPrompt As Boolean) As Boolean
 
 		Dim intMonth As Short
-		Dim intMonthCount As Short
+		Dim intMonthCount As Integer
 		Dim dtMonth As Date
 		Dim fOK As Boolean
 		Dim strPageName As String
@@ -1128,7 +1126,7 @@ AddError:
 
 		mstrExcludedColours = CStr(mlngBC_Data)
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mlngBC_Data = datGeneral.GetUserSetting("output", "databackcolour", 13434879)
+		mlngBC_Data = General.GetUserSetting("output", "databackcolour", 13434879)
 		mstrExcludedColours = mstrExcludedColours & ", " & CStr(mlngBC_Data)
 
 		GetAvailableColours(mstrExcludedColours)
@@ -1236,33 +1234,31 @@ ErrorTrap:
 		mlngCurrentRecordID = -1
 
 		With mrsCalendarBaseInfo
-			If .BOF And .EOF Then
-				OutputArray_AddCalendar = False
-				GoTo TidyUpAndExit
+			If .Rows.Count = 0 Then
+				Return False
 			End If
 
 			ReDim mavOutputDateIndex(2, 0)
 
-			.MoveFirst()
-			Do While Not .EOF
+			For Each objRow As DataRow In .Rows
 
 				' Get base description 1
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If Not IsDBNull(.Fields("Description1").Value) Then
-					If datGeneral.DoesColumnUseSeparators(mlngDescription1) Then
-						iDecimals = datGeneral.GetDecimalsSize(mlngDescription1)
+				If Not IsDBNull(objRow("Description1")) Then
+					If General.DoesColumnUseSeparators(mlngDescription1) Then
+						iDecimals = General.GetDecimalsSize(mlngDescription1)
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription1 = Format(.Fields("Description1").Value, strFormat)
-					ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+						strBaseDescription1 = Format(objRow("Description1"), strFormat)
+					ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription1 = IIf(.Fields("Description1").Value, "Y", "N")
-					ElseIf datGeneral.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+						strBaseDescription1 = IIf(objRow("Description1"), "Y", "N")
+					ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription1 = VB6.Format(.Fields("Description1").Value, mstrClientDateFormat)
+						strBaseDescription1 = VB6.Format(objRow("Description1"), mstrClientDateFormat)
 					Else
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription1 = .Fields("Description1").Value
+						strBaseDescription1 = objRow("Description1")
 					End If
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1271,21 +1267,21 @@ ErrorTrap:
 
 				' Get base description 2
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If Not IsDBNull(.Fields("Description2").Value) Then
-					If datGeneral.DoesColumnUseSeparators(mlngDescription2) Then
-						iDecimals = datGeneral.GetDecimalsSize(mlngDescription2)
+				If Not IsDBNull(objRow("Description2")) Then
+					If General.DoesColumnUseSeparators(mlngDescription2) Then
+						iDecimals = General.GetDecimalsSize(mlngDescription2)
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription2 = Format(.Fields("Description2").Value, strFormat)
-					ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+						strBaseDescription2 = Format(objRow("Description2"), strFormat)
+					ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription2 = IIf(.Fields("Description2").Value, "Y", "N")
-					ElseIf datGeneral.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+						strBaseDescription2 = IIf(objRow("Description2"), "Y", "N")
+					ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription2 = VB6.Format(.Fields("Description2").Value, mstrClientDateFormat)
+						strBaseDescription2 = VB6.Format(objRow("Description2"), mstrClientDateFormat)
 					Else
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strBaseDescription2 = .Fields("Description2").Value
+						strBaseDescription2 = objRow("Description2")
 					End If
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1294,13 +1290,13 @@ ErrorTrap:
 
 				' Get base description expression
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If Not IsDBNull(.Fields("DescriptionExpr").Value) Then
-					If datGeneral.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
-						strBaseDescriptionExpr = IIf(.Fields("DescriptionExpr").Value, "Y", "N")
-					ElseIf datGeneral.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
-						strBaseDescriptionExpr = IIf(.Fields("DescriptionExpr").Value, "Y", "N")
+				If Not IsDBNull(objRow("DescriptionExpr")) Then
+					If General.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+						strBaseDescriptionExpr = IIf(objRow("DescriptionExpr"), "Y", "N")
+					ElseIf General.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+						strBaseDescriptionExpr = IIf(objRow("DescriptionExpr"), "Y", "N")
 					Else
-						strBaseDescriptionExpr = .Fields("DescriptionExpr").Value
+						strBaseDescriptionExpr = objRow("DescriptionExpr")
 					End If
 				Else
 					strBaseDescriptionExpr = vbNullString
@@ -1327,15 +1323,15 @@ ErrorTrap:
 						mstrBaseRecDesc = strTempRecordDesc
 						mintBaseRecordCount_Output = mintBaseRecordCount_Output + 1
 					End If
-					mlngCurrentRecordID = .Fields(mstrBaseIDColumn).Value
+					mlngCurrentRecordID = CInt(objRow(mstrBaseIDColumn))
 
 				Else
-					If .Fields(mstrBaseIDColumn).Value <> mlngCurrentRecordID Then
+					If CInt(objRow(mstrBaseIDColumn)) <> mlngCurrentRecordID Then
 						blnNewBaseRecord = True
 
 						mstrBaseRecDesc = strTempRecordDesc
 
-						mlngCurrentRecordID = .Fields(mstrBaseIDColumn).Value
+						mlngCurrentRecordID = objRow(mstrBaseIDColumn)
 						mintBaseRecordCount_Output = mintBaseRecordCount_Output + 1
 					End If
 
@@ -1356,7 +1352,7 @@ ErrorTrap:
 							intControlCount = intControlCount + 1
 						End If
 
-						lngBaseID = CInt(.Fields(mstrBaseIDColumn).Value)
+						lngBaseID = CInt(objRow(mstrBaseIDColumn))
 
 						If (intControlCount >= mintFirstDayOfMonth_Output) And (intControlCount < (mintFirstDayOfMonth_Output + mintDaysInMonth_Output)) Then
 							strSession = IIf(intSessionCount = 2, " PM", " AM")
@@ -1435,7 +1431,7 @@ ErrorTrap:
 					Next iCount2
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavOutputDateIndex(0, mintBaseRecordCount_Output). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavOutputDateIndex(0, mintBaseRecordCount_Output) = .Fields(mstrBaseIDColumn).Value
+					mavOutputDateIndex(0, mintBaseRecordCount_Output) = objRow(mstrBaseIDColumn)
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavOutputDateIndex(1, mintBaseRecordCount_Output). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mavOutputDateIndex(1, mintBaseRecordCount_Output) = mstrBaseRecDesc
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavOutputDateIndex(2, mintBaseRecordCount_Output). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1443,7 +1439,7 @@ ErrorTrap:
 
 				End If
 
-				mcolBaseDescIndex_Output.Add(mintBaseRecordCount_Output, CStr(.Fields(mstrBaseIDColumn).Value))
+				mcolBaseDescIndex_Output.Add(mintBaseRecordCount_Output, objRow(mstrBaseIDColumn).ToString())
 
 				ReDim varTempArray(9, 0)
 
@@ -1452,19 +1448,14 @@ ErrorTrap:
 
 				blnNewBaseRecord = False
 
-				.MoveNext()
-			Loop
+			Next
 
 		End With
 
-		OutputArray_AddCalendar = True
-
-TidyUpAndExit:
-		Exit Function
+		Return True
 
 ErrorTrap:
-		OutputArray_AddCalendar = False
-		GoTo TidyUpAndExit
+		Return False
 
 	End Function
 
@@ -1817,46 +1808,45 @@ ErrorTrap:
 
 			' If there are no event records, skip this bit
 			' this bit (but still show the form)
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				Exit Function
 			End If
 
-			.MoveFirst()
-			' Loop through the events recordset
-			Do Until .EOF
+			For Each objRow As DataRow In .Rows
 
-				lngCurrentBaseID = .Fields(mstrBaseIDColumn).Value
+
+				lngCurrentBaseID = objRow(mstrBaseIDColumn)
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolBaseDescIndex_Output.Item(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				intBaseRecordIndex = mcolBaseDescIndex_Output.Item(CStr(lngCurrentBaseID))
 
 				' Load each event record data into variables
 				' (has to be done because start/end dates may be modified by code to fill grid correctly)
-				mstrCurrentEventKey = .Fields(mstrEventIDColumn).Value
+				mstrCurrentEventKey = objRow(mstrEventIDColumn)
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrEventLegend_Output = IIf(IsDBNull(.Fields("Legend").Value), "", Left(.Fields("Legend").Value, 2))
+				mstrEventLegend_Output = IIf(IsDBNull(objRow("Legend")), "", Left(objRow("Legend"), 2))
 
 				'****************************************************************************
-				mdtEventStartDate_Output = .Fields("StartDate").Value
+				mdtEventStartDate_Output = objRow("StartDate")
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(.Fields("EndDate").Value) Then
+				If IsDBNull(objRow("EndDate")) Then
 					mdtEventEndDate_Output = mdtEventStartDate_Output
 				Else
-					mdtEventEndDate_Output = .Fields("EndDate").Value
+					mdtEventEndDate_Output = objRow("EndDate")
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(.Fields("StartSession").Value) And IsDBNull(.Fields("EndSession").Value) Then
+				If IsDBNull(objRow("StartSession")) And IsDBNull(objRow("EndSession")) Then
 					mstrEventStartSession_Output = "AM"
 					mstrEventEndSession_Output = "PM"
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				ElseIf IsDBNull(.Fields("EndSession").Value) Then
+				ElseIf IsDBNull(objRow("EndSession")) Then
 					mstrEventEndSession_Output = mstrEventStartSession_Output
 				Else
-					mstrEventStartSession_Output = UCase(.Fields("StartSession").Value.ToString())
-					mstrEventEndSession_Output = UCase(.Fields("EndSession").Value.ToString())
+					mstrEventStartSession_Output = UCase(objRow("StartSession").ToString())
+					mstrEventEndSession_Output = UCase(objRow("EndSession").ToString())
 				End If
 
 				'****************************************************************************
@@ -1917,21 +1907,17 @@ ErrorTrap:
 				End If
 
 				If fOK = False Then
-					Exit Do
+					Exit For
 				End If
 
-				.MoveNext()
-			Loop
+			Next
 		End With
 
-		OutputArray_AddEvents = True
+		Return True
 
-TidyUpAndExit:
-		Exit Function
 
 ErrorTrap:
-		OutputArray_AddEvents = False
-		GoTo TidyUpAndExit
+		Return False
 
 	End Function
 
@@ -1983,7 +1969,7 @@ ErrorTrap:
 
 		On Error GoTo ErrorTrap
 
-		Dim intCount As Short
+		Dim intCount As Integer
 
 		Dim varTempArray(,) As Object
 
@@ -2050,7 +2036,7 @@ ErrorTrap:
 
 	Private Function GetLegendColour(ByRef pstrEventKey As String) As String
 
-		Dim i As Short
+		Dim i As Integer
 		Dim lngTemp As Integer
 
 		For i = 0 To UBound(mavLegend, 2) Step 1
@@ -2063,7 +2049,7 @@ ErrorTrap:
 			End If
 		Next i
 
-		GetLegendColour = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black).ToString
+		Return ColorTranslator.ToOle(Color.Black).ToString
 
 	End Function
 
@@ -2169,7 +2155,7 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim i As Integer
 		Dim iLegendCount As Integer
-		Dim iNewIndex As Short
+		Dim iNewIndex As Integer
 
 		fOK = True
 
@@ -2228,15 +2214,15 @@ ErrorTrap:
 
 		On Error GoTo ErrorTrap
 
-		Dim intNewIndex As Short
-		Dim intCount As Short
+		Dim intNewIndex As Integer
+		Dim intCount As Integer
 
 		Dim strEventID As String
 
 		Dim blnNewEvent As Boolean
 
 		Dim intColourIndex As Short
-		Dim intColourMax As Short
+		Dim intColourMax As Integer
 
 		strEventID = vbNullString
 
@@ -2245,12 +2231,12 @@ ErrorTrap:
 		intColourMax = UBound(mavAvailableColours, 2)
 
 		With mrsCalendarReportsOutput
-			If Not (.BOF And .EOF) Then
+			If Not (.Rows.Count = 0) Then
 
-				.MoveFirst()
-				Do While Not .EOF
-					If strEventID <> .Fields(mstrEventIDColumn).Value Then
-						strEventID = .Fields(mstrEventIDColumn).Value
+				For Each objRow As DataRow In .Rows
+
+					If strEventID <> objRow(mstrEventIDColumn) Then
+						strEventID = objRow(mstrEventIDColumn)
 
 						blnNewEvent = True
 						For intCount = 1 To UBound(mavLegend, 2) Step 1
@@ -2267,9 +2253,9 @@ ErrorTrap:
 							'UPGRADE_WARNING: Couldn't resolve default property of object mavLegend(0, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							mavLegend(0, intNewIndex) = strEventID
 							'UPGRADE_WARNING: Couldn't resolve default property of object mavLegend(1, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mavLegend(1, intNewIndex) = Left(.Fields("Name").Value, 50)
+							mavLegend(1, intNewIndex) = Left(objRow("Name"), 50)
 							'UPGRADE_WARNING: Couldn't resolve default property of object mavLegend(2, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mavLegend(2, intNewIndex) = Left(.Fields("Legend").Value, 2)
+							mavLegend(2, intNewIndex) = Left(objRow("Legend"), 2)
 
 							intColourIndex = (intNewIndex - 1) Mod intColourMax
 							'UPGRADE_WARNING: Couldn't resolve default property of object mavAvailableColours(1, intColourIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -2279,8 +2265,7 @@ ErrorTrap:
 						End If
 					End If
 
-					.MoveNext()
-				Loop
+				Next
 
 				' Sort the Array here - then add the Multiple events item to the end.
 				SortLegend(mavLegend, 1)
@@ -2299,21 +2284,17 @@ ErrorTrap:
 				End If
 
 			Else
-				Load_Legend = False
-				GoTo TidyUpAndExit
+				Return False
 
 			End If
 		End With
 
-		Load_Legend = True
+		Return True
 
-TidyUpAndExit:
-		Exit Function
 
 ErrorTrap:
 		mstrErrorString = "Error creating Calendar Report Key."
-		Load_Legend = False
-		GoTo TidyUpAndExit
+		Return False
 
 	End Function
 
@@ -2367,15 +2348,9 @@ ErrorTrap:
 
 	Private Function GetAvailableColours(ByRef pstrExcludedColours As String) As Boolean
 
-		On Error GoTo ErrorTrap
+		Dim rsColours As DataTable
 
-		Dim rsColours As Recordset
-
-		Dim intColourCount As Short
-		Dim intNextIndex As Short
-
-		intColourCount = 0
-		intNextIndex = 0
+		Dim intNextIndex As Short = 0
 		ReDim mavAvailableColours(3, intNextIndex)
 
 		Dim strSQL As String
@@ -2387,45 +2362,33 @@ ErrorTrap:
 			& "WHERE (CalendarLegendColour = 1) " _
 			& "  AND (ASRSysColours.ColValue NOT IN ( " & pstrExcludedColours & ")) " _
 			& "ORDER BY ASRSysColours.ColOrder "
-		rsColours = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsColours = DB.GetDataTable(strSQL)
 
 		With rsColours
-			If .BOF And .EOF Then
-				GetAvailableColours = False
-				GoTo TidyUpAndExit
+			If .Rows.Count = 0 Then
+				Return False
 			End If
 
-			.MoveFirst()
-			Do While Not .EOF
+			For Each objRow As DataRow In .Rows
+
 				ReDim Preserve mavAvailableColours(3, intNextIndex)
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAvailableColours(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAvailableColours(0, intNextIndex) = .Fields("ColValue").Value
+				mavAvailableColours(0, intNextIndex) = objRow("ColValue")
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAvailableColours(1, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAvailableColours(1, intNextIndex) = HexValue(CInt(.Fields("ColValue").Value))
+				mavAvailableColours(1, intNextIndex) = HexValue(CInt(objRow("ColValue")))
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAvailableColours(2, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAvailableColours(2, intNextIndex) = .Fields("ColDesc").Value
+				mavAvailableColours(2, intNextIndex) = objRow("ColDesc").ToString()
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAvailableColours(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAvailableColours(3, intNextIndex) = .Fields("WordColourIndex").Value
+				mavAvailableColours(3, intNextIndex) = objRow("WordColourIndex")
 
 				intNextIndex = UBound(mavAvailableColours, 2) + 1
 
-				.MoveNext()
-			Loop
+			Next
 
 		End With
-		rsColours.Close()
 
-		GetAvailableColours = True
-
-TidyUpAndExit:
-		'UPGRADE_NOTE: Object rsColours may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsColours = Nothing
-		Exit Function
-
-ErrorTrap:
-		GetAvailableColours = False
-		GoTo TidyUpAndExit
+		Return True
 
 	End Function
 
@@ -3001,7 +2964,7 @@ ErrorTrap:
 	' Get columns defined as a SortOrder and load into array
 	Public Function GetOrderArray() As Boolean
 
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim sSQL As String
 		Dim intTemp As Integer
 
@@ -3011,26 +2974,27 @@ ErrorTrap:
 					& " INNER JOIN ASRSysColumns c ON c.ColumnID = o.ColumnID AND c.tableid = t.tableid" _
 					& " WHERE CalendarReportID = {0}" _
 					& " ORDER BY [OrderSequence]", mlngCalendarReportID)
-			rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			rsTemp = DB.GetDataTable(sSQL)
 
 			With rsTemp
-				If .BOF And .EOF Then
+				If .Rows.Count = 0 Then
 					mstrErrorString = "No columns have been defined as a sort order for the specified Calendar Report definition." & vbNewLine & "Please remove this definition and create a new one."
 					Return False
 				End If
-				Do Until .EOF
+
+				For Each objRow As DataRow In rsTemp.Rows
+
 					intTemp = UBound(mvarSortOrder, 2) + 1
 					ReDim Preserve mvarSortOrder(2, intTemp)
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarSortOrder(0, intTemp) = .Fields("ColumnID").Value
+					mvarSortOrder(0, intTemp) = CInt(objRow("ColumnID"))
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarSortOrder(1, intTemp) = .Fields("ColumnName").Value
+					mvarSortOrder(1, intTemp) = objRow("ColumnName").ToString()
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarSortOrder(2, intTemp) = .Fields("OrderType").Value
+					mvarSortOrder(2, intTemp) = objRow("OrderType")
 
-					.MoveNext()
-				Loop
+				Next
 			End With
 
 		Catch ex As Exception
@@ -3144,14 +3108,12 @@ ErrorTrap:
 
 	End Function
 
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
+	Public Sub Initialise()
 
 		' Purpose : Sets references to other classes and redimensions arrays
 		'           used for table usage information
 
-		Dim rstData As Recordset
-		mclsData = New clsDataAccess
+		Dim rstData As DataTable
 		mobjEventLog = New clsEventLog
 		mcolBaseDescIndex = New Collection
 
@@ -3173,23 +3135,17 @@ ErrorTrap:
 
 		LegendColors = New List(Of LegendColor)()
 
-		rstData = DB.OpenRecordset("EXEC spASRIntGetCalendarColours", CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		Do While Not rstData.EOF
+		rstData = DB.GetDataTable("spASRIntGetCalendarColours", CommandType.StoredProcedure)
+		For Each objRow As DataRow In rstData.Rows
 			Dim objItem = New LegendColor
-			objItem.ColOrder = rstData.Fields("colorder").Value.ToString
-			objItem.ColValue = rstData.Fields("ColValue").Value.ToString
-			objItem.ColDesc = rstData.Fields("ColDesc").Value.ToString
-			objItem.WordColorIndex = rstData.Fields("WordColourIndex").Value.ToString
-			objItem.IsCalendarLegendColor = rstData.Fields("CalendarLegendColour").Value
+			objItem.ColOrder = objRow("colorder").ToString()
+			objItem.ColValue = objRow("ColValue").ToString
+			objItem.ColDesc = objRow("ColDesc").ToString
+			objItem.WordColorIndex = objRow("WordColourIndex").ToString
+			objItem.IsCalendarLegendColor = objRow("CalendarLegendColour")
 			LegendColors.Add(objItem)
-			rstData.MoveNext()
-		Loop
+		Next
 
-	End Sub
-
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
 	End Sub
 
 	Private Function IsColumnInView(ByRef plngViewID As Integer, ByRef plngColumnID As Integer) As Boolean
@@ -3211,8 +3167,6 @@ ErrorTrap:
 	Private Sub Class_Terminate_Renamed()
 
 		' Purpose : Clears references to other classes.
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
 
 		'Set mfrmOutput = Nothing
 		'UPGRADE_NOTE: Object mcolEvents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -3256,9 +3210,9 @@ ErrorTrap:
 		GenerateSQLOrderBy()
 		mstrSQL = mstrSQL & mstrSQLOrderBy
 
-		mrsCalendarReportsOutput = mclsData.OpenRecordset(mstrSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		mrsCalendarReportsOutput = DB.GetDataTable(mstrSQL)
 
-		If mrsCalendarReportsOutput.BOF And mrsCalendarReportsOutput.EOF Then
+		If mrsCalendarReportsOutput.Rows.Count = 0 Then
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
@@ -3270,9 +3224,9 @@ ErrorTrap:
 		MultipleCheck()
 
 		'get only the base table info into a recordset
-		mrsCalendarBaseInfo = mclsData.OpenRecordset(mstrSQLBaseData, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		mrsCalendarBaseInfo = DB.GetDataTable(mstrSQLBaseData)
 
-		If mrsCalendarBaseInfo.BOF And mrsCalendarBaseInfo.EOF Then
+		If mrsCalendarBaseInfo.Rows.Count = 0 Then
 			ExecuteSql = False
 			mstrErrorString = "No records meet selection criteria."
 			mblnNoRecords = True
@@ -3286,19 +3240,18 @@ ErrorTrap:
 		'TM08102003
 		UDFFunctions(mastrUDFsRequired, False)
 
-		ExecuteSql = True
-		Exit Function
+		Return True
 
 ExecuteSQL_ERROR:
 
 		mstrErrorString = "Error whilst executing SQL statement." & vbNewLine & Err.Description
-		ExecuteSql = False
+		Return False
 
 	End Function
 
 	Private Function MultipleCheck() As Boolean
 
-		Dim rsMultiple As Recordset
+		Dim rsMultiple As DataTable
 		Dim sSQL As String
 		Dim dtSD As Date
 		Dim dtED As Date
@@ -3320,162 +3273,159 @@ ExecuteSQL_ERROR:
 
 		sSQL = "SELECT [BaseID], [Description1], [Description2], [DescriptionExpr], [StartDate], [StartSession], [EndDate], [EndSession] " _
 			& "FROM [" & gsUsername & "].[" & mstrTempTableName & "] " & mstrSQLOrderBy & vbNewLine
-		rsMultiple = DB.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsMultiple = DB.GetDataTable(sSQL)
 
 		If Not rsMultiple Is Nothing Then
 			With rsMultiple
-				If Not (.BOF And .EOF) Then
-					Do Until .EOF
-						dtSD = .Fields("StartDate").Value
+				For Each objRow As DataRow In .Rows
+					dtSD = objRow("StartDate")
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					dtED = IIf(IsDBNull(objRow("EndDate")), objRow("StartDate"), objRow("EndDate"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					strStartSession = IIf(IsDBNull(objRow("StartSession")), "AM", objRow("StartSession"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If ((IsDBNull(objRow("EndDate"))) And (IsDBNull(objRow("EndSession"))) And (IsDBNull(objRow("StartSession")))) Then
+						strEndSession = "PM"
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						dtED = IIf(IsDBNull(.Fields("EndDate").Value), .Fields("StartDate").Value, .Fields("EndDate").Value)
+					ElseIf ((IsDBNull(objRow("EndDate"))) And (IsDBNull(objRow("EndSession")))) Then
+						strEndSession = strStartSession
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						strStartSession = IIf(IsDBNull(.Fields("StartSession").Value), "AM", .Fields("StartSession").Value)
+					ElseIf IsDBNull(objRow("EndSession")) Then
+						strEndSession = "PM"
+					Else
+						strEndSession = objRow("EndSession")
+					End If
+
+					If mblnGroupByDescription Then
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If ((IsDBNull(.Fields("EndDate").Value)) And (IsDBNull(.Fields("EndSession").Value)) And (IsDBNull(.Fields("StartSession").Value))) Then
-							strEndSession = "PM"
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						ElseIf ((IsDBNull(.Fields("EndDate").Value)) And (IsDBNull(.Fields("EndSession").Value))) Then
-							strEndSession = strStartSession
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						ElseIf IsDBNull(.Fields("EndSession").Value) Then
-							strEndSession = "PM"
+						strDescription1 = IIf(IsDBNull(objRow("Description1")), "", objRow("Description1"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						strDescription2 = IIf(IsDBNull(objRow("Description2")), "", objRow("Description2"))
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						strDescriptionExpr = IIf(IsDBNull(objRow("DescriptionExpr")), "", objRow("DescriptionExpr"))
+						strFullDesc = strDescription1 & mstrDescriptionSeparator & strDescription2 & mstrDescriptionSeparator & strDescriptionExpr
+
+						If (strFullDesc <> strCurrentDesc) Or blnFirstCalendarRecord Then
+							strCurrentDesc = strFullDesc
+							blnFirstCalendarRecord = False
+
+							ReDim avDateRanges(6, 0)
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(0, 0) = strFullDesc
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(1, 0) = dtSD
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(2, 0) = dtED
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(3, 0) = strStartSession
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(4, 0) = strEndSession
+
 						Else
-							strEndSession = .Fields("EndSession").Value
+							'Loop through the array for the current calendar row, checking if any dates overlap.
+							For i = 0 To UBound(avDateRanges, 2) Step 1
+
+								'if the start or end dates 'equal' any other start orend dates then check if the sessions are also equal.
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If ((dtSD = avDateRanges(1, i)) And (strStartSession = avDateRanges(3, i))) Or ((dtSD = avDateRanges(2, i)) And (strStartSession = avDateRanges(4, i))) Or ((dtED = avDateRanges(1, i)) And (strEndSession = avDateRanges(3, i))) Or ((dtED = avDateRanges(2, i)) And (strEndSession = avDateRanges(4, i))) Then
+									mblnHasMultipleEvents = True
+									MultipleCheck = True
+									GoTo TidyUpAndExit
+								End If
+
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If ((dtSD > avDateRanges(1, i)) And (dtED < avDateRanges(2, i))) Or ((dtSD > avDateRanges(1, i)) And (dtSD < avDateRanges(2, i)) And (dtED > avDateRanges(2, i))) Or ((dtED > avDateRanges(1, i)) And (dtED < avDateRanges(2, i)) And (dtSD < avDateRanges(1, i))) Or ((dtSD < avDateRanges(1, i)) And (dtED > avDateRanges(2, i))) Then
+									mblnHasMultipleEvents = True
+									MultipleCheck = True
+									GoTo TidyUpAndExit
+								End If
+							Next i
+
+							intNewIndex = UBound(avDateRanges, 2) + 1
+							ReDim Preserve avDateRanges(6, intNewIndex)
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(0, intNewIndex) = lngBaseID
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(1, intNewIndex) = dtSD
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(2, intNewIndex) = dtED
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(3, intNewIndex) = strStartSession
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(4, intNewIndex) = strEndSession
+
 						End If
+					Else
+						lngBaseID = CInt(objRow("BaseID"))
 
-						If mblnGroupByDescription Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							strDescription1 = IIf(IsDBNull(.Fields("Description1").Value), "", .Fields("Description1").Value)
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							strDescription2 = IIf(IsDBNull(.Fields("Description2").Value), "", .Fields("Description2").Value)
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							strDescriptionExpr = IIf(IsDBNull(.Fields("DescriptionExpr").Value), "", .Fields("DescriptionExpr").Value)
-							strFullDesc = strDescription1 & mstrDescriptionSeparator & strDescription2 & mstrDescriptionSeparator & strDescriptionExpr
+						If (lngBaseID <> lngCurrentBaseID) Or blnFirstCalendarRecord Then
+							lngCurrentBaseID = lngBaseID
+							blnFirstCalendarRecord = False
 
-							If (strFullDesc <> strCurrentDesc) Or blnFirstCalendarRecord Then
-								strCurrentDesc = strFullDesc
-								blnFirstCalendarRecord = False
+							ReDim avDateRanges(6, 0)
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(0, 0) = lngBaseID
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(1, 0) = dtSD
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(2, 0) = dtED
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(3, 0) = strStartSession
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(4, 0) = strEndSession
 
-								ReDim avDateRanges(6, 0)
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(0, 0) = strFullDesc
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(1, 0) = dtSD
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(2, 0) = dtED
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(3, 0) = strStartSession
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(4, 0) = strEndSession
-
-							Else
-								'Loop through the array for the current calendar row, checking if any dates overlap.
-								For i = 0 To UBound(avDateRanges, 2) Step 1
-
-									'if the start or end dates 'equal' any other start orend dates then check if the sessions are also equal.
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If ((dtSD = avDateRanges(1, i)) And (strStartSession = avDateRanges(3, i))) Or ((dtSD = avDateRanges(2, i)) And (strStartSession = avDateRanges(4, i))) Or ((dtED = avDateRanges(1, i)) And (strEndSession = avDateRanges(3, i))) Or ((dtED = avDateRanges(2, i)) And (strEndSession = avDateRanges(4, i))) Then
-										mblnHasMultipleEvents = True
-										MultipleCheck = True
-										GoTo TidyUpAndExit
-									End If
-
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If ((dtSD > avDateRanges(1, i)) And (dtED < avDateRanges(2, i))) Or ((dtSD > avDateRanges(1, i)) And (dtSD < avDateRanges(2, i)) And (dtED > avDateRanges(2, i))) Or ((dtED > avDateRanges(1, i)) And (dtED < avDateRanges(2, i)) And (dtSD < avDateRanges(1, i))) Or ((dtSD < avDateRanges(1, i)) And (dtED > avDateRanges(2, i))) Then
-										mblnHasMultipleEvents = True
-										MultipleCheck = True
-										GoTo TidyUpAndExit
-									End If
-								Next i
-
-								intNewIndex = UBound(avDateRanges, 2) + 1
-								ReDim Preserve avDateRanges(6, intNewIndex)
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(0, intNewIndex) = lngBaseID
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(1, intNewIndex) = dtSD
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(2, intNewIndex) = dtED
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(3, intNewIndex) = strStartSession
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(4, intNewIndex) = strEndSession
-
-							End If
 						Else
-							lngBaseID = .Fields("BaseID").Value
+							'Loop through the array for the current calendar row, checking if any dates overlap.
+							For i = 0 To UBound(avDateRanges, 2) Step 1
 
-							If (lngBaseID <> lngCurrentBaseID) Or blnFirstCalendarRecord Then
-								lngCurrentBaseID = lngBaseID
-								blnFirstCalendarRecord = False
+								'if the start or end dates 'equal' any other start orend dates then check if the sessions are also equal.
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If ((dtSD = avDateRanges(1, i)) And (strStartSession = avDateRanges(3, i))) Or ((dtSD = avDateRanges(2, i)) And (strStartSession = avDateRanges(4, i))) Or ((dtED = avDateRanges(1, i)) And (strEndSession = avDateRanges(3, i))) Or ((dtED = avDateRanges(2, i)) And (strEndSession = avDateRanges(4, i))) Then
+									mblnHasMultipleEvents = True
+									MultipleCheck = True
+									GoTo TidyUpAndExit
+								End If
 
-								ReDim avDateRanges(6, 0)
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(0, 0) = lngBaseID
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(1, 0) = dtSD
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(2, 0) = dtED
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(3, 0) = strStartSession
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(4, 0) = strEndSession
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If ((dtSD > avDateRanges(1, i)) And (dtED < avDateRanges(2, i))) Or ((dtSD > avDateRanges(1, i)) And (dtSD < avDateRanges(2, i)) And (dtED > avDateRanges(2, i))) Or ((dtED > avDateRanges(1, i)) And (dtED < avDateRanges(2, i)) And (dtSD < avDateRanges(1, i))) Or ((dtSD < avDateRanges(1, i)) And (dtED > avDateRanges(2, i))) Then
+									mblnHasMultipleEvents = True
+									MultipleCheck = True
+									GoTo TidyUpAndExit
+								End If
+							Next i
 
-							Else
-								'Loop through the array for the current calendar row, checking if any dates overlap.
-								For i = 0 To UBound(avDateRanges, 2) Step 1
+							intNewIndex = UBound(avDateRanges, 2) + 1
+							ReDim Preserve avDateRanges(6, intNewIndex)
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(0, intNewIndex) = lngBaseID
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(1, intNewIndex) = dtSD
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(2, intNewIndex) = dtED
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(3, intNewIndex) = strStartSession
+							'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							avDateRanges(4, intNewIndex) = strEndSession
 
-									'if the start or end dates 'equal' any other start orend dates then check if the sessions are also equal.
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If ((dtSD = avDateRanges(1, i)) And (strStartSession = avDateRanges(3, i))) Or ((dtSD = avDateRanges(2, i)) And (strStartSession = avDateRanges(4, i))) Or ((dtED = avDateRanges(1, i)) And (strEndSession = avDateRanges(3, i))) Or ((dtED = avDateRanges(2, i)) And (strEndSession = avDateRanges(4, i))) Then
-										mblnHasMultipleEvents = True
-										MultipleCheck = True
-										GoTo TidyUpAndExit
-									End If
-
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If ((dtSD > avDateRanges(1, i)) And (dtED < avDateRanges(2, i))) Or ((dtSD > avDateRanges(1, i)) And (dtSD < avDateRanges(2, i)) And (dtED > avDateRanges(2, i))) Or ((dtED > avDateRanges(1, i)) And (dtED < avDateRanges(2, i)) And (dtSD < avDateRanges(1, i))) Or ((dtSD < avDateRanges(1, i)) And (dtED > avDateRanges(2, i))) Then
-										mblnHasMultipleEvents = True
-										MultipleCheck = True
-										GoTo TidyUpAndExit
-									End If
-								Next i
-
-								intNewIndex = UBound(avDateRanges, 2) + 1
-								ReDim Preserve avDateRanges(6, intNewIndex)
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(0, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(0, intNewIndex) = lngBaseID
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(1, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(1, intNewIndex) = dtSD
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(2, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(2, intNewIndex) = dtED
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(3, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(3, intNewIndex) = strStartSession
-								'UPGRADE_WARNING: Couldn't resolve default property of object avDateRanges(4, intNewIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								avDateRanges(4, intNewIndex) = strEndSession
-
-							End If
 						End If
+					End If
 
-						.MoveNext()
-					Loop
-				End If
-				.Close()
+				Next
+
 			End With
 		End If
 
 		mblnHasMultipleEvents = False
 
-		MultipleCheck = True
+		Return True
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsMultiple may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -3491,12 +3441,12 @@ TidyUpAndExit:
 
 		On Error GoTo Error_Trap
 
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 
 		Dim sSQL As String
 		Dim sDateInterval As String
 
-		Dim rsIDs As Recordset
+		Dim rsIDs As DataTable
 		Dim blnOK As Boolean
 		Dim iStartDateType As CalendarDataType
 		Dim iEndDateType As CalendarDataType
@@ -3504,30 +3454,32 @@ TidyUpAndExit:
 		mstrSQLIDs = vbNullString
 
 		sSQL = String.Format("SELECT * FROM ASRSYSCalendarReports WHERE ID = {0}", mlngCalendarReportID)
-		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsTemp = DB.GetDataTable(sSQL)
 
 		Dim pblnOK As Object
 		Dim objTableView As TablePrivilege
 		Dim objExpression As clsExprExpression
 		With rsTemp
 
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				GetCalendarReportDefinition = False
 				mstrErrorString = "Could not find specified Calendar Report definition."
 				GoTo TidyUpAndExit
 			End If
 
+			Dim rowDefinition = .Rows(0)
+
 			'JPD 20040729 Fault 8972 & Fault 8990
-			If LCase(.Fields("Username").Value.ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
+			If LCase(rowDefinition("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
 				GetCalendarReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function
 			End If
 
-			mstrCalendarReportsName = .Fields("Name").Value
+			mstrCalendarReportsName = rowDefinition("Name").ToString
 			mobjEventLog.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
-			mlngCalendarReportsBaseTable = .Fields("BaseTable").Value
-			mstrCalendarReportsBaseTableName = datGeneral.GetTableName(mlngCalendarReportsBaseTable)
+			mlngCalendarReportsBaseTable = CInt(rowDefinition("BaseTable"))
+			mstrCalendarReportsBaseTableName = General.GetTableName(mlngCalendarReportsBaseTable)
 
 			' Check the user has permission to read the base table.
 			'UPGRADE_WARNING: Couldn't resolve default property of object pblnOK. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3547,31 +3499,31 @@ TidyUpAndExit:
 				GoTo TidyUpAndExit
 			End If
 
-			mlngCalendarReportsPickListID = .Fields("picklist").Value
-			mlngCalendarReportsFilterID = .Fields("Filter").Value
+			mlngCalendarReportsPickListID = CInt(rowDefinition("picklist"))
+			mlngCalendarReportsFilterID = CInt(rowDefinition("Filter"))
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngDescription1 = IIf(IsDBNull(.Fields("Description1").Value), 0, .Fields("Description1").Value)
+			mlngDescription1 = IIf(IsDBNull(rowDefinition("Description1")), 0, rowDefinition("Description1"))
 			If mlngDescription1 > 0 Then
-				mstrDescription1 = datGeneral.GetColumnName(.Fields("Description1").Value)
-				mblnDesc1IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
+				mstrDescription1 = General.GetColumnName(rowDefinition("Description1"))
+				mblnDesc1IsDate = (General.GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
 			Else
 				mstrDescription1 = vbNullString
 				mblnDesc1IsDate = False
 			End If
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngDescription2 = IIf(IsDBNull(.Fields("Description2").Value), 0, .Fields("Description2").Value)
+			mlngDescription2 = IIf(IsDBNull(rowDefinition("Description2")), 0, rowDefinition("Description2"))
 			If mlngDescription2 > 0 Then
-				mstrDescription2 = datGeneral.GetColumnName(.Fields("Description2").Value)
-				mblnDesc2IsDate = (datGeneral.GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
+				mstrDescription2 = General.GetColumnName(rowDefinition("Description2"))
+				mblnDesc2IsDate = (General.GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
 			Else
 				mstrDescription2 = vbNullString
 				mblnDesc2IsDate = False
 			End If
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngDescriptionExpr = IIf(IsDBNull(.Fields("DescriptionExpr").Value), 0, .Fields("DescriptionExpr").Value)
+			mlngDescriptionExpr = IIf(IsDBNull(rowDefinition("DescriptionExpr")), 0, rowDefinition("DescriptionExpr"))
 			If mlngDescriptionExpr > 0 Then
 
 				objExpression = New clsExprExpression
@@ -3591,9 +3543,9 @@ TidyUpAndExit:
 			'UPGRADE_NOTE: Object objExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objExpression = Nothing
 
-			mlngRegion = .Fields("Region").Value
+			mlngRegion = rowDefinition("Region")
 			If mlngRegion > 0 Then
-				mstrRegion = datGeneral.GetColumnName(.Fields("Region").Value)
+				mstrRegion = General.GetColumnName(rowDefinition("Region"))
 
 			ElseIf (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (grtRegionType = RegionType.rtStaticRegion) Then
 
@@ -3605,9 +3557,9 @@ TidyUpAndExit:
 
 			End If
 
-			mblnGroupByDescription = IIf(.Fields("GroupByDesc").Value, True, False)
+			mblnGroupByDescription = IIf(rowDefinition("GroupByDesc"), True, False)
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mstrDescriptionSeparator = IIf(IsDBNull(.Fields("DescriptionSeparator").Value), " ", .Fields("DescriptionSeparator").Value)
+			mstrDescriptionSeparator = IIf(IsDBNull(rowDefinition("DescriptionSeparator")), " ", rowDefinition("DescriptionSeparator"))
 
 			'create the events collection here so that the event filters can bee checked
 			If Not GetEventsCollection() Then
@@ -3616,9 +3568,9 @@ TidyUpAndExit:
 			End If
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngStartDateExpr = IIf(IsDBNull(.Fields("StartDateExpr").Value), 0, .Fields("StartDateExpr").Value)
+			mlngStartDateExpr = IIf(IsDBNull(rowDefinition("StartDateExpr")), 0, rowDefinition("StartDateExpr"))
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mlngEndDateExpr = IIf(IsDBNull(.Fields("EndDateExpr").Value), 0, .Fields("EndDateExpr").Value)
+			mlngEndDateExpr = IIf(IsDBNull(rowDefinition("EndDateExpr")), 0, rowDefinition("EndDateExpr"))
 
 			If Not IsRecordSelectionValid() Then
 				GetCalendarReportDefinition = False
@@ -3627,69 +3579,69 @@ TidyUpAndExit:
 
 			'************** Must do the dates stuff here *****************
 			'calculate and store the start and end dates
-			iStartDateType = .Fields("StartType").Value
-			iEndDateType = .Fields("EndType").Value
+			iStartDateType = rowDefinition("StartType")
+			iEndDateType = rowDefinition("EndType")
 
 			'START DATE
 			Select Case iStartDateType
 				Case CalendarDataType.Fixed
-					mdtStartDate = .Fields("FixedStart").Value
+					mdtStartDate = rowDefinition("FixedStart")
 				Case CalendarDataType.CurrentDate
 					mdtStartDate = Today
 				Case CalendarDataType.Custom
-					'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtStartDate = datGeneral.GetValueForRecordIndependantCalc(mlngStartDateExpr, mvarPrompts)
+					'UPGRADE_WARNING: Couldn't resolve default property of object General.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mdtStartDate = General.GetValueForRecordIndependantCalc(mlngStartDateExpr, mvarPrompts)
 			End Select
 
 			'END DATE
 			Select Case iEndDateType
 				Case CalendarDataType.Fixed
-					mdtEndDate = .Fields("FixedEnd").Value
+					mdtEndDate = rowDefinition("FixedEnd")
 				Case CalendarDataType.CurrentDate
 					mdtEndDate = CStr(Today)
 				Case CalendarDataType.Custom
-					'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtEndDate = datGeneral.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts)
+					'UPGRADE_WARNING: Couldn't resolve default property of object General.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mdtEndDate = General.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts)
 			End Select
 
 			If iStartDateType = CalendarDataType.Offset And iEndDateType = CalendarDataType.Offset Then
 				'START DATE
-				Select Case .Fields("StartPeriod").Value
+				Select Case rowDefinition("StartPeriod")
 					Case DatePeriod.Days : sDateInterval = "d"
 					Case DatePeriod.Weeks : sDateInterval = "ww"
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtStartDate = DateAdd(sDateInterval, CDbl(.Fields("StartFrequency").Value), Today)
+				mdtStartDate = DateAdd(sDateInterval, CDbl(rowDefinition("StartFrequency")), Today)
 
 				'END DATE
-				Select Case .Fields("EndPeriod").Value
+				Select Case rowDefinition("EndPeriod")
 					Case DatePeriod.Days : sDateInterval = "d"
 					Case DatePeriod.Weeks : sDateInterval = "ww"
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(.Fields("EndFrequency").Value), Today))
+				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(rowDefinition("EndFrequency")), Today))
 
 			ElseIf iStartDateType = CalendarDataType.Offset And Not iEndDateType = CalendarDataType.Offset Then
 				'START DATE
-				Select Case .Fields("StartPeriod").Value
+				Select Case rowDefinition("StartPeriod")
 					Case DatePeriod.Days : sDateInterval = "d"
 					Case DatePeriod.Weeks : sDateInterval = "ww"
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtStartDate = DateAdd(sDateInterval, CDbl(.Fields("StartFrequency").Value), CDate(mdtEndDate))
+				mdtStartDate = DateAdd(sDateInterval, CDbl(rowDefinition("StartFrequency")), CDate(mdtEndDate))
 
 			ElseIf iEndDateType = CalendarDataType.Offset And Not iStartDateType = CalendarDataType.Offset Then
 				'END DATE
-				Select Case .Fields("EndPeriod").Value
+				Select Case rowDefinition("EndPeriod")
 					Case DatePeriod.Days : sDateInterval = "d"
 					Case DatePeriod.Weeks : sDateInterval = "ww"
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(.Fields("EndFrequency").Value), mdtStartDate))
+				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(rowDefinition("EndFrequency")), mdtStartDate))
 
 			End If
 
@@ -3701,36 +3653,36 @@ TidyUpAndExit:
 
 			'************************************************
 
-			mblnShowBankHolidays = .Fields("ShowBankHolidays").Value
-			mblnShowCaptions = .Fields("ShowCaptions").Value
-			mblnShowWeekends = .Fields("ShowWeekends").Value
-			mbStartOnCurrentMonth = .Fields("StartOnCurrentMonth").Value
-			mblnIncludeWorkingDaysOnly = .Fields("IncludeWorkingDaysOnly").Value
-			mblnIncludeBankHolidays = .Fields("IncludeBankHolidays").Value
-			mblnCustomReportsPrintFilterHeader = .Fields("PrintFilterHeader").Value
+			mblnShowBankHolidays = rowDefinition("ShowBankHolidays")
+			mblnShowCaptions = rowDefinition("ShowCaptions")
+			mblnShowWeekends = rowDefinition("ShowWeekends")
+			mbStartOnCurrentMonth = rowDefinition("StartOnCurrentMonth")
+			mblnIncludeWorkingDaysOnly = rowDefinition("IncludeWorkingDaysOnly")
+			mblnIncludeBankHolidays = rowDefinition("IncludeBankHolidays")
+			mblnCustomReportsPrintFilterHeader = rowDefinition("PrintFilterHeader")
 
-			mblnOutputPreview = .Fields("OutputPreview").Value
-			mlngOutputFormat = .Fields("OutputFormat").Value
-			mblnOutputScreen = .Fields("OutputScreen").Value
-			mblnOutputPrinter = .Fields("OutputPrinter").Value
-			mstrOutputPrinterName = .Fields("OutputPrinterName").Value
-			mblnOutputSave = .Fields("OutputSave").Value
-			mlngOutputSaveExisting = .Fields("OutputSaveExisting").Value
-			mblnOutputEmail = .Fields("OutputEmail").Value
-			mlngOutputEmailID = .Fields("OutputEmailAddr").Value
-			mstrOutputEmailName = GetEmailGroupName(.Fields("OutputEmailAddr").Value)
-			mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
+			mblnOutputPreview = rowDefinition("OutputPreview")
+			mlngOutputFormat = rowDefinition("OutputFormat")
+			mblnOutputScreen = rowDefinition("OutputScreen")
+			mblnOutputPrinter = rowDefinition("OutputPrinter")
+			mstrOutputPrinterName = rowDefinition("OutputPrinterName")
+			mblnOutputSave = rowDefinition("OutputSave")
+			mlngOutputSaveExisting = rowDefinition("OutputSaveExisting")
+			mblnOutputEmail = rowDefinition("OutputEmail")
+			mlngOutputEmailID = rowDefinition("OutputEmailAddr")
+			mstrOutputEmailName = GetEmailGroupName(rowDefinition("OutputEmailAddr"))
+			mstrOutputEmailSubject = rowDefinition("OutputEmailSubject")
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
-			mstrOutputFilename = .Fields("OutputFilename").Value
+			mstrOutputEmailAttachAs = IIf(IsDBNull(rowDefinition("OutputEmailAttachAs")), vbNullString, rowDefinition("OutputEmailAttachAs"))
+			mstrOutputFilename = rowDefinition("OutputFilename")
 
 			mblnPersonnelBase = (mlngCalendarReportsBaseTable = glngPersonnelTableID)
 
 			If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID < 1) Then
 				If (mlngCalendarReportsFilterID > 0) Then
-					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table filter : " & datGeneral.GetFilterName(mlngCalendarReportsFilterID) & ")"
+					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
 				ElseIf (mlngCalendarReportsPickListID > 0) Then
-					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table picklist : " & datGeneral.GetPicklistName(mlngCalendarReportsPickListID) & ")"
+					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
 				End If
 			End If
 
@@ -3739,65 +3691,54 @@ TidyUpAndExit:
 				mstrSQLIDs = CStr(mlngSingleRecordID)
 
 			ElseIf mlngCalendarReportsPickListID > 0 Then
-				rsIDs = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+				rsIDs = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID)
 
-				If rsIDs.BOF And rsIDs.EOF Then
+				If rsIDs.Rows.Count = 0 Then
 					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 					mobjEventLog.AddDetailEntry(mstrErrorString)
 					mstrErrorString = "The selected picklist contains no records."
-					GetCalendarReportDefinition = False
-					GoTo TidyUpAndExit
+					Return False
 				End If
 
-				Do While Not rsIDs.EOF
-					mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & rsIDs.Fields(0).Value
-					rsIDs.MoveNext()
-				Loop
-				rsIDs.Close()
-				'UPGRADE_NOTE: Object rsIDs may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsIDs = Nothing
+				For Each objRow As DataRow In rsIDs.Rows
+					mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & objRow(0)
+				Next
+
 
 			ElseIf mlngCalendarReportsFilterID > 0 Then
-				blnOK = datGeneral.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
+				blnOK = General.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					blnOK = UDFFunctions(mastrUDFsRequired, True)
 					If blnOK Then
-						rsIDs = mclsData.OpenRecordset(mstrFilteredIDs, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+						rsIDs = DB.GetDataTable(mstrFilteredIDs)
 					End If
 
-					If rsIDs.BOF And rsIDs.EOF Then
-						GetCalendarReportDefinition = False
+					If rsIDs.Rows.Count = 0 Then
 						mstrErrorString = "The base table filter returned no records."
 						mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 						mobjEventLog.AddDetailEntry(mstrErrorString)
 						mblnNoRecords = True
-						GoTo TidyUpAndExit
+						Return False
 					End If
 
-					Do While Not rsIDs.EOF
-						mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & rsIDs.Fields(0).Value
-						rsIDs.MoveNext()
-					Loop
-					rsIDs.Close()
-					'UPGRADE_NOTE: Object rsIDs may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					rsIDs = Nothing
+					For Each objRow As DataRow In rsTemp.Rows
+						mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & objRow(0)
+					Next
 
 					blnOK = UDFFunctions(mastrUDFsRequired, False)
 
 				Else
 					' Permission denied on something in the filter.
-					mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCalendarReportsFilterID) & "' filter."
+					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCalendarReportsFilterID) & "' filter."
 					mobjEventLog.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 					mobjEventLog.AddDetailEntry(mstrErrorString)
-					GetCalendarReportDefinition = False
-					GoTo TidyUpAndExit
+					Return False
 				End If
 
 			End If
 
 		End With
-		rsTemp.Close()
 
 		mstrBaseIDColumn = "?ID_" & mstrCalendarReportsBaseTableName
 		mstrEventIDColumn = "?ID_EventID"
@@ -3928,57 +3869,9 @@ Error_Trap:
 		strSQLCC = strSQLCC & "ORDER BY " _
 				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
 				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " "
-		rsCareerChange = mclsData.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsCareerChange = DB.GetDataTable(strSQLCC)
 
 		lngBaseRecordID = -1
-
-		'******************************************************************************
-		''Create an array containing the ranges of career change period
-		'With rsCC
-
-		'	If Not (.BOF And .EOF) Then
-
-		'		Do While Not .EOF
-		'			intNextIndex = UBound(avCareerRanges, 2) + 1
-		'			ReDim Preserve avCareerRanges(4, intNextIndex)
-
-		'			If lngBaseRecordID <> .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value Then
-		'				lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
-		'				dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
-
-		'				avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
-		'				avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
-		'				avCareerRanges(2, intNextIndex) = "" 'End Date
-		'				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		'				avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
-		'				avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
-
-		'			Else
-		'				dtStartDate = .Fields(gsPersonnelHWorkingPatternDateColumnName).Value
-		'				dtEndDate = dtStartDate
-		'				avCareerRanges(2, intNextIndex - 1) = CStr(dtEndDate)	'End Date
-
-		'				avCareerRanges(0, intNextIndex) = CStr(lngBaseRecordID)	'BaseRecordID
-		'				avCareerRanges(1, intNextIndex) = CStr(dtStartDate)	'Start Date
-		'				avCareerRanges(2, intNextIndex) = "" 'End Date
-		'				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		'				avCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHWorkingPatternColumnName).Value), "", .Fields(gsPersonnelHWorkingPatternColumnName).Value)	'Working Pattern???
-		'				avCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
-
-		'			End If
-
-		'			.MoveNext()
-		'		Loop
-
-		'	Else
-		'		'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'		Get_HistoricWorkingPatterns = True
-		'		GoTo TidyUpAndExit
-
-		'	End If
-
-		'End With
-		''******************************************************************************
 
 		lngBaseRecordID = -1
 
@@ -4052,8 +3945,8 @@ ErrorTrap:
 
 		If mblnDisableRegions Then Return False
 
-		Dim rsCC As Recordset	'career change data for base records
-		Dim rsPersonnelBHols As Recordset
+		Dim rsCC As DataTable	'career change data for base records
+		Dim rsPersonnelBHols As DataTable
 		Dim colBankHolidays As clsBankHolidays
 
 		Dim strSQLCC As String 'sql for retieving career change data
@@ -4104,7 +3997,7 @@ ErrorTrap:
 
 		strSQLCC = strSQLCC & "ORDER BY " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
 				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " "
-		rsCC = DB.OpenRecordset(strSQLCC, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsCC = DB.GetDataTable(strSQLCC)
 
 		lngBaseRecordID = -1
 		blnNewBaseRecord = False
@@ -4116,17 +4009,18 @@ ErrorTrap:
 
 		With rsCC
 
-			If Not (.BOF And .EOF) Then
+			If Not (.Rows.Count = 0) Then
 
-				Do While Not .EOF
+				For Each objRow As DataRow In .Rows
+
 					intNextIndex = UBound(mavCareerRanges, 2) + 1
 					ReDim Preserve mavCareerRanges(4, intNextIndex)
 
-					If lngBaseRecordID <> .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value Then
-						lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
+					If lngBaseRecordID <> objRow("ID_" & CStr(mlngCalendarReportsBaseTable)) Then
+						lngBaseRecordID = objRow("ID_" & CStr(mlngCalendarReportsBaseTable))
 						blnNewBaseRecord = True
 						lngBaseRowCount = lngBaseRowCount + 1
-						dtStartDate = .Fields(gsPersonnelHRegionDateColumnName).Value
+						dtStartDate = objRow(gsPersonnelHRegionDateColumnName)
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavCareerRanges(0, intNextIndex) = lngBaseRecordID 'BaseRecordID
@@ -4136,13 +4030,12 @@ ErrorTrap:
 						mavCareerRanges(2, intNextIndex) = ""	'End Date
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHRegionColumnName).Value), "", .Fields(gsPersonnelHRegionColumnName).Value) 'Region
+						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(gsPersonnelHRegionColumnName)), "", objRow(gsPersonnelHRegionColumnName))	'Region
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(4, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value	'Career Change Count
+						mavCareerRanges(4, intNextIndex) = objRow("CareerChanges")	'Career Change Count
 
 					Else
-						'          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "MM/dd/yyyy")
-						dtStartDate = .Fields(gsPersonnelHRegionDateColumnName).Value
+						dtStartDate = objRow(gsPersonnelHRegionDateColumnName)
 
 						dtEndDate = dtStartDate
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(2, intNextIndex - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4156,20 +4049,17 @@ ErrorTrap:
 						mavCareerRanges(2, intNextIndex) = ""	'End Date
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(.Fields(gsPersonnelHRegionColumnName).Value), "", .Fields(gsPersonnelHRegionColumnName).Value) 'Region
+						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(gsPersonnelHRegionColumnName)), "", objRow(gsPersonnelHRegionColumnName)) 'Region
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(4, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value	'Career Change Count
+						mavCareerRanges(4, intNextIndex) = objRow("CareerChanges")	'Career Change Count
 
 					End If
 
 					blnNewBaseRecord = False
-					.MoveNext()
-				Loop
-
+				Next
 			Else
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Get_HistoricBankHolidays = True
-				GoTo TidyUpAndExit
+				Return True
 
 			End If
 
@@ -4185,7 +4075,7 @@ ErrorTrap:
 		INPUT_STRING = vbNullString
 		intRecordBHol = 0
 
-		mstrRegionFormString = "<FORM id=frmRegion name=frmRegion style=""visibility:hidden;display:none"">" & vbNewLine
+		mstrRegionFormString = "<form id=frmRegion name=frmRegion style=""visibility:hidden;display:none"">" & vbNewLine
 
 		For intCount = 1 To UBound(mavCareerRanges, 2) Step 1
 
@@ -4194,7 +4084,7 @@ ErrorTrap:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(4, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mstrRegionFormString = mstrRegionFormString & vbNewLine & vbTab & "<INPUT NAME=txtRegionCOUNT_" & mavCareerRanges(0, intCount) & " ID=txtRegionCOUNT_" & mavCareerRanges(0, intCount) & " VALUE=""" & mavCareerRanges(4, intCount) & """>" & vbNewLine
+				mstrRegionFormString = mstrRegionFormString & vbNewLine & vbTab & "<input NAME=txtRegionCOUNT_" & mavCareerRanges(0, intCount) & " ID=txtRegionCOUNT_" & mavCareerRanges(0, intCount) & " VALUE=""" & mavCareerRanges(4, intCount) & """>" & vbNewLine
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				lngBaseRecordID = mavCareerRanges(0, intCount)
 				intRecordBHol = 0
@@ -4212,11 +4102,11 @@ ErrorTrap:
 
 			'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mstrRegionFormString = mstrRegionFormString & vbTab & "<INPUT NAME=txtRegion_" & mavCareerRanges(0, intCount) & "_" & intRecordBHol & " ID=txtRegion_" & mavCareerRanges(0, intCount) & "_" & intRecordBHol & " VALUE=""" & INPUT_STRING & """>" & vbNewLine
+			mstrRegionFormString = mstrRegionFormString & vbTab & "<input NAME=txtRegion_" & mavCareerRanges(0, intCount) & "_" & intRecordBHol & " ID=txtRegion_" & mavCareerRanges(0, intCount) & "_" & intRecordBHol & " VALUE=""" & INPUT_STRING & """>" & vbNewLine
 
 		Next intCount
 
-		mstrRegionFormString = mstrRegionFormString & "</FORM>" & vbNewLine
+		mstrRegionFormString = mstrRegionFormString & "</form>" & vbNewLine
 
 
 		lngBaseRecordID = -1
@@ -4307,7 +4197,7 @@ ErrorTrap:
 				strSQLOrder = " ORDER BY 'ID', 'Region' " & vbNewLine
 				strSQLAllBHols = strSQLAllBHols & strSQLOrder
 
-				rsPersonnelBHols = DB.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+				rsPersonnelBHols = DB.GetDataTable(strSQLAllBHols)
 
 				lngBaseRecordID = -1
 				blnNewBaseRecord = False
@@ -4319,11 +4209,17 @@ ErrorTrap:
 
 					INPUT_STRING = vbNullString
 
-					If Not (.BOF And .EOF) Then
+					If .Rows.Count > 0 Then
 
-						Do While Not .EOF
+						For Each objRow As DataRow In .Rows
 
-							If lngBaseRecordID <> CInt(.Fields("ID").Value) Then
+							' Append total bank holidays for this base record
+							If Not lngBaseRecordID = -1 And lngBaseRecordID <> CInt(objRow("ID")) Then
+								mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
+								intRecordBHol = 0
+							End If
+
+							If lngBaseRecordID <> CInt(objRow("ID")) Then
 
 								If Not (colBankHolidays Is Nothing) Then
 									mcolHistoricBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
@@ -4332,46 +4228,37 @@ ErrorTrap:
 								End If
 								colBankHolidays = New clsBankHolidays
 
-								lngBaseRecordID = CInt(.Fields("ID").Value)
+								lngBaseRecordID = CInt(objRow("ID"))
 
 							End If
 
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							colBankHolidays.Add(IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value), IIf(IsDBNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value), IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", .Fields(gsBHolDateColumnName).Value))
+							colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(gsBHolDescriptionColumnName)), "", objRow(gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", objRow(gsBHolDateColumnName)))
 
 							intRecordBHol = intRecordBHol + 1
 
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							INPUT_STRING = IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
+							INPUT_STRING = IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", VB6.Format(objRow(gsBHolDateColumnName), mstrClientDateFormat)) & "_"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
+							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(objRow("Region")), "", objRow("Region"))
 
 							mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", lngBaseRecordID, intRecordBHol, Replace(INPUT_STRING, """", "&quot;")))
 
-							.MoveNext()
+						Next
 
-							If Not .EOF Then
-								If lngBaseRecordID <> CInt(.Fields("ID").Value) Then
-									mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
-									intRecordBHol = 0
-								End If
-							Else
-								mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
-								intRecordBHol = 0
-							End If
+						mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intRecordBHol & """>")
+						intRecordBHol = 0
 
-							If .EOF And Not (colBankHolidays Is Nothing) Then
-								mcolHistoricBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
-								'UPGRADE_NOTE: Object colBankHolidays may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								colBankHolidays = Nothing
-							End If
-
-						Loop
+						If Not colBankHolidays Is Nothing Then
+							mcolHistoricBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
+							'UPGRADE_NOTE: Object colBankHolidays may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							colBankHolidays = Nothing
+						End If
 
 
 					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object Get_HistoricBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						Get_HistoricBankHolidays = True
+
+						Return True
 
 					End If
 
@@ -4419,7 +4306,7 @@ ErrorTrap:
 			Return False
 		End If
 
-		Dim rsPersonnelBHols As Recordset
+		Dim rsPersonnelBHols As DataTable
 		Dim colBankHolidays As clsBankHolidays
 		Dim strSQLAllBHols As String
 		Dim lngBaseRecordID As Integer
@@ -4482,7 +4369,7 @@ ErrorTrap:
 		End If
 
 		strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] ON [Base].Region = [RegionInfo].Region ORDER BY [Base].ID "
-		rsPersonnelBHols = DB.OpenRecordset(strSQLAllBHols, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsPersonnelBHols = DB.GetDataTable(strSQLAllBHols)
 
 		lngBaseRecordID = -1
 
@@ -4494,13 +4381,19 @@ ErrorTrap:
 			intBHolCount = 0
 
 			mstrBHolFormString = New StringBuilder
-			mstrBHolFormString.Append("<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">")
+			mstrBHolFormString.Append("<form id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">")
 
-			If Not (.BOF And .EOF) Then
+			If .Rows.Count > 0 Then
 
-				Do While Not .EOF
+				For Each objRow As DataRow In .Rows
 
-					If lngBaseRecordID <> .Fields("ID").Value Then
+					' Append total bank holidays for this base record
+					If Not lngBaseRecordID = -1 And lngBaseRecordID <> CInt(objRow("ID")) Then
+						mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
+						intBHolCount = 0
+					End If
+
+					If lngBaseRecordID <> objRow("ID") Then
 						intBHolCount = 0
 						If Not (colBankHolidays Is Nothing) Then
 							mcolStaticBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
@@ -4508,55 +4401,44 @@ ErrorTrap:
 							colBankHolidays = Nothing
 						End If
 						colBankHolidays = New clsBankHolidays
-						lngBaseRecordID = .Fields("ID").Value
+						lngBaseRecordID = objRow("ID")
 
 					End If
 
 					intBHolCount = intBHolCount + 1
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					colBankHolidays.Add(IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value), IIf(IsDBNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value), IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", .Fields(gsBHolDateColumnName).Value))
+					colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(gsBHolDescriptionColumnName)), "", objRow(gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", objRow(gsBHolDateColumnName)))
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					INPUT_STRING = IIf(IsDBNull(.Fields(gsBHolDateColumnName).Value), "", VB6.Format(.Fields(gsBHolDateColumnName).Value, mstrClientDateFormat)) & "_"
+					INPUT_STRING = IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", VB6.Format(objRow(gsBHolDateColumnName), mstrClientDateFormat)) & "_"
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
-					'        INPUT_STRING = INPUT_STRING & IIf(IsNull(.Fields(gsBHolDescriptionColumnName).Value), "", .Fields(gsBHolDescriptionColumnName).Value) & "_"
+					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(objRow("Region")), "", objRow("Region"))
+					mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", objRow("ID"), intBHolCount, Replace(INPUT_STRING, """", "&quot;")))
 
-					mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", .Fields("ID").Value, intBHolCount, Replace(INPUT_STRING, """", "&quot;")))
+				Next
 
-					.MoveNext()
+				mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
+				intBHolCount = 0
 
-					If Not .EOF Then
-						If lngBaseRecordID <> CInt(.Fields("ID").Value) Then
-							mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
-							intBHolCount = 0
-						End If
-					Else
-						mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
-						intBHolCount = 0
-					End If
-
-
-					If .EOF And Not (colBankHolidays Is Nothing) Then
-						mcolStaticBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
-						'UPGRADE_NOTE: Object colBankHolidays may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						colBankHolidays = Nothing
-					End If
-				Loop
+				If Not (colBankHolidays Is Nothing) Then
+					mcolStaticBankHolidays.Add(colBankHolidays, CStr(lngBaseRecordID))
+					'UPGRADE_NOTE: Object colBankHolidays may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					colBankHolidays = Nothing
+				End If
 
 			Else
-				mstrBHolFormString.Append("<INPUT NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
+				mstrBHolFormString.Append("<input NAME=txtBHolCOUNT_" & lngBaseRecordID & " ID=txtBHolCOUNT_" & lngBaseRecordID & " VALUE=""" & intBHolCount & """>")
 
 			End If
 
-			mstrBHolFormString.Append("</FORM>")
+			mstrBHolFormString.Append("</form>")
 
 		End With
 		'##############################################################################
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		Get_StaticBankHolidays = True
+		Return True
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsPersonnelBHols may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -4566,9 +4448,7 @@ TidyUpAndExit:
 		Exit Function
 
 ErrorTrap:
-		'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticBankHolidays. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		Get_StaticBankHolidays = False
-		GoTo TidyUpAndExit
+		Return False
 
 	End Function
 
@@ -4605,15 +4485,14 @@ ErrorTrap:
 		'populate collections with new data
 		With mrsCalendarBaseInfo
 
-			If Not (.BOF And .EOF) Then
-				.MoveFirst()
+			If Not (.Rows.Count = 0) Then
 
-				Do While Not .EOF
+				For Each objRow As DataRow In .Rows
 
-					If lngBaseRecordID <> .Fields(mstrBaseIDColumn).Value Then
+					If lngBaseRecordID <> objRow(mstrBaseIDColumn) Then
 
 						If Not (colWorkingPatterns Is Nothing) Then
-							mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<INPUT NAME=txtWPCOUNT_" & lngBaseRecordID & " ID=txtWPCOUNT_" & lngBaseRecordID & " VALUE=1>" & vbNewLine
+							mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<input NAME=txtWPCOUNT_" & lngBaseRecordID & " ID=txtWPCOUNT_" & lngBaseRecordID & " VALUE=1>" & vbNewLine
 
 							mcolStaticWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
 							'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -4621,7 +4500,7 @@ ErrorTrap:
 						End If
 						colWorkingPatterns = New clsCalendarEvents
 
-						lngBaseRecordID = .Fields(mstrBaseIDColumn).Value
+						lngBaseRecordID = objRow(mstrBaseIDColumn)
 						blnNewBaseRecord = True
 
 					End If
@@ -4629,25 +4508,23 @@ ErrorTrap:
 					'lngBaseRecordID = .Fields(mstrBaseIDColumn).Value
 
 					INPUT_STRING = vbNullString
-					INPUT_STRING = INPUT_STRING & .Fields(gsPersonnelWorkingPatternColumnName).Value
+					INPUT_STRING = INPUT_STRING & objRow(gsPersonnelWorkingPatternColumnName)
 
 					mstrWPFormString = mstrWPFormString & vbTab & "<INPUT NAME=txtWP_" & lngBaseRecordID & " ID=txtBHol_" & lngBaseRecordID & " VALUE=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , , , , , , , , , , , , , , , , , , , , , , , , , , , , IIf(IsDBNull(.Fields(gsPersonnelWorkingPatternColumnName).Value), "              ", .Fields(gsPersonnelWorkingPatternColumnName).Value))
+					colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , , , , , , , , , , , , , , , , , , , , , , , , , , , , IIf(IsDBNull(objRow(gsPersonnelWorkingPatternColumnName)), "              ", objRow(gsPersonnelWorkingPatternColumnName)))
 
 					blnNewBaseRecord = False
 
-					.MoveNext()
+				Next
 
-					If .EOF And Not (colWorkingPatterns Is Nothing) Then
-						mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<INPUT NAME=txtWPCOUNT_" & lngBaseRecordID & " ID=txtWPCOUNT_" & lngBaseRecordID & " VALUE=1>" & vbNewLine
-						mcolStaticWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
-						'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						colWorkingPatterns = Nothing
-					End If
-
-				Loop
+				If Not colWorkingPatterns Is Nothing Then
+					mstrWPFormString = mstrWPFormString & vbNewLine & vbTab & "<input NAME=txtWPCOUNT_" & lngBaseRecordID & " ID=txtWPCOUNT_" & lngBaseRecordID & " VALUE=1>" & vbNewLine
+					mcolStaticWorkingPatterns.Add(colWorkingPatterns, CStr(lngBaseRecordID))
+					'UPGRADE_NOTE: Object colWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					colWorkingPatterns = Nothing
+				End If
 
 			Else
 				'UPGRADE_WARNING: Couldn't resolve default property of object Get_StaticWorkingPatterns. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -5082,7 +4959,7 @@ DisableWPs:
 		On Error GoTo Error_Trap
 
 		Dim sSQL As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 
 		Dim sTempTableName As String
 		Dim sTempStartDateName As String
@@ -5100,110 +4977,104 @@ DisableWPs:
 		' Get the column information from the Details table, in order
 		sSQL = String.Format("SELECT e.*, t.TableName FROM ASRSysCalendarReportEvents e INNER JOIN ASRSysTables t ON t.tableID = e.TableID" &
 				" WHERE CalendarReportID = {0} ORDER BY Name ASC", mlngCalendarReportID)
-		rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
+		rsTemp = DB.GetDataTable(sSQL)
 		With rsTemp
-			If .BOF And .EOF Then
+			If .Rows.Count = 0 Then
 				mstrErrorString = "No events found in the specified Calendar Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				GetEventsCollection = False
-				GoTo TidyUpAndExit
+				Return False
 			End If
 
 			mcolEvents = New clsCalendarEvents
 
-			Do Until .EOF
-				sTempTableName = .Fields("TableName").Value
+			For Each objRow As DataRow In rsTemp.Rows
 
-				If .Fields("EventStartDateID").Value > 0 Then
-					sTempStartDateName = datGeneral.GetColumnName(.Fields("EventStartDateID").Value)
+				sTempTableName = objRow("TableName")
+
+				If objRow("EventStartDateID") > 0 Then
+					sTempStartDateName = General.GetColumnName(objRow("EventStartDateID"))
 				Else
 					GetEventsCollection = False
 					GoTo TidyUpAndExit
 				End If
 
-				If .Fields("EventStartSessionID").Value > 0 Then
-					sTempStartSessionName = datGeneral.GetColumnName(.Fields("EventStartSessionID").Value)
+				If objRow("EventStartSessionID") > 0 Then
+					sTempStartSessionName = General.GetColumnName(objRow("EventStartSessionID"))
 				Else
 					sTempStartSessionName = vbNullString
 				End If
 
-				If .Fields("EventEndDateID").Value > 0 Then
-					sTempEndDateName = datGeneral.GetColumnName(.Fields("EventEndDateID").Value)
+				If objRow("EventEndDateID") > 0 Then
+					sTempEndDateName = General.GetColumnName(objRow("EventEndDateID"))
 				Else
 					sTempEndDateName = vbNullString
 				End If
 
-				If .Fields("EventEndSessionID").Value > 0 Then
-					sTempEndSessionName = datGeneral.GetColumnName(.Fields("EventEndSessionID").Value)
+				If objRow("EventEndSessionID") > 0 Then
+					sTempEndSessionName = General.GetColumnName(objRow("EventEndSessionID"))
 				Else
 					sTempEndSessionName = vbNullString
 				End If
 
-				If .Fields("EventDurationID").Value > 0 Then
-					sTempDurationName = datGeneral.GetColumnName(.Fields("EventDurationID").Value)
+				If objRow("EventDurationID") > 0 Then
+					sTempDurationName = General.GetColumnName(objRow("EventDurationID"))
 				Else
 					sTempDurationName = vbNullString
 				End If
 
-				If .Fields("LegendLookupTableID").Value > 0 Then
-					sTempLegendTableName = datGeneral.GetTableName(.Fields("LegendLookupTableID").Value)
+				If objRow("LegendLookupTableID") > 0 Then
+					sTempLegendTableName = General.GetTableName(objRow("LegendLookupTableID"))
 				Else
 					sTempLegendTableName = vbNullString
 				End If
 
-				If .Fields("LegendLookupColumnID").Value > 0 Then
-					sTempLegendColumnName = datGeneral.GetColumnName(.Fields("LegendLookupColumnID").Value)
+				If objRow("LegendLookupColumnID") > 0 Then
+					sTempLegendColumnName = General.GetColumnName(objRow("LegendLookupColumnID"))
 				Else
 					sTempLegendColumnName = vbNullString
 				End If
 
-				If .Fields("LegendLookupCodeID").Value > 0 Then
-					sTempLegendCodeName = datGeneral.GetColumnName(.Fields("LegendLookupCodeID").Value)
+				If objRow("LegendLookupCodeID") > 0 Then
+					sTempLegendCodeName = General.GetColumnName(objRow("LegendLookupCodeID"))
 				Else
 					sTempLegendCodeName = vbNullString
 				End If
 
-				If .Fields("LegendEventColumnID").Value > 0 Then
-					sTempLegendEventTypeName = datGeneral.GetColumnName(.Fields("LegendEventColumnID").Value)
+				If objRow("LegendEventColumnID") > 0 Then
+					sTempLegendEventTypeName = General.GetColumnName(objRow("LegendEventColumnID"))
 				Else
 					sTempLegendEventTypeName = vbNullString
 				End If
 
-				If .Fields("EventDesc1ColumnID").Value > 0 Then
-					sTempDesc1Name = datGeneral.GetColumnName(.Fields("EventDesc1ColumnID").Value)
+				If objRow("EventDesc1ColumnID") > 0 Then
+					sTempDesc1Name = General.GetColumnName(objRow("EventDesc1ColumnID"))
 				Else
 					sTempDesc1Name = vbNullString
 				End If
 
-				If .Fields("EventDesc2ColumnID").Value > 0 Then
-					sTempDesc2Name = datGeneral.GetColumnName(.Fields("EventDesc2ColumnID").Value)
+				If objRow("EventDesc2ColumnID") > 0 Then
+					sTempDesc2Name = General.GetColumnName(objRow("EventDesc2ColumnID"))
 				Else
 					sTempDesc2Name = vbNullString
 				End If
 
-				mcolEvents.Add(.Fields("EventKey").Value, .Fields("Name").Value, .Fields("TableID").Value, sTempTableName, .Fields("FilterID").Value, .Fields("EventStartDateID").Value _
-											 , sTempStartDateName, .Fields("EventStartSessionID").Value, sTempStartSessionName, .Fields("EventEndDateID").Value, sTempEndDateName, .Fields("EventEndSessionID").Value _
-											 , sTempEndSessionName, .Fields("EventDurationID").Value, sTempDurationName, .Fields("LegendType").Value, .Fields("LegendCharacter").Value _
-											 , .Fields("LegendLookupTableID").Value, sTempLegendTableName, .Fields("LegendLookupColumnID").Value, sTempLegendColumnName, .Fields("LegendLookupCodeID").Value _
-											 , sTempLegendCodeName, .Fields("LegendEventColumnID").Value, sTempLegendEventTypeName, .Fields("EventDesc1ColumnID").Value, sTempDesc1Name, .Fields("EventDesc2ColumnID").Value _
+				mcolEvents.Add(objRow("EventKey"), objRow("Name"), objRow("TableID"), sTempTableName, objRow("FilterID"), objRow("EventStartDateID") _
+											 , sTempStartDateName, objRow("EventStartSessionID"), sTempStartSessionName, objRow("EventEndDateID"), sTempEndDateName, objRow("EventEndSessionID") _
+											 , sTempEndSessionName, objRow("EventDurationID"), sTempDurationName, objRow("LegendType"), objRow("LegendCharacter") _
+											 , objRow("LegendLookupTableID"), sTempLegendTableName, objRow("LegendLookupColumnID"), sTempLegendColumnName, objRow("LegendLookupCodeID") _
+											 , sTempLegendCodeName, objRow("LegendEventColumnID"), sTempLegendEventTypeName, objRow("EventDesc1ColumnID"), sTempDesc1Name, objRow("EventDesc2ColumnID") _
 											 , sTempDesc2Name)
 
-				.MoveNext()
-			Loop
-			.Close()
+			Next
 		End With
-
-		Return True
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsTemp = Nothing
-		Exit Function
+		Return True
 
 Error_Trap:
-		GetEventsCollection = False
 		mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & Err.Description
-		GoTo TidyUpAndExit
+		Return False
 
 	End Function
 
@@ -5211,7 +5082,7 @@ Error_Trap:
 
 		Dim fOK As Boolean = True
 		Dim objEvent As clsCalendarEvent
-		Dim rsLegendBreakdown As Recordset
+		Dim rsLegendBreakdown As DataTable
 		Dim objLegendEvent As CalendarLegend
 		Dim objColor As Color
 
@@ -5233,19 +5104,19 @@ Error_Trap:
 					'Therefore use the unique types from the legend information.
 
 					strSQL = String.Format("SELECT DISTINCT {0} FROM {1}", .LegendColumnName, .LegendTableName)
-					rsLegendBreakdown = mclsData.OpenRecordset(strSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+					rsLegendBreakdown = DB.GetDataTable(strSQL)
 
-					If rsLegendBreakdown.BOF And rsLegendBreakdown.EOF Then
+					If rsLegendBreakdown.Rows.Count = 0 Then
 						mstrErrorString = "The '" & .LegendTableName & "' event lookup table contains no records."
-						GenerateSQL = False
-						Exit Function
+						Return False
 					End If
 
-					Do While Not rsLegendBreakdown.EOF
+					For Each objRow As DataRow In rsLegendBreakdown.Rows
+
 						mintDynamicEventCount = mintDynamicEventCount + 1
 
 						strDynamicKey = "DYNAMICEVENT" & CStr(mintDynamicEventCount)
-						strDynamicName = Replace(IIf(IsDBNull(rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "", rsLegendBreakdown.Fields(CStr(.LegendColumnName)).Value), "'", "''")
+						strDynamicName = Replace(IIf(IsDBNull(objRow(CStr(.LegendColumnName))), "", objRow(CStr(.LegendColumnName))), "'", "''")
 						mstrSQLDynamicLegendWhere = vbNullString
 
 						objLegendEvent = New CalendarLegend
@@ -5264,9 +5135,7 @@ Error_Trap:
 						fOK = InsertIntoTempTable(mstrSQLEvent)
 						mstrSQLEvent = vbNullString
 
-						rsLegendBreakdown.MoveNext()
-					Loop
-					rsLegendBreakdown.Close()
+					Next
 
 				Else
 
@@ -5601,7 +5470,7 @@ Error_Trap:
 							& "'" & .Description1Name & "' AS 'EventDescription1Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If datGeneral.GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
+					If General.GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription1', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription1', " & vbNewLine
@@ -5631,7 +5500,7 @@ Error_Trap:
 							& "'" & .Description2Name & "' AS 'EventDescription2Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If datGeneral.GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
+					If General.GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription2', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription2', " & vbNewLine
@@ -5931,10 +5800,10 @@ GenerateSQLSelect_ERROR:
 				bViewContains_DurationColumn = IsColumnInView((objTableView.ViewID), (objEvent.DurationID))
 			End If
 
-			If (objTableView.TableID = mlngCalendarReportsBaseTable) And (objTableView.ViewID > 0) Or (datGeneral.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
+			If (objTableView.TableID = mlngCalendarReportsBaseTable) And (objTableView.ViewID > 0) Or (General.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
 				' Get the table/view object from the id stored in the array
 
-				If (datGeneral.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
+				If (General.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
 					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & objTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & objTableView.TableID & " = " & objTableView.RealSource & ".ID"
 
 					mstrSQLBaseData = mstrSQLBaseData & " LEFT OUTER JOIN " & objTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & objTableView.TableID & " = " & objTableView.RealSource & ".ID"
@@ -5964,7 +5833,7 @@ GenerateSQLSelect_ERROR:
 					End If
 				End If
 
-			ElseIf (datGeneral.IsAChildOf(mlngTableViews(2, intLoop), mlngCalendarReportsBaseTable)) And (objEvent.TableID = objTableView.TableID) Then
+			ElseIf (General.IsAChildOf(mlngTableViews(2, intLoop), mlngCalendarReportsBaseTable)) And (objEvent.TableID = objTableView.TableID) Then
 				objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, intLoop))
 
 				If objChildTable.AllowSelect Then
@@ -5977,7 +5846,7 @@ GenerateSQLSelect_ERROR:
 						If mblnHasEventFilterIDs Then
 							blnOK = True
 						Else
-							blnOK = datGeneral.FilteredIDs((objEvent.FilterID), strFilterIDs, mastrUDFsRequired, mvarPrompts)
+							blnOK = General.FilteredIDs((objEvent.FilterID), strFilterIDs, mastrUDFsRequired, mvarPrompts)
 							mblnHasEventFilterIDs = blnOK
 							mstrEventFilterIDs = strFilterIDs
 						End If
@@ -5986,7 +5855,7 @@ GenerateSQLSelect_ERROR:
 							sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & mstrEventFilterIDs & ")"
 						Else
 							' Permission denied on something in the filter.
-							mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(objEvent.FilterID) & "' filter."
+							mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(objEvent.FilterID) & "' filter."
 							GenerateSQLJoin = False
 							GoTo TidyUpAndExit
 						End If
@@ -6143,13 +6012,13 @@ GenerateSQLJoin_ERROR:
 			mstrSQLBaseDateClause = mstrSQLBaseDateClause & " AND (" & mstrSQLBaseStartDateColumn & " IS NOT NULL)"
 
 			If objEvent.FilterID > 0 Then
-				blnOK = datGeneral.FilteredIDs(objEvent.FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+				blnOK = General.FilteredIDs(objEvent.FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & strFilterIDs & ")"
 				Else
 					' Permission denied on something in the filter.
-					mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(objEvent.FilterID) & "' filter."
+					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(objEvent.FilterID) & "' filter."
 					GenerateSQLWhere = False
 					GoTo TidyUpAndExit
 				End If
@@ -6263,9 +6132,6 @@ GenerateSQLWhere_ERROR:
 		mintDynamicEventCount = 0
 
 		' Class references
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
-
 		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjEventLog = Nothing
 		'UPGRADE_NOTE: Object mcolBaseDescIndex may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

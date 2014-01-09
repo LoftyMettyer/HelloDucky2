@@ -29,6 +29,7 @@
 		objCalendar.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 					
 		' Pass required info to the DLL
+		objCalendar.Initialise()
 		objCalendar.CalendarReportID = Session("utilid")
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
@@ -80,7 +81,7 @@
 
 		' Convert data over to DataTables (remove step at later date when rest of code converted)
 		If fok Then		
-			objCalendar.Events = RecordSetToDataTable(objCalendar.EventsRecordset)
+			objCalendar.Events = objCalendar.EventsRecordset
 		End If
 		
 		
