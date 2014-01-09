@@ -110,15 +110,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function GetRecordsInTransaction(ByRef sSQL As String) As Recordset
-		' Return the required STATIC/read-only recordset.
-		' This is useful when getting a recordset in the middle of a transaction.
-		' An error occurs when getting more than one forward-only, read-only recordset in the middle
-		' of a transaction.
-		GetRecordsInTransaction = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
-
-	End Function
-
 	Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.

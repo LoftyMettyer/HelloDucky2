@@ -38,7 +38,7 @@ Namespace BaseClasses
 
 #Region "From modExpression"
 
-		Protected Function ExprDeleted(ByRef lngExprID As Long) As Boolean
+		Protected Function ExprDeleted(ByVal lngExprID As Integer) As Boolean
 
 			Dim rsExprTemp As DataTable
 			Dim sSQL As String

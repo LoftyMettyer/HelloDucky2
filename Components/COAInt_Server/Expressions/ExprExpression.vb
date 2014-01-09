@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
@@ -17,7 +16,7 @@ Friend Class clsExprExpression
 	Private msExpressionName As String
 	Private mlngBaseTableID As Integer
 	Private miReturnType As ExpressionValueTypes
-	Private miExpressionType As Short
+	Private miExpressionType As Integer
 	Private mlngParentComponentID As Integer
 	Private msOwner As String
 	Private msAccess As String
@@ -86,13 +85,13 @@ Friend Class clsExprExpression
 		End Set
 	End Property
 
-	Public Property ExpressionType() As Short
+	Public Property ExpressionType() As Integer
 		Get
 			' Return the expression's parent type property.
-			ExpressionType = miExpressionType
+			Return miExpressionType
 
 		End Get
-		Set(ByVal Value As Short)
+		Set(ByVal Value As Integer)
 			' Set the expression's type property.
 			miExpressionType = Value
 
@@ -262,7 +261,7 @@ Friend Class clsExprExpression
 		End Set
 	End Property
 
-	Public Sub ResetConstructedFlag(ByRef fValue As Object)
+	Public Sub ResetConstructedFlag(ByRef fValue As Boolean)
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object fValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mfConstructed = fValue
@@ -304,8 +303,8 @@ Friend Class clsExprExpression
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim iLoop As Short
-		Dim iIndex As Short
+		Dim iLoop As Integer
+		Dim iIndex As Integer
 
 		fOK = True
 		iIndex = 0
@@ -387,7 +386,7 @@ ErrorTrap:
 	Public Function DeleteExpression() As Boolean
 	End Function
 
-	Public Function ValidityMessage(ByRef piInvalidityCode As Short) As String
+	Public Function ValidityMessage(ByRef piInvalidityCode As ExprValidationCodes) As String
 		' Return the text nmessage that describes the given expression invalidity code.
 
 		Select Case piInvalidityCode
@@ -447,7 +446,7 @@ ErrorTrap:
 		'JPD 20040507 Fault 8600
 		On Error GoTo ErrorTrap
 
-		Dim iLoop1 As Short
+		Dim iLoop1 As Integer
 
 		ContainsExpression = False
 
@@ -476,21 +475,10 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-
-		' Begin the transaction of data.
-		'gADOCon.BeginTrans()
-
 		fOK = WriteExpression()
 
 TidyUpAndExit:
-		' Commit the data transaction if everything was okay.
-		'If fOK Then
-		'	gADOCon.CommitTrans()
-		'Else
-		'	gADOCon.RollbackTrans()
-		'End If
-		WriteExpression_Transaction = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False
@@ -516,16 +504,14 @@ ErrorTrap:
 			fOK = (mlngExpressionID > 0)
 
 			If fOK Then
-				sSQL = "INSERT INTO ASRSysExpressions" & " (exprID, name, TableID, returnType, returnSize, returnDecimals, " & " type, parentComponentID, Username, access, description, ViewInColour, ExpandedNode)" & " VALUES(" & Trim(Str(mlngExpressionID)) & ", " & "'" & Replace(Trim(msExpressionName), "'", "''") & "', " & Trim(Str(mlngBaseTableID)) & ", " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & ", " & "0,0, " & Trim(Str(miExpressionType)) & ", " & Trim(Str(mlngParentComponentID)) & ", " & "'" & Replace(Trim(msOwner), "'", "''") & "', " & "'" & Trim(msAccess) & "', " & "'" & Replace(Trim(msDescription), "'", "'") & "', " & IIf(mbViewInColour, "1, ", "0, ") & IIf(mbExpandedNode, "1", "0") & ")"
-				gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+				sSQL = "INSERT INTO ASRSysExpressions (exprID, name, TableID, returnType, returnSize, returnDecimals, type, parentComponentID, Username, access, description, ViewInColour, ExpandedNode)" & " VALUES(" & Trim(Str(mlngExpressionID)) & ", " & "'" & Replace(Trim(msExpressionName), "'", "''") & "', " & Trim(Str(mlngBaseTableID)) & ", " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & ", " & "0,0, " & Trim(Str(miExpressionType)) & ", " & Trim(Str(mlngParentComponentID)) & ", " & "'" & Replace(Trim(msOwner), "'", "''") & "', " & "'" & Trim(msAccess) & "', " & "'" & Replace(Trim(msDescription), "'", "'") & "', " & IIf(mbViewInColour, "1, ", "0, ") & IIf(mbExpandedNode, "1", "0") & ")"
+				DB.ExecuteSql(sSQL)
 
 			End If
 		Else
-			sSQL = "UPDATE ASRSysExpressions" & " SET name = '" & Replace(Trim(msExpressionName), "'", "''") & "'," & " TableID = " & Trim(Str(mlngBaseTableID)) & "," & " returnType = " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & "," & " returnSize = 0," & " returnDecimals = 0," & " type = " & Trim(Str(miExpressionType)) & "," & " parentComponentID = " & Trim(Str(mlngParentComponentID)) & "," & " Username = '" & Replace(Trim(msOwner), "'", "''") & "'," & " access = '" & Trim(msAccess) & "'," & " description = '" & Replace(Trim(msDescription), "'", "''") & "', " & " ViewInColour = " & IIf(mbViewInColour, "1", "0") & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+			sSQL = "UPDATE ASRSysExpressions SET name = '" & Replace(Trim(msExpressionName), "'", "''") & "', TableID = " & Trim(Str(mlngBaseTableID)) & "," & " returnType = " & IIf(miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION, Trim(Str(ExpressionValueTypes.giEXPRVALUE_UNDEFINED)), Trim(Str(miReturnType))) & "," & " returnSize = 0," & " returnDecimals = 0," & " type = " & Trim(Str(miExpressionType)) & "," & " parentComponentID = " & Trim(Str(mlngParentComponentID)) & "," & " Username = '" & Replace(Trim(msOwner), "'", "''") & "'," & " access = '" & Trim(msAccess) & "'," & " description = '" & Replace(Trim(msDescription), "'", "''") & "', " & " ViewInColour = " & IIf(mbViewInColour, "1", "0") & " WHERE exprID = " & Trim(Str(mlngExpressionID))
+			DB.ExecuteSql(sSQL)
 
-			'" owner = '" & Trim(msOwner) & "'," & _
-			'
-			gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
 		End If
 
 		If fOK Then
@@ -569,11 +555,11 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim iLoop1 As Short
-		Dim iLoop2 As Short
-		Dim iLoop3 As Short
-		Dim iParameter1Index As Short
-		Dim iParameter2Index As Short
+		Dim iLoop1 As Integer
+		Dim iLoop2 As Integer
+		Dim iLoop3 As Integer
+		Dim iParameter1Index As Integer
+		Dim iParameter2Index As Integer
 		Dim iMinOperatorPrecedence As Short
 		Dim iMaxOperatorPrecedence As Short
 		Dim sCode As String
@@ -667,7 +653,7 @@ ErrorTrap:
 									' Read the index of the parameter's value if there is one.
 									For iLoop3 = iLoop2 - 1 To 1 Step -1
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										If avValues(2, iLoop3) <> vbNullString Then
+										If avValues(2, iLoop3).ToString() <> vbNullString Then
 											iParameter1Index = iLoop3
 											Exit For
 										End If
@@ -791,7 +777,7 @@ ErrorTrap:
 				'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If avValues(2, iLoop1) <> vbNullString Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sCode = avValues(2, iLoop1)
+					sCode = avValues(2, iLoop1).ToString()
 					Exit For
 				End If
 			Next iLoop1
@@ -826,7 +812,7 @@ ErrorTrap:
 		' This is used to suppress prompting the user for promted values, when we are only validating the expression.
 
 		Dim fOK As Boolean
-		Dim iLoop1 As Short
+		Dim iLoop1 As Integer
 		Dim sWhereCode As String
 		Dim sBaseTableSource As String
 		Dim sRuntimeFilterSQL As String
@@ -1033,45 +1019,44 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim sSQL As String
 		Dim sDeletedExpressionIDs As String
-		Dim rsSubExpressions As ADODB.Recordset
+		Dim rsSubExpressions As DataTable
 		Dim objExpr As clsExprExpression
 
 		fOK = True
 		sDeletedExpressionIDs = ""
 
 		' Get the expression's function components from the database.
-		sSQL = "SELECT ASRSysExpressions.exprID" & " FROM ASRSysExpressions" & " INNER JOIN ASRSysExprComponents" & "   ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID" & " AND ASRSysExprComponents.exprID = " & Trim(Str(mlngExpressionID))
-		rsSubExpressions = General.GetRecordsInTransaction(sSQL)
+		sSQL = "SELECT ASRSysExpressions.exprID FROM ASRSysExpressions INNER JOIN ASRSysExprComponents ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID AND ASRSysExprComponents.exprID = " & Trim(Str(mlngExpressionID))
+		rsSubExpressions = DB.GetDataTable(sSQL)
 		With rsSubExpressions
-			Do While (Not .EOF) And fOK
+			For Each objRow As DataRow In .Rows
+				If Not fOK Then Exit For
+
 				' Instantiate each function parameter expression.
 				' Instruct the function parameter expression to delete its components.
 				objExpr = New clsExprExpression(Login)
-				objExpr.ExpressionID = .Fields("ExprID").Value
+				objExpr.ExpressionID = CInt(objRow("ExprID"))
 				fOK = objExpr.DeleteExistingComponents
 				'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objExpr = Nothing
 
 				' Add the ID of the sub-expression to the string of sub-expressions to be deleted.
-				sDeletedExpressionIDs = sDeletedExpressionIDs & IIf(Len(sDeletedExpressionIDs) > 0, ", ", "") & Trim(Str(.Fields("ExprID").Value))
+				sDeletedExpressionIDs = sDeletedExpressionIDs & IIf(Len(sDeletedExpressionIDs) > 0, ", ", "") & Trim(Str(objRow("ExprID")))
 
-				.MoveNext()
-			Loop
-
-			.Close()
+			Next
 		End With
 		'UPGRADE_NOTE: Object rsSubExpressions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsSubExpressions = Nothing
 
 		If Len(sDeletedExpressionIDs) > 0 Then
 			' Delete all existing sub-expressions for this expression from the database.
-			sSQL = "DELETE FROM ASRSysExpressions" & " WHERE exprID IN (" & sDeletedExpressionIDs & ")"
-			gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+			sSQL = "DELETE FROM ASRSysExpressions WHERE exprID IN (" & sDeletedExpressionIDs & ")"
+			DB.ExecuteSql(sSQL)
 		End If
 
 		' Delete all existing components for this expression from the database.
-		sSQL = "DELETE FROM ASRSysExprComponents" & " WHERE exprID = " & Trim(Str(mlngExpressionID))
-		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+		sSQL = "DELETE FROM ASRSysExprComponents WHERE exprID = " & Trim(Str(mlngExpressionID))
+		DB.ExecuteSql(sSQL)
 
 TidyUpAndExit:
 		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1094,24 +1079,24 @@ ErrorTrap:
 		' which has definite return type (eg. function sub-expressions, runtime calcs, etc).
 		On Error GoTo ErrorTrap
 
-		Dim iLoop1 As Short
-		Dim iLoop2 As Short
-		Dim iLoop3 As Short
+		Dim iLoop1 As Integer
+		Dim iLoop2 As Integer
+		Dim iLoop3 As Integer
 		Dim iParam1Type As Short
 		Dim iParam2Type As Short
-		Dim iParameter1Index As Short
-		Dim iParameter2Index As Short
+		Dim iParameter1Index As Integer
+		Dim iParameter2Index As Integer
 		Dim iParam1ReturnType As Short
 		Dim iParam2ReturnType As Short
 		Dim iOperatorReturnType As ExpressionValueTypes
-		Dim iBadLogicColumnIndex As Short
+		Dim iBadLogicColumnIndex As Integer
 		Dim iMinOperatorPrecedence As Short
 		Dim iMaxOperatorPrecedence As Short
 		Dim iValidationCode As ExprValidationCodes
 		Dim iEvaluatedReturnType As ExpressionValueTypes
-		Dim aiDummyValues(,) As Short
+		Dim aiDummyValues(,) As Integer
 		Dim avDummyPrompts(,) As Object
-		Dim iTempReturnType As Short
+		Dim iTempReturnType As Integer
 
 		ReDim avDummyPrompts(1, 0)
 
@@ -1374,7 +1359,7 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim lngCalcViews(,) As Integer
-		Dim intCount As Short
+		Dim intCount As Integer
 		Dim sSource As String
 		Dim sSPCode As String
 		Dim strJoinCode As String
@@ -1385,8 +1370,8 @@ ErrorTrap:
 		Dim alngSourceTables(,) As Integer
 		Dim sProcName As String
 		Dim avDummyPrompts(,) As Object
-		Dim intStart As Short
-		Dim intFound As Short
+		Dim intStart As Integer
+		Dim intFound As Integer
 
 		ReDim avDummyPrompts(1, 0)
 
@@ -1405,7 +1390,7 @@ ErrorTrap:
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
+					DB.ExecuteSql(sSPCode)
 
 					General.DropUniqueSQLObject(sProcName, 4)
 
@@ -1439,7 +1424,7 @@ ErrorTrap:
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
-					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
+					DB.ExecuteSql(sSPCode)
 
 					' Drop the test stored procedure.
 					General.DropUniqueSQLObject(sProcName, 4)
@@ -1510,7 +1495,7 @@ ErrorTrap:
 		' This picks up on errors such as too many nested levels of the CASE statement.
 		Dim iValidationCode As ExprValidationCodes
 		Dim sSQL As String
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim objComp As clsExprComponent
 		Dim objExpr As clsExprExpression
 
@@ -1524,12 +1509,16 @@ ErrorTrap:
 
 		sSQL = String.Format("SELECT componentID FROM ASRSysExprComponents WHERE calculationID = {0} OR filterID = {0} OR (fieldSelectionFilter = {0} AND type = {1})" _
 			, mlngExpressionID, CStr(ExpressionComponentTypes.giCOMPONENT_FIELD))
-		rsTemp = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsTemp = DB.GetDataTable(sSQL)
 
 		With rsTemp
-			Do While (Not .EOF) And (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
+			For Each objRow As DataRow In .Rows
+				If iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+					Exit For
+				End If
+
 				objComp = New clsExprComponent(Login)
-				objComp.ComponentID = .Fields("ComponentID").Value
+				objComp.ComponentID = CInt(objRow("ComponentID"))
 
 				objExpr = New clsExprExpression(Login)
 				objExpr.ExpressionID = objComp.RootExpressionID
@@ -1544,9 +1533,7 @@ ErrorTrap:
 				'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objComp = Nothing
 
-				.MoveNext()
-			Loop
-			.Close()
+			Next
 		End With
 		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsTemp = Nothing
@@ -1566,7 +1553,7 @@ ErrorTrap:
 		Dim fOK As Boolean
 		Dim sSQL As String
 		Dim objComponent As clsExprComponent
-		Dim rsExpression As Recordset
+		Dim rsExpression As DataTable
 
 		fOK = True
 
@@ -1579,15 +1566,14 @@ ErrorTrap:
 			If mlngExpressionID > 0 Then
 				' Get the expression timestamp.
 				sSQL = String.Format("SELECT CONVERT(integer, ASRSysExpressions.timestamp) AS intTimestamp FROM ASRSysExpressions WHERE exprID = {0}", mlngExpressionID)
-				rsExpression = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+				rsExpression = DB.GetDataTable(sSQL)
 
 				With rsExpression
-					fOK = Not (.EOF And .BOF)
+					fOK = (.Rows.Count > 0)
 					If fOK Then
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If Not mfDontUpdateTimeStamp Then mlngTimeStamp = IIf(IsDBNull(.Fields("intTimestamp").Value), 0, .Fields("intTimestamp").Value)
+						If Not mfDontUpdateTimeStamp Then mlngTimeStamp = IIf(IsDBNull(.Rows(0)("intTimestamp")), 0, .Rows(0)("intTimestamp"))
 					End If
-					.Close()
 				End With
 				'UPGRADE_NOTE: Object rsExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsExpression = Nothing
@@ -1603,22 +1589,22 @@ ErrorTrap:
 				InitialiseExpression()
 			Else
 
-				msExpressionName = rowExpression("Name")
-				mlngBaseTableID = rowExpression("TableID")
-				miReturnType = rowExpression("ReturnType")
-				miExpressionType = rowExpression("Type")
+				msExpressionName = rowExpression("Name").ToString()
+				mlngBaseTableID = CInt(rowExpression("TableID"))
+				miReturnType = CType(rowExpression("ReturnType"), ExpressionValueTypes)
+				miExpressionType = CInt(rowExpression("Type"))
 
 				If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
 					miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
 				End If
 
-				mlngParentComponentID = rowExpression("ParentComponentID")
-				msOwner = rowExpression("Username")
-				msAccess = rowExpression("Access")
-				msDescription = rowExpression("Description")
-				mlngTimeStamp = rowExpression("intTimestamp")
-				msBaseTableName = rowExpression("TableName")
-				mbViewInColour = rowExpression("ViewInColour")
+				mlngParentComponentID = CInt(rowExpression("ParentComponentID"))
+				msOwner = rowExpression("Username").ToString()
+				msAccess = rowExpression("Access").ToString()
+				msDescription = rowExpression("Description").ToString()
+				mlngTimeStamp = CInt(rowExpression("intTimestamp"))
+				msBaseTableName = rowExpression("TableName").ToString()
+				mbViewInColour = CBool(rowExpression("ViewInColour"))
 
 			End If
 
@@ -1669,7 +1655,7 @@ ErrorTrap:
 		fOK = False
 		'NO MSGBOX ON THE SERVER ! - MsgBox "Error constructing the expression.", _
 		'vbOKOnly + vbExclamation, App.ProductName
-		Err.Number = False
+		Err.Clear()
 		Resume TidyUpAndExit
 
 	End Function
@@ -1703,7 +1689,7 @@ ErrorTrap:
 
 	End Sub
 
-	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As Short) As Boolean
+	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As ExpressionValueTypes) As Boolean
 		' Initialise the expression object.
 		' Return TRUE if everything was initialised okay.
 		On Error GoTo ErrorTrap
@@ -1743,7 +1729,7 @@ TidyUpAndExit:
 ErrorTrap:
 		fOK = False
 		'NO MSGBOX ON THE SERVER ! - MsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
-		Err.Number = False
+		Err.Clear()
 		Resume TidyUpAndExit
 
 	End Function
