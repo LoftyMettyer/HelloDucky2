@@ -108,29 +108,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function EnableUDFFunctions() As Boolean
-
-		Dim sSQL As String
-		Dim rsUser As Recordset
-
-		sSQL = "exec master..xp_msver"
-
-		rsUser = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		rsUser.MoveNext()
-
-		Select Case Val(rsUser.Fields(3).Value)
-			Case Is >= 8
-				EnableUDFFunctions = True
-			Case Else
-				EnableUDFFunctions = False
-		End Select
-
-		rsUser.Close()
-		'UPGRADE_NOTE: Object rsUser may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsUser = Nothing
-
-	End Function
-
 	Public Function GetRecordsInTransaction(ByRef sSQL As String) As Recordset
 		' Return the required STATIC/read-only recordset.
 		' This is useful when getting a recordset in the middle of a transaction.
