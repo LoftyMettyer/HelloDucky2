@@ -5,6 +5,7 @@ Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprFunction
 	Inherits BaseExpressionComponent
@@ -883,7 +884,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objFunctionCopy As New clsExprFunction
+		Dim objFunctionCopy As New clsExprFunction(Login)
 
 		' Copy the component's basic properties.
 		' ie. the function id, not its parameters, etc.
@@ -1041,7 +1042,7 @@ ErrorTrap:
 		' Get the standard function parameter definitions.
 		For Each objParameter In Functions.GetById(mlngFunctionID).Parameters
 
-			mcolParameters.Add(New clsExprComponent)
+			mcolParameters.Add(New clsExprComponent(Login))
 			With mcolParameters.Item(mcolParameters.Count())
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
@@ -1069,7 +1070,7 @@ ErrorTrap:
 			For Each objRow As DataRow In rsParameters.Rows
 
 				' Instantiate a new component object.
-				objNewParameter = New clsExprComponent
+				objNewParameter = New clsExprComponent(Login)
 
 				' Construct the hierarchy of objects that define the parameter.
 				objNewParameter.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
@@ -1131,27 +1132,13 @@ ErrorTrap:
 
 	End Sub
 
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-		' Create a new collection to hold the function's parameters.
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
 		mcolParameters = New Collection
 	End Sub
 
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-
-
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-		' Disassociate object variables.
-		'UPGRADE_NOTE: Object mcolParameters may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolParameters = Nothing
-
-	End Sub
 	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
+		mcolParameters = Nothing
 		MyBase.Finalize()
 	End Sub
 

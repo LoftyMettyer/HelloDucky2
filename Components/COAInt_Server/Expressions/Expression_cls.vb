@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
 
 Public Class Expression
 	Inherits BaseExpressionComponent
@@ -17,6 +18,11 @@ Public Class Expression
 	Private mastrUDFsRequired() As String
 
 	Private mobjGeneral As New clsGeneral
+
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
+	End Sub
+
 
 	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As Short) As Boolean
 		' Initialise the expression object.
@@ -48,7 +54,7 @@ ErrorTrap:
 		Dim lngRecCount As Integer
 		Dim rstTemp As ADODB.Recordset
 
-		rstTemp = datGeneral.GetRecords(psFilterCode)
+		rstTemp = General.GetRecords(psFilterCode)
 		lngRecCount = rstTemp.Fields(0).Value
 		rstTemp.Close()
 		'UPGRADE_NOTE: Object rstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -268,7 +274,7 @@ ErrorTrap:
 			'UPGRADE_NOTE: Object mobjBaseExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			mobjBaseExpr = Nothing
 		End If
-		mobjBaseExpr = New clsExprExpression
+		mobjBaseExpr = New clsExprExpression(Login)
 		mobjBaseExpr.Initialise(mlngBaseTableID, mlngExpressionID, miType, miReturnType)
 		mobjBaseExpr.ExpandedNode = True
 
@@ -674,7 +680,7 @@ ErrorTrap:
 		Dim objExpression As clsExprExpression
 
 		' Instantiate the calculation expression.
-		objExpression = New clsExprExpression
+		objExpression = New clsExprExpression(Login)
 
 		With objExpression
 			' Construct the calculation expression.

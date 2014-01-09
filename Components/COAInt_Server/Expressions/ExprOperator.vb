@@ -4,6 +4,7 @@ Option Explicit On
 Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprOperator
 	Inherits BaseExpressionComponent
@@ -24,6 +25,10 @@ Friend Class clsExprOperator
 
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
+
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
+	End Sub
 
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		Return False
@@ -228,7 +233,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objOperatorCopy As New clsExprOperator
+		Dim objOperatorCopy As New clsExprOperator(Login)
 
 		' Copy the component's basic properties.
 		objOperatorCopy.OperatorID = mlngOperatorID

@@ -151,7 +151,7 @@ ErrorTrap:
 					' and in truth the filter should not have become invalid (if somebody has changed it to be invalid
 					' the full check will be made when they try to save the filter). So I don't want
 					' to do this full check now.
-					'        Set objExpr = New clsExprExpression
+					'        Set objExpr = NewExpression()
 					'        With objExpr
 					'          .ExpressionID = CLng(plngID)
 					'          .ConstructExpression

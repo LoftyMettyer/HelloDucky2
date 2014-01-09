@@ -4339,7 +4339,9 @@ Namespace Controllers
 			On Error Resume Next
 
 			' Get the server DLL to save the expression definition
-			objExpression = New HR.Intranet.Server.Expression
+
+			Dim objContext = CType(Session("SessionContext"), SessionInfo)
+			objExpression = New Expression(objContext.LoginInfo)
 
 			If Request.Form("txtSend_type") = 11 Then
 				iExprType = 11

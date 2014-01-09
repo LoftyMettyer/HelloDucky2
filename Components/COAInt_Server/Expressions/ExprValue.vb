@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprValue
 	Inherits BaseExpressionComponent
@@ -16,7 +17,11 @@ Friend Class clsExprValue
 	
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
-		
+
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
+	End Sub
+
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		Return False
 	End Function
@@ -124,7 +129,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objValueCopy As New clsExprValue
+		Dim objValueCopy As New clsExprValue(Login)
 
 		' Copy the component's basic properties.
 		With objValueCopy
@@ -196,7 +201,7 @@ ErrorTrap:
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'MH20010130 Fault 1610
 					'ComponentDescription = Trim(Str(mdblNumericValue))
-					ComponentDescription = datGeneral.ConvertNumberForDisplay(CStr(mdblNumericValue))
+					ComponentDescription = General.ConvertNumberForDisplay(CStr(mdblNumericValue))
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					ComponentDescription = IIf(mfLogicValue, "True", "False")
 				Case ExpressionValueTypes.giEXPRVALUE_DATE

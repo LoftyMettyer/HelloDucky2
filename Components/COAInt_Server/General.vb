@@ -14,8 +14,10 @@ Imports HR.Intranet.Server.Structures
 Public Class clsGeneral
 
 	Private datData As New clsDataAccess
+	Private ReadOnly _login As LoginInfo
 
 	Public Sub New(ByVal LoginInfo As LoginInfo)
+		_login = LoginInfo
 		datData = New clsDataAccess(LoginInfo)
 	End Sub
 
@@ -121,7 +123,7 @@ Public Class clsGeneral
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
 		Dim fOK As Boolean
-		Dim objExpr As clsExprExpression = New clsExprExpression
+		Dim objExpr As clsExprExpression = New clsExprExpression(_login)
 
 		With objExpr
 			' Initialise the filter expression object.
@@ -164,7 +166,7 @@ Public Class clsGeneral
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		GetValueForRecordIndependantCalc = vbNullString
 
-		objExpr = New clsExprExpression
+		objExpr = New clsExprExpression(_login)
 		With objExpr
 			' Initialise the filter expression object.
 			fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
@@ -432,7 +434,7 @@ LocalErr:
 			Case Else	'Calculation
 
 				Dim objCalcExpr As clsExprExpression
-				objCalcExpr = New clsExprExpression
+				objCalcExpr = New clsExprExpression(_login)
 				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				objCalcExpr.ConstructExpression()
 				objCalcExpr.ValidateExpression(True)
@@ -459,7 +461,7 @@ LocalErr:
 				BitColumn = (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean)
 
 			Case Else	'Calculation
-				objCalcExpr = New clsExprExpression
+				objCalcExpr = New clsExprExpression(_login)
 				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				objCalcExpr.ConstructExpression()
 				objCalcExpr.ValidateExpression(True)

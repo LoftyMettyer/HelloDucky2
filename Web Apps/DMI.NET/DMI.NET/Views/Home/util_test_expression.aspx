@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <!DOCTYPE html>
 
@@ -166,7 +167,7 @@
 	Dim fDisplay As Boolean
 	Dim sUtilType As String
 	Dim sUtilType2 As String
-	Dim objExpression As HR.Intranet.Server.Expression
+	Dim objExpression As Expression
 	Dim iExprType As Integer
 	Dim iReturnType As Integer
 	Dim iValidityCode As Integer
@@ -176,6 +177,8 @@
 	Dim sMsg1 As String
 	Dim sMsg As String
 
+	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	
 	fOK = True
 	fDisplay = false
 	
@@ -188,7 +191,7 @@
 	end if
 		
 	' Get the server DLL to test the expression definition
-		objExpression = New HR.Intranet.Server.Expression
+	objExpression = New Expression(objSessionInfo.LoginInfo)
 	
 	if fok then 
 		if Request.form("type") = 11 then

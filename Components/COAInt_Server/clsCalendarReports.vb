@@ -3522,7 +3522,7 @@ TidyUpAndExit:
 			mlngDescriptionExpr = IIf(IsDBNull(rowDefinition("DescriptionExpr")), 0, rowDefinition("DescriptionExpr"))
 			If mlngDescriptionExpr > 0 Then
 
-				objExpression = New clsExprExpression
+				objExpression = NewExpression()
 				objExpression.ExpressionID = mlngDescriptionExpr
 				objExpression.ConstructExpression()
 				objExpression.ValidateExpression(True)
@@ -5673,7 +5673,7 @@ GenerateSQLSelect_ERROR:
 		' Column 1 = 0 if this row is for a table, 1 if it is for a view.
 		' Column 2 = table/view ID.
 		ReDim alngSourceTables(2, 0)
-		objCalcExpr = New clsExprExpression
+		objCalcExpr = NewExpression()
 		blnOK = objCalcExpr.Initialise(plngBaseTableID, plngExprID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 		If blnOK Then
 			blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)

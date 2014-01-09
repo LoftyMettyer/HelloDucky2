@@ -36,6 +36,9 @@ Namespace BaseClasses
 			End Get
 		End Property
 
+		Friend Function NewExpression() As clsExprExpression
+			Return New clsExprExpression(_login)
+		End Function
 
 	End Class
 End Namespace

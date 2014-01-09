@@ -559,7 +559,7 @@ LocalErr:
 							Else
 								Call SQLAddCalculation(objRow("ColExpID"), objRow("Table") & objRow("Name"))
 
-								objExpr = New clsExprExpression
+								objExpr = NewExpression()
 								objExpr.ExpressionID = objRow("ColExpID")
 								objExpr.ConstructExpression()
 								objExpr.ValidateExpression(True)
@@ -839,7 +839,7 @@ LocalErr:
 		Dim objTableView As TablePrivilege
 
 		ReDim lngCalcViews(2, 0)
-		objCalcExpr = New clsExprExpression
+		objCalcExpr = NewExpression()
 		fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 		If fOK Then
 			fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
@@ -886,7 +886,7 @@ LocalErr:
 					'TM20020904 Fault 4364 - depending on whether the table that is about to
 					'                        joined is a Parent or Child denotes which ID
 					'                        columns are used to establish the join.
-					If datGeneral.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
+					If General.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & CStr(objTableView.TableID) & " = " & sSource & ".ID"
 					End If
@@ -925,7 +925,7 @@ LocalErr:
 					'TM20020904 Fault 4364 - depending on whether the table that is about to
 					'                        joined is a Parent or Child denotes which ID
 					'                        columns are used to establish the join.
-					If datGeneral.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
+					If General.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & lngCalcViews(2, intCount) & " = " & sSource & ".ID"
 					End If

@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <!DOCTYPE html>
 
@@ -145,6 +146,8 @@
 	Dim sUtilType2 As String
 	Dim iExprType As Integer
 
+	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
 	Dim cmdValidate As Command
 	Dim prmUtilName As ADODB.Parameter
 	Dim prmUtilID As ADODB.Parameter
@@ -171,7 +174,7 @@
 	Dim iIndex As Integer
 	Dim sDesc As String
 	
-	Dim objExpression As HR.Intranet.Server.Expression
+	Dim objExpression As Expression
 	Dim iReturnType As Integer
 			
 	Dim iValidityCode As Integer
@@ -668,7 +671,7 @@
 		
 	If Request.Form("validatePass") = 2 Then
 		' Get the server DLL to validate the expression definition
-		objExpression = New HR.Intranet.Server.Expression
+		objExpression = New HR.Intranet.Server.Expression(objSessionInfo.LoginInfo)
 			
 		If Request.Form("validateUtilType") = 11 Then
 			iExprType = 11
@@ -731,7 +734,7 @@
 			' If so, check if it can be.
 
 			If Request.Form("validateUtilID") > 0 Then
-				objExpression = New HR.Intranet.Server.Expression
+				objExpression = New Expression(objSessionInfo.LoginInfo)
 
 				iOriginalReturnType = objExpression.ExistingExpressionReturnType(CLng(Request.Form("validateUtilID")))
 				objExpression = Nothing

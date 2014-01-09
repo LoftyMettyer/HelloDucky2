@@ -4,6 +4,7 @@ Option Explicit On
 Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprFilter
 	Inherits BaseExpressionComponent
@@ -16,6 +17,10 @@ Friend Class clsExprFilter
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
+	End Sub
+
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
 															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
 															, ByRef psUDFs() As String _
@@ -27,7 +32,7 @@ Friend Class clsExprFilter
 		Dim bOK As Boolean
 
 		' Instantiate and generate the runtime for the filter expression.
-		objFilter = New clsExprExpression
+		objFilter = New clsExprExpression(Login)
 		With objFilter
 			.ExpressionID = mlngFilterID
 			.ConstructExpression()
@@ -81,7 +86,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objFilterCopy As New clsExprFilter
+		Dim objFilterCopy As New clsExprFilter(Login)
 
 		' Copy the component's basic properties.
 		objFilterCopy.FilterID = mlngFilterID
@@ -106,7 +111,7 @@ ErrorTrap:
 			Dim objFilter As clsExprExpression
 
 			' Instantiate the filter expression.
-			objFilter = New clsExprExpression
+			objFilter = New clsExprExpression(Login)
 
 			With objFilter
 				' Construct the filter expression.

@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%	
 	If Len(Session("recordID")) = 0 Then
@@ -589,6 +590,8 @@
 
 	Dim sErrorDescription = ""
 
+	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	
 	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtParentTableID' name='txtParentTableID' value='" & Session("parentTableID") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtParentRecordID' name='txtParentRecordID' value='" & Session("parentRecordID") & "'>" & vbCrLf)
@@ -1115,7 +1118,7 @@
 		Dim iCharIndex As Integer
 		
 		' Get the server DLL to test the expression definition
-		Dim objExpression = New HR.Intranet.Server.Expression
+		Dim objExpression = New HR.Intranet.Server.Expression(objSessionInfo.LoginInfo)
 				
 		' Pass required info to the DLL			
 		Do While Len(sParam1) > 0

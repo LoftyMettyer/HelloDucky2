@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
 
 Friend Class clsExprComponent
 	Inherits BaseExpressionComponent
@@ -17,6 +18,10 @@ Friend Class clsExprComponent
 
 	' Definition for expanded/unexpanded status of the component
 	Private mbExpanded As Boolean
+
+	Public Sub New(ByVal Value As LoginInfo)
+		MyBase.New(Value)
+	End Sub
 
 	Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
 		' Retrun TRUE if the current expression (or any of its sub expressions)
@@ -106,34 +111,34 @@ ErrorTrap:
 				Select Case miComponentType
 
 					Case ExpressionComponentTypes.giCOMPONENT_FIELD
-						mvComponent = New clsExprField
+						mvComponent = New clsExprField(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-						mvComponent = New clsExprFunction
+						mvComponent = New clsExprFunction(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-						mvComponent = New clsExprCalculation
+						mvComponent = New clsExprCalculation(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_VALUE
-						mvComponent = New clsExprValue
+						mvComponent = New clsExprValue(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
-						mvComponent = New clsExprOperator
+						mvComponent = New clsExprOperator(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
-						mvComponent = New clsExprTableLookup
+						mvComponent = New clsExprTableLookup(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
-						mvComponent = New clsExprPromptedValue
+						mvComponent = New clsExprPromptedValue(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
 						' Not required.
 
 					Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-						mvComponent = New clsExprExpression
+						mvComponent = New clsExprExpression(Login)
 
 					Case ExpressionComponentTypes.giCOMPONENT_FILTER
-						mvComponent = New clsExprFilter
+						mvComponent = New clsExprFilter(Login)
 
 				End Select
 
@@ -297,7 +302,7 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim objCopyComponent As New clsExprComponent
+		Dim objCopyComponent As New clsExprComponent(Login)
 
 		' Copy the component's basic properties.
 		With objCopyComponent
@@ -480,7 +485,7 @@ ErrorTrap:
 		Dim rsExpressions As ADODB.Recordset
 
 		sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID FROM ASRSysExpressions JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
-		rsExpressions = datGeneral.GetRecords(sSQL)
+		rsExpressions = General.GetRecords(sSQL)
 		With rsExpressions
 			fOK = Not (.EOF And .BOF)
 
@@ -491,7 +496,7 @@ ErrorTrap:
 				Else
 					' If the parent expression is not a top-level expression then
 					' find the parent expression's parent expression. Confused yet ?
-					objComp = New clsExprComponent
+					objComp = New clsExprComponent(Login)
 					objComp.ComponentID = .Fields("ParentComponentID").Value
 					lngRootExprID = objComp.RootExpressionID
 					'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

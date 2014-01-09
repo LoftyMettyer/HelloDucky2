@@ -269,8 +269,10 @@ Friend Class clsExprExpression
 
 	End Sub
 
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
+	Public Sub New(ByVal Value As LoginInfo)
+
+		MyBase.New(Value)
+
 		' Create a new collection to hold the expression's components.
 		mcolComponents = New Collection
 		mfConstructed = False
@@ -278,10 +280,7 @@ Friend Class clsExprExpression
 		ReDim mastrUDFsRequired(0)
 
 	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
+
 
 
 	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
@@ -343,7 +342,7 @@ ErrorTrap:
 		Dim objComponent As clsExprComponent
 
 		' Instantiate a component object.
-		objComponent = New clsExprComponent
+		objComponent = New clsExprComponent(Login)
 
 		' Initialse the new component's properties.
 		objComponent.ParentExpression = Me
@@ -471,59 +470,6 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-
-	Public Sub NewExpression()
-		'  ' Handle the definition of a new expression.
-		'  On Error GoTo ErrorTrap
-		'
-		'  Dim fOK As Boolean
-		'  Dim frmEdit As frmExpression
-		'
-		'  fOK = True
-		'
-		'  ' Initialize the properties for a new expression.
-		'  InitialiseExpression
-		'
-		'  ' Display the expression definition form.
-		'  Set frmEdit = New frmExpression
-		'  With frmEdit
-		'    Set .Expression = Me
-		'    .Show vbModal
-		'
-		'    fOK = Not .Cancelled
-		'  End With
-		'
-		'  If fOK Then
-		'    ' Write the new expression to the database.
-		'    fOK = WriteExpression_Transaction
-		'
-		'
-		'    'MH20000712
-		'    Select Case miExpressionType
-		'    Case giEXPR_RUNTIMECALCULATION
-		'      Call UtilCreated(utlCalculation, Me.ExpressionID)
-		'    Case giEXPR_RUNTIMEFILTER
-		'      Call UtilCreated(utlFilter, Me.ExpressionID)
-		'    End Select
-		'
-		'
-		'    ' If the write failed then re-initialize the
-		'    ' properties for a new expression.
-		'    If Not fOK Then
-		'      InitialiseExpression
-		'    End If
-		'  End If
-		'
-		'TidyUpAndExit:
-		'  ' Disassociate object variables.
-		'  Set frmEdit = Nothing
-		'  Exit Sub
-		'
-		'ErrorTrap:
-		'  fOK = False
-		'  Resume TidyUpAndExit
-		'
-	End Sub
 
 	Public Function WriteExpression_Transaction() As Boolean
 		' Transaction wrapper for the 'WriteExpression' function.
@@ -1104,12 +1050,12 @@ ErrorTrap:
 
 		' Get the expression's function components from the database.
 		sSQL = "SELECT ASRSysExpressions.exprID" & " FROM ASRSysExpressions" & " INNER JOIN ASRSysExprComponents" & "   ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID" & " AND ASRSysExprComponents.exprID = " & Trim(Str(mlngExpressionID))
-		rsSubExpressions = datGeneral.GetRecordsInTransaction(sSQL)
+		rsSubExpressions = General.GetRecordsInTransaction(sSQL)
 		With rsSubExpressions
 			Do While (Not .EOF) And fOK
 				' Instantiate each function parameter expression.
 				' Instruct the function parameter expression to delete its components.
-				objExpr = New clsExprExpression
+				objExpr = New clsExprExpression(Login)
 				objExpr.ExpressionID = .Fields("ExprID").Value
 				fOK = objExpr.DeleteExistingComponents
 				'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1464,13 +1410,13 @@ ErrorTrap:
 
 					On Error GoTo SQLCodeErrorTrap
 
-					sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
+					sProcName = General.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
 					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
 
-					datGeneral.DropUniqueSQLObject(sProcName, 4)
+					General.DropUniqueSQLObject(sProcName, 4)
 
 					On Error GoTo ErrorTrap
 				Else
@@ -1498,14 +1444,14 @@ ErrorTrap:
 
 					On Error GoTo SQLCodeErrorTrap
 
-					sProcName = datGeneral.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
+					sProcName = General.UniqueSQLObjectName("tmpsp_ASRExprTest", 4)
 
 					' Create the test stored procedure to see if the filter expression is valid.
 					sSPCode = " CREATE PROCEDURE " & sProcName & " AS " & sSQLCode
 					gADOCon.Execute(sSPCode, , CommandTypeEnum.adCmdText)
 
 					' Drop the test stored procedure.
-					datGeneral.DropUniqueSQLObject(sProcName, 4)
+					General.DropUniqueSQLObject(sProcName, 4)
 
 					On Error GoTo ErrorTrap
 				Else
@@ -1591,10 +1537,10 @@ ErrorTrap:
 
 		With rsTemp
 			Do While (Not .EOF) And (iValidationCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS)
-				objComp = New clsExprComponent
+				objComp = New clsExprComponent(Login)
 				objComp.ComponentID = .Fields("ComponentID").Value
 
-				objExpr = New clsExprExpression
+				objExpr = New clsExprExpression(Login)
 				objExpr.ExpressionID = objComp.RootExpressionID
 				objExpr.ConstructExpression()
 				iValidationCode = objExpr.ValidateSQLCode(plngFixedExpressionID, psFixedSQLCode)
@@ -1694,7 +1640,7 @@ ErrorTrap:
 				For Each objRow As DataRow In dsExpression.Tables(1).Rows
 
 					' Instantiate a new component object.
-					objComponent = New clsExprComponent
+					objComponent = New clsExprComponent(Login)
 
 					With objComponent
 						' Initialise the new component's properties.
