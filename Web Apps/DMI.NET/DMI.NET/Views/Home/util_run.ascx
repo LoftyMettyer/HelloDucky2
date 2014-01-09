@@ -118,8 +118,10 @@
 	function ShowDataFrame() {
 
 		$("#cmdOK").hide();
-		$("#cmdCancel").hide();
+		//$("#cmdCancel").hide();
+		$("#cmdCancel").button({ disabled: true });
 		$("#cmdOutput").show();
+		$("#cmdOutput").button({ disabled: false });
 
 		$("#reportbreakdownframe").hide();
 		$("#top").hide();
@@ -132,7 +134,7 @@
 
 	function outputOptionsPrintClick() {
 
-		var divToPrint = document.getElementById('tdOutputMSG');
+		var divToPrint = document.getElementById('reportworkframe');
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no, width=1, height=1, visible=none', "");
 		newWin.document.write(divToPrint.innerHTML);
 		newWin.document.close();
@@ -150,9 +152,10 @@
 		$("#reportworkframe").hide();
 		$("#reportbreakdownframe").hide();
 		$("#outputoptions").show();
-
+		
 		$("#cmdOK").show();
 		$("#cmdCancel").show();
+		$("#cmdCancel").button({ disabled: false });
 		$("#cmdOutput").hide();
 
 	}
@@ -234,9 +237,9 @@
 		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
 			<div style="float: right;">
 				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="Print" onclick="outputOptionsPrintClick()" />
-				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Output" onclick="outputOptionsOKClick()" />
+				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
+				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Export" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Options" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 			</div>
 		</div>
@@ -283,7 +286,8 @@ End If
 
 	menu_refreshMenu();
 
-	$("#cmdCancel").hide();
+	//$("#cmdCancel").hide();	
+	$("#cmdCancel").button({ disabled: true });
 	$("#cmdOK").hide();
 
 </script>
