@@ -357,7 +357,7 @@ ErrorTrap:
 		Try
 
 			' Initialise the component with the definition from the database.
-			ComponentType = prsComponents("Type")
+			ComponentType = CType(prsComponents("Type"), ExpressionComponentTypes)
 
 			With mvComponent
 				Select Case miComponentType
@@ -378,7 +378,7 @@ ErrorTrap:
 
 					Case ExpressionComponentTypes.giCOMPONENT_VALUE
 						.ReturnType = prsComponents("ValueType")
-						Select Case prsComponents("ValueType")
+						Select Case CType(prsComponents("ValueType"), ExpressionValueTypes)
 							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 								.Value = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
@@ -401,7 +401,7 @@ ErrorTrap:
 						.ColumnID = prsComponents("LookupColumnID")
 						.ReturnType = prsComponents("ValueType")
 
-						Select Case prsComponents("ValueType")
+						Select Case CType(prsComponents("ValueType"), ExpressionValueTypes)
 							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 								.Value = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
@@ -427,7 +427,7 @@ ErrorTrap:
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						.ValueFormat = IIf(IsDBNull(prsComponents("promptMask")), "", prsComponents("promptMask"))
 
-						Select Case prsComponents("ValueType")
+						Select Case CType(prsComponents("ValueType"), ExpressionValueTypes)
 							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 								.DefaultValue = IIf(IsDBNull(prsComponents("valueCharacter")), "", prsComponents("valueCharacter"))
@@ -482,29 +482,31 @@ ErrorTrap:
 		Dim lngRootExprID As Integer
 		Dim sSQL As String
 		Dim objComp As clsExprComponent
-		Dim rsExpressions As ADODB.Recordset
+		Dim rsExpressions As DataTable
+		Dim objRow As DataRow
 
 		sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID FROM ASRSysExpressions JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
-		rsExpressions = General.GetRecords(sSQL)
+		rsExpressions = DB.GetDataTable(sSQL)
 		With rsExpressions
-			fOK = Not (.EOF And .BOF)
+			fOK = (.Rows.Count > 0)
 
 			If fOK Then
+				objRow = .Rows(0)
+
 				' See if the parent expression is a top level expression.
-				If .Fields("ParentComponentID").Value = 0 Then
-					lngRootExprID = .Fields("ExprID").Value
+				If CInt(objRow("ParentComponentID")) = 0 Then
+					lngRootExprID = CInt(.Rows(0)("ExprID"))
 				Else
 					' If the parent expression is not a top-level expression then
 					' find the parent expression's parent expression. Confused yet ?
 					objComp = New clsExprComponent(Login)
-					objComp.ComponentID = .Fields("ParentComponentID").Value
+					objComp.ComponentID = CInt(objRow("ParentComponentID"))
 					lngRootExprID = objComp.RootExpressionID
 					'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objComp = Nothing
 				End If
 			End If
 
-			.Close()
 		End With
 
 TidyUpAndExit:

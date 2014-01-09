@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -107,7 +106,7 @@ ErrorTrap:
 		Dim fFound As Boolean
 		Dim fSrchColumnOK As Boolean
 		Dim fRtnColumnOK As Boolean
-		Dim iLoop As Short
+		Dim iLoop As Integer
 		Dim lngSrchTableID As Integer
 		Dim lngRtnTableID As Integer
 		Dim sCode As String = ""
@@ -123,7 +122,7 @@ ErrorTrap:
 		Dim sSrchColumnName As String = ""
 		Dim sRtnColumnName As String = ""
 		Dim sSrchTableName As String
-		Dim rsInfo As Recordset
+		Dim rsInfo As DataTable
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim objTableView As TablePrivilege
 		Dim asViews(,) As String
@@ -517,31 +516,22 @@ ErrorTrap:
 
 					' Get the column parameter definitions.
 					sSQL = "SELECT ASRSysModuleSetup.*, ASRSysColumns.ColumnName, ASRSysTables.TableName FROM ASRSysModuleSetup INNER JOIN ASRSysColumns ON ASRSysModuleSetup.ParameterValue = ASRSysColumns.ColumnID INNER JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID WHERE ASRSysModuleSetup.ModuleKey = 'MODULE_CURRENCY'"
-					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+					rsInfo = DB.GetDataTable(sSQL)
 					sSQL = vbNullString
 
 					With rsInfo
-						If Not (.EOF And .BOF) Then
-							Do While Not .EOF
-								sCConvTable = .Fields("TableName").Value
-								Select Case .Fields("ParameterKey").Value
-									Case "Param_CurrencyNameColumn" : sCConvCurrDescCol = .Fields("ColumnName").Value
-									Case "Param_ConversionValueColumn" : sCConvExRateCol = .Fields("ColumnName").Value
-									Case "Param_DecimalColumn" : sCConvDecCol = .Fields("ColumnName").Value
+						If .Rows.Count > 0 Then
+
+							For Each objRow As DataRow In .Rows
+								sCConvTable = objRow("TableName").ToString
+								Select Case objRow("ParameterKey").ToString()
+									Case "Param_CurrencyNameColumn" : sCConvCurrDescCol = objRow("ColumnName").ToString()
+									Case "Param_ConversionValueColumn" : sCConvExRateCol = objRow("ColumnName").ToString
+									Case "Param_DecimalColumn" : sCConvDecCol = objRow("ColumnName").ToString()
 								End Select
-								.MoveNext()
-							Loop
+							Next
 
 							If (Len(sCConvTable) > 0) And (Len(sCConvCurrDescCol) > 0) And (Len(sCConvExRateCol) > 0) And (Len(sCConvDecCol) > 0) Then
-								'              sCode = "(SELECT ROUND((" & sParamCode1
-								'              sCode = sCode & "              / "
-								'              sCode = sCode & "             (SELECT " & sCConvTable & "." & sCConvExRateCol & " FROM " & sCConvTable & " WHERE " & sCConvTable & "." & sCConvCurrDescCol & " = " & sParamCode2 & ") "
-								'              sCode = sCode & "              * "
-								'              sCode = sCode & "             (SELECT " & sCConvTable & "." & sCConvExRateCol & " FROM " & sCConvTable & " WHERE " & sCConvTable & "." & sCConvCurrDescCol & " = " & sParamCode3 & ")) "
-								'              sCode = sCode & "        , "
-								'              sCode = sCode & "        (SELECT " & sCConvTable & "." & sCConvDecCol & " FROM " & sCConvTable & " WHERE " & sCConvTable & "." & sCConvCurrDescCol & " = " & sParamCode3 & ")) ) "
-
-								'AE20071204 Fault #12669
 								sCode = vbNullString
 								sCode = sCode & "ROUND(ISNULL((" & sParamCode1 & " / NULLIF((SELECT " & sCConvTable & "." & sCConvExRateCol
 								sCode = sCode & "                                     FROM " & sCConvTable
@@ -560,7 +550,7 @@ ErrorTrap:
 						Else
 							sCode = "null"
 						End If
-						.Close()
+
 					End With
 					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsInfo = Nothing
@@ -569,12 +559,12 @@ ErrorTrap:
 				Case 52
 					objTableView = gcoTablePrivileges.FindTableID(Columns.GetById(CInt(sParamCode1)).TableID)
 					sCode = "(SELECT Top 1 DateTimeStamp FROM ASRSysAuditTrail WHERE ColumnID = " & sParamCode1
-					sCode = sCode & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID ORDER BY DateTimeStamp DESC)"
+					sCode = sCode & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "").ToString() & "ID = ASRSysAuditTrail.RecordID ORDER BY DateTimeStamp DESC)"
 
 					' Field changed between two dates
 				Case 53
 					objTableView = gcoTablePrivileges.FindTableID(Columns.GetById(CInt(sParamCode1)).TableID)
-					sCode = " case when " & " Exists(Select DateTimeStamp From ASRSysAuditTrail Where ColumnID = " & sParamCode1 & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "") & "ID = ASRSysAuditTrail.RecordID" & " And DateTimeStamp >= " & sParamCode2 & " And DateTimeStamp <= " & sParamCode3 & " + 1)" & " then 1 else 0 end"
+					sCode = " case when " & " Exists(Select DateTimeStamp From ASRSysAuditTrail Where ColumnID = " & sParamCode1 & " And " & IIf(Not pfValidating, objTableView.RealSource & ".", "").ToString() & "ID = ASRSysAuditTrail.RecordID" & " And DateTimeStamp >= " & sParamCode2 & " And DateTimeStamp <= " & sParamCode3 & " + 1)" & " then 1 else 0 end"
 
 					'Whole years between two dates
 				Case 54
@@ -761,8 +751,8 @@ ErrorTrap:
 
 		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, functionID, valueLogic, ExpandedNode)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FUNCTION)) & "," & " " & Trim(Str(mlngFunctionID)) & "," & " 0," & IIf(mbExpanded, "1", "0") & ")"
-		gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, functionID, valueLogic, ExpandedNode) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FUNCTION)) & ", " & Trim(Str(mlngFunctionID)) & "," & " 0," & IIf(mbExpanded, "1", "0").ToString() & ")"
+		DB.ExecuteSql(sSQL)
 
 		' Write the function parameter expressions.
 		For Each objParameter In mcolParameters
@@ -894,7 +884,7 @@ ErrorTrap:
 
 		' JDM - 06/02/01 - Now copies it's children so that cut'n paste works
 		' Copy all the child components
-		Dim iCount As Short
+		Dim iCount As Integer
 		Dim objParameter As clsExprComponent
 		For iCount = 1 To mcolParameters.Count()
 			'        Set objParameter = New clsExprComponent
@@ -919,10 +909,10 @@ ErrorTrap:
 		' Validate the function. Return a code describing the validity.
 		On Error GoTo BasicErrorTrap
 
-		Dim iLoop As Short
+		Dim iLoop As Integer
 		Dim iValidationCode As ExprValidationCodes
 		Dim iFunctionReturnType As ExpressionValueTypes
-		Dim aiDummyValues(6) As Short
+		Dim aiDummyValues(6) As Integer
 		Dim objSubExpression As clsExprExpression
 		Dim objParameter As clsExprComponent
 
@@ -935,8 +925,7 @@ ErrorTrap:
 
 		' Validate the function parameter expressions.
 		For Each objParameter In mcolParameters
-			iLoop = iLoop + 1
-
+			iLoop += 1
 			objSubExpression = objParameter.Component
 			With objSubExpression
 				' Validate the parameter expression.
@@ -1031,7 +1020,7 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean = True
-		Dim iIndex As Short
+		Dim iIndex As Integer
 		Dim sSQL As String
 
 		Dim objNewParameter As clsExprComponent

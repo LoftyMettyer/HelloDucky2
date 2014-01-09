@@ -259,7 +259,7 @@ ErrorTrap:
 		Resume TidyUpAndExit
 
 	End Function
-	Public Function ValidateFunctionParameters(ByRef plngFunctionID As Object, ByRef piResultType As ExpressionValueTypes, Optional ByRef piParam1Type As Short = 0, Optional ByRef piParam2Type As Short = 0, Optional ByRef piParam3Type As Short = 0, Optional ByRef piParam4Type As Short = 0, Optional ByRef piParam5Type As Short = 0, Optional ByRef piParam6Type As Short = 0) As Boolean
+	Public Function ValidateFunctionParameters(ByRef plngFunctionID As Integer, ByRef piResultType As ExpressionValueTypes, Optional ByRef piParam1Type As Short = 0, Optional ByRef piParam2Type As Short = 0, Optional ByRef piParam3Type As Short = 0, Optional ByRef piParam4Type As Short = 0, Optional ByRef piParam5Type As Short = 0, Optional ByRef piParam6Type As Short = 0) As Boolean
 		' Validate the given function with the given parameters.
 		' Return the result type in the piResultType parameter.
 		On Error GoTo ErrorTrap

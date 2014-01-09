@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -18,7 +17,7 @@ Friend Class clsExprField
 	' Component definition variables.
 	Private mlngTableID As Integer
 	Private mlngColumnID As Integer
-	Private miFieldPassType As Short
+	Private miFieldPassType As FieldPassTypes
 	Private miSelectionType As FieldSelectionTypes
 	Private mlngSelectionLine As Integer
 	Private mlngSelOrderID As Integer
@@ -94,8 +93,9 @@ ErrorTrap:
 
 		fOK = True
 
-		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type," & " fieldTableID, fieldColumnID, fieldPassBy, fieldSelectionRecord," & " fieldSelectionLine, fieldSelectionOrderID, fieldSelectionFilter, valueLogic)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FIELD)) & "," & " " & Trim(Str(mlngTableID)) & "," & " " & Trim(Str(mlngColumnID)) & "," & " " & Trim(Str(miFieldPassType)) & "," & " " & Trim(Str(miSelectionType)) & "," & " " & Trim(Str(mlngSelectionLine)) & "," & " " & Trim(Str(mlngSelOrderID)) & "," & " " & Trim(Str(mlngSelFilterID)) & "," & " 0)"
-		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
+		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, fieldTableID, fieldColumnID, fieldPassBy, fieldSelectionRecord, fieldSelectionLine, fieldSelectionOrderID, fieldSelectionFilter, valueLogic)" _
+			& " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & ", " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & ", " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FIELD)) & ", " & Trim(Str(mlngTableID)) & ", " & Trim(Str(mlngColumnID)) & ", " & Trim(Str(miFieldPassType)) & ", " & Trim(Str(miSelectionType)) & ", " & Trim(Str(mlngSelectionLine)) & "," & " " & Trim(Str(mlngSelOrderID)) & "," & " " & Trim(Str(mlngSelFilterID)) & "," & " 0)"
+		DB.ExecuteSql(sSQL)
 
 TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -165,23 +165,22 @@ ErrorTrap:
 			Dim sTableName As String
 			Dim sColumnName As String
 			Dim sSelectionType As String = ""
-			Dim rsInfo As Recordset
+			Dim rsInfo As DataTable
 
 			' Get the column and table name.
 			sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID WHERE ASRSysColumns.columnID = " & Trim(Str(mlngColumnID))
-			rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+			rsInfo = DB.GetDataTable(sSQL)
 			With rsInfo
-				fOK = Not (.EOF And .BOF)
+				fOK = (.Rows.Count > 0)
 
 				If fOK Then
-					sColumnName = .Fields("ColumnName").Value
-					sTableName = .Fields("TableName").Value
+					sColumnName = .Rows(0)("ColumnName").ToString()
+					sTableName = .Rows(0)("TableName").ToString()
 				Else
 					sColumnName = "<unknown>"
 					sTableName = "<unknown>"
 				End If
 
-				.Close()
 			End With
 			'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsInfo = Nothing
@@ -193,13 +192,10 @@ ErrorTrap:
 					' expression's parent table.
 
 					sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & " AND childID = " & Trim(Str(mlngTableID))
-					rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+					rsInfo = DB.GetDataTable(sSQL)
 
-					With rsInfo
-						fChildField = Not (.EOF And .BOF)
+					fChildField = (rsInfo.Rows.Count > 0)
 
-						.Close()
-					End With
 					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					rsInfo = Nothing
 
@@ -222,14 +218,12 @@ ErrorTrap:
 						If mlngSelOrderID > 0 Then
 							' Get the order name.
 							sSQL = "SELECT name FROM ASRSysOrders WHERE orderID = " & Trim(Str(mlngSelOrderID))
-							rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+							rsInfo = DB.GetDataTable(sSQL)
 
 							With rsInfo
-								If Not (.BOF And .EOF) Then
-									sSelectionType = sSelectionType & ", order by '" & .Fields("Name").Value & "'"
+								If (.Rows.Count > 0) Then
+									sSelectionType = sSelectionType & ", order by '" & .Rows(0)("Name").ToString() & "'"
 								End If
-
-								.Close()
 							End With
 							'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							rsInfo = Nothing
@@ -238,13 +232,11 @@ ErrorTrap:
 						If mlngSelFilterID > 0 Then
 							' Get the filter name.
 							sSQL = "SELECT name FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngSelFilterID))
-							rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+							rsInfo = DB.GetDataTable(sSQL)
 							With rsInfo
-								If Not (.BOF And .EOF) Then
-									sSelectionType = sSelectionType & ", filter by '" & .Fields("Name").Value & "'"
+								If (.Rows.Count > 0) Then
+									sSelectionType = sSelectionType & ", filter by '" & .Rows(0)("Name").ToString() & "'"
 								End If
-
-								.Close()
 							End With
 							'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 							rsInfo = Nothing
@@ -336,13 +328,13 @@ ErrorTrap:
 		End Set
 	End Property
 
-	Public Property SelectionType() As Short
+	Public Property SelectionType() As FieldSelectionTypes
 		Get
 			' Return the selection type.
 			SelectionType = miSelectionType
 
 		End Get
-		Set(ByVal Value As Short)
+		Set(ByVal Value As FieldSelectionTypes)
 			miSelectionType = Value
 		End Set
 	End Property
@@ -360,13 +352,13 @@ ErrorTrap:
 		End Set
 	End Property
 
-	Public Property FieldPassType() As Short
+	Public Property FieldPassType() As FieldPassTypes
 		Get
 			' Return the field pass type property.
 			FieldPassType = miFieldPassType
 
 		End Get
-		Set(ByVal Value As Short)
+		Set(ByVal Value As FieldPassTypes)
 			' Set the field pass type property.
 			miFieldPassType = Value
 
@@ -431,15 +423,15 @@ ErrorTrap:
 		Dim fColumnOK As Boolean
 		Dim fParentField As Boolean
 		Dim fNewSourceTable As Boolean
-		Dim iLoop As Short
-		Dim iNextIndex As Short
+		Dim iLoop As Integer
+		Dim iNextIndex As Integer
 		Dim sSQL As String
 		Dim sCode As String
 		Dim sOtherTableName As String
 		Dim sOrderCode As String
 		Dim sFilterCode As String = ""
 		Dim sColumnCode As String = ""
-		Dim rsInfo As Recordset
+		Dim rsInfo As DataTable
 		Dim asViews() As String
 		Dim avOrderJoinTables(,) As Object
 		Dim objFilterExpr As clsExprExpression
@@ -698,21 +690,21 @@ ErrorTrap:
 					ReDim avOrderJoinTables(2, 0)
 					If mlngSelOrderID > 0 Then
 						sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.columnID, ASRSysColumns.tableID, ASRSysTables.tableName, ASRSysOrderItems.ascending FROM ASRSysOrderItems JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID" & " JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & " WHERE orderID = " & Trim(Str(mlngSelOrderID)) & " AND type = 'O'" & " AND ASRSysColumns.columnID = ASRSysOrderItems.columnID" & " AND ASRSysColumns.tableID = ASRSysTables.tableID" & " ORDER BY sequence"
-						rsInfo = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+						rsInfo = DB.GetDataTable(sSQL)
 						With rsInfo
+							For Each objRow As DataRow In .Rows
 
-							Do While Not .EOF
 								If Not pfApplyPermissions Then
 									' Construct the order code. Remember that if we are selecting the last record,
 									' we must reverse the ASC/DESC options.
-									sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & .Fields("TableName").Value & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+									sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "").ToString() & objRow("TableName").ToString() & "." & objRow("ColumnName").ToString() & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(objRow("Ascending"), " DESC", ""), IIf(objRow("Ascending"), "", " DESC"))
 
-									If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
+									If (objRow("TableID") <> mlngTableID) And ((objRow("TableID") <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
 
 										' Check if the table has already been added to the array of tables used in the order.
 										fFound = False
 										For iNextIndex = 1 To UBound(avOrderJoinTables, 2)
-											If avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value And (avOrderJoinTables(2, iNextIndex) = .Fields("TableName").Value) Then
+											If avOrderJoinTables(1, iNextIndex) = objRow("TableID") And (avOrderJoinTables(2, iNextIndex) = objRow("TableName")) Then
 
 												fFound = True
 												Exit For
@@ -723,28 +715,28 @@ ErrorTrap:
 											iNextIndex = UBound(avOrderJoinTables, 2) + 1
 											ReDim Preserve avOrderJoinTables(2, iNextIndex)
 											'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value
+											avOrderJoinTables(1, iNextIndex) = objRow("TableID")
 											'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											avOrderJoinTables(2, iNextIndex) = .Fields("TableName").Value
+											avOrderJoinTables(2, iNextIndex) = objRow("TableName")
 										End If
 									End If
 								Else
 									' Get the permission object for the table.
-									objOrderTableView = gcoTablePrivileges.Item(.Fields("TableName").Value)
+									objOrderTableView = gcoTablePrivileges.Item(objRow("TableName"))
 									objOrderColumns = GetColumnPrivileges((objOrderTableView.TableName))
 
-									fColumnOK = objOrderColumns.Item(.Fields("ColumnName").Value).AllowSelect
+									fColumnOK = objOrderColumns.Item(objRow("ColumnName")).AllowSelect
 
 									If fColumnOK Then
 										' Column can be read directly from the table.
-										sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & objOrderTableView.RealSource & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+										sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & objOrderTableView.RealSource & "." & objRow("ColumnName") & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(objRow("Ascending"), " DESC", ""), IIf(objRow("Ascending"), "", " DESC"))
 
-										If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
+										If (objRow("TableID") <> mlngTableID) And ((objRow("TableID") <> mobjBaseComponent.ParentExpression.BaseTableID)) Then
 
 											' Check if the table has already been added to the array of tables used in the order.
 											fFound = False
 											For iNextIndex = 1 To UBound(avOrderJoinTables, 2)
-												If avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value And (avOrderJoinTables(2, iNextIndex) = .Fields("TableName").Value) Then
+												If avOrderJoinTables(1, iNextIndex) = objRow("TableID") And (avOrderJoinTables(2, iNextIndex) = objRow("TableName")) Then
 
 													fFound = True
 													Exit For
@@ -755,9 +747,9 @@ ErrorTrap:
 												iNextIndex = UBound(avOrderJoinTables, 2) + 1
 												ReDim Preserve avOrderJoinTables(2, iNextIndex)
 												'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value
+												avOrderJoinTables(1, iNextIndex) = objRow("TableID")
 												'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												avOrderJoinTables(2, iNextIndex) = .Fields("TableName").Value
+												avOrderJoinTables(2, iNextIndex) = objRow("TableName")
 											End If
 										End If
 									Else
@@ -767,12 +759,12 @@ ErrorTrap:
 											' The column cannot be read from the table directly. Try the views on the table.
 											ReDim asViews(0)
 											For Each objView In gcoTablePrivileges.Collection
-												If (objView.TableID = .Fields("TableID").Value) And (Not objView.IsTable) And (objView.AllowSelect) Then
+												If (objView.TableID = objRow("TableID")) And (Not objView.IsTable) And (objView.AllowSelect) Then
 
 													objViewColumns = GetColumnPrivileges((objView.ViewName))
 
-													If objViewColumns.IsValid(.Fields("ColumnName").Value) Then
-														If objViewColumns.Item(.Fields("ColumnName").Value).AllowSelect Then
+													If objViewColumns.IsValid(objRow("ColumnName")) Then
+														If objViewColumns.Item(objRow("ColumnName")).AllowSelect Then
 															' Add the view info to an array to be put into the column list or order code below.
 															iNextIndex = UBound(asViews) + 1
 															ReDim Preserve asViews(iNextIndex)
@@ -783,7 +775,7 @@ ErrorTrap:
 															fFound = False
 															For iNextIndex = 1 To UBound(avOrderJoinTables, 2)
 																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-																If avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value And avOrderJoinTables(2, iNextIndex) = objView.ViewName Then
+																If avOrderJoinTables(1, iNextIndex) = objRow("TableID") And avOrderJoinTables(2, iNextIndex) = objView.ViewName Then
 																	fFound = True
 																	Exit For
 																End If
@@ -794,7 +786,7 @@ ErrorTrap:
 																iNextIndex = UBound(avOrderJoinTables, 2) + 1
 																ReDim Preserve avOrderJoinTables(2, iNextIndex)
 																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-																avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value
+																avOrderJoinTables(1, iNextIndex) = objRow("TableID")
 																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 																avOrderJoinTables(2, iNextIndex) = objView.ViewName
 															End If
@@ -816,11 +808,11 @@ ErrorTrap:
 														sColumnCode = vbNewLine & "CASE " & vbNewLine
 													End If
 
-													sColumnCode = sColumnCode & "WHEN NOT " & asViews(iNextIndex) & "." & .Fields("ColumnName").Value & " IS NULL THEN " & asViews(iNextIndex) & "." & .Fields("ColumnName").Value & vbNewLine
+													sColumnCode = sColumnCode & "WHEN NOT " & asViews(iNextIndex) & "." & objRow("ColumnName") & " IS NULL THEN " & asViews(iNextIndex) & "." & objRow("ColumnName") & vbNewLine
 												Next iNextIndex
 
 												If Len(sColumnCode) > 0 Then
-													sColumnCode = sColumnCode & "ELSE NULL" & vbNewLine & "END" & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+													sColumnCode = sColumnCode & "ELSE NULL" & vbNewLine & "END" & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(objRow("Ascending"), " DESC", ""), IIf(objRow("Ascending"), "", " DESC"))
 
 													sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & sColumnCode
 												End If
@@ -834,10 +826,8 @@ ErrorTrap:
 									objOrderColumns = Nothing
 								End If
 
-								.MoveNext()
-							Loop
+							Next
 
-							.Close()
 						End With
 						'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						rsInfo = Nothing

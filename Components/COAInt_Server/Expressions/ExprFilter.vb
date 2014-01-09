@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
@@ -204,7 +203,7 @@ ErrorTrap:
 		fOK = True
 
 		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, FilterID, valueLogic) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_FILTER)) & "," & " " & Trim(Str(mlngFilterID)) & ", " & " 0)"
-		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
+		DB.ExecuteSql(sSQL)
 
 TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -223,23 +222,22 @@ ErrorTrap:
 
 		Dim fOK As Boolean
 		Dim sSQL As String
-		Dim rsFilter As Recordset
+		Dim rsFilter As DataTable
 
 		' Set default values.
 		msFilterName = "<unknown>"
 
 		' Get the filter definition.
 		sSQL = "SELECT name, returnType FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngFilterID))
-		rsFilter = dataAccess.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
+		rsFilter = DB.GetDataTable(sSQL)
 		With rsFilter
-			fOK = Not (.EOF And .BOF)
+			fOK = (.Rows.Count > 0)
 
 			If fOK Then
-				msFilterName = .Fields("Name").Value
-				miReturnType = .Fields("ReturnType").Value
+				msFilterName = .Rows(0)("Name").ToString()
+				miReturnType = CType(.Rows(0)("ReturnType"), ExpressionValueTypes)
 			End If
 
-			.Close()
 		End With
 
 TidyUpAndExit:

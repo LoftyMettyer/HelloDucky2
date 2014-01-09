@@ -1088,7 +1088,7 @@ ErrorTrap:
 
 	End Function
 
-	Public Function ValidateExpression(ByRef pfTopLevel As Boolean) As Short
+	Public Function ValidateExpression(ByRef pfTopLevel As Boolean) As ExprValidationCodes
 		' Validate the expression. Return a code defining the validity of the expression.
 		' NB. This function is also good for evaluating the return type of an expression
 		' which has definite return type (eg. function sub-expressions, runtime calcs, etc).

@@ -58,7 +58,7 @@ Friend Class clsExprPromptedValue
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					sCode = Trim(Str(gsDUMMY_NUMERIC))
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-					sCode = IIf(gsDUMMY_LOGIC, "1", "0")
+					sCode = IIf(gsDUMMY_LOGIC, "1", "0").ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					sCode = "convert(datetime, '" & VB6.Format(CDate(gsDUMMY_DATE), "MM/dd/yyyy") & "')"
 			End Select
@@ -151,10 +151,10 @@ ErrorTrap:
 					& " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " _
 					& Trim(Str(ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE)) & "," & " '" & Replace(Trim(msPrompt), "'", "''") & "'," & " " & Trim(Str(miType)) & "," _
 					& " " & Trim(Str(miReturnSize)) & "," & " " & Trim(Str(miReturnDecimals)) & "," & " '" & Replace(Trim(msFormat), "'", "''") & "'," & " '" & Replace(Trim(msDefaultCharacterValue), "'", "''") _
-					& "'," & " " & Trim(Str(mdblDefaultNumericValue)) & "," & " " & IIf(mfDefaultLogicValue, "1", "0") & "," _
-					& IIf(mdtDefaultDateValue Is Nothing, " null,", " '" & VB6.Format(mdtDefaultDateValue, "MM/dd/yyyy") & "',") _
+					& "'," & " " & Trim(Str(mdblDefaultNumericValue)) & "," & " " & IIf(mfDefaultLogicValue, "1", "0").ToString() & "," _
+					& IIf(mdtDefaultDateValue Is Nothing, " null,", " '" & VB6.Format(mdtDefaultDateValue, "MM/dd/yyyy") & "',").ToString() _
 					& " " & Trim(Str(mlngLookupColumnID)) & "," & " " & Trim(Str(miDefaultDateType)) & ")"
-			gADOCon.Execute(sSQL, , ADODB.CommandTypeEnum.adCmdText)
+			DB.ExecuteSql(sSQL)
 
 		Catch ex As Exception
 			fOK = False
@@ -276,13 +276,13 @@ ErrorTrap:
 			Select Case miType
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					msDefaultCharacterValue = Value
+					msDefaultCharacterValue = Value.ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdblDefaultNumericValue = Value
+					mdblDefaultNumericValue = CDbl(Value)
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mfDefaultLogicValue = Value
+					mfDefaultLogicValue = CBool(Value)
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -294,7 +294,7 @@ ErrorTrap:
 					End If
 				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 					'UPGRADE_WARNING: Couldn't resolve default property of object pvNewValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					msDefaultCharacterValue = Value
+					msDefaultCharacterValue = Value.ToString()
 			End Select
 
 		End Set
@@ -379,13 +379,13 @@ ErrorTrap:
 
 
 
-	Public Property ValueType() As Short
+	Public Property ValueType() As ExpressionValueTypes
 		Get
 			' Return the type property.
 			ValueType = miType
 
 		End Get
-		Set(ByVal Value As Short)
+		Set(ByVal Value As ExpressionValueTypes)
 			' Set the type property.
 			miType = Value
 

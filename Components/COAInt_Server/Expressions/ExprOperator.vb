@@ -1,7 +1,6 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
@@ -13,8 +12,8 @@ Friend Class clsExprOperator
 	Private mlngOperatorID As Integer
 	Private msOperatorName As String
 	Private miReturnType As ExpressionValueTypes
-	Private miOperandCount As Short
-	Private miPrecedence As Short
+	Private miOperandCount As Integer
+	Private miPrecedence As Integer
 	Private msSPName As String
 	Private msSQLCode As String
 	Private msSQLType As String
@@ -54,7 +53,7 @@ Friend Class clsExprOperator
 		End Get
 	End Property
 
-	Public ReadOnly Property Precedence() As Short
+	Public ReadOnly Property Precedence() As Integer
 		Get
 			' Return the operator precedence property.
 			Precedence = miPrecedence
@@ -138,7 +137,7 @@ Friend Class clsExprOperator
 		End Set
 	End Property
 
-	Public ReadOnly Property OperandCount() As Short
+	Public ReadOnly Property OperandCount() As Integer
 		Get
 			' Return the operator's operand count.
 			OperandCount = miOperandCount
@@ -204,7 +203,7 @@ Friend Class clsExprOperator
 
 	End Function
 
-	Public Function WriteComponent() As Object
+	Public Function WriteComponent() As Boolean
 		' Write the component definition to the component recordset.
 		On Error GoTo ErrorTrap
 
@@ -214,12 +213,11 @@ Friend Class clsExprOperator
 		fOK = True
 
 		sSQL = "INSERT INTO ASRSysExprComponents (componentID, exprID, type, operatorID, valueLogic) VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & ", " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & ", " & Trim(Str(ExpressionComponentTypes.giCOMPONENT_OPERATOR)) & ", " & Trim(Str(mlngOperatorID)) & ", 0)"
-		gADOCon.Execute(sSQL, , CommandTypeEnum.adCmdText)
+		DB.ExecuteSql(sSQL)
 
 TidyUpAndExit:
 		'UPGRADE_WARNING: Couldn't resolve default property of object WriteComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		WriteComponent = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False
@@ -254,7 +252,7 @@ ErrorTrap:
 			miReturnType = objOperator.ReturnType
 			miPrecedence = objOperator.Precedence
 			miOperandCount = objOperator.OperandCount
-			msSPName = IIf(IsDBNull(objOperator.SPName), "", objOperator.SPName)
+			msSPName = IIf(IsDBNull(objOperator.SPName), "", objOperator.SPName).ToString()
 			msSQLCode = objOperator.SQLCode
 			msSQLType = objOperator.SQLType
 			mfCheckDivideByZero = objOperator.CheckDivideByZero
