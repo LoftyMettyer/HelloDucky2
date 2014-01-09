@@ -191,7 +191,7 @@
     <Compile Include="Expressions\ExprComponent.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Expressions\Expression_bas.vb">
+    <Compile Include="Expressions\modExpression.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Expressions\Expression_cls.vb">

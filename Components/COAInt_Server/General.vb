@@ -524,4 +524,105 @@ LocalErr:
 
 	End Function
 
+#Region "From modExpression"
+
+	Public Function HasHiddenComponents(ByVal lngExprID As Integer) As Boolean
+
+		'********************************************************************************
+		' HasHiddenComponents - Loops through the passed expression searching for       *
+		'                       hidden expressions (calcs/filters).                     *
+		'                       Note: This function calls itself and drills down the    *
+		'                       expression checking for hidden calcs & filters, then    *
+		'                       works its way up the expressions/components.            *
+		'                                                                               *
+		' 'TM20010802 Fault 2617                                                        *
+		'********************************************************************************
+
+		Dim rsExpr As DataTable
+		Dim rsExprComp As DataTable
+		Dim lngCalcFilterID As Integer
+		Dim bHasHiddenComp As Boolean
+		Dim sSQL As String
+
+		On Error GoTo ErrorTrap
+
+		sSQL = String.Format("SELECT *, ISNULL(e.Access,'') AS [Access] FROM ASRSysExprComponents c INNER JOIN ASRSysExpressions e ON c.ExprID = e.ExprID WHERE c.ExprID = {0}", lngExprID)
+		rsExprComp = datData.GetDataTable(sSQL)
+		bHasHiddenComp = False
+
+		With rsExprComp
+
+			For Each objRow As DataRow In .Rows
+
+				Select Case CType(objRow("Type"), ExpressionComponentTypes)
+					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						lngCalcFilterID = CInt(IIf(IsDBNull(objRow("CalculationID")), 0, objRow("CalculationID")))
+
+						If lngCalcFilterID > 0 Then
+							If HasHiddenComponents(lngCalcFilterID) Or objRow("Access").ToString() = ACCESS_HIDDEN Then
+								bHasHiddenComp = True
+							End If
+						End If
+
+					Case ExpressionComponentTypes.giCOMPONENT_FILTER
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						lngCalcFilterID = CInt(IIf(IsDBNull(objRow("FilterID")), 0, objRow("FilterID")))
+
+
+						If lngCalcFilterID > 0 Then
+							If HasHiddenComponents(lngCalcFilterID) Or objRow("Access").ToString() = ACCESS_HIDDEN Then
+								bHasHiddenComp = True
+								'TM20011003
+								'Need this function to just find out if there are any hidden components,
+								'it was also setting the access of the functions and therefore changing
+								'time stamp.
+								'SetExprAccess lngCalcFilterID, "HD"
+							End If
+						End If
+
+					Case ExpressionComponentTypes.giCOMPONENT_FIELD
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						lngCalcFilterID = CInt(IIf(IsDBNull(objRow("FieldSelectionFilter")), 0, objRow("FieldSelectionFilter")))
+
+						If lngCalcFilterID > 0 Then
+							If HasHiddenComponents(lngCalcFilterID) Or objRow("Access").ToString() = ACCESS_HIDDEN Then
+								bHasHiddenComp = True
+							End If
+						End If
+
+					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+						sSQL = "SELECT exprID, Access FROM ASRSysExpressions WHERE parentComponentID = " & CStr(objRow("ComponentID"))
+						rsExpr = datData.GetDataTable(sSQL)
+						For Each objFunctionRow As DataRow In rsExpr.Rows
+
+							If HasHiddenComponents(CInt(objFunctionRow("ExprID"))) Or objFunctionRow("Access").ToString() = ACCESS_HIDDEN Then
+								bHasHiddenComp = True
+								Exit For
+							End If
+
+						Next
+						'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+						rsExpr = Nothing
+				End Select
+
+				If bHasHiddenComp Then
+					Exit For
+				End If
+
+			Next
+		End With
+
+		Return bHasHiddenComp
+
+ErrorTrap:
+		Return False
+
+	End Function
+
+
+
+#End Region
+
+
 End Class

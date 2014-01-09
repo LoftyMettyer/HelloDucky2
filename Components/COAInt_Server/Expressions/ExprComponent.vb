@@ -240,10 +240,7 @@ ErrorTrap:
 
 		'MH20010712 Need keep manual record of allocated IDs incase users
 		'in SYS MGR have created expressions but not yet saved changes
-		'lngNewID = UniqueColumnValue("ASRSysExprComponents", "componentID")
 		lngNewID = GetUniqueID("ExprComponents", "ASRSysExprComponents", "componentID")
-
-
 
 		fOK = (lngNewID > 0)
 
