@@ -303,19 +303,15 @@
 						return 7; //No to saving the changes, as none have been made.
 				}
 
-				answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "");
-				if (answer == 7) {
-						// No
-						return 7;
+				answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "PC Configuration");
+				if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+						return 2;
 				}
-				if (answer == 6) {
-						// Yes
-						frmConfiguration.txtReaction.value = psAction;
-						saveConfiguration();
-					//TODO: don't show a confirmation message after saving
+				else if (answer == 6) { // 'OK' -> discard changes and continue navigation
+					return 6;
 				}
-
-				return 2; //Cancel.
+				else 
+				  return 2; //Cancel.
 		}
 
 		function definitionChanged() {

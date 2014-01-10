@@ -1475,14 +1475,13 @@ function cancelClick() {
 		return false;
 	}
 
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+	var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3, "Expression Builder");
 	if (answer == 7) {
 		// No
 		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 		return (false);
 	}
-
-	if (answer == 6) {
+	else if (answer == 6) {
 		// Yes
 		okClick();
 	}
@@ -1888,23 +1887,22 @@ function saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (definitionChanged() == false) {
 		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-		return 7; //No to saving the changes, as none have been made.
+		return 6; // No changes made. Continue navigation
 	}
 
-	answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
-	if (answer == 7) {
-		// No
+	answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Expression Builder");
+	if (answer == 7) { // Cancel
 		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-		return 7;
+		return 2; // Cancel the changes and do not save them.
 	}
-
-	if (answer == 6) {
-		// Yes
+	else if (answer == 6) {
+		// OK
 		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-		okClick();
+		//okClick();
+		return 6; // 'OK' -> discard changes and continue navigation
 	}
-
-	return 2; //Cancel.
+	else
+		return 2; //Cancel.
 }
 
 function definitionChanged() {

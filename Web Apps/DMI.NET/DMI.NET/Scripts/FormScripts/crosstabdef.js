@@ -1394,7 +1394,7 @@ function cancelClick() {
 				return (false);
 		}
 
-		var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+		var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3);
 		if (answer == 7) {
 				// No
 			menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
@@ -1433,24 +1433,22 @@ function okClick()
 		submitDefinition();
 }
 
-function saveChanges(psAction, pfPrompt, pfTBOverride)
-{
+function saveChanges(psAction, pfPrompt, pfTBOverride) {
+	debugger;
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 				(definitionChanged() == false)) {
 				return 7; //No to saving the changes, as none have been made.
 		}
 
-		answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3,"Cross Tabs");
-		if (answer == 7) {
-				// No
-				return 7;
+		answer = OpenHR.messageBox("You have changed the current definition. SClick 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Cross Tabs");
+		if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+			return 2;
 		}
-		if (answer == 6) {
-				// Yes
-				okClick();
+		if (answer == 6) { // 'OK' -> discard changes and continue navigation
+			return 6;
 		}
-
-		return 2; //Cancel.
+		else
+			return 2; //Cancel.
 }
 
 function definitionChanged()

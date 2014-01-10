@@ -651,22 +651,21 @@
 		function saveChanges(psAction, pfPrompt, pfTBOverride) {
 			
 				if (definitionChanged() == false) {
-						return 7; //No to saving the changes, as none have been made.
+						return 6; //No to saving the changes, as none have been made.
 				}
 
-				answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
-				if (answer == 7) {
-						// No
-						return 7;
+				answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3);
+				if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+						return 2;
 				}
-				if (answer == 6) {
+				else if (answer == 6) { // 'OK' -> discard changes and continue navigation
 						// Yes
-						frmConfiguration.txtReaction.value = psAction;
-						saveConfiguration();
-					//TODO: don't show a confirmation message after saving
+						//frmConfiguration.txtReaction.value = psAction;
+						//saveConfiguration();
+					return 6;
 				}
-
-				return 2; //Cancel.
+				else
+					return 2; //Cancel.
 		}
 
 		function definitionChanged() {

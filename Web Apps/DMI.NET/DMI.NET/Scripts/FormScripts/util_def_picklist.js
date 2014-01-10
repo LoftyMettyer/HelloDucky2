@@ -241,7 +241,7 @@ function cancelClick() {
 		return (false);
 	}
 
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+	var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3, "Picklist Definition");
 	if (answer == 7) {
 		// No
 		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
@@ -312,20 +312,21 @@ function picklistdef_makeSelection(psType, piID, psPrompts) {
 function saveChanges() {
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
-		return 7; //No to saving the changes, as none have been made.
+		return 6; // No changes made. Continue navigation
 	}
 
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
-	if (answer == 7) {
-		// No
-		return 7;
-	}
+	answer = OpenHR.messageBox("Report definition changed. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "Picklist Definition");
 	if (answer == 6) {
-		// Yes
-		okClick();
+		return 6;
+		// 'OK' -> discard changes and continue navigation
 	}
-
-	return 2; //Cancel.
+	else if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+		// Cancel the changes and do not save them.
+		return 2; // 2 = vbCancel -> Continue Editing
+	}
+	else {
+		return 2; // Do not save changes, and cancel the operation that called this function.
+	}
 }
 
 function definitionChanged() {
