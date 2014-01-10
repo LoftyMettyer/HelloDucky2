@@ -17,8 +17,6 @@ Public Class Expression
 	Private mvarPrompts(,) As Object
 	Private mastrUDFsRequired() As String
 
-	Private mobjGeneral As New clsGeneral
-
 	Public Sub New(ByVal Value As LoginInfo)
 		MyBase.New(Value)
 	End Sub
@@ -713,7 +711,7 @@ ErrorTrap:
 	End Function
 
 	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
-		Return mobjGeneral.UDFFunctions(mastrUDFsRequired, pbCreate)
+		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
 End Class

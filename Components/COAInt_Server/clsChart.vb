@@ -19,9 +19,6 @@ Public Class clsChart
 	Private mobjTableView As TablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 
-	' Classes
-	Private mclsGeneral As clsGeneral
-
 	' Strings to hold the SQL statement
 	Private mstrSQLSelect As String
 	Private mstrSQLSelectColour As String
@@ -62,8 +59,8 @@ Public Class clsChart
 		lngColourID = plngChart_ColourID
 
 		strTableName = General.GetTableName(lngTableID)
-		strColumnName = mclsGeneral.GetColumnName(lngColumnID)
-		strColourColumnName = mclsGeneral.GetColumnName(lngColourID)
+		strColumnName = General.GetColumnName(lngColumnID)
+		strColourColumnName = General.GetColumnName(lngColourID)
 
 		If fOK Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColumnID, strColumnName, False)
 		If fOK And piElementType = 2 And lngColourID > 0 Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColourID, strColourColumnName, True)
@@ -613,30 +610,6 @@ GenerateSQLWhere_ERROR:
 		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
 
 	End Function
-
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-		' Initialise the the classes/arrays to be used
-		mclsGeneral = New clsGeneral
-		' ReDim mvarSortOrder(2, 0)
-
-	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-		' Clear references to classes and clear collection objects
-
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
-	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
 
 	Private Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
 

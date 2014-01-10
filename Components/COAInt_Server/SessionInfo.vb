@@ -2,13 +2,8 @@
 Imports ADODB
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
-Imports System.Data.SqlClient
 
 Public Class SessionInfo
-	'Public Shared gADOCon As ADODB.Connection
-
-	'Public Shared datGeneral As New clsGeneral
-	'Public Shared dataAccess As New clsDataAccess
 
 	Private _objLogin As LoginInfo
 
