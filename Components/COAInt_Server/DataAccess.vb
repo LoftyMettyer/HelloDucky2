@@ -100,6 +100,19 @@ Public Class clsDataAccess
 
 	End Function
 
+	Public Function GetFromSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter) As DataTable
+
+		Try
+			Return GetDataSet(ProcedureName, CommandType.StoredProcedure, args).Tables(0)
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Function
+
+
 	Public Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)
 
 		Dim strConn As String = GetConnectionString(_objLogin)

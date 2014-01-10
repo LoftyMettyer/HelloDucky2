@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script type="text/javascript">
 
@@ -428,11 +431,6 @@
 			return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
 		}
 		
-
-
-</script>
-
-<script type="text/javascript">
 	function addActiveXHandlers() {
 		$("#ctlRecordEdit").find("[data-columntype='lookup']").click(function () {
 			ctlRecordEdit_LookupClick(this);	//TODO: add the parameters here....
@@ -450,10 +448,7 @@
 		});
 
 	}
-</script>
 
-
-<script type="text/javascript">
 		function ctlRecordEdit_dataChanged() {
 				// The data in the recEdit control has changed so refresh the menu.
 				// Get menu.asp to refresh the menu.
@@ -485,7 +480,6 @@
 						
 			menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
 		}    
-
 
 		function ctlRecordEdit_ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
 				// An image has been pressed in the recEdit control,
@@ -574,8 +568,6 @@
 			}
 		}
 
-
-
 		function refreshData() {    	
 				// Get the data.asp to get the required data.
 				var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
@@ -601,9 +593,6 @@
 				data_refreshData();
 		}
 
-
- 
-
 </script>
 
 <link href="<%: Url.LatestContent("~/Content/spectrum.css")%>" rel="stylesheet" type="text/css" />
@@ -613,42 +602,32 @@
 	<div class="absolutefull">
 
 <%
-	On Error Resume Next
 	
-		Dim sErrorDescription As String
-	sErrorDescription = ""
+	Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	Dim SPParameters() As SqlParameter
 
+	Dim sErrorDescription As String = ""
+	
 	' Get the page title.
-	Dim cmdRecEditWindowTitle = New ADODB.Command
-	cmdRecEditWindowTitle.CommandText = "sp_ASRIntGetRecordEditInfo"
-	cmdRecEditWindowTitle.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdRecEditWindowTitle.ActiveConnection = Session("databaseConnection")
+	Dim prmTitle = New SqlParameter("psTitle", SqlDbType.VarChar, 500) With {.Direction = ParameterDirection.Output}
+	Dim prmQuickEntry = New SqlParameter("pfQuickEntry", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+	Dim prmScreenID = New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}
+	Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}
 
-		Dim prmTitle = cmdRecEditWindowTitle.CreateParameter("title", 200, 2, 100)
-		cmdRecEditWindowTitle.Parameters.Append(prmTitle)
+	Try
+		objDatabaseAccess.ExecuteSP("sp_ASRIntGetRecordEditInfo", prmTitle, prmQuickEntry, prmScreenID, prmViewID)
+		
+	Catch ex As Exception
+		sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(ex.Message)
 
-		Dim prmQuickEntry = cmdRecEditWindowTitle.CreateParameter("quickEntry", 11, 2) ' 11=bit, 2=output
-		cmdRecEditWindowTitle.Parameters.Append(prmQuickEntry)
-
-		Dim prmScreenID = cmdRecEditWindowTitle.CreateParameter("screenID", 3, 1)
-		cmdRecEditWindowTitle.Parameters.Append(prmScreenID)
-	prmScreenID.value = CleanNumeric(Session("screenID"))
-
-		Dim prmViewID = cmdRecEditWindowTitle.CreateParameter("viewID", 3, 1)
-		cmdRecEditWindowTitle.Parameters.Append(prmViewID)
-	prmViewID.value = CleanNumeric(Session("viewID"))
-
-		Err.Clear()
-	cmdRecEditWindowTitle.Execute()
+	End Try
 	
-		If (Err.Number <> 0) Then
-				sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(Err.Description)
-		End If
-
 	If Len(sErrorDescription) = 0 Then
-				'Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)        
-				Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdRecEditWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
-		End If
+		'Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)        
+		Response.Write("<input type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prmQuickEntry.Value & ">" & vbCrLf)
+	End If
+	
+	
 %>
 
 		<div class="pageTitleDiv">
@@ -661,7 +640,7 @@
 			</a>
 			<span style="margin-left: 40px;margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">
 				<%
-					Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " "))
+					Response.Write(Replace(prmTitle.Value.ToString(), "_", " "))
 				%>
 			</span>
 		</div>	
@@ -674,177 +653,112 @@
 
 <%
 	'Save the page title in a hidden field for use in menu.js
-	Response.Write("<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & "'>" & vbCrLf)
-	'Release the ADO command object.
-	cmdRecEditWindowTitle = Nothing
-%>
-
-<%
-		Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
-	Response.Write("<INPUT type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
-	
+	Response.Write("<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & Replace(prmTitle.Value.ToString(), "_", " ") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
 	
 	If Len(sErrorDescription) = 0 Then
-		' Read the screen definition from the database into 'hidden' controls.
-		Dim cmdRecEditDefinition = New ADODB.Command
-		cmdRecEditDefinition.CommandText = "sp_ASRIntGetScreenDefinition"
-		cmdRecEditDefinition.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				cmdRecEditDefinition.ActiveConnection = Session("databaseConnection")
+			
+		Try
+			
+			SPParameters = New SqlParameter() { _
+					New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+					New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}}
+			
+			Dim rowScreenInfo = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenDefinition", SPParameters).Rows(0)
 
-				prmScreenID = cmdRecEditDefinition.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
-				cmdRecEditDefinition.Parameters.Append(prmScreenID)
-		prmScreenID.value = CleanNumeric(Session("screenID"))
+			Response.Write("<input type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & Session("tableID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & Session("viewID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rowScreenInfo("height") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rowScreenInfo("width") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rowScreenInfo("tabCount") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & Replace(Replace(rowScreenInfo("tabCaptions").ToString(), "&", "&&"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & Replace(rowScreenInfo("fontName").ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rowScreenInfo("fontSize") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rowScreenInfo("fontBold") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rowScreenInfo("fontItalic") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rowScreenInfo("fontUnderline") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rowScreenInfo("fontStrikethru") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & Replace(rowScreenInfo("realSource").ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rowScreenInfo("insertGranted") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rowScreenInfo("deleteGranted") & ">" & vbCrLf)
+			
+		Catch ex As Exception
+			sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(ex.Message)
+			
+		End Try
+				
 
-				prmViewID = cmdRecEditDefinition.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
-				cmdRecEditDefinition.Parameters.Append(prmViewID)
-		prmViewID.value = CleanNumeric(Session("viewID"))
-
-				Err.Clear()
-				Dim rstScreenDefinition = cmdRecEditDefinition.Execute
-		
-				If (Err.Number <> 0) Then
-						sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(Err.Description)
-				End If
-
-		If Len(sErrorDescription) = 0 Then
-						Response.Write("<INPUT type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & Session("tableID") & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & Session("viewID") & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rstScreenDefinition.Fields("height").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rstScreenDefinition.Fields("width").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rstScreenDefinition.Fields("tabCount").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & Replace(Replace(rstScreenDefinition.Fields("tabCaptions").Value, "&", "&&"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & Replace(rstScreenDefinition.Fields("fontName").Value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rstScreenDefinition.Fields("fontSize").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rstScreenDefinition.Fields("fontBold").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rstScreenDefinition.Fields("fontItalic").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rstScreenDefinition.Fields("fontUnderline").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rstScreenDefinition.Fields("fontStrikethru").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & Replace(rstScreenDefinition.Fields("realSource").Value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rstScreenDefinition.Fields("insertGranted").Value & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rstScreenDefinition.Fields("deleteGranted").Value & ">" & vbCrLf)
-				End If
-		
-		rstScreenDefinition.close()
-				rstScreenDefinition = Nothing
-		
-		' Release the ADO command object.
-				cmdRecEditDefinition = Nothing
 	End If
 	
-		Response.Write("<INPUT type='hidden' id=txtRecEditEmpTableID name=txtRecEditEmpTableID value=" & Session("TB_EmpTableID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtRecEditCourseTableID name=txtRecEditCourseTableID value=" & Session("TB_CourseTableID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtRecEditTBTableID name=txtRecEditTBTableID value=" & Session("TB_TBTableID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtRecEditTBStatusColumnID name=txtRecEditTBStatusColumnID value=" & Session("TB_TBStatusColumnID") & ">" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtRecEditCourseCancelDateColumnID name=txtRecEditCourseCancelDateColumnID value=" & Session("TB_CourseCancelDateColumnID") & ">" & vbCrLf)
-		'ND commented out for now - Response.Write "<INPUT type='hidden' id=txtWaitListOverRideColumnID name=txtWaitListOverRideColumnID value=" & session("TB_WaitListOverRideColumnID") & ">" & vbcrlf
+	Response.Write("<input type='hidden' id=txtRecEditEmpTableID name=txtRecEditEmpTableID value=" & Session("TB_EmpTableID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditCourseTableID name=txtRecEditCourseTableID value=" & Session("TB_CourseTableID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditTBTableID name=txtRecEditTBTableID value=" & Session("TB_TBTableID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditTBStatusColumnID name=txtRecEditTBStatusColumnID value=" & Session("TB_TBStatusColumnID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditCourseCancelDateColumnID name=txtRecEditCourseCancelDateColumnID value=" & Session("TB_CourseCancelDateColumnID") & ">" & vbCrLf)
 
 	If Len(sErrorDescription) = 0 Then
-		' Get the screen controls
-		Dim cmdRecEditControls = New ADODB.Command
-		cmdRecEditControls.CommandText = "sp_ASRIntGetScreenControlsString2"
-		cmdRecEditControls.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				cmdRecEditControls.ActiveConnection = Session("databaseConnection")
-
-				prmScreenID = cmdRecEditControls.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
-				cmdRecEditControls.Parameters.Append(prmScreenID)
-		prmScreenID.value = CleanNumeric(Session("screenID"))
-
-				prmViewID = cmdRecEditControls.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
-				cmdRecEditControls.Parameters.Append(prmViewID)
-		prmViewID.value = CleanNumeric(Session("viewID"))
-
-				Dim prmSelectSQL = cmdRecEditControls.CreateParameter("selectSQL", 200, 2, 2147483646) ' 200=varchar, 2=output
-				cmdRecEditControls.Parameters.Append(prmSelectSQL)
-
-		Dim prmFromDef = cmdRecEditControls.CreateParameter("fromDef", 200, 2, 255)	' 200=varchar, 2=output
-				cmdRecEditControls.Parameters.Append(prmFromDef)
-
-				Dim prmOrderID = cmdRecEditControls.CreateParameter("orderID", 3, 3) ' 3=integer,  3=input/output
-				cmdRecEditControls.Parameters.Append(prmOrderID)
-		prmOrderID.value = CleanNumeric(Session("orderID"))
-
-				Err.Clear()
-				Dim rstScreenControls = cmdRecEditControls.Execute
 		
-				If (Err.Number <> 0) Then
-						sErrorDescription = "The screen control definitions could not be read." & vbCrLf & FormatError(Err.Description)
-				End If
+		Try
 
-		If Len(sErrorDescription) = 0 Then
-						Dim iloop = 1
-			Do While Not rstScreenControls.EOF
-								Response.Write("<INPUT type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(rstScreenControls.Fields("controlDefinition").Value, """", "&quot;") & """>" & vbCrLf)
-								rstScreenControls.MoveNext()
-	
-				iloop = iloop + 1
-			Loop
-
-			' Release the ADO recordset object.
-			rstScreenControls.close()
-						rstScreenControls = Nothing
+			Dim prmSelectSQL = New SqlParameter("psselectSQL", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmFromDef = New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOrderID = New SqlParameter("piOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("orderID"))}
 		
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and set it to nothing before using the output parameters. 
-						Response.Write("<INPUT type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & Replace(Replace(cmdRecEditControls.Parameters("selectSQL").Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & Replace(Replace(cmdRecEditControls.Parameters("fromDef").Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & cmdRecEditControls.Parameters("orderID").Value & ">" & vbCrLf)
-				End If
-		
-				cmdRecEditControls = Nothing
-	End If
-	
-	If Len(sErrorDescription) = 0 Then
-		' Get the screen column control values
-		Dim cmdRecEditControlValues = New ADODB.Command
-		cmdRecEditControlValues.CommandText = "sp_ASRIntGetScreenControlValuesString"
-		cmdRecEditControlValues.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				cmdRecEditControlValues.ActiveConnection = Session("databaseConnection")
+			SPParameters = New SqlParameter() { _
+				New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+				New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))},
+				prmSelectSQL, prmFromDef, prmOrderID}
+			Dim dtControls As DataTable = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlsString2", SPParameters)
 
-				prmScreenID = cmdRecEditControlValues.CreateParameter("screenID", 3, 1)
-				cmdRecEditControlValues.Parameters.Append(prmScreenID)
-		prmScreenID.value = CleanNumeric(Session("screenID"))
+			Dim iloop = 1
+			For Each objRow As DataRow In dtControls.Rows
+				Response.Write("<input type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(objRow("controlDefinition").ToString(), """", "&quot;") & """>" & vbCrLf)
+				iloop += 1
+			Next
 
-				Err.Clear()
-				Dim rstScreenControlValues = cmdRecEditControlValues.Execute
-		
-				If (Err.Number <> 0) Then
-						sErrorDescription = "The screen control values could not be read." & vbCrLf & FormatError(Err.Description)
-				End If
+			Response.Write("<input type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & Replace(Replace(prmSelectSQL.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & Replace(Replace(prmFromDef.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & prmOrderID.Value.ToString() & ">" & vbCrLf)
 
-		If Len(sErrorDescription) = 0 Then
-						Dim iloop = 1
-			Do While Not rstScreenControlValues.EOF
-				Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Replace(rstScreenControlValues.Fields("valueDefinition").Value, """", "&quot;") & "'>" & vbCrLf)
-								rstScreenControlValues.MoveNext()
-				iloop = iloop + 1
-			Loop
-
-			' Release the ADO recordset object.
-			rstScreenControlValues.close()
-						rstScreenControlValues = Nothing
+			
+			
+			Dim rstScreenControlValues = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlValuesString" _
+			, New SqlParameter("plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))})
+			
+			iloop = 1
+			For Each objRow As DataRow In rstScreenControlValues.Rows
+				Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Replace(objRow("valueDefinition").ToString(), """", "&quot;") & "'>" & vbCrLf)
+				iloop += 1
+			Next
 			
 			'Add two more culture-specific hidden fields: number decimal separator and thousand separator; they will be used by the autoNumeric plugin
-			Response.Write("<input type='hidden' id='txtRecEditControlNumberDecimalSeparator' name='txtRecEditControlNumberDecimalSeparator' value='" & System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtRecEditControlNumberGroupSeparator' name='txtRecEditControlNumberGroupSeparator' value='" & System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator & "'>" & vbCrLf)
-		End If
-	
-				cmdRecEditControlValues = Nothing
-	End If
+			Response.Write("<input type='hidden' id='txtRecEditControlNumberDecimalSeparator' name='txtRecEditControlNumberDecimalSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtRecEditControlNumberGroupSeparator' name='txtRecEditControlNumberGroupSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator & "'>" & vbCrLf)
+				
+			
+		Catch ex As Exception
+			sErrorDescription = "The screen control definitions could not be read." & vbCrLf & FormatError(ex.Message)
 
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
-		Response.Write("<INPUT type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
+		End Try
+		
+	End If
+	
+	
+
+	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+	Response.Write("<input type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
 
 	' JPD 20021021 - Added pictures functionlity.
 	' JPD 20021127 - Moved Utilities object into session variable.
