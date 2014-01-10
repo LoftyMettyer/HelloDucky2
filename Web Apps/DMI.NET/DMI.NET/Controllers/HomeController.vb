@@ -990,6 +990,10 @@ Namespace Controllers
 		End Function
 
 		Function Find(Optional sParameters As String = "") As ActionResult
+			'Data access variables
+			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+			Dim SPParameters() As SqlParameter
 
 			' Additional controller actions for SSI view. Only SSI calls to this action have parameters.
 			If sParameters.Length > 0 Then
@@ -1073,50 +1077,34 @@ Namespace Controllers
 
 				If Len(sErrorDescription) = 0 Then
 					If (Session("linkType") = "multifind") Then
-						Dim cmdOrder = CreateObject("ADODB.Command")
-						cmdOrder.CommandText = "spASRIntGetDefaultOrder"
-						cmdOrder.CommandType = 4 ' Stored Procedure
-						cmdOrder.ActiveConnection = Session("databaseConnection")
+						Dim prm_piOrderID As New SqlParameter("@piOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						SPParameters = New SqlParameter() { _
+								New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+								prm_piOrderID _
+						}
 
-						Dim prmTableID = cmdOrder.CreateParameter("tableID", 3, 1)
-						cmdOrder.Parameters.Append(prmTableID)
-						prmTableID.value = CleanNumeric(Session("tableID"))
+						Try
+							objDataAccess.ExecuteSP("spASRIntGetDefaultOrder", SPParameters)
+						Catch ex As Exception
+							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(ex.Message)
+						End Try
 
-						Dim prmOrderID = cmdOrder.CreateParameter("orderID", 3, 2)
-						cmdOrder.Parameters.Append(prmOrderID)
-
-						Err.Clear()
-						cmdOrder.Execute()
-						If (Err.Number <> 0) Then
-							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(Err.Description)
-						Else
-							Session("orderID") = cmdOrder.Parameters("orderID").Value
-						End If
-						' Release the ADO command object.
-						cmdOrder = Nothing
+						Session("orderID") = prm_piOrderID.Value
 					Else
 						' Get the screen's default order if none is already specified.
-						Dim cmdScreenOrder = CreateObject("ADODB.Command")
-						cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
-						cmdScreenOrder.CommandType = 4 ' Stored Procedure
-						cmdScreenOrder.ActiveConnection = Session("databaseConnection")
+						Dim prm_plngOrderID As New SqlParameter("@plngOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						SPParameters = New SqlParameter() { _
+								New SqlParameter("@plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+								prm_plngOrderID _
+						}
 
-						Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
-						cmdScreenOrder.Parameters.Append(prmOrderID)
+						Try
+							objDataAccess.ExecuteSP("sp_ASRIntGetScreenOrder", SPParameters)
+						Catch ex As Exception
+							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(ex.Message)
+						End Try
 
-						Dim prmScreenID = cmdScreenOrder.CreateParameter("screenID", 3, 1)
-						cmdScreenOrder.Parameters.Append(prmScreenID)
-						prmScreenID.value = CleanNumeric(Session("screenID"))
-
-						Err.Clear()
-						cmdScreenOrder.Execute()
-						If (Err.Number <> 0) Then
-							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(Err.Description)
-						Else
-							Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
-						End If
-						' Release the ADO command object.
-						cmdScreenOrder = Nothing
+						Session("orderID") = prm_plngOrderID.Value
 					End If
 				End If
 

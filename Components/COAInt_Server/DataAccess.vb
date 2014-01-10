@@ -203,6 +203,75 @@ Public Class clsDataAccess
 
 	End Function
 
+	Public Function CallToStoredProcedure(sProcedureName As String, ByVal ParamArray args() As SqlParameter) As String
+		Dim strConn As String = GetConnectionString(_objLogin)
+		Using sqlConnection As New SqlConnection(strConn)
+			Dim sqlCommand As New SqlCommand(sProcedureName, sqlConnection)
+			For Each sqlParm In args
+				sqlCommand.Parameters.Add(sqlParm)
+			Next
+
+			Dim DECLAREs As String = ""
+			Dim EXEC As String = ""
+			Dim SELECTs As String = ""
+
+			'Declare output variables
+			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+				If p.Direction = ParameterDirection.Output Then
+					If DECLAREs = "" Then
+						DECLAREs = "DECLARE " & Environment.NewLine
+					End If
+					If p.SqlDbType = SqlDbType.NVarChar Or p.SqlDbType = SqlDbType.VarChar Then
+						DECLAREs &= "     " & p.ParameterName & " " & p.SqlDbType.ToString & "(MAX), " & Environment.NewLine
+					Else
+						DECLAREs &= "     " & p.ParameterName & " " & p.SqlDbType.ToString & ", " & Environment.NewLine
+					End If
+				End If
+			Next
+			If Not String.IsNullOrEmpty(DECLAREs) Then
+				DECLAREs = DECLAREs.Substring(0, DECLAREs.LastIndexOf(", "))
+			End If
+
+			'EXEC
+			EXEC = Environment.NewLine & "EXEC " & sqlCommand.CommandText & " " & Environment.NewLine
+			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+				If p.SqlDbType = SqlDbType.Decimal Or p.SqlDbType = SqlDbType.Float Or p.SqlDbType = SqlDbType.Int Or p.SqlDbType = SqlDbType.Money Or p.SqlDbType = SqlDbType.Real Then
+					If p.Direction = ParameterDirection.Output Then
+						EXEC &= "     " & p.ParameterName & " = " & p.ParameterName & " OUTPUT, " & Environment.NewLine
+					Else
+						EXEC &= "     " & p.ParameterName & " = " & p.Value.ToString & ", " & Environment.NewLine
+					End If
+				Else
+					If p.Direction = ParameterDirection.Output Then
+						EXEC &= "     " & p.ParameterName & " = " & p.ParameterName & " OUTPUT, " & Environment.NewLine
+					Else
+						EXEC &= "     " & p.ParameterName & " = '" & p.Value.ToString & "', " & Environment.NewLine
+					End If
+
+				End If
+			Next
+			If EXEC <> "" Then
+				EXEC = EXEC.Substring(0, EXEC.LastIndexOf(", "))
+			End If
+
+			'SELECTs
+			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+				If p.Direction = ParameterDirection.Output Then
+					If SELECTs = "" Then
+						SELECTs = Environment.NewLine & "SELECT " & Environment.NewLine
+					End If
+					SELECTs &= "     " & p.ParameterName & " AS N'" & p.ParameterName & "', " & Environment.NewLine
+				End If
+			Next
+			If Not String.IsNullOrEmpty(SELECTs) Then
+				SELECTs = SELECTs.Substring(0, SELECTs.LastIndexOf(", "))
+			End If
+
+			Return DECLAREs & Environment.NewLine & EXEC & Environment.NewLine & SELECTs & Environment.NewLine
+
+		End Using
+	End Function
+
 	Public Function GetDataSet(ByVal sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
 		Return GetDataSet(sProcedureName, CommandType.StoredProcedure, args)
 	End Function
