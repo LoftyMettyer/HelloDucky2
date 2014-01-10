@@ -893,10 +893,10 @@
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 											<tr>
 												<td>
-													<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 100%">
+													<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled" tabindex="-1" style="WIDTH: 100%; padding-right: 6px;">
 												</td>
 												<td width="25" class="hidden">
-													<input type="button" id="cmdFilename" name="cmdFilename" value="..." style="WIDTH: 100%" class="btn" onclick="saveFile()" />
+													<input type="button" id="cmdFilename" name="cmdFilename" value="..." style="WIDTH: 100%; padding-top: 0; padding-bottom: 0;" class="btn" onclick="saveFile()" />
 												</td>
 											</tr>
 										</table>
@@ -945,12 +945,12 @@
 									<td colspan="2">
 										<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
 											<tr>
-												<td>
-													<input id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
+												<td style="padding-right: 6px;">
+													<input id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled" style="WIDTH: 100%;">
 													<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
 												</td>
 												<td width="25">
-													<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%" class="btn" onclick="selectEmailGroup()" />
+													<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%; padding-top: 0;" class="btn" onclick="selectEmailGroup()" />
 												</td>
 											</tr>
 										</table>
