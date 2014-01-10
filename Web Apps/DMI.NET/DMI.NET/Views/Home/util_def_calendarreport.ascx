@@ -1788,7 +1788,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td colspan="8"></td>
 																			</tr>
 
-																			<tr height="20">
+																			<%--<tr height="40px">
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
@@ -1818,13 +1818,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td width="30" nowrap>&nbsp;</td>
-																			</tr>
+																			</tr>--%>
 
 																			<%--<tr height="10">
 																				<td colspan="8"></td>
 																			</tr>--%>
 
-																			<tr style="height: 20px">
+																			<tr style="height: 40px">
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
@@ -1863,7 +1863,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																			</tr>
 
-																			<tr height="20">
+																			<tr height="40px">
 																				<td></td>
 																				<td></td>
 																				<td></td>
@@ -1881,7 +1881,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																			</tr>
 
-																			<tr height="20">
+																			<tr height="40px">
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
@@ -1918,7 +1918,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
                                                                                 <td></td>
 																			</tr>
-																			<tr>
+																			<tr height="40px">
 																				<td></td>
 																				<td></td>
 																				<td></td>
@@ -1943,7 +1943,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td></td>
 																			</tr>
-																			<tr>
+																			<tr height="40px">
 																				<td style="width: 130px" colspan="1"></td>
 																				<td></td>
 																				<td></td>
