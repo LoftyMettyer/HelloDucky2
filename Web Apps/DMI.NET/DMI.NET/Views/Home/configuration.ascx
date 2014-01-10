@@ -481,7 +481,7 @@
 				}
 
 				for (i = 0; i < cboCombo.options.length; i++) {
-						if (cboCombo.options(i).value == piValue) {
+						if (cboCombo.options[i].value == piValue) {
 								cboCombo.selectedIndex = i;
 								return;
 						}

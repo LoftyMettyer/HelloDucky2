@@ -350,7 +350,7 @@ function setBaseTable(piTableID) {
 
 		if (piTableID > 0) {
 				for (i = 0; i < frmDefinition.cboBaseTable.options.length; i++) {
-						if (frmDefinition.cboBaseTable.options(i).value == piTableID) {
+						if (frmDefinition.cboBaseTable.options[i].value == piTableID) {
 								frmDefinition.cboBaseTable.selectedIndex = i;
 								frmUseful.txtCurrentBaseTableID.value = piTableID;
 								break;
@@ -360,7 +360,7 @@ function setBaseTable(piTableID) {
 		else {
 				if (frmDefinition.cboBaseTable.options.length > 0) {
 						frmDefinition.cboBaseTable.selectedIndex = 0;
-						frmUseful.txtCurrentBaseTableID.value = frmDefinition.cboBaseTable.options(0).value;
+						frmUseful.txtCurrentBaseTableID.value = frmDefinition.cboBaseTable.options[0].value;
 				}
 		}
 
