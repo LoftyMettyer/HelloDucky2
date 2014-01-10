@@ -346,17 +346,18 @@
 			End If
 		End If
 	
-	
-	objReport.ClearUp()
+	If fok Then
+		objReport.ClearUp()
+	End If
 
 		
-		If fok Then
-			Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
-			Response.Write("<div>")
+	If fok Then
+		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
+		Response.Write("<div>")
 		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-			Response.Write("				<tr>" & vbCrLf)
-			Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
-			Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
+		Response.Write("				<tr>" & vbCrLf)
+		Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
+		Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 			
 			
 %>

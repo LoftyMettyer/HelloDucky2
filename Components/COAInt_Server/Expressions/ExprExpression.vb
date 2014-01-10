@@ -653,7 +653,7 @@ ErrorTrap:
 									' Read the index of the parameter's value if there is one.
 									For iLoop3 = iLoop2 - 1 To 1 Step -1
 										'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										If avValues(2, iLoop3).ToString() <> vbNullString Then
+										If avValues(2, iLoop3) <> vbNullString Then
 											iParameter1Index = iLoop3
 											Exit For
 										End If
