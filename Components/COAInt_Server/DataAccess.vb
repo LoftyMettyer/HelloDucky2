@@ -282,35 +282,42 @@ Public Class clsDataAccess
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 
-		Try
+		Const RetryThreshold = 5
+		Dim iRetryCount As Integer = 0
+		Dim bRetry As Boolean = True
 
-			Using sqlConnection As New SqlConnection(strConn)
+		Do While bRetry
 
-				''Dim sqlConnection As New SqlConnection(strConn)
-				'	sqlConnection.Open()
-				objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
-				objAdaptor.SelectCommand.CommandType = CommandType
+			Try
 
-				objAdaptor.SelectCommand.Parameters.Clear()
-				For Each sqlParm In args
-					objAdaptor.SelectCommand.Parameters.Add(sqlParm)
-				Next
+				Using sqlConnection As New SqlConnection(strConn)
 
+					objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
+					objAdaptor.SelectCommand.CommandType = CommandType
 
-				'		objAdaptor.SelectCommand.Parameters.AddWithValue("@begDate", SqlDbType.Date).Value = beg_Date
+					objAdaptor.SelectCommand.Parameters.Clear()
+					For Each sqlParm In args
+						objAdaptor.SelectCommand.Parameters.Add(sqlParm)
+					Next
 
+					objAdaptor.Fill(objDataSet)
 
-				objAdaptor.Fill(objDataSet)
+				End Using
 
-				' ????
-				'sqlConnection.Close()
-			End Using
+				bRetry = False
 
+			Catch ex As Exception
 
-		Catch ex As Exception
-			Throw
+				' TODO Certain errors we should just try again, deadlocking for example?
+				'			 others bomb immediately
+				bRetry = False
 
-		End Try
+				iRetryCount += 1
+				If iRetryCount > RetryThreshold Or Not bRetry Then Throw
+
+			End Try
+
+		Loop
 
 		Return objDataSet
 
