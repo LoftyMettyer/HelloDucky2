@@ -1,6 +1,7 @@
 ﻿Imports System.Web.Optimization
 Imports DMI.NET.App_Start
 Imports System.Drawing
+Imports HR.Intranet.Server
 
 ' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 ' visit http://go.microsoft.com/?LinkId=9394802
@@ -156,28 +157,9 @@ Public Class MvcApplication
 
 	Sub Session_End()
 
-		On Error Resume Next
+		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-		Dim conX = Session("databaseConnection")
-
-		' RH 18/04/01 - Put 'Log Out' entry in the audit access log
-		Dim cmdAudit = New ADODB.Command
-		cmdAudit.CommandText = "sp_ASRIntAuditAccess"
-		cmdAudit.CommandType = 4 ' Stored Procedure
-		cmdAudit.ActiveConnection = conX
-
-		Dim prmLoggingIn = cmdAudit.CreateParameter("LoggingIn", 11, 1, , False)
-		cmdAudit.Parameters.Append(prmLoggingIn)
-
-		Dim prmUser = cmdAudit.CreateParameter("Username", 200, 1, 1000)
-		cmdAudit.Parameters.Append(prmUser)
-		prmUser.value = Replace(Session("Username"), "'", "''")
-
-		cmdAudit.Execute()
-
-		Session("databaseConnection") = ""
-
-		conX.close()
+		objDatabase.LogOut()
 
 		' Clear up any temporary files from OLE functionality
 		Session("OLEObject") = Nothing

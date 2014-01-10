@@ -14,7 +14,7 @@ Namespace BaseClasses
 		Protected AccessLog As AccessLog
 
 		Private _sessionInfo As SessionInfo
-		Private _login As LoginInfo
+		Protected _login As LoginInfo
 
 		Public Property SessionInfo() As SessionInfo
 			Set(value As SessionInfo)

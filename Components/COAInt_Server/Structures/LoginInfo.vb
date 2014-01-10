@@ -14,6 +14,12 @@ Namespace Structures
 		Public LockedOut As Boolean
 		Public LockoutTime As Date
 
+
+		Public UserType As Integer
+		Public SelfServiceUserType As Integer
+		Public UserGroup As String
+		Public LoginFailReason As String = ""
+
 		'Public ReadOnly Property OldConnectionString() As String
 		'	Get
 

@@ -5,6 +5,7 @@ Imports System.IO
 Imports System.Drawing
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
+Imports HR.Intranet.Server.Structures
 
 Namespace Controllers
 	Public Class AccountController
@@ -318,47 +319,23 @@ Namespace Controllers
 			objServerSession.LoginInfo = objLogin
 			objServerSession.Initialise()
 
-			Session("sessionContext") = objServerSession
-
-
 			Dim objDatabase As New Database
 			objDatabase.SessionInfo = objServerSession
 			Session("DatabaseFunctions") = objDatabase
 
-
 			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 
+			Try
+				objDatabase.CheckLogin(objServerSession.LoginInfo, Session("version").ToString())
 
+				If objServerSession.LoginInfo.LoginFailReason.Length <> 0 Then
+					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
+					FormatError(objServerSession.LoginInfo.LoginFailReason)
+					Return RedirectToAction("Loginerror")
+				End If
 
-			' Check that its okay for the user to login.
-			Dim cmdLoginCheck = New Command
-			cmdLoginCheck.CommandText = "sp_ASRIntCheckLogin"
-			cmdLoginCheck.CommandType = 4	' Stored Procedure
-			cmdLoginCheck.ActiveConnection = conX
-
-			Dim prmSuccessFlag = cmdLoginCheck.CreateParameter("SuccessFlag", 3, 2)										' 3 = integer,		2 = output
-			cmdLoginCheck.Parameters.Append(prmSuccessFlag)
-			Dim prmErrorMessage = cmdLoginCheck.CreateParameter("ErrorMessage", 200, 2, 8000)					' 200 = varchar,	2 = output,		8000 = size
-			cmdLoginCheck.Parameters.Append(prmErrorMessage)
-			Dim prmMinPasswordLength = cmdLoginCheck.CreateParameter("MinPasswordLength", 3, 2)				' 3 = integer,		2 = output
-			cmdLoginCheck.Parameters.Append(prmMinPasswordLength)
-			Dim prmIntranetVersion = cmdLoginCheck.CreateParameter("version", 200, 1, 50)							' 200 = varchar,	1 = INPUT,		50 = size
-			cmdLoginCheck.Parameters.Append(prmIntranetVersion)
-			prmIntranetVersion.Value = Session("version")
-			Dim prmPasswordLength = cmdLoginCheck.CreateParameter("pwdLength", 3, 1)									' 3 = integer,		1 = INPUT
-			cmdLoginCheck.Parameters.Append(prmPasswordLength)
-			prmPasswordLength.Value = CleanNumeric(Len(sPassword))
-			Dim prmUserType = cmdLoginCheck.CreateParameter("userType", 3, 2)													' 3 = integer,		2 = output
-			cmdLoginCheck.Parameters.Append(prmUserType)
-			Dim prmUserGroup = cmdLoginCheck.CreateParameter("UserGroup", 200, 2, 250)								' 200 = varchar,	2 = output,		250 = size
-			cmdLoginCheck.Parameters.Append(prmUserGroup)
-			Dim prmSelfServiceUserType = cmdLoginCheck.CreateParameter("SelfServiceUserType", 3, 2)		' 3 = integer,		2 = output
-			cmdLoginCheck.Parameters.Append(prmSelfServiceUserType)
-
-			Err.Clear()
-			cmdLoginCheck.Execute()
-
-			If (Err.Number <> 0) Then
+			Catch ex As Exception
+				' These error codes need updating
 				Session("ErrorTitle") = "Login Page"
 				If Err.Number = -2147217900 Then
 					Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
@@ -370,23 +347,17 @@ Namespace Controllers
 					 FormatError(Err.Description)
 				End If
 				Return RedirectToAction("Loginerror")
-			End If
 
-			Session("userType") = cmdLoginCheck.Parameters("userType").Value
-			Session("SelfServiceUserType") = cmdLoginCheck.Parameters("SelfServiceUserType").Value
-			Session("UserGroup") = cmdLoginCheck.Parameters("UserGroup").Value
+			End Try
 
-			If cmdLoginCheck.Parameters("SuccessFlag").Value = 0 Then
-				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
-				 cmdLoginCheck.Parameters("ErrorMessage").Value
-				Return RedirectToAction("Loginerror")
-			ElseIf cmdLoginCheck.Parameters("SuccessFlag").Value = 2 Then
-				'	Password expired.
-				fForcePasswordChange = True
-				Session("minPasswordLength") = cmdLoginCheck.Parameters("MinPasswordLength").Value
-				'End If
-			End If
+			Session("sessionContext") = objServerSession
+			Session("Server") = sServerName
+			Session("Database") = sDatabaseName
+			Session("WinAuth") = bWindowsAuthentication
+			Session("userType") = objServerSession.LoginInfo.UserType
+			Session("SelfServiceUserType") = objServerSession.LoginInfo.SelfServiceUserType
+			Session("UserGroup") = objServerSession.LoginInfo.UserGroup
+
 
 			' If the users default database is not 'master' then make it so.
 			Dim cmdDefaultDB = New Command
@@ -398,12 +369,6 @@ Namespace Controllers
 			cmdDefaultDB = Nothing
 
 			' Put the username in a session variable	
-			Session("Server") = sServerName
-			Session("Database") = sDatabaseName
-			Session("WinAuth") = bWindowsAuthentication
-
-			' Release the ADO command object.
-			cmdLoginCheck = Nothing
 
 
 			' RH 18/04/01 - Put entry in the audit access log
