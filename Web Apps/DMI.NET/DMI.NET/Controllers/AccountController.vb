@@ -319,11 +319,13 @@ Namespace Controllers
 			objServerSession.LoginInfo = objLogin
 			objServerSession.Initialise()
 
+			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 			Dim objDatabase As New Database
+
 			objDatabase.SessionInfo = objServerSession
 			Session("DatabaseFunctions") = objDatabase
+			Session("DatabaseAccess") = objDataAccess
 
-			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 
 			Try
 				objDatabase.CheckLogin(objServerSession.LoginInfo, Session("version").ToString())

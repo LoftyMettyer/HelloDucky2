@@ -4756,6 +4756,8 @@ Namespace Controllers
 		<HttpPost()>
 		Function recordEditMain(psScreenInfo As String) As ActionResult
 
+			Dim sErrorDescription As String = ""
+
 			Session("action") = ""
 			Session("parentTableID") = 0
 			Session("parentRecordID") = 0
@@ -4765,6 +4767,7 @@ Namespace Controllers
 			Session("previousAction") = ""
 			Session("orderID") = 0
 
+			Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sParameters As String = psScreenInfo
 
@@ -4785,53 +4788,41 @@ Namespace Controllers
 			Else
 				Session("linkID") = Mid(sParameters, InStr(sParameters, "_") + 1)
 
-				Err.Clear()
-				Dim cmdLinkInfo = CreateObject("ADODB.Command")
-				cmdLinkInfo.CommandText = "spASRIntGetLinkInfo"
-				cmdLinkInfo.CommandType = 4	' Stored Procedure
-				cmdLinkInfo.ActiveConnection = Session("databaseConnection")
+				Dim prmLinkID = New SqlParameter("piLinkID", SqlDbType.Int)
+				prmLinkID.Value = NullSafeInteger(CleanNumeric(Session("linkID")))
 
-				Dim prmLinkID = cmdLinkInfo.CreateParameter("linkID", 3, 1)	' 3=integer, 1=input
-				cmdLinkInfo.Parameters.Append(prmLinkID)
-				prmLinkID.value = NullSafeInteger(CleanNumeric(Session("linkID")))
+				Dim prmScreenID = New SqlParameter("piScreenID", SqlDbType.Int)
+				prmScreenID.Direction = ParameterDirection.Output
 
-				Dim prmScreenID = cmdLinkInfo.CreateParameter("screenID", 3, 2)	' 3=integer, 2=output
-				cmdLinkInfo.Parameters.Append(prmScreenID)
+				Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int)
+				prmTableID.Direction = ParameterDirection.Output
 
-				Dim prmTableID = cmdLinkInfo.CreateParameter("tableID", 3, 2)	' 3=integer, 2=output
-				cmdLinkInfo.Parameters.Append(prmTableID)
+				Dim prmTitle = New SqlParameter("psTitle", SqlDbType.VarChar, 8000)
+				prmTitle.Direction = ParameterDirection.Output
 
-				Dim prmTitle = cmdLinkInfo.CreateParameter("title", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-				cmdLinkInfo.Parameters.Append(prmTitle)
+				Dim prmStartMode = New SqlParameter("piStartMode", SqlDbType.Int)
+				prmStartMode.Direction = ParameterDirection.Output
 
-				Dim prmStartMode = cmdLinkInfo.CreateParameter("startMode", 3, 2)	' 3=integer, 2=output
-				cmdLinkInfo.Parameters.Append(prmStartMode)
+				Dim prmTableType = New SqlParameter("piTableType", SqlDbType.Int)
+				prmTableType.Direction = ParameterDirection.Output
 
-				Dim prmTableType = cmdLinkInfo.CreateParameter("tableType", 3, 2)	' 3=integer, 2=output
-				cmdLinkInfo.Parameters.Append(prmTableType)
+				Try
+					objDatabaseAccess.ExecuteSP("spASRIntGetLinkInfo", prmLinkID, prmScreenID, prmTableID, prmTitle, prmStartMode, prmTableType)
 
-				Err.Clear()
-				cmdLinkInfo.Execute()
+					Session("screenID") = CInt(prmScreenID.Value)
+					Session("tableID") = CInt(prmTableID.Value)
+					Session("title") = prmTitle.Value.ToString()
+					Session("startMode") = CInt(prmStartMode.Value)
+					Session("tableType") = CInt(prmTableType.Value)
+					Session("viewID") = Session("SSILinkViewID")
 
-				Dim sErrorDescription As String = ""
-
-				If (Err.Number <> 0) Then
+				Catch ex As Exception
 					sErrorDescription = "Unable to get the link definition." & vbCrLf & FormatError(Err.Description)
-				Else
-					Session("screenID") = cmdLinkInfo.Parameters("screenID").Value
-					Session("tableID") = cmdLinkInfo.Parameters("tableID").Value
-					Session("title") = (cmdLinkInfo.Parameters("title").Value)
-					Session("startMode") = cmdLinkInfo.Parameters("startMode").Value
-					Session("tableType") = cmdLinkInfo.Parameters("tableType").Value
-				End If
 
-				cmdLinkInfo = Nothing
+				End Try
 
-				'session("tableID") = session("SSILinkTableID") 
-				Session("viewID") = Session("SSILinkViewID")
 			End If
 
-			' recordEditMain.asp now replaced with the following server side code instead. So don't go looking for the form.
 			If Session("linkType") = "multifind" Then
 				Return RedirectToAction("Find", New With {.sParameters = "LOAD_0_0_"})
 			Else
