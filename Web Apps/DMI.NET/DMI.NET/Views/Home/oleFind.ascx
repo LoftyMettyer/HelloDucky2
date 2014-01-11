@@ -1236,7 +1236,6 @@
 				objOLE.UseEncryption = bEncryption
 				objOLE.UseFileSecurity = False
 				objOLE.CreateOLEDocument(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
-				objOLE.CloseStream()
 				bEncryption = (objOLE.OLEType = 2)
 				Session("optionOLEType") = objOLE.OLEType
 				strFullFileName = objOLE.FileName

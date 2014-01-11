@@ -1,10 +1,8 @@
-﻿' This class temporarily replaces clsOLE whilst we decide on what to do with this functionality. Only the properties that are called externally have had code stumps
-' created. Original code is held in clsOLE which is not inclued in the project file as it errors and needs rework to handle encryption and different file access methods.
-' Possibly suggest rewriting the class rather than upgrading.
+﻿Option Explicit On
+Option Strict Off
 
 Imports System.IO
 Imports System.Text
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
 
@@ -28,8 +26,6 @@ Public Class Ole
 	Private _mstrFileModifyDate As String
 	Private _mstrDummyConnectionString As String
 	Private _mbUseEncryption As Boolean
-	Private _mobjStream As ADODB.Stream
-
 
 	Private _misPhoto As Boolean
 
@@ -134,35 +130,17 @@ Public Class Ole
 
 		Try
 
-			_mobjStream = New ADODB.Stream()
-
 			' New record - thus no stream will exist
 			If plngRecordID = 0 Then
 				Return Nothing
 			End If
 
-			strColumnName = General.GetColumnName(CInt(plngColumnID))
+			strColumnName = General.GetColumnName(plngColumnID)
 
 			sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
-
 			rsDocument = DB.GetDataTable(sSQL).Rows(0)
 
-			If _mobjStream.State <> ObjectStateEnum.adStateOpen Then
-				_mobjStream.Open()
-				_mobjStream.Type = StreamTypeEnum.adTypeBinary
-			End If
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			If Not IsDBNull(rsDocument(strColumnName)) Then
-				_mobjStream.Write(rsDocument(strColumnName))
-			Else
-				'CreateOLEDocument = ""
-				_miOLEType = 3
-				_mstrDisplayFileName = ""
-				Return Nothing
-			End If
-
-			If _mobjStream.Size > 0 Then
 				abtImage = CType(rsDocument(strColumnName), Byte())
 
 				_msOLEVersionType = Encoding.UTF8.GetString(rsDocument(strColumnName), 0, 8)
@@ -174,26 +152,22 @@ Public Class Ole
 				End If
 
 				fFileOK = (abtImage.GetLength(0) > 0)
-
 				strTempFile = GetTmpFName()
 
-				_mobjStream.SaveToFile(strTempFile, SaveOptionsEnum.adSaveCreateOverWrite)
+				Dim b As Byte() = rsDocument(strColumnName)
 
-				'objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
-				'strProperties = Trim(objTextStream.Read(400))				
+				Dim fs = New FileStream(strTempFile, FileMode.Create)
+				fs.Write(b, 0, b.Length)
+				fs.Close()
+
+				b = New Byte(399) {}
 				objTextStream = File.OpenRead(strTempFile)
-				Dim b As Byte() = New Byte(399) {}
-				' strProperties = Trim(objTextStream.Read(400))				
 				Dim temp As New UTF8Encoding(True)
 				objTextStream.Read(b, 0, b.Length)
 				strProperties &= temp.GetString(b)
 
 				responseFile = New Byte((objTextStream.Length - 1) - 400) {}
 				objTextStream.Read(responseFile, 0, responseFile.Length)
-
-				'Dim outputFile As Byte() = New Byte(responseFile.Length - 400) {}
-				'Array.Copy(responseFile, 400, outputFile, 0, responseFile.Length - 400)
-
 
 				_miOLEType = Val(Mid(strProperties, 9, 2))
 				_mstrDisplayFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
@@ -229,13 +203,8 @@ Public Class Ole
 
 	End Function
 
-	Public Function CloseStream() As Boolean
-		_mobjStream.Close()
-	End Function
+	Public Function GetPropertiesFromStream(plngRecordID As Integer, plngColumnID As Integer, pstrRealSource As String) As String
 
-	Public Function GetPropertiesFromStream(ByRef plngRecordID As Object, ByRef plngColumnID As Object, ByRef pstrRealSource As String) As String
-
-		Dim objStream As ADODB.Stream
 		Dim rsDocument As DataRow
 		Dim strTempFile As String
 		Dim sSQL As String
@@ -246,14 +215,10 @@ Public Class Ole
 			Return ""
 		End If
 
-		objStream = New ADODB.Stream
-		objStream.Open()
-		objStream.Type = StreamTypeEnum.adTypeBinary
-
 		strTempFile = GetTmpFName()
-		_misPhoto = General.IsPhotoDataType(CInt(plngColumnID))
+		_misPhoto = General.IsPhotoDataType(plngColumnID)
 
-		strColumnName = General.GetColumnName(CInt(plngColumnID))
+		strColumnName = General.GetColumnName(plngColumnID)
 		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 
 		rsDocument = DB.GetDataTable(sSQL).Rows(0)
@@ -261,7 +226,6 @@ Public Class Ole
 		Try
 
 			If Not IsDBNull(rsDocument(strColumnName)) Then
-				objStream.Write(rsDocument(strColumnName))
 
 				_msOLEVersionType = Encoding.UTF8.GetString(rsDocument(strColumnName), 0, 8)
 
@@ -303,12 +267,10 @@ Public Class Ole
 	End Function
 
 
-	Public Function ExtractPhotoToBase64(ByRef plngRecordID As Object, ByRef plngColumnID As Object, ByRef pstrRealSource As String) As String
+	Public Function ExtractPhotoToBase64(plngRecordID As Integer, plngColumnID As Integer, pstrRealSource As String) As String
 
-		Dim objStream As ADODB.Stream
 		Dim rsDocument As DataRow
 
-		Dim strTempFile As String
 		Dim sSQL As String
 		Dim strColumnName As String
 
@@ -317,24 +279,16 @@ Public Class Ole
 			Exit Function
 		End If
 
-		objStream = New ADODB.Stream
-		objStream.Open()
-		objStream.Type = StreamTypeEnum.adTypeBinary
+		Dim bIsPhoto = General.IsPhotoDataType(plngColumnID)
 
-		strTempFile = GetTmpFName()
-		Dim bIsPhoto = General.IsPhotoDataType(CInt(plngColumnID))
-
-		strColumnName = General.GetColumnName(CInt(plngColumnID))
+		strColumnName = General.GetColumnName(plngColumnID)
 		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
-
 
 		rsDocument = DB.GetDataTable(sSQL).Rows(0)
 
 		Try
 
 			If Not IsDBNull(rsDocument(strColumnName)) Then
-				objStream.Write(rsDocument(strColumnName))
-
 				_miOLEType = Val(Encoding.UTF8.GetString(rsDocument(strColumnName), 8, 2))
 				_mstrDisplayFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument(strColumnName), 10, 70)))
 				_mstrFileName = Trim(Path.GetFileName(Encoding.UTF8.GetString(rsDocument(strColumnName), 10, 70)))
@@ -345,8 +299,7 @@ Public Class Ole
 				_mstrFileModifyDate = Trim(Encoding.UTF8.GetString(rsDocument(strColumnName), 380, 20))
 
 			Else
-				ExtractPhotoToBase64 = ""
-				Exit Function
+				Return ""
 			End If
 
 			If _miOLEType = 2 Then
@@ -357,11 +310,11 @@ Public Class Ole
 
 					Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
 
-					ExtractPhotoToBase64 = System.Convert.ToBase64String(binaryData, 0, binaryData.Length)
+					ExtractPhotoToBase64 = Convert.ToBase64String(binaryData, 0, binaryData.Length)
 
 
-				Catch exp As System.ArgumentNullException
-					System.Console.WriteLine("Binary data array is null.")
+				Catch exp As ArgumentNullException
+					Console.WriteLine("Binary data array is null.")
 
 				End Try
 			Else
@@ -370,8 +323,8 @@ Public Class Ole
 
 
 		Catch ex As Exception
-			ExtractPhotoToBase64 = ""
 			ProgramError("ExtractPhotoToBase64", Err, Erl())
+			Return ""
 
 		Finally
 
@@ -436,9 +389,6 @@ Public Class Ole
 	End Property
 
 	Public Sub New()
-		'Set datData = New clsGeneral
-		_mobjStream = New ADODB.Stream
-		' mobjFileSystem = New Scripting.FileSystemObject
 
 		_miOLEType = 3
 		_mstrFileName = ""
