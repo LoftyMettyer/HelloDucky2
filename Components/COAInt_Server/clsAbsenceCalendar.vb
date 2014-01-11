@@ -2,7 +2,6 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
-Imports ADODB
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -18,7 +17,7 @@ Public Class AbsenceCalendar
 
 	Private mstrRealSource As String
 	Private mlngPersonnelRecordID As Long
-	Private mrstAbsenceRecords As ADODB.Recordset
+	Private mrstAbsenceRecords As DataTable
 	Private mbColourKeyLoaded As Boolean
 
 	Private mdStartDate As Date
@@ -195,12 +194,6 @@ Public Class AbsenceCalendar
 	Public WriteOnly Property Username() As String
 		Set(ByVal value As String)
 			gsUsername = value
-		End Set
-	End Property
-
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal value As ADODB.Connection)
-			gADOCon = value
 		End Set
 	End Property
 
@@ -541,10 +534,10 @@ Public Class AbsenceCalendar
 		sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
 		sSQL = sSQL & "ORDER BY 'StartDate' ASC"
 
-		mrstAbsenceRecords = DB.OpenRecordset(sSQL, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+		mrstAbsenceRecords = DB.GetDataTable(sSQL)
 
 		' Set amount of absence records found
-		Return mrstAbsenceRecords.RecordCount
+		Return mrstAbsenceRecords.Rows.Count
 
 GetAbsenceRecordSet_ERROR:
 
@@ -557,7 +550,6 @@ GetAbsenceRecordSet_ERROR:
 
 	Public Sub Initialise()
 
-		Dim objTableView As TablePrivilege
 		Dim fOK As Boolean
 
 		fOK = True
@@ -609,35 +601,34 @@ GetAbsenceRecordSet_ERROR:
 
 		' Have colour already been loaded?
 		If mbColourKeyLoaded Then
-			LoadColourKey = True
+			Return True
 		End If
 
 		On Error GoTo errLoadColourKey
 
-		Dim rstColourKey As ADODB.Recordset
+		Dim rstColourKey As DataTable
 		Dim strColourKeySQL As String
 		Dim intCounter As Integer
 		Dim strHexColour As String
 
 		strColourKeySQL = "SELECT DISTINCT " & gsAbsenceTypeTypeColumnName & " AS Type, " & gsAbsenceTypeCalCodeColumnName & " AS CalCode," & gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName
-		rstColourKey = General.GetRecords(strColourKeySQL)
+		rstColourKey = DB.GetDataTable(strColourKeySQL)
 
-		If rstColourKey.BOF And rstColourKey.EOF Then
-			'MsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
-			LoadColourKey = False
-			Exit Function
+		If rstColourKey.Rows.Count = 0 Then
+			Return False
 		End If
 
 		'ReDim Preserve mastrAbsenceTypes(rstColourKey.RecordCount + 1, 5)
 		ReDim Preserve mastrAbsenceTypes(20, 5)
 
 		intCounter = 0
-		Do Until rstColourKey.EOF
+
+		For Each objRow As DataRow In rstColourKey.Rows
 
 			If intCounter <= 18 Then
 
 				' Set the colour box caption and show the label
-				mastrAbsenceTypes(intCounter, 0) = rstColourKey.Fields(0).Value
+				mastrAbsenceTypes(intCounter, 0) = objRow(0).ToString()
 
 				Select Case intCounter Mod 5
 					Case 0
@@ -655,18 +646,16 @@ GetAbsenceRecordSet_ERROR:
 				mastrAbsenceTypes(intCounter, 1) = strHexColour
 				mastrAbsenceTypes(intCounter, 2) = CStr(intCounter)
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 3) = UCase(Left(IIf(IsDBNull(rstColourKey.Fields("CalCode").Value), "", rstColourKey.Fields("CalCode").Value), 2))
+				mastrAbsenceTypes(intCounter, 3) = UCase(Left(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), 2))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 4) = Replace(IIf(IsDBNull(rstColourKey.Fields("CalCode").Value), "", rstColourKey.Fields("CalCode").Value), "'", "")
+				mastrAbsenceTypes(intCounter, 4) = Replace(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), "'", "")
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 5) = Replace(IIf(IsDBNull(rstColourKey.Fields("TypeCode").Value), "", rstColourKey.Fields("TypeCode").Value), "'", "")
+				mastrAbsenceTypes(intCounter, 5) = Replace(IIf(IsDBNull(objRow("TypeCode")), "", objRow("TypeCode")), "'", "")
 
 			End If
 
 			intCounter = intCounter + 1
-			rstColourKey.MoveNext()
-
-		Loop
+		Next
 
 		' Now add the 'Other' box (if needed)
 		If intCounter > 17 Then
@@ -840,46 +829,45 @@ errLoadColourKey:
 
 		' If there are no absence records for the current employee then skip
 		' this bit (but still show the form)
-		If mrstAbsenceRecords.BOF And mrstAbsenceRecords.EOF Then
+		If mrstAbsenceRecords.Rows.Count = 0 Then
 			Exit Sub
 		End If
 
 		mstrAbsWPattern = ""
 
 		With mrstAbsenceRecords
-			.MoveFirst()
 
-			' Loop through the absence recordset
-			Do Until .EOF
+			For Each objRow As DataRow In .Rows
+
 				' Load each absence record data into variables
 				' (has to be done because start/end dates may be modified by code to fill grid correctly)
 
 				' JDM - Kak-Handed way of sorting out American settings on different versions of IIS
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(.Fields("StartDate").Value) Then
+				If IsDBNull(objRow("StartDate")) Then
 					mdAbsStartDate = DateSerial(Year(Now), Month(Now), Now.Day)
 				Else
-					mdAbsStartDate = DateSerial(Year(.Fields("StartDate").Value), Month(.Fields("StartDate").Value), CDate(.Fields("StartDate").Value).Day)
+					mdAbsStartDate = DateSerial(Year(objRow("StartDate")), Month(objRow("StartDate")), CDate(objRow("StartDate")).Day)
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(.Fields("EndDate").Value) Then
+				If IsDBNull(objRow("EndDate")) Then
 					mdAbsEndDate = DateSerial(Year(Now), Month(Now), Now.Day)
 				Else
-					mdAbsEndDate = DateSerial(Year(.Fields("EndDate").Value), Month(.Fields("EndDate").Value), CDate(.Fields("EndDate").Value).Day)
+					mdAbsEndDate = DateSerial(Year(objRow("EndDate")), Month(objRow("EndDate")), CDate(objRow("EndDate")).Day)
 				End If
 
-				mstrAbsStartSession = CStr(.Fields("StartSession").Value).ToUpper()
-				mstrAbsEndSession = CStr(.Fields("EndSession").Value).ToUpper()
+				mstrAbsStartSession = CStr(objRow("StartSession")).ToUpper()
+				mstrAbsEndSession = CStr(objRow("EndSession")).ToUpper()
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsType = IIf(IsDBNull(.Fields("Type").Value), "", .Fields("Type").Value)
+				mstrAbsType = IIf(IsDBNull(objRow("Type")), "", objRow("Type"))
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsCalendarCode = IIf(IsDBNull(.Fields("CalendarCode").Value), "", .Fields("CalendarCode").Value)
-				mlngAbsDuration = .Fields("Duration").Value
+				mstrAbsCalendarCode = IIf(IsDBNull(objRow("CalendarCode")), "", objRow("CalendarCode"))
+				mlngAbsDuration = objRow("Duration")
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsReason = IIf(IsDBNull(.Fields("Reason").Value), "", .Fields("Reason").Value)
+				mstrAbsReason = IIf(IsDBNull(objRow("Reason")), "", objRow("Reason"))
 
 				If mdAbsStartDate <= mdCalendarEndDate And mdAbsEndDate >= mdCalendarStartDate Then
 					intStart = GetCalIndex(mdAbsStartDate, mstrAbsStartSession = "PM")
@@ -888,8 +876,7 @@ errLoadColourKey:
 					FillCalBoxes(intStart, intEnd)
 				End If
 
-				.MoveNext()
-			Loop
+			Next
 		End With
 
 	End Sub
@@ -900,7 +887,7 @@ errLoadColourKey:
 
 		Dim lngCount As Integer
 		Dim sSQL As String
-		Dim prstPersonnelData As ADODB.Recordset
+		Dim prstPersonnelData As DataTable
 
 		' Botch as we have a lot of rubbish code that does not handle nulls at all.
 		mdStartDate = DateTime.FromOADate(0)
@@ -924,17 +911,14 @@ errLoadColourKey:
 			sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
 			' Get the start and leaving date
-			prstPersonnelData = General.GetRecords(sSQL)
+			prstPersonnelData = DB.GetDataTable(sSQL)
 
-			If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
+			If prstPersonnelData.Rows.Count > 0 Then
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdStartDate = IIf(IsDBNull(prstPersonnelData.Fields("StartDate").Value), mdStartDate, VB6.Format(prstPersonnelData.Fields("StartDate").Value, DateFormat))
+				mdStartDate = IIf(IsDBNull(prstPersonnelData.Rows(0)("StartDate")), mdStartDate, VB6.Format(prstPersonnelData.Rows(0)("StartDate"), DateFormat))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdLeavingDate = IIf(IsDBNull(prstPersonnelData.Fields("LeavingDate").Value), mdLeavingDate, VB6.Format(prstPersonnelData.Fields("LeavingDate").Value, DateFormat))
+				mdLeavingDate = IIf(IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")), mdLeavingDate, VB6.Format(prstPersonnelData.Rows(0)("LeavingDate"), DateFormat))
 			End If
-			prstPersonnelData.Close()
-			'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstPersonnelData = Nothing
 		Else
 			GoTo PersonnelERROR
 		End If
@@ -956,21 +940,18 @@ errLoadColourKey:
 					End If
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-				prstPersonnelData = General.GetRecords(sSQL)
+				prstPersonnelData = DB.GetDataTable(sSQL)
 			Else
 				' Its a historic region, so get topmost from the history
-				prstPersonnelData = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
 			End If
 
-			If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
+			If prstPersonnelData.Rows.Count > 0 Then
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrRegion = Replace(IIf(IsDBNull(prstPersonnelData.Fields("Region").Value), "", IIf(prstPersonnelData.Fields("Region").Value = "", "", prstPersonnelData.Fields("Region").Value)), "&", "&&")
+				mstrRegion = Replace(IIf(IsDBNull(prstPersonnelData.Rows(0)("Region")), "", IIf(prstPersonnelData.Rows(0)("Region") = "", "", prstPersonnelData.Rows(0)("Region"))), "&", "&&")
 			Else
 				mstrRegion = "&lt;None&gt;"
 			End If
-			prstPersonnelData.Close()
-			'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstPersonnelData = Nothing
 		Else
 			'Regions DISABLED
 			mstrRegion = vbNullString
@@ -994,23 +975,19 @@ errLoadColourKey:
 					End If
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-				prstPersonnelData = General.GetRecords(sSQL)
+				prstPersonnelData = DB.GetDataTable(sSQL)
 
 			Else
 				' Its a historic working pattern, so get topmost from the history
-				prstPersonnelData = General.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
 																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
 			End If
 
-			If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
-				mstrWorkingPattern = prstPersonnelData.Fields("WP").Value
+			If prstPersonnelData.Rows.Count > 0 Then
+				mstrWorkingPattern = prstPersonnelData.Rows(0)("WP")
 			Else
 				mstrWorkingPattern = Space(14)
 			End If
-
-			prstPersonnelData.Close()
-			'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			prstPersonnelData = Nothing
 
 		Else
 			'WPs DISABLED
@@ -1020,16 +997,11 @@ errLoadColourKey:
 
 		'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		prstPersonnelData = Nothing
-		GetPersonnelRecordSet = True
-		Exit Function
+		Return True
 
 PersonnelERROR:
 
-		'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstPersonnelData = Nothing
-		GetPersonnelRecordSet = False
-		'MsgBox "Error whilst retrieving the personnel information." & vbNewLine & Err.Description, vbExclamation + vbOKOnly, App.Title
-		Exit Function
+		Return False
 
 	End Function
 
@@ -1538,7 +1510,7 @@ Error_FillCalBoxes:
 	Private Sub GetWorkingPatterns()
 
 		Dim iCount As Integer
-		Dim rstHistoricWPatterns As ADODB.Recordset
+		Dim rstHistoricWPatterns As DataTable
 		Dim sSQL As String
 		Dim lngCount As Integer
 
@@ -1554,16 +1526,16 @@ Error_FillCalBoxes:
 			If gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
 
 				' Get the wpattern for the start of the absence period
-				rstHistoricWPatterns = General.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				rstHistoricWPatterns = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
 
-				If Not (rstHistoricWPatterns.BOF And rstHistoricWPatterns.EOF) Then
+				If rstHistoricWPatterns.Rows.Count > 0 Then
 
 					' Start working pattern for this employee
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(0, 0) = rstHistoricWPatterns.Fields("Date").Value
+					mavWorkingPatternChanges(0, 0) = rstHistoricWPatterns.Rows(0)("Date")
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mstrAbsWPattern = IIf(IsDBNull(rstHistoricWPatterns.Fields("WP").Value), Space(14), rstHistoricWPatterns.Fields("WP").Value)
+					mstrAbsWPattern = IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP"))
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mavWorkingPatternChanges(1, 0) = mstrAbsWPattern
 
@@ -1571,40 +1543,30 @@ Error_FillCalBoxes:
 
 				' Now get the rest of the working patterns
 				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " ASC")
-				rstHistoricWPatterns = DB.OpenRecordset(sSQLWorkingPatterns, CursorTypeEnum.adOpenStatic, LockTypeEnum.adLockReadOnly)
+				rstHistoricWPatterns = DB.GetDataTable(sSQLWorkingPatterns)
 
-				If Not (rstHistoricWPatterns.EOF And rstHistoricWPatterns.BOF) Then
+				If rstHistoricWPatterns.Rows.Count > 0 Then
 
 					' Size the array for the amount of working patterns this employee has.
-					ReDim Preserve mavWorkingPatternChanges(1, rstHistoricWPatterns.RecordCount)
-
-					rstHistoricWPatterns.MoveFirst()
+					ReDim Preserve mavWorkingPatternChanges(1, rstHistoricWPatterns.Rows.Count)
 
 					' Load all the working patterns into array
-					For iCount = 1 To rstHistoricWPatterns.RecordCount
+					iCount = 0
+					For Each objRow As DataRow In rstHistoricWPatterns.Rows
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						mstrAbsWPattern = IIf(IsDBNull(rstHistoricWPatterns.Fields("WP").Value), Space(14), rstHistoricWPatterns.Fields("WP").Value)
+						mstrAbsWPattern = IIf(IsDBNull(objRow("WP").ToString()), Space(14), objRow("WP").ToString())
 						mstrAbsWPattern = mstrAbsWPattern & Space(14 - Len(mstrAbsWPattern))
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(0, iCount) = IIf(IsDBNull(rstHistoricWPatterns.Fields("Date").Value), CDate("01/01/1899"), rstHistoricWPatterns.Fields("Date").Value)
+						mavWorkingPatternChanges(0, iCount) = IIf(IsDBNull(objRow("Date")), CDate("01/01/1899"), objRow("Date"))
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavWorkingPatternChanges(1, iCount) = mstrAbsWPattern
 
-						' Go to next record
-						rstHistoricWPatterns.MoveNext()
+						iCount += 1
 
-					Next iCount
-
-					'Else
-
-					' Size the array for the amount of working patterns this employee has.
-					'ReDim Preserve mavWorkingPatternChanges(1, 1)
-
-					'mavWorkingPatternChanges(0, 1) = CDate("31/12/9999")
-					'mavWorkingPatternChanges(1, 1) = Space(14)
+					Next
 
 				End If
 
@@ -1629,15 +1591,15 @@ Error_FillCalBoxes:
 				Next lngCount
 				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
-				rstHistoricWPatterns = General.GetRecords(sSQL)
+				rstHistoricWPatterns = DB.GetDataTable(sSQL)
 
 				' Stuff the working pattern into array
-				If Not (rstHistoricWPatterns.EOF And rstHistoricWPatterns.BOF) Then
+				If rstHistoricWPatterns.Rows.Count > 0 Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mavWorkingPatternChanges(0, 0) = CDate("01/01/1899")
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(1, 0) = Left(IIf(IsDBNull(rstHistoricWPatterns.Fields("WP").Value), Space(14), rstHistoricWPatterns.Fields("WP").Value) & Space(14), 14)
+					mavWorkingPatternChanges(1, 0) = Left(IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP")) & Space(14), 14)
 				End If
 
 			End If
@@ -1657,7 +1619,7 @@ Error_FillCalBoxes:
 		Dim strRegionAtCurrentDate As String
 		Dim dtmNextChangeDate As Date
 		Dim intCount As Integer
-		Dim rstBankHolRegion As ADODB.Recordset
+		Dim rstBankHolRegion As DataTable
 		Dim dtmCurrentDate As Date
 		Dim sSQL As String
 		Dim lngCount As Integer
@@ -1669,24 +1631,24 @@ Error_FillCalBoxes:
 			If grtRegionType = RegionType.rtHistoricRegion Then
 
 				' Get the first region for this employee within this calendar year
-				rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
 
 				' Was there a region at the start of the calendar
-				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+				If rstBankHolRegion.Rows.Count = 0 Then
 					strRegionAtCurrentDate = ""
 				Else
-					strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
+					strRegionAtCurrentDate = rstBankHolRegion.Rows(0)("Region").ToString()
 					bNewRegionFound = True
 				End If
 
 				' Get the second region for this employee within this calendar year
-				rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
 				' Was there a region at the start of the calendar
-				If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+				If rstBankHolRegion.Rows.Count = 0 Then
 					dtmNextChangeDate = CDate("31/12/9999")
 				Else
-					dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
+					dtmNextChangeDate = CDate(rstBankHolRegion.Rows(0)("Date"))
 				End If
 
 
@@ -1701,24 +1663,24 @@ Error_FillCalBoxes:
 
 						'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
 						' Find the employees region for this date
-						rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+						rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
 
-						If rstBankHolRegion.BOF And rstBankHolRegion.EOF Then
+						If rstBankHolRegion.Rows.Count = 0 Then
 
 							' No regions found for this user
 							dtmNextChangeDate = CDate("31/12/9999")
 
 						Else
 
-							strRegionAtCurrentDate = rstBankHolRegion.Fields("Region").Value
+							strRegionAtCurrentDate = rstBankHolRegion.Rows(0)("Region").ToString()
 							bNewRegionFound = True
 
 							' Now get the next change date
-							rstBankHolRegion = General.GetRecords("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Fields("Date").Value, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
-							If rstBankHolRegion.EOF Then
+							rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Rows(0)("Date"), "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+							If rstBankHolRegion.Rows.Count = 0 Then
 								dtmNextChangeDate = CDate("31/12/9999")
 							Else
-								dtmNextChangeDate = rstBankHolRegion.Fields("Date").Value
+								dtmNextChangeDate = CDate(rstBankHolRegion.Rows(0)("Date"))
 							End If
 
 						End If
@@ -1760,23 +1722,20 @@ Error_FillCalBoxes:
 							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
 							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
 							sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
-							rstBankHolRegion = General.GetRecords(sSQL)
+							rstBankHolRegion = DB.GetDataTable(sSQL)
 
 							' Cycle through the recordset checking for the current day
-							If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
 
-								rstBankHolRegion.MoveFirst()
-								Do Until rstBankHolRegion.EOF
-									intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
+							For Each objRow As DataRow In rstBankHolRegion.Rows
 
-									'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									mavAbsences(intTemp, 3) = True
-									'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									mavAbsences(intTemp + 1, 3) = True
+								intTemp = GetCalIndex(CDate(objRow("Date")), False)
 
-									rstBankHolRegion.MoveNext()
-								Loop
-							End If
+								'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mavAbsences(intTemp, 3) = True
+								'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mavAbsences(intTemp + 1, 3) = True
+
+							Next
 
 						End If
 
@@ -1813,23 +1772,19 @@ Error_FillCalBoxes:
 					sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
 					sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC" & vbNewLine
 
-					rstBankHolRegion = General.GetRecords(sSQL)
+					rstBankHolRegion = DB.GetDataTable(sSQL)
 
 					' Cycle through the recordset checking for the current day
-					If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
-						rstBankHolRegion.MoveFirst()
-						Do Until rstBankHolRegion.EOF
+					For Each objRow As DataRow In rstBankHolRegion.Rows
 
-							intTemp = GetCalIndex(CDate(rstBankHolRegion.Fields("Date").Value), False)
+						intTemp = GetCalIndex(CDate(objRow("Date")), False)
 
-							'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mavAbsences(intTemp, 3) = True
-							'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mavAbsences(intTemp + 1, 3) = True
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavAbsences(intTemp, 3) = True
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavAbsences(intTemp + 1, 3) = True
 
-							rstBankHolRegion.MoveNext()
-						Loop
-					End If
+					Next
 
 					' Define the region for this period
 					For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
@@ -2414,7 +2369,7 @@ FailReport:
 			' this column cannot be read direct. If its from a parent, try parent views
 			' Loop thru the views on the table, seeing if any have read permis for the column
 
-			Dim mstrViews(0) As Object
+			Dim mstrViews(0) As String
 			For Each mobjTableView In gcoTablePrivileges.Collection
 				If (Not mobjTableView.IsTable) And (mobjTableView.TableID = lngTempTableID) And (mobjTableView.AllowSelect) Then
 
@@ -2501,7 +2456,7 @@ FailReport:
 
 		End If
 
-		CheckPermission_Columns = True
+		Return True
 
 	End Function
 
