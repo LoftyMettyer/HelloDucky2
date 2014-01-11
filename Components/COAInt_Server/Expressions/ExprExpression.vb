@@ -1580,7 +1580,7 @@ ErrorTrap:
 			End If
 		Else
 
-			dsExpression = dataAccess.GetDataSet("spASRIntGetExpressionAndComponents" _
+			dsExpression = DB.GetDataSet("spASRIntGetExpressionAndComponents" _
 					, New SqlParameter("ExpressionID", mlngExpressionID), New SqlParameter("ExpressionType", miExpressionType))
 
 			Dim rowExpression = dsExpression.Tables(0).Rows(0)
@@ -1689,7 +1689,7 @@ ErrorTrap:
 
 	End Sub
 
-	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As ExpressionValueTypes) As Boolean
+	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As ExpressionTypes, ByRef piReturnType As ExpressionValueTypes) As Boolean
 		' Initialise the expression object.
 		' Return TRUE if everything was initialised okay.
 		On Error GoTo ErrorTrap

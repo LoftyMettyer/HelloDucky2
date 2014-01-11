@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
 
@@ -209,12 +210,8 @@
 	end if
 
 	' Create absence calendar object
-		Dim objAbsenceCalendar As HR.Intranet.Server.AbsenceCalendar
-		objAbsenceCalendar = New HR.Intranet.Server.AbsenceCalendar()
-
-	' Pass required info to the DLL
-		objAbsenceCalendar.Username = Session("username").ToString()
-	objAbsenceCalendar.Connection = session("databaseConnection")
+	Dim objAbsenceCalendar As New AbsenceCalendar
+	objAbsenceCalendar.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 	' Pass in the recordID for the current record
 	objAbsenceCalendar.RealSource = Session("optionRealsource")

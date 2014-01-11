@@ -1,4 +1,4 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
@@ -17,81 +17,19 @@ Public Class clsSettings
 	Public Function GetUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
 		'UPGRADE_WARNING: Couldn't resolve default property of object modSettings.GetUserSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetUserSetting = datGeneral.GetUserSetting(strSection, strKey, varDefault)
+		GetUserSetting = General.GetUserSetting(strSection, strKey, varDefault)
 	End Function
 
 	Public Function GetWordColourIndex(ByRef lngColourValue As Long) As Integer
 
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-
-		On Error GoTo LocalErr
-
-		strSQL = "SELECT WordColourIndex FROM ASRSysColours " & " WHERE ColValue = " & CStr(lngColourValue)
-		rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
-
-		With rsTemp
-			If Not .BOF And Not .EOF Then
-				GetWordColourIndex = rsTemp.Fields("WordColourIndex").Value
+		Dim sSQL As String = String.Format("SELECT WordColourIndex FROM ASRSysColours WHERE ColValue = {0}", lngColourValue)
+		With DB.GetDataTable(sSQL)
+			If .Rows.Count > 0 Then
+				Return CInt(.Rows(0)(0))
 			Else
-				GetWordColourIndex = 0
+				Return 0
 			End If
 		End With
-
-		rsTemp.Close()
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-
-		Exit Function
-
-LocalErr:
-		GetWordColourIndex = 0
-
-	End Function
-
-	Public Function GetEmailGroupAddresses(ByRef lngGroupID As Integer) As String
-
-		Dim datData As clsDataAccess
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		Dim strOutput As String
-
-		On Error GoTo LocalErr
-
-		strOutput = vbNullString
-
-		datData = New clsDataAccess
-
-		strSQL = "SELECT ASRSysEmailAddress.Fixed From ASRSysEmailGroupName " & "JOIN ASRSysEmailGroupItems ON ASRSysEmailGroupName.EmailGroupID = ASRSysEmailGroupItems.EmailGroupID " & "JOIN ASRSysEmailAddress ON ASRSysEmailGroupItems.EmailDefID = ASRSysEmailAddress.EmailID " & "WHERE ASRSysEmailGroupName.EmailGroupID = " & CStr(lngGroupID)
-		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-		With rsTemp
-			If Not .BOF And Not .EOF Then
-
-				Do While Not rsTemp.EOF
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If Not IsDBNull(rsTemp.Fields(0).Value) Then
-						strOutput = strOutput & IIf(strOutput <> vbNullString, ";", "") & rsTemp.Fields(0).Value
-					End If
-					rsTemp.MoveNext()
-				Loop
-
-			End If
-		End With
-
-		rsTemp.Close()
-
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		datData = Nothing
-
-
-		GetEmailGroupAddresses = strOutput
-
-		Exit Function
-
-LocalErr:
 
 	End Function
 
@@ -115,30 +53,7 @@ LocalErr:
 
 	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
 		' Return the value of the given parameter.
-		GetModuleParameter = datGeneral.GetModuleParameter(psModuleKey, psParameterKey)
-	End Function
-
-	Public WriteOnly Property Connection() As ADODB.Connection
-		Set(ByVal Value As ADODB.Connection)
-			gADOCon = Value
-		End Set
-	End Property
-
-	Public Function GetFieldNameFromModuleSetup(ByRef psModuleKey As Object, ByRef psParameterKey As Object) As Object
-
-		Dim sColumnID As String
-		'UPGRADE_WARNING: Couldn't resolve default property of object psParameterKey. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object psModuleKey. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		sColumnID = GetModuleParameter(CStr(psModuleKey), CStr(psParameterKey))
-
-		If IsNumeric(sColumnID) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetFieldNameFromModuleSetup. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetFieldNameFromModuleSetup = datGeneral.GetColumnName(CInt(sColumnID))
-		Else
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetFieldNameFromModuleSetup. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetFieldNameFromModuleSetup = ""
-		End If
-
+		GetModuleParameter = General.GetModuleParameter(psModuleKey, psParameterKey)
 	End Function
 
 	' Return date of report in SQL (American date format)
@@ -151,13 +66,13 @@ LocalErr:
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object psReportType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		blnCustom = (GetSystemSetting(CStr(psReportType), "Custom Dates", "0") = "1")
+		blnCustom = (GetSystemSetting(psReportType, "Custom Dates", "0").ToString() = "1")
 
 		If blnCustom Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object psReportDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object psReportType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			lngDateExprID = GetSystemSetting(CStr(psReportType), CStr(psReportDateType), 0)
+			lngDateExprID = CInt(GetSystemSetting(CStr(psReportType), CStr(psReportDateType), 0))
 			strRecSelStatus = IsCalcValid(lngDateExprID)
 
 			If strRecSelStatus <> vbNullString Then
@@ -170,9 +85,9 @@ LocalErr:
 				End If
 			Else
 				'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetStandardReportDate = VB6.Format(datGeneral.GetValueForRecordIndependantCalc(lngDateExprID), "MM/dd/yyyy")
+				GetStandardReportDate = VB6.Format(General.GetValueForRecordIndependantCalc(lngDateExprID), "MM/dd/yyyy")
 
-				dEndDate = datGeneral.GetValueForRecordIndependantCalc(lngDateExprID)
+				dEndDate = CDate(General.GetValueForRecordIndependantCalc(lngDateExprID))
 				GetStandardReportDate = dEndDate.ToString("MM/dd/yyyy")
 
 
@@ -190,14 +105,14 @@ LocalErr:
 
 	End Function
 
-	Public Function GetPicklistFilterName(ByRef psReportType As Object, ByRef pstrType As Object) As Object
+	Public Function GetPicklistFilterName(ByRef psReportType As String, ByRef pstrType As String) As String
 
 		Dim strRecSelStatus As String
 		Dim plngID As Integer
 		Dim strName As String
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		plngID = GetSystemSetting(psReportType, "ID", 0)
+		plngID = CInt(GetSystemSetting(psReportType, "ID", 0))
 
 		Select Case pstrType
 			Case "A"
@@ -207,18 +122,18 @@ LocalErr:
 				If strRecSelStatus <> vbNullString Then
 					strName = "<None>"
 				Else
-					strName = datGeneral.GetFilterName(plngID)
+					strName = General.GetFilterName(plngID)
 				End If
 			Case "P"
 				strRecSelStatus = IsPicklistValid(plngID)
 				If strRecSelStatus <> vbNullString Then
 					strName = "<None>"
 				Else
-					strName = datGeneral.GetPicklistName(plngID)
+					strName = General.GetPicklistName(plngID)
 				End If
 		End Select
 
-		GetPicklistFilterName = Replace(strName, """", "")
+		Return Replace(strName, """", "")
 
 
 	End Function
@@ -232,7 +147,7 @@ LocalErr:
 
 		If IsNumeric(sTableID) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object GetTableNameFromModuleSetup. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetTableNameFromModuleSetup = datGeneral.GetTableName(CInt(sTableID))
+			GetTableNameFromModuleSetup = General.GetTableName(CInt(sTableID))
 		Else
 			'UPGRADE_WARNING: Couldn't resolve default property of object GetTableNameFromModuleSetup. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			GetTableNameFromModuleSetup = ""
@@ -240,42 +155,16 @@ LocalErr:
 
 	End Function
 
-	Public Function GetEmailGroupName(ByRef lngGroupID As Integer) As String
+	Public Function GetEmailGroupName(lngGroupID As Integer) As String
 
-		Dim datData As clsDataAccess
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		Dim strOutput As String
-
-		strOutput = vbNullString
-
-		datData = New clsDataAccess
-
-		strSQL = "SELECT Name From ASRSysEmailGroupName " & "WHERE EmailGroupID = " & CStr(lngGroupID)
-		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-
-		With rsTemp
-			If Not .BOF And Not .EOF Then
-
-				Do While Not rsTemp.EOF
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If Not IsDBNull(rsTemp.Fields(0).Value) Then
-						strOutput = rsTemp.Fields(0).Value
-					End If
-					rsTemp.MoveNext()
-				Loop
-
+		Dim sSQL As String = String.Format("SELECT Name From ASRSysEmailGroupName WHERE EmailGroupID = {0}", lngGroupID)
+		With DB.GetDataTable(sSQL)
+			If .Rows.Count > 0 Then
+				Return Trim(.Rows(0)(0).ToString())
+			Else
+				Return vbNullString
 			End If
 		End With
-
-		rsTemp.Close()
-
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		datData = Nothing
-
-		GetEmailGroupName = strOutput
 
 	End Function
 
@@ -339,4 +228,5 @@ SQLNCLI_Err:
 		End If
 
 	End Function
+
 End Class

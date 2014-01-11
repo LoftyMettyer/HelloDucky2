@@ -609,7 +609,7 @@ ExecuteSQL_ERROR:
 			Dim rowData = rsDefinition.Rows(0)
 
 			' RH 29/05/01 - Dont run if its been made hidden by another user.
-			If LCase(rowData("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+			If LCase(rowData("Username").ToString()) <> LCase(gsUsername) And General.CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
 				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function
@@ -1485,107 +1485,200 @@ Error_Trap:
 		Dim sVALUES As String
 		Dim SQLSTRING As String
 
-		On Error GoTo Error_Trap
+		Try
 
-		'******************* Create multiple child temp table ***************************
-		sMCTempTable = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
+			'******************* Create multiple child temp table ***************************
+			sMCTempTable = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
 
-		sSQL = "SELECT * INTO [" & sMCTempTable & "] FROM [" & mstrTempTableName & "]"
-		DB.ExecuteSql(sSQL)
+			sSQL = "SELECT * INTO [" & sMCTempTable & "] FROM [" & mstrTempTableName & "]"
+			DB.ExecuteSql(sSQL)
 
-		sSQL = "DELETE FROM [" & sMCTempTable & "]"
-		DB.ExecuteSql(sSQL)
+			sSQL = "DELETE FROM [" & sMCTempTable & "]"
+			DB.ExecuteSql(sSQL)
 
 
-		'************** Get the Parent SELECT SQL statment ******************************
-		For Each objItem In ColumnDetails
+			'************** Get the Parent SELECT SQL statment ******************************
+			For Each objItem In ColumnDetails
 
-			lngTableID = objItem.TableID
-			If IsReportParentTable(lngTableID) Or IsReportBaseTable(lngTableID) Then
-				sParentSelectSQL = sParentSelectSQL & "[" & objItem.IDColumnName & "], "
-			End If
-		Next
+				lngTableID = objItem.TableID
+				If IsReportParentTable(lngTableID) Or IsReportBaseTable(lngTableID) Then
+					sParentSelectSQL = sParentSelectSQL & "[" & objItem.IDColumnName & "], "
+				End If
+			Next
 
-		sParentSelectSQL = Left(sParentSelectSQL, Len(sParentSelectSQL) - 2) & " "
+			sParentSelectSQL = Left(sParentSelectSQL, Len(sParentSelectSQL) - 2) & " "
 
-		sSQL = "SELECT DISTINCT " & sParentSelectSQL & " FROM [" & mstrTempTableName & "] "
+			sSQL = "SELECT DISTINCT " & sParentSelectSQL & " FROM [" & mstrTempTableName & "] "
 
-		'Order the Parent recorset
-		sSQL = sSQL & OrderBy(mlngCustomReportsBaseTable)
+			'Order the Parent recorset
+			sSQL = sSQL & OrderBy(mlngCustomReportsBaseTable)
 
-		rsParent = DB.GetDataTable(sSQL)
+			rsParent = DB.GetDataTable(sSQL)
 
-		lngColumnID = 0
-		lngTableID = 0
-		iChildUsed = 0
+			lngColumnID = 0
+			lngTableID = 0
+			iChildUsed = 0
 
-		'*************** Circle through the distinct list of parent records *************
-		With rsParent
+			'*************** Circle through the distinct list of parent records *************
+			With rsParent
 
-			'TM20020802 Fault 4273
-			If (.Rows.Count = 0) Then
-				mstrErrorString = "No records meet selection criteria"
-				CreateMutipleChildTempTable = False
-				Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
-				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-				mblnNoRecords = True
+				'TM20020802 Fault 4273
+				If (.Rows.Count = 0) Then
+					mstrErrorString = "No records meet selection criteria"
+					CreateMutipleChildTempTable = False
+					Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
+					Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+					mblnNoRecords = True
 
-				sMCTempTable = vbNullString
-				'      Set rsTemp = Nothing
-				'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsParent = Nothing
-				Exit Function
-			End If
+					sMCTempTable = vbNullString
+					'      Set rsTemp = Nothing
+					'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					rsParent = Nothing
+					Exit Function
+				End If
 
-			iParentCount = 0
-			lngSequenceCount = 1
+				iParentCount = 0
+				lngSequenceCount = 1
 
-			mbUseSequence = True
+				mbUseSequence = True
 
-			For Each objRow As DataRow In .Rows
+				For Each objRow As DataRow In .Rows
 
-				iParentCount = iParentCount + 1
+					iParentCount = iParentCount + 1
 
-				ReDim avChildRecordsets(0, miUsedChildCount - 1)
-				For iChildCount = 0 To UBound(mvarChildTables, 2) Step 1
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					lngCurrentTableID = mvarChildTables(0, iChildCount)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarChildTables(4, iChildCount) Then	'is the child table used???
+					ReDim avChildRecordsets(0, miUsedChildCount - 1)
+					For iChildCount = 0 To UBound(mvarChildTables, 2) Step 1
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						lngCurrentTableID = mvarChildTables(0, iChildCount)
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarChildTables(4, iChildCount) Then	'is the child table used???
 
-						For Each objItem In ColumnDetails
-							lngTableID = objItem.TableID
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If objItem.IsReportChildTable And (lngTableID = mvarChildTables(0, iChildCount)) And (objItem.ColumnName <> ("?ID_" & CStr(mlngCustomReportsBaseTable))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sChildSelectSQL = sChildSelectSQL & "[" & objItem.IDColumnName & "]" & ", "
-							End If
-						Next
-						sChildSelectSQL = Left(sChildSelectSQL, Len(sChildSelectSQL) - 2) & " "
+							For Each objItem In ColumnDetails
+								lngTableID = objItem.TableID
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								If objItem.IsReportChildTable And (lngTableID = mvarChildTables(0, iChildCount)) And (objItem.ColumnName <> ("?ID_" & CStr(mlngCustomReportsBaseTable))) Then
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sChildSelectSQL = sChildSelectSQL & "[" & objItem.IDColumnName & "]" & ", "
+								End If
+							Next
+							sChildSelectSQL = Left(sChildSelectSQL, Len(sChildSelectSQL) - 2) & " "
 
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sChildWhereSQL = sChildWhereSQL & "[?ID_" & mvarChildTables(0, iChildCount) & "] = "
-						sChildWhereSQL = sChildWhereSQL & objRow("?ID")
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sChildWhereSQL = sChildWhereSQL & "[?ID_" & mvarChildTables(0, iChildCount) & "] = "
+							sChildWhereSQL = sChildWhereSQL & objRow("?ID")
 
-						sSQL = "SELECT DISTINCT " & sChildSelectSQL & " FROM [" & mstrTempTableName & "] WHERE " & sChildWhereSQL
+							sSQL = "SELECT DISTINCT " & sChildSelectSQL & " FROM [" & mstrTempTableName & "] WHERE " & sChildWhereSQL
 
-						'Order the child recordset.
-						sSQL = sSQL & OrderBy(lngCurrentTableID)
+							'Order the child recordset.
+							sSQL = sSQL & OrderBy(lngCurrentTableID)
 
-						sChildSelectSQL = vbNullString
-						sChildWhereSQL = vbNullString
+							sChildSelectSQL = vbNullString
+							sChildWhereSQL = vbNullString
 
-						'Add the child tables recordset to the array of child tables.
-						avChildRecordsets(0, iChildUsed) = DB.GetDataTable(sSQL)
-						iChildUsed += 1
-					End If
-				Next iChildCount
+							'Add the child tables recordset to the array of child tables.
+							avChildRecordsets(0, iChildUsed) = DB.GetDataTable(sSQL)
+							iChildUsed += 1
+						End If
+					Next iChildCount
 
-				'      With rsTemp
-				iMostChilds = GetMostChildsForParent(avChildRecordsets, 0)
-				If iMostChilds > 0 Then
-					For i = 0 To iMostChilds - 1 Step 1
-						'            .AddNew
+					'      With rsTemp
+					iMostChilds = GetMostChildsForParent(avChildRecordsets, 0)
+					If iMostChilds > 0 Then
+						For i = 0 To iMostChilds - 1 Step 1
+							'            .AddNew
+
+							sFIELDS = vbNullString
+							sVALUES = vbNullString
+							SQLSTRING = vbNullString
+
+							'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
+							For iFields = 0 To rsParent.Columns.Count - 1 Step 1
+
+								sFIELDS = sFIELDS & "[" & rsParent.Columns(iFields).ColumnName & "],"
+
+								Select Case rsParent.Columns(iFields).DataType.Name.ToLower()
+									Case "int32"
+										'	'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+										sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
+
+									Case "datetime"
+										If Not IsDBNull(objRow(iFields)) Then
+											sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
+										Else
+											sVALUES = sVALUES & "NULL,"
+										End If
+
+									Case "boolean"
+										sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
+
+									Case Else
+										'MH20021119 Fault 4315
+										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+										If Not IsDBNull(objRow(iFields)) Then
+											sVALUES = sVALUES & "'" & Replace(objRow(iFields), "'", "''") & "',"
+										Else
+											sVALUES = sVALUES & "'',"
+										End If
+								End Select
+
+							Next iFields
+
+							For iChildCount = 0 To UBound(avChildRecordsets, 2) Step 1
+
+								If avChildRecordsets(0, iChildCount).Rows.Count > 0 Then
+
+									Dim rowFirstRow = avChildRecordsets(0, iChildCount).Rows(0)
+
+									'<<<<<<<<<<<<<<<<<<< Add Values To Child Fields >>>>>>>>>>>>>>>>>>>>>>>
+									For iFields = 0 To avChildRecordsets(0, iChildCount).Columns.Count - 1 Step 1
+										sFIELDS = sFIELDS & "[" & avChildRecordsets(0, iChildCount).Columns(iFields).ColumnName & "],"
+
+										Select Case avChildRecordsets(0, iChildCount).Columns(iFields).DataType.Name.ToLower()
+											Case "int32"
+												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+												sVALUES = sVALUES & IIf(IsDBNull(rowFirstRow(iFields)), 0, rowFirstRow(iFields)) & ","
+											Case "datetime"
+												'TM20030124 Fault 4974
+												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+												If Not IsDBNull(rowFirstRow(iFields)) Then
+													sVALUES = sVALUES & "'" & VB6.Format(rowFirstRow(iFields), "MM/dd/yyyy") & "',"
+												Else
+													sVALUES = sVALUES & "NULL,"
+												End If
+											Case "boolean"
+												sVALUES = sVALUES & IIf(rowFirstRow(iFields), 1, 0) & ","
+											Case Else
+												'MH20021119 Fault 4315
+												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+												If Not IsDBNull(rowFirstRow(iFields)) Then
+													sVALUES = sVALUES & "'" & Replace(rowFirstRow(iFields), "'", "''") & "',"
+												Else
+													sVALUES = sVALUES & "'',"
+												End If
+										End Select
+
+									Next iFields
+
+								End If
+							Next iChildCount
+
+							'Add the Sequence number to the sequence column for ordering the data later.
+							'            .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
+
+							sFIELDS = sFIELDS & "[" & lng_SEQUENCECOLUMNNAME & "]"
+							sVALUES = sVALUES & lngSequenceCount
+
+							lngSequenceCount = lngSequenceCount + 1
+
+							SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
+							SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
+
+							DB.ExecuteSql(SQLSTRING)
+
+							'            .Update
+						Next i
+					Else
+						'          .AddNew
 
 						sFIELDS = vbNullString
 						sVALUES = vbNullString
@@ -1597,25 +1690,26 @@ Error_Trap:
 							sFIELDS = sFIELDS & "[" & rsParent.Columns(iFields).ColumnName & "],"
 
 							Select Case rsParent.Columns(iFields).DataType.Name.ToLower()
-								Case "int32"
-									'	'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-									sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
 
+								Case "int32"
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
 								Case "datetime"
+									'TM20030124 Fault 4974
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 									If Not IsDBNull(objRow(iFields)) Then
 										sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
 									Else
 										sVALUES = sVALUES & "NULL,"
 									End If
-
 								Case "boolean"
 									sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
-
 								Case Else
 									'MH20021119 Fault 4315
+									'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
 									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 									If Not IsDBNull(objRow(iFields)) Then
-										sVALUES = sVALUES & "'" & Replace(objRow(iFields), "'", "''") & "',"
+										sVALUES = sVALUES & "'" & Replace(CStr(objRow(iFields)), "'", "''") & "',"
 									Else
 										sVALUES = sVALUES & "'',"
 									End If
@@ -1623,47 +1717,8 @@ Error_Trap:
 
 						Next iFields
 
-						For iChildCount = 0 To UBound(avChildRecordsets, 2) Step 1
-
-							If avChildRecordsets(0, iChildCount).Rows.Count > 0 Then
-
-								Dim rowFirstRow = avChildRecordsets(0, iChildCount).Rows(0)
-
-								'<<<<<<<<<<<<<<<<<<< Add Values To Child Fields >>>>>>>>>>>>>>>>>>>>>>>
-								For iFields = 0 To avChildRecordsets(0, iChildCount).Columns.Count - 1 Step 1
-									sFIELDS = sFIELDS & "[" & avChildRecordsets(0, iChildCount).Columns(iFields).ColumnName & "],"
-
-									Select Case avChildRecordsets(0, iChildCount).Columns(iFields).DataType.Name.ToLower()
-										Case "int32"
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											sVALUES = sVALUES & IIf(IsDBNull(rowFirstRow(iFields)), 0, rowFirstRow(iFields)) & ","
-										Case "datetime"
-											'TM20030124 Fault 4974
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If Not IsDBNull(rowFirstRow(iFields)) Then
-												sVALUES = sVALUES & "'" & VB6.Format(rowFirstRow(iFields), "MM/dd/yyyy") & "',"
-											Else
-												sVALUES = sVALUES & "NULL,"
-											End If
-										Case "boolean"
-											sVALUES = sVALUES & IIf(rowFirstRow(iFields), 1, 0) & ","
-										Case Else
-											'MH20021119 Fault 4315
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											If Not IsDBNull(rowFirstRow(iFields)) Then
-												sVALUES = sVALUES & "'" & Replace(rowFirstRow(iFields), "'", "''") & "',"
-											Else
-												sVALUES = sVALUES & "'',"
-											End If
-									End Select
-
-								Next iFields
-
-							End If
-						Next iChildCount
-
 						'Add the Sequence number to the sequence column for ordering the data later.
-						'            .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
+						'          .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
 
 						sFIELDS = sFIELDS & "[" & lng_SEQUENCECOLUMNNAME & "]"
 						sVALUES = sVALUES & lngSequenceCount
@@ -1675,127 +1730,39 @@ Error_Trap:
 
 						DB.ExecuteSql(SQLSTRING)
 
-						'            .Update
-					Next i
-				Else
-					'          .AddNew
+						'          .Update
+					End If
+					'      End With
 
-					sFIELDS = vbNullString
-					sVALUES = vbNullString
-					SQLSTRING = vbNullString
+					iChildUsed = 0
+				Next
+			End With
 
-					'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
-					For iFields = 0 To rsParent.Columns.Count - 1 Step 1
+			'************ Re-Order the data using the defined sort orders. ******************
+			sSQL = "DELETE FROM [" & mstrTempTableName & "]"
+			DB.ExecuteSql(sSQL)
 
-						sFIELDS = sFIELDS & "[" & rsParent.Columns(iFields).ColumnName & "],"
-
-						Select Case rsParent.Columns(iFields).DataType.Name.ToLower()
-
-							Case "int32"
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								sVALUES = sVALUES & IIf(IsDBNull(objRow(iFields)), 0, objRow(iFields)) & ","
-							Case "datetime"
-								'TM20030124 Fault 4974
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If Not IsDBNull(objRow(iFields)) Then
-									sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
-								Else
-									sVALUES = sVALUES & "NULL,"
-								End If
-							Case "boolean"
-								sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
-							Case Else
-								'MH20021119 Fault 4315
-								'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If Not IsDBNull(objRow(iFields)) Then
-									sVALUES = sVALUES & "'" & Replace(CStr(objRow(iFields)), "'", "''") & "',"
-								Else
-									sVALUES = sVALUES & "'',"
-								End If
-						End Select
-
-					Next iFields
-
-					'Add the Sequence number to the sequence column for ordering the data later.
-					'          .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
-
-					sFIELDS = sFIELDS & "[" & lng_SEQUENCECOLUMNNAME & "]"
-					sVALUES = sVALUES & lngSequenceCount
-
-					lngSequenceCount = lngSequenceCount + 1
-
-					SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
-					SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
-
-					DB.ExecuteSql(SQLSTRING)
-
-					'          .Update
-				End If
-				'      End With
-
-				iChildUsed = 0
-			Next
-		End With
-
-		'************ Re-Order the data using the defined sort orders. ******************
-		sSQL = "DELETE FROM [" & mstrTempTableName & "]"
-		DB.ExecuteSql(sSQL)
-
-		sSQL = "INSERT INTO [" & mstrTempTableName & "] SELECT * FROM [" & sMCTempTable & "]"
-		' Order the entire recordset.
-		sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
-		DB.ExecuteSql(sSQL)
+			sSQL = "INSERT INTO [" & mstrTempTableName & "] SELECT * FROM [" & sMCTempTable & "]"
+			' Order the entire recordset.
+			sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
+			DB.ExecuteSql(sSQL)
 
 
-		'***************** Drop the multiple child temp table. **************************
-		' Delete the temptable if exists, and then clear the variable
-		'  If Len(sMCTempTable) > 0 Then
-		'    mclsData.ExecuteSql ("IF EXISTS(SELECT * FROM sysobjects WHERE name = '" & sMCTempTable & "') " & _
-		''                      "DROP TABLE [" & sMCTempTable & "]")
-		'  End If
-		General.DropUniqueSQLObject(sMCTempTable, 3)
-		sMCTempTable = vbNullString
+			'***************** Drop the multiple child temp table. **************************
+			General.DropUniqueSQLObject(sMCTempTable, 3)
+			sMCTempTable = vbNullString
 
+		Catch ex As Exception
 
-		'************ Drop the ID columns from the temp table. ******************
-		'  With rsTemp
-		'    'Remove the ".ID" & "ID" columns from the report.
-		'    For iColCount = 1 To UBound(mvarColDetails, 2) Step 1
-		'      If (mvarColDetails(16, iColCount) = "ID") Or (mvarColDetails(16, iColCount) = ("ID_" & CStr(mlngCustomReportsBaseTable))) Then
-		'        sSQL = "ALTER TABLE [" & mstrTempTableName & "] DROP COLUMN [" & mvarColDetails(0, iColCount) & "]"
-		'        mclsData.ExecuteSql sSQL
-		'      End If
-		'    Next iColCount
-		'    .Close
-		'  End With
-		'  'remove the id columns from column details array.
-		'  ReDim Preserve mvarColDetails(20, miColumnsInReport)
+			mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & Err.Number & vbNewLine & ex.Message
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
+			Return False
 
-		'********************************************************************************
+		End Try
 
-		sMCTempTable = vbNullString
-		'  Set rsTemp = Nothing
-		'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsParent = Nothing
 		Return True
-
-Error_Trap:
-		CreateMutipleChildTempTable = False
-		sMCTempTable = vbNullString
-		'  Set rsTemp = Nothing
-		'UPGRADE_NOTE: Object rsParent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsParent = Nothing
-
-		mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & Err.Number & vbNewLine & Err.Description
-
-		For i = 0 To gADOCon.Errors.Count - 1 Step 1
-			mstrErrorString = mstrErrorString & "Err.Number = " & gADOCon.Errors(i).Number & " Err.Desc = " & gADOCon.Errors(i).Description
-		Next i
-
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2574,8 +2541,6 @@ GenerateSQLOrderBy_ERROR:
 		Dim sSQL As String
 
 		On Error GoTo CheckRecordSet_ERROR
-
-		'  Set mrstCustomReportsOutput = mclsData.OpenRecordset("SELECT * FROM " & mstrTempTableName, adOpenStatic, adLockReadOnly)
 
 		'TM20020429 Fault 3764
 		If mbUseSequence Then

@@ -1,24 +1,19 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports System.Globalization
-Imports ADODB
-Imports System.Collections.Generic
-Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
-Imports System.Collections.ObjectModel
-Imports HR.Intranet.Server.Metadata
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
 
 Public Class clsGeneral
 
-	Private datData As New clsDataAccess
+	Private DB As New clsDataAccess
 	Private ReadOnly _login As LoginInfo
 
 	Public Sub New(ByVal LoginInfo As LoginInfo)
 		_login = LoginInfo
-		datData = New clsDataAccess(LoginInfo)
+		DB = New clsDataAccess(LoginInfo)
 	End Sub
 
 	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
@@ -52,7 +47,7 @@ Public Class clsGeneral
 
 		Dim strDateSeparator As String
 
-		Dim i As Short
+		Dim i As Integer
 
 		' eg. DateFormat = "MM/dd/yyyy"
 		'     Calendar   = "dd/mm/yyyy"
@@ -132,22 +127,15 @@ Public Class clsGeneral
 
 	End Function
 
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-
-		datData = New clsDataAccess
-
-	End Sub
-
 	Public Sub New()
 		MyBase.New()
-		Class_Initialize_Renamed()
+		DB = New clsDataAccess
 	End Sub
 
 	Public Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
 
 		Dim objExpr As clsExprExpression
-		Dim rsTemp As Recordset
+		Dim rsTemp As DataTable
 		Dim strSQL As String
 		Dim fOK As Boolean
 		Dim lngViews(,) As Integer
@@ -167,10 +155,10 @@ Public Class clsGeneral
 			End If
 
 			If fOK Then
-				rsTemp = GetReadOnlyRecords("SELECT " & strSQL)
-				If Not rsTemp.BOF And Not rsTemp.EOF Then
+				rsTemp = DB.GetDataTable("SELECT " & strSQL)
+				If rsTemp.Rows.Count > 0 Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					GetValueForRecordIndependantCalc = rsTemp.Fields(0).Value
+					Return rsTemp.Rows(0)(0)
 				End If
 			End If
 
@@ -185,70 +173,8 @@ LocalErr:
 
 	End Function
 
-	Public Function GetActualLogin() As String
-
-		Dim cmdLoginInfo As New Command
-		Dim prmActutalLogin As Parameter
-
-		cmdLoginInfo.CommandText = "spASRIntGetActualLogin"
-		cmdLoginInfo.CommandType = 4
-		cmdLoginInfo.let_ActiveConnection(gADOCon)
-
-		prmActutalLogin = cmdLoginInfo.CreateParameter("ActualLogin", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 250)
-		cmdLoginInfo.Parameters.Append(prmActutalLogin)
-
-		cmdLoginInfo.ActiveConnection.Errors.Clear()
-		cmdLoginInfo.Execute()
-
-		GetActualLogin = cmdLoginInfo.Parameters("ActualLogin").Value
-
-		'UPGRADE_NOTE: Object prmActutalLogin may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prmActutalLogin = Nothing
-		'UPGRADE_NOTE: Object cmdLoginInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdLoginInfo = Nothing
-
-	End Function
-
-	Public Function GetUserDetails() As String
-
-		Dim sSQL As String
-		Dim rsUser As Recordset
-
-		sSQL = "exec sp_helpuser '" & Replace(gsActualLogin, "'", "''") & "'"
-
-		rsUser = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-		Do While rsUser.Fields("GroupName").Value = "db_owner" Or LCase(Left(rsUser.Fields("GroupName").Value, 6)) = "asrsys"
-			rsUser.MoveNext()
-		Loop
-		GetUserDetails = rsUser.Fields("GroupName").Value
-
-		rsUser.Close()
-		'UPGRADE_NOTE: Object rsUser may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsUser = Nothing
-
-	End Function
-
-	Friend Function GetRecords(ByRef sSQL As String) As Recordset
-		' Return the required forward-only/read-only recordset.
-		'  Set GetRecords = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-
-		' JPD - Changed cursor-type to static.
-		' The SQL Server ODBC driver uses a special cursor when the cursor is
-		' forward-only, read-only, and the ODBC rowset size is one.
-		' The cursor is called a "firehose" cursor because it is the fastest way to retrieve the data.
-		' Unfortunately, a side affect of the cursor is that it only permits one active recordset per connection.
-		' To get around this we'll try using a STATIC cursor.
-		GetRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
-	End Function
-
-	Friend Function GetReadOnlyRecords(ByRef sSQL As String) As Recordset
-
-		' JDM - 13/12/2003 - Converted to a firehose cursor. This will not reurn a .recordcount so use with caution. 
-		'   If a record count is needed then use a function which uses a static cursor type - be warned of permformance though)
-		GetReadOnlyRecords = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-
+	Friend Function GetReadOnlyRecords(ByRef sSQL As String) As DataTable
+		Return DB.GetDataTable(sSQL)
 	End Function
 
 	Public Function GetTableName(ByVal plngTableID As Integer) As String
@@ -256,66 +182,41 @@ LocalErr:
 	End Function
 
 	Public Function GetFilterName(ByVal lFilterID As Integer) As String
-		Dim rsFilter As Recordset
-		Dim sSQL As String
 
-		sSQL = "SELECT name FROM ASRSysExpressions WHERE ExprID=" & lFilterID
-
-		rsFilter = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		With rsFilter
-			If Not (.BOF And .EOF) Then
-				GetFilterName = Trim(.Fields(0).Value)
+		Dim sSQL As String = String.Format("SELECT name FROM ASRSysExpressions WHERE ExprID={0}", lFilterID)
+		With DB.GetDataTable(sSQL)
+			If .Rows.Count > 0 Then
+				Return Trim(.Rows(0)(0).ToString())
 			Else
-				GetFilterName = vbNullString
+				Return vbNullString
 			End If
-			.Close()
 		End With
-
-		'UPGRADE_NOTE: Object rsFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsFilter = Nothing
 
 	End Function
 
 	Public Function GetPicklistName(ByVal lPicklistID As Integer) As String
-		Dim rsPicklist As Recordset
-		Dim sSQL As String
 
-		sSQL = "SELECT Name FROM ASRSysPicklistName WHERE PicklistID=" & lPicklistID
-
-		rsPicklist = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		With rsPicklist
-			If Not (.BOF And .EOF) Then
-				GetPicklistName = Trim(.Fields(0).Value)
+		Dim sSQL As String = String.Format("SELECT Name FROM ASRSysPicklistName WHERE PicklistID={0}", lPicklistID)
+		With DB.GetDataTable(sSQL)
+			If .Rows.Count > 0 Then
+				Return Trim(.Rows(0)(0).ToString())
 			Else
-				GetPicklistName = vbNullString
+				Return vbNullString
 			End If
-			.Close()
 		End With
-
-		'UPGRADE_NOTE: Object rsPicklist may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsPicklist = Nothing
 
 	End Function
 
-	Public Function GetRecDescExprID(ByVal TableID As Integer) As String
-		' JPD - Return the Record Description Expression ID for the given table.
-		Dim rsTable As Recordset
-		Dim sSQL As String
+	Public Function GetRecDescExprID(ByVal TableID As Integer) As Integer
 
-		sSQL = "SELECT recordDescExprID FROM ASRSysTables WHERE TableID=" & TableID
-
-		rsTable = datData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockOptimistic)
-		With rsTable
-			If Not (.BOF And .EOF) Then
-				GetRecDescExprID = .Fields(0).Value
+		Dim sSQL As String = String.Format("SELECT recordDescExprID FROM ASRSysTables WHERE TableID={0}", TableID)
+		With DB.GetDataTable(sSQL)
+			If .Rows.Count > 0 Then
+				Return CInt(.Rows(0)(0))
 			Else
-				GetRecDescExprID = CStr(0)
+				Return 0
 			End If
-			.Close()
 		End With
-
-		'UPGRADE_NOTE: Object rsTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTable = Nothing
 
 	End Function
 
@@ -367,9 +268,9 @@ LocalErr:
 			Dim prmType As New SqlParameter("Type", SqlDbType.Int)
 			prmType.Value = intType
 
-			datData.ExecuteSP("sp_ASRUniqueObjectName", prmName, prmPrefix, prmType)
+			DB.ExecuteSP("sp_ASRUniqueObjectName", prmName, prmPrefix, prmType)
 
-			Return prmName.Value
+			Return prmName.Value.ToString()
 
 		Catch ex As Exception
 			Return ""
@@ -388,7 +289,7 @@ LocalErr:
 			Dim prmType As New SqlParameter("piType", SqlDbType.Int)
 			prmType.Value = iType
 
-			datData.ExecuteSP("sp_ASRDropUniqueObject", prmName, prmType)
+			DB.ExecuteSP("sp_ASRDropUniqueObject", prmName, prmType)
 
 		Catch ex As Exception
 			Throw
@@ -477,8 +378,8 @@ LocalErr:
 		Dim strDropCode As String
 		Dim strFunctionName As String
 		Dim sCode As String
-		Dim iStart As Short
-		Dim iEnd As Short
+		Dim iStart As Integer
+		Dim iEnd As Integer
 		Dim strFunctionNumber As String
 
 		Try
@@ -494,12 +395,12 @@ LocalErr:
 
 						'Drop existing function (could exist if the expression is used more than once in a report)
 						strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-						datData.ExecuteSql(strDropCode)
+						DB.ExecuteSql(strDropCode)
 
 						' Create the new function
 						If pbCreate Then
 							sCode = paFunctions(iCount)
-							datData.ExecuteSql(sCode)
+							DB.ExecuteSql(sCode)
 						End If
 					End If
 
@@ -514,6 +415,121 @@ LocalErr:
 		Return True
 
 	End Function
+
+#Region "From modUtilityAccess"
+
+	Friend Function CurrentUserAccess(piUtilityType As UtilityType, plngID As Integer) As String
+
+		' Return the access code (RW/RO/HD) of the current user's access
+		' on the given utility.
+		Dim sAccessCode As String
+		Dim sSQL As String
+		Dim sDefaultAccess As String
+		Dim rsAccess As DataTable
+		Dim sTableName As String
+		Dim sAccessTableName As String
+		Dim sIDColumnName As String
+
+		sTableName = ""
+		sAccessTableName = ""
+
+		If plngID > 0 Then
+			sDefaultAccess = ACCESS_HIDDEN
+		Else
+			sDefaultAccess = ACCESS_HIDDEN
+		End If
+
+		' Construct the SQL code to get the current user's access settings for the given utility.
+		' NB. System and Security Manager users automatically have Read/Write access.
+		Select Case piUtilityType
+			Case UtilityType.utlBatchJob
+				sTableName = "ASRSysBatchJobName"
+				sAccessTableName = "ASRSysBatchJobAccess"
+				sIDColumnName = "ID"
+
+			Case UtilityType.utlCalendarReport
+				sTableName = "ASRSysCalendarReports"
+				sAccessTableName = "ASRSysCalendarReportAccess"
+				sIDColumnName = "ID"
+
+			Case UtilityType.utlCrossTab
+				sTableName = "ASRSysCrossTab"
+				sAccessTableName = "ASRSysCrossTabAccess"
+				sIDColumnName = "CrossTabID"
+
+			Case UtilityType.utlCustomReport
+				sTableName = "ASRSysCustomReportsName"
+				sAccessTableName = "ASRSysCustomReportAccess"
+				sIDColumnName = "ID"
+
+			Case UtilityType.utlDataTransfer
+				sTableName = "ASRSysDataTransferName"
+				sAccessTableName = "ASRSysDataTransferAccess"
+				sIDColumnName = "DataTransferID"
+
+			Case UtilityType.utlExport
+				sTableName = "ASRSysExportName"
+				sAccessTableName = "ASRSysExportAccess"
+				sIDColumnName = "ID"
+
+			Case UtilityType.UtlGlobalAdd, UtilityType.utlGlobalDelete, UtilityType.utlGlobalUpdate
+				sTableName = "ASRSysGlobalFunctions"
+				sAccessTableName = "ASRSysGlobalAccess"
+				sIDColumnName = "functionID"
+
+			Case UtilityType.utlImport
+				sTableName = "ASRSysImportName"
+				sAccessTableName = "ASRSysImportAccess"
+				sIDColumnName = "ID"
+
+			Case UtilityType.utlLabel, UtilityType.utlMailMerge
+				sTableName = "ASRSysMailMergeName"
+				sAccessTableName = "ASRSysMailMergeAccess"
+				sIDColumnName = "mailMergeID"
+
+			Case UtilityType.utlRecordProfile
+				sTableName = "ASRSysRecordProfileName"
+				sAccessTableName = "ASRSysRecordProfileAccess"
+				sIDColumnName = "recordProfileID"
+
+			Case UtilityType.utlMatchReport, UtilityType.utlSuccession, UtilityType.utlCareer
+				sTableName = "ASRSysMatchReportName"
+				sAccessTableName = "ASRSysMatchReportAccess"
+				sIDColumnName = "matchReportID"
+
+		End Select
+
+		Try
+
+			If Len(sAccessTableName) > 0 Then
+				sSQL = "SELECT" & "  CASE" & "    WHEN (SELECT count(*)" & "      FROM ASRSysGroupPermissions" & "      INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "        AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "        OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & "      INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "        AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & "      WHERE b.Name = ASRSysGroupPermissions.groupname" & "        AND ASRSysGroupPermissions.permitted = 1) > 0 THEN '" & ACCESS_READWRITE & "'" & "    WHEN " & sTableName & ".userName = system_user THEN '" & ACCESS_READWRITE & "'" & "    ELSE" & "      CASE" & "        WHEN " & sAccessTableName & ".access IS null THEN '" & sDefaultAccess & "'" & "        ELSE " & sAccessTableName & ".access" & "      END" & "  END AS Access" & " FROM sysusers b" & " INNER JOIN sysusers a ON b.uid = a.gid" & " LEFT OUTER JOIN " & sAccessTableName & " ON (b.name = " & sAccessTableName & ".groupName" & "   AND " & sAccessTableName & ".id = " & CStr(plngID) & ")" & " INNER JOIN " & sTableName & " ON " & sAccessTableName & ".ID = " & sTableName & "." & sIDColumnName & " WHERE b.name = '" & gsUserGroup & "'"
+
+
+				rsAccess = DB.GetDataTable(sSQL)
+				With rsAccess
+					If .Rows.Count = 0 Then
+						sAccessCode = sDefaultAccess
+					Else
+						sAccessCode = .Rows(0)("Access").ToString()
+					End If
+
+				End With
+			Else
+				sAccessCode = ACCESS_UNKNOWN
+			End If
+
+			Return sAccessCode
+
+		Catch ex As Exception
+			Return sDefaultAccess
+
+		End Try
+
+	End Function
+
+
+#End Region
+
 
 #Region "From modExpression"
 
@@ -538,7 +554,7 @@ LocalErr:
 		On Error GoTo ErrorTrap
 
 		sSQL = String.Format("SELECT *, ISNULL(e.Access,'') AS [Access] FROM ASRSysExprComponents c INNER JOIN ASRSysExpressions e ON c.ExprID = e.ExprID WHERE c.ExprID = {0}", lngExprID)
-		rsExprComp = datData.GetDataTable(sSQL)
+		rsExprComp = DB.GetDataTable(sSQL)
 		bHasHiddenComp = False
 
 		With rsExprComp
@@ -584,7 +600,7 @@ LocalErr:
 
 					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
 						sSQL = "SELECT exprID, Access FROM ASRSysExpressions WHERE parentComponentID = " & CStr(objRow("ComponentID"))
-						rsExpr = datData.GetDataTable(sSQL)
+						rsExpr = DB.GetDataTable(sSQL)
 						For Each objFunctionRow As DataRow In rsExpr.Rows
 
 							If HasHiddenComponents(CInt(objFunctionRow("ExprID"))) Or objFunctionRow("Access").ToString() = ACCESS_HIDDEN Then

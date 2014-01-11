@@ -305,7 +305,7 @@ Public Class MailMerge
 
 		objRow = rsMailMergeDefinition.Rows(0)
 
-		If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
+		If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And General.CurrentUserAccess(UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
 			'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsMailMergeDefinition = Nothing
 			mstrStatusMessage = "This definition has been made hidden by another user."

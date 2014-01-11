@@ -264,6 +264,7 @@
 	objMenu = Nothing
 
 	Dim objUtilities As New HR.Intranet.Server.Utilities
+	objUtilities.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 	Session("UtilitiesObject") = objUtilities
 	
 	Dim objOLE As New HR.Intranet.Server.Ole

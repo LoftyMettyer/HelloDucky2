@@ -46,7 +46,7 @@
 				Dim i As Integer
 				Dim sValue As String
 
-				Dim objUtilities As HR.Intranet.Server.Utilities
+				Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
 		
 				Dim cmdEventBatchJobs As Command
 				Dim prmBatchRunID As ADODB.Parameter

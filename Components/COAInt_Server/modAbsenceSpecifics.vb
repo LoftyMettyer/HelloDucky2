@@ -224,7 +224,7 @@ Module modAbsenceSpecifics
 
 		Dim fValid As Boolean
 		Dim strMessage As String = ""
-		Dim rsType As ADODB.Recordset
+		Dim rsType As DataTable
 
 		' Check that the Absence module is installed.
 		If gfAbsenceEnabled Then
@@ -287,7 +287,7 @@ Module modAbsenceSpecifics
 			' Check that types exist
 			If Len(strMessage) = 0 Then
 				rsType = datGeneral.GetReadOnlyRecords("SELECT *" & " FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName)
-				If rsType.BOF And rsType.EOF Then
+				If rsType.Rows.Count = 0 Then
 					strMessage = strMessage & "You do not have any entries in the '" & gsAbsenceTypeTableName & "' table." & vbNewLine
 				End If
 

@@ -21,7 +21,6 @@ Namespace BaseClasses
 				_sessionInfo = value
 				_login = _sessionInfo.LoginInfo
 
-				gADOCon = _sessionInfo.Connection
 				gsUsername = _sessionInfo.LoginInfo.Username
 
 				DB = New clsDataAccess(_sessionInfo.LoginInfo)
@@ -45,7 +44,7 @@ Namespace BaseClasses
 
 #Region "FROM modExpression"
 
-		Protected Function IsFilterValid(ByRef varID As Object) As String
+		Protected Function IsFilterValid(varID As Integer) As String
 
 			' Since validation occurs whenn saving expression this function should be unnecessary
 			Return ""
@@ -138,7 +137,68 @@ Namespace BaseClasses
 
 #Region "From modUtilityAccess"
 
-		Private Function ValidateFilter(ByRef plngID As Integer) As RecordSelectionValidityCodes
+		Protected Function CurrentUserIsSysSecMgr() As Boolean
+			Dim sSQL As String
+			Dim rsAccess As DataTable
+
+			sSQL = "SELECT count(*) AS [result] FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "   AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "   OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & " WHERE ASRSysGroupPermissions.permitted = 1" & "   AND ASRSysGroupPermissions.groupname = '" & gsUserGroup & "'"
+
+			rsAccess = DB.GetDataTable(sSQL)
+			Return CBool(CInt(rsAccess.Rows(0)("Result")) > 0)
+
+
+		End Function
+
+
+
+		Private Function ValidatePicklist(plngID As Integer) As RecordSelectionValidityCodes
+			' Return an integer code representing the validity of the picklist.
+			' Return 0 if the picklist is OK.
+			' Return 1 if the picklist has been deleted by another user.
+			' Return 2 if the picklist is hidden, and is owned by the current user.
+			' Return 3 if the picklist is hidden, and is NOT owned by the current user.
+			' Return 4 if the picklist is no longer valid.
+			Dim iResult As RecordSelectionValidityCodes
+			Dim rstemp As DataTable
+			Dim sSQL As String
+
+			Try
+
+				iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
+
+				If plngID > 0 Then
+
+					sSQL = "SELECT access, userName FROM ASRSysPickListName WHERE picklistID = " & CStr(plngID)
+					rstemp = DB.GetDataTable(sSQL)
+
+					If rstemp.Rows.Count = 0 Then
+						' Picklist no longer exists
+						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+					Else
+						If (rstemp.Rows(0)("Access").ToString() = ACCESS_HIDDEN) Then
+							If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(gsUsername))) Then
+								' Picklist is hidden by the current user.
+								iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
+							Else
+								' Picklist is hidden by another user.
+								iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+							End If
+						End If
+					End If
+
+				End If
+
+				Return iResult
+
+			Catch ex As Exception
+				Return RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+
+			End Try
+
+		End Function
+
+
+		Private Function ValidateFilter(plngID As Integer) As RecordSelectionValidityCodes
 			' Return an integer code representing the validity of the filter.
 			' Return 0 if the filter is OK.
 			' Return 1 if the filter has been deleted by another user.

@@ -133,25 +133,4 @@ Friend Module Extensions
 		Return items.FirstOrDefault(Function(item) item.ModuleKey = key)
 	End Function
 
-	<Extension()>
-	Public Function ToDataTable(Of T)(list As ICollection(Of T)) As DataTable
-		Dim table As DataTable = clsDataAccess.CreateTable(Of T)()
-		Dim entityType As Type = GetType(T)
-		Dim properties As PropertyDescriptorCollection = TypeDescriptor.GetProperties(entityType)
-
-		For Each item As T In list
-			Dim row As DataRow = table.NewRow()
-
-			For Each prop As PropertyDescriptor In properties
-				row(prop.Name) = prop.GetValue(item)
-			Next
-
-			table.Rows.Add(row)
-		Next
-
-		Return table
-	End Function
-
-
-
 End Module

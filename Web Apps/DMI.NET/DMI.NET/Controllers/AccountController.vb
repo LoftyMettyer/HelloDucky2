@@ -315,7 +315,6 @@ Namespace Controllers
 			objLogin.TrustedConnection = bWindowsAuthentication
 
 			objServerSession.Username = sUserName
-			objServerSession.Connection = conX
 			objServerSession.LoginInfo = objLogin
 			objServerSession.Initialise()
 
@@ -687,7 +686,8 @@ Namespace Controllers
 
 			Dim sTempPath As String, sBGImage As String = "", intBGPos As Short = 2, strRepeat As String, strBGPos As String
 
-			Dim objUtilities = New HR.Intranet.Server.Utilities
+			Dim objUtilities = New Utilities
+			objUtilities.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			sTempPath = Server.MapPath("~/pictures")
 			sBGImage = objUtilities.GetBackgroundPicture(CStr(sTempPath))

@@ -609,7 +609,7 @@ ErrorTrap:
 		Dim objRow = rsCrossTabDefinition.Rows(0)
 		With rsCrossTabDefinition
 
-			If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+			If LCase(CType(objRow("Username"), String)) <> LCase(gsUsername) And General.CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
 				'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsCrossTabDefinition = Nothing
 				mstrStatusMessage = "This definition has been made hidden by another user."
@@ -637,7 +637,6 @@ ErrorTrap:
 			mlngOutputSaveExisting = objRow("OutputSaveExisting")
 			mblnOutputEmail = objRow("OutputEmail")
 			mlngOutputEmailID = objRow("OutputEmailAddr")
-			'mstrOutputEmailAddr = GetEmailGroupAddresses(!OutputEmailAddr)
 			mstrOutputEmailName = GetEmailGroupName(objRow("OutputEmailAddr"))
 			mstrOutputEmailSubject = objRow("OutputEmailSubject")
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -932,7 +931,7 @@ LocalErr:
 		'MH20010327 Seems that it might be moving on pass this line of code too
 		'quickly so I've tried returning the number of rows effected to make
 		'sure that it completes fully
-		mclsData.ExecuteSqlReturnAffected(strSQL)
+		DB.ExecuteSql(strSQL)
 
 		strSQL = "SELECT * FROM " & mstrTempTableName
 		rsCrossTabData = DB.GetDataTable(strSQL)

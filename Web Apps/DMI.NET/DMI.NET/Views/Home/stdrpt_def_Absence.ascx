@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
@@ -69,8 +70,8 @@
 
 	' Settings objects
 	Dim objSettings As New HR.Intranet.Server.clsSettings
-	objSettings.Connection = Session("databaseConnection")
-
+	objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	
 	Dim aColumnNames
 	Dim aAbsenceTypes
 	Dim cmdReportsCols As Command

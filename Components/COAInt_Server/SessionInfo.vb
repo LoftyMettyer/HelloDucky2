@@ -1,5 +1,4 @@
 ﻿Imports System.Collections.Generic
-Imports ADODB
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 
@@ -53,15 +52,6 @@ Public Class SessionInfo
 
 		ActiveConnections = 1
 	End Sub
-
-	Public Property Connection() As Connection
-		Get
-			Return gADOCon
-		End Get
-		Set(value As Connection)
-			gADOCon = value
-		End Set
-	End Property
 
 	Public Property LoginInfo() As LoginInfo
 		Get

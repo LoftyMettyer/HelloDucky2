@@ -13,7 +13,7 @@ Public Class Expression
 	Private mlngBaseTableID As Integer
 	Private mlngExpressionID As Integer
 	Private miType As Short
-	Private miReturnType As Short
+	Private miReturnType As ExpressionValueTypes
 	Private mvarPrompts(,) As Object
 	Private mastrUDFsRequired() As String
 
@@ -22,7 +22,7 @@ Public Class Expression
 	End Sub
 
 
-	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As Short) As Boolean
+	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As ExpressionValueTypes) As Boolean
 		' Initialise the expression object.
 		' Return TRUE if everything was initialised okay.
 		On Error GoTo ErrorTrap
@@ -47,26 +47,17 @@ ErrorTrap:
 	End Function
 
 	Public Function TestFilterCode(ByRef psFilterCode As String) As Integer
-		On Error GoTo ErrorTrap
 
-		Dim lngRecCount As Integer
-		Dim rstTemp As ADODB.Recordset
+		Dim rstTemp As DataTable
 
-		rstTemp = General.GetRecords(psFilterCode)
-		lngRecCount = rstTemp.Fields(0).Value
-		rstTemp.Close()
-		'UPGRADE_NOTE: Object rstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rstTemp = Nothing
+		Try
+			rstTemp = DB.GetDataTable(psFilterCode)
+			Return CInt(rstTemp.Rows(0)(0))
 
+		Catch ex As Exception
+			Return -1
 
-TidyUpAndExit:
-		TestFilterCode = lngRecCount
-
-		Exit Function
-
-ErrorTrap:
-		lngRecCount = -1
-		Resume TidyUpAndExit
+		End Try
 
 	End Function
 
@@ -211,16 +202,16 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim iIndex As Short
-		Dim iIndex2 As Short
-		Dim iParameterIndex As Short
+		Dim iIndex As Integer
+		Dim iIndex2 As Integer
+		Dim iParameterIndex As Integer
 		Dim sDefn As String
 		Dim sCompType As String
 		Dim sParameter As String
 
 		Dim sNodeKey As String
 		Dim lngCompID As Integer
-		Dim iType As Short
+		Dim iType As ExpressionComponentTypes
 		Dim lngFieldColumnID As Integer
 		Dim iFieldPassBy As Short
 		Dim lngFieldSelectionTableID As Integer
@@ -231,7 +222,7 @@ ErrorTrap:
 		Dim lngFunctionID As Integer
 		Dim lngCalculationID As Integer
 		Dim lngOperatorID As Integer
-		Dim iValueType As Short
+		Dim iValueType As ExpressionValueTypes
 		Dim sValueCharacter As String
 		Dim dblValueNumeric As Double
 		Dim fValueLogic As Boolean
@@ -259,7 +250,7 @@ ErrorTrap:
 
 		Dim objParameter As clsExprComponent
 		Dim iNextIndex As Short
-		Dim iCount As Short
+		Dim iCount As Integer
 		Dim sParentNodeKey As String
 
 		fOK = True
@@ -666,7 +657,7 @@ ErrorTrap:
 		Resume TidyUpAndExit
 	End Function
 
-	Public Function ReturnType() As Short
+	Public Function ReturnType() As ExpressionValueTypes
 		Return mobjBaseExpr.ReturnType
 	End Function
 
@@ -674,7 +665,7 @@ ErrorTrap:
 		Return mobjBaseExpr.ExpressionID
 	End Function
 
-	Public Function ExistingExpressionReturnType(ByRef plngExprID As Integer) As Short
+	Public Function ExistingExpressionReturnType(ByRef plngExprID As Integer) As ExpressionValueTypes
 		Dim objExpression As clsExprExpression
 
 		' Instantiate the calculation expression.
@@ -685,28 +676,27 @@ ErrorTrap:
 			.ExpressionID = plngExprID
 			.ConstructExpression()
 			.ValidateExpression(False)
-			ExistingExpressionReturnType = .ReturnType
+			Return .ReturnType
 		End With
 
 		'UPGRADE_NOTE: Object objExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objExpression = Nothing
 	End Function
 
-	Public Function ValidateExpression() As Short
+	Public Function ValidateExpression() As ExprValidationCodes
 
 		ValidateExpression = mobjBaseExpr.ValidateExpression(True)
 
-		'JPD 20040507 Fault 8600
 		If (ValidateExpression = ExprValidationCodes.giEXPRVALIDATION_NOERRORS) And (mlngExpressionID > 0) Then
 
 			If mobjBaseExpr.ContainsExpression(mlngExpressionID) Then
-				ValidateExpression = ExprValidationCodes.giEXPRVALIDATION_CYCLIC
+				Return ExprValidationCodes.giEXPRVALIDATION_CYCLIC
 			End If
 		End If
 
 	End Function
 
-	Public Function ValidityMessage(ByRef piValidityCode As Short) As String
+	Public Function ValidityMessage(ByRef piValidityCode As ExprValidationCodes) As String
 		Return mobjBaseExpr.ValidityMessage(piValidityCode)
 	End Function
 

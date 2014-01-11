@@ -1,55 +1,22 @@
 Option Strict On
 Option Explicit On
 
-Imports ADODB
 Imports System.Data.SqlClient
-Imports System.ComponentModel
 Imports HR.Intranet.Server.Structures
 
 Public Class clsDataAccess
 
-	Private _objLogin As LoginInfo
+	Private ReadOnly _objLogin As LoginInfo
 
 	Public Sub New()
+		MyBase.New()
 	End Sub
 
 	Public Sub New(ByVal value As LoginInfo)
 		_objLogin = value
 	End Sub
 
-	Friend Function OpenRecordset(ByRef sSQL As String, ByRef CursorType As CursorTypeEnum, ByRef LockType As LockTypeEnum _
-		, Optional ByVal iCursorLocation As CursorLocationEnum = CursorLocationEnum.adUseServer) As Recordset
-
-		' Open a recordset from the given SQL query, with the given recordset properties.
-		Dim rsTemp As Recordset
-		Dim iOldCursorLocation As CursorLocationEnum
-
-		Try
-
-			iOldCursorLocation = gADOCon.CursorLocation
-
-			rsTemp = New Recordset
-			gADOCon.CursorLocation = iCursorLocation
-
-			rsTemp.Open(sSQL, gADOCon, CursorType, LockType, CommandTypeEnum.adCmdText)
-
-		Catch ex As Exception
-			Return Nothing
-
-		Finally
-			If (iOldCursorLocation = CursorLocationEnum.adUseClient) Or (iOldCursorLocation = CursorLocationEnum.adUseServer) Then
-				gADOCon.CursorLocation = iOldCursorLocation
-			Else
-				gADOCon.CursorLocation = CursorLocationEnum.adUseServer
-			End If
-
-		End Try
-
-		Return rsTemp
-
-	End Function
-
-	Friend Sub ExecuteSql(ByRef sSQL As String)
+	Friend Sub ExecuteSql(sSQL As String)
 		' Execute the given SQL statement.
 		Dim strConn As String = GetConnectionString(_objLogin)
 
@@ -74,17 +41,7 @@ Public Class clsDataAccess
 
 	End Sub
 
-	Friend Function ExecuteSqlReturnAffected(ByRef sSQL As String) As Object
-		' Execute the given SQL statement, and return the number of rows affected.
-		Dim lngAffected As Object
-
-		gADOCon.Execute(sSQL, lngAffected, CommandTypeEnum.adCmdText)
-		ExecuteSqlReturnAffected = lngAffected
-
-	End Function
-
-
-	Private Function GetConnectionString(ByVal LoginDetail As LoginInfo) As String
+	Private Function GetConnectionString(LoginDetail As LoginInfo) As String
 
 		Const _AppName As String = "OpenHR"
 
@@ -100,7 +57,7 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Function GetFromSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter) As DataTable
+	Public Function GetFromSP(ProcedureName As String, ParamArray args() As SqlParameter) As DataTable
 
 		Try
 			Return GetDataSet(ProcedureName, CommandType.StoredProcedure, args).Tables(0)
@@ -112,8 +69,7 @@ Public Class clsDataAccess
 
 	End Function
 
-
-	Public Sub ExecuteSP(ByVal ProcedureName As String, ParamArray args() As SqlParameter)
+	Public Sub ExecuteSP(ProcedureName As String, ParamArray args() As SqlParameter)
 
 		Dim strConn As String = GetConnectionString(_objLogin)
 
@@ -142,7 +98,7 @@ Public Class clsDataAccess
 
 	End Sub
 
-	Public Function GetDataTable(ByVal sProcedureName As String) As DataTable
+	Public Function GetDataTable(sProcedureName As String) As DataTable
 
 		Try
 			Return GetDataTable(sProcedureName, CommandType.Text)
@@ -157,8 +113,7 @@ Public Class clsDataAccess
 
 	End Function
 
-
-	Public Function GetDataTable(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
+	Public Function GetDataTable(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
 
 		Try
 			Return GetDataSet(sProcedureName, CommandType, args).Tables(0)
@@ -172,7 +127,7 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Function GetDataTable(ByVal procedureName As String, ByVal parameterName As String, dataList As DataTable) As DataTable
+	Public Function GetDataTable(procedureName As String, parameterName As String, dataList As DataTable) As DataTable
 
 		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
@@ -203,7 +158,7 @@ Public Class clsDataAccess
 
 	End Function
 
-	Public Function CallToStoredProcedure(sProcedureName As String, ByVal ParamArray args() As SqlParameter) As String
+	Public Function CallToStoredProcedure(sProcedureName As String, ParamArray args() As SqlParameter) As String
 		Dim strConn As String = GetConnectionString(_objLogin)
 		Using sqlConnection As New SqlConnection(strConn)
 			Dim sqlCommand As New SqlCommand(sProcedureName, sqlConnection)
@@ -216,7 +171,7 @@ Public Class clsDataAccess
 			Dim SELECTs As String = ""
 
 			'Declare output variables
-			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+			For Each p As SqlParameter In sqlCommand.Parameters
 				If p.Direction = ParameterDirection.Output Then
 					If DECLAREs = "" Then
 						DECLAREs = "DECLARE " & Environment.NewLine
@@ -234,7 +189,7 @@ Public Class clsDataAccess
 
 			'EXEC
 			EXEC = Environment.NewLine & "EXEC " & sqlCommand.CommandText & " " & Environment.NewLine
-			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+			For Each p As SqlParameter In sqlCommand.Parameters
 				If p.SqlDbType = SqlDbType.Decimal Or p.SqlDbType = SqlDbType.Float Or p.SqlDbType = SqlDbType.Int Or p.SqlDbType = SqlDbType.Money Or p.SqlDbType = SqlDbType.Real Then
 					If p.Direction = ParameterDirection.Output Then
 						EXEC &= "     " & p.ParameterName & " = " & p.ParameterName & " OUTPUT, " & Environment.NewLine
@@ -255,7 +210,7 @@ Public Class clsDataAccess
 			End If
 
 			'SELECTs
-			For Each p As System.Data.SqlClient.SqlParameter In sqlCommand.Parameters
+			For Each p As SqlParameter In sqlCommand.Parameters
 				If p.Direction = ParameterDirection.Output Then
 					If SELECTs = "" Then
 						SELECTs = Environment.NewLine & "SELECT " & Environment.NewLine
@@ -272,11 +227,11 @@ Public Class clsDataAccess
 		End Using
 	End Function
 
-	Public Function GetDataSet(ByVal sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
+	Public Function GetDataSet(sProcedureName As String, ParamArray args() As SqlParameter) As DataSet
 		Return GetDataSet(sProcedureName, CommandType.StoredProcedure, args)
 	End Function
 
-	Private Function GetDataSet(ByVal sProcedureName As String, ByVal CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
+	Private Function GetDataSet(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
 
 		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
@@ -323,18 +278,7 @@ Public Class clsDataAccess
 
 	End Function
 
-	Friend Shared Function CreateTable(Of T)() As DataTable
-		Dim entityType As Type = GetType(T)
-		Dim table As New DataTable(entityType.Name)
-		Dim properties As PropertyDescriptorCollection = TypeDescriptor.GetProperties(entityType)
 
-		For Each prop As PropertyDescriptor In properties
-			' HERE IS WHERE THE ERROR IS THROWN FOR NULLABLE TYPES
-			table.Columns.Add(prop.Name, prop.PropertyType)
-		Next
-
-		Return table
-	End Function
 
 
 End Class

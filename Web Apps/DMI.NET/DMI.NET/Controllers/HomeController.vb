@@ -1005,11 +1005,8 @@ Namespace Controllers
 				Dim sViewName
 				'NPG20081401 Fault 12868
 				Dim dblPreviousColumnWidth
-				Dim objUser As HR.Intranet.Server.clsSettings
-
-				'NPG20081401 Fault 12868
-				objUser = New HR.Intranet.Server.clsSettings
-				objUser.Connection = Session("databaseConnection")
+				Dim objUser As New clsSettings
+				objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 				Const DEADLOCK_ERRORNUMBER = -2147467259
 				Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
@@ -6778,7 +6775,7 @@ Namespace Controllers
 
 		Public Function EditFile(plngRecordID As Integer, plngColumnID As Integer, pstrRealSource As String)
 
-			Dim objOLE = Session("OLEObject")
+			Dim objOLE As Ole = Session("OLEObject")
 			Dim fileResponse As Byte() = objOLE.CreateOLEDocument(plngRecordID, plngColumnID, pstrRealSource)
 
 			Response.ContentType = "application/octet-stream"

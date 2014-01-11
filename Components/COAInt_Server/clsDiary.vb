@@ -410,18 +410,6 @@ Public Class clsDiary
 
 	End Function
 
-
-
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-		mdtSelectedDate = Now
-		CheckAccessToSystemEvents()
-	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-
 	Public Function GetCurrentRecord() As DataTable
 		Return DB.GetDataTable("SELECT ASRSysDiaryEvents.*, CONVERT(integer,ASRSysDiaryEvents.TimeStamp) AS intTimeStamp FROM ASRSysDiaryEvents " & SQLWhereCurrentEvent(), CommandType.Text)
 	End Function
@@ -522,7 +510,7 @@ LocalErr:
 
 	End Function
 
-	Private Sub CheckAccessToSystemEvents()
+	Public Sub CheckAccessToSystemEvents()
 
 		Dim rsTemp As DataTable
 		Dim strSQL As String
@@ -532,7 +520,7 @@ LocalErr:
 		Dim strColList As String
 
 		strSQL = "SELECT DISTINCT t.TableID, t.TableName, c.ColumnID, c.ColumnName FROM ASRSysDiaryLinks d JOIN ASRSysColumns c ON d.ColumnID = c.ColumnID JOIN ASRSysTables t ON c.TableID = t.TableID"
-		rsTemp = dataAccess.GetDataTable(strSQL, CommandType.Text)
+		rsTemp = DB.GetDataTable(strSQL, CommandType.Text)
 
 		If rsTemp.Rows.Count = 0 Then
 			'Can't find any links !!!

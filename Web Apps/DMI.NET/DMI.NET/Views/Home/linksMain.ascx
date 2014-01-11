@@ -794,6 +794,7 @@
 												' Create the reference to the DLL
 												Dim objDiaryEvents As clsDiary = New clsDiary
 												objDiaryEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+												objDiaryEvents.CheckAccessToSystemEvents()
 			
 												Err.Clear()
 												Dim mrstEventData = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
