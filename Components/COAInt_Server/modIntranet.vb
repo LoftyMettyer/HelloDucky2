@@ -87,4 +87,19 @@ Module modIntranet
 			End If
 		Next
 	End Function
+
+	Friend Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
+
+		Dim i As Short 'make sure there are enough bits to contain the number
+		Do While DeciValue > (2 ^ NoOfBits) - 1
+			NoOfBits = NoOfBits + 8
+		Loop
+		DecToBin = vbNullString
+		'build the string
+		For i = 0 To (NoOfBits - 1)
+			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
+		Next i
+	End Function
+
+
 End Module

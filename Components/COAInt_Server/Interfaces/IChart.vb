@@ -2,10 +2,10 @@
 
 Namespace Interfaces
 	Public Interface IChart
-		Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
-															 ByRef piAggregateType As Long, ByRef piElementType As ElementType,
-															 ByRef plngTableID_2 As Long, ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
-															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As DataTable
+		Function GetChartData(plngTableID As Integer, plngColumnID As Integer, plngFilterID As Integer,
+																piAggregateType As Integer, piElementType As ElementType,
+																plngTableID_2 As Integer, plngColumnID_2 As Integer, plngTableID_3 As Integer, plngColumnID_3 As Integer,
+																plngSortOrderID As Integer, piSortDirection As Integer, plngChart_ColourID As Integer) As DataTable
 		Property SessionInfo() As SessionInfo
 	End Interface
 End Namespace

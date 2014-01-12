@@ -1,4 +1,4 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
@@ -11,7 +11,6 @@ Public Class clsMultiAxisChart
 	Implements IChart
 
 	Private mastrUDFsRequired() As String
-	Private mvarPrompts() As Object
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
@@ -39,10 +38,10 @@ Public Class clsMultiAxisChart
 	' Recordset to store legend data from sQL
 	Private mrstChartLegendData As New DataTable
 
-	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
-															 ByRef piAggregateType As Long, ByRef piElementType As ElementType,
-															 ByRef plngTableID_2 As Long, ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
-															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As DataTable Implements IChart.GetChartData
+	Public Function GetChartData(plngTableID As Integer, plngColumnID As Integer, plngFilterID As Integer,
+																piAggregateType As Integer, piElementType As ElementType,
+																plngTableID_2 As Integer, plngColumnID_2 As Integer, plngTableID_3 As Integer, plngColumnID_3 As Integer,
+																plngSortOrderID As Integer, piSortDirection As Integer, plngChart_ColourID As Integer) As DataTable Implements IChart.GetChartData
 
 
 		Dim fOK As Boolean
@@ -65,7 +64,7 @@ Public Class clsMultiAxisChart
 		Dim lngColourColumnID As Integer
 
 		Dim lngSortOrderID As Integer
-		Dim iSortDirection As Short
+		Dim iSortDirection As Integer
 
 		fOK = True
 
@@ -154,10 +153,10 @@ Public Class clsMultiAxisChart
 	Private Function SQLSelectVerticalID(ByRef plngColumnID As Integer, ByRef pstrTableName As String) As Boolean
 		Dim pstrSQL As String
 		Dim pstrCaseStatements As String
-		Dim piCount As Short
+		Dim piCount As Integer
 		Dim pstrVerticalIDColumn As String
 		Dim pfNullFlag As Boolean
-		Dim piNull_ID As Short
+		Dim piNull_ID As Integer
 
 		On Error GoTo SQLSelectVerticalID_ERROR
 
@@ -166,7 +165,7 @@ Public Class clsMultiAxisChart
 
 		Else
 
-			pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectVerticalID & ") AS [VERTICAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " ORDER BY 1 "
+			pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectVerticalID & ") AS [VERTICAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin).ToString() & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere).ToString() & " ORDER BY 1 "
 
 			' Execute the SQL and store in recordset
 			mrstChartLegendData = DB.GetDataTable(pstrSQL, CommandType.Text)
@@ -189,13 +188,13 @@ Public Class clsMultiAxisChart
 					pfNullFlag = True
 					piNull_ID = piCount
 				Else
-					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID"))
+					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID").ToString())
 					pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
 
 					If General.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 						pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 					End If
-					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'") & " THEN " & CStr(piCount)
+					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'").ToString() & " THEN " & CStr(piCount)
 				End If
 				piCount = piCount + 1
 			Next
@@ -221,20 +220,20 @@ SQLSelectVerticalID_ERROR:
 
 	End Function
 
-	Private Function SQLSelectHorizontalID(ByRef piSortDirection As Short, ByRef lngColumnID As Integer, ByRef pstrTableName As String) As Boolean
+	Private Function SQLSelectHorizontalID(ByRef piSortDirection As Integer, ByRef lngColumnID As Integer, ByRef pstrTableName As String) As Boolean
 		Dim pstrSQL As String
 		Dim pstrCaseStatements As String
-		Dim piCount As Short
+		Dim piCount As Integer
 		Dim pstrSQLOrderBy As String
 		Dim pstrHorizontalIDColumn As String
 		Dim pfNullFlag As Boolean
-		Dim piNull_ID As Short
+		Dim piNull_ID As Integer
 
 		On Error GoTo SQLSelectHorizontalID_ERROR
 
-		pstrSQLOrderBy = " ORDER BY 1 " & IIf(piSortDirection = 0, " ASC", " DESC")
+		pstrSQLOrderBy = " ORDER BY 1 " & IIf(piSortDirection = 0, " ASC", " DESC").ToString()
 
-		pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectHorizontalID & ") AS [HORIZONTAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & pstrSQLOrderBy
+		pstrSQL = "SELECT DISTINCT(" & mstrSQLSelectHorizontalID & ") AS [HORIZONTAL_ID] FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin).ToString() & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere).ToString() & pstrSQLOrderBy
 
 		' Execute the SQL and store in recordset
 		mrstChartLegendData = DB.GetDataTable(pstrSQL, CommandType.Text)
@@ -258,13 +257,13 @@ SQLSelectVerticalID_ERROR:
 				pfNullFlag = True
 				piNull_ID = piCount
 			Else
-				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID"))
+				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID").ToString())
 				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
 				If General.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
 					pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 				End If
-				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'") & " THEN " & CStr(piCount)
+				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'").ToString() & " THEN " & CStr(piCount)
 			End If
 			piCount += 1
 		Next
@@ -287,7 +286,7 @@ SQLSelectHorizontalID_ERROR:
 
 	End Function
 
-	Private Function GenerateSQLOrderBy(ByRef plngSortOrderID As Integer, ByRef piSortDirection As Short) As Boolean
+	Private Function GenerateSQLOrderBy(ByRef plngSortOrderID As Integer, ByRef piSortDirection As Integer) As Boolean
 		' Purpose : Returns order by string from the sort order array
 
 		On Error GoTo GenerateSQLOrderBy_ERROR
@@ -306,19 +305,19 @@ SQLSelectHorizontalID_ERROR:
 		If Len(mstrSQLOrderBy) > 0 Then mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
 
 		If Mid(pstrBinaryString, 3, 1) = "1" Then	' The third switch is for 'Sort by Aggregate'
-			piSortDirection = Val(Right(pstrBinaryString, 1))
-			mstrSQLOrderBy = "[AGGREGATE] " & IIf(piSortDirection = 0, "ASC", "DESC")
-			mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Left(pstrBinaryString, 1) = "0", " [HORIZONTAL] ASC ", " [HORIZONTAL] DESC ")
+			piSortDirection = CInt(Right(pstrBinaryString, 1))
+			mstrSQLOrderBy = "[AGGREGATE] " & IIf(piSortDirection = 0, "ASC", "DESC").ToString()
+			mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Left(pstrBinaryString, 1) = "0", " [HORIZONTAL] ASC ", " [HORIZONTAL] DESC ").ToString()
 			If Len(mstrSQLSelectVerticalID) > 0 Then ' may be 2 axis chart
-				mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 2, 1) = "0", " [VERTICAL] ASC ", " [VERTICAL] DESC ")
+				mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 2, 1) = "0", " [VERTICAL] ASC ", " [VERTICAL] DESC ").ToString()
 			End If
 
 		Else
-			mstrSQLOrderBy = IIf(Left(pstrBinaryString, 1) = "0", " [HORIZONTAL] ASC ", " [HORIZONTAL] DESC ")
+			mstrSQLOrderBy = IIf(Left(pstrBinaryString, 1) = "0", " [HORIZONTAL] ASC ", " [HORIZONTAL] DESC ").ToString()
 			If Len(mstrSQLSelectVerticalID) > 0 Then ' may be 2 axis chart
-				mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 2, 1) = "0", " [VERTICAL] ASC ", " [VERTICAL] DESC ")
+				mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 2, 1) = "0", " [VERTICAL] ASC ", " [VERTICAL] DESC ").ToString()
 			End If
-			mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 4, 1) = "0", " [AGGREGATE] ASC ", " [AGGREGATE] DESC ")
+			mstrSQLOrderBy = mstrSQLOrderBy & ", " & IIf(Mid(pstrBinaryString, 4, 1) = "0", " [AGGREGATE] ASC ", " [AGGREGATE] DESC ").ToString()
 		End If
 
 
@@ -335,17 +334,8 @@ GenerateSQLOrderBy_ERROR:
 
 	Private Function MergeSQLStrings(ByRef iAggregateType As Short, ByRef iElementType As Short) As Boolean
 
-		On Error GoTo MergeSQLStrings_ERROR
-
-		mstrSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " GROUP BY " & mstrSQLGroupBy & mstrSQLOrderBy
-
-		MergeSQLStrings = True
-
-		Exit Function
-
-MergeSQLStrings_ERROR:
-		MergeSQLStrings = False
-		mstrErrorString = "Error merging SQL string components." & vbNewLine & Err.Description
+		mstrSQL = "SELECT " & mstrSQLSelect & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin).ToString() & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere).ToString() & " GROUP BY " & mstrSQLGroupBy & mstrSQLOrderBy
+		Return True
 
 	End Function
 
@@ -371,7 +361,7 @@ MergeSQLStrings_ERROR:
 		Dim pstrColumnListforHorizontalID As String
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
-		Dim pintNextIndex As Short
+		Dim pintNextIndex As Integer
 
 		Dim objTableView As TablePrivilege
 
@@ -466,11 +456,11 @@ MergeSQLStrings_ERROR:
 
 			' Load the temp variables
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(pintLoop, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			plngTempTableID = mvarColDetails(pintLoop, 0)
+			plngTempTableID = CInt(mvarColDetails(pintLoop, 0))
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(pintLoop, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			pstrTempTableName = mvarColDetails(pintLoop, 1)
+			pstrTempTableName = mvarColDetails(pintLoop, 1).ToString()
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(pintLoop, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			pstrTempColumnName = mvarColDetails(pintLoop, 2)
+			pstrTempColumnName = mvarColDetails(pintLoop, 2).ToString()
 
 			If plngTempTableID <> 0 Then ' should only happen for the z-axis (2 dimensional chart)
 
@@ -492,12 +482,12 @@ MergeSQLStrings_ERROR:
 
 					' this column can be read direct from the tbl/view or from a parent table
 
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrAggregatePrefix & IIf(pintLoop = 1 Or pintLoop = 0, "CASE ", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
+					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "").ToString() & pstrAggregatePrefix & IIf(pintLoop = 1 Or pintLoop = 0, "CASE ", "").ToString() & mstrRealSource & "." & Trim(pstrTempColumnName)
 
 					' once again, for the groupby, without aggregate prefix.
 					' Excluding any aggregates
 					If pintLoop <> 2 Then
-						pstrColumnListClean = pstrColumnListClean & IIf(Len(pstrColumnListClean) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
+						pstrColumnListClean = pstrColumnListClean & IIf(Len(pstrColumnListClean) > 0, ",", "").ToString() & mstrRealSource & "." & Trim(pstrTempColumnName)
 					End If
 
 					' If this is the 'Horizontal' column, create the select statement for the chart legend
@@ -589,7 +579,7 @@ MergeSQLStrings_ERROR:
 							' pstrColumnCode = pstrColumnCode & _
 							'' " WHEN NOT " & mstrViews(pintNextIndex) & "." & pstrTempColumnName & " IS NULL THEN " & mstrViews(pintNextIndex) & "." & pstrTempColumnName
 							' CHanged to COALESCE
-							pstrColumnCode = pstrColumnCode & IIf(pintNextIndex > 1, ", ", "") & mstrViews(pintNextIndex) & "." & pstrTempColumnName
+							pstrColumnCode = pstrColumnCode & IIf(pintNextIndex > 1, ", ", "").ToString() & mstrViews(pintNextIndex) & "." & pstrTempColumnName
 
 						Next pintNextIndex
 
@@ -604,11 +594,11 @@ MergeSQLStrings_ERROR:
 
 							pstrColumnCode = pstrColumnCode & ", NULL)"
 
-							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrAggregatePrefix & IIf(pintLoop = 1 Or pintLoop = 0, "CASE ", "") & pstrColumnCode
+							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "").ToString() & pstrAggregatePrefix & IIf(pintLoop = 1 Or pintLoop = 0, "CASE ", "").ToString() & pstrColumnCode
 
 							' Repeat for groupby...BUT EXCLUDE the intersection column.
 							If pintLoop <> 2 Then
-								pstrColumnListClean = pstrColumnListClean & IIf(Len(pstrColumnListClean) > 0, ",", "") & pstrColumnCode
+								pstrColumnListClean = pstrColumnListClean & IIf(Len(pstrColumnListClean) > 0, ",", "").ToString() & pstrColumnCode
 							End If
 
 							' If this is the 'Horizontal' column, create the select statement for the chart legend
@@ -644,11 +634,11 @@ MergeSQLStrings_ERROR:
 					Case 0 ' Horizontal
 						pstrColumnList = pstrColumnList & " <^> AS [HORIZONTAL_ID]"
 						' Insert the 'Horizontal' column value
-						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnListforHorizontalID) > 0, ", " & pstrColumnListforHorizontalID & " AS [HORIZONTAL]", "")
+						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnListforHorizontalID) > 0, ", " & pstrColumnListforHorizontalID & " AS [HORIZONTAL]", "").ToString()
 					Case 1 ' vertical_ID
 						pstrColumnList = pstrColumnList & " <$> AS [VERTICAL_ID]"
 						' Insert the 'Vertical' column value
-						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnListforVerticalID) > 0, ", " & pstrColumnListforVerticalID & " AS [VERTICAL]", "")
+						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnListforVerticalID) > 0, ", " & pstrColumnListforVerticalID & " AS [VERTICAL]", "").ToString()
 					Case 2 ' intersection
 						If Len(pstrAggregatePrefix) > 0 And pintLoop = 2 Then
 							pstrColumnList = pstrColumnList & ") AS [Aggregate]"
@@ -710,7 +700,7 @@ GenerateSQLFrom_ERROR:
 		On Error GoTo GenerateSQLJoin_ERROR
 
 		Dim pobjTableView As TablePrivilege
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom
@@ -899,7 +889,7 @@ GenerateSQLJoin_ERROR:
 
 		On Error GoTo GenerateSQLWhere_ERROR
 
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 		Dim pobjTableView As TablePrivilege
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
@@ -921,7 +911,7 @@ GenerateSQLJoin_ERROR:
 					' dont add where clause for the base/chil/p1/p2 TABLES...only add views here
 					' JPD20030207 Fault 5034
 					If (mlngTableViews(1, pintLoop) = 1) Then
-						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (") & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
+						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (").ToString() & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
 					End If
 
 				Next pintLoop
@@ -935,10 +925,10 @@ GenerateSQLJoin_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired)
 
 			If blnOK Then
-				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ").ToString() & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
 			Else
 				' Permission denied on something in the filter.
 				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngFilterID) & "' filter."
@@ -956,18 +946,7 @@ GenerateSQLWhere_ERROR:
 
 	End Function
 
-	Private Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
 
-		Dim i As Short 'make sure there are enough bits to contain the number
-		Do While DeciValue > (2 ^ NoOfBits) - 1
-			NoOfBits = NoOfBits + 8
-		Loop
-		DecToBin = vbNullString
-		'build the string
-		For i = 0 To (NoOfBits - 1)
-			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
-		Next i
-	End Function
 
 	Private Function ReverseDateTextField(ByRef pDateValue As String) As String
 

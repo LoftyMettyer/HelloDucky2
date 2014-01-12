@@ -105,7 +105,7 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function FilteredIDs(ByRef plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional ByRef paPrompts As Object = Nothing) As Boolean
+	Public Function FilteredIDs(plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional paPrompts As Object = Nothing) As Boolean
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
 		Dim fOK As Boolean

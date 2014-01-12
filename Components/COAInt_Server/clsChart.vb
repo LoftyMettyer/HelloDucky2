@@ -1,4 +1,4 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
 Imports HR.Intranet.Server.BaseClasses
@@ -11,7 +11,6 @@ Public Class clsChart
 	Implements IChart
 
 	Private mastrUDFsRequired() As String
-	Private mvarPrompts() As Object
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
 	Private mlngTableViews(,) As Integer
@@ -29,10 +28,10 @@ Public Class clsChart
 	Private mstrSQL As String
 	Private mstrErrorString As String
 
-	Public Function GetChartData(ByRef plngTableID As Long, ByRef plngColumnID As Long, ByRef plngFilterID As Long,
-															 ByRef piAggregateType As Long, ByRef piElementType As ElementType,
-															 ByRef plngTableID_2 As Long, ByRef plngColumnID_2 As Long, ByRef plngTableID_3 As Long, ByRef plngColumnID_3 As Long,
-															 ByRef plngSortOrderID As Long, ByRef piSortDirection As Long, ByRef plngChart_ColourID As Long) As DataTable Implements IChart.GetChartData
+	Public Function GetChartData(plngTableID As Integer, plngColumnID As Integer, plngFilterID As Integer,
+																piAggregateType As Integer, piElementType As ElementType,
+																plngTableID_2 As Integer, plngColumnID_2 As Integer, plngTableID_3 As Integer, plngColumnID_3 As Integer,
+																plngSortOrderID As Integer, piSortDirection As Integer, plngChart_ColourID As Integer) As DataTable Implements IChart.GetChartData
 
 		Dim fOK As Boolean
 		Dim strTableName As String
@@ -43,7 +42,7 @@ Public Class clsChart
 		Dim iAggregateType As Short
 		Dim iElementType As Short
 		Dim lngSortOrderID As Integer
-		Dim iSortDirection As Short
+		Dim iSortDirection As Integer
 		Dim lngColourID As Integer
 		Dim strColourColumnName As String
 
@@ -104,9 +103,9 @@ Public Class clsChart
 		End Select
 
 		If iElementType = 4 Then
-			mstrSQL = "SELECT " & pstrAggregate & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere)
+			mstrSQL = "SELECT " & pstrAggregate & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin).ToString() & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere).ToString()
 		Else
-			mstrSQL = "SELECT " & mstrSQLSelect & " AS [COLUMN], " & pstrAggregate & IIf(mstrSQLSelectColour <> vbNullString, mstrSQLSelectColour & " AS [COLOUR] ", ", " & Str(ColorTranslator.ToOle(Color.White)) & " AS [COLOUR] ") & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " GROUP BY " & mstrSQLSelect & mstrSQLSelectColour & mstrSQLOrderBy
+			mstrSQL = "SELECT " & mstrSQLSelect & " AS [COLUMN], " & pstrAggregate & IIf(mstrSQLSelectColour <> vbNullString, mstrSQLSelectColour & " AS [COLOUR] ", ", " & Str(ColorTranslator.ToOle(Color.White)).ToString() & " AS [COLOUR] ").ToString() & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin).ToString() & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere).ToString() & " GROUP BY " & mstrSQLSelect & mstrSQLSelectColour & mstrSQLOrderBy
 		End If
 
 		MergeSQLStrings = True
@@ -136,7 +135,7 @@ MergeSQLStrings_ERROR:
 		Dim pstrColumnList As String
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
-		Dim pintNextIndex As Short
+		Dim pintNextIndex As Integer
 
 		Dim objTableView As TablePrivilege
 
@@ -194,7 +193,7 @@ MergeSQLStrings_ERROR:
 		If pblnColumnOK Then
 
 			' this column can be read direct from the tbl/view or from a parent table
-			pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
+			pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "").ToString() & mstrRealSource & "." & Trim(pstrTempColumnName)
 
 			' If the table isnt the base table (or its realsource) then
 			' Check if it has already been added to the array. If not, add it.
@@ -282,7 +281,7 @@ MergeSQLStrings_ERROR:
 					'" END AS '" & mvarColDetails(0, pintLoop) & "'"
 					pstrColumnCode = "CASE " & pstrColumnCode & " ELSE NULL" & " END "
 
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrColumnCode
+					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "").ToString() & pstrColumnCode
 				End If
 
 			End If
@@ -334,7 +333,7 @@ GenerateSQLSelect_ERROR:
 		On Error GoTo GenerateSQLJoin_ERROR
 
 		Dim pobjTableView As TablePrivilege
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom
@@ -510,7 +509,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function GenerateSQLOrderBy(ByRef plngSortOrderID As Integer, ByRef piSortDirection As Short) As Boolean
+	Private Function GenerateSQLOrderBy(ByRef plngSortOrderID As Integer, ByRef piSortDirection As Integer) As Boolean
 
 		' Purpose : Returns order by string from the sort order array
 
@@ -528,11 +527,11 @@ GenerateSQLJoin_ERROR:
 		pstrBinaryString = DecToBin(plngSortOrderID, 4)
 
 		If Mid(pstrBinaryString, 3, 1) = "1" Then	' The third switch is for 'Sort by Aggregate'
-			piSortDirection = Val(Right(pstrBinaryString, 1))
-			mstrSQLOrderBy = "[AGGREGATE] " & IIf(piSortDirection = 0, "ASC", "DESC")
+			piSortDirection = CInt(Right(pstrBinaryString, 1))
+			mstrSQLOrderBy = "[AGGREGATE] " & IIf(piSortDirection = 0, "ASC", "DESC").ToString()
 		Else
-			piSortDirection = Val(Mid(pstrBinaryString, 1, 1))
-			mstrSQLOrderBy = "[COLUMN] " & IIf(piSortDirection = 0, "ASC", "DESC")
+			piSortDirection = CInt(Mid(pstrBinaryString, 1, 1))
+			mstrSQLOrderBy = "[COLUMN] " & IIf(piSortDirection = 0, "ASC", "DESC").ToString()
 		End If
 
 		If Len(mstrSQLOrderBy) > 0 Then mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
@@ -554,7 +553,7 @@ GenerateSQLOrderBy_ERROR:
 
 		On Error GoTo GenerateSQLWhere_ERROR
 
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 		Dim pobjTableView As TablePrivilege
 		Dim blnOK As Boolean
 		Dim strFilterIDs As String
@@ -576,7 +575,7 @@ GenerateSQLOrderBy_ERROR:
 					' dont add where clause for the base/chil/p1/p2 TABLES...only add views here
 					' JPD20030207 Fault 5034
 					If (mlngTableViews(1, pintLoop) = 1) Then
-						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (") & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
+						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (").ToString() & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
 					End If
 
 				Next pintLoop
@@ -590,10 +589,10 @@ GenerateSQLOrderBy_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired)
 
 			If blnOK Then
-				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ").ToString() & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
 			Else
 				' Permission denied on something in the filter.
 				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngFilterID) & "' filter."
@@ -609,19 +608,6 @@ GenerateSQLWhere_ERROR:
 		GenerateSQLWhere = False
 		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
 
-	End Function
-
-	Private Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
-
-		Dim i As Short 'make sure there are enough bits to contain the number
-		Do While DeciValue > (2 ^ NoOfBits) - 1
-			NoOfBits = NoOfBits + 8
-		Loop
-		DecToBin = vbNullString
-		'build the string
-		For i = 0 To (NoOfBits - 1)
-			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
-		Next i
 	End Function
 
 	Public Sub resetGlobals()
