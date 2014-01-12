@@ -83,17 +83,17 @@ Public Class clsMultiAxisChart
 		iSortDirection = CShort(piSortDirection)
 
 		If lngTableID > 0 Then
-			strTableName = General.GetTableName(lngTableID)
+			strTableName = GetTableName(lngTableID)
 			strColumnName = General.GetColumnName(lngColumnID)
 		End If
 
 		If lngTableID2 > 0 Then
-			strTableName2 = General.GetTableName(lngTableID2)
+			strTableName2 = GetTableName(lngTableID2)
 			strColumnName2 = General.GetColumnName(lngColumnID2)
 		End If
 
 		If lngTableID3 > 0 Then
-			strTableName3 = General.GetTableName(lngTableID3)
+			strTableName3 = GetTableName(lngTableID3)
 			strColumnName3 = General.GetColumnName(lngColumnID3)
 		End If
 
@@ -117,7 +117,7 @@ Public Class clsMultiAxisChart
 			End If
 		End If
 
-		mstrBaseTableName = General.GetTableName(CInt(mlngBaseTableID))
+		mstrBaseTableName = GetTableName(CInt(mlngBaseTableID))
 
 		' Fault HRPRO 1354 - Default column 3 name to 'ID' if no column is
 		' set in the database and aggregate is count. This is for tables

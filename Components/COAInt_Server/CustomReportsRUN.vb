@@ -846,7 +846,7 @@ GetCustomReportDefinition_ERROR:
 		objReportItemDetail.ColExprID = -1
 		objReportItemDetail.Type = "C"
 		objReportItemDetail.TableID = mlngCustomReportsBaseTable
-		objReportItemDetail.TableName = General.GetTableName(CInt(objReportItemDetail.TableID))
+		objReportItemDetail.TableName = GetTableName(objReportItemDetail.TableID)
 		objReportItemDetail.IDColumnName = "?ID"
 		objReportItemDetail.ColumnName = "ID"
 		objReportItemDetail.IsDateColumn = False
@@ -4516,7 +4516,7 @@ CalculateBradfordFactors_ERROR:
 		mstrCustomReportsName = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
 
 		mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
-		mstrCustomReportsBaseTableName = General.GetTableName(mlngCustomReportsBaseTable)
+		mstrCustomReportsBaseTableName = GetTableName(mlngCustomReportsBaseTable)
 		mlngCustomReportsParent1Table = 0
 		mlngCustomReportsParent1FilterID = 0
 		mlngCustomReportsParent2Table = 0
@@ -4532,7 +4532,7 @@ CalculateBradfordFactors_ERROR:
 		mvarChildTables(2, 0) = 0	'Number of records to take from child
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(3, 0) = General.GetTableName(mvarChildTables(0, 0))	'Child Table Name
+		mvarChildTables(3, 0) = GetTableName(mvarChildTables(0, 0))	'Child Table Name
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mvarChildTables(4, 0) = True 'Boolean - True if table is used, False if not
 		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4751,7 +4751,7 @@ GetBradfordReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.TableID = lngTableID
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.TableName = General.GetTableName(CInt(lngTableID))
+				objReportItem.TableName = GetTableName(CInt(lngTableID))
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.Type = "C" Then

@@ -3475,7 +3475,7 @@ TidyUpAndExit:
 			mstrCalendarReportsName = rowDefinition("Name").ToString
 			Logs.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
 			mlngCalendarReportsBaseTable = CInt(rowDefinition("BaseTable"))
-			mstrCalendarReportsBaseTableName = General.GetTableName(mlngCalendarReportsBaseTable)
+			mstrCalendarReportsBaseTableName = GetTableName(mlngCalendarReportsBaseTable)
 
 			' Check the user has permission to read the base table.
 			'UPGRADE_WARNING: Couldn't resolve default property of object pblnOK. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -5018,7 +5018,7 @@ DisableWPs:
 				End If
 
 				If objRow("LegendLookupTableID") > 0 Then
-					sTempLegendTableName = General.GetTableName(objRow("LegendLookupTableID"))
+					sTempLegendTableName = GetTableName(objRow("LegendLookupTableID"))
 				Else
 					sTempLegendTableName = vbNullString
 				End If

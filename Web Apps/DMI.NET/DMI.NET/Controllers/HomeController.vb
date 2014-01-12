@@ -993,6 +993,8 @@ Namespace Controllers
 			'Data access variables
 			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
 			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
 			Dim SPParameters() As SqlParameter
 
 			' Additional controller actions for SSI view. Only SSI calls to this action have parameters.
@@ -1230,29 +1232,10 @@ Namespace Controllers
 
 				If (Len(sErrorDescription) = 0) Then
 					Dim sTitle As String = ""
+
 					If (Session("linkType") <> "multifind") Then
-						Dim cmdGetTableName = CreateObject("ADODB.Command")
-						cmdGetTableName.CommandText = "sp_ASRIntGetTableName"
-						cmdGetTableName.CommandType = 4	' Stored procedure
-						cmdGetTableName.ActiveConnection = Session("databaseConnection")
 
-						Dim prmTableID = cmdGetTableName.CreateParameter("TableID", 3, 1)
-						cmdGetTableName.Parameters.Append(prmTableID)
-						prmTableID.value = CleanNumeric(Session("tableID"))
-
-						Dim prmTableName = cmdGetTableName.CreateParameter("TableName", 200, 2, 255)
-						cmdGetTableName.Parameters.Append(prmTableName)
-
-						Err.Clear()
-						cmdGetTableName.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Error getting the link table name." & vbCrLf & FormatError(Err.Description)
-						Else
-							sTableName = Replace(cmdGetTableName.Parameters("TableName").Value, "_", " ")
-						End If
-
-						cmdGetTableName = Nothing
+						sTableName = Replace(objDatabase.GetTableName(CInt(Session("tableID"))), "_", " ")
 
 						sTitle = "Select the required "
 
@@ -1336,32 +1319,7 @@ Namespace Controllers
 
 					Else
 
-						Dim cmdGetTableName = CreateObject("ADODB.Command")
-						cmdGetTableName.CommandText = "sp_ASRIntGetTableName"
-						cmdGetTableName.CommandType = 4	' Stored procedure
-						cmdGetTableName.ActiveConnection = Session("databaseConnection")
-
-						Dim prmTableID = cmdGetTableName.CreateParameter("TableID", 3, 1)
-						cmdGetTableName.Parameters.Append(prmTableID)
-						prmTableID.value = CleanNumeric(Session("SSILinkTableID"))
-
-						Dim prmTableName = cmdGetTableName.CreateParameter("TableName", 200, 2, 255)
-						cmdGetTableName.Parameters.Append(prmTableName)
-
-						Err.Clear()
-						cmdGetTableName.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Error getting the link table name." & vbCrLf & FormatError(Err.Description)
-						Else
-							If Not IsDBNull(cmdGetTableName.Parameters("TableName").Value) Then
-								sTableName = Replace(cmdGetTableName.Parameters("TableName").Value, "_", " ")
-							Else
-								sTableName = ""
-							End If
-						End If
-
-						cmdGetTableName = Nothing
+						sTableName = Replace(objDatabase.GetTableName(CInt(Session("SSILinkTableID"))), "_", " ")
 
 					End If
 

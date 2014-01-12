@@ -2180,7 +2180,7 @@ LocalErr:
 
 
 		mlngBaseTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))
-		mstrBaseTable = General.GetTableName(mlngBaseTableID)
+		mstrBaseTable = GetTableName(mlngBaseTableID)
 
 		mlngRecordDescExprID = CInt(General.GetRecDescExprID(mlngBaseTableID))
 

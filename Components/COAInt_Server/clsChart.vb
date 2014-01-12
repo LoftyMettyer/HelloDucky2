@@ -57,7 +57,7 @@ Public Class clsChart
 		iSortDirection = CShort(piSortDirection)
 		lngColourID = plngChart_ColourID
 
-		strTableName = General.GetTableName(lngTableID)
+		strTableName = GetTableName(lngTableID)
 		strColumnName = General.GetColumnName(lngColumnID)
 		strColourColumnName = General.GetColumnName(lngColourID)
 

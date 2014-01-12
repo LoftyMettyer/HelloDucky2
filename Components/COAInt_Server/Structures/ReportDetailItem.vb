@@ -18,7 +18,7 @@ Namespace Structures
 		Public LastValue As String
 		Public ColExprID As Long
 		Public Type As String
-		Public TableID As Long
+		Public TableID As Integer
 		Public TableName As String
 		Public ColumnName As String
 		Public IsDateColumn As Boolean

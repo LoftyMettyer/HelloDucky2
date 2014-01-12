@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
@@ -412,6 +413,9 @@
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
+		
+		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
 		Dim sReaction As String
 		Dim sUtilTypeName As String
 		Dim sErrMsg As String
@@ -511,27 +515,10 @@
 	<%
 		Dim sErrorDescription As String
 				
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 	
-		Dim cmdBaseTable As Command = New Command
-		cmdBaseTable.CommandText = "sp_ASRIntGetTableName"
-		cmdBaseTable.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdBaseTable.ActiveConnection = Session("databaseConnection")
-
-		Dim prmTableID = cmdBaseTable.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-		cmdBaseTable.Parameters.Append(prmTableID)
-		prmTableID.value = CleanNumeric(Session("utiltableid"))
-
-		Dim prmTableName = cmdBaseTable.CreateParameter("tableName", 200, 2, 255)
-		cmdBaseTable.Parameters.Append(prmTableName)
-
-		Err.Clear()
-		cmdBaseTable.Execute()
-			
-		Response.Write("<INPUT type='hidden' id=txtTableName name=txtTableName value=""" & cmdBaseTable.Parameters("tableName").Value & """>" & vbCrLf)
-
-		' Release the ADO command object.
-		cmdBaseTable = Nothing
+		Dim sTableName = objDatabase.GetTableName(CInt(Session("utiltableid")))	
+		Response.Write("<input type='hidden' id='txtTableName' name='txtTableName' value=""" & sTableName & """>" & vbCrLf)
 	
 	%>
 	<input type="hidden" id="txtCanDelete" name="txtCanDelete" value="0">

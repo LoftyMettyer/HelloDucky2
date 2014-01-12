@@ -332,8 +332,16 @@ ErrorTrap:
 
 #Region "From clsGeneral"
 
-		Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+		Public Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
 			Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+		End Function
+
+#End Region
+
+#Region "Accessible from dmi.net - may need to move to a metadata class at a future date"
+
+		Public Function GetTableName(plngTableID As Integer) As String
+			Return Tables.GetById(plngTableID).Name
 		End Function
 
 #End Region
