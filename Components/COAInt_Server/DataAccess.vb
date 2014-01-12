@@ -116,7 +116,13 @@ Public Class clsDataAccess
 	Public Function GetDataTable(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
 
 		Try
-			Return GetDataSet(sProcedureName, CommandType, args).Tables(0)
+			Dim dtData = GetDataSet(sProcedureName, CommandType, args)
+
+			If dtData.Tables.Count = 0 Then
+				Return Nothing
+			Else
+				Return dtData.Tables(0)
+			End If
 
 		Catch ex As Exception
 			Throw

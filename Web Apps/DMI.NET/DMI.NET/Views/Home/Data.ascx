@@ -603,119 +603,74 @@
 	' Get the required record count if we have a query.
 	If Len(Session("selectSQL")) > 0 Then
 		If Session("action") = "NEW" Then
-			Dim cmdGetRecord = New ADODB.Command
-			cmdGetRecord.CommandText = "sp_ASRIntCalcDefaults"
-			cmdGetRecord.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-			cmdGetRecord.ActiveConnection = Session("databaseConnection")
 
-			Dim prmRecordCount = cmdGetRecord.CreateParameter("recordCount", 3, 2)
-			cmdGetRecord.Parameters.Append(prmRecordCount)
-
-			Dim prmFromDef = cmdGetRecord.CreateParameter("fromDef", 200, 1, 2147483646)
-			cmdGetRecord.Parameters.Append(prmFromDef)
-			prmFromDef.value = Session("fromDef")
-
-			Dim prmFilterDef = cmdGetRecord.CreateParameter("filterDef", 200, 1, 2147483646)
-			cmdGetRecord.Parameters.Append(prmFilterDef)
-			prmFilterDef.value = Session("filterDef")
-
-			Dim prmTableId = cmdGetRecord.CreateParameter("tableID", 3, 1)
-			cmdGetRecord.Parameters.Append(prmTableId)
-			prmTableId.value = CleanNumeric(Session("tableID"))
-
-			Dim prmParentTableId = cmdGetRecord.CreateParameter("parentTableID", 3, 1)
-			cmdGetRecord.Parameters.Append(prmParentTableId)
-			prmParentTableId.value = CleanNumeric(Session("parentTableID"))
-
-			Dim prmParentRecordId = cmdGetRecord.CreateParameter("parentRecordID", 3, 1)
-			cmdGetRecord.Parameters.Append(prmParentRecordId)
-			prmParentRecordId.value = CleanNumeric(Session("parentRecordID"))
-	
-			Dim prmDefaultCalcCols = cmdGetRecord.CreateParameter("defaultCalcCols", 200, 1, 2147483646)
-			cmdGetRecord.Parameters.Append(prmDefaultCalcCols)
-			prmDefaultCalcCols.value = Session("defaultCalcColumns")
-	
-			Dim prmDecSeparator = cmdGetRecord.CreateParameter("decSeparator", 200, 1, 255)
-			cmdGetRecord.Parameters.Append(prmDecSeparator)
-			prmDecSeparator.value = Session("LocaleDecimalSeparator")
-
-			Dim prmDateFormat = cmdGetRecord.CreateParameter("dateFormat", 200, 1, 255)
-			cmdGetRecord.Parameters.Append(prmDateFormat)
-			prmDateFormat.value = Session("LocaleDateFormat")
+			Dim prmRecordCount As New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 		
-			Err.Clear()
-			Dim rstRecord = cmdGetRecord.Execute
-	
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Default values could not be calculated." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				If rstRecord.state = 1 Then	'adStateOpen
-					If Not (rstRecord.bof And rstRecord.eof) Then
-						For iloop = 0 To (rstRecord.fields.count - 1)
-							If IsDBNull(rstRecord.fields(iloop).value) Then
-								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value=''>" & vbCrLf)
+			Try
+							
+				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
+					, prmRecordCount _
+					, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
+					, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+					, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+					, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+					, New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = Session("defaultCalcColumns")} _
+					, New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
+					, New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDateFormat")})
+		
+				If Not rstRecord Is Nothing Then
+					If rstRecord.Rows.Count > 0 Then
+						For iloop = 0 To (rstRecord.Columns.Count - 1)
+							If IsDBNull(rstRecord(iloop)) Then
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value=''>" & vbCrLf)
 							Else
-								Response.Write("<input type='hidden' id='txtData_" & rstRecord.fields(iloop).name & "' name='txtData_" & rstRecord.fields(iloop).name & "' value='" & Replace(rstRecord.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Replace(rstRecord(0)(iloop).ToString(), """", "&quot;") & "'>" & vbCrLf)
 							End If
 						Next
 					End If
-	
-					' Release the ADO recordset object.
-					rstRecord.close()
 				End If
-			End If
-			rstRecord = Nothing
+				
+			Catch ex As Exception
+				sErrorDescription = "Default values could not be calculated." & vbCrLf & FormatError(ex.Message)
 
+			End Try
+
+		
 			If Session("parentTableID") > 0 Then
-				Dim cmdGetParentValues = New ADODB.Command
-				cmdGetParentValues.CommandText = "spASRIntGetParentValues"
-				cmdGetParentValues.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				cmdGetParentValues.ActiveConnection = Session("databaseConnection")
-
-				Dim prmScreenId = cmdGetParentValues.CreateParameter("screenID", 3, 1)
-				cmdGetParentValues.Parameters.Append(prmScreenId)
-				prmScreenId.value = CleanNumeric(Session("screenID"))
-
-				Dim prmParentTableId2 = cmdGetParentValues.CreateParameter("parentTableID", 3, 1)
-				cmdGetParentValues.Parameters.Append(prmParentTableId2)
-				prmParentTableId2.value = CleanNumeric(Session("parentTableID"))
-
-				Dim prmParentRecordId2 = cmdGetParentValues.CreateParameter("parentRecordID", 3, 1)
-				cmdGetParentValues.Parameters.Append(prmParentRecordId2)
-				prmParentRecordId2.value = CleanNumeric(Session("parentRecordID"))
+				
+				Try
 					
-				Err.Clear()
-				Dim rstParentValues = cmdGetParentValues.Execute
-					
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(Err.Description)
-				End If
+					Dim rstParentValues = objDataAccess.GetDataTable("spASRIntGetParentValues", CommandType.StoredProcedure _
+						, New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))} _
+						, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+						, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))})
 
-				If Len(sErrorDescription) = 0 Then
-					If rstParentValues.state = 1 Then	'adStateOpen
-						If Not (rstParentValues.bof And rstParentValues.eof) Then
-							For iloop = 0 To (rstParentValues.fields.count - 1)
-								If IsDBNull(rstParentValues.fields(iloop).value) Then
-									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value=''>" & vbCrLf)
+					If Not rstParentValues Is Nothing Then
+						If rstParentValues.Rows.Count > 0 Then
+							For iloop = 0 To (rstParentValues.Columns.Count - 1)
+								If IsDBNull(rstParentValues(iloop)) Then
+									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.Columns(iloop).ColumnName & "' name='txtData_" & rstParentValues.Columns(iloop).ColumnName & "' value=''>" & vbCrLf)
 								Else
-									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.fields(iloop).name & "' name='txtData_" & rstParentValues.fields(iloop).name & "' value='" & Replace(rstParentValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+									Response.Write("<input type='hidden' id='txtData_" & rstParentValues.Columns(iloop).ColumnName & "' name='txtData_" & rstParentValues.Columns(iloop).ColumnName & "' value='" & Replace(rstParentValues(0)(iloop).ToString(), """", "&quot;") & "'>" & vbCrLf)
 								End If
 							Next
 						End If
-					
-						' Release the ADO recordset object.
-						rstParentValues.close()
 					End If
-				End If
-				rstParentValues = Nothing
+										
+				Catch ex As Exception
+					sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(Err.Description)
+
+				End Try
+
+
+					
 			End If
 
 			If Len(sErrorDescription) = 0 Then
 				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & cmdGetRecord.Parameters("recordCount").Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & cmdGetRecord.Parameters("recordCount").Value + 1 & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='" & prmRecordCount.Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & prmRecordCount.Value + 1 & "'>" & vbCrLf)
 			Else
 				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
 				Response.Write("<input type='hidden' id='txtRecordCount' name='txtRecordCount' value='0'>" & vbCrLf)
@@ -732,7 +687,7 @@
 			Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmRecordPosition = New SqlParameter("piRecordPosition", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmFilterDef = New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}
-			Dim prmAction = New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("action")}		
+			Dim prmAction = New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("action")}
 			Dim prmParentTableId = New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}
 			Dim prmParentRecordId = New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}
 			Dim prmDecSeparator = New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")}
@@ -763,7 +718,7 @@
 						Else
 
 							' Is column a embedded/linked OLE								
-							If rstRecord.Columns(iloop).DataType.ToString().ToLower = "system.byte[]" Then														
+							If rstRecord.Columns(iloop).DataType.ToString().ToLower = "system.byte[]" Then
 								oleColumnData.Add(rstRecord.Columns(iloop).ColumnName)
 							Else
 								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Replace(objRow(iloop).ToString(), """", "&quot;") & "'>" & vbCrLf)
@@ -840,7 +795,7 @@
 
 		End If
 		
-	' Get the record description.
+		' Get the record description.
 		Dim sRecDesc As String = ""
 		If (Len(sErrorDescription) = 0) Then
 								
@@ -1042,7 +997,7 @@
 			
 				For Each objRow As DataRow In rsEventLogRecords.Rows
 
-					sAddString = vbNullString					
+					sAddString = vbNullString
 					sAddString = sAddString & objRow("ID").ToString() & vbTab
 					sAddString = sAddString & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbTab
 					
