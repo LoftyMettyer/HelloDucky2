@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
     <Compile Include="Database.vb" />
+    <Compile Include="Enums\RecEditStartType.vb" />
     <Compile Include="Enums\RelationType.vb" />
     <Compile Include="Interfaces\IChart.vb" />
     <Compile Include="Metadata\Link.vb" />

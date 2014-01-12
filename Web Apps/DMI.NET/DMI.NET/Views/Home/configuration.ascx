@@ -1,309 +1,72 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
-		Dim sReferringPage
-		Dim sTemp
-		Dim cmdDisplayDefault
-		Dim prmSection
-		Dim prmKey
-		Dim prmDefault
-		Dim prmUserSetting
-		Dim prmResult
-		Dim cmdDefSelOnlyMine
-		Dim cmdUtilWarning
-
-
+	Dim sTemp As String
 	
-		'Primary Start Mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "recordediting"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "primary"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "3"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("PrimaryStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
+	Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
+	Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
+	Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
+	Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
+	Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
+	Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
+	Session("FindRecords") = CLng(objDatabase.GetUserSetting("recordediting", "BlockSize", 1000))
 	
-		'History Start Mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+	' Get the DefSel 'only mine' settings.
+	For i = 0 To 20
+		sTemp = "onlymine "
 
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "recordediting"
+		Select Case i
+			Case 0
+				sTemp = sTemp & "BatchJobs"
+			Case 1
+				sTemp = sTemp & "Calculations"
+			Case 2
+				sTemp = sTemp & "CrossTabs"
+			Case 3
+				sTemp = sTemp & "CustomReports"
+			Case 4
+				sTemp = sTemp & "DataTransfer"
+			Case 5
+				sTemp = sTemp & "Export"
+			Case 6
+				sTemp = sTemp & "Filters"
+			Case 7
+				sTemp = sTemp & "GlobalAdd"
+			Case 8
+				sTemp = sTemp & "GlobalUpdate"
+			Case 9
+				sTemp = sTemp & "GlobalDelete"
+			Case 10
+				sTemp = sTemp & "Import"
+			Case 11
+				sTemp = sTemp & "MailMerge"
+			Case 12
+				sTemp = sTemp & "Picklists"
+			Case 13
+				sTemp = sTemp & "CalendarReports"
+			Case 14
+				sTemp = sTemp & "Labels"
+			Case 15
+				sTemp = sTemp & "LabelDefinition"
+			Case 16
+				sTemp = sTemp & "MatchReports"
+			Case 17
+				sTemp = sTemp & "CareerProgression"
+			Case 18
+				sTemp = sTemp & "EmailGroups"
+			Case 19
+				sTemp = sTemp & "RecordProfile"
+			Case 20
+				sTemp = sTemp & "SuccessionPlanning"
+		End Select
 
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "history"
+		Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
 
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "3"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("HistoryStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-	
-		'Lookup Start Mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "recordediting"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "lookup"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "3"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("LookupStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-	
-		'Quick Access Start Mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "recordediting"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "quickaccess"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "3"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("QuickAccessStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-	
-		'Expression colour mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "expressionbuilder"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "viewcolours"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "1"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("ExprColourMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-
-		'Expression expand mode.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "expressionbuilder"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "nodesize"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "1"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("ExprNodeMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-	
-		'Find window records.
-		cmdDisplayDefault = CreateObject("ADODB.Command")
-		cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-		cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-		cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-		prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmSection)
-		prmSection.value = "IntranetFindWindow"
-
-		prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmKey)
-		prmKey.value = "BlockSize"
-
-		prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmDefault)
-		prmDefault.value = "1000"
-
-		prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-		cmdDisplayDefault.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-		prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdDisplayDefault.Parameters.Append(prmResult)
-
-		Err.Clear()
-		cmdDisplayDefault.Execute()
-		Session("FindRecords") = CLng(cmdDisplayDefault.Parameters("result").Value)
-		cmdDisplayDefault = Nothing
-
-	
-		' Get the DefSel 'only mine' settings.
-		For i = 0 To 20
-				sTemp = "onlymine "
-
-				Select Case i
-						Case 0
-								sTemp = sTemp & "BatchJobs"
-						Case 1
-								sTemp = sTemp & "Calculations"
-						Case 2
-								sTemp = sTemp & "CrossTabs"
-						Case 3
-								sTemp = sTemp & "CustomReports"
-						Case 4
-								sTemp = sTemp & "DataTransfer"
-						Case 5
-								sTemp = sTemp & "Export"
-						Case 6
-								sTemp = sTemp & "Filters"
-						Case 7
-								sTemp = sTemp & "GlobalAdd"
-						Case 8
-								sTemp = sTemp & "GlobalUpdate"
-						Case 9
-								sTemp = sTemp & "GlobalDelete"
-						Case 10
-								sTemp = sTemp & "Import"
-						Case 11
-								sTemp = sTemp & "MailMerge"
-						Case 12
-								sTemp = sTemp & "Picklists"
-						Case 13
-								sTemp = sTemp & "CalendarReports"
-						Case 14
-								sTemp = sTemp & "Labels"
-						Case 15
-								sTemp = sTemp & "LabelDefinition"
-						Case 16
-								sTemp = sTemp & "MatchReports"
-						Case 17
-								sTemp = sTemp & "CareerProgression"
-						Case 18
-								sTemp = sTemp & "EmailGroups"
-						Case 19
-								sTemp = sTemp & "RecordProfile"
-						Case 20
-								sTemp = sTemp & "SuccessionPlanning"
-				End Select
-			
-				cmdDefSelOnlyMine = CreateObject("ADODB.Command")
-				cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
-				cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
-				cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
-
-				prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmSection)
-				prmSection.value = "defsel"
-
-				prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmKey)
-				prmKey.value = sTemp
-
-				prmDefault = cmdDefSelOnlyMine.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmDefault)
-				prmDefault.value = "0"
-
-				prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-				cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
-				prmUserSetting.value = 1
-
-				prmResult = cmdDefSelOnlyMine.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmResult)
-
-				Err.Clear()
-				cmdDefSelOnlyMine.Execute()
-				Session(sTemp) = CLng(cmdDefSelOnlyMine.Parameters("result").Value)
-				cmdDefSelOnlyMine = Nothing
-		Next
+	Next
 
 		' Get the Utility Warning settings.
 		For i = 0 To 4
@@ -322,36 +85,9 @@
 								sTemp = sTemp & "Import"
 				End Select
 			
-						
-				cmdUtilWarning = CreateObject("ADODB.Command")
-				cmdUtilWarning.CommandText = "sp_ASRIntGetSetting"
-				cmdUtilWarning.CommandType = 4 ' Stored procedure.
-				cmdUtilWarning.ActiveConnection = Session("databaseConnection")
-
-				prmSection = cmdUtilWarning.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdUtilWarning.Parameters.Append(prmSection)
-				prmSection.value = "warningmsg"
-
-				prmKey = cmdUtilWarning.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdUtilWarning.Parameters.Append(prmKey)
-				prmKey.value = sTemp
-
-				prmDefault = cmdUtilWarning.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdUtilWarning.Parameters.Append(prmDefault)
-				prmDefault.value = "1"
-
-				prmUserSetting = cmdUtilWarning.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-				cmdUtilWarning.Parameters.Append(prmUserSetting)
-				prmUserSetting.value = 1
-
-				prmResult = cmdUtilWarning.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdUtilWarning.Parameters.Append(prmResult)
-
-				Err.Clear()
-				cmdUtilWarning.Execute()
-				Session(sTemp) = CLng(cmdUtilWarning.Parameters("result").Value)
-				cmdUtilWarning = Nothing
-		Next
+		Session(sTemp) = CLng(objDatabase.GetUserSetting("warningmsg", sTemp, 1))
+		
+	Next
 %>
 
 
