@@ -1,50 +1,32 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <%
-	'This section of script is used for saving the new purge criteria.
-	Dim sDoesPurge As String
-	Dim sPeriod As String
-	Dim iFrequency As Integer
-	Dim cmdPurge As Command
-	Dim prmPeriod As ADODB.Parameter
-	Dim prmFrequency As ADODB.Parameter
-		
-	sDoesPurge = Trim(Request.Form("txtDoesPurge"))
-	sPeriod = Request.Form("txtPurgePeriod")
-	iFrequency = Request.Form("txtPurgeFrequency")
 	
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	Dim SPParameters() As SqlParameter
+
+	'This section of script is used for saving the new purge criteria.
+	Dim sDoesPurge As String = Trim(Request.Form("txtDoesPurge"))
+	Dim sPeriod As String = Request.Form("txtPurgePeriod")
+	Dim iFrequency As Integer = CInt(Request.Form("txtPurgeFrequency"))
+			
 	If sDoesPurge <> vbNullString Then
 		
 		' Delete old purge information to the database
-		cmdPurge = New Command
-		cmdPurge.CommandText = "spASRIntClearEventLogPurge"
-		cmdPurge.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdPurge.ActiveConnection = Session("databaseConnection")
-		Err.Clear()
-		cmdPurge.Execute()
-		cmdPurge = Nothing
- 
+		objDataAccess.ExecuteSP("spASRIntClearEventLogPurge")
+	
 		If sDoesPurge = "1" Then
-			' Insert the new purge criteria
-			cmdPurge = New Command
-			cmdPurge.CommandText = "spASRIntSetEventLogPurge"
-			cmdPurge.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdPurge.ActiveConnection = Session("databaseConnection")
-		
-			prmPeriod = cmdPurge.CreateParameter("period", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-			cmdPurge.Parameters.Append(prmPeriod)
-			prmPeriod.Value = CStr(sPeriod)
 
-			prmFrequency = cmdPurge.CreateParameter("frequency", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdPurge.Parameters.Append(prmFrequency)
-			prmFrequency.Value = CleanNumeric(CLng(iFrequency))
-			
-			Err.Clear()
-			cmdPurge.Execute()
-			cmdPurge = Nothing
-
+			' Insert the new purge criteria	
+			objDataAccess.ExecuteSP("spASRIntSetEventLogPurge" _
+						, New SqlParameter("psPeriod", SqlDbType.VarChar, 2) With {.Value = sPeriod} _
+						, New SqlParameter("piFrequency", SqlDbType.Int) With {.Value = iFrequency})
+					
 			Session("showPurgeMessage") = 1
 		Else
 			Session("showPurgeMessage") = 0
@@ -52,41 +34,17 @@
 	End If
 	
 	'This section of script is used for deleting Event Log records according to the selection on the Delete screen. 
-	Dim iDeleteSelection As Integer
-	Dim sSelectedEventIDs As String
-	Dim cmdDelete As Command
-	Dim sHasViewAllPermission As String
-	Dim prmEventIDs As ADODB.Parameter
-	Dim prmType As ADODB.Parameter
-	Dim prmCanViewAll As ADODB.Parameter
+	Dim sDeleteSelection As String = Request.Form("txtDeleteSel")
+	Dim sSelectedEventIDs As String = Request.Form("txtSelectedIDs")
+	Dim sHasViewAllPermission As Boolean = CBool(CleanBoolean(Request.Form("txtViewAllPerm")))
 	
-	iDeleteSelection = Request.Form("txtDeleteSel")
-	sSelectedEventIDs = Request.Form("txtSelectedIDs")
-	sHasViewAllPermission = Request.Form("txtViewAllPerm")
-
-	If iDeleteSelection <> vbNullString Then
-		iDeleteSelection = CInt(iDeleteSelection)
+	If Not sDeleteSelection Is Nothing Then
+			
+		objDataAccess.ExecuteSP("spASRIntDeleteEventLogRecords" _
+			, New SqlParameter("piDeleteType", SqlDbType.Int) With {.Value = CInt(sDeleteSelection)} _
+			, New SqlParameter("psSelectedEventIDs", SqlDbType.VarChar, -1) With {.Value = sSelectedEventIDs} _
+			, New SqlParameter("pfCanViewAll", SqlDbType.Bit) With {.Value = sHasViewAllPermission})
 		
-		cmdDelete = New Command
-		cmdDelete.CommandText = "spASRIntDeleteEventLogRecords"
-		cmdDelete.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdDelete.ActiveConnection = Session("databaseConnection")
-		
-		prmType = cmdDelete.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-		cmdDelete.Parameters.Append(prmType)
-		prmType.value = CleanNumeric(CLng(iDeleteSelection))
-
-		prmEventIDs = cmdDelete.CreateParameter("eventIDs", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDelete.Parameters.Append(prmEventIDs)
-		prmEventIDs.value = CStr(sSelectedEventIDs)
-
-		prmCanViewAll = cmdDelete.CreateParameter("canViewAll", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamInput)
-		cmdDelete.Parameters.Append(prmCanViewAll)
-		prmCanViewAll.Value = CleanBoolean(CBool(sHasViewAllPermission))
-
-		Err.Clear()
-		cmdDelete.Execute()
-		cmdDelete = Nothing
 	End If
 
 %>
@@ -1041,11 +999,6 @@
 											<tr>
 												<td width="10">
 													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80"
-														<%--onclick="viewEvent();"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}"
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1054,11 +1007,6 @@
 											<tr>
 												<td width="10">
 													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80"
-														<%--onclick="deleteEvent();"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}"
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1067,11 +1015,6 @@
 											<tr>
 												<td width="10">
 													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80"
-														<%--onclick="purgeEvent();"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}"
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1080,11 +1023,6 @@
 											<tr>
 												<td width="10">
 													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80"
-														<%--onclick="emailEvent();"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}"
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}"--%> />
 												</td>
 											</tr>
 										</table>
