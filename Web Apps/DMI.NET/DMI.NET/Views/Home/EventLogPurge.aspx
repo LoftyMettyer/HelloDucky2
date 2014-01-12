@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <!DOCTYPE html>
 <html>
@@ -205,27 +206,23 @@
 	<body>
 	<form id="frmEventPurge" name="frmEventPurge">
 		<%
-			Dim rsPurgeInfo As Recordset
+			
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			Dim iPeriod As Integer
-			Dim cmdPurgeInfo As Command
-	
-			cmdPurgeInfo = New Command
-			cmdPurgeInfo.CommandText = "spASRIntGetEventLogPurgeDetails"
-			cmdPurgeInfo.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdPurgeInfo.ActiveConnection = Session("databaseConnection")
+			
+			Dim rsPurgeInfo = objDataAccess.GetDataTable("spASRIntGetEventLogPurgeDetails", CommandType.StoredProcedure)
+		
+			If rsPurgeInfo.Rows.Count = 0 Then
 
-			Err.Clear()
-			rsPurgeInfo = cmdPurgeInfo.Execute
-	
-			If rsPurgeInfo.BOF And rsPurgeInfo.EOF Then
 				Response.Write("<input type=hidden name=txtPurge id=txtPurge value=0>" & vbCrLf)
 				Response.Write("<input type=hidden name=txtPeriodIndex id=txtPeriodIndex>" & vbCrLf)
 				Response.Write("<input type=hidden name=txtFrequency id=txtFrequency>" & vbCrLf)
 			Else
+				Dim objRow = rsPurgeInfo.Rows(0)
 				Response.Write("<input type=hidden name=txtPurge id=txtPurge value=1>" & vbCrLf)
-				Response.Write("<input type=hidden name=txtFrequency id=txtFrequency value=" & rsPurgeInfo.Fields("Frequency").Value & ">" & vbCrLf)
+				Response.Write("<input type=hidden name=txtFrequency id=txtFrequency value=" & objRow("Frequency") & ">" & vbCrLf)
 		
-				Select Case UCase(rsPurgeInfo.Fields("Period").value)
+				Select Case UCase(objRow("Period").tostring)
 					Case "DD" : iPeriod = 0
 					Case "WK" : iPeriod = 1
 					Case "MM" : iPeriod = 2
@@ -236,16 +233,13 @@
 				Response.Write("<input type=hidden name=txtPeriodIndex id=txtPeriodIndex value=" & iPeriod & ">" & vbCrLf)
 			End If
 	
-			rsPurgeInfo.close()
 			rsPurgeInfo = Nothing
-			cmdPurgeInfo = Nothing
 		%>
 
-		<%--<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">--%>
+
 			<table style="text-align : center; padding: 5px; border-spacing: 0;  width: 30%;  height: 100%; margin-right: 0px;">
 			<tr>
 				<td>
-					<%--<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">--%>
 						<table class="invisible" style="width: 30%;  height: 100%; padding: 0; border-spacing: 0;">
 						<tr style="height: 5px">
 							<td colspan="2"></td>

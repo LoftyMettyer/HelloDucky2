@@ -1,8 +1,9 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <!DOCTYPE html>
 
@@ -43,16 +44,14 @@
 		<form id="frmEventDetails" name="frmEventDetails">
 
 			<%
-				Dim rsAllBatchJobs As Recordset
+				
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 				Dim i As Integer
 				Dim sValue As String
 
 				Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
-		
-				Dim cmdEventBatchJobs As Command
-				Dim prmBatchRunID As ADODB.Parameter
-				Dim prmEventID As ADODB.Parameter
-		
+				
 				Session("eventName") = Request("txtEventName")
 				Session("eventID") = Request("txtEventID")
 				Session("cboString") = vbNullString
@@ -64,86 +63,70 @@
 					Session("eventBatch") = False
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='0'>" & vbCrLf)
 				End If
-
-				cmdEventBatchJobs = New Command
-				cmdEventBatchJobs.CommandText = "spASRIntGetEventLogBatchDetails"
-				cmdEventBatchJobs.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdEventBatchJobs.ActiveConnection = Session("databaseConnection")
-								
-				prmBatchRunID = cmdEventBatchJobs.CreateParameter("BatchRunID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-				cmdEventBatchJobs.Parameters.Append(prmBatchRunID)
-				prmBatchRunID.value = CleanNumeric(Request("txtEventBatchRunID"))
-
-				prmEventID = cmdEventBatchJobs.CreateParameter("EventID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-				cmdEventBatchJobs.Parameters.Append(prmEventID)
-				prmEventID.value = CleanNumeric(Request("txtEventID"))
-
-				Err.Clear()
-				rsAllBatchJobs = cmdEventBatchJobs.Execute
-	
+				
+				Dim rsAllBatchJobs = objDataAccess.GetDataTable("spASRIntGetEventLogBatchDetails", CommandType.StoredProcedure _
+					, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
+					, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))})
+		
+				
 				With rsAllBatchJobs
-					If Not (.EOF And .BOF) Then
-						i = 0
-						Do Until .EOF
-							i = i + 1
+					
+					i = 0
+					For Each objRow As DataRow In .Rows
 
-							Response.Write("<input type='hidden' Name='txtEventID_" & .Fields("ID").Value & "' id='txtEventID_" & .Fields("ID").Value & "' value='" & Replace(.Fields("ID").Value, """", "&quot;") & "'>" & vbCrLf)
-				
-							sValue = .Fields("Name").Value											'original value
-							sValue = Replace(sValue, """", "&quot;")		'escape quotes
-							sValue = Replace(sValue, "<", "&lt;")						'escape left angle bracket
-							sValue = Replace(sValue, ">", "&gt;")						'escape right angle bracket
-				
-							Response.Write("<input type='hidden' Name='txtEventName_" & .Fields("ID").Value & "' id='txtEventName_" & .Fields("ID").Value & "' value='" & sValue & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventMode_" & .Fields("ID").Value & "' id='txtEventMode_" & .Fields("ID").Value & "' value='" & Replace(.Fields("Mode").Value, """", "&quot;") & "'>" & vbCrLf)
-				
-							Response.Write("<input type='hidden' Name='txtEventStartTime_" & .Fields("ID").Value & "' id='txtEventStartTime_" & .Fields("ID").Value & "' value='" & ConvertSQLDateToLocale(.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(.Fields("DateTime").Value) & "'>" & vbCrLf)
-				
-							If IsDBNull(.Fields("EndTime").Value) Then
-								Response.Write("<input type='hidden' Name='txtEventEndTime_" & .Fields("ID").Value & "' id='txtEventEndTime_" & .Fields("ID").Value & "' value='" & vbNullString & "'>" & vbCrLf)
-							Else
-								Response.Write("<input type='hidden' Name='txtEventEndTime_" & .Fields("ID").Value & "' id='txtEventEndTime_" & .Fields("ID").Value & "' value='" & ConvertSQLDateToLocale(.Fields("EndTime").Value) & " " & ConvertSqlDateToTime(.Fields("EndTime").Value) & "'>" & vbCrLf)
-							End If
-				
-							Response.Write("<input type='hidden' Name='txtEventDuration_" & .Fields("ID").Value & "' id='txtEventDuration_" & .Fields("ID").Value & "' value='" & objUtilities.FormatEventDuration(CLng(.Fields("Duration").Value)) & "'>" & vbCrLf)
+						i += 1
 
-							Response.Write("<input type='hidden' Name='txtEventType_" & .Fields("ID").Value & "' id='txtEventType_" & .Fields("ID").Value & "' value='" & Replace(.Fields("Type").Value, """", "&quot;") & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventStatus_" & .Fields("ID").Value & "' id='txtEventStatus_" & .Fields("ID").Value & "' value='" & Replace(.Fields("Status").Value, """", "&quot;") & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventUser_" & .Fields("ID").Value & "' id='txtEventUser_" & .Fields("ID").Value & "' value='" & Replace(.Fields("Username").Value, """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventID_" & objRow("ID") & "' id='txtEventID_" & objRow("ID") & "' value='" & Replace(objRow("ID"), """", "&quot;") & "'>" & vbCrLf)
 				
-							Response.Write("<input type='hidden' Name='txtEventSuccessCount_" & .Fields("ID").Value & "' id='txtEventSuccessCount_" & .Fields("ID").Value & "' value='" & Replace(.Fields("SuccessCount").Value, """", "&quot;") & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventFailCount_" & .Fields("ID").Value & "' id='txtEventFailCount_" & .Fields("ID").Value & "' value='" & Replace(.Fields("FailCount").Value, """", "&quot;") & "'>" & vbCrLf)
+						sValue = objRow("Name").ToString()											'original value
+						sValue = Replace(sValue, """", "&quot;")		'escape quotes
+						sValue = Replace(sValue, "<", "&lt;")						'escape left angle bracket
+						sValue = Replace(sValue, ">", "&gt;")						'escape right angle bracket
 				
-							Response.Write("<input type='hidden' Name='txtEventBatchRunID_" & .Fields("ID").Value & "' id='txtEventBatchRunID_" & .Fields("ID").Value & "' value='" & Replace(.Fields("BatchRunID").Value, """", "&quot;") & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventBatchName_" & .Fields("ID").Value & "' id='txtEventBatchName_" & .Fields("ID").Value & "' value='" & Replace(.Fields("BatchName").Value, """", "&quot;") & "'>" & vbCrLf)
-							Response.Write("<input type='hidden' Name='txtEventBatchJobID_" & .Fields("ID").Value & "' id='txtEventBatchJobID_" & .Fields("ID").Value & "' value='" & Replace(.Fields("BatchJobID").Value, """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventName_" & objRow("ID") & "' id='txtEventName_" & objRow("ID") & "' value='" & sValue & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventMode_" & objRow("ID") & "' id='txtEventMode_" & objRow("ID") & "' value='" & Replace(objRow("Mode"), """", "&quot;") & "'>" & vbCrLf)
 				
-							If Session("eventBatch") = True Then
-								If Session("eventID") = .Fields("ID").Value Then
-									Session("cboString") = Session("cboString") & "<option selected='selected' name='" & .Fields("Name").Value & "' value='" & .Fields("ID").Value & "'>" & .Fields("Type").Value & " - " & .Fields("Name").Value & "</option>" & vbCrLf
-								Else
-									Session("cboString") = Session("cboString") & "<option name='" & .Fields("Name").Value & "' value='" & .Fields("ID").Value & "'>" & .Fields("Type").Value & " - " & .Fields("Name").Value & "</option>" & vbCrLf
-								End If
-							End If
+						Response.Write("<input type='hidden' Name='txtEventStartTime_" & objRow("ID") & "' id='txtEventStartTime_" & objRow("ID") & "' value='" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & "'>" & vbCrLf)
 				
-							.MoveNext()
-						Loop
-			
-						Session("eventBatchName") = Request("txtEventBatchName")
-			
-						Session("cboString") = Session("cboString") & "</SELECT>" & vbCrLf
-						If i <= 1 Then
-							Session("cboString") = "<select disabled id=cboOtherJobs name=cboOtherJobs class=""combodisabled"" style=""WIDTH: 100%"" onchange='populateEventInfo();populateEventDetails();'>" & vbCrLf & Session("cboString")
+						If IsDBNull(objRow("EndTime")) Then
+							Response.Write("<input type='hidden' Name='txtEventEndTime_" & objRow("ID") & "' id='txtEventEndTime_" & objRow("ID") & "' value='" & vbNullString & "'>" & vbCrLf)
 						Else
-							Session("cboString") = "<select id=cboOtherJobs name=cboOtherJobs class=""combo"" style=""WIDTH: 100%"" onchange='populateEventInfo();populateEventDetails();'>" & vbCrLf & Session("cboString")
+							Response.Write("<input type='hidden' Name='txtEventEndTime_" & objRow("ID") & "' id='txtEventEndTime_" & objRow("ID") & "' value='" & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & "'>" & vbCrLf)
 						End If
+				
+						Response.Write("<input type='hidden' Name='txtEventDuration_" & objRow("ID") & "' id='txtEventDuration_" & objRow("ID") & "' value='" & objUtilities.FormatEventDuration(CLng(objRow("Duration"))) & "'>" & vbCrLf)
+
+						Response.Write("<input type='hidden' Name='txtEventType_" & objRow("ID") & "' id='txtEventType_" & objRow("ID") & "' value='" & Replace(objRow("Type"), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventStatus_" & objRow("ID") & "' id='txtEventStatus_" & objRow("ID") & "' value='" & Replace(objRow("Status"), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventUser_" & objRow("ID") & "' id='txtEventUser_" & objRow("ID") & "' value='" & Replace(objRow("Username"), """", "&quot;") & "'>" & vbCrLf)
+				
+						Response.Write("<input type='hidden' Name='txtEventSuccessCount_" & objRow("ID") & "' id='txtEventSuccessCount_" & objRow("ID") & "' value='" & Replace(objRow("SuccessCount"), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventFailCount_" & objRow("ID") & "' id='txtEventFailCount_" & objRow("ID") & "' value='" & Replace(objRow("FailCount"), """", "&quot;") & "'>" & vbCrLf)
+				
+						Response.Write("<input type='hidden' Name='txtEventBatchRunID_" & objRow("ID") & "' id='txtEventBatchRunID_" & objRow("ID") & "' value='" & Replace(objRow("BatchRunID"), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventBatchName_" & objRow("ID") & "' id='txtEventBatchName_" & objRow("ID") & "' value='" & Replace(objRow("BatchName"), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventBatchJobID_" & objRow("ID") & "' id='txtEventBatchJobID_" & objRow("ID") & "' value='" & Replace(objRow("BatchJobID"), """", "&quot;") & "'>" & vbCrLf)
+				
+						If Session("eventBatch") = True Then
+							If Session("eventID") = objRow("ID") Then
+								Session("cboString") = Session("cboString") & "<option selected='selected' name='" & objRow("Name") & "' value='" & objRow("ID") & "'>" & objRow("Type") & " - " & objRow("Name") & "</option>" & vbCrLf
+							Else
+								Session("cboString") = Session("cboString") & "<option name='" & objRow("Name") & "' value='" & objRow("ID") & "'>" & objRow("Type") & " - " & objRow("Name") & "</option>" & vbCrLf
+							End If
+						End If
+				
+					Next
+					Session("eventBatchName") = Request("txtEventBatchName")
+			
+					Session("cboString") = Session("cboString") & "</SELECT>" & vbCrLf
+					If i <= 1 Then
+						Session("cboString") = "<select disabled id=cboOtherJobs name=cboOtherJobs class=""combodisabled"" style=""WIDTH: 100%"" onchange='populateEventInfo();populateEventDetails();'>" & vbCrLf & Session("cboString")
+					Else
+						Session("cboString") = "<select id=cboOtherJobs name=cboOtherJobs class=""combo"" style=""WIDTH: 100%"" onchange='populateEventInfo();populateEventDetails();'>" & vbCrLf & Session("cboString")
 					End If
 				End With
 	
 				rsAllBatchJobs = Nothing
-				cmdEventBatchJobs = Nothing
-				prmEventID = Nothing
-				prmBatchRunID = Nothing
 				objUtilities = Nothing
 	
 				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & Request("txtEventID") & "'>" & vbCrLf)
@@ -281,59 +264,34 @@
 																				</tr>
 
 																				<%
-																					Dim iDetailCount As Integer
-																					Dim rsEventDetails As Recordset
-																					Dim cmdEventDetails As Command
-																					Dim prmEventExists As ADODB.Parameter
+																					Dim iDetailCount As Integer = 0
 
-																					iDetailCount = 0
-	
-																					cmdEventDetails = New Command
-																					cmdEventDetails.CommandText = "spASRIntGetEventLogDetails"
-																					cmdEventDetails.CommandType = CommandTypeEnum.adCmdStoredProc
-																					cmdEventDetails.ActiveConnection = Session("databaseConnection")
-								
-																					prmBatchRunID = cmdEventDetails.CreateParameter("BatchRunID", 3, 1)	' 3=integer, 1=input
-																					cmdEventDetails.Parameters.Append(prmBatchRunID)
-																					prmBatchRunID.value = CleanNumeric(Request("txtEventBatchRunID"))
-
-																					prmEventID = cmdEventDetails.CreateParameter("EventID", 3, 1)	' 3=integer, 1=input
-																					cmdEventDetails.Parameters.Append(prmEventID)
-																					prmEventID.value = CleanNumeric(Request("txtEventID"))
-
-																					prmEventExists = cmdEventDetails.CreateParameter("EventExists", 3, 2)	' 3=integer, 2=output
-																					cmdEventDetails.Parameters.Append(prmEventExists)
-
-																					Err.Clear()
-																					rsEventDetails = cmdEventDetails.Execute
-
-																					If Not (rsEventDetails.BOF And rsEventDetails.EOF) Then
-																						Do While Not rsEventDetails.EOF
-																							iDetailCount = iDetailCount + 1
+																					Dim prmEventExists = New SqlParameter("piExists", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+																					Dim rsEventDetails = objDataAccess.GetDataTable("spASRIntGetEventLogDetails", CommandType.StoredProcedure _
+																						, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
+																						, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))} _
+																						, prmEventExists)
+		
+																					For Each objRow As DataRow In rsEventDetails.Rows
+																						iDetailCount = iDetailCount + 1
 				
-																							sValue = rsEventDetails.Fields("Notes").value				'original value
-																							sValue = Replace(sValue, """", "&quot;")	'escape quotes
+																						sValue = objRow("Notes").ToString()
+																						sValue = Replace(sValue, """", "&quot;")	'escape quotes
 
-																							Response.Write("<tr disabled='disabled'>")
-																							Response.Write("<td><input type='radio' value='row_" & rsEventDetails.Fields("EventLogID").value & "'></td>")
-																							Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & sValue & "<input id='detail_" & rsEventDetails.Fields("EventLogID").value & "' type='hidden' value='" & sValue & "'></td>")
-																							Response.Write("</tr>")
+																						Response.Write("<tr disabled='disabled'>")
+																						Response.Write("<td><input type='radio' value='row_" & objRow("EventLogID") & "'></td>")
+																						Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & sValue & "<input id='detail_" & objRow("EventLogID") & "' type='hidden' value='" & sValue & "'></td>")
+																						Response.Write("</tr>")
 																			
-																							rsEventDetails.MoveNext()
-																						Loop
-																					End If
-																					rsEventDetails.close()
-																					rsEventDetails = Nothing
+																					Next
 	
-																					If cmdEventDetails.Parameters("EventExists").Value > 0 Then
+																					If prmEventExists.Value > 0 Then
 																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='1'>" & vbCrLf)
 																					Else
 																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='0'>" & vbCrLf)
 																					End If
 	
-																					cmdEventDetails = Nothing
-																					prmEventID = Nothing
-																					prmBatchRunID = Nothing
+
 																					prmEventExists = Nothing
 																				%>
 																			</table>
