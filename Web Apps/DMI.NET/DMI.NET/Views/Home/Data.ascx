@@ -590,7 +590,7 @@
 	Dim SPParameters() As SqlParameter
 	
 	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
-	Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 	
 	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtParentTableID' name='txtParentTableID' value='" & Session("parentTableID") & "'>" & vbCrLf)
@@ -753,7 +753,7 @@
 				SPParameters = New SqlParameter() {prmRecordId, prmRecordCount, prmRecordPosition, prmFilterDef, _
 						prmAction, prmParentTableId, prmParentRecordId, prmDecSeparator, prmDateFormat, prmScreenId, prmViewId, prmOrderId}
 
-				Dim rstRecord = objDatabaseAccess.GetFromSP("sp_ASRIntGetRecord", SPParameters)
+				Dim rstRecord = objDataAccess.GetFromSP("sp_ASRIntGetRecord", SPParameters)
 					
 				For Each objRow As DataRow In rstRecord.Rows
 					For iloop = 0 To (rstRecord.Columns.Count - 1)
@@ -848,7 +848,7 @@
 
 				Dim prmRecordDesc As New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 			
-				objDatabaseAccess.ExecuteSP("sp_ASRIntGetRecordDescription", _
+				objDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription", _
 						New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
 						New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = lngRecordID}, _
 						New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
@@ -1010,155 +1010,95 @@
 		'**********************************************************************************************
 	ElseIf Session("action") = "LOADEVENTLOG" Then
 				
-		Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
+		Try
+			
+			Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
+			Dim prmError As New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIsFirstPage As New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIsLastPage As New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTotalRecCount As New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFirstRecPos As New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("ELFirstRecPos"))}
+				
+			Dim rsEventLogRecords = objDataAccess.GetDataTable("spASRIntGetEventLogRecords", CommandType.StoredProcedure _
+				, prmError _
+				, New SqlParameter("psFilterUser", SqlDbType.VarChar, -1) With {.Value = Session("ELFilterUser")} _
+				, New SqlParameter("piFilterType", SqlDbType.Int) With {.Value = Session("ELFilterType")} _
+				, New SqlParameter("piFilterStatus", SqlDbType.Int) With {.Value = Session("ELFilterStatus")} _
+				, New SqlParameter("piFilterMode", SqlDbType.Int) With {.Value = Session("ELFilterMode")} _
+				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderColumn")} _
+				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderOrder")} _
+				, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = Session("findRecords")} _
+				, prmIsFirstPage _
+				, prmIsLastPage _
+				, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("ELAction")} _
+				, prmTotalRecCount _
+				, prmFirstRecPos _
+				, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("ELCurrentRecCount"))})
 		
-		Dim cmdEventLogRecords = New ADODB.Command
-		cmdEventLogRecords.CommandText = "spASRIntGetEventLogRecords"
-		cmdEventLogRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdEventLogRecords.ActiveConnection = Session("databaseConnection")
-
-		Dim prmError = cmdEventLogRecords.CreateParameter("error", 11, 2)		' 11=bit, 2=output
-		cmdEventLogRecords.Parameters.Append(prmError)
-
-		Dim prmUser = cmdEventLogRecords.CreateParameter("user", 200, 1, 8000)
-		cmdEventLogRecords.Parameters.Append(prmUser)
-		prmUser.Value = Session("ELFilterUser")
-
-		Dim prmType = cmdEventLogRecords.CreateParameter("type", 3, 1)
-		cmdEventLogRecords.Parameters.Append(prmType)
-		prmType.Value = Session("ELFilterType")
-
-		Dim prmStatus = cmdEventLogRecords.CreateParameter("status", 3, 1)
-		cmdEventLogRecords.Parameters.Append(prmStatus)
-		prmStatus.Value = Session("ELFilterStatus")
-
-		Dim prmMode = cmdEventLogRecords.CreateParameter("mode", 3, 1)
-		cmdEventLogRecords.Parameters.Append(prmMode)
-		prmMode.Value = Session("ELFilterMode")
-
-		Dim prmOrderColumn = cmdEventLogRecords.CreateParameter("orderColumn", 200, 1, 8000)
-		cmdEventLogRecords.Parameters.Append(prmOrderColumn)
-		prmOrderColumn.Value = Session("ELOrderColumn")
-
-		Dim prmOrderOrder = cmdEventLogRecords.CreateParameter("orderOrder", 200, 1, 8000)
-		cmdEventLogRecords.Parameters.Append(prmOrderOrder)
-		prmOrderOrder.Value = Session("ELOrderOrder")
-
-		Dim prmReqRecs = cmdEventLogRecords.CreateParameter("reqRecs", 3, 1)
-		cmdEventLogRecords.Parameters.Append(prmReqRecs)
-		prmReqRecs.Value = CleanNumeric(Session("findRecords"))
-
-		Dim prmIsFirstPage = cmdEventLogRecords.CreateParameter("isFirstPage", 11, 2)		' 11=bit, 2=output
-		cmdEventLogRecords.Parameters.Append(prmIsFirstPage)
-
-		Dim prmIsLastPage = cmdEventLogRecords.CreateParameter("isLastPage", 11, 2)	' 11=bit, 2=output
-		cmdEventLogRecords.Parameters.Append(prmIsLastPage)
-
-		Dim prmAction = cmdEventLogRecords.CreateParameter("action", 200, 1, 8000)
-		cmdEventLogRecords.Parameters.Append(prmAction)
-		prmAction.Value = Session("ELAction")
-
-		Dim prmTotalRecCount = cmdEventLogRecords.CreateParameter("totalRecCount", 3, 2)		' 3=integer, 2=output
-		cmdEventLogRecords.Parameters.Append(prmTotalRecCount)
-
-		Dim prmFirstRecPos = cmdEventLogRecords.CreateParameter("firstRecPos", 3, 3) ' 3=integer, 3=input/output
-		cmdEventLogRecords.Parameters.Append(prmFirstRecPos)
-		prmFirstRecPos.Value = CleanNumeric(Session("ELFirstRecPos"))
-
-		Dim prmCurrentRecCount = cmdEventLogRecords.CreateParameter("currentRecCount", 3, 1) ' 3=integer, 1=input
-		cmdEventLogRecords.Parameters.Append(prmCurrentRecCount)
-		prmCurrentRecCount.Value = CleanNumeric(Session("ELCurrentRecCount"))
-	
-		Err.Clear()
-		Dim rsEventLogRecords = cmdEventLogRecords.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		Dim lngRowCount = 0
-		If Len(sErrorDescription) = 0 Then
+			Dim lngRowCount = 0
+			If Len(sErrorDescription) = 0 Then
 			
-			Dim sAddString As String = vbNullString
+				Dim sAddString As String = vbNullString
 			
-			If Not (rsEventLogRecords.BOF And rsEventLogRecords.EOF) Then
-				Do Until rsEventLogRecords.EOF
-					sAddString = vbNullString
+				For Each objRow As DataRow In rsEventLogRecords.Rows
+
+					sAddString = vbNullString					
+					sAddString = sAddString & objRow("ID").ToString() & vbTab
+					sAddString = sAddString & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbTab
 					
-					sAddString = sAddString & rsEventLogRecords.Fields("ID").Value.ToString() & vbTab
-					
-					sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("DateTime").Value) & vbTab
-					
-					If IsDBNull(rsEventLogRecords.Fields("EndTime").Value) Then
+					If IsDBNull(objRow("EndTime")) Then
 						sAddString = sAddString & "" & vbTab
 					Else
-						sAddString = sAddString & ConvertSQLDateToLocale(rsEventLogRecords.Fields("EndTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("EndTime").Value) & vbTab
+						sAddString = sAddString & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbTab
 					End If
 						
-					sAddString = sAddString & objUtilities.FormatEventDuration(CLng(rsEventLogRecords.Fields("Duration").Value)) & vbTab
+					sAddString = sAddString & objUtilities.FormatEventDuration(CInt(objRow("Duration"))) & vbTab
 					
-					sAddString = sAddString & Replace(rsEventLogRecords.Fields("EventInfo").Value, """", "&quot;")
+					sAddString = sAddString & Replace(objRow("EventInfo").ToString(), """", "&quot;")
 					
 					Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString & "'>" & vbCrLf)
 
-					lngRowCount = lngRowCount + 1
-					rsEventLogRecords.MoveNext()
-				Loop
+					lngRowCount += 1
+
+				Next
 			End If
+						
+			Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & prmIsFirstPage.Value & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & prmIsLastPage.Value & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & prmTotalRecCount.Value & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & prmFirstRecPos.Value & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
+
+		
+		Catch ex As Exception
+			sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
+	
+		End Try
+
 			
-		End If
-		
-		rsEventLogRecords.Close()
-		rsEventLogRecords = Nothing
-		
-		Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & cmdEventLogRecords.Parameters("isFirstPage").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & cmdEventLogRecords.Parameters("isLastPage").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & cmdEventLogRecords.Parameters("totalRecCount").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & cmdEventLogRecords.Parameters("firstRecPos").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
-
-		cmdEventLogRecords = Nothing
-		objUtilities = Nothing
-		
 	ElseIf Session("action") = "LOADEVENTLOGUSERS" Then
-		'Purge the event log.
-		Dim cmdPurgeCommand = New ADODB.Command
-		cmdPurgeCommand.CommandText = "sp_AsrEventLogPurge"
-		cmdPurgeCommand.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdPurgeCommand.ActiveConnection = Session("databaseConnection")
-		Err.Clear()
-		cmdPurgeCommand.Execute()
-		cmdPurgeCommand = Nothing
-		
-		'Get the list of users
-		Dim cmdEventLogUsers = New ADODB.Command
-		cmdEventLogUsers.CommandText = "spASRIntGetEventLogUsers"
-		cmdEventLogUsers.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdEventLogUsers.ActiveConnection = Session("databaseConnection")
-		
-		Err.Clear()
-		Dim rstEventLogUsers = cmdEventLogUsers.Execute
 
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the event log users." & vbCrLf & FormatError(Err.Description)
-		End If
+		Try
+	
+			'Purge the event log.
+			objDataAccess.ExecuteSP("sp_AsrEventLogPurge")
+	
+			Dim rstEventLogUsers = objDataAccess.GetDataTable("spASRIntGetEventLogUsers", CommandType.StoredProcedure)
 
-		If Len(sErrorDescription) = 0 Then
 			Dim iLoop = 1
-			Do While Not rstEventLogUsers.EOF
-				Response.Write("<input type='hidden' id='txtEventLogUser_" & iLoop & "' name='txtEventLogUser_" & iLoop & "' value='" & Replace(rstEventLogUsers.Fields("Username").Value, """", "&quot;") & "'>" & vbCrLf)
-				rstEventLogUsers.MoveNext()
-				iLoop = iLoop + 1
-			Loop
+			For Each objRow As DataRow In rstEventLogUsers.Rows
+				Response.Write("<input type='hidden' id='txtEventLogUser_" & iLoop & "' name='txtEventLogUser_" & iLoop & "' value='" & Replace(objRow("Username").ToString(), """", "&quot;") & "'>" & vbCrLf)
+				iLoop += 1
+			Next
 
-			' Release the ADO recordset object.
-			rstEventLogUsers.Close()
-		End If
-				
-		rstEventLogUsers = Nothing
-		cmdEventLogUsers = Nothing
+			
+		Catch ex As Exception
+			sErrorDescription = "Error getting the event log users." & vbCrLf & FormatError(Err.Description)
+
+		End Try
+
 			
 		'**********************************************************************************************
 	End If
