@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
+Imports HR.Intranet.Server.Metadata
 
 Namespace BaseClasses
 
@@ -340,8 +341,13 @@ ErrorTrap:
 
 #Region "Accessible from dmi.net - may need to move to a metadata class at a future date"
 
-		Public Function GetTableName(plngTableID As Integer) As String
-			Return Tables.GetById(plngTableID).Name
+		Public Function GetTableName(TableID As Integer) As String
+			Return Tables.GetById(TableID).Name
+		End Function
+
+		Public Function GetTableFromColumnID(ColumnID As Integer) As Table
+			Dim objColumn = Columns.GetById(ColumnID)
+			Return Tables.GetById(objColumn.TableID)
 		End Function
 
 #End Region

@@ -209,7 +209,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetChartData.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetColumnsFromTablesAndViews.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetColumnTableID.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDefaultOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDocumentManagementTypes.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEmailGroupAddresses.sql" />
@@ -250,7 +249,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetViewName.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetWorkflowParameters.sql" />
     <Build Include="Stored Procedures\Web\spASRIntInsertNewRecord.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntIsLookupTable.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSaveCalendarReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSetEventLogPurge.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSysSecMgr.sql" />

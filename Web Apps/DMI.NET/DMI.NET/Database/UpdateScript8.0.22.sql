@@ -97,6 +97,11 @@ GO
 
 
 -- Redundant stored procedures
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetColumnTableID]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntGetColumnTableID]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
 	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemPermissions]
 GO
@@ -107,6 +112,10 @@ GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetTableName]') AND xtype = 'P')
 	DROP PROCEDURE [dbo].[sp_ASRIntGetTableName]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntIsLookupTable]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntIsLookupTable]
 GO
 
 

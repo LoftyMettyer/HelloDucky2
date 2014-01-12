@@ -1,6 +1,10 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -84,9 +88,6 @@
 			refreshOptionData();	//should be in scope now...
 		}
 	}
-</script>
-
-<script type="text/javascript">
 
 	function SelectLookup() {		
 		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
@@ -275,11 +276,6 @@
 		OpenHR.messageBox(helpText, 48, "Information");
 	}
 
-
-</script>
-
-<script type="text/javascript">
-
 	function ssOleDBGrid_dblClick() {
 		SelectLookup();
 	}
@@ -290,63 +286,17 @@
 <div <%=session("BodyTag")%>>
 	<form action="" method="POST" id="frmLookupFindForm" name="frmLookupFindForm">
 		<%
+			
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim fIsLookupTable = False
-			Dim lngLookupTableID = 0
+			Dim objTable = objDatabase.GetTableFromColumnID(CInt(Session("optionLookupColumnID")))
+			Dim fIsLookupTable = (objTable.TableType = TableTypes.tabLookup)
+			Dim lngLookupTableID = objTable.ID
+
 			Dim sErrorDescription = ""
 			Dim sFailureDescription = ""
-			Dim cmdGetTable As Command
-			Dim cmdIsLookupTable As Command
-			Dim cmdViewRecords As Command
-			Dim cmdOrderRecords As Command
 	
-			cmdGetTable = New Command
-			cmdGetTable.CommandText = "spASRIntGetColumnTableID"
-			cmdGetTable.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdGetTable.ActiveConnection = Session("databaseConnection")
-
-			Dim prmColumnID = cmdGetTable.CreateParameter("LookupColumnID", 3, 1)
-			cmdGetTable.Parameters.Append(prmColumnID)
-			prmColumnID.value = CleanNumeric(Session("optionLookupColumnID"))
-
-			Dim prmTableID = cmdGetTable.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-			cmdGetTable.Parameters.Append(prmTableID)
-
-			Err.Clear()
-			cmdGetTable.Execute()
-	
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Error getting the lookup column table ID." & vbCrLf & FormatError(Err.Description)
-			Else
-				lngLookupTableID = CType(cmdGetTable.Parameters("tableID").Value, Integer)
-			End If
-
-			cmdGetTable = Nothing
-
-			If Len(sErrorDescription) = 0 Then
-				cmdIsLookupTable = New Command
-				cmdIsLookupTable.CommandText = "spASRIntIsLookupTable"
-				cmdIsLookupTable.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdIsLookupTable.ActiveConnection = Session("databaseConnection")
-
-				prmTableID = cmdIsLookupTable.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-				cmdIsLookupTable.Parameters.Append(prmTableID)
-				prmTableID.value = CleanNumeric(lngLookupTableID)
-
-				Dim prmIsLookup = cmdIsLookupTable.CreateParameter("isLookup", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
-				cmdIsLookupTable.Parameters.Append(prmIsLookup)
-
-				Err.Clear()
-				cmdIsLookupTable.Execute()
-	
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error checking the lookup column table type." & vbCrLf & FormatError(Err.Description)
-				Else
-					fIsLookupTable = CBool(cmdIsLookupTable.Parameters("isLookup").Value)
-				End If
-
-				cmdIsLookupTable = Nothing
-			End If
 		%>
 		<div id="divFindForm" <%=session("BodyTag")%>>
 			<div class="absolutefull">
@@ -372,67 +322,41 @@
 													<td width="175">
 														<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
-																On Error Resume Next
 
+																' Get the view records.
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-																	' Get the view records.
-																	cmdViewRecords = New Command
-																	cmdViewRecords.CommandText = "spASRIntGetLookupViews"
-																	cmdViewRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																	cmdViewRecords.ActiveConnection = Session("databaseConnection")
 
-																	prmTableID = cmdViewRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																	cmdViewRecords.Parameters.Append(prmTableID)
-																	prmTableID.value = CleanNumeric(lngLookupTableID)
+																	Try
 
-																	Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-																	cmdViewRecords.Parameters.Append(prmDfltOrderID)
-
-																	prmColumnID = cmdViewRecords.CreateParameter("columnID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																	cmdViewRecords.Parameters.Append(prmColumnID)
-																	prmColumnID.value = CleanNumeric(Session("optionColumnID"))
-
-																	Err.Clear()
-																	Dim rstViewRecords = cmdViewRecords.Execute
-
-																	If (Err.Number <> 0) Then
-																		sErrorDescription = "The lookup view records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																	End If
-
-																	If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-																		Do While Not rstViewRecords.EOF
-																			Response.Write("						<OPTION value=" & rstViewRecords.Fields(0).Value)
-																			If rstViewRecords.Fields(0).Value = CLng(Session("optionLinkViewID")) Then
+																		Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+																		Dim rstViewRecords = objDataAccess.GetDataTable("spASRIntGetLookupViews", CommandType.StoredProcedure _
+																			, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = lngLookupTableID} _
+																			, prmDfltOrderID _
+																			, New SqlParameter("plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))})
+																				
+																		For Each objRow As DataRow In rstViewRecords.Rows
+																			Response.Write("						<option value=" & objRow(0))
+																			If objRow(0) = CLng(Session("optionLinkViewID")) Then
 																				Response.Write(" SELECTED")
 																			End If
 
-																			If rstViewRecords.Fields(0).Value = 0 Then
-																				Response.Write(">" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "</OPTION>" & vbCrLf)
+																			If objRow(0) = 0 Then
+																				Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
 																			Else
-																				Response.Write(">'" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "' view</OPTION>" & vbCrLf)
+																				Response.Write(">'" & Replace(objRow(1).ToString(), "_", " ") & "' view</option>" & vbCrLf)
 																			End If
+																	
+																		Next
 
-																			rstViewRecords.MoveNext()
-																		Loop
-			
-																		If (rstViewRecords.EOF And rstViewRecords.BOF) Then
-																			sFailureDescription = "You do not have permission to read the lookup table."
-																		End If
-		
-																		' Release the ADO recordset object.
-																		rstViewRecords.close()
-																		rstViewRecords = Nothing
-	
-																		' NB. IMPORTANT ADO NOTE.
-																		' When calling a stored procedure which returns a recordset AND has output parameters
-																		' you need to close the recordset and set it to nothing before using the output parameters. 
 																		If Session("optionLookupOrderID") <= 0 Then
-																			Session("optionLookupOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
+																			Session("optionLookupOrderID") = prmDfltOrderID.Value
 																		End If
-																	End If
+																		
+																	Catch ex As Exception
+																		sErrorDescription = "The lookup view records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
-																	' Release the ADO command object.
-																	cmdViewRecords = Nothing
+																	End Try
+		
 																End If
 															%>
 														</select>
@@ -458,12 +382,12 @@
 															<%
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
 																	' Get the order records.
-																	cmdOrderRecords = New Command
+																	Dim cmdOrderRecords = New Command
 																	cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
 																	cmdOrderRecords.CommandType = CommandTypeEnum.adCmdStoredProc
 																	cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
-																	prmTableID = cmdOrderRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
+																	Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
 																	cmdOrderRecords.Parameters.Append(prmTableID)
 																	prmTableID.value = CleanNumeric(lngLookupTableID)
 
