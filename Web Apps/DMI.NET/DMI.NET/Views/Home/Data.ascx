@@ -841,91 +841,34 @@
 		End If
 		
 	' Get the record description.
-	Dim sRecDesc = ""
-	If (Len(sErrorDescription) = 0) Then
-		Dim cmdGetRecordDesc = New ADODB.Command
-		cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-		cmdGetRecordDesc.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+		Dim sRecDesc As String = ""
+		If (Len(sErrorDescription) = 0) Then
+								
+			Try
 
-		Dim prmTableId = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-		cmdGetRecordDesc.Parameters.Append(prmTableId)
-		prmTableId.Value = CleanNumeric(Session("tableID"))
+				Dim prmRecordDesc As New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			
+				objDatabaseAccess.ExecuteSP("sp_ASRIntGetRecordDescription", _
+						New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+						New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = lngRecordID}, _
+						New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
+						New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
+						prmRecordDesc)
 
-		Dim prmRecordId = cmdGetRecordDesc.CreateParameter("recordID", 3, 1)		' 3 = integer, 1 = input
-		cmdGetRecordDesc.Parameters.Append(prmRecordId)
-		prmRecordId.Value = CleanNumeric(lngRecordID)
+				sRecDesc = prmRecordDesc.Value.ToString()
 
-		Dim prmParentTableId = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
-		cmdGetRecordDesc.Parameters.Append(prmParentTableId)
-		prmParentTableId.Value = CleanNumeric(Session("parentTableID"))
-
-		Dim prmParentRecordId = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1)		' 3=integer, 1=input
-		cmdGetRecordDesc.Parameters.Append(prmParentRecordId)
-		prmParentRecordId.Value = CleanNumeric(Session("parentRecordID"))
-
-		Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000)		' 200=varchar, 2=output, 8000=size
-		cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
-
-		Dim fOk = True
-		Dim fDeadlock = True
-		Dim sErrMsg As String
-		Do While fDeadlock
-			fDeadlock = False
-
-			cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-			cmdGetRecordDesc.Execute()
-
-			If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
-				For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-					sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-					If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-					 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-						(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-					 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-											 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-						' The error is for a deadlock.
-						' Sorry about having to use the err.description to trap the error but the err.number
-						' is not specific and MSDN suggests using the err.description.
-						If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
-							iRetryCount = iRetryCount + 1
-							fDeadlock = True
-						Else
-							If Len(sErrorDescription) > 0 Then
-								sErrorDescription = sErrorDescription & vbCrLf
-							End If
-							sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-							fOk = False
-						End If
-					Else
-						sErrorDescription = sErrorDescription & vbCrLf & _
-						 FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-						fOk = False
-					End If
-				Next
-
-				cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-												
-				If Not fOk Then
-					sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
-				End If
-			End If
-		Loop
+			Catch ex As Exception
+				sRecDesc = ""
 				
-		If Len(sErrorDescription) = 0 Then
-			sRecDesc = cmdGetRecordDesc.Parameters("recordDesc").Value.ToString()
+			End Try
+			
 		End If
-					
-		cmdGetRecordDesc = Nothing
-	End If
 		
-	Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Replace(sRecDesc, """", "&quot;") & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Replace(sRecDesc, """", "&quot;") & "'>" & vbCrLf)
 	Else
-	Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
 	End If
 
 	If Session("action") = "LOADREPORTCOLUMNS" Then

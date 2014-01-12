@@ -137,7 +137,7 @@
 						Dim prmError As New SqlParameter("@pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						Dim prmSomeSelectable As New SqlParameter("@pfSomeSelectable", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						Dim prmSomeNotSelectable As New SqlParameter("@pfSomeNotSelectable", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-						Dim prmRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 255}
+						Dim prmRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 						Dim prmInsertGranted As New SqlParameter("@pfInsertGranted", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						Dim prmDeleteGranted As New SqlParameter("@pfDeleteGranted", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						Dim prmIsFirstPage As New SqlParameter("@pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -160,11 +160,11 @@
 							New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
 							New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
 							New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-							New SqlParameter("@psFilterDef", SqlDbType.VarChar) With {.Value = Session("filterDef"), .Size = Integer.MaxValue - 1}, _
+							New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}, _
 							New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = CleanNumeric(Session("FindRecords"))}, _
 							prmIsFirstPage, _
 							prmIsLastPage, _
-							New SqlParameter("@psLocateValue", SqlDbType.VarChar) With {.Value = Session("locateValue"), .Size = Integer.MaxValue - 1}, _
+							New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
 							prmColumnType, _
 							prmColumnSize, _
 							prmColumnDecimals, _
@@ -172,8 +172,8 @@
 							prmTotalRecCount, _
 							prmFirstRecPos, _
 							New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
-							New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar) With {.Value = Session("LocaleDecimalSeparator"), .Size = 255}, _
-							New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar) With {.Value = Session("LocaleDateFormat"), .Size = 255} _
+							New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
+							New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDateFormat")} _
 						}
 
 						Try
@@ -249,7 +249,7 @@
 							If prmError.Value <> 0 Then
 								sErrorDescription = "Error reading order definition."
 							Else
-								If prmSomeNotSelectable.Value = 0 Then
+								If prmSomeSelectable.Value = 0 Then
 									sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 								End If
 							End If
