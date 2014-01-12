@@ -1821,6 +1821,8 @@ Namespace Controllers
 			Dim fOk = False
 			Dim fTBOverride = False
 
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 			' Read the information from the calling form.
 			Dim sRealSource = Request.Form("txtRealSource")
 			Dim lngTableID = Request.Form("txtCurrentTableID")
@@ -2060,21 +2062,9 @@ Namespace Controllers
 							Loop
 							cmdInsertRecord = Nothing
 
+							objDataAccess.ExecuteSP("spASREmailImmediate", _
+									New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
 
-							'MH20001017 Immediate email stuff to go in v1.9.0
-							Dim cmdInsertRecord2 As Command = New Command
-							cmdInsertRecord2.CommandText = "spASREmailImmediate"
-							cmdInsertRecord2.CommandType = CommandTypeEnum.adCmdStoredProc
-							cmdInsertRecord2.CommandTimeout = 180
-							cmdInsertRecord2.ActiveConnection = Session("databaseConnection")
-
-							Dim prmInsertSQL2 = cmdInsertRecord2.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
-							cmdInsertRecord2.Parameters.Append(prmInsertSQL2)
-							prmInsertSQL2.Value = Session("Username")
-
-							Err.Clear()
-							cmdInsertRecord2.Execute()
-							cmdInsertRecord2 = Nothing
 						Else
 							' Updating.
 
@@ -2186,19 +2176,9 @@ Namespace Controllers
 							Loop
 							cmdUpdateRecord = Nothing
 
-							cmdUpdateRecord = New Command
-							cmdUpdateRecord.CommandText = "spASREmailImmediate"
-							cmdUpdateRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-							cmdUpdateRecord.CommandTimeout = 180
-							cmdUpdateRecord.ActiveConnection = Session("databaseConnection")
+							objDataAccess.ExecuteSP("spASREmailImmediate", _
+									New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
 
-							prmUpdateSQL = cmdUpdateRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
-							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
-							prmUpdateSQL.Value = Session("Username")
-
-							Err.Clear()
-							cmdUpdateRecord.Execute()
-							cmdUpdateRecord = Nothing
 						End If
 					End If
 				End If
@@ -2290,20 +2270,8 @@ Namespace Controllers
 				Loop
 				cmdDeleteRecord = Nothing
 
-				'MH20100609
-				Dim cmdInsertRecord As Command = New Command
-				cmdInsertRecord.CommandText = "spASREmailImmediate"
-				cmdInsertRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdInsertRecord.CommandTimeout = 180
-				cmdInsertRecord.ActiveConnection = Session("databaseConnection")
-
-				Dim prmInsertSQL = cmdInsertRecord.CreateParameter("Username", DataTypeEnum.adVarChar, ParameterDirection.Input, 255)
-				cmdInsertRecord.Parameters.Append(prmInsertSQL)
-				prmInsertSQL.Value = Session("Username")
-
-				Err.Clear()
-				cmdInsertRecord.Execute()
-				cmdInsertRecord = Nothing
+				objDataAccess.ExecuteSP("spASREmailImmediate", _
+						New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
 
 			ElseIf sAction = "CANCELCOURSE" Then
 				' Check number of bookings made.
