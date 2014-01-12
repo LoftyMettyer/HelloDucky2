@@ -359,44 +359,26 @@ Namespace Controllers
 			Session("SelfServiceUserType") = objServerSession.LoginInfo.SelfServiceUserType
 			Session("UserGroup") = objServerSession.LoginInfo.UserGroup
 
+			Try
 
-			' If the users default database is not 'master' then make it so.
-			Dim cmdDefaultDB = New Command
-			cmdDefaultDB.CommandText =
-			 "IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine &
-			 "	EXEC sp_defaultdb [" & sUserName & "], master"
-			cmdDefaultDB.ActiveConnection = conX
-			cmdDefaultDB.Execute()
-			cmdDefaultDB = Nothing
+				' If the users default database is not 'master' then make it so. (Although I don't know why!?!?!)
+				objDataAccess.ExecuteSQL("IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine &
+					"	EXEC sp_defaultdb [" & sUserName & "], master")
 
-			' Put the username in a session variable	
+				' Put entry in the audit access log
+				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess" _
+					, New SqlParameter("blnLoggingIn", SqlDbType.Bit) With {.Value = True} _
+					, New SqlParameter("strUsername", SqlDbType.VarChar, 1000) With {.Value = sUserName})
 
+			Catch ex As Exception
 
-			' RH 18/04/01 - Put entry in the audit access log
-			Dim cmdAudit = New Command
-			cmdAudit.CommandText = "sp_ASRIntAuditAccess"
-			cmdAudit.CommandType = 4
-			' Stored Procedure
-			cmdAudit.ActiveConnection = conX
-
-			Dim prmLoggingIn = cmdAudit.CreateParameter("LoggingIn", 11, 1, , True)	' 11 = boolean, 3 = int, 200 = varchar, 2 = output, 8000 = size
-			cmdAudit.Parameters.Append(prmLoggingIn)
-
-			Dim prmUser = cmdAudit.CreateParameter("Username", 200, 1, 1000)
-			cmdAudit.Parameters.Append(prmUser)
-			prmUser.Value = sUserName
-
-			Err.Number = 0
-			cmdAudit.Execute()
-
-			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page - Audit Access"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
-				 FormatError(Err.Description)
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" & ex.Message
 				Return RedirectToAction("Loginerror")
-			End If
 
-			cmdAudit = Nothing
+			End Try
+
+
 
 			' Successful login.
 			Dim dtSettings = objDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)

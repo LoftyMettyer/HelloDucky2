@@ -16,7 +16,7 @@ Public Class clsDataAccess
 		_objLogin = value
 	End Sub
 
-	Friend Sub ExecuteSql(sSQL As String)
+	Public Sub ExecuteSql(sSQL As String)
 		' Execute the given SQL statement.
 		Dim strConn As String = GetConnectionString(_objLogin)
 
