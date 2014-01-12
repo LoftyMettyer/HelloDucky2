@@ -998,7 +998,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80"
+													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80" />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1006,7 +1006,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80"
+													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80" />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1014,7 +1014,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80"
+													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80" />
 												</td>
 											</tr>
 											<tr height="10">
@@ -1022,7 +1022,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80"
+													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80" />
 												</td>
 											</tr>
 										</table>
