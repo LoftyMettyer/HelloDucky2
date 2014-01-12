@@ -1392,29 +1392,23 @@ Namespace Controllers
 
 				' Get the screen's default order if none is already specified.
 				If Session("orderID") <= 0 Then
-					Dim cmdScreenOrder = New ADODB.Command
-					cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
-					cmdScreenOrder.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-					cmdScreenOrder.ActiveConnection = Session("databaseConnection")
 
-					Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
-					cmdScreenOrder.Parameters.Append(prmOrderID)
+					Try
 
-					Dim prmScreenID2 = cmdScreenOrder.CreateParameter("screenID", 3, 1)
-					cmdScreenOrder.Parameters.Append(prmScreenID2)
-					prmScreenID2.Value = CleanNumeric(Session("screenID"))
+						Dim prmOrder As New SqlParameter("plngOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						SPParameters = New SqlParameter() { _
+								New SqlParameter("plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+								prmOrder}
+						objDataAccess.ExecuteSP("sp_ASRIntGetScreenOrder", SPParameters)
 
-					Err.Clear()
-					cmdScreenOrder.Execute()
-					If (Err.Number <> 0) Then
+						Session("orderID") = prmOrder.Value.ToString()
+
+					Catch ex As Exception
 						Session("ErrorTitle") = "Find Page"
-						Session("ErrorText") = "The default order for the screen could not be determined :<p>" & FormatError(Err.Description)
-						Response.Redirect("FormError")
-					Else
-						Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
-					End If
-					' Release the ADO command object.
-					cmdScreenOrder = Nothing
+						Session("ErrorText") = "The default order for the screen could not be determined :<p>" & vbNewLine & ex.Message
+
+					End Try
+
 				End If
 
 				' Enable response buffering as we may redirect the response further down this page.
