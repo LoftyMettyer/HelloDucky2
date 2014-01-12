@@ -30,221 +30,24 @@ Namespace Controllers
 			Dim sTemp
 			Dim sType = ""
 			Dim sControlName
-			Dim cmdPrimaryStartMode
-			Dim prmSection
-			Dim prmKey
-			Dim prmUserSetting
-			Dim prmValue
-			Dim cmdHistoryStartMode
 
 			' Save the user configuration settings.
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-			'--------------------------------------------
-			' Save the Primary Record Editing Start Mode.
-			'--------------------------------------------
-			cmdPrimaryStartMode = CreateObject("ADODB.Command")
-			cmdPrimaryStartMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdPrimaryStartMode.CommandType = 4	' Stored procedure.
-			cmdPrimaryStartMode.ActiveConnection = Session("databaseConnection")
+			objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
+			objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
+			objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
+			objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
+			objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
+			objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
+			objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
 
-			prmSection = cmdPrimaryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmSection)
-			prmSection.value = "RecordEditing"
-
-			prmKey = cmdPrimaryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmKey)
-			prmKey.value = "Primary"
-
-			prmUserSetting = cmdPrimaryStartMode.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdPrimaryStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdPrimaryStartMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdPrimaryStartMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtPrimaryStartMode")
-
-			Err.Clear()
-			cmdPrimaryStartMode.Execute()
-			cmdPrimaryStartMode = Nothing
 			Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
-
-			'--------------------------------------------
-			' Save the History Record Editing Start Mode.
-			'--------------------------------------------
-			cmdHistoryStartMode = CreateObject("ADODB.Command")
-			cmdHistoryStartMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdHistoryStartMode.CommandType = 4	' Stored procedure.
-			cmdHistoryStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdHistoryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmSection)
-			prmSection.value = "RecordEditing"
-
-			prmKey = cmdHistoryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmKey)
-			prmKey.value = "History"
-
-			prmUserSetting = cmdHistoryStartMode.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdHistoryStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdHistoryStartMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdHistoryStartMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtHistoryStartMode")
-
-			Err.Clear()
-			cmdHistoryStartMode.Execute()
-			cmdHistoryStartMode = Nothing
 			Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
-
-			'--------------------------------------------
-			' Save the Lookup Record Editing Start Mode.
-			'--------------------------------------------
-			Dim cmdLookupStartMode
-			cmdLookupStartMode = CreateObject("ADODB.Command")
-			cmdLookupStartMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdLookupStartMode.CommandType = 4 ' Stored procedure.
-			cmdLookupStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdLookupStartMode.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmSection)
-			prmSection.value = "RecordEditing"
-
-			prmKey = cmdLookupStartMode.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmKey)
-			prmKey.value = "LookUp"
-
-			prmUserSetting = cmdLookupStartMode.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
-			cmdLookupStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdLookupStartMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdLookupStartMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtLookupStartMode")
-
-			Err.Clear()
-			cmdLookupStartMode.Execute()
-			cmdLookupStartMode = Nothing
 			Session("LookupStartMode") = Request.Form("txtLookupStartMode")
-
-			'--------------------------------------------
-			' Save the Quick Access Record Editing Start Mode.
-			'--------------------------------------------
-			Dim cmdQuickAccessStartMode
-			cmdQuickAccessStartMode = CreateObject("ADODB.Command")
-			cmdQuickAccessStartMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdQuickAccessStartMode.CommandType = 4	' Stored procedure.
-			cmdQuickAccessStartMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdQuickAccessStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmSection)
-			prmSection.value = "RecordEditing"
-
-			prmKey = cmdQuickAccessStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmKey)
-			prmKey.value = "QuickAccess"
-
-			prmUserSetting = cmdQuickAccessStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdQuickAccessStartMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdQuickAccessStartMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdQuickAccessStartMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtQuickAccessStartMode")
-
-			Err.Clear()
-			cmdQuickAccessStartMode.Execute()
-			cmdQuickAccessStartMode = Nothing
 			Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
-
-			'--------------------------------------------
-			' Save the Expression Colour Mode.
-			'--------------------------------------------
-			Dim cmdExprColourMode
-			cmdExprColourMode = CreateObject("ADODB.Command")
-			cmdExprColourMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdExprColourMode.CommandType = 4	' Stored procedure.
-			cmdExprColourMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdExprColourMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmSection)
-			prmSection.value = "ExpressionBuilder"
-
-			prmKey = cmdExprColourMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmKey)
-			prmKey.value = "ViewColours"
-
-			prmUserSetting = cmdExprColourMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdExprColourMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdExprColourMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprColourMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtExprColourMode")
-
-			Err.Clear()
-			cmdExprColourMode.Execute()
-			cmdExprColourMode = Nothing
 			Session("ExprColourMode") = Request.Form("txtExprColourMode")
-
-			'--------------------------------------------
-			' Save the Expression Node Mode.
-			'--------------------------------------------
-			Dim cmdExprNodeMode
-			cmdExprNodeMode = CreateObject("ADODB.Command")
-			cmdExprNodeMode.CommandText = "sp_ASRIntSaveSetting"
-			cmdExprNodeMode.CommandType = 4	' Stored procedure.
-			cmdExprNodeMode.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdExprNodeMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmSection)
-			prmSection.value = "ExpressionBuilder"
-
-			prmKey = cmdExprNodeMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmKey)
-			prmKey.value = "NodeSize"
-
-			prmUserSetting = cmdExprNodeMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdExprNodeMode.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdExprNodeMode.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdExprNodeMode.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtExprNodeMode")
-
-			Err.Clear()
-			cmdExprNodeMode.Execute()
-			cmdExprNodeMode = Nothing
 			Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
-
-			'--------------------------------------------
-			' Save the Find Window Block Size.
-			'--------------------------------------------
-			Dim cmdFindSize
-			cmdFindSize = CreateObject("ADODB.Command")
-			cmdFindSize.CommandText = "sp_ASRIntSaveSetting"
-			cmdFindSize.CommandType = 4	' Stored procedure.
-			cmdFindSize.ActiveConnection = Session("databaseConnection")
-
-			prmSection = cmdFindSize.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmSection)
-			prmSection.value = "IntranetFindWindow"
-
-			prmKey = cmdFindSize.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmKey)
-			prmKey.value = "BlockSize"
-
-			prmUserSetting = cmdFindSize.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-			cmdFindSize.Parameters.Append(prmUserSetting)
-			prmUserSetting.value = 1
-
-			prmValue = cmdFindSize.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdFindSize.Parameters.Append(prmValue)
-			prmValue.value = Request.Form("txtFindSize")
-
-			Err.Clear()
-			cmdFindSize.Execute()
-			cmdFindSize = Nothing
 			Session("FindRecords") = Request.Form("txtFindSize")
 
 			'--------------------------------------------
@@ -299,31 +102,8 @@ Namespace Controllers
 				sControlName = "txtOwner_" & sType
 				sTemp = "onlymine " & sType
 
-				Dim cmdDefSelOnlyMine
-				cmdDefSelOnlyMine = CreateObject("ADODB.Command")
-				cmdDefSelOnlyMine.CommandText = "sp_ASRIntSaveSetting"
-				cmdDefSelOnlyMine.CommandType = 4	' Stored procedure.
-				cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
+				objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
 
-				prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmSection)
-				prmSection.value = "defsel"
-
-				prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmKey)
-				prmKey.value = sTemp
-
-				prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-				cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
-				prmUserSetting.value = 1
-
-				prmValue = cmdDefSelOnlyMine.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmValue)
-				prmValue.value = Request.Form(sControlName)
-
-				Err.Clear()
-				cmdDefSelOnlyMine.Execute()
-				cmdDefSelOnlyMine = Nothing
 			Next
 
 			'--------------------------------------------
@@ -346,31 +126,8 @@ Namespace Controllers
 				sControlName = "txtWarn_" & sType
 				sTemp = "warning " & sType
 
-				Dim cmdDefSelOnlyMine
-				cmdDefSelOnlyMine = CreateObject("ADODB.Command")
-				cmdDefSelOnlyMine.CommandText = "sp_ASRIntSaveSetting"
-				cmdDefSelOnlyMine.CommandType = 4	' Stored procedure.
-				cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
+				objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
 
-				prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmSection)
-				prmSection.value = "warningmsg"
-
-				prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmKey)
-				prmKey.value = sTemp
-
-				prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-				cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
-				prmUserSetting.value = 1
-
-				prmValue = cmdDefSelOnlyMine.CreateParameter("value", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefSelOnlyMine.Parameters.Append(prmValue)
-				prmValue.value = Request.Form(sControlName)
-
-				Err.Clear()
-				cmdDefSelOnlyMine.Execute()
-				cmdDefSelOnlyMine = Nothing
 			Next
 
 			'--------------------------------------------

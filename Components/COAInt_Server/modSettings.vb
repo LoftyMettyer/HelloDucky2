@@ -13,45 +13,7 @@ Module modSettings
 	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
 		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
 	End Function
-
-  Public Function SaveUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varSetting As Object) As Boolean
-
-    Dim datData As clsDataAccess
-    Dim strSQL As String
-
-    datData = New clsDataAccess
-
-    strSQL = "DELETE FROM ASRSysUserSettings " & " WHERE Section = '" & Replace(LCase(strSection), "'", "''") & "'" & " AND SettingKey = '" & Replace(LCase(strKey), "'", "''") & "'" & " AND UserName = '" & Replace(LCase(gsUsername), "'", "''") & "'"
-    datData.ExecuteSql(strSQL)
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object varSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    strSQL = "INSERT ASRSysUserSettings " & "(Section, SettingKey, SettingValue, UserName) " & "VALUES " & "('" & Replace(LCase(strSection), "'", "''") & "'," & " '" & Replace(LCase(strKey), "'", "''") & "'," & " '" & Replace(CStr(varSetting), "'", "''") & "'," & " '" & Replace(LCase(gsUsername), "'", "''") & "')"
-    datData.ExecuteSql(strSQL)
-
-    'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    datData = Nothing
-
-  End Function
-
-  Public Function SaveSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varSetting As Object) As Boolean
-
-    Dim datData As clsDataAccess
-    Dim strSQL As String
-
-    datData = New clsDataAccess
-
-    strSQL = "DELETE FROM ASRSysSystemSettings " & " WHERE Section = '" & LCase(strSection) & "'" & " AND SettingKey = '" & LCase(strKey) & "'"
-    datData.ExecuteSql(strSQL)
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object varSetting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    strSQL = "INSERT ASRSysSystemSettings " & "(Section, SettingKey, SettingValue) " & "VALUES " & "('" & LCase(strSection) & "'," & " '" & LCase(strKey) & "'," & " '" & CStr(varSetting) & "')"
-    datData.ExecuteSql(strSQL)
-
-    'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    datData = Nothing
-
-  End Function
-
+	
 	Public Function GetSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
 		Return SystemSettings.GetSetting(strSection, strKey, varDefault).Value
 	End Function

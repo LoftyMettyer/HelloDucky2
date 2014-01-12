@@ -8,7 +8,7 @@ Imports HR.Intranet.Server.Structures
 Public Class Database
 	Inherits BaseForDMI
 
-	Public Function GetEmailAddress(ByRef lngRecordID As Integer, lngEmailAddrCalc As Integer) As String
+	Public Function GetEmailAddress(lngRecordID As Integer, lngEmailAddrCalc As Integer) As String
 
 		' Check if the user can create New instances of the given category.
 
@@ -35,7 +35,7 @@ Public Class Database
 	End Function
 
 	' Return 0 or an error code
-	Public Sub CheckLogin(ByRef Login As LoginInfo, ByVal ApplicationVersion As String)
+	Public Sub CheckLogin(Login As LoginInfo, ApplicationVersion As String)
 
 		Try
 
@@ -98,6 +98,22 @@ Public Class Database
 
 	End Sub
 
-	
+	Public Sub SaveUserSetting(strSection As String, strKey As String, varSetting As Object)
+
+		Try
+
+			DB.ExecuteSP("sp_ASRIntSaveSetting" _
+			, New SqlParameter("psSection", SqlDbType.VarChar, 255) With {.Value = strSection} _
+					, New SqlParameter("psKey", SqlDbType.VarChar, 255) With {.Value = strKey} _
+					, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = True} _
+					, New SqlParameter("psValue", SqlDbType.VarChar, -1) With {.Value = varSetting})
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
 
 End Class
