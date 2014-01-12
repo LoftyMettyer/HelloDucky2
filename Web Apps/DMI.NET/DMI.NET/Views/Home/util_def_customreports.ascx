@@ -1,8 +1,10 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -1821,56 +1823,39 @@
 
 	<form id="frmAccess">
 		<%
+			Dim prmAccessUtilID = New SqlParameter("piID", SqlDbType.Int)
+			Dim prmFromCopy = New SqlParameter("piFromCopy", SqlDbType.Int)
+		
 			sErrorDescription = ""
-	
-			' Get the table records.
-			Dim cmdAccess As New Command
-			cmdAccess.CommandText = "spASRIntGetUtilityAccessRecords"
-			cmdAccess.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdAccess.ActiveConnection = Session("databaseConnection")
 
-			Dim prmUtilType = cmdAccess.CreateParameter("utilType", 3, 1)	' 3=integer, 1=input
-			cmdAccess.Parameters.Append(prmUtilType)
-			prmUtilType.Value = 2	' 2 = custom report
+			Try
+			
+				If UCase(Session("action")) = "NEW" Then
+					prmAccessUtilID.Value = 0
+				Else
+					prmAccessUtilID.Value = CleanNumeric(Session("utilid"))
+				End If
 
-			Dim prmUtilID3 = cmdAccess.CreateParameter("utilID", 3, 1) ' 3=integer, 1=input
-			cmdAccess.Parameters.Append(prmUtilID3)
-			If UCase(Session("action")) = "NEW" Then
-				prmUtilID3.Value = 0
-			Else
-				prmUtilID3.Value = CleanNumeric(Session("utilid"))
-			End If
+				If UCase(Session("action")) = "COPY" Then
+					prmFromCopy.Value = 1
+				Else
+					prmFromCopy.Value = 0
+				End If
 
-			Dim prmFromCopy = cmdAccess.CreateParameter("fromCopy", 3, 1)	' 3=integer, 1=input
-			cmdAccess.Parameters.Append(prmFromCopy)
-			If UCase(Session("action")) = "COPY" Then
-				prmFromCopy.Value = 1
-			Else
-				prmFromCopy.Value = 0
-			End If
+				Dim rstAccessInfo = objDataAccess.GetDataTable("spASRIntGetUtilityAccessRecords", CommandType.StoredProcedure _
+					, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = UtilityType.utlCustomReport} _
+					, prmAccessUtilID, prmFromCopy)
 
-			Err.Clear()
-			Dim rstAccessInfo = cmdAccess.Execute
-			If (Err.Number <> 0) Then
-				sErrorDescription = "The access information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
 				Dim iCount = 0
-				Do While Not rstAccessInfo.EOF
-					Response.Write("<INPUT type='hidden' id=txtAccess_" & iCount & " name=txtAccess_" & iCount & " value=""" & rstAccessInfo.Fields("accessDefinition").Value & """>" & vbCrLf)
+				For Each objRow As DataRow In rstAccessInfo.Rows
+					Response.Write("<input type='hidden' id=txtAccess_" & iCount & " name=txtAccess_" & iCount & " value=""" & objRow("accessDefinition").ToString() & """>" & vbCrLf)
+					iCount += 1
+				Next
+			
+			Catch ex As Exception
+				sErrorDescription = "The access information could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
-					iCount = iCount + 1
-					rstAccessInfo.MoveNext()
-				Loop
-
-				' Release the ADO recordset object.
-				rstAccessInfo.Close()
-				rstAccessInfo = Nothing
-			End If
-	
-			' Release the ADO command object.
-			cmdAccess = Nothing
+			End Try
 		%>
 	</form>
 
