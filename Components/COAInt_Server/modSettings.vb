@@ -10,7 +10,9 @@ Module modSettings
   Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Integer, ByVal lpTempFileName As String) As Integer
   Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Integer, ByVal lpBuffer As String) As Integer
 
-
+	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+	End Function
 
   Public Function SaveUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varSetting As Object) As Boolean
 
@@ -53,12 +55,6 @@ Module modSettings
 	Public Function GetSystemSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
 		Return SystemSettings.GetSetting(strSection, strKey, varDefault).Value
 	End Function
-
-  Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
-    ' Return the value of the given parameter.
-    GetModuleParameter = datGeneral.GetModuleParameter(psModuleKey, psParameterKey)
-
-  End Function
 
   Public Function DateFormat() As String
     ' Returns the date format.

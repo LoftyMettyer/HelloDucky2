@@ -1336,31 +1336,14 @@
 	<input type="hidden" id="txtEmailPermission" name="txtEmailPermission">
 	<%
 				
-		Dim cmdDefinition = CreateObject("ADODB.Command")
-		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-		cmdDefinition.CommandType = 4	' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
+		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-		Dim prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-		prmModuleKey.value = "MODULE_PERSONNEL"
+		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
+		Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)
+		
+		Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value="""">" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtAction' name='txtAction' value=" & Session("action") & ">" & vbCrLf)
 
-		Dim prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-		prmParameterKey.value = "Param_TablePersonnel"
-
-		Dim prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-		cmdDefinition.Execute()
-
-		Response.Write("<INPUT type=""hidden"" id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").value & ">" & vbCrLf)
-	
-		'cmdDefinition = Nothing
-
-		Response.Write("<INPUT type=""hidden"" id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-		Response.Write("<INPUT type=""hidden"" id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
 	%>
 </form>
 

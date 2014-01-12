@@ -783,67 +783,10 @@ Namespace Controllers
 
 			cmdModuleInfo = Nothing
 
-			' Get the configured SSI Welcome info; name, last login date & time. 		
-			cmdModuleInfo = New Command
-			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
-			cmdModuleInfo.CommandType = 4	' Stored Procedure
-			cmdModuleInfo.ActiveConnection = conX
-
-			Dim prmModuleKey = cmdModuleInfo.CreateParameter("moduleKey", 200, 1, 255)
-			cmdModuleInfo.Parameters.Append(prmModuleKey)
-			prmModuleKey.Value = "MODULE_PERSONNEL"
-
-			Dim prmParameterKey = cmdModuleInfo.CreateParameter("parameterKey", 200, 1, 255)
-			cmdModuleInfo.Parameters.Append(prmParameterKey)
-			prmParameterKey.Value = "Param_FieldsSSIWelcome"
-
-			Dim prmParameterValue = cmdModuleInfo.CreateParameter("parameterValue", 200, 2, 1000)
-			cmdModuleInfo.Parameters.Append(prmParameterValue)
-
-			Err.Clear()
-			cmdModuleInfo.Execute()
-
-			If (Err.Number <> 0) Then
-				Session("ErrorTitle") = "Login Page - Module setup"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" & FormatError(Err.Description)
-				Return RedirectToAction("loginerror")
-			End If
-
-			Dim lngSSIWelcomeColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
-
+			Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
 			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
 
-			' photo
-			cmdModuleInfo = New Command
-			cmdModuleInfo.CommandText = "sp_ASRIntGetModuleParameter"
-			cmdModuleInfo.CommandType = CommandType.StoredProcedure
-			cmdModuleInfo.ActiveConnection = conX
-
-			prmModuleKey = cmdModuleInfo.CreateParameter("moduleKey", 200, 1, 255)
-			cmdModuleInfo.Parameters.Append(prmModuleKey)
-			prmModuleKey.Value = "MODULE_PERSONNEL"
-
-			prmParameterKey = cmdModuleInfo.CreateParameter("parameterKey", 200, 1, 255)
-			cmdModuleInfo.Parameters.Append(prmParameterKey)
-			prmParameterKey.Value = "Param_FieldsSSIPhotograph"
-
-			prmParameterValue = cmdModuleInfo.CreateParameter("parameterValue", 200, 2, 1000)
-			cmdModuleInfo.Parameters.Append(prmParameterValue)
-
-			Err.Clear()
-			cmdModuleInfo.Execute()
-
-			If (Err.Number <> 0) Then
-				Session("ErrorTitle") = "Login Page - Module setup"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" & FormatError(Err.Description)
-				Return RedirectToAction("loginerror")
-			End If
-
-			Dim lngSSIPhotographColumnID As Long = 0
-			If Not IsDBNull(cmdModuleInfo.Parameters("parameterValue").Value) Then
-				lngSSIPhotographColumnID = CLng(cmdModuleInfo.Parameters("parameterValue").Value)
-			End If
-
+			Dim lngSSIPhotographColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIPhotograph"))
 			If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
 
 			Dim cmdSSIWelcomeDetails = Nothing
@@ -853,7 +796,7 @@ Namespace Controllers
 			cmdSSIWelcomeDetails.CommandType = CommandType.StoredProcedure
 			cmdSSIWelcomeDetails.ActiveConnection = conX
 
-			prmModuleKey = cmdSSIWelcomeDetails.CreateParameter("WelcomeColumnID", DataTypeEnum.adInteger, ParameterDirection.Input)
+			Dim prmModuleKey = cmdSSIWelcomeDetails.CreateParameter("WelcomeColumnID", DataTypeEnum.adInteger, ParameterDirection.Input)
 			cmdSSIWelcomeDetails.Parameters.Append(prmModuleKey)
 			prmModuleKey.Value = lngSSIWelcomeColumnID
 
@@ -861,7 +804,7 @@ Namespace Controllers
 			cmdSSIWelcomeDetails.Parameters.Append(prmModuleKey)
 			prmModuleKey.Value = lngSSIPhotographColumnID
 
-			prmParameterKey = cmdSSIWelcomeDetails.CreateParameter("SingleRecordViewID", DataTypeEnum.adInteger, ParameterDirection.Input)
+			Dim prmParameterKey = cmdSSIWelcomeDetails.CreateParameter("SingleRecordViewID", DataTypeEnum.adInteger, ParameterDirection.Input)
 			cmdSSIWelcomeDetails.Parameters.Append(prmParameterKey)
 			prmParameterKey.Value = Session("SingleRecordViewID")
 
@@ -869,7 +812,7 @@ Namespace Controllers
 			cmdSSIWelcomeDetails.Parameters.Append(prmParameterKey)
 			prmParameterKey.Value = Session("username")
 
-			prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("WelcomeMessage", DataTypeEnum.adVarChar, ParameterDirection.Output, 255)
+			Dim prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("WelcomeMessage", DataTypeEnum.adVarChar, ParameterDirection.Output, 255)
 			cmdSSIWelcomeDetails.Parameters.Append(prmParameterValue)
 
 			prmParameterValue = cmdSSIWelcomeDetails.CreateParameter("WelcomeName", DataTypeEnum.adVarChar, ParameterDirection.Output, 255)

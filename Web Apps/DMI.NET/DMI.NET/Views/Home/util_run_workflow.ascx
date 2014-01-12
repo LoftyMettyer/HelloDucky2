@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -8,9 +9,11 @@
 <% 
 	Response.Expires = 0
 
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
 	Dim sMessage = ""
 	Dim sFormElements = ""
-	Dim sURL = ""
+	Dim sURL As String = objDatabase.GetModuleParameter("MODULE_WORKFLOW", "Param_URL")
 	Dim sInstanceID = ""
 	Dim iInstanceID As Integer
 	
@@ -18,32 +21,6 @@
 	Session("utilid") = Request.Form("utilid")
 	Session("action") = "RUN"
 	Session("utilname") = Request.Form("utilname")
-	
-	Dim cmdURL = CreateObject("ADODB.Command")
-	cmdURL.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdURL.CommandType = 4 ' Stored Procedure
-	cmdURL.ActiveConnection = Session("databaseConnection")
-
-	Dim prmModuleKey = cmdURL.CreateParameter("ModuleKey", 200, 1, 8000)
-	cmdURL.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_WORKFLOW"
-
-	Dim prmParameterKey = cmdURL.CreateParameter("ParameterKey", 200, 1, 8000)
-	cmdURL.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_URL"
-
-	Dim prmUrl = cmdURL.CreateParameter("url", 200, 2, 8000) ' 200=adVarChar, 2=output, 8000=size
-	cmdURL.Parameters.Append(prmUrl)
-
-	Err.Clear()
-	cmdURL.Execute()
-		
-	If Err.Number = 0 Then
-		sURL = CType(cmdURL.Parameters("url").Value, String)
-	End If
-	
-	' Release the ADO command object.
-	cmdURL = Nothing
 	
 	If Len(sURL) > 0 Then
 		Dim cmdInitiate = CreateObject("ADODB.Command")

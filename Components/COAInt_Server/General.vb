@@ -240,7 +240,7 @@ LocalErr:
 		End If
 	End Function
 
-	Friend Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+	Shared Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
 		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
 	End Function
 

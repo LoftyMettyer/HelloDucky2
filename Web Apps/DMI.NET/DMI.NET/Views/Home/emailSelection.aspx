@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 <!DOCTYPE html>
 
 <html>
@@ -410,44 +411,26 @@
 	<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 		<%
-			Dim cmdDefinition
-			Dim prmModuleKey
-			Dim prmParameterValue
-			Dim prmParameterKey
-			Dim sErrorDescription
+
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
+			Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
+			Response.Write("<input type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & sParameterValue & ">" & vbCrLf)
 		
-			cmdDefinition = CreateObject("ADODB.Command")
-			cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-			cmdDefinition.CommandType = 4	' Stored procedure.
-			cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-			prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefinition.Parameters.Append(prmModuleKey)
-			prmModuleKey.value = "MODULE_PERSONNEL"
-
-			prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefinition.Parameters.Append(prmParameterKey)
-			prmParameterKey.value = "Param_TablePersonnel"
-
-			prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefinition.Parameters.Append(prmParameterValue)
-
-			Err.Clear()
-			cmdDefinition.Execute()
-
-			Response.Write("<INPUT type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbCrLf)
-	
-			cmdDefinition = Nothing
-
-			Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value="""">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+			
+			
 		%>
 	</form>
 
 	<form name="frmList" id="frmList" style="visibility: hidden; display: none">
 
 		<%
+
+			
 			'Get the required Email information
+			Dim sErrorDescription As String
 			Dim cmdEmail
 			Dim rsEmail
 			Dim i

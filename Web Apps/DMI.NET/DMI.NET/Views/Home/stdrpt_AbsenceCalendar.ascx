@@ -172,42 +172,19 @@
 </script>
 
 <%
-	if Session("stdrpt_AbsenceCalendar_StartMonth") = "" then
-	
-				Dim cmdDefinition As Object
-				Dim prmModuleKey As Object
-				Dim prmParameterKey As Object
-				Dim prmParameterValue As Object
-				
-				cmdDefinition = Server.CreateObject("ADODB.Command")
-		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-		cmdDefinition.CommandType = 4 ' Stored procedure.
-				cmdDefinition.ActiveConnection = Session("databaseConnection")
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-				prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdDefinition.Parameters.Append(prmModuleKey)
-		prmModuleKey.value = "MODULE_ABSENCE"
+	If Session("stdrpt_AbsenceCalendar_StartMonth") = "" Then
 
-				prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdDefinition.Parameters.Append(prmParameterKey)
-		prmParameterKey.value = "Param_FieldStartMonth"
+		Session("stdrpt_AbsenceCalendar_StartMonth") = objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldStartMonth")
 
-				prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-				cmdDefinition.Parameters.Append(prmParameterValue)
+		If Month(Now) < CInt(Session("stdrpt_AbsenceCalendar_StartMonth")) Then
+			Session("stdrpt_AbsenceCalendar_StartYear") = Year(Now) - 1
+		Else
+			Session("stdrpt_AbsenceCalendar_StartYear") = Year(Now)
+		End If
 
-				Err.Clear()
-		cmdDefinition.Execute
-
-		Session("stdrpt_AbsenceCalendar_StartMonth") = cmdDefinition.Parameters("paramValue").Value
-				If Month(Now) < CInt(Session("stdrpt_AbsenceCalendar_StartMonth")) Then
-						Session("stdrpt_AbsenceCalendar_StartYear") = Year(Now) - 1
-				Else
-						Session("stdrpt_AbsenceCalendar_StartYear") = Year(Now)
-				End If
-
-				cmdDefinition = Nothing
-
-	end if
+	End If
 
 	' Create absence calendar object
 	Dim objAbsenceCalendar As New AbsenceCalendar

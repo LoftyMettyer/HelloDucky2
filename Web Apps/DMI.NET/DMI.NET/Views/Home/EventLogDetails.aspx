@@ -2,6 +2,7 @@
 
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <!DOCTYPE html>
 
@@ -51,8 +52,6 @@
 				Dim cmdEventBatchJobs As Command
 				Dim prmBatchRunID As ADODB.Parameter
 				Dim prmEventID As ADODB.Parameter
-		
-				objUtilities = Session("UtilitiesObject")
 		
 				Session("eventName") = Request("txtEventName")
 				Session("eventID") = Request("txtEventID")
@@ -381,38 +380,16 @@
 		<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 			<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 			<%
-				Dim cmdDefinition As Command
-				Dim prmModuleKey As ADODB.Parameter
-				Dim prmParameterKey As ADODB.Parameter
-				Dim prmParameterValue As ADODB.Parameter
-				Dim sErrorDescription As String
+					
+				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
+				Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
+				Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)
 		
-				cmdDefinition = New Command
-				cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-				cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdDefinition.ActiveConnection = Session("databaseConnection")
-
+				Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value="""">" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtAction' name='txtAction' value=" & Session("action") & ">" & vbCrLf)
 			
-				prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-				cmdDefinition.Parameters.Append(prmModuleKey)
-				prmModuleKey.value = "MODULE_PERSONNEL"
-
-				prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-				cmdDefinition.Parameters.Append(prmParameterKey)
-				prmParameterKey.value = "Param_TablePersonnel"
-
-				prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-				cmdDefinition.Parameters.Append(prmParameterValue)
-
-				Err.Clear()
-				cmdDefinition.Execute()
-
-				Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value='" & cmdDefinition.Parameters("paramValue").Value & "'>" & vbCrLf)
-	
-				cmdDefinition = Nothing
-
-				Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("action") & "'>" & vbCrLf)
+				
 			%>
 		</form>
 
@@ -474,9 +451,6 @@
 					setGridCaption();
 				}
 			}
-		</script>
-
-		<script type="text/javascript" id="scptGeneralFunctions">
 
 			function okClick() {
 				self.close();

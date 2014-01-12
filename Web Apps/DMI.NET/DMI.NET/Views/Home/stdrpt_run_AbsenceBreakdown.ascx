@@ -8,6 +8,8 @@
 
 <%
 
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
 		Dim dtStartDate
 		Dim dtEndDate
 		Dim strAbsenceTypes As String
@@ -31,13 +33,16 @@
 		Dim pstrOutputEmailAttachAs As String
 		Dim pstrOutputFilename As String
 
-		Dim lngStartDateColID As Long
-		Dim lngStartSessionColID As Long
-		Dim lngEndDateColID As Long
-		Dim lngEndSessionColID As Long
-		Dim lngTypeColID As Long
-		Dim lngReasonColID As Long
-		Dim lngDurationColID As Long
+	Dim lngHorColID As Integer
+	Dim lngVerColID As Integer		
+	Dim lngStartDateColID As Integer
+	Dim lngStartSessionColID As Integer
+	Dim lngEndDateColID As Integer
+	Dim lngEndSessionColID As Integer
+	Dim lngTypeColID As Integer
+	Dim lngReasonColID As Integer
+	Dim lngDurationColID As Integer
+	Dim iParameterValue As Integer
 	
 	' Get variables for Absence Breakdown / Bradford Factor
 	dtStartDate = convertLocaleDateToSQL(session("stdReport_StartDate"))
@@ -61,167 +66,21 @@
 	pstrOutputEmailSubject = session("stdReport_OutputEmailSubject")
 	pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
 	pstrOutputFilename = session("stdReport_OutputFilename")
-
-	Dim cmdDefinition As Command
-	Dim prmModuleKey As ADODB.Parameter
-	Dim prmParameterKey As ADODB.Parameter
-	Dim prmParameterValue As ADODB.Parameter
-	Dim lngHorColID As Long
-	Dim lngVerColID As Long
-		
-	'Hard coded values for the horizontal cross tab fields (start sesssion)
-	cmdDefinition = New Command
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
-	cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-	cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.Value = "MODULE_ABSENCE"
-
-	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-	cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.Value = "Param_FieldStartSession"
-
-	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-	cmdDefinition.Parameters.Append(prmParameterValue)
-
-	Err.Clear()
-	cmdDefinition.Execute()
 	
-	lngHorColID = cmdDefinition.Parameters("paramValue").Value
-	lngStartSessionColID = cmdDefinition.Parameters("paramValue").Value
-
-	'Hard coded values for the vertical cross tab fields (absence type)
-	cmdDefinition = New Command
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
-	cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-
-	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-	cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.Value = "MODULE_ABSENCE"
-
-	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-	cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.Value = "Param_FieldType"
-
-	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-	cmdDefinition.Parameters.Append(prmParameterValue)
-
-	Err.Clear()
-	cmdDefinition.Execute()
+	iParameterValue = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldStartSession"))		
+	lngHorColID = iParameterValue
+	lngStartSessionColID = iParameterValue
 	
-	lngVerColID = cmdDefinition.Parameters("paramValue").value
-	lngTypeColID = cmdDefinition.Parameters("paramValue").value
-
-	cmdDefinition = New Command
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-	prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
-
-	prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldStartDate"
-
-	prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-	cmdDefinition.Execute
+	iParameterValue = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldType"))
+	lngVerColID = iParameterValue
+	lngTypeColID = iParameterValue
 		
-	lngStartDateColID = cmdDefinition.Parameters("paramValue").value
+	lngStartDateColID = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldStartDate"))
+	lngEndDateColID = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldEndDate"))
+	lngEndSessionColID = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldEndSession"))	
+	lngReasonColID = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldReason"))
+	lngDurationColID = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldDuration"))
 
-		cmdDefinition = CreateObject("ADODB.Command")
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
-
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldEndDate"
-
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-	cmdDefinition.Execute
-		
-	lngEndDateColID = cmdDefinition.Parameters("paramValue").value
-
-		cmdDefinition = CreateObject("ADODB.Command")
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
-
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldEndSession"
-
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-	cmdDefinition.Execute
-		
-	lngEndSessionColID = cmdDefinition.Parameters("paramValue").value
-
-		cmdDefinition = CreateObject("ADODB.Command")
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
-
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldReason"
-
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-	cmdDefinition.Execute
-		
-	lngReasonColID = cmdDefinition.Parameters("paramValue").value
-
-		cmdDefinition = Server.CreateObject("ADODB.Command")
-	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-	cmdDefinition.CommandType = 4 ' Stored procedure.
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmModuleKey)
-	prmModuleKey.value = "MODULE_ABSENCE"
-
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterKey)
-	prmParameterKey.value = "Param_FieldDuration"
-
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-	cmdDefinition.Execute
-		
-	lngDurationColID = cmdDefinition.Parameters("paramValue").value
-
-		cmdDefinition = Nothing
 
 		Dim fok As Boolean
 		Dim objCrossTab As HR.Intranet.Server.CrossTab

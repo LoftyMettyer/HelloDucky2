@@ -6,9 +6,9 @@
 <%@ Import Namespace="System.Data" %>
 
 <%
-	
+
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-	Dim SPParameters() As SqlParameter
 
 	'This section of script is used for saving the new purge criteria.
 	Dim sDoesPurge As String = Trim(Request.Form("txtDoesPurge"))
@@ -998,7 +998,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80" />
+													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80">
 												</td>
 											</tr>
 											<tr height="10">
@@ -1006,7 +1006,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80" />
+													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80">
 												</td>
 											</tr>
 											<tr height="10">
@@ -1014,7 +1014,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80" />
+													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80">
 												</td>
 											</tr>
 											<tr height="10">
@@ -1022,7 +1022,7 @@
 											</tr>
 											<tr>
 												<td width="10">
-													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80" />
+													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80">
 												</td>
 											</tr>
 										</table>
@@ -1124,57 +1124,27 @@
 	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
 </form>
 
-<%
-	Session("showPurgeMessage") = 0
-%>
-
 <form id="frmEventUseful" name="frmEventUseful" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<%
-		Dim cmdDefinition As Command
-		Dim prmModuleKey As ADODB.Parameter
-		Dim prmParameterKey As ADODB.Parameter
-		Dim prmParameterValue As ADODB.Parameter
-		Dim sErrorDescription As String
+			
+		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
+		Response.Write("<input type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & sParameterValue & ">" & vbCrLf)
 		
-		cmdDefinition = New Command
-		cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
-		cmdDefinition.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdDefinition.ActiveConnection = Session("databaseConnection")
-
-		prmModuleKey = cmdDefinition.CreateParameter("moduleKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDefinition.Parameters.Append(prmModuleKey)
-		prmModuleKey.value = "MODULE_PERSONNEL"
-
-		prmParameterKey = cmdDefinition.CreateParameter("paramKey", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDefinition.Parameters.Append(prmParameterKey)
-		prmParameterKey.value = "Param_TablePersonnel"
-
-		prmParameterValue = cmdDefinition.CreateParameter("paramValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-		cmdDefinition.Parameters.Append(prmParameterValue)
-
-		Err.Clear()
-		cmdDefinition.Execute()
-
-		Response.Write("<input type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbCrLf)
-	
-		cmdDefinition = Nothing
-
-		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value="""">" & vbCrLf)
 		Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+
+		Session("showPurgeMessage") = 0
+		Session("CurrentUsername") = ""
+		Session("CurrentType") = ""
+		Session("CurrentMode") = ""
+		Session("CurrentStatus") = ""		
+		
 	%>
 </form>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
-<%
-	Session("CurrentUsername") = ""
-	Session("CurrentType") = ""
-	Session("CurrentMode") = ""
-	Session("CurrentStatus") = ""
-%>
-
 
 <script type="text/javascript">
 
@@ -1255,11 +1225,6 @@
 		refreshGrid();
 	}
 
-
-</script>
-
-
-<script type="text/javascript">
 	eventLog_window_onload();
 	eventlog_addActiveXHandlers();
 </script>

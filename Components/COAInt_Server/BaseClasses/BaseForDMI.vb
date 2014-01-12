@@ -330,6 +330,13 @@ ErrorTrap:
 
 #End Region
 
+#Region "From clsGeneral"
+
+		Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+			Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+		End Function
+
+#End Region
 
 	End Class
 End Namespace

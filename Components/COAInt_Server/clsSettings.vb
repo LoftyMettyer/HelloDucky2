@@ -51,11 +51,6 @@ Public Class clsSettings
 
 	End Function
 
-	Public Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
-		' Return the value of the given parameter.
-		GetModuleParameter = General.GetModuleParameter(psModuleKey, psParameterKey)
-	End Function
-
 	' Return date of report in SQL (American date format)
 	Public Function GetStandardReportDate(ByRef psReportType As String, ByRef psReportDateType As String) As String
 
