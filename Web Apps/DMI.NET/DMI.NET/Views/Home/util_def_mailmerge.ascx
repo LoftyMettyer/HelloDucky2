@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_mailmerge")%>" type="text/javascript"></script>
 
@@ -1016,38 +1017,25 @@
 	</form>
 
 	<form id="frmTables">
-		<%
+		<%					
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			Dim sErrorDescription = ""
-	
-			' Get the table records.
-			Dim cmdTables = CreateObject("ADODB.Command")
-			cmdTables.CommandText = "sp_ASRIntGetTablesInfo"
-			cmdTables.CommandType = 4	' Stored Procedure
-			cmdTables.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				Dim rstTablesInfo = objDataAccess.GetDataTable("sp_ASRIntGetTablesInfo", CommandType.StoredProcedure)
+				
+				For Each objRow As DataRow In rstTablesInfo.Rows
+					Response.Write("<input type='hidden' id=txtTableName_" & objRow("tableID") & " name=txtTableName_" & objRow("tableID") & " value=""" & objRow("tableName") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableType_" & objRow("tableID") & " name=txtTableType_" & objRow("tableID") & " value=" & objRow("tableType") & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableChildren_" & objRow("tableID") & " name=txtTableChildren_" & objRow("tableID") & " value=""" & objRow("childrenString") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableParents_" & objRow("tableID") & " name=txtTableParents_" & objRow("tableID") & " value=""" & objRow("parentsString") & """>" & vbCrLf)
+				Next
+											
+			Catch ex As Exception
+				sErrorDescription = "The tables information could not be retrieved." & vbCrLf & ex.Message
 
-			Err.Clear()
-			Dim rstTablesInfo = cmdTables.Execute
-			If (Err.Number <> 0) Then
-				sErrorDescription = "The tables information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				Do While Not rstTablesInfo.EOF
-					Response.Write("<INPUT type=""hidden"" id=txtTableName_" & rstTablesInfo.fields("tableID").value & " name=txtTableName_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("tableName").value & """>" & vbCrLf)
-					Response.Write("<INPUT type=""hidden"" id=txtTableType_" & rstTablesInfo.fields("tableID").value & " name=txtTableType_" & rstTablesInfo.fields("tableID").value & " value=" & rstTablesInfo.fields("tableType").value & ">" & vbCrLf)
-					Response.Write("<INPUT type=""hidden"" id=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenString").value & """>" & vbCrLf)
-					Response.Write("<INPUT type=""hidden"" id=txtTableParents_" & rstTablesInfo.fields("tableID").value & " name=txtTableParents_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("parentsString").value & """>" & vbCrLf)
-
-					rstTablesInfo.MoveNext()
-				Loop
-
-				' Release the ADO recordset object.
-				rstTablesInfo.close()
-				'rstTablesInfo = Nothing
-			End If
-	
-			' Release the ADO command object.
-			'cmdTables = Nothing
+			End Try
+			
 		%>
 	</form>
 

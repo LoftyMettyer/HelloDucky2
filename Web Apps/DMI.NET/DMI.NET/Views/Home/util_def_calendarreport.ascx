@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_calendarreports")%>" type="text/javascript"></script>  
 
@@ -2042,44 +2043,28 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 <form id="frmTables" style="visibility: hidden; display: none">
 	<%
+		
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 		Dim sErrorDescription = ""
-	
-		' Get the table records.
-		Dim cmdTables = CreateObject("ADODB.Command")
-		cmdTables.CommandText = "sp_ASRIntGetTablesInfo"
-		cmdTables.CommandType = 4	' Stored Procedure
-		cmdTables.ActiveConnection = Session("databaseConnection")
-	
-		Response.Write("<B>Set Connection</B>")
-	
-		Err.Number = 0
-		Dim rstTablesInfo = cmdTables.Execute
-	
-		Response.Write("<B>Executed SP</B>")
-	
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The tables information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-		End If
+			
+		Try
+			Dim rstTablesInfo = objDataAccess.GetDataTable("sp_ASRIntGetTablesInfo", CommandType.StoredProcedure)
 
-		If Len(sErrorDescription) = 0 Then
-			Dim iCount = 0
-			Do While Not rstTablesInfo.EOF
-				Response.Write("<INPUT type='hidden' id=txtTableName_" & rstTablesInfo.fields("tableID").value & " name=txtTableName_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("tableName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTableType_" & rstTablesInfo.fields("tableID").value & " name=txtTableType_" & rstTablesInfo.fields("tableID").value & " value=" & rstTablesInfo.fields("tableType").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenString").value & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTableChildrenNames_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildrenNames_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenNames").value & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTableParents_" & rstTablesInfo.fields("tableID").value & " name=txtTableParents_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("parentsString").value & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtTableRelations_" & rstTablesInfo.fields("tableID").value & " name=txtTableRelations_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("relatedString").value & """>" & vbCrLf)
-				rstTablesInfo.MoveNext()
-			Loop
+			For Each objRow As DataRow In rstTablesInfo.Rows
+				Response.Write("<input type='hidden' id=txtTableName_" & objRow("tableID") & " name=txtTableName_" & objRow("tableID") & " value=""" & objRow("tableName") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTableType_" & objRow("tableID") & " name=txtTableType_" & objRow("tableID") & " value=" & objRow("tableType") & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTableChildren_" & objRow("tableID") & " name=txtTableChildren_" & objRow("tableID") & " value=""" & objRow("childrenString") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTableChildrenNames_" & objRow("tableID") & " name=txtTableChildrenNames_" & objRow("tableID") & " value=""" & objRow("childrenNames") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTableParents_" & objRow("tableID") & " name=txtTableParents_" & objRow("tableID") & " value=""" & objRow("parentsString") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTableRelations_" & objRow("tableID") & " name=txtTableRelations_" & objRow("tableID") & " value=""" & objRow("relatedString") & """>" & vbCrLf)
+			Next
 
-			' Release the ADO recordset object.
-			rstTablesInfo.close()
-			rstTablesInfo = Nothing
-		End If
-	
-		' Release the ADO command object.
-		cmdTables = Nothing
+			
+		Catch ex As Exception
+			sErrorDescription = "The tables information could not be retrieved." & vbCrLf & ex.Message
+
+		End Try		
+					
 	%>
 </form>
 
