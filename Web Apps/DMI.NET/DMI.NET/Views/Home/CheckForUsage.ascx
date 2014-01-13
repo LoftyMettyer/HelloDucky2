@@ -2,30 +2,19 @@
 
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 
 <%
-	' call the sp to retrieve the items that the current utility
-	' is used in.
-	Dim cmdUsage = CreateObject("ADODB.Command")
-	cmdUsage.CommandText = "sp_ASRIntDefUsage"
-	cmdUsage.CommandType = 4
-	cmdUsage.ActiveConnection = Session("databaseConnection")
-
-	Dim prmType = cmdUsage.CreateParameter("type", 3, 1)
-	cmdUsage.Parameters.Append(prmType)
-	prmType.value = cleanNumeric(session("utiltype"))
-				
-	Dim prmId = cmdUsage.CreateParameter("id", 3, 1)
-	cmdUsage.Parameters.Append(prmId)
-	prmId.value = cleanNumeric(Session("utilid"))
-
-	Err.Clear()
-	Dim rstUsage = cmdUsage.Execute
 	
-	' The util isnt used in any batch jobs, so we can delete it
-	if rstUsage.eof then
-		Response.Redirect("util_delete")		
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+	
+	Dim rstUsage = objDatabase.GetUtilityUsage(CInt(CleanNumeric(Session("utiltype"))), CInt(CleanNumeric(Session("utilid"))))
+		
+	' The utility isnt used in any batch jobs, so we can delete it
+	If rstUsage.Rows.Count = 0 Then
+		Response.Redirect("util_delete")
 	End If
 %>
 
@@ -49,15 +38,17 @@
 							<td>
 									Could not <%=session("action")%> '<%=session("utilname")%>' because it is used in the following:<BR><BR>
 <%
-	Do While Not rstUsage.EOF
-		Dim sDescription As String = CType(rstUsage.Fields("description").Value, String)
+	
+
+	For Each objRow As DataRow In rstUsage.Rows
+
+		Dim sDescription As String = objRow("description").ToString()
 		sDescription = Replace(sDescription, "<", "&lt;")
 		sDescription = Replace(sDescription, ">", "&gt;")
 
 		Response.Write(sDescription & "<BR>" & vbCrLf)
 
-		rstUsage.MoveNext()
-	Loop
+	Next
 %>
 							</td>
 					<td width=20>&nbsp;</td>
@@ -69,17 +60,13 @@
 				 
 					<tr> 
 							<td colspan=3 height=10 align=center> 
-									<input id="cmdOK" name="cmdOK" type="button" value="OK" style="WIDTH: 75px" class="btn" onclick="OpenHR.submitForm(frmUsage);"
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+									<input id="cmdOK" name="cmdOK" type="button" value="OK" style="WIDTH: 75px" class="btn" onclick="OpenHR.submitForm(frmUsage);" />
 							</td>
 					</tr>
 					<tr>
 					<td height=10 colspan=3></td>
 				</tr>
-<%--				<%session("utilid") = Request.Form("utilid")%>--%>
+
 			</table>
 		</TD>
 	</TR>

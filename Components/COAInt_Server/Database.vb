@@ -1,6 +1,7 @@
 ﻿Option Explicit On
 Option Strict On
 
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
@@ -159,8 +160,16 @@ Public Class Database
 	Public Function GetTableOrders(TableID As Integer, ViewID As Integer) As DataTable
 
 		Return DB.GetDataTable("sp_ASRIntGetTableOrders", CommandType.StoredProcedure _
-			, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = TableID} _
-			, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = ViewID})
+				, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = TableID} _
+				, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = ViewID})
+
+	End Function
+
+	Public Function GetUtilityUsage(UtilType As UtilityType, ID As Integer) As DataTable
+
+		Return DB.GetDataTable("sp_ASRIntDefUsage", CommandType.StoredProcedure _
+				, New SqlParameter("intType", SqlDbType.Int) With {.Value = UtilType} _
+				, New SqlParameter("intID", SqlDbType.Int) With {.Value = ID})
 
 	End Function
 

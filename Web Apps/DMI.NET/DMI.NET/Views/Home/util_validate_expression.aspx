@@ -2,6 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <!DOCTYPE html>
 
@@ -146,6 +147,7 @@
 	Dim sUtilType2 As String
 	Dim iExprType As Integer
 
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 	Dim cmdValidate As Command
@@ -740,24 +742,21 @@
 				objExpression = Nothing
 					
 				If iReturnType <> iOriginalReturnType Then
-					cmdDefPropRecords = New Command()
-					cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
-					cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
+										
+					Dim rsUsage = objDatabase.GetUtilityUsage(CInt(CleanNumeric(Request.Form("validateUtilType"))), CInt(CleanNumeric(Request.Form("validateUtilID"))))
 
-					cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
-
-					prmType = cmdDefPropRecords.CreateParameter("type", 3, 1)	' 3=integer, 1=input
-					cmdDefPropRecords.Parameters.Append(prmType)
-					prmType.value = CleanNumeric(Request.Form("validateUtilType"))
-
-					prmID = cmdDefPropRecords.CreateParameter("id", 3, 1)	' 3=integer, 1=input
-					cmdDefPropRecords.Parameters.Append(prmID)
-					prmID.value = CleanNumeric(Request.Form("validateUtilID"))
-
-					Err.Clear()
-					rsDefProp = cmdDefPropRecords.Execute
-
-					If Not (rsDefProp.BOF And rsDefProp.EOF) Then
+					If rsUsage.Rows.Count = 0 Then
+						Response.Write("<option>&lt;None&gt;</option>")
+					Else
+						For Each objRow As DataRow In rsUsage.Rows
+							sDescription = objRow("description").ToString()
+							sDescription = Replace(sDescription, "<", "&lt;")
+							sDescription = Replace(sDescription, ">", "&gt;")
+							Response.Write("<option>" & sDescription & "</option>")
+						Next
+					End If
+					 
+					If rsUsage.Rows.Count > 0 Then
 						fDisplay = True
 						Response.Write("			  <tr>" & vbCrLf)
 						Response.Write("					<td width='20'></td>" & vbCrLf)
@@ -777,8 +776,8 @@
 						Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
 						
-						Do While Not rsDefProp.EOF
-							sDescription = rsDefProp.Fields("description").Value
+						For Each objRow As DataRow In rsDefProp.Rows
+							sDescription = objRow("description").ToString()
 							sDescription = Replace(sDescription, "<", "&lt;")
 							sDescription = Replace(sDescription, ">", "&gt;")
 
@@ -789,10 +788,8 @@
 							Response.Write("			    </td>" & vbCrLf)
 							Response.Write("					<td width='20'></td>" & vbCrLf)
 							Response.Write("			  </tr>" & vbCrLf)
-
-							rsDefProp.MoveNext()
-						Loop
-
+						Next
+						
 						Response.Write("			  <tr>" & vbCrLf)
 						Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)

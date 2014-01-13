@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <% 
 	Response.Expires = -1 
@@ -62,6 +64,9 @@
 							</td>
 					</tr>
 <%
+	
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+	
 	Dim cmdDefPropRecords As Command = New Command()
 	cmdDefPropRecords.CommandText = "sp_ASRIntDefProperties"
 	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
@@ -146,34 +151,25 @@
 						<td rowspan=4>
 						<select size=2 id=select1 name=select1 style="WIDTH: 300px; height:100%" class="combo">
 <%
-	cmdDefPropRecords = New Command()
-	cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
-	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
+	
+	Try
+		Dim rsDefUsage = objDatabase.GetUtilityUsage(CInt(Request("utiltype")), CInt(Request("prop_id")))
 
-	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
+		If rsDefUsage.Rows.Count = 0 Then
+			Response.Write("<option>&lt;None&gt;</option>")
+		Else
+			For Each objRow As DataRow In rsDefUsage.Rows
+				Dim sDescription As String = objRow("description").ToString()
+				sDescription = Replace(sDescription, "<", "&lt;")
+				sDescription = Replace(sDescription, ">", "&gt;")
+				Response.Write("<option>" & sDescription & "</option>")
+			Next
+		End If
 
-	prmType = cmdDefPropRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-	cmdDefPropRecords.Parameters.Append(prmType)
-prmType.value = cleanNumeric(clng(Request("utiltype")))
-
-	prmID = cmdDefPropRecords.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-	cmdDefPropRecords.Parameters.Append(prmID)
-prmID.value = cleanNumeric(clng(Request("prop_id")))
-
-	Err.Clear()
-	rsDefProp = cmdDefPropRecords.Execute
-
-if rsDefProp.BOF and rsDefProp.EOF then
-		Response.Write("<option>&lt;None&gt;</option>")
-else
-	do while not rsDefProp.EOF
-			Dim sDescription As String = CStr(rsDefProp.Fields("description").Value)
-		sDescription = replace(sDescription, "<", "&lt;")
-		sDescription = replace(sDescription, ">", "&gt;")
-			Response.Write("<option>" & sDescription & "</option>")
-		rsDefProp.MoveNext
-	loop
-end if
+	Catch ex As Exception
+		Throw
+		
+	End Try
 					 
 	rsDefProp = Nothing
 	cmdDefPropRecords = Nothing
