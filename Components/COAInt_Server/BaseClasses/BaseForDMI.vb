@@ -9,7 +9,7 @@ Namespace BaseClasses
 
 	Public Class BaseForDMI
 
-		Protected DB As clsDataAccess
+		Public DB As clsDataAccess
 		Protected General As clsGeneral
 		Protected Logs As clsEventLog
 		Protected AccessLog As AccessLog

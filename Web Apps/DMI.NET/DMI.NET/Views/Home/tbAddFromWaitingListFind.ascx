@@ -2,6 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%Dim sErrorDescription = ""
 	Dim sFailureDescription = ""%>
@@ -321,60 +322,33 @@
 													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 													
 													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-														' Get the view records.
-														Dim cmdViewRecords = CreateObject("ADODB.Command")
-														cmdViewRecords.CommandText = "sp_ASRIntGetLinkViews"
-														cmdViewRecords.CommandType = 4 ' Stored Procedure
-														cmdViewRecords.ActiveConnection = Session("databaseConnection")
-
-														Dim prmTableID = cmdViewRecords.CreateParameter("tableID", 3, 1)
-														cmdViewRecords.Parameters.Append(prmTableID)
-														prmTableID.value = CleanNumeric(Session("optionLinkTableID"))
-
-														Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, 2) ' 11=integer, 2=output
-														cmdViewRecords.Parameters.Append(prmDfltOrderID)
-
-														Err.Clear()
-														Dim rstViewRecords = cmdViewRecords.Execute
-
-														If (Err.Number <> 0) Then
-															sErrorDescription = "The Course views could not be retrieved." & vbCrLf & FormatError(Err.Description)
-														End If
+														
+														Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+														Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
+																, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkTableID"))} _
+																, prmDfltOrderID)
 
 														If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-															Do While Not rstViewRecords.EOF
-																Response.Write("						<OPTION value=" & rstViewRecords.Fields(0).Value)
-																If rstViewRecords.Fields(0).Value = Session("optionLinkViewID") Then
+															For Each objRow As DataRow In rstViewRecords.Rows
+																Response.Write("						<option value=" & objRow(0))
+																If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
 																	Response.Write(" SELECTED")
 																End If
 
-																If rstViewRecords.Fields(0).Value = 0 Then
-																	Response.Write(">" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "</OPTION>" & vbCrLf)
+																If objRow(0) = 0 Then
+																	Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
 																Else
-																	Response.Write(">'" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "' view</OPTION>" & vbCrLf)
+																	Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
 																End If
-
-																rstViewRecords.MoveNext()
-															Loop
-			
-															If (rstViewRecords.EOF And rstViewRecords.BOF) Then
-																sFailureDescription = "You do not have permission to read the Course table."
-															End If
-		
-															' Release the ADO recordset object.
-															rstViewRecords.close()
-															rstViewRecords = Nothing
+																
+															Next
 	
-															' NB. IMPORTANT ADO NOTE.
-															' When calling a stored procedure which returns a recordset AND has output parameters
-															' you need to close the recordset and set it to nothing before using the output parameters. 
 															If Session("optionLinkOrderID") <= 0 Then
-																Session("optionLinkOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
+																Session("optionLinkOrderID") = prmDfltOrderID.Value
 															End If
+
 														End If
 
-														' Release the ADO command object.
-														cmdViewRecords = Nothing
 													End If
 												%>
 											</select>

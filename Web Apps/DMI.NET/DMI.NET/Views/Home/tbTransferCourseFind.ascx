@@ -2,10 +2,11 @@
 <%@ Import namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
-<script type="text/javascript">
+<script type="text/javascript">	
 	function tbTransferCourseFind_onload() {
 		var fOK;
 		fOK = true;
@@ -74,9 +75,6 @@
 			refreshOptionData();	//should be in scope
 		}
 	}
-</script>
-
-<script type="text/javascript">
 
 	function tbSelect() {
 		
@@ -245,10 +243,7 @@
 
 		frmtbFindForm.ssOleDBGridRecords.redraw = true;
 	}
-</script>
 
-
-<script type="text/javascript">
 	function tbAddFromWaitingListFind_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", "tbssOleDBGridRecords_dblClick()");
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", "tbssOleDBGridRecords_click()");
@@ -328,62 +323,35 @@
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	
-	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-		' Get the view records.
-		Dim cmdViewRecords = CreateObject("ADODB.Command")
-		cmdViewRecords.CommandText = "sp_ASRIntGetLinkViews"
-		cmdViewRecords.CommandType = 4 ' Stored Procedure
-		cmdViewRecords.ActiveConnection = Session("databaseConnection")
+	If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+				
+		Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
+				, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkTableID"))} _
+				, prmDfltOrderID)
 
-		Dim prmTableID = cmdViewRecords.CreateParameter("tableID", 3, 1)
-		cmdViewRecords.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionLinkTableID"))
-
-		Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, 2) ' 11=integer, 2=output
-		cmdViewRecords.Parameters.Append(prmDfltOrderID)
-
-		Err.Clear()
-		Dim rstViewRecords = cmdViewRecords.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The Course views could not be retrieved." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-			do while not rstViewRecords.EOF
-				Response.Write("						<OPTION value=" & rstViewRecords.Fields(0).Value)
-				if rstViewRecords.Fields(0).Value = session("optionLinkViewID") then
+		If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+			For Each objRow As DataRow In rstViewRecords.Rows
+				Response.Write("						<option value=" & objRow(0))
+				If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
 					Response.Write(" SELECTED")
-				end if
+				End If
 
-				if rstViewRecords.Fields(0).Value = 0 then
-					Response.Write(">" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "</OPTION>" & vbCrLf)
+				If objRow(0) = 0 Then
+					Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
 				Else
-					Response.Write(">'" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "' view</OPTION>" & vbCrLf)
-				end if
-
-				rstViewRecords.MoveNext
-			loop
-			
-			if (rstViewRecords.EOF and rstViewRecords.BOF) then
-				sFailureDescription = "You do not have permission to read the Course table."
-			end if
-		
-			' Release the ADO recordset object.
-			rstViewRecords.close
-			rstViewRecords = Nothing
+					Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
+				End If
+																
+			Next
 	
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and set it to nothing before using the output parameters. 
-			if session("optionLinkOrderID") <= 0 then
-				session("optionLinkOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
-			end if
-		end if
+			If Session("optionLinkOrderID") <= 0 Then
+				Session("optionLinkOrderID") = prmDfltOrderID.Value
+			End If
 
-		' Release the ADO command object.
-		cmdViewRecords = Nothing
-	end if
+		End If
+		
+	End If
 %>
 									</SELECT>						
 								</TD>

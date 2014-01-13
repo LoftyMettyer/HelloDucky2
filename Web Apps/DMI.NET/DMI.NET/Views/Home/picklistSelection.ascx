@@ -3,6 +3,7 @@
 <%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
@@ -475,13 +476,7 @@
 								Dim prmUser As ADODB.Parameter
 								Dim rstSelRecords As Recordset
 								Dim lngRowCount As Long
-								Dim cmdViewRecords As Command
-								Dim prmDfltOrderID As ADODB.Parameter
-								Dim rstViewRecords As Recordset
 								Dim sFailureDescription As String
-								Dim cmdOrderRecords As Command
-								Dim prmViewID As ADODB.Parameter
-								Dim rstOrderRecords As Recordset
 																		
 								Session("optionLinkViewID") = 0
 								Session("optionLinkOrderID") = 0
@@ -687,68 +682,35 @@
 													<select id="selectView" name="selectView" class="combo" style="width: 200px">
 														<%
 															If Len(sErrorDescription) = 0 Then
-																' Get the view records.
-																cmdViewRecords = New Command
-																cmdViewRecords.CommandText = "sp_ASRIntGetLinkViews"
-																cmdViewRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																cmdViewRecords.ActiveConnection = Session("databaseConnection")
+																
+																Dim prmDfltOrderID As New SqlParameter("@plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+																Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
+																		, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("selectionTableID")))} _
+																		, prmDfltOrderID)
 
-																prmTableID = cmdViewRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)
-																cmdViewRecords.Parameters.Append(prmTableID)
-																prmTableID.Value = CleanNumeric(Session("selectionTableID"))
-
-																prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, ParameterDirectionEnum.adParamOutput)	' 11=integer, 2=output
-																cmdViewRecords.Parameters.Append(prmDfltOrderID)
-
-																Err.Clear()
-																rstViewRecords = cmdViewRecords.Execute
-
-																If (Err.Number <> 0) Then
-																	sErrorDescription = "The Employee views could not be retrieved." & vbCrLf & FormatError(Err.Description)
+																If (rstViewRecords.Rows.Count = 0) Then
+																	sFailureDescription = "You do not have permission to read the Employee table."
 																End If
+																
+																For Each objRow As DataRow In rstViewRecords.Rows
+																	Response.Write("						<option value=" & objRow(0))
+																	If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
+																		Response.Write(" SELECTED")
+																	End If
 
-																If Len(sErrorDescription) = 0 Then
-																	Do While Not rstViewRecords.EOF
-														%>
-														<option value="<%=rstViewRecords.Fields(0).Value%>"
-															<%
-															If rstViewRecords.Fields(0).Value = Session("optionLinkViewID") Then
-%>
-															selected
-															<%
-														End If
+																	If objRow(0) = 0 Then
+																		Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
+																	Else
+																		Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
+																	End If
+																
+																Next
 
-														If rstViewRecords.Fields(0).Value = 0 Then
-%>><%=replace(rstViewRecords.Fields(1).Value, "_", " ")%></option>
-														<%
-														Else
-														%>
-																						>'<%=replace(rstViewRecords.Fields(1).Value, "_", " ")%>' view</OPTION>
-																														<%
-																														End If
-
-																														rstViewRecords.MoveNext()
-																													Loop
-			
-																													If (rstViewRecords.EOF And rstViewRecords.BOF) Then
-																														sFailureDescription = "You do not have permission to read the Employee table."
-																													End If
-		
-																													' Release the ADO recordset object.
-																													rstViewRecords.Close()
-																													rstViewRecords = Nothing
-	
-																													' NB. IMPORTANT ADO NOTE.
-																													' When calling a stored procedure which returns a recordset AND has output parameters
-																													' you need to close the recordset and set it to nothing before using the output parameters. 
-																													If Session("optionLinkOrderID") <= 0 Then
-																														Session("optionLinkOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
-																													End If
-																												End If
-
-																												' Release the ADO command object.
-																												cmdViewRecords = Nothing
-																											End If
+																If Session("optionLinkOrderID") <= 0 Then
+																	Session("optionLinkOrderID") = prmDfltOrderID.Value
+																End If
+																	
+															End If
 																														%>
 													</select>
 												</td>
@@ -776,9 +738,6 @@
 																	Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
 																Next
 															
-	
-													' Release the ADO command object.
-													cmdOrderRecords = Nothing
 												End If
 														%>
 													</select>
