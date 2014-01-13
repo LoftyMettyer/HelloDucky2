@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -323,6 +325,8 @@
 <%
 	on error resume next
 	Dim sErrorDescription = "", sFailureDescription = ""
+
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	
 	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
 		' Get the view records.
@@ -385,11 +389,7 @@
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoView name=btnGoView class="btn"
-											onclick="tbgoView()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbgoView()" />
 								</TD>
 								<TD>
 									&nbsp;
@@ -403,59 +403,24 @@
 								<TD width=175>
 									<SELECT id=selectOrder name=selectOrder class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 <%
-	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-		' Get the order records.
-		Dim cmdOrderRecords = CreateObject("ADODB.Command")
-		cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-		cmdOrderRecords.CommandType = 4 ' Stored Procedure
-		cmdOrderRecords.ActiveConnection = Session("databaseConnection")
-
-		Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
-		cmdOrderRecords.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionLinkTableID"))
-
-		Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
-		cmdOrderRecords.Parameters.Append(prmViewID)
-		prmViewID.value = 0
-
-		Err.Clear()
-		Dim rstOrderRecords = cmdOrderRecords.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-			do while not rstOrderRecords.EOF
-				Response.Write("						<OPTION value=" & rstOrderRecords.Fields(1).Value)
-
-				If rstOrderRecords.Fields(1).Value = Session("optionLinkOrderID") Then
-					Response.Write(" SELECTED")
-				End If
-
-				Response.Write(">" & Replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbCrLf)
-
-				rstOrderRecords.MoveNext
-			loop
-
-			' Release the ADO recordset object.
-			rstOrderRecords.close
-			rstOrderRecords = Nothing
-		end if
-	
-		' Release the ADO command object.
-		cmdOrderRecords = Nothing
-	end if
+	If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+		
+		Dim rstOrderRecords = objDatabase.GetTableOrders(CInt(CleanNumeric(Session("optionLinkTableID"))), 0)
+		For Each objRow As DataRow In rstOrderRecords.Rows
+			Response.Write("						<option value=" & objRow(1))
+			If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+				Response.Write(" SELECTED")
+			End If
+			Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+		Next
+		
+	End If
 %>
 									</SELECT>
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoOrder name=btnGoOrder class="btn"
-											onclick="tbgoOrder()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbgoOrder()" />
 								</TD>
 							</TR>
 						</table>
@@ -471,8 +436,7 @@
 						<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridRecords name=ssOleDBGridRecords  codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%">
 							<PARAM NAME="ScrollBars" VALUE="4">
 							<PARAM NAME="_Version" VALUE="196617">
-							<PARAM NAME="DataMode" VALUE="2">
-							
+							<PARAM NAME="DataMode" VALUE="2">							
 							<PARAM NAME="Cols" VALUE="0">
 							<PARAM NAME="Rows" VALUE="0">
 							<PARAM NAME="BorderStyle" VALUE="1">
@@ -567,21 +531,13 @@
 								</td>
 								<td width=10>
 									<input id="cmdSelect" name="cmdSelect" type="button" class="btn" value="Select" style="WIDTH: 75px" width="75" 
-											onclick="tbSelect()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbSelect()" />
 								</td>
 								<td width=40>
 								</td>
 								<td width=10>
 									<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-											onclick="tbCancel()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="tbCancel()" />
 								</td>
 							</tr>			
 						</table>

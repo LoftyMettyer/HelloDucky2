@@ -380,47 +380,19 @@
 													<td width="175">
 														<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
+																
+																' Get the order records.																
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-																	' Get the order records.
-																	Dim cmdOrderRecords = New Command
-																	cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-																	cmdOrderRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																	cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
-																	Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																	cmdOrderRecords.Parameters.Append(prmTableID)
-																	prmTableID.value = CleanNumeric(lngLookupTableID)
+																	Dim rstOrderRecords = objDatabase.GetTableOrders(lngLookupTableID, 0)																
+																	For Each objRow As DataRow In rstOrderRecords.Rows
+																		Response.Write("						<option value=" & objRow(1))
+																		If objRow(1) = CInt(Session("optionOrderID")) Then
+																			Response.Write(" SELECTED")
+																		End If
+																		Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+																	Next
 
-																	Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-																	cmdOrderRecords.Parameters.Append(prmViewID)
-																	prmViewID.value = 0
-
-																	Err.Clear()
-																	Dim rstOrderRecords = cmdOrderRecords.Execute
-
-																	If (Err.Number <> 0) Then
-																		sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																	End If
-
-																	If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-																		Do While Not rstOrderRecords.EOF
-																			Response.Write("						<OPTION value=" & rstOrderRecords.Fields(1).Value)
-																			If rstOrderRecords.Fields(1).Value = CInt(Session("optionOrderID")) Then
-																				Response.Write(" SELECTED")
-																			End If
-
-																			Response.Write(">" & Replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbCrLf)
-
-																			rstOrderRecords.MoveNext()
-																		Loop
-
-																		' Release the ADO recordset object.
-																		rstOrderRecords.close()
-																		rstOrderRecords = Nothing
-																	End If
-	
-																	' Release the ADO command object.
-																	cmdOrderRecords = Nothing
 																End If
 															%>
 														</select>

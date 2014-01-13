@@ -156,4 +156,12 @@ Public Class Database
 
 	End Function
 
+	Public Function GetTableOrders(TableID As Integer, ViewID As Integer) As DataTable
+
+		Return DB.GetDataTable("sp_ASRIntGetTableOrders", CommandType.StoredProcedure _
+			, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = TableID} _
+			, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = ViewID})
+
+	End Function
+
 End Class

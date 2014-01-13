@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
@@ -71,9 +73,6 @@
 			loadAddRecords();
 		}
 	}
-</script>
-
-<script type="text/javascript">
 
 	function picklistSelection_refreshControls() {
 		var fNoneSelected;
@@ -381,10 +380,6 @@
 		}
 	}
 
-</script>
-
-<script type="text/javascript">
-
 	function picklistSelection_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", "ssOleDBGridSelRecords_RowColChange()");
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", "ssOleDBGridSelRecords_DblClick()");
@@ -472,6 +467,8 @@
 						<td width="20"></td>
 						<td>
 							<%
+								Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+								
 								Dim sErrorDescription As String
 								Dim cmdSelRecords As Command
 								Dim prmTableID As ADODB.Parameter
@@ -769,46 +766,16 @@
 													<select id="selectOrder" name="selectOrder" class="combo" style="width: 200px">
 														<%
 															If Len(sErrorDescription) = 0 Then
-																' Get the order records.
-																cmdOrderRecords = New Command
-																cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-																cmdOrderRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-																cmdOrderRecords.ActiveConnection = Session("databaseConnection")
-
-																prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)
-																cmdOrderRecords.Parameters.Append(prmTableID)
-																prmTableID.Value = CleanNumeric(Session("selectionTableID"))
-
-																prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, ParameterDirectionEnum.adParamInput)
-																cmdOrderRecords.Parameters.Append(prmViewID)
-																prmViewID.Value = 0
-
-																Err.Clear()
-																rstOrderRecords = cmdOrderRecords.Execute
-
-																If (Err.Number <> 0) Then
-																	sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																End If
-
-																If Len(sErrorDescription) = 0 Then
-																	Do While Not rstOrderRecords.EOF
-														%>
-														<option value="<%=rstOrderRecords.Fields(1).Value%>"
-															<%
-															If rstOrderRecords.Fields(1).Value = Session("optionLinkOrderID") Then
-%>
-															selected
-															<%
-														End If
-%>><%=replace(rstOrderRecords.Fields(0).Value, "_", " ")%></option>
-														<%
-															rstOrderRecords.MoveNext()
-														Loop
-
-														' Release the ADO recordset object.
-														rstOrderRecords.Close()
-														rstOrderRecords = Nothing
-													End If
+																
+																Dim rstTableOrderRecords = objDatabase.GetTableOrders(CInt(Session("selectionTableID")), 0)
+																For Each objRow As DataRow In rstTableOrderRecords.Rows
+																	Response.Write("						<option value=" & objRow(1))
+																	If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+																		Response.Write(" SELECTED")
+																	End If
+																	Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+																Next
+															
 	
 													' Release the ADO command object.
 													cmdOrderRecords = Nothing

@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -223,82 +225,71 @@
 			</div>
 			<div id="orderGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
 				<%
+
+					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 					Dim sErrorDescription = ""
 	
 					If Len(sErrorDescription) = 0 Then
-						' Get the order records.
-						Dim cmdOrderRecords = CreateObject("ADODB.Command")
-						cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-						cmdOrderRecords.CommandType = 4	' Stored Procedure
-						cmdOrderRecords.ActiveConnection = Session("databaseConnection")
-
-						Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
-						cmdOrderRecords.Parameters.Append(prmTableID)
-						prmTableID.value = CleanNumeric(Session("optionTableID"))
-
-						Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
-						cmdOrderRecords.Parameters.Append(prmViewID)
-						prmViewID.value = CleanNumeric(Session("optionViewID"))
-
-						Err.Clear()
-						Dim rstOrderRecords = cmdOrderRecords.Execute
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-						End If
-
+										
+						Dim rstOrderRecords = objDatabase.GetTableOrders(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")))
+											
 						If Len(sErrorDescription) = 0 Then%>
 
 				<table class="outline" style="width: 100%;" id="ssOleDBGridOrderRecords">
 
 					<tr class="">
-						<%For iLoop = 0 To (rstOrderRecords.fields.count - 1)
+						<%For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
 								Dim headerStyle As New StringBuilder
 								Dim headerCaption As String
 												
 								headerStyle.Append("width: 373px; ")
 												
-								If rstOrderRecords.fields(iLoop).name = "orderID" Then
+								If rstOrderRecords.Columns(iLoop).ColumnName = "orderID" Then
 									headerStyle.Append("display: none; ")
 								End If
 	
-								headerCaption = Replace(rstOrderRecords.fields(iLoop).name.ToString(), "_", " ")
+								headerCaption = Replace(rstOrderRecords.Columns(iLoop).ColumnName.ToString(), "_", " ")
 												
 								headerStyle.Append("text-align: left; ")
 										
-								If rstOrderRecords.fields(iLoop).name <> "orderID" Then%>
+								If rstOrderRecords.Columns(iLoop).ColumnName <> "orderID" Then%>
 						<th style="<%=headerStyle.ToString()%>"><%=headerCaption%></th>
 						<%End If
 						Next
 
 						Dim lngRowCount = 0%>
 					</tr>
-					<%Do While Not rstOrderRecords.EOF
+					<%For Each objRow As DataRow In rstOrderRecords.Rows
 							Dim iIDNumber As Integer = 0
 												
-							For iLoop = 0 To (rstOrderRecords.fields.count - 1)
-								If rstOrderRecords.fields(iLoop).name = "orderID" Then
-									iIDNumber = rstOrderRecords.fields(iLoop).Value
+							For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
+								If rstOrderRecords.Columns(iLoop).ColumnName = "orderID" Then
+									iIDNumber = CInt(objRow(iLoop))
 									Exit For
 								End If
-								Next%>
+							Next
+							%>
 
 					<tr disabled="disabled" id="row_<%=iIDNumber.ToString()%>">
-						<%For iLoop = 0 To (rstOrderRecords.fields.count - 1)
-								If rstOrderRecords.fields(iLoop).name <> "orderID" Then%>
-						<td class="" id="col_<%=NullSafeString(iIDNumber)%>"><%=Replace(NullSafeString(rstOrderRecords.Fields(iLoop).Value), "_", " ")%><input type='hidden' value='<%=NullSafeString(iIDNumber)%>'></td>
-						<%End If
-							Next%>
+						<%
+							For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
+								If rstOrderRecords.Columns(iLoop).ColumnName <> "orderID" Then
+									%>
+						<td class="" id="col_<%=NullSafeString(iIDNumber)%>"><%=Replace(NullSafeString(objRow(iLoop).ToString), "_", " ")%><input type='hidden' value='<%=NullSafeString(iIDNumber)%>'></td>
+						<%
+							End If
+					Next
+						%>
 					</tr>
-					<%lngRowCount = lngRowCount + 1
-						rstOrderRecords.MoveNext()
-					 Loop%>
+					<%
+						lngRowCount = lngRowCount + 1
+					Next
+					%>
 					<input type="hidden" id="txtCurrentOrderID" name="txtCurrentOrderID" value="<%=Session("optionOrderID")%>">
 
-					<%' Release the ADO recordset object.
-						rstOrderRecords.close()
-						'rstOrderRecords = Nothing
-					End If%>
+					<%
+					End If
+					%>
 				</table>
 				<%' Release the ADO command object.
 					'cmdOrderRecords = Nothing

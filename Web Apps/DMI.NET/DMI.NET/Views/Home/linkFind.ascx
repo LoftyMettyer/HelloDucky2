@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -95,9 +97,7 @@
 
 		}
 	}
-</script>
 
-<script type="text/javascript">
 	function SelectLink() {
 		
 		// Fault 3503
@@ -318,38 +318,6 @@
 
 </script>
 
-<script for="ssOleDBGridLinkRecords" event="dblClick" language="JavaScript">
-//SelectLink();
-</script>
-
-<script for="ssOleDBGridLinkRecords" event="KeyPress(iKeyAscii)" language="JavaScript">
-//if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
-	//	var dtTicker = new Date();
-	//	var iThisTick = new Number(dtTicker.getTime());
-	//	if (txtLastKeyFind.value.length > 0) {
-	//		var iLastTick = new Number(txtTicker.value);
-	//	}
-	//	else {
-	//		var iLastTick = new Number("0");
-	//	}
-
-	//	if (iThisTick > (iLastTick + 1500)) {
-	//		var sFind = String.fromCharCode(iKeyAscii);
-	//	}
-	//	else {
-	//		var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-	//	}
-
-	//	txtTicker.value = iThisTick;
-	//	txtLastKeyFind.value = sFind;
-
-	//	locateRecord(sFind, false);
-	//}
-</script>
-
-<script for="ssOleDBGridLinkRecords" event="click" language="JavaScript">
-//refreshControls();
-</script>
 <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
 
 <div id="divLinkFindForm" <%=session("BodyTag")%>>
@@ -379,6 +347,8 @@
 											<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 												<%
 													On Error Resume Next
+
+													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
 													Dim sErrorDescription = ""
 													Dim sFailureDescription = ""
@@ -448,11 +418,7 @@
 										</td>
 										<td width="10">
 											<input type="button" value="Go" id="btnGoLinkView" name="btnGoLinkView" class="btn"
-												onclick="goLinkView()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="goLinkView()" />
 										</td>
 										<td>&nbsp;
 										</td>
@@ -464,47 +430,16 @@
 											<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 												<%
 													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-														' Get the order records.
-														Dim cmdOrderRecords = CreateObject("ADODB.Command")
-														cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-														cmdOrderRecords.CommandType = 4	' Stored Procedure
-														cmdOrderRecords.ActiveConnection = Session("databaseConnection")
+														
+														Dim rstOrderRecords = objDatabase.GetTableOrders(CleanNumeric(Session("optionLinkTableID")), 0)
+														For Each objRow As DataRow In rstOrderRecords.Rows
+															Response.Write("						<option value=" & objRow(1))
+															If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+																Response.Write(" SELECTED")
+															End If
+															Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+														Next
 
-														Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
-														cmdOrderRecords.Parameters.Append(prmTableID)
-														prmTableID.value = CleanNumeric(Session("optionLinkTableID"))
-
-														Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
-														cmdOrderRecords.Parameters.Append(prmViewID)
-														prmViewID.value = 0
-
-														Err.Clear()
-														Dim rstOrderRecords = cmdOrderRecords.Execute
-
-														If (Err.Number <> 0) Then
-															sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-														End If
-
-														If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-															Do While Not rstOrderRecords.EOF
-																Response.Write("						<OPTION value=" & rstOrderRecords.Fields(1).Value)
-
-																If rstOrderRecords.Fields(1).Value = CLng(Session("optionLinkOrderID")) Then
-																	Response.Write(" SELECTED")
-																End If
-
-																Response.Write(">" & Replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbCrLf)
-
-																rstOrderRecords.MoveNext()
-															Loop
-
-															' Release the ADO recordset object.
-															rstOrderRecords.close()
-															rstOrderRecords = Nothing
-														End If
-	
-														' Release the ADO command object.
-														cmdOrderRecords = Nothing
 													End If
 												%>
 											</select>
@@ -516,11 +451,7 @@
 										</td>
 										<td width="10">
 											<input type="button" value="Go" id="btnGoLinkOrder" name="btnGoLinkOrder" class="btn"
-												onclick="goLinkOrder()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="goLinkOrder()" />
 										</td>
 									</tr>
 								</table>
@@ -553,20 +484,12 @@
 										<td></td>
 										<td width="10">
 											<input id="cmdSelectLink" name="cmdSelectLink" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-												onclick="SelectLink()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="SelectLink()"/>
 										</td>
 										<td width="40"></td>
 										<td width="10">
 											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-												onclick="CancelLink()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="CancelLink()" />
 										</td>
 									</tr>
 								</table>

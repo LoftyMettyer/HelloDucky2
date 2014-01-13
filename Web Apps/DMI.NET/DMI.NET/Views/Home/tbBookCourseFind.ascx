@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -240,8 +242,6 @@
 	}
 </script>
 
-
-
 <script type="text/javascript">
 	
 	function tbBookCourseFind_addhandlers() {
@@ -323,6 +323,8 @@
 	on error resume next
 	Dim sErrorDescription = ""
 	Dim sFailureDescription = ""
+
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	
 	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
 		' Get the view records.
@@ -385,11 +387,7 @@
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoView class="btn" name=btnGoView 
-											onclick="goView()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="goView()" />
 								</TD>
 								<TD>
 									&nbsp;
@@ -403,59 +401,24 @@
 								<TD width=175>
 									<SELECT id=selectOrder name=selectOrder class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 <%
-	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-		' Get the order records.
-		Dim cmdOrderRecords = Server.CreateObject("ADODB.Command")
-		cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-		cmdOrderRecords.CommandType = 4 ' Stored Procedure
-		cmdOrderRecords.ActiveConnection = Session("databaseConnection")
-
-		Dim prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
-		cmdOrderRecords.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionLinkTableID"))
-
-		Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
-		cmdOrderRecords.Parameters.Append(prmViewID)
-		prmViewID.value = 0
-
-		Err.Clear()
-		Dim rstOrderRecords = cmdOrderRecords.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-			do while not rstOrderRecords.EOF
-				Response.Write("						<OPTION value=" & rstOrderRecords.Fields(1).Value)
-
-				if rstOrderRecords.Fields(1).Value = session("optionLinkOrderID") then
-					Response.Write(" SELECTED")
-				end if
-
-				Response.Write(">" & Replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbCrLf)
-
-				rstOrderRecords.MoveNext
-			loop
-
-			' Release the ADO recordset object.
-			rstOrderRecords.close
-			rstOrderRecords = Nothing
-		end if
-	
-		' Release the ADO command object.
-		cmdOrderRecords = Nothing
-	end if
+	If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+				
+		Dim rstOrderRecords = objDatabase.GetTableOrders(CInt(CleanNumeric(Session("optionLinkTableID"))), 0)
+		For Each objRow As DataRow In rstOrderRecords.Rows
+			Response.Write("						<option value=" & objRow(1))
+			If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+				Response.Write(" SELECTED")
+			End If
+			Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+		Next
+		
+	End If
 %>
 									</SELECT>
 								</TD>
 								<TD width=10>
 									<INPUT type="button" value="Go" id=btnGoOrder name=btnGoOrder class="btn"
-											onclick="goOrder()"
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="goOrder()" />
 								</TD>
 							</TR>
 						</table>
