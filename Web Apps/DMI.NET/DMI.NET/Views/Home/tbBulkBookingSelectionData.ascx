@@ -140,8 +140,6 @@
 
 <FORM id=frmData name=frmData>
 <%
-	on error resume next
-		
 	Const DEADLOCK_ERRORNUMBER = -2147467259
 	Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
 	Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
@@ -160,43 +158,11 @@
 
 		Dim sThousandColumns = ""
 			
-		Dim cmdThousandFindColumns = CreateObject("ADODB.Command")
-		cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-		cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
-		cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-		cmdThousandFindColumns.CommandTimeout = 180
-		
-		Dim prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-		cmdThousandFindColumns.Parameters.Append(prmError)
-
-		Dim prmTableID2 = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-		cmdThousandFindColumns.Parameters.Append(prmTableID2)
-		prmTableID2.value = CleanNumeric(Session("tableID"))
-
-		Dim prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-		cmdThousandFindColumns.Parameters.Append(prmViewID)
-		prmViewID.value = cleanNumeric(session("viewID"))
-
-		Dim prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-		cmdThousandFindColumns.Parameters.Append(prmOrderID)
-		prmOrderID.value = cleanNumeric(session("orderID"))
-
-		Dim prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-		cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-		Err.Clear()
-		cmdThousandFindColumns.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-		End If
-
-		if len(sErrorDescription) = 0 then
-			sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value			
-		end if
-	
-		' Release the ADO command object.
-		cmdThousandFindColumns = Nothing
+		Try
+			sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")))
+		Catch ex As Exception
+			sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+		End Try
 
 		Dim cmdGetFindRecords = CreateObject("ADODB.Command")
 		cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
@@ -208,15 +174,15 @@
 		cmdGetFindRecords.Parameters.Append(prmTableID)
 		prmTableID.value = cleanNumeric(session("tableID"))
 
-		prmViewID = cmdGetFindRecords.CreateParameter("viewID", 3, 1)
+		Dim prmViewID = cmdGetFindRecords.CreateParameter("viewID", 3, 1)
 		cmdGetFindRecords.Parameters.Append(prmViewID)
 		prmViewID.value = cleanNumeric(session("viewID"))
 
-		prmOrderID = cmdGetFindRecords.CreateParameter("orderID", 3, 1)
+		Dim prmOrderID = cmdGetFindRecords.CreateParameter("orderID", 3, 1)
 		cmdGetFindRecords.Parameters.Append(prmOrderID)
 		prmOrderID.value = cleanNumeric(session("orderID"))
 
-		prmError = cmdGetFindRecords.CreateParameter("error", 11, 2) ' 11=bit, 2=output
+		Dim prmError = cmdGetFindRecords.CreateParameter("error", 11, 2) ' 11=bit, 2=output
 		cmdGetFindRecords.Parameters.Append(prmError)
 
 		Dim prmReqRecs = cmdGetFindRecords.CreateParameter("reqRecs", 3, 1)

@@ -4,6 +4,8 @@ Imports System.IO
 Imports System.Drawing.Imaging
 Imports ADODB
 Imports System.Data.OleDb
+Imports HR.Intranet.Server
+Imports System.Data.SqlClient
 
 Public Module ASRIntranetFunctions
 
@@ -198,5 +200,29 @@ Public Module ASRIntranetFunctions
 			Case Else	'Does anybody know more of this 'magic numbers' so we can add to this Case? Should we have an enum?
 				Return ""
 		End Select
+	End Function
+
+	Public Function Get1000SeparatorFindColumns(TableID As Long, ViewID As Long, OrderID As Long) As String
+		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+		Dim ThousandColumns As String = ""
+
+		Dim pfError As New SqlParameter("@pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim piTableID As New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = TableID}
+		Dim piViewID As New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = ViewID}
+		Dim piOrderID As New SqlParameter("@piOrderID", SqlDbType.Int) With {.Value = OrderID}
+		Dim ps1000SeparatorCols As New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+		objDataAccess.ExecuteSP("spASRIntGet1000SeparatorFindColumns", _
+						pfError, _
+						piTableID, _
+						piViewID, _
+						piOrderID, _
+						ps1000SeparatorCols _
+		)
+
+		ThousandColumns = ps1000SeparatorCols.Value
+
+		Return ThousandColumns
 	End Function
 End Module

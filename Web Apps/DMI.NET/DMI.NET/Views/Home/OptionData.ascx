@@ -1,7 +1,14 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
+<%
+	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+%>
 <script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
 
 <form action="optionData_Submit" method="post" id="frmGetOptionData" name="frmGetOptionData">
@@ -31,37 +38,34 @@
 
 <form id="frmOptionData" name="frmOptionData">
 		<%
-				On Error Resume Next
-		
-				Dim aPrompts(1, 0)
+			Dim aPrompts(1, 0)
 
-				Const adStateOpen = 1
+			Const adStateOpen = 1
 		
-				Const DEADLOCK_ERRORNUMBER = -2147467259
-				Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
-				Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
-				Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
-				Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
-				Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
+			Const DEADLOCK_ERRORNUMBER = -2147467259
+			Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
+			Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
+			Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
+			Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
+			Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
 
-				Const iRETRIES = 5
-				Dim iRetryCount As Integer = 0
-				' NPG20080904 Fault 13018
-				Session("flagOverrideFilter") = False
+			Const iRETRIES = 5
+			Dim iRetryCount As Integer = 0
+			' NPG20080904 Fault 13018
+			Session("flagOverrideFilter") = False
 
 			Dim objUtilities As HR.Intranet.Server.Utilities
 
-				Dim sErrorDescription As String = ""
-				Dim sNonFatalErrorDescription As String = ""
+			Dim sErrorDescription As String = ""
+			Dim sNonFatalErrorDescription As String = ""
 
-			Dim cmdThousandFindColumns As Command
 			Dim prmError As ADODB.Parameter
 			Dim prmTableID As ADODB.Parameter
 			Dim prmViewID As ADODB.Parameter
 			Dim prmOrderID As ADODB.Parameter
-			Dim prmThousandColumns As ADODB.Parameter
+			Dim prmThousandColumns As SqlParameter
 			Dim cmdGetFindRecords As Command
-				Dim sThousandColumns As String
+			Dim sThousandColumns As String
 			Dim prmReqRecs As ADODB.Parameter
 
 			Dim prmIsFirstPage As ADODB.Parameter
@@ -97,21 +101,21 @@
 			Dim cmdTransferCourse As Command
 			Dim cmdBookCourse As Command
 			Dim prmStatus As ADODB.Parameter
-				Dim fDeadlock As Boolean
-				Dim sErrMsg As String
+			Dim fDeadlock As Boolean
+			Dim sErrMsg As String
 		
 			Dim prmTBRecordID As ADODB.Parameter
 			Dim prmErrorMessage As ADODB.Parameter
 
-				Dim iCount As Integer
-				Dim sAddString As String
-				Dim sColDef As String
-				Dim sTemp As String
+			Dim iCount As Integer
+			Dim sAddString As String
+			Dim sColDef As String
+			Dim sTemp As String
 		
-				Dim j As Integer
-				Dim sPrompts As String
-				Dim iIndex1 As Integer
-				Dim iIndex2 As Integer
+			Dim j As Integer
+			Dim sPrompts As String
+			Dim iIndex1 As Integer
+			Dim iIndex2 As Integer
 		
 			Dim cmdBulkBooking As ADODB.Command
 			Dim prmSelectionType As ADODB.Parameter
@@ -119,7 +123,7 @@
 			Dim prmSelectedIDs As ADODB.Parameter
 			Dim prmPromptSQL As ADODB.Parameter
 		
-				Dim fOK As Boolean
+			Dim fOK As Boolean
 
 			Dim prmErrMsg As ADODB.Parameter
 			Dim cmdPicklist As Command
@@ -134,50 +138,18 @@
 			Dim rstExprValues As ADODB.Recordset
 			Dim prmDataType As ADODB.Parameter
 		
-				Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
-				' Get the required record count if we have a query.
-				'	if len(session("selectSQL")) > 0 then
+			' Get the required record count if we have a query.
+			'	if len(session("selectSQL")) > 0 then
 			If Session("optionAction") = "LOADFIND" Then
 				sThousandColumns = ""
 			
-				cmdThousandFindColumns = New ADODB.Command
-				cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-				cmdThousandFindColumns.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-				cmdThousandFindColumns.CommandTimeout = 180
-		
-				prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-				cmdThousandFindColumns.Parameters.Append(prmError)
-
-				prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-				prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmViewID)
-				prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-				prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmOrderID)
-				prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-				prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-				Err.Clear()
-				cmdThousandFindColumns.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-					sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-				End If
-	
-				' Release the ADO command object.
-				cmdThousandFindColumns = Nothing
+				Try
+					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+				Catch ex As Exception
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+				End Try
 
 				cmdGetFindRecords = New Command
 				cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
@@ -387,43 +359,11 @@
 					sThousandColumns = ""
 
 					If Session("IsLookupTable") = "False" Then
-						cmdThousandFindColumns = New ADODB.Command
-						cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
-						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-						cmdThousandFindColumns.CommandTimeout = 180
-		
-						prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-						cmdThousandFindColumns.Parameters.Append(prmError)
-
-						prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-						cmdThousandFindColumns.Parameters.Append(prmTableID)
-						prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-						prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-						cmdThousandFindColumns.Parameters.Append(prmViewID)
-						prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-						prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-						cmdThousandFindColumns.Parameters.Append(prmOrderID)
-						prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-						prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-						cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-						Err.Clear()
-						cmdThousandFindColumns.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-						End If
-
-						If Len(sErrorDescription) = 0 Then
-							sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-						End If
-	
-						' Release the ADO command object.
-						cmdThousandFindColumns = Nothing
+						Try
+							sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+						Catch ex As Exception
+							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+						End Try
 
 						cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "spASRIntGetLookupFindRecords2"
@@ -500,33 +440,20 @@
 						cmdGetFindRecords.Parameters.Append(prmOverrideFilter)
 						prmOverrideFilter.Value = Session("flagOverrideFilter")
 					Else
-						cmdThousandFindColumns = New ADODB.Command
-						cmdThousandFindColumns.CommandText = "spASRIntGetLookupFindColumnInfo"
-						cmdThousandFindColumns.CommandType = 4 ' Stored Procedure
-						cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-						cmdThousandFindColumns.CommandTimeout = 180
-		
-						prmLookupColumnID = cmdThousandFindColumns.CreateParameter("lookupColumnID", 3, 1)
-						cmdThousandFindColumns.Parameters.Append(prmLookupColumnID)
-						prmLookupColumnID.Value = CleanNumeric(Session("optionLookupColumnID"))
-
-						prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-						cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-						Err.Clear()
-						cmdThousandFindColumns.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-						End If
+						prmThousandColumns = New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Try
+							objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
+													New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLookupColumnID"))}, _
+													prmThousandColumns _
+							)
+						Catch ex As Exception
+							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+						End Try
 
 						If Len(sErrorDescription) = 0 Then
-							sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
+							sThousandColumns = prmThousandColumns.Value
 						End If
 	
-						' Release the ADO command object.
-						cmdThousandFindColumns = Nothing
-
 						cmdGetFindRecords = New ADODB.Command
 						cmdGetFindRecords.CommandText = "spASRIntGetLookupFindRecords"
 						cmdGetFindRecords.CommandType = 4	' Stored procedure
@@ -672,43 +599,11 @@
 			ElseIf Session("optionAction") = "LOADTRANSFERCOURSE" Then
 				sThousandColumns = ""
 			
-				cmdThousandFindColumns = New ADODB.Command
-				cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-				cmdThousandFindColumns.CommandTimeout = 180
-		
-				prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-				cmdThousandFindColumns.Parameters.Append(prmError)
-
-				prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-				prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmViewID)
-				prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-				prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmOrderID)
-				prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-				prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-				Err.Clear()
-				cmdThousandFindColumns.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-					sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-				End If
-	
-				' Release the ADO command object.
-				cmdThousandFindColumns = Nothing
+				Try
+					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+				Catch ex As Exception
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+				End Try
 
 				cmdGetFindRecords = New ADODB.Command
 				cmdGetFindRecords.CommandText = "sp_ASRIntGetTransferCourseRecords"
@@ -861,44 +756,12 @@
 			ElseIf Session("optionAction") = "LOADBOOKCOURSE" Then
 				sThousandColumns = ""
 			
-				cmdThousandFindColumns = New ADODB.Command
-				cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-				cmdThousandFindColumns.CommandTimeout = 180
+				Try
+					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+				Catch ex As Exception
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+				End Try
 		
-				prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-				cmdThousandFindColumns.Parameters.Append(prmError)
-
-				prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-				prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmViewID)
-				prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-				prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmOrderID)
-				prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-				prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-				Err.Clear()
-				cmdThousandFindColumns.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-					sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-				End If
-	
-				' Release the ADO command object.
-				cmdThousandFindColumns = Nothing
-
 				cmdGetFindRecords = New ADODB.Command
 				cmdGetFindRecords.CommandText = "sp_ASRIntGetBookCourseRecords"
 				cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
@@ -1201,43 +1064,11 @@
 			ElseIf Session("optionAction") = "LOADTRANSFERBOOKING" Then
 				sThousandColumns = ""
 			
-				cmdThousandFindColumns = New ADODB.Command
-				cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-				cmdThousandFindColumns.CommandTimeout = 180
-		
-				prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-				cmdThousandFindColumns.Parameters.Append(prmError)
-
-				prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-				prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmViewID)
-				prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-				prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmOrderID)
-				prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-				prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-				Err.Clear()
-				cmdThousandFindColumns.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-					sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-				End If
-	
-				' Release the ADO command object.
-				cmdThousandFindColumns = Nothing
+				Try
+					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+				Catch ex As Exception
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+				End Try
 
 				cmdGetFindRecords = New ADODB.Command
 				cmdGetFindRecords.CommandText = "sp_ASRIntGetTransferBookingRecords"
@@ -1396,43 +1227,11 @@
 			ElseIf Session("optionAction") = "LOADADDFROMWAITINGLIST" Then
 				sThousandColumns = ""
 			
-				cmdThousandFindColumns = New Command
-				cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-				cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-				cmdThousandFindColumns.CommandTimeout = 180
-		
-				prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-				cmdThousandFindColumns.Parameters.Append(prmError)
-
-				prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
-
-				prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmViewID)
-				prmViewID.Value = CleanNumeric(Session("optionViewID"))
-
-				prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-				cmdThousandFindColumns.Parameters.Append(prmOrderID)
-				prmOrderID.Value = CleanNumeric(Session("optionOrderID"))
-
-				prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-				Err.Clear()
-				cmdThousandFindColumns.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-				End If
-
-				If Len(sErrorDescription) = 0 Then
-					sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-				End If
-	
-				' Release the ADO command object.
-				cmdThousandFindColumns = Nothing
+				Try
+					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+				Catch ex As Exception
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+				End Try
 
 				cmdGetFindRecords = New ADODB.Command
 				cmdGetFindRecords.CommandText = "sp_ASRIntGetAddFromWaitingListRecords"
@@ -2104,7 +1903,7 @@
 				cmdExprValues = Nothing
 
 			End If
-			'	end if
+				'	end if
 
 				Response.Write("<INPUT type='hidden' id=txtOptionAction name=txtOptionAction value=" & Session("optionAction") & ">" & vbCrLf)
 				Response.Write("<INPUT type='hidden' id=txtOptionTableID name=txtOptionTableID value=" & Session("optionTableID") & ">" & vbCrLf)

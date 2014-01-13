@@ -125,17 +125,13 @@
 
 <form id="frmPicklistData" name="frmPicklistData">
 	<%
-		On Error Resume Next
-		
 		Dim sErrorDescription As String = ""
 		Dim sThousandColumns As String
 		
-		Dim cmdThousandFindColumns As Command
 		Dim prmError As ADODB.Parameter
 		Dim prmTableID As ADODB.Parameter
 		Dim prmViewID As ADODB.Parameter
 		Dim prmOrderID As ADODB.Parameter
-		Dim prmThousandColumns As ADODB.Parameter
 		Dim cmdGetFindRecords As Command
 		Dim prmReqRecs As ADODB.Parameter
 		Dim prmIsFirstPage As ADODB.Parameter
@@ -160,46 +156,13 @@
 
 		' Get the required record count if we have a query.
 		If Session("picklistSelectionDataLoading") = False Then
-
 			sThousandColumns = ""
 			
-			cmdThousandFindColumns = New Command
-			cmdThousandFindColumns.CommandText = "spASRIntGet1000SeparatorFindColumns"
-			cmdThousandFindColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdThousandFindColumns.ActiveConnection = Session("databaseConnection")
-			cmdThousandFindColumns.CommandTimeout = 180
-		
-			prmError = cmdThousandFindColumns.CreateParameter("error", 11, 2)	' 11=bit, 2=output
-			cmdThousandFindColumns.Parameters.Append(prmError)
-
-			prmTableID = cmdThousandFindColumns.CreateParameter("tableID", 3, 1)
-			cmdThousandFindColumns.Parameters.Append(prmTableID)
-			prmTableID.Value = CleanNumeric(Session("tableID"))
-
-			prmViewID = cmdThousandFindColumns.CreateParameter("viewID", 3, 1)
-			cmdThousandFindColumns.Parameters.Append(prmViewID)
-			prmViewID.Value = CleanNumeric(Session("viewID"))
-
-			prmOrderID = cmdThousandFindColumns.CreateParameter("orderID", 3, 1)
-			cmdThousandFindColumns.Parameters.Append(prmOrderID)
-			prmOrderID.Value = CleanNumeric(Session("orderID"))
-
-			prmThousandColumns = cmdThousandFindColumns.CreateParameter("thousandColumns", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdThousandFindColumns.Parameters.Append(prmThousandColumns)
-	
-			Err.Clear()
-			cmdThousandFindColumns.Execute()
-
-			If (Err.Number <> 0) Then
-				sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				sThousandColumns = cmdThousandFindColumns.Parameters("thousandColumns").Value
-			End If
-	
-			' Release the ADO command object.
-			cmdThousandFindColumns = Nothing
+			Try
+				sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")))
+			Catch ex As Exception
+				sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+			End Try
 
 			cmdGetFindRecords = New Command
 			cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
