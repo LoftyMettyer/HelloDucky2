@@ -137,4 +137,23 @@ Public Class Database
 
 	End Function
 
+	Public Function GetRecordTimestamp(RecordID As Integer, RealSource As String) As Integer
+
+		Dim prmTimestamp As New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+		Try
+			DB.ExecuteSP("spASRIntGetTimestamp" _
+				, prmTimestamp _
+				, New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = RecordID} _
+				, New SqlParameter("psRealsource", SqlDbType.VarChar, 255) With {.Value = RealSource})
+
+			Return CInt(prmTimestamp.Value)
+
+		Catch ex As Exception
+			Return 0
+
+		End Try
+
+	End Function
+
 End Class

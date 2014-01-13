@@ -6034,32 +6034,11 @@ Namespace Controllers
 					Session("OLEObject") = objOLE
 					objOLE = Nothing
 
+					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+					Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
+
 					'Update the ID badge picture in Session
 					Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
-
-					' Just saved the OLE so we need to get the updated timestamp.
-					Dim cmdTimestamp = CreateObject("ADODB.Command")
-					cmdTimestamp.CommandText = "spASRIntGetTimestamp"
-					cmdTimestamp.CommandType = 4 ' Stored Procedure
-					cmdTimestamp.ActiveConnection = Session("databaseConnection")
-
-					Dim prmTimestamp = cmdTimestamp.CreateParameter("timestamp", 3, 2) '3=integer, 2=output
-					cmdTimestamp.Parameters.Append(prmTimestamp)
-
-					Dim prmRecordID = cmdTimestamp.CreateParameter("recordID", 3, 1) ' 3=integer, 1=input
-					cmdTimestamp.Parameters.Append(prmRecordID)
-					prmRecordID.value = CleanNumeric(Session("optionRecordID"))
-
-					Dim prmRealsource = cmdTimestamp.CreateParameter("realSource", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-					cmdTimestamp.Parameters.Append(prmRealsource)
-					prmRealsource.value = Session("realSource")
-
-					Err.Clear()
-					cmdTimestamp.Execute()
-
-					Session("timestamp") = cmdTimestamp.Parameters("timestamp").value
-
-					cmdTimestamp = Nothing
 
 				End If
 
@@ -6155,69 +6134,48 @@ Namespace Controllers
 			'Return RedirectToAction("Index")
 		End Function
 
-		<HttpPost()> _
-		Public Function EmbedFile(filSelectFile As HttpPostedFileBase) As JsonResult
+		'<HttpPost()> _
+		'Public Function EmbedFile(filSelectFile As HttpPostedFileBase) As JsonResult
 
-			' Commit changes to the database		
-			' The file will (should) have already been copied from the client to the temp path
+		'	' Commit changes to the database		
+		'	' The file will (should) have already been copied from the client to the temp path
 
-			Try
-				' Read input stream from request
-				Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
-				Dim offset As Integer = 0
-				Dim cnt As Integer = 0
+		'	Try
+		'		' Read input stream from request
+		'		Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
+		'		Dim offset As Integer = 0
+		'		Dim cnt As Integer = 0
 
-				While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
-					offset += cnt
-				End While
+		'		While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
+		'			offset += cnt
+		'		End While
 
-				Dim objOLE = Session("OLEObject")
-				With objOLE
-					.UseEncryption = Request("HTTP_X_USEENCRYPTION")
-					.OLEType = Request("HTTP_X_OLETYPE")
-					.FileName = Request("HTTP_X_FILE_NAME")
-					.DisplayFilename = Request("HTTP_X_DISPLAYFILENAME")
-					.OLEFileSize = Request("HTTP_X_FILE_SIZE")
-					.OLEModifiedDate = Request("HTTP_X_OLEMODIFIEDDATE")
+		'		Dim objOLE = Session("OLEObject")
+		'		With objOLE
+		'			.UseEncryption = Request("HTTP_X_USEENCRYPTION")
+		'			.OLEType = Request("HTTP_X_OLETYPE")
+		'			.FileName = Request("HTTP_X_FILE_NAME")
+		'			.DisplayFilename = Request("HTTP_X_DISPLAYFILENAME")
+		'			.OLEFileSize = Request("HTTP_X_FILE_SIZE")
+		'			.OLEModifiedDate = Request("HTTP_X_OLEMODIFIEDDATE")
 
-					.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
-					'.DeleteTempFile()
-				End With
-				Session("OLEObject") = objOLE
-				objOLE = Nothing
+		'			.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+		'			'.DeleteTempFile()
+		'		End With
+		'		Session("OLEObject") = objOLE
+		'		objOLE = Nothing
 
-				' Just saved the OLE so we need to get the updated timestamp.
-				Dim cmdTimestamp = CreateObject("ADODB.Command")
-				cmdTimestamp.CommandText = "spASRIntGetTimestamp"
-				cmdTimestamp.CommandType = 4 ' Stored Procedure
-				cmdTimestamp.ActiveConnection = Session("databaseConnection")
+		'		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+		'		Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
 
-				Dim prmTimestamp = cmdTimestamp.CreateParameter("timestamp", 3, 2) '3=integer, 2=output
-				cmdTimestamp.Parameters.Append(prmTimestamp)
+		'	Catch generatedExceptionName As Exception
+		'		Session("ErrorTitle") = "File upload"
+		'		Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
+		'		Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+		'		Return Json(data1, JsonRequestBehavior.AllowGet)
+		'	End Try
 
-				Dim prmRecordID = cmdTimestamp.CreateParameter("recordID", 3, 1) ' 3=integer, 1=input
-				cmdTimestamp.Parameters.Append(prmRecordID)
-				prmRecordID.value = CleanNumeric(Session("optionRecordID"))
-
-				Dim prmRealsource = cmdTimestamp.CreateParameter("realSource", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdTimestamp.Parameters.Append(prmRealsource)
-				prmRealsource.value = Session("realSource")
-
-				Err.Clear()
-				cmdTimestamp.Execute()
-
-				Session("timestamp") = cmdTimestamp.Parameters("timestamp").value
-
-				cmdTimestamp = Nothing
-
-			Catch generatedExceptionName As Exception
-				Session("ErrorTitle") = "File upload"
-				Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
-				Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-				Return Json(data1, JsonRequestBehavior.AllowGet)
-			End Try
-
-		End Function
+		'End Function
 
 		'<HttpPost()>
 		'Public Function UploadFile() As JsonResult
