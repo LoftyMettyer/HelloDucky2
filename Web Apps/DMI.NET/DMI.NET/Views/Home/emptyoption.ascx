@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
 
@@ -414,63 +417,38 @@
 %>
 
 <form id="frmEmptyOption" name="frmEmptyOption">
-	<%	
-		Dim cmdLinkValues
-		Dim prmChildScreenID
-		Dim prmTableID
-		Dim prmRecordID
-		Dim rstLinkValues
-			Dim sErrorDescription As String = ""
+	<%
 		
-		
+		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+		Dim sErrorDescription As String = ""
+			
 		If Session("optionAction") = "SELECTLINK" Then
-			' Get the parent fields for the selected link.
-			cmdLinkValues = CreateObject("ADODB.Command")
-			cmdLinkValues.CommandText = "sp_ASRIntGetLinkParentValues"
-			cmdLinkValues.CommandType = 4	' Stored Procedure
-			cmdLinkValues.ActiveConnection = Session("databaseConnection")
+			
+			Try
+			
+				Dim rstLinkValues = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkParentValues", CommandType.StoredProcedure _
+					, New SqlParameter("piChildScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionScreenID"))} _
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkTableID"))} _
+					, New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))})
 
-			prmChildScreenID = cmdLinkValues.CreateParameter("childScreenID", 3, 1)
-			cmdLinkValues.Parameters.Append(prmChildScreenID)
-			prmChildScreenID.value = CleanNumeric(Session("optionScreenID"))
-
-			prmTableID = cmdLinkValues.CreateParameter("tableID", 3, 1)
-			cmdLinkValues.Parameters.Append(prmTableID)
-			prmTableID.value = CleanNumeric(Session("optionLinkTableID"))
-
-			prmRecordID = cmdLinkValues.CreateParameter("recordID", 3, 1)
-			cmdLinkValues.Parameters.Append(prmRecordID)
-			prmRecordID.value = CleanNumeric(Session("optionRecordID"))
-
-			Err.Clear()
-			rstLinkValues = cmdLinkValues.Execute
-
-			If (Err.Number <> 0) Then
-				sErrorDescription = "The link values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				If Not (rstLinkValues.bof And rstLinkValues.eof) Then
-					For iloop = 0 To (rstLinkValues.fields.count - 1)
-						If IsDBNull(rstLinkValues.fields(iloop).value) Then
-													Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value=''>" & vbCrLf)
+				If Not rstLinkValues Is Nothing Then
+					For iloop = 0 To (rstLinkValues.Columns.Count - 1)
+						If IsDBNull(rstLinkValues(0)(iloop)) Then
+							Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.Columns(iloop).ColumnName & "' name='txtData_" & rstLinkValues.Columns(iloop).ColumnName & "' value=''>" & vbCrLf)
 						Else
-													Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.fields(iloop).name & "' name='txtData_" & rstLinkValues.fields(iloop).name & "' value='" & Replace(rstLinkValues.fields(iloop).value, """", "&quot;") & "'>" & vbCrLf)
+							Response.Write("<input type='hidden' id='txtData_" & rstLinkValues.Columns(iloop).ColumnName & "' name='txtData_" & rstLinkValues.Columns(iloop).ColumnName & "' value='" & Replace(rstLinkValues(0)(iloop).ToString(), """", "&quot;") & "'>" & vbCrLf)
 						End If
 					Next
 				End If
 
-				'	Release the ADO recordset object.
-				rstLinkValues.close()
-			End If
-			
-			rstLinkValues = Nothing
+			Catch ex As Exception
+				sErrorDescription = "The link values could not be retrieved." & vbCrLf & FormatError(Err.Description)
 
-			' Release the ADO command object.
-			cmdLinkValues = Nothing
+			End Try
+
 		End If
 	
-			Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
+		Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
 	%>
 </form>
 
