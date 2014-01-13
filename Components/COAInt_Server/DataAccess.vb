@@ -72,29 +72,51 @@ Public Class clsDataAccess
 	Public Sub ExecuteSP(ProcedureName As String, ParamArray args() As SqlParameter)
 
 		Dim strConn As String = GetConnectionString(_objLogin)
+		Dim retryCount = 5
+		Dim success As Boolean = False
 
-		Try
+		Using sqlConnection As New SqlConnection(strConn)
 
-			Using sqlConnection As New SqlConnection(strConn)
-				Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
+			Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
 
-					objCommand.CommandType = CommandType.StoredProcedure
+				objCommand.CommandType = CommandType.StoredProcedure
 
-					objCommand.Parameters.Clear()
-					For Each sqlParm As SqlParameter In args
-						objCommand.Parameters.Add(sqlParm)
-					Next
+				objCommand.Parameters.Clear()
+				For Each sqlParm As SqlParameter In args
+					objCommand.Parameters.Add(sqlParm)
+				Next
 
-					sqlConnection.Open()
-					objCommand.ExecuteNonQuery()
-				End Using
+				sqlConnection.Open()
+
+				While retryCount > 0 AndAlso Not success
+
+					Try
+						objCommand.ExecuteNonQuery()
+						success = True
+
+					Catch exception As SqlException
+
+						' SQL Deadlock exception
+						If exception.Number <> 1205 Then
+							Throw
+						End If
+
+						' Add delay here if you wish. 
+						retryCount -= 1
+						If retryCount = 0 Then
+							Throw
+						End If
+
+					Catch ex As Exception
+						Throw
+
+					End Try
+
+				End While
 
 			End Using
 
-		Catch
-			Throw
-
-		End Try
+		End Using
 
 	End Sub
 
@@ -283,8 +305,5 @@ Public Class clsDataAccess
 		Return objDataSet
 
 	End Function
-
-
-
 
 End Class

@@ -1520,8 +1520,6 @@ Namespace Controllers
 
 		Function Data_Submit() As ActionResult
 
-			On Error Resume Next
-
 			Const DEADLOCK_ERRORNUMBER = -2147467259
 			Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
 			Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
@@ -1688,211 +1686,89 @@ Namespace Controllers
 						If lngRecordID = 0 Then
 							' Inserting.
 
-							' The required stored procedure exists, so run it.
-							Dim cmdInsertRecord As Command = New Command
-							cmdInsertRecord.CommandText = "spASRIntInsertNewRecord"
-							cmdInsertRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-							cmdInsertRecord.CommandTimeout = 180
-							cmdInsertRecord.ActiveConnection = Session("databaseConnection")
+							Try
 
-							Dim prmNewID = cmdInsertRecord.CreateParameter("newID", DataTypeEnum.adInteger, ParameterDirection.Output)
-							cmdInsertRecord.Parameters.Append(prmNewID)
+								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
+									, prmRecordID _
+									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef})
 
-							Dim prmInsertSQL = cmdInsertRecord.CreateParameter("insertSQL", DataTypeEnum.adLongVarChar, ParameterDirection.Input, 2147483646)
-							cmdInsertRecord.Parameters.Append(prmInsertSQL)
-							prmInsertSQL.Value = sInsertUpdateDef
+								lngRecordID = prmRecordID.Value
 
-							Dim fDeadlock = True
-							Do While fDeadlock
-								fDeadlock = False
-
-								cmdInsertRecord.ActiveConnection.Errors.Clear()
-
-								' Run the insert stored procedure.
-								cmdInsertRecord.Execute()
-
-								If cmdInsertRecord.ActiveConnection.Errors.Count > 0 Then
-									For iLoop = 1 To cmdInsertRecord.ActiveConnection.Errors.Count
-										sErrMsg = FormatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-										If (cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-										 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-										(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-										 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-											(InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-											' The error is for a deadlock.
-											' Sorry about having to use the err.description to trap the error but the err.number
-											' is not specific and MSDN suggests using the err.description.
-											If (iRetryCount < iRETRIES) And (cmdInsertRecord.ActiveConnection.Errors.Count = 1) Then
-												iRetryCount = iRetryCount + 1
-												fDeadlock = True
-											Else
-												If Len(sErrorMsg) > 0 Then
-													sErrorMsg = sErrorMsg & vbCrLf
-												End If
-												sErrorMsg = sErrorMsg & "Another user is deadlocking the database. Try saving again."
-												fOk = False
-											End If
-										ElseIf UCase(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description) = SQLMAILNOTSTARTEDMESSAGE Then
-											'"SQL Mail session is not started."
-											'Ignore this error
-											'ElseIf (cmdInsertRecord.ActiveConnection.Errors.Item(iloop - 1).Number = XP_SENDMAIL_ERRORNUMBER) And _
-											'	(UCase(Left(cmdInsertRecord.ActiveConnection.Errors.Item(iloop - 1).Description, Len(XP_SENDMAIL_MESSAGE))) = XP_SENDMAIL_MESSAGE) Then
-											'"EXECUTE permission denied on object 'xp_sendmail'"
-											'Ignore this error
-										ElseIf cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
-											' Ignore the follow on message that says "The transaction ended in the trigger."
-										Else
-											'NHRD 18082011 HRPRO-1572 Removed extra carriage return for this error msg
-											'sErrorMsg = sErrorMsg & vbcrlf & _
-											sErrorMsg = sErrorMsg & _
-											 FormatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-											fOk = False
-										End If
-									Next
-
-									cmdInsertRecord.ActiveConnection.Errors.Clear()
-
-									If Not fOk Then
-										'JPD 20110705 HRPRO-1572
-										' Now get validation failure message prefixed woth <record description> and <line of hyphens>.
-										' Only add extra carriage return if required (ie. if there is a record description).
-										Dim sRecDescExists = ""
-										If Mid(sErrorMsg, 3, 5) <> "-----" Then
-											sRecDescExists = vbCrLf
-										End If
-
-										sErrorMsg = "The new record could not be created." & sRecDescExists & sErrorMsg
-										sAction = "SAVEERROR"
-									End If
+								If Len(sReaction) > 0 Then
+									sAction = sReaction
 								Else
-									lngRecordID = cmdInsertRecord.Parameters("newID").Value
-
-									If Len(sReaction) > 0 Then
-										sAction = sReaction
-									Else
-										sAction = "LOAD"
-									End If
+									sAction = "LOAD"
 								End If
-							Loop
-							cmdInsertRecord = Nothing
 
-							objDataAccess.ExecuteSP("spASREmailImmediate", _
-									New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+								objDataAccess.ExecuteSP("spASREmailImmediate", New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+
+
+							Catch ex As Exception
+
+								sErrorMsg = sErrorMsg & FormatError(ex.Message)
+								fOk = False
+
+								Dim sRecDescExists = ""
+								If Mid(sErrorMsg, 3, 5) <> "-----" Then
+									sRecDescExists = vbCrLf
+								End If
+
+								sErrorMsg = "The new record could not be created." & sRecDescExists & sErrorMsg
+								sAction = "SAVEERROR"
+
+
+							End Try
+
 
 						Else
 							' Updating.
 
-							' The required stored procedure exists, so run it.
-							Dim cmdUpdateRecord As Command = New Command
-							cmdUpdateRecord.CommandText = "spASRIntUpdateRecord"
-							cmdUpdateRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-							cmdUpdateRecord.CommandTimeout = 180
-							cmdUpdateRecord.ActiveConnection = Session("databaseConnection")
+							Try
 
-							Dim prmResultCode = cmdUpdateRecord.CreateParameter("resultCode", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-							cmdUpdateRecord.Parameters.Append(prmResultCode)
+								Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+								objDataAccess.ExecuteSP("spASRIntUpdateRecord" _
+									, prmResult _
+									, New SqlParameter("psUpdateDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
+									, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = NullSafeInteger(CleanNumeric(lngTableID))} _
+									, New SqlParameter("psRealSource", SqlDbType.VarChar, 255) With {.Value = sRealSource} _
+									, New SqlParameter("piID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
+									, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(iTimestamp)})
 
-							Dim prmUpdateSQL = cmdUpdateRecord.CreateParameter("updateSQL", DataTypeEnum.adLongVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
-							cmdUpdateRecord.Parameters.Append(prmUpdateSQL)
-							prmUpdateSQL.Value = sInsertUpdateDef
+								Select Case prmResult.Value
+									Case 1 ' Record changed by another user, and is no longer in the current table/view.
+										sErrorMsg = "The record has been amended by another user and is no longer in the current view."
+									Case 2 ' Record changed by another user, and still in the current table/view.
+										sErrorMsg = "The record has been amended by another user and will be refreshed."
+									Case 3 ' Record deleted by another user.
+										sErrorMsg = "The record has been deleted by another user."
+								End Select
 
-							Dim prmTableID = cmdUpdateRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-							cmdUpdateRecord.Parameters.Append(prmTableID)
-							prmTableID.Value = NullSafeInteger(CleanNumeric(lngTableID))
-
-							Dim prmRealSource = cmdUpdateRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 255)
-							cmdUpdateRecord.Parameters.Append(prmRealSource)
-							prmRealSource.Value = sRealSource
-
-							Dim prmID = cmdUpdateRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-							cmdUpdateRecord.Parameters.Append(prmID)
-							prmID.Value = CleanNumeric(lngRecordID)
-
-							Dim prmTimestamp = cmdUpdateRecord.CreateParameter("timestamp", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-							cmdUpdateRecord.Parameters.Append(prmTimestamp)
-							prmTimestamp.Value = CleanNumeric(iTimestamp)
-
-							Dim fDeadlock = True
-							Do While fDeadlock
-								fDeadlock = False
-
-								cmdUpdateRecord.ActiveConnection.Errors.Clear()
-
-								' Run the update stored procedure.
-								cmdUpdateRecord.Execute()
-
-								If cmdUpdateRecord.ActiveConnection.Errors.Count > 0 Then
-									For iLoop = 1 To cmdUpdateRecord.ActiveConnection.Errors.Count
-										sErrMsg = FormatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-										If (cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-										 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-											(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-										 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-										 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-											' The error is for a deadlock.
-											' Sorry about having to use the err.description to trap the error but the err.number
-											' is not specific and MSDN suggests using the err.description.
-											If (iRetryCount < iRETRIES) And (cmdUpdateRecord.ActiveConnection.Errors.Count = 1) Then
-												iRetryCount = iRetryCount + 1
-												fDeadlock = True
-											Else
-												If Len(sErrorMsg) > 0 Then
-													sErrorMsg = sErrorMsg & vbCrLf
-												End If
-												sErrorMsg = sErrorMsg & "Another user is deadlocking the database. Try saving again."
-												fOk = False
-											End If
-										ElseIf UCase(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description) = SQLMAILNOTSTARTEDMESSAGE Then
-											'"SQL Mail session is not started."
-											'Ignore this error
-										ElseIf cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
-											' Ignore the follow on message that says "The transaction ended in the trigger."
-										Else
-											sErrorMsg = sErrorMsg & vbCrLf & _
-											 FormatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-											fOk = False
-										End If
-									Next
-
-									cmdUpdateRecord.ActiveConnection.Errors.Clear()
-
-									If Not fOk Then
-										'JPD 20110705 HRPRO-1572
-										' Now get validation failure message prefixed with <record description> and <line of hyphens>.
-										' Only add extra carriage return if required (ie. if there is a record description).
-										Dim sRecDescExists = ""
-										If Mid(sErrorMsg, 3, 5) <> "-----" Then
-											sRecDescExists = vbCrLf
-										End If
-
-										sErrorMsg = "The record could not be updated." & sRecDescExists & sErrorMsg
-										sAction = "SAVEERROR"
-									End If
+								If Len(sReaction) > 0 Then
+									sAction = sReaction
 								Else
-									'The spASRIntUpdateRecord is not very clear about the meaning of the resultCode returned when editing a record,
-									'but JIRA 3387 indicates that the messages should be as they are now below
-									Select Case cmdUpdateRecord.Parameters("resultCode").Value
-										Case 1 ' Record changed by another user, and is no longer in the current table/view.
-											sErrorMsg = "The record has been amended by another user and is no longer in the current view."
-										Case 2 ' Record changed by another user, and still in the current table/view.
-											sErrorMsg = "The record has been amended by another user and will be refreshed."
-										Case 3 ' Record deleted by another user.
-											sErrorMsg = "The record has been deleted by another user."
-									End Select
-
-									If Len(sReaction) > 0 Then
-										sAction = sReaction
-									Else
-										sAction = "LOAD"
-									End If
+									sAction = "LOAD"
 								End If
-							Loop
-							cmdUpdateRecord = Nothing
 
-							objDataAccess.ExecuteSP("spASREmailImmediate", _
-									New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+								objDataAccess.ExecuteSP("spASREmailImmediate", _
+										New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+
+
+							Catch ex As Exception
+
+								sErrorMsg = sErrorMsg & FormatError(ex.Message)
+								fOk = False
+
+								Dim sRecDescExists = ""
+								If Mid(sErrorMsg, 3, 5) <> "-----" Then
+									sRecDescExists = vbCrLf
+								End If
+
+								sErrorMsg = "The record could not be updated." & sRecDescExists & sErrorMsg
+								sAction = "SAVEERROR"
+
+							End Try
+
 
 						End If
 					End If
@@ -1900,93 +1776,39 @@ Namespace Controllers
 			ElseIf sAction = "DELETE" Then
 				' Deleting.
 
-				' The required stored procedure exists, so run it.
-				Dim cmdDeleteRecord As Command = New Command
-				cmdDeleteRecord.CommandText = "sp_ASRDeleteRecord"
-				cmdDeleteRecord.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdDeleteRecord.ActiveConnection = Session("databaseConnection")
+				Try
 
-				Dim prmResultCode = cmdDeleteRecord.CreateParameter("resultCode", DataTypeEnum.adInteger, ParameterDirection.Output)
-				cmdDeleteRecord.Parameters.Append(prmResultCode)
+					Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+					objDataAccess.ExecuteSP("sp_ASRDeleteRecord" _
+							, prmResult _
+							, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = NullSafeInteger(CleanNumeric(lngTableID))} _
+							, New SqlParameter("psRealSource", SqlDbType.VarChar, 255) With {.Value = sRealSource} _
+							, New SqlParameter("piID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)})
 
-				Dim prmTableID = cmdDeleteRecord.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirection.Input)
-				cmdDeleteRecord.Parameters.Append(prmTableID)
-				prmTableID.Value = NullSafeInteger(CleanNumeric(lngTableID))
+					Select Case prmResult.Value
+						Case 2 ' Record changed by another user, and is no longer in the current table/view.
+							sErrorMsg = "The record has been amended by another user and is no longer in the current view."
+					End Select
 
-				Dim prmRealSource = cmdDeleteRecord.CreateParameter("realSource", DataTypeEnum.adVarChar, ParameterDirection.Input, 8000)
-				cmdDeleteRecord.Parameters.Append(prmRealSource)
-				prmRealSource.Value = CleanString(sRealSource)
+					lngRecordID = 0
 
-				Dim prmID = cmdDeleteRecord.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirection.Input)
-				cmdDeleteRecord.Parameters.Append(prmID)
-				prmID.Value = CleanNumeric(lngRecordID)
-
-				Dim fDeadlock = True
-				Do While fDeadlock
-					fDeadlock = False
-
-					cmdDeleteRecord.ActiveConnection.Errors.Clear()
-
-					' Run the delete stored procedure.
-					cmdDeleteRecord.Execute()
-
-					If cmdDeleteRecord.ActiveConnection.Errors.Count > 0 Then
-						For iLoop = 1 To cmdDeleteRecord.ActiveConnection.Errors.Count
-							sErrMsg = FormatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-							If (cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-							 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-								(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-							 ((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-							 (InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-
-								' The error is for a deadlock.
-								' Sorry about having to use the err.description to trap the error but the err.number
-								' is not specific and MSDN suggests using the err.description.
-								If (iRetryCount < iRETRIES) And (cmdDeleteRecord.ActiveConnection.Errors.Count = 1) Then
-									iRetryCount = iRetryCount + 1
-									fDeadlock = True
-								Else
-									If Len(sErrorMsg) > 0 Then
-										sErrorMsg = sErrorMsg & vbCrLf
-									End If
-									sErrorMsg = sErrorMsg & "Another user is deadlocking the database. Try saving again."
-									fOk = False
-								End If
-							ElseIf cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).NativeError = 3609 Then
-								' Ignore the follow on message that says "The transaction ended in the trigger."
-							Else
-								sErrorMsg = sErrorMsg & vbCrLf & _
-								 FormatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
-								fOk = False
-							End If
-						Next
-
-						cmdDeleteRecord.ActiveConnection.Errors.Clear()
-
-						If Not fOk Then
-							sErrorMsg = "The record could not be deleted." & vbCrLf & sErrorMsg
-							sAction = "SAVEERROR"
-						End If
+					If Len(sReaction) > 0 Then
+						sAction = sReaction
 					Else
-						Select Case cmdDeleteRecord.Parameters("resultCode").Value
-							Case 2 ' Record changed by another user, and is no longer in the current table/view.
-								sErrorMsg = "The record has been amended by another user and is no longer in the current view."
-						End Select
-
-						lngRecordID = 0
-
-						If Len(sReaction) > 0 Then
-							sAction = sReaction
-						Else
-							sAction = "LOAD"
-						End If
+						sAction = "LOAD"
 					End If
-				Loop
-				cmdDeleteRecord = Nothing
 
-				objDataAccess.ExecuteSP("spASREmailImmediate", _
-						New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+					objDataAccess.ExecuteSP("spASREmailImmediate" _
+							, New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+
+
+				Catch ex As Exception
+					sErrorMsg = "The record could not be deleted." & vbCrLf & FormatError(ex.Message)
+					sAction = "SAVEERROR"
+
+
+				End Try
+
 
 			ElseIf sAction = "CANCELCOURSE" Then
 				' Check number of bookings made.
