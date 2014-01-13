@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script type="text/javascript">
 	function util_validate_calendarreportdates_data_window_onload() {
@@ -33,94 +36,52 @@
 		<!-- INPUT element containing the required data for the calendar reports dates form -->
 		<%
 			Dim sErrorDescription = ""
-
-			If Session("CalendarAction") = "LOADCALENDAREVENTDETAILSCOLUMNS" Then
-				'Response.Write("<FONT COLOR=red><B>Base 1 Table : " & Session("CalendarBaseTableID") & "<B></FONT><BR>")
-				'Response.Write("<FONT COLOR=red><B>Event Table : " & Session("CalendarEventTableID") & "<B></FONT>")
-		
-				Dim cmdEventCols = CreateObject("ADODB.Command")
-				cmdEventCols.CommandText = "spASRIntGetCalendarReportColumns"
-				cmdEventCols.CommandType = 4
-				cmdEventCols.ActiveConnection = Session("databaseConnection")
-				
-				Dim prmBaseTableID = cmdEventCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-				cmdEventCols.Parameters.Append(prmBaseTableID)
-				prmBaseTableID.value = CleanNumeric(Session("CalendarBaseTableID"))
-
-				Dim prmEventTableID = cmdEventCols.CreateParameter("eventTableID", 3, 1) ' 3=integer, 1=input
-				cmdEventCols.Parameters.Append(prmEventTableID)
-				prmEventTableID.value = CleanNumeric(Session("CalendarEventTableID"))
-
-				Err.Clear()
-				Dim rstEventColumns = cmdEventCols.Execute
-
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error getting the calendar report event columns." & vbCrLf & FormatError(Err.Description)
-				End If
-		
-				If Len(sErrorDescription) = 0 Then
-					Dim iLoop = 1
-					Do While Not rstEventColumns.EOF
-						Response.Write("<INPUT type='hidden' id=txtRepCol_" & rstEventColumns.Fields("columnid").Value & " name=txtRepCol_" & rstEventColumns.Fields("columnid").Value & " value=" & Replace(rstEventColumns.Fields("columnName").Value, """", "&quot;") & ">" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColDataType_" & rstEventColumns.Fields("columnid").Value & " name=txtRepColDataType_" & rstEventColumns.Fields("columnid").Value & " value='" & Replace(rstEventColumns.Fields("datatype").Value, """", "&quot;") & "'>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColSize_" & rstEventColumns.Fields("columnid").Value & " name=txtRepColSize_" & rstEventColumns.Fields("columnid").Value & " value='" & Replace(rstEventColumns.Fields("size").Value, """", "&quot;") & "'>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColTableID_" & rstEventColumns.Fields("columnid").Value & " name=txtRepColTableID_" & rstEventColumns.Fields("columnid").Value & " value='" & Replace(rstEventColumns.Fields("tableid").Value, """", "&quot;") & "'>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColTableName_" & rstEventColumns.Fields("columnid").Value & " name=txtRepColTableName_" & rstEventColumns.Fields("columnid").Value & " value='" & Replace(rstEventColumns.Fields("tablename").Value, """", "&quot;") & "'>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColType_" & rstEventColumns.Fields("columnid").Value & " name=txtRepColType_" & rstEventColumns.Fields("columnid").Value & " value='" & Replace(rstEventColumns.Fields("columntype").Value, """", "&quot;") & "'>" & vbCrLf)
-				
-						rstEventColumns.MoveNext()
-						iLoop = iLoop + 1
-					Loop
-
-					' Release the ADO recordset object.
-					rstEventColumns.close()
-				End If
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			
-				rstEventColumns = Nothing
-				cmdEventCols = Nothing
+			If Session("CalendarAction") = "LOADCALENDAREVENTDETAILSCOLUMNS" Then
+			
+				Try
+			
+					Dim rstEventColumns = objDataAccess.GetDataTable("spASRIntGetCalendarReportColumns", CommandType.StoredProcedure _
+							, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("CalendarBaseTableID"))} _
+							, New SqlParameter("piEventTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("CalendarEventTableID"))})
 
+					For Each objRow As DataRow In rstEventColumns.Rows
+						Response.Write("<input type='hidden' id=txtRepCol_" & objRow("columnid") & " name=txtRepCol_" & objRow("columnid") & " value=" & Replace(objRow("columnName").ToString(), """", "&quot;") & ">" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtRepColDataType_" & objRow("columnid") & " name=txtRepColDataType_" & objRow("columnid") & " value='" & Replace(objRow("datatype").ToString(), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtRepColSize_" & objRow("columnid") & " name=txtRepColSize_" & objRow("columnid") & " value='" & Replace(objRow("size").ToString(), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtRepColTableID_" & objRow("columnid") & " name=txtRepColTableID_" & objRow("columnid") & " value='" & Replace(objRow("tableid").ToString(), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtRepColTableName_" & objRow("columnid") & " name=txtRepColTableName_" & objRow("columnid") & " value='" & Replace(objRow("tablename").ToString(), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtRepColType_" & objRow("columnid") & " name=txtRepColType_" & objRow("columnid") & " value='" & Replace(objRow("columntype").ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Next
+			
+				Catch ex As Exception
+					sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(ex.Message)
+
+				End Try
+				
 			ElseIf Session("CalendarAction") = "LOADCALENDAREVENTKEYLOOKUPCOLUMNS" Then
 
-				Dim cmdKeyLookupCols = CreateObject("ADODB.Command")
-				cmdKeyLookupCols.CommandText = "spASRIntGetCalendarReportColumns"
-				cmdKeyLookupCols.CommandType = 4 ' Stored procedure
-				cmdKeyLookupCols.ActiveConnection = Session("databaseConnection")
-								
-				Dim prmBaseTableID = cmdKeyLookupCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-				cmdKeyLookupCols.Parameters.Append(prmBaseTableID)
-				prmBaseTableID.value = CleanNumeric(Session("CalendarLookupTableID"))
+				Try
+			
+					Dim rstLookupColumns = objDataAccess.GetDataTable("spASRIntGetCalendarReportColumns", CommandType.StoredProcedure _
+							, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("CalendarLookupTableID"))} _
+							, New SqlParameter("piEventTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("CalendarLookupTableID"))})
 
-				Dim prmEventTableID = cmdKeyLookupCols.CreateParameter("eventTableID", 3, 1) ' 3=integer, 1=input
-				cmdKeyLookupCols.Parameters.Append(prmEventTableID)
-				prmEventTableID.value = CleanNumeric(Session("CalendarLookupTableID"))
-		
-				Err.Clear()
-				Dim rstLookupColumns = cmdKeyLookupCols.Execute
-		
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(Err.Description)
-				End If
-		
-				If Len(sErrorDescription) = 0 Then
-					Dim iLoop = 1
-					Do While Not rstLookupColumns.EOF
-						Response.Write("<INPUT type='hidden' id=txtRepCol_" & rstLookupColumns.Fields("columnid").Value & " name=txtRepCol_" & rstLookupColumns.Fields("columnid").Value & " value='" & Replace(rstLookupColumns.Fields("columnName").Value, """", "&quot;") & "'>" & vbCrLf)
-						Response.Write("<INPUT type='hidden' id=txtRepColDataType_" & rstLookupColumns.Fields("columnid").Value & " name=txtRepColDataType_" & rstLookupColumns.Fields("columnid").Value & " value='" & Replace(rstLookupColumns.Fields("datatype").Value, """", "&quot;") & "'>" & vbCrLf)
-						rstLookupColumns.MoveNext()
-						iLoop = iLoop + 1
-					Loop
-		
-					' Release the ADO recordset object.
-					rstLookupColumns.close()
-				End If
-				
-				rstLookupColumns = Nothing
-				cmdKeyLookupCols = Nothing
-		
+					For Each objRow As DataRow In rstLookupColumns.Rows
+						Response.Write("<input type='hidden' id='txtRepCol_" & objRow("columnid") & "' name='txtRepCol_" & objRow("columnid") & "' value='" & Replace(objRow("columnName").ToString(), """", "&quot;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id='txtRepColDataType_" & objRow("columnid") & "' name='txtRepColDataType_" & objRow("columnid") & "' value='" & Replace(objRow("datatype").ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Next
+			
+				Catch ex As Exception
+					sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(ex.Message)
+
+				End Try
+					
 			End If
 
-			Response.Write("<INPUT type='hidden' id=txtCalendarAction name=txtCalendarAction value=" & Session("CalendarAction") & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtCalendarAction name=txtCalendarAction value=" & Session("CalendarAction") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 
 			Session("CalendarAction") = ""
 		%>

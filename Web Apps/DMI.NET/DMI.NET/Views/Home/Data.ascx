@@ -659,7 +659,7 @@
 					End If
 										
 				Catch ex As Exception
-					sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(Err.Description)
+					sErrorDescription = "Parent values could not be determined." & vbCrLf & FormatError(ex.Message)
 
 				End Try
 
@@ -827,86 +827,46 @@
 	End If
 
 	If Session("action") = "LOADREPORTCOLUMNS" Then
-		Dim cmdReportsCols = New ADODB.Command
-		cmdReportsCols.CommandText = "sp_ASRIntGetReportColumns"
-		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdReportsCols.ActiveConnection = Session("databaseConnection")
-								
-		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmBaseTableId)
-		prmBaseTableId.Value = CleanNumeric(Session("ReportBaseTableID"))
 
-		Dim prmParent1TableId = cmdReportsCols.CreateParameter("parent1TableID", 3, 1) ' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmParent1TableId)
-		prmParent1TableId.Value = CleanNumeric(Session("ReportParent1TableID"))
+		Try
 
-		Dim prmParent2TableId = cmdReportsCols.CreateParameter("parent2TableID", 3, 1) ' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmParent2TableId)
-		prmParent2TableId.Value = CleanNumeric(Session("ReportParent2TableID"))
+			Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetReportColumns", CommandType.StoredProcedure _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))} _
+					, New SqlParameter("piParentTable1ID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportParent1TableID"))} _
+					, New SqlParameter("piParentTable2ID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportParent2TableID"))} _
+					, New SqlParameter("piChildTableID", SqlDbType.VarChar, -1) With {.Value = CleanNumeric(Session("ReportChildTableID"))})
 
-		Dim prmChildTableId = cmdReportsCols.CreateParameter("childTableID", 200, 1, 8000) ' 200=varchar 1=input
-		cmdReportsCols.Parameters.Append(prmChildTableId)
-		prmChildTableId.Value = Session("ReportChildTableID")
-
-		Err.Clear()
-		Dim rstReportColumns = cmdReportsCols.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		If Len(sErrorDescription) = 0 Then
 			Dim iLoop = 1
-			Do While Not rstReportColumns.EOF
-				Response.Write("<input type='hidden' id='txtRepCol_" & iLoop & "' name='txtRepCol_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
-				rstReportColumns.MoveNext()
-				iLoop = iLoop + 1
-			Loop
+			For Each objRow As DataRow In rstReportColumns.Rows
+				Response.Write("<input type='hidden' id='txtRepCol_" & iLoop & "' name='txtRepCol_" & iLoop & "' value='" & Replace(objRow("columnDefn").ToString(), """", "&quot;") & "'>" & vbCrLf)
+				iLoop += 1
+			Next
+						
+		Catch ex As Exception
+			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(ex.Message)
 
-			' Release the ADO recordset object.
-			rstReportColumns.Close()
-		End If
-				
-		rstReportColumns = Nothing
-		cmdReportsCols = Nothing
+		End Try
+		
 	
 	ElseIf Session("action") = "LOADCALENDARREPORTCOLUMNS" Then
-		Dim cmdReportsCols = New ADODB.Command
-		cmdReportsCols.CommandText = "spASRIntGetCalendarReportColumns"
-		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdReportsCols.ActiveConnection = Session("databaseConnection")
-								
-		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmBaseTableId)
-		prmBaseTableId.Value = CleanNumeric(Session("ReportBaseTableID"))
 		
-		Dim prmEventTableId = cmdReportsCols.CreateParameter("eventTableID", 3, 1)	' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmEventTableId)
-		prmEventTableId.Value = CleanNumeric(Session("ReportBaseTableID"))
+		Try
+			
+			Dim rstReportColumns = objDataAccess.GetDataTable("spASRIntGetCalendarReportColumns", CommandType.StoredProcedure _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))} _
+					, New SqlParameter("piEventTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))})
+
+			For Each objRow As DataRow In rstReportColumns.Rows
+				Response.Write("<input type='hidden' id='txtRepCol_" & objRow("columnid") & "' name='txtRepCol_" & objRow("columnid") & "' value='" & Replace(objRow("columnName"), """", "&quot;") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRepColDataType_" & objRow("columnid") & "' name='txtRepColDataType_" & objRow("columnid") & "' value='" & Replace(objRow("datatype"), """", "&quot;") & "'>" & vbCrLf)
+			Next
+			
+		Catch ex As Exception
+			sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(ex.Message)
+
+		End Try
 		
-		Err.Clear()
-		Dim rstReportColumns = cmdReportsCols.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(Err.Description)
-		End If
 		
-		If Len(sErrorDescription) = 0 Then
-			Dim iLoop = 1
-			Do While Not rstReportColumns.EOF
-				Response.Write("<input type='hidden' id='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepCol_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("columnName").Value, """", "&quot;") & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' name='txtRepColDataType_" & rstReportColumns.Fields("columnid").Value & "' value='" & Replace(rstReportColumns.Fields("datatype").Value, """", "&quot;") & "'>" & vbCrLf)
-				rstReportColumns.MoveNext()
-				iLoop = iLoop + 1
-			Loop
-
-			' Release the ADO recordset object.
-			rstReportColumns.Close()
-		End If
-				
-		rstReportColumns = Nothing
-		cmdReportsCols = Nothing
-
 	ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
 		Dim cmdReportsCols = New ADODB.Command
 		cmdReportsCols.CommandText = "sp_ASRIntGetEmailAddresses"
