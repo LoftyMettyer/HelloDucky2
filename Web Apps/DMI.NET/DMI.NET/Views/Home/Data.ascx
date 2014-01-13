@@ -3,7 +3,6 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Diagnostics" %>
 
 <%	
 	If Len(Session("recordID")) = 0 Then
@@ -868,36 +867,23 @@
 		
 		
 	ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
-		Dim cmdReportsCols = New ADODB.Command
-		cmdReportsCols.CommandText = "sp_ASRIntGetEmailAddresses"
-		cmdReportsCols.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-		cmdReportsCols.ActiveConnection = Session("databaseConnection")
-								
-		Dim prmBaseTableId = cmdReportsCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-		cmdReportsCols.Parameters.Append(prmBaseTableId)
-		prmBaseTableId.Value = CleanNumeric(Session("ReportBaseTableID"))
-
-		Err.Clear()
-		Dim rstReportColumns = cmdReportsCols.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		If Len(sErrorDescription) = 0 Then
-			Dim iLoop = 1
-			Do While Not rstReportColumns.EOF
-				Response.Write("<input type='hidden' id='txtEmail_" & iLoop & "' name='txtEmail_" & iLoop & "' value='" & Replace(rstReportColumns.Fields("columnDefn").Value, """", "&quot;") & "'>" & vbCrLf)
-				rstReportColumns.MoveNext()
-				iLoop = iLoop + 1
-			Loop
-
-			' Release the ADO recordset object.
-			rstReportColumns.Close()
-		End If
 				
-		rstReportColumns = Nothing
-		cmdReportsCols = Nothing
+		Try
+			
+			Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetEmailAddresses", CommandType.StoredProcedure _
+					, New SqlParameter("baseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))})
+
+			Dim iLoop = 1
+			For Each objRow As DataRow In rstReportColumns.Rows
+				Response.Write("<input type='hidden' id='txtEmail_" & iLoop & "' name='txtEmail_" & iLoop & "' value='" & Replace(objRow("columnDefn").ToString(), """", "&quot;") & "'>" & vbCrLf)
+				iLoop += 1
+			Next
+			
+		Catch ex As Exception
+			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(ex.Message)
+
+		End Try
+	
 
 	ElseIf Session("action") = "GETEXPRESSIONRETURNTYPES" Then
 		Dim sParam1 As String = CStr(Session("Param1"))
