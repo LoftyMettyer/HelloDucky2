@@ -110,14 +110,6 @@
 			End If
 		%>'>
 
-	<table align=center class="outline" cellPadding=5 cellSpacing=0 style=width:100%;">
-	<tr>
-	  <td>
-			<table align=center class="invisible" cellspacing=0 cellpadding=0 style="width:100%;">
-				<tr>
-					<td colspan=5 align=center><H3 align=center>Prompted Values</H3></td>
-				</tr>
-	
 			<%
 				' Get variables for Absence Breakdown / Bradford Factor
 				Session("stdReport_StartDate") = Request.Form("txtFromDate")
@@ -193,6 +185,14 @@
 				End If			
 				
 				If rstPromptedValue.Rows.Count > 0 Then
+
+					Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 style=""width:100%;"">" & vbCrLf)
+					Response.Write("  <tr>" & vbCrLf)
+					Response.Write("	  <td>" & vbCrLf)
+					Response.Write("			<table align=center class=""invisible"" cellspacing=0 cellpadding=0 style=""width:100%;"">" & vbCrLf)
+					Response.Write("				<tr>" & vbCrLf)
+					Response.Write("					<td colspan=5 align=center><H3 align=center>Prompted Values</H3></td>" & vbCrLf)
+					Response.Write("				</tr>" & vbCrLf)
 
 					For Each objRow As DataRow In rstPromptedValue.Rows
 					
@@ -402,7 +402,7 @@
 						Response.Write("				</tr>" & vbCrLf)
 
 					Next
-					
+			
 			%>
 			<tr>
 				<td colspan="5" height="10">&nbsp;</td>
@@ -429,12 +429,12 @@
 			<tr>
 				<td colspan="5" height="5">&nbsp;</td>
 			</tr>
-			
-
+							
 			</table>
 		</td>
 	</tr>
 </table>
+
 			
 
 	<%
