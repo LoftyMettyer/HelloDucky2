@@ -1434,7 +1434,7 @@ function okClick()
 }
 
 function saveChanges(psAction, pfPrompt, pfTBOverride) {
-	debugger;
+
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 				(definitionChanged() == false)) {
 				return 7; //No to saving the changes, as none have been made.
