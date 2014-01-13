@@ -35,7 +35,7 @@ Public Class Database
 	End Function
 
 	' Return 0 or an error code
-	Public Sub CheckLogin(Login As LoginInfo, ApplicationVersion As String)
+	Public Sub CheckLogin(ByRef Login As LoginInfo, ApplicationVersion As String)
 
 		Try
 
