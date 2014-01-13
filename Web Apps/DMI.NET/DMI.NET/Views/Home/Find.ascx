@@ -212,7 +212,7 @@
 										If rstFindRecords.Columns(iloop).DataType = GetType(System.DateTime) Then
 											' Field is a date so format as such.
 											sAddString = sAddString & ConvertSQLDateToLocale(row(iloop))
-										ElseIf GeneralUtilities.IsDataColumnNumeric(rstFindRecords.Columns(iloop)) Then
+										ElseIf GeneralUtilities.IsDataColumnDecimal(rstFindRecords.Columns(iloop)) Then
 											' Field is a numeric so format as such.
 											If Not IsDBNull(row(iloop)) Then
 												If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
@@ -438,40 +438,41 @@ If fCanSelect Then
 	}
 	Try
 		resultsDataTable = objDataAccess.GetDataTable("spASRIntGetSummaryValues", CommandType.StoredProcedure, SPParameters)
+		Dim sTempValue As String
+					
+		If Len(sErrorDescription) = 0 Then
+			For iLoop = 0 To (resultsDataTable.Columns.Count - 1)
+				If GeneralUtilities.IsDataColumnDecimal(resultsDataTable.Columns(iLoop)) Then
+					sTemp = "," & resultsDataTable.Columns(iLoop).ColumnName & ","
+
+					If IsDBNull(resultsDataTable.Rows(0)(iLoop)) Then
+						sTempValue = "0"
+					Else
+						sTempValue = resultsDataTable.Rows(0)(iLoop)
+					End If
+
+					If InStr(sThousSepSummaryFields, sTemp) > 0 Then
+						sTemp = ""
+						sTemp = FormatNumber(sTempValue, , True, False, True)
+					Else
+						sTemp = ""
+						sTemp = FormatNumber(sTempValue, , True, False, False)
+					End If
+					sTemp = Replace(sTemp, ".", "x")
+					sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+					sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+							
+					Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & sTemp & """>" & vbCrLf)
+				Else
+					Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & resultsDataTable.Rows(0)(iLoop) & """>" & vbCrLf)
+				End If
+			Next
+		End If
 	Catch ex As Exception
 		sErrorDescription = "The summary field values could not be retrieved." & vbCrLf & FormatError(ex.Message)
 	End Try
-	Dim sTempValue As String
-					
-	If Len(sErrorDescription) = 0 Then
-		For iLoop = 0 To (resultsDataTable.Columns.Count - 1)
-			If GeneralUtilities.IsDataColumnNumeric(resultsDataTable.Columns(iLoop)) Then
-				sTemp = "," & resultsDataTable.Columns(iLoop).ColumnName & ","
-
-				If IsDBNull(resultsDataTable.Rows(0)(iLoop)) Then
-					sTempValue = "0"
-				Else
-					sTempValue = resultsDataTable.Rows(0)(iLoop)
-				End If
-
-				If InStr(sThousSepSummaryFields, sTemp) > 0 Then
-					sTemp = ""
-					sTemp = FormatNumber(sTempValue, , True, False, True)
-				Else
-					sTemp = ""
-					sTemp = FormatNumber(sTempValue, , True, False, False)
-				End If
-				sTemp = Replace(sTemp, ".", "x")
-				sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-				sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-							
-				Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & sTemp & """>" & vbCrLf)
-			Else
-				Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & resultsDataTable.Rows(0)(iLoop) & """>" & vbCrLf)
-			End If
-		Next
-	End If
-End If
+	
+End If 
 End If
 End If
 	
