@@ -185,7 +185,6 @@
 	Dim cmdDefPropRecords As Command
 	Dim prmType As ADODB.Parameter
 	Dim prmID As ADODB.Parameter
-	Dim rsDefProp As Recordset
 	Dim sDescription As String
 	Dim cmdCheckHidden As Command
 		
@@ -776,7 +775,7 @@
 						Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
 						
-						For Each objRow As DataRow In rsDefProp.Rows
+						For Each objRow As DataRow In rsUsage.Rows
 							sDescription = objRow("description").ToString()
 							sDescription = Replace(sDescription, "<", "&lt;")
 							sDescription = Replace(sDescription, ">", "&gt;")
@@ -803,7 +802,6 @@
 						Response.Write("			  </tr>" & vbCrLf)
 					End If
 										 
-					rsDefProp = Nothing
 					cmdDefPropRecords = Nothing
 				End If
 			End If
