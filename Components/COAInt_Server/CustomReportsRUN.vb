@@ -2212,8 +2212,7 @@ DoChildOrderString_ERROR:
 
 			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The second parent table picklist contains no records."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 
 			For Each objRow As DataRow In prstTemp.Rows
@@ -2248,7 +2247,7 @@ DoChildOrderString_ERROR:
 			End If
 
 			For Each objRow As DataRow In prstTemp.Rows
-				pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & objRow(0).Value
+				pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & objRow(0).ToString()
 			Next
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & pstrPickListIDs & ")"
@@ -2267,16 +2266,14 @@ DoChildOrderString_ERROR:
 			Else
 				' Permission denied on something in the filter.
 				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsFilterID) & "' filter."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 		End If
 
 		'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		prstTemp = Nothing
 
-		GenerateSQLWhere = True
-		Exit Function
+		Return True
 
 GenerateSQLWhere_ERROR:
 
