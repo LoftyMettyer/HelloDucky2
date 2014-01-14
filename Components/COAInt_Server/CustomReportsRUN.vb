@@ -3068,70 +3068,74 @@ LoadRecords_ERROR:
 		' Is Numeric
 		If objReportItem.IsNumeric Then
 
-			vData = CDbl(vData)
+			If IsNumeric(vData) Then
+				vData = CDbl(vData)
 
-			' Overflow check (ignore decimals)
-			If CLng(vData).ToString.Length > objReportItem.Size And objReportItem.Size > 0 Then
-				vData = New String("#", objReportItem.Size)
+				' Overflow check (ignore decimals)
+				If CLng(vData).ToString.Length > objReportItem.Size And objReportItem.Size > 0 Then
+					vData = New String("#", objReportItem.Size)
+				Else
+					If Not objReportItem.Mask Is Nothing Then
+						vData = String.Format(objReportItem.Mask, vData)
+					End If
+				End If
 			Else
-				If Not objReportItem.Mask Is Nothing Then
-					vData = String.Format(objReportItem.Mask, vData)
-				End If
+				vData = "######"
 			End If
 
 		End If
 
 
-		' SRV ?
-		If Not mbIsBradfordIndexReport Then
-			If mbSuppressRepeated = True Then
-				'check if column value should be repeated or not.
-				If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-						vData = ""
-					End If
+			' SRV ?
+			If Not mbIsBradfordIndexReport Then
+				If mbSuppressRepeated = True Then
+					'check if column value should be repeated or not.
+					If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+							vData = ""
+						End If
 
-				ElseIf objReportItem.SuppressRepeated Then
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-						vData = ""
+					ElseIf objReportItem.SuppressRepeated Then
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+							vData = ""
+						End If
+					End If
+				End If
+
+			Else
+				'Bradford Factor does not use the repetition functionality.
+				If mbSuppressRepeated = True Then
+
+					If objReportItem.SuppressRepeated Then
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+							vData = ""
+						End If
 					End If
 				End If
 			End If
 
-		Else
-			'Bradford Factor does not use the repetition functionality.
-			If mbSuppressRepeated = True Then
-
-				If objReportItem.SuppressRepeated Then
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-						vData = ""
-					End If
-				End If
-			End If
-		End If
 
 
+			''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+			'If Not IsDBNull(vData) Then
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, vbNewLine, " ")
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, vbCr, " ")
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, vbLf, " ")
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, vbTab, " ")
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, Chr(10), "")
+			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'	vData = Replace(vData, Chr(13), "")
+			'End If
 
-		''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		'If Not IsDBNull(vData) Then
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbNewLine, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbCr, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbLf, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbTab, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, Chr(10), "")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, Chr(13), "")
-		'End If
-
-		Return vData
+			Return vData
 
 	End Function
 
