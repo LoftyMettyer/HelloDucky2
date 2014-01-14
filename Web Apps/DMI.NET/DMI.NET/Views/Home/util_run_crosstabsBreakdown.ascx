@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <form action="util_run_CrossTabsBreakdown" method="post" id="frmBreakdown" name="frmBreakdown">
 		<input type="hidden" id="txtMode" name="txtMode" value="<%=Session("CT_Mode")%>">
@@ -11,11 +12,9 @@
 </form>
 
 <%
-	Dim objCrossTab As Object	' HR.Intranet.Server.CrossTab
-
+	Dim objCrossTab = CType(Session("objCrossTab" & Session("CT_UtilID")), CrossTab)
+	
 		If Session("CT_Mode") = "BREAKDOWN" Then
-		 
-				objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
 
 				If objCrossTab.CrossTabType = 3 Then
 						Response.Write("Absence Breakdown Cell Breakdown")
@@ -31,7 +30,6 @@
 								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
 
 										<%
-												objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
 			
 												If objCrossTab.PageBreakColumnName <> "<None>" Then
 														Response.Write("<TR HEIGHT=5>" & vbCrLf)
@@ -102,7 +100,7 @@
 										</tr>
 										<tr height="5">
 												<td colspan="3" align="RIGHT">
-														<input type="button" id="cmdClose" name="cmdClose" value="OK" style="WIDTH: 80px" class="btn" onclick="ShowDataFrame();" />
+														<input type="button" id="cmdClose" name="cmdClose" value="Back" style="WIDTH: 80px" class="btn" onclick="ShowDataFrame();" />
 												</td>
 										</tr>
 								</table>
@@ -113,13 +111,8 @@
 
 		<%
 
-				Dim iInterSectionColumnCount As Integer
-
-				objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
-				iInterSectionColumnCount = 1
- 
-				Response.Write("<script type=""text/javascript"">" & vbCrLf)
-				Response.Write("function util_run_crosstabsBreakdown_window_onload()" & vbCrLf)
+			Response.Write("<script type=""text/javascript"">" & vbCrLf)			
+			Response.Write("function util_run_crosstabsBreakdown_window_onload()" & vbCrLf)
 			Response.Write("{" & vbCrLf & vbCrLf)
 
 			Response.Write("    var colNames = [];" & vbCrLf)
@@ -146,8 +139,7 @@
 			Response.Write("  colNames.push(""" & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """);" & vbCrLf)
 			Response.Write("	colMode.push({ name: """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """ });" & vbCrLf)
 				
-			iInterSectionColumnCount = 4
-		End If
+			End If
 		
 		If objCrossTab.IntersectionColumn = True Then
 			Response.Write("  colNames.push('" & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & "');" & vbCrLf)
@@ -156,7 +148,7 @@
 
 		
 			Dim objData As String()
-			For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
+			For intCount = 1 To objCrossTab.OutputArrayDataUBound
 								
 				Response.Write("  obj = {};" & vbCrLf)
 				objData = Split(objCrossTab.OutputArrayData(intCount), vbTab)

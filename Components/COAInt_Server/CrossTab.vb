@@ -218,9 +218,9 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputArrayDataUBound() As String
+	Public ReadOnly Property OutputArrayDataUBound() As Integer
 		Get
-			OutputArrayDataUBound = CStr(UBound(mstrOutput))
+			Return UBound(mstrOutput)
 		End Get
 	End Property
 
@@ -1262,7 +1262,7 @@ LocalErr:
 								strSearch(lngCount) = strColumnName & " = " & General.ConvertNumberForSQL(objRow(0))
 
 							Case Else
-								strHeading(lngCount) = FormatString(objRow(0))
+								strHeading(lngCount) = HTMLEncode(objRow(0).ToString())
 								strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
 
 						End Select
@@ -1605,7 +1605,7 @@ LocalErr:
 					Case Else
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If LCase(mvarHeadings(Index)(lngCount)) = LCase(FormatString(strValue)) Then
+						If LCase(mvarHeadings(Index)(lngCount)) = LCase(HTMLEncode(strValue)) Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							GetGroupNumber = lngCount
 							Exit For
@@ -1950,7 +1950,7 @@ LocalErr:
 				End If
 			End If
 
-			lngCount = lngCount + 1
+			lngCount += 1
 			ReDim Preserve mstrOutput(lngCount)
 			mstrOutput(lngCount) = FormatString(strOutput)
 
@@ -2431,7 +2431,7 @@ LocalErr:
 		Dim sReturnValue As String
 
 		sReturnValue = Left(Trim(sHeading), 100)
-		sReturnValue = Replace(sReturnValue, Chr(9), "")
+		'sReturnValue = Replace(sReturnValue, vbTab, "")
 		sReturnValue = Replace(sReturnValue, Chr(10), "")
 		sReturnValue = Replace(sReturnValue, Chr(13), "")
 		sReturnValue = Replace(sReturnValue, "'", "&apos;")
