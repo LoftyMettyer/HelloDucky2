@@ -566,18 +566,18 @@ AddTempTableToSQL_ERROR:
 
 	Public Function ExecuteSql() As Boolean
 
-		On Error GoTo ExecuteSQL_ERROR
+		Try
+			DB.ExecuteSql(mstrSQL)
 
-		DB.ExecuteSql(mstrSQL)
+		Catch ex As Exception
+			mstrErrorString = "Error executing SQL statement." & vbNewLine & ex.Message
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
+
+		End Try
 
 		Return True
-
-ExecuteSQL_ERROR:
-
-		mstrErrorString = "Error executing SQL statement." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-		Return False
 
 	End Function
 
@@ -1402,7 +1402,7 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function GetMostChildsForParent(ByRef avChildRecs(,) As DataTable, ByRef iParentCount As Short) As Integer
+	Private Function GetMostChildsForParent(avChildRecs(,) As DataTable, iParentCount As Short) As Integer
 
 		Dim i As Integer
 		Dim iMostChildRecords As Integer
@@ -1466,7 +1466,6 @@ Error_Trap:
 		Dim sSQL As String
 		Dim sParentSelectSQL As String
 		Dim rsParent As DataTable
-		Dim lngColumnID As Integer
 		Dim lngTableID As Integer
 		Dim iChildCount As Integer
 		Dim iParentCount As Integer
@@ -1474,7 +1473,7 @@ Error_Trap:
 		Dim sChildSelectSQL As String
 		Dim sChildWhereSQL As String
 		Dim iFields As Integer
-		Dim i As Integer
+		Dim iChildRowCount As Integer
 		Dim iChildUsed As Integer
 		Dim iMostChilds As Integer
 		Dim lngCurrentTableID As Integer
@@ -1482,7 +1481,8 @@ Error_Trap:
 
 		Dim sFIELDS As String
 		Dim sVALUES As String
-		Dim SQLSTRING As String
+
+		Dim aryInsertStatements As New List(Of String)
 
 		Try
 
@@ -1514,7 +1514,6 @@ Error_Trap:
 
 			rsParent = DB.GetDataTable(sSQL)
 
-			lngColumnID = 0
 			lngTableID = 0
 			iChildUsed = 0
 
@@ -1580,15 +1579,13 @@ Error_Trap:
 						End If
 					Next iChildCount
 
-					'      With rsTemp
+
 					iMostChilds = GetMostChildsForParent(avChildRecordsets, 0)
 					If iMostChilds > 0 Then
-						For i = 0 To iMostChilds - 1 Step 1
-							'            .AddNew
+						For iChildRowCount = 0 To iMostChilds - 1 Step 1
 
 							sFIELDS = vbNullString
 							sVALUES = vbNullString
-							SQLSTRING = vbNullString
 
 							'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
 							For iFields = 0 To rsParent.Columns.Count - 1 Step 1
@@ -1624,9 +1621,9 @@ Error_Trap:
 
 							For iChildCount = 0 To UBound(avChildRecordsets, 2) Step 1
 
-								If avChildRecordsets(0, iChildCount).Rows.Count > 0 Then
+								If avChildRecordsets(0, iChildCount).Rows.Count > iChildRowCount Then
 
-									Dim rowFirstRow = avChildRecordsets(0, iChildCount).Rows(0)
+									Dim rowFirstRow = avChildRecordsets(0, iChildCount).Rows(iChildRowCount)
 
 									'<<<<<<<<<<<<<<<<<<< Add Values To Child Fields >>>>>>>>>>>>>>>>>>>>>>>
 									For iFields = 0 To avChildRecordsets(0, iChildCount).Columns.Count - 1 Step 1
@@ -1637,7 +1634,6 @@ Error_Trap:
 												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 												sVALUES = sVALUES & IIf(IsDBNull(rowFirstRow(iFields)), 0, rowFirstRow(iFields)) & ","
 											Case "datetime"
-												'TM20030124 Fault 4974
 												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 												If Not IsDBNull(rowFirstRow(iFields)) Then
 													sVALUES = sVALUES & "'" & VB6.Format(rowFirstRow(iFields), "MM/dd/yyyy") & "',"
@@ -1661,27 +1657,17 @@ Error_Trap:
 								End If
 							Next iChildCount
 
-							'Add the Sequence number to the sequence column for ordering the data later.
-							'            .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
-
 							sFIELDS = sFIELDS & "[" & lng_SEQUENCECOLUMNNAME & "]"
 							sVALUES = sVALUES & lngSequenceCount
 
-							lngSequenceCount = lngSequenceCount + 1
+							lngSequenceCount += 1
+							aryInsertStatements.Add(String.Format("INSERT INTO {0} ({1}) VALUES ({2});{3}", sMCTempTable, sFIELDS, sVALUES, vbNewLine))
 
-							SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
-							SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
-
-							DB.ExecuteSql(SQLSTRING)
-
-							'            .Update
-						Next i
+						Next iChildRowCount
 					Else
-						'          .AddNew
 
 						sFIELDS = vbNullString
 						sVALUES = vbNullString
-						SQLSTRING = vbNullString
 
 						'<<<<<<<<<<<<<<<<<<< Add Values To Parent Fields >>>>>>>>>>>>>>>>>>>>>>>
 						For iFields = 0 To rsParent.Columns.Count - 1 Step 1
@@ -1717,19 +1703,13 @@ Error_Trap:
 						Next iFields
 
 						'Add the Sequence number to the sequence column for ordering the data later.
-						'          .Fields(lng_SEQUENCECOLUMNNAME) = lngSequenceCount
 
 						sFIELDS = sFIELDS & "[" & lng_SEQUENCECOLUMNNAME & "]"
 						sVALUES = sVALUES & lngSequenceCount
 
-						lngSequenceCount = lngSequenceCount + 1
+						lngSequenceCount += 1
+						aryInsertStatements.Add(String.Format("INSERT INTO {0} ({1}) VALUES ({2});{3}", sMCTempTable, sFIELDS, sVALUES, vbNewLine))
 
-						SQLSTRING = "INSERT INTO " & sMCTempTable & " (" & sFIELDS & ") "
-						SQLSTRING = SQLSTRING & " VALUES (" & sVALUES & ") "
-
-						DB.ExecuteSql(SQLSTRING)
-
-						'          .Update
 					End If
 					'      End With
 
@@ -1737,13 +1717,13 @@ Error_Trap:
 				Next
 			End With
 
-			'************ Re-Order the data using the defined sort orders. ******************
-			sSQL = "DELETE FROM [" & mstrTempTableName & "]"
-			DB.ExecuteSql(sSQL)
 
-			sSQL = "INSERT INTO [" & mstrTempTableName & "] SELECT * FROM [" & sMCTempTable & "]"
-			' Order the entire recordset.
-			sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
+			'************ Re-Order the data using the defined sort orders. ******************
+			aryInsertStatements.Add(String.Format("DELETE FROM {0};{1}", mstrTempTableName, vbNewLine))
+			aryInsertStatements.Add(String.Format("INSERT INTO [{0}] SELECT * FROM [{1}] ORDER BY [{2}] ASC;", mstrTempTableName, sMCTempTable, lng_SEQUENCECOLUMNNAME))
+
+			sSQL = Join(aryInsertStatements.ToArray())
+
 			DB.ExecuteSql(sSQL)
 
 
@@ -2609,8 +2589,6 @@ CheckRecordSet_ERROR:
 		Dim sBreakValue As String
 
 		'Group With Next Column variables
-		Dim intRowIndex_GW As Integer
-		Dim intColIndex_GW As Integer
 		Dim intGroupCount As Integer
 		Dim blnHasGroupWithNext As Boolean
 		Dim blnSkipped As Boolean
@@ -2618,8 +2596,6 @@ CheckRecordSet_ERROR:
 		Dim strGroupString As String
 		Dim sLastValue As String = vbNullString
 
-		intRowIndex_GW = 0
-		intColIndex_GW = 0
 		blnHasGroupWithNext = False
 		blnSkipped = False
 		intSkippedIndex = 0
@@ -2649,14 +2625,13 @@ CheckRecordSet_ERROR:
 
 		For Each objRow As DataRow In mrstCustomReportsOutput.Rows
 
-
 			aryAddString = New ArrayList()
 
 			'bRecordChanged used for repetition funcionality.
 			If Not mbIsBradfordIndexReport Then
-				If objRow("?ID") <> lngCurrentRecordID Then
+				If CInt(objRow("?ID")) <> lngCurrentRecordID Then
 					bBaseRecordChanged = True
-					lngCurrentRecordID = objRow("?ID")
+					lngCurrentRecordID = CInt(objRow("?ID"))
 				Else
 					bBaseRecordChanged = False
 				End If
@@ -2924,7 +2899,6 @@ CheckRecordSet_ERROR:
 			If mblnCustomReportsSummaryReport = False Then
 				If Not NEW_AddToArray_Data(RowType.Data, aryAddString) Then
 
-					'If Not AddToArray_Data(sAddString, RowType.Data) Then
 					Return False
 
 				Else
@@ -2948,8 +2922,6 @@ CheckRecordSet_ERROR:
 
 			'Clear the Group Arrays/Variables
 			ReDim mvarGroupWith(1, 0)
-			intRowIndex_GW = 0
-			intColIndex_GW = 0
 			blnHasGroupWithNext = False
 
 			fNotFirstTime = True
@@ -3027,7 +2999,7 @@ LoadRecords_ERROR:
 
 	End Function
 
-	Private Sub AddPageBreakValue(ByVal pintRowIndex As Integer, ByVal pvarValue As Object)
+	Private Sub AddPageBreakValue(pintRowIndex As Integer, pvarValue As Object)
 
 		ReDim Preserve mvarPageBreak(pintRowIndex)
 		'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3036,7 +3008,7 @@ LoadRecords_ERROR:
 
 	End Sub
 
-	Private Function PopulateGrid_FormatData(ByRef objReportItem As ReportDetailItem, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As String
+	Private Function PopulateGrid_FormatData(objReportItem As ReportDetailItem, vData As Object, mbSuppressRepeated As Boolean, pbNewBaseRecord As Boolean) As String
 		'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
 		' Purpose : Format the data to the form the user has specified to see it
 		'           in the grid
@@ -3047,7 +3019,6 @@ LoadRecords_ERROR:
 		If IsDBNull(vData) Then Return ""
 
 		vOriginalData = vData
-
 
 		' Is it a boolean calculation ? If so, change to Y or N
 		If objReportItem.IsBitColumn Then
@@ -3083,56 +3054,56 @@ LoadRecords_ERROR:
 		End If
 
 
-			' SRV ?
-			If Not mbIsBradfordIndexReport Then
-				If mbSuppressRepeated = True Then
-					'check if column value should be repeated or not.
-					If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-							vData = ""
-						End If
-
-					ElseIf objReportItem.SuppressRepeated Then
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-							vData = ""
-						End If
+		' SRV ?
+		If Not mbIsBradfordIndexReport Then
+			If mbSuppressRepeated = True Then
+				'check if column value should be repeated or not.
+				If Not objReportItem.Repetition And Not pbNewBaseRecord And Not objReportItem.SuppressRepeated And Not objReportItem.IsReportChildTable Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
 					End If
-				End If
 
-			Else
-				'Bradford Factor does not use the repetition functionality.
-				If mbSuppressRepeated = True Then
-
-					If objReportItem.SuppressRepeated Then
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
-							vData = ""
-						End If
+				ElseIf objReportItem.SuppressRepeated Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
 					End If
 				End If
 			End If
 
+		Else
+			'Bradford Factor does not use the repetition functionality.
+			If mbSuppressRepeated = True Then
+
+				If objReportItem.SuppressRepeated Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If CStr(RTrim(IIf(IsDBNull(objReportItem.LastValue), vbNullString, objReportItem.LastValue))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+						vData = ""
+					End If
+				End If
+			End If
+		End If
 
 
-			''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			'If Not IsDBNull(vData) Then
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, vbNewLine, " ")
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, vbCr, " ")
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, vbLf, " ")
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, vbTab, " ")
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, Chr(10), "")
-			'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'	vData = Replace(vData, Chr(13), "")
-			'End If
 
-			Return vData
+		''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+		'If Not IsDBNull(vData) Then
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbNewLine, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbCr, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbLf, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, vbTab, " ")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, Chr(10), "")
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	vData = Replace(vData, Chr(13), "")
+		'End If
+
+		Return vData
 
 	End Function
 
@@ -4875,8 +4846,8 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Public Function SetBradfordOrders(ByVal pstrOrderBy As String, ByVal pstrGroupBy As String, ByVal pbOrder1Asc As Boolean, ByRef pbOrder2Asc As Boolean _
-																		, ByVal plngOrderByColumnID As Long, ByVal plngGroupByColumnID As Long) As Boolean
+	Public Function SetBradfordOrders(pstrOrderBy As String, pstrGroupBy As String, pbOrder1Asc As Boolean, pbOrder2Asc As Boolean _
+																		, plngOrderByColumnID As Integer, plngGroupByColumnID As Integer) As Boolean
 
 		' Set Report Order Options
 		mstrOrderByColumn = pstrOrderBy
@@ -4890,9 +4861,9 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Public Function SetBradfordIncludeOptions(ByVal pbOmitBeforeStart As Boolean, ByVal pbOmitAfterEnd As Boolean, ByVal plngPersonnelID As Long _
-																						, ByVal plngCustomReportsFilterID As Long, ByVal plngCustomReportsPickListID As Long, ByVal pbMinBradford As Boolean _
-																						, ByVal plngMinBradfordAmount As Long) As Boolean
+	Public Function SetBradfordIncludeOptions(pbOmitBeforeStart As Boolean, pbOmitAfterEnd As Boolean, plngPersonnelID As Integer _
+																						, plngCustomReportsFilterID As Integer, plngCustomReportsPickListID As Integer, pbMinBradford As Boolean _
+																						, plngMinBradfordAmount As Integer) As Boolean
 
 		' Include options for this report
 		mbOmitBeforeStart = pbOmitBeforeStart
@@ -4983,7 +4954,7 @@ GetBradfordRecordSet_ERROR:
 		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
-	Private Function GetOrderDefinition(ByRef plngOrderID As Integer) As DataTable
+	Private Function GetOrderDefinition(plngOrderID As Integer) As DataTable
 		' Return a recordset of the order items (both Find Window and Sort Order columns)
 		' for the given order.
 		Dim prmID As New SqlParameter("piOrderID", SqlDbType.Int)
