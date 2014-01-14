@@ -46,8 +46,8 @@ Public Class Report
 	Private mblnOutputPreview As Boolean
 
 	Private mvarChildTables(,) As Object
-	Private miChildTablesCount As Short
-	Private miUsedChildCount As Short
+	Private miChildTablesCount As Integer
+	Private miUsedChildCount As Integer
 
 	Private mlngCustomReportsParent1PickListID As Integer
 	Private mlngCustomReportsParent2PickListID As Integer
@@ -177,13 +177,13 @@ Public Class Report
 		End Get
 	End Property
 
-	Public ReadOnly Property ChildCount() As Short
+	Public ReadOnly Property ChildCount() As Integer
 		Get
 			Return miChildTablesCount
 		End Get
 	End Property
 
-	Public ReadOnly Property UsedChildCount() As Short
+	Public ReadOnly Property UsedChildCount() As Integer
 		Get
 			Return miUsedChildCount
 		End Get
@@ -316,7 +316,7 @@ Public Class Report
 	Public ReadOnly Property OutputArray_ExcelFormats() As Object
 		Get
 			Dim avTemp() As Object
-			Dim iLoop As Short
+			Dim iLoop As Integer
 
 			ReDim avTemp(UBound(mstrExcelFormats))
 
@@ -588,8 +588,8 @@ ExecuteSQL_ERROR:
 		Dim objData As DataSet
 		Dim rsDefinition As DataTable
 		Dim prmID As New SqlParameter("ReportID", SqlDbType.Int)
-		'		Dim strSQL As String
-		Dim i As Short
+
+		Dim i As Integer
 
 		mbIsBradfordIndexReport = False
 
@@ -615,37 +615,37 @@ ExecuteSQL_ERROR:
 				Exit Function
 			End If
 
-			mstrCustomReportsName = rowData("Name")
-			mlngCustomReportsBaseTable = rowData("BaseTable")
-			mstrCustomReportsBaseTableName = rowData("TableName")
-			mlngCustomReportsPickListID = rowData("picklist")
-			mlngCustomReportsFilterID = rowData("Filter")
-			mlngCustomReportsParent1Table = rowData("parent1table")
-			mlngCustomReportsParent1FilterID = rowData("parent1filter")
-			mlngCustomReportsParent2Table = rowData("parent2table")
-			mlngCustomReportsParent2FilterID = rowData("parent2filter")
+			mstrCustomReportsName = rowData("Name").ToString()
+			mlngCustomReportsBaseTable = CInt(rowData("BaseTable"))
+			mstrCustomReportsBaseTableName = rowData("TableName").ToString()
+			mlngCustomReportsPickListID = CInt(rowData("picklist"))
+			mlngCustomReportsFilterID = CInt(rowData("Filter"))
+			mlngCustomReportsParent1Table = CInt(rowData("parent1table"))
+			mlngCustomReportsParent1FilterID = CInt(rowData("parent1filter"))
+			mlngCustomReportsParent2Table = CInt(rowData("parent2table"))
+			mlngCustomReportsParent2FilterID = CInt(rowData("parent2filter"))
 
-			mblnCustomReportsSummaryReport = rowData("Summary")
-			mblnIgnoreZerosInAggregates = rowData("IgnoreZeros")
-			mblnCustomReportsPrintFilterHeader = rowData("PrintFilterHeader")
-			mlngCustomReportsParent1PickListID = rowData("parent1Picklist")
-			mlngCustomReportsParent2PickListID = rowData("parent2Picklist")
+			mblnCustomReportsSummaryReport = CBool(rowData("Summary"))
+			mblnIgnoreZerosInAggregates = CBool(rowData("IgnoreZeros"))
+			mblnCustomReportsPrintFilterHeader = CBool(rowData("PrintFilterHeader"))
+			mlngCustomReportsParent1PickListID = CInt(rowData("parent1Picklist"))
+			mlngCustomReportsParent2PickListID = CInt(rowData("parent2Picklist"))
 
 			'New Default Output Variables
-			mblnOutputPreview = rowData("OutputPreview")
-			mlngOutputFormat = rowData("OutputFormat")
-			mblnOutputScreen = rowData("OutputScreen")
-			mblnOutputPrinter = rowData("OutputPrinter")
-			mstrOutputPrinterName = rowData("OutputPrinterName")
-			mblnOutputSave = rowData("OutputSave")
-			mlngOutputSaveExisting = rowData("OutputSaveExisting")
-			mblnOutputEmail = rowData("OutputEmail")
-			mlngOutputEmailID = rowData("OutputEmailAddr")
-			mstrOutputEmailName = rowData("EmailGroupName")
-			mstrOutputEmailSubject = rowData("OutputEmailSubject")
-			mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs")
-			mstrOutputFilename = rowData("OutputFilename")
-			mblnOutputPreview = (rowData("OutputPreview") Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = CBool(rowData("OutputPreview"))
+			mlngOutputFormat = CInt(rowData("OutputFormat"))
+			mblnOutputScreen = CBool(rowData("OutputScreen"))
+			mblnOutputPrinter = CBool(rowData("OutputPrinter"))
+			mstrOutputPrinterName = rowData("OutputPrinterName").ToString()
+			mblnOutputSave = CBool(rowData("OutputSave"))
+			mlngOutputSaveExisting = CInt(rowData("OutputSaveExisting"))
+			mblnOutputEmail = CBool(rowData("OutputEmail"))
+			mlngOutputEmailID = CInt(rowData("OutputEmailAddr"))
+			mstrOutputEmailName = rowData("EmailGroupName").ToString()
+			mstrOutputEmailSubject = rowData("OutputEmailSubject").ToString()
+			mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs").ToString()
+			mstrOutputFilename = rowData("OutputFilename").ToString()
+			mblnOutputPreview = (CBool(rowData("OutputPreview")) Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
 		End With
 
@@ -754,30 +754,30 @@ GetCustomReportDefinition_ERROR:
 
 				'*************************************************************************
 
-				objReportItemDetail.Size = objRow("Size")
-				objReportItemDetail.Decimals = objRow("dp")
-				objReportItemDetail.IsNumeric = objRow("IsNumeric")
-				objReportItemDetail.IsAverage = objRow("Avge")
-				objReportItemDetail.IsCount = objRow("cnt")
-				objReportItemDetail.IsTotal = objRow("tot")
-				objReportItemDetail.IsBreakOnChange = objRow("boc")
-				objReportItemDetail.IsPageOnChange = objRow("poc")
-				objReportItemDetail.IsValueOnChange = objRow("voc")
-				objReportItemDetail.SuppressRepeated = objRow("srv")
+				objReportItemDetail.Size = CInt(objRow("Size"))
+				objReportItemDetail.Decimals = CInt(objRow("dp"))
+				objReportItemDetail.IsNumeric = CBool(objRow("IsNumeric"))
+				objReportItemDetail.IsAverage = CBool(objRow("Avge"))
+				objReportItemDetail.IsCount = CBool(objRow("cnt"))
+				objReportItemDetail.IsTotal = CBool(objRow("tot"))
+				objReportItemDetail.IsBreakOnChange = CBool(objRow("boc"))
+				objReportItemDetail.IsPageOnChange = CBool(objRow("poc"))
+				objReportItemDetail.IsValueOnChange = CBool(objRow("voc"))
+				objReportItemDetail.SuppressRepeated = CBool(objRow("srv"))
 				objReportItemDetail.LastValue = ""
-				objReportItemDetail.ColExprID = objRow("ColExprID")
-				objReportItemDetail.ID = objRow("ColExprID")
+				objReportItemDetail.ColExprID = CInt(objRow("ColExprID"))
+				objReportItemDetail.ID = CInt(objRow("ColExprID"))
 
-				objReportItemDetail.Type = objRow("Type")
+				objReportItemDetail.Type = objRow("Type").ToString()
 
 				lngTableID = IIf(IsDBNull(objRow("TableID")), 0, objRow("TableID"))
 				objReportItemDetail.TableID = lngTableID
-				objReportItemDetail.TableName = objRow("TableName")
+				objReportItemDetail.TableName = objRow("TableName").ToString()
 
-				If objRow("Type") = "C" Then
-					objReportItemDetail.ColumnName = objRow("ColumnName")
-					objReportItemDetail.IsDateColumn = objRow("IsDateColumn")
-					objReportItemDetail.IsBitColumn = objRow("IsBooleanColumn")
+				If objRow("Type").ToString() = "C" Then
+					objReportItemDetail.ColumnName = objRow("ColumnName").ToString()
+					objReportItemDetail.IsDateColumn = CBool(objRow("IsDateColumn"))
+					objReportItemDetail.IsBitColumn = CBool(objRow("IsBooleanColumn"))
 
 				Else
 					objReportItemDetail.ColumnName = ""
@@ -806,7 +806,7 @@ GetCustomReportDefinition_ERROR:
 				objReportItemDetail.IsHidden = IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False)
 				objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
 				objReportItemDetail.Repetition = IIf(objRow("repetition") = 1, True, False)
-				objReportItemDetail.Use1000Separator = objRow("Use1000separator")
+				objReportItemDetail.Use1000Separator = CBool(objRow("Use1000separator"))
 
 				' Format for this numeric column
 				If objReportItemDetail.IsNumeric Then
@@ -858,8 +858,7 @@ GetCustomReportDefinition_ERROR:
 		objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
 		ColumnDetails.Add(objReportItemDetail)
 
-
-		Dim iChildCount As Short
+		Dim iChildCount As Integer
 		Dim lngChildTableID As Integer
 		If miChildTablesCount > 0 Then
 			For iChildCount = 0 To UBound(mvarChildTables, 2) Step 1
@@ -1043,15 +1042,15 @@ GetDetailsRecordsets_ERROR:
 
 		Dim pblnOK As Boolean
 		Dim pblnColumnOK As Boolean
-		Dim iLoop1 As Short
+		Dim iLoop1 As Integer
 		Dim pblnNoSelect As Boolean
 		Dim pblnFound As Boolean
 
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 		Dim pstrColumnList As String
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
-		Dim pintNextIndex As Short
+		Dim pintNextIndex As Integer
 
 		Dim blnOK As Boolean
 		Dim sCalcCode As String
@@ -1387,7 +1386,7 @@ GenerateSQLSelect_ERROR:
 
 	Private Function IsReportChildTable(ByRef lngTableID As Integer) As Boolean
 
-		Dim i As Short
+		Dim i As Integer
 
 		IsReportChildTable = False
 
@@ -1403,11 +1402,11 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function GetMostChildsForParent(ByRef avChildRecs(,) As DataTable, ByRef iParentCount As Short) As Short
+	Private Function GetMostChildsForParent(ByRef avChildRecs(,) As DataTable, ByRef iParentCount As Short) As Integer
 
-		Dim i As Short
-		Dim iMostChildRecords As Short
-		Dim iChildRecordCount As Short
+		Dim i As Integer
+		Dim iMostChildRecords As Integer
+		Dim iChildRecordCount As Integer
 
 		On Error GoTo Error_Trap
 
@@ -1469,15 +1468,15 @@ Error_Trap:
 		Dim rsParent As DataTable
 		Dim lngColumnID As Integer
 		Dim lngTableID As Integer
-		Dim iChildCount As Short
-		Dim iParentCount As Short
+		Dim iChildCount As Integer
+		Dim iParentCount As Integer
 		Dim avChildRecordsets(,) As DataTable
 		Dim sChildSelectSQL As String
 		Dim sChildWhereSQL As String
-		Dim iFields As Short
-		Dim i As Short
-		Dim iChildUsed As Short
-		Dim iMostChilds As Short
+		Dim iFields As Integer
+		Dim i As Integer
+		Dim iChildUsed As Integer
+		Dim iMostChilds As Integer
 		Dim lngCurrentTableID As Integer
 		Dim lngSequenceCount As Integer
 
@@ -1609,7 +1608,7 @@ Error_Trap:
 										End If
 
 									Case "boolean"
-										sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
+										sVALUES = sVALUES & IIf(CBool(objRow(iFields)), 1, 0) & ","
 
 									Case Else
 										'MH20021119 Fault 4315
@@ -1802,7 +1801,7 @@ Error_Trap:
 
 		Dim pobjTableView As TablePrivilege
 		Dim objChildTable As TablePrivilege
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 		Dim sChildJoinCode As String
 		Dim sChildOrderString As String
 		Dim rsTemp As DataTable
@@ -1814,9 +1813,9 @@ Error_Trap:
 		Dim lngTempMaxRecords As Integer
 		Dim lngTempFilterID As Integer
 		Dim lngTempOrderID As Integer
-		Dim i As Short
+		Dim i As Integer
 		Dim sOtherParentJoinCode As String
-		Dim iLoop2 As Short
+		Dim iLoop2 As Integer
 
 		' Get the base table real source
 		mstrBaseTableRealSource = mstrSQLFrom
@@ -1969,7 +1968,7 @@ GenerateSQLJoin_ERROR:
 
 		Dim fColumnOK As Boolean
 		Dim fFound As Boolean
-		Dim iNextIndex As Short
+		Dim iNextIndex As Integer
 		Dim sSource As String
 		Dim sRealSource As String
 		Dim sColumnCode As String
@@ -1979,7 +1978,7 @@ GenerateSQLJoin_ERROR:
 		Dim objTableView As TablePrivilege
 		Dim alngTableViews(,) As Integer
 		Dim asViews() As String
-		Dim iTempCounter As Short
+		Dim iTempCounter As Integer
 
 		' Dimension an array of tables/views joined to the base table/view.
 		' Column 1 = 0 if this row is for a table, 1 if it is for a view.
@@ -2139,7 +2138,7 @@ DoChildOrderString_ERROR:
 
 		On Error GoTo GenerateSQLWhere_ERROR
 
-		Dim pintLoop As Short
+		Dim pintLoop As Integer
 		Dim pobjTableView As TablePrivilege
 		Dim prstTemp As DataTable
 		Dim pstrPickListIDs As String
@@ -2298,7 +2297,7 @@ GenerateSQLWhere_ERROR:
 		Dim pstrSource As String
 		Dim pstrOrderFrom1 As String
 		Dim pstrOrderFrom2 As String
-		Dim pintNextIndex As Short
+		Dim pintNextIndex As Integer
 
 		On Error GoTo GenerateSQLOrderBy_ERROR
 
@@ -2602,23 +2601,23 @@ CheckRecordSet_ERROR:
 
 		Dim vValue As Object
 		Dim fBreak As Boolean
-		Dim iLoop2 As Short
-		Dim iColumnIndex As Short
-		Dim iOtherColumnIndex As Short
+		Dim iLoop2 As Integer
+		Dim iColumnIndex As Integer
+		Dim iOtherColumnIndex As Integer
 		Dim fNotFirstTime As Boolean
 		Dim bSuppress As Boolean
 
-		Dim intColCounter As Short
+		Dim intColCounter As Integer
 
 		Dim sBreakValue As String
 
 		'Group With Next Column variables
-		Dim intRowIndex_GW As Short
-		Dim intColIndex_GW As Short
-		Dim intGroupCount As Short
+		Dim intRowIndex_GW As Integer
+		Dim intColIndex_GW As Integer
+		Dim intGroupCount As Integer
 		Dim blnHasGroupWithNext As Boolean
 		Dim blnSkipped As Boolean
-		Dim intSkippedIndex As Short
+		Dim intSkippedIndex As Integer
 		Dim strGroupString As String
 		Dim sLastValue As String = vbNullString
 
@@ -2714,7 +2713,7 @@ CheckRecordSet_ERROR:
 
 
 						If objReportItem.IsPageOnChange Then
-							sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
+							sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "").ToString() & sBreakValue
 						End If
 
 						If Not fBreak Then
@@ -3031,7 +3030,7 @@ LoadRecords_ERROR:
 
 	End Function
 
-	Private Sub AddPageBreakValue(ByVal pintRowIndex As Short, ByVal pvarValue As Object)
+	Private Sub AddPageBreakValue(ByVal pintRowIndex As Integer, ByVal pvarValue As Object)
 
 		ReDim Preserve mvarPageBreak(pintRowIndex)
 		'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3136,10 +3135,10 @@ LoadRecords_ERROR:
 
 	End Function
 
-	Private Function PopulateGrid_DoSummaryInfo(ByRef pavColumns As ICollection(Of ReportColumn), ByRef piColumnIndex As Short, ByRef piSortIndex As Short) As Boolean
+	Private Function PopulateGrid_DoSummaryInfo(ByRef pavColumns As ICollection(Of ReportColumn), ByRef piColumnIndex As Integer, ByRef piSortIndex As Integer) As Boolean
 
 		Dim fDoValue As Boolean
-		Dim iLoop As Short
+		Dim iLoop As Integer
 		'	Dim iLoop2 As Short
 		'	Dim iColumnIndex As Short
 		Dim sSQL As String
@@ -3599,7 +3598,7 @@ LoadRecords_ERROR:
 
 		On Error GoTo PopulateGrid_DoGrandSummary_ERROR
 
-		Dim iLoop As Short
+		Dim iLoop As Integer = 0
 		Dim rsTemp As DataTable
 
 		Dim aryAverageAddString As New ArrayList
@@ -3614,11 +3613,8 @@ LoadRecords_ERROR:
 
 		Dim sSQL As String
 
-		Dim intColCounter As Short
-
 		Dim strAggrValue As String
 
-		intColCounter = 1
 		strAggrValue = vbNullString
 
 		' Construct the required select statement.
@@ -3630,12 +3626,14 @@ LoadRecords_ERROR:
 
 		For Each objReportItem In ColumnDetails
 
+			iLoop += 1
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If objReportItem.IsAverage Then
 				' Average.
 
 				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3643,7 +3641,7 @@ LoadRecords_ERROR:
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 				Else
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3658,7 +3656,7 @@ LoadRecords_ERROR:
 				' Count.
 
 				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3666,7 +3664,7 @@ LoadRecords_ERROR:
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
 				Else
-					sSQL = sSQL & ",(SELECT COUNT([?ID]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT COUNT([?ID]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3681,7 +3679,7 @@ LoadRecords_ERROR:
 				' Total.
 
 				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3689,7 +3687,7 @@ LoadRecords_ERROR:
 
 					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 				Else
-					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
 					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
 						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
@@ -3699,8 +3697,10 @@ LoadRecords_ERROR:
 				End If
 
 			End If
+
 		Next
 
+		iLoop = 0
 		If Len(sSQL) > 0 Then
 			sSQL = "SELECT " & Right(sSQL, Len(sSQL) - 1)
 
@@ -3709,7 +3709,7 @@ LoadRecords_ERROR:
 
 			For Each objReportItem In ColumnDetails
 
-				intColCounter = intColCounter + 1
+				iLoop += 1
 
 				If iLoop > 0 Then objPrevious = ColumnDetails.GetByIndex(iLoop - 1) Else objPrevious = New ReportDetailItem
 
