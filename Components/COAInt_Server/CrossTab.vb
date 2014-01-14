@@ -278,7 +278,7 @@ Public Class CrossTab
 
 	Public ReadOnly Property PageBreakColumnName() As String
 		Get
-			PageBreakColumnName = IIf(mblnPageBreak, Replace(mstrColName(PGB), "_", " "), "<None>")
+			PageBreakColumnName = IIf(mblnPageBreak, Replace(mstrColName(PGB), "_", " "), "<None>").ToString()
 		End Get
 	End Property
 
@@ -290,7 +290,7 @@ Public Class CrossTab
 
 	Public ReadOnly Property IntersectionColumnName() As String
 		Get
-			IntersectionColumnName = IIf(mblnIntersection, Replace(mstrColName(INS), "_", " "), "<None>")
+			IntersectionColumnName = IIf(mblnIntersection, Replace(mstrColName(INS), "_", " "), "<None>").ToString()
 		End Get
 	End Property
 
@@ -617,35 +617,35 @@ ErrorTrap:
 				Exit Function
 			End If
 
-			mlngBaseTableID = objRow("TableID")
-			mstrBaseTable = objRow("TableName")
-			mlngRecordDescExprID = objRow("RecordDescExprID")
-			mstrCrossTabName = objRow("Name")
-			mblnChkPicklistFilter = objRow("PrintFilterHeader")
+			mlngBaseTableID = CInt(objRow("TableID"))
+			mstrBaseTable = objRow("TableName").ToString()
+			mlngRecordDescExprID = CInt(objRow("RecordDescExprID"))
+			mstrCrossTabName = objRow("Name").ToString()
+			mblnChkPicklistFilter = CBool(objRow("PrintFilterHeader"))
 
-			mblnShowPercentage = objRow("Percentage")
-			mblnPercentageofPage = objRow("PercentageOfPage")
-			mblnSuppressZeros = objRow("SuppressZeros")
-			mbUse1000Separator = objRow("ThousandSeparators")
+			mblnShowPercentage = CBool(objRow("Percentage"))
+			mblnPercentageofPage = CBool(objRow("PercentageOfPage"))
+			mblnSuppressZeros = CBool(objRow("SuppressZeros"))
+			mbUse1000Separator = CBool(objRow("ThousandSeparators"))
 
-			mblnOutputPreview = objRow("OutputPreview")
-			mlngOutputFormat = objRow("OutputFormat")
-			mblnOutputScreen = objRow("OutputScreen")
-			mblnOutputPrinter = objRow("OutputPrinter")
-			mstrOutputPrinterName = objRow("OutputPrinterName")
-			mblnOutputSave = objRow("OutputSave")
-			mlngOutputSaveExisting = objRow("OutputSaveExisting")
-			mblnOutputEmail = objRow("OutputEmail")
-			mlngOutputEmailID = objRow("OutputEmailAddr")
-			mstrOutputEmailName = GetEmailGroupName(objRow("OutputEmailAddr"))
-			mstrOutputEmailSubject = objRow("OutputEmailSubject")
+			mblnOutputPreview = CBool(objRow("OutputPreview"))
+			mlngOutputFormat = CInt(objRow("OutputFormat"))
+			mblnOutputScreen = CBool(objRow("OutputScreen"))
+			mblnOutputPrinter = CBool(objRow("OutputPrinter"))
+			mstrOutputPrinterName = objRow("OutputPrinterName").ToString()
+			mblnOutputSave = CBool(objRow("OutputSave"))
+			mlngOutputSaveExisting = CInt(objRow("OutputSaveExisting"))
+			mblnOutputEmail = CBool(objRow("OutputEmail"))
+			mlngOutputEmailID = CInt(objRow("OutputEmailAddr"))
+			mstrOutputEmailName = GetEmailGroupName(CInt(objRow("OutputEmailAddr")))
+			mstrOutputEmailSubject = objRow("OutputEmailSubject").ToString()
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mstrOutputEmailAttachAs = IIf(IsDBNull(objRow("OutputEmailAttachAs")), vbNullString, objRow("OutputEmailAttachAs"))
-			mstrOutputFilename = objRow("OutputFilename")
+			mstrOutputFilename = objRow("OutputFilename").ToString()
 
-			mblnOutputPreview = (objRow("OutputPreview") Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			mblnOutputPreview = (CBool(objRow("OutputPreview")) Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
 
-			mlngColID(HOR) = objRow("HorizontalColID")
+			mlngColID(HOR) = CInt(objRow("HorizontalColID"))
 			mdblMin(HOR) = Val(objRow("HorizontalStart"))
 			mdblMax(HOR) = Val(objRow("HorizontalStop"))
 			mdblStep(HOR) = Val(objRow("HorizontalStep"))
@@ -653,7 +653,7 @@ ErrorTrap:
 			mlngColDataType(HOR) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(HOR)))
 			mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
-			mlngColID(VER) = objRow("VerticalColID")
+			mlngColID(VER) = CInt(objRow("VerticalColID"))
 			mdblMin(VER) = Val(objRow("VerticalStart"))
 			mdblMax(VER) = Val(objRow("VerticalStop"))
 			mdblStep(VER) = Val(objRow("VerticalStep"))
@@ -661,7 +661,7 @@ ErrorTrap:
 			mlngColDataType(VER) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(VER)))
 			mstrFormat(VER) = GetFormat(mlngColID(VER))
 
-			mlngColID(PGB) = objRow("PageBreakColID")
+			mlngColID(PGB) = CInt(objRow("PageBreakColID"))
 			mblnPageBreak = (mlngColID(PGB) > 0)
 			If mblnPageBreak Then
 				mstrColName(PGB) = General.GetColumnName(mlngColID(PGB))
@@ -672,11 +672,11 @@ ErrorTrap:
 				mdblStep(PGB) = Val(objRow("PageBreakStep"))
 			End If
 
-			mblnIntersection = (objRow("IntersectionColID") > 0)
+			mblnIntersection = (CInt(objRow("IntersectionColID")) > 0)
 			If mblnIntersection Then
-				mlngType = objRow("IntersectionType")
-				mlngColID(INS) = objRow("IntersectionColID")
-				mstrColName(INS) = objRow("IntersectionColName")
+				mlngType = CInt(objRow("IntersectionType"))
+				mlngColID(INS) = CInt(objRow("IntersectionColID"))
+				mstrColName(INS) = objRow("IntersectionColName").ToString()
 				mlngIntersectionDecimals = CInt(objRow("IntersectionDecimals"))
 				mstrIntersectionMask = New String("#", 20) & "0"
 				If CInt(objRow("IntersectionDecimals")) > 0 Then
@@ -772,7 +772,7 @@ LocalErr:
 			Else
 				GetPicklistFilterSelect = vbNullString
 				For Each objRow As DataRow In rsTemp.Rows
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & objRow(0)
+					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "").ToString() & objRow(0).ToString()
 				Next
 			End If
 
@@ -781,7 +781,7 @@ LocalErr:
 
 			'MH20020704 Fault 4022
 			rsTemp = DB.GetDataTable("SELECT name from ASRSysPicklistName WHERE PicklistID = " & CStr(lngPicklistID))
-			mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Rows(0)("Name") & ")"
+			mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Rows(0)("Name").ToString() & ")"
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 
@@ -804,7 +804,7 @@ LocalErr:
 
 			'MH20020704 Fault 4022
 			rsTemp = DB.GetDataTable("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID))
-			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Rows(0)("Name") & ")"
+			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Rows(0)("Name").ToString() & ")"
 
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
@@ -969,7 +969,7 @@ LocalErr:
 		Dim lngCount As Integer
 		Dim fColumnOK As Boolean
 		Dim alngTableViews(,) As Integer
-		Dim iNextIndex As Short
+		Dim iNextIndex As Integer
 		Dim fFound As Boolean
 
 		Dim sCaseStatement As String
@@ -1030,7 +1030,7 @@ LocalErr:
 					strColumn = FormatSQLColumn(strColumn)
 				End If
 
-				mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & strColumn & " AS '" & strCol(2, lngCount) & "'"
+				mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & strColumn & " AS '" & strCol(2, lngCount) & "'"
 
 			Else
 
@@ -1076,10 +1076,10 @@ LocalErr:
 
 									mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
 
-									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
+									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString).ToString() & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
 
 									'If mstrPicklistFilter <> vbNullString Then
-									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
+									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString).ToString() & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString).ToString() & sSource & ".ID > 0)"
 									'End If
 
 								End If
@@ -1111,7 +1111,7 @@ LocalErr:
 					sCaseStatement = ""
 					For iNextIndex = 1 To UBound(asViews)
 						'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "") & asViews(iNextIndex) & "." & strCol(1, lngCount)
+						sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "").ToString() & asViews(iNextIndex).ToString() & "." & strCol(1, lngCount)
 					Next iNextIndex
 
 					If Len(sCaseStatement) > 0 Then
@@ -1121,7 +1121,7 @@ LocalErr:
 							strColumn = FormatSQLColumn(strColumn)
 						End If
 
-						mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
+						mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
 					End If
 
 				End If
@@ -1328,7 +1328,7 @@ LocalErr:
 		'     mstrFormat(lngLoop) = #0.00, GetSmallestUnit = 0.01
 
 		Dim strTemp As String
-		Dim intFound As Short
+		Dim intFound As Integer
 
 		intFound = InStr(mstrFormat(lngLoop), ".")
 		If intFound > 0 Then
@@ -1520,7 +1520,7 @@ LocalErr:
 
 	End Function
 
-	Private Function GetGroupNumber(ByRef strValue As String, ByRef Index As Short) As Object
+	Private Function GetGroupNumber(strValue As String, Index As Integer) As Integer
 
 		'This returns which array element a particular value should be added to
 		'Examples:
@@ -1682,7 +1682,7 @@ LocalErr:
 		Dim lngTYPE As Integer
 
 		Dim sngAverage As Single
-		Dim iAverageColumn As Short
+		Dim iAverageColumn As Integer
 
 		On Error GoTo LocalErr
 
@@ -1878,18 +1878,18 @@ LocalErr:
 		strWhere = vbNullString
 		If lngHOR <= UBound(mvarSearches(HOR)) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ") & "(" & mvarSearches(HOR)(lngHOR) & ")"
+			strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ").ToString() & "(" & mvarSearches(HOR)(lngHOR) & ")"
 		End If
 
 		If lngVER <= UBound(mvarSearches(VER)) Then
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ") & "(" & mvarSearches(VER)(lngVER) & ")"
+			strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ").ToString() & "(" & mvarSearches(VER)(lngVER) & ")"
 		End If
 
 		If mblnPageBreak Then
 			If lngPGB <= UBound(mvarSearches(PGB)) Then
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ") & "(" & mvarSearches(PGB)(lngPGB) & ")"
+				strWhere = IIf(strWhere = vbNullString, " WHERE ", strWhere & " AND ").ToString() & "(" & mvarSearches(PGB)(lngPGB) & ")"
 			End If
 		End If
 
@@ -1990,8 +1990,8 @@ LocalErr:
 		If fOK Then
 			For Each objRow As DataRow In rsCrossTabDataLocal.Rows
 
-				If objRow("Day_Number") < 8 Then
-					objRow("HOR") = WeekdayName(objRow("Day_Number"), False, FirstDayOfWeek.Monday)
+				If CInt(objRow("Day_Number")) < 8 Then
+					objRow("HOR") = WeekdayName(CInt(objRow("Day_Number")), False, FirstDayOfWeek.Monday)
 				End If
 
 			Next
