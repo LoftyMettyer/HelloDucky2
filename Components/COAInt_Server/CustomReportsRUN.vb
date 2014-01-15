@@ -3895,90 +3895,21 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 	Public Function ClearUp() As Boolean
 
-		' Purpose : To clear all variables/recordsets/references and drops temptable
-		' Input   : None
-		' Output  : True/False success
+		Try
+			AccessLog.UtilUpdateLastRun(UtilityType.utlCustomReport, mlngCustomReportID)
 
-		' Definition variables
+			' Delete the temptable if exists
+			General.DropUniqueSQLObject(mstrTempTableName, 3)
 
-		On Error GoTo ClearUp_ERROR
+			Return True
 
-		AccessLog.UtilUpdateLastRun(UtilityType.utlCustomReport, mlngCustomReportID)
+		Catch ex As Exception
+			Throw
 
-		mlngCustomReportID = 0
-		mstrCustomReportsName = vbNullString
-		mlngCustomReportsBaseTable = 0
-		mstrCustomReportsBaseTableName = vbNullString
-		mlngCustomReportsPickListID = 0
-		mlngCustomReportsFilterID = 0
-		mlngCustomReportsParent1Table = 0
-		mlngCustomReportsParent1PickListID = 0
-		mlngCustomReportsParent1FilterID = 0
-		mlngCustomReportsParent2Table = 0
-		mlngCustomReportsParent2PickListID = 0
-		mlngCustomReportsParent2FilterID = 0
-		mblnCustomReportsSummaryReport = False
-		mblnCustomReportsPrintFilterHeader = False
-		mlngSingleRecordID = 0
-
-		miChildTablesCount = 0
-
-		' Recordsets
-
-		'UPGRADE_NOTE: Object mrstCustomReportsDetails may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrstCustomReportsDetails = Nothing
-		'UPGRADE_NOTE: Object mrstCustomReportsOutput may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrstCustomReportsOutput = Nothing
-
-		'  ' Delete the temptable if exists, and then clear the variable
-		'  If Len(mstrTempTableName) > 0 Then
-		'    mclsData.ExecuteSql ("IF EXISTS(SELECT * FROM sysobjects WHERE name = '" & mstrTempTableName & "') " & _
-		''                      "DROP TABLE " & mstrTempTableName)
-		'  End If
-		General.DropUniqueSQLObject(mstrTempTableName, 3)
-		mstrTempTableName = vbNullString
-
-		' SQL strings
-
-		mstrSQLSelect = vbNullString
-		mstrSQLFrom = vbNullString
-		mstrSQLWhere = vbNullString
-		mstrSQLJoin = vbNullString
-		mstrSQLOrderBy = vbNullString
-		mstrSQL = vbNullString
-
-		' Arrays
-
-		'  ReDim mvarColDetails(24, 0)
-		ReDim mvarChildTables(5, 0)
-
-		' Flags
-
-		mblnReportHasSummaryInfo = False
-		mblnReportHasPageBreak = False
-
-		' Column Privilege arrays / collections / variables
-
-		mstrBaseTableRealSource = vbNullString
-		mstrRealSource = vbNullString
-		'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjTableView = Nothing
-		'UPGRADE_NOTE: Object mobjColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjColumnPrivileges = Nothing
-		ReDim mlngTableViews(2, 0)
-		ReDim mstrViews(0)
-		ReDim mvarPageBreak(0)
-		ReDim mvarVisibleColumns(3, 0)
-
-		ClearUp = True
-		Exit Function
-
-ClearUp_ERROR:
-
-		mstrErrorString = "Error clearing data." & vbNewLine & "(" & Err.Description & ")"
-		ClearUp = False
+		End Try
 
 	End Function
+
 
 	Private Function IsRecordSelectionValid() As Boolean
 		Dim sSQL As String
