@@ -113,23 +113,7 @@
 						</tr>
 						<%
 							' Force password change only if there are no other users logged in with the same name.
-							Dim cmdCheckUserSessions = CreateObject("ADODB.Command")
-							cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
-							cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
-							cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
-
-							Dim prmCount = cmdCheckUserSessions.CreateParameter("count", 3, 2) ' 3=integer, 2=output
-							cmdCheckUserSessions.Parameters.Append(prmCount)
-
-							Dim prmUserName = cmdCheckUserSessions.CreateParameter("userName", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-							cmdCheckUserSessions.Parameters.Append(prmUserName)
-							prmUserName.value = Session("Username")
-
-							Err.Clear()
-							cmdCheckUserSessions.Execute()
-			
-							Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
-							cmdCheckUserSessions = Nothing
+							Dim iUserSessionCount As Integer = ASRFunctions.GetCurrentUsersCountOnServer(Session("Username"))
 							
 							Response.Write("<INPUT type='hidden' id=txtUserSessionCount name=txtUserSessionCount value=" & iUserSessionCount & ">")
 			
