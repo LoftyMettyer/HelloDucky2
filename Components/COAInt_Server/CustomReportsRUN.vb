@@ -54,7 +54,7 @@ Public Class Report
 
 	' Recordsets to store the definition and column information
 	Private mrstCustomReportsDetails As DataTable
-
+	
 	' TableViewsGuff
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
@@ -72,8 +72,9 @@ Public Class Report
 	Private mstrSQL As String
 
 	' Collection to hold column definitions in the report
-	Public ColumnDetails As ICollection(Of ReportDetailItem)
-	Private colSortOrder As ICollection(Of ReportSortItem)
+	Private ColumnDetails As List(Of ReportDetailItem)
+	Private colSortOrder As List(Of ReportSortItem)
+	Public DisplayColumns As List(Of ReportDetailItem)
 
 	Dim mstrExcelFormats() As String
 	Dim mvarVisibleColumns(,) As Object
@@ -148,13 +149,17 @@ Public Class Report
 
 	Public datCustomReportOutput As DataTable
 
+
 	Private Sub datCustomReportOutput_Start()
 		datCustomReportOutput = New DataTable()
+		DisplayColumns = New List(Of ReportDetailItem)
+
 		datCustomReportOutput.Columns.Add("rowType", GetType(RowType))
 		datCustomReportOutput.Columns.Add("Summary Info", GetType(String))
 
 		For Each objItem In ColumnDetails
 			datCustomReportOutput.Columns.Add(objItem.IDColumnName, GetType(String))
+			DisplayColumns.Add(objItem)
 		Next
 
 	End Sub
@@ -529,7 +534,7 @@ ErrorTrap:
 
 		' By default this is not a Bradford Index Report
 		mbIsBradfordIndexReport = False
-		ColumnDetails = New Collection(Of ReportDetailItem)()
+		ColumnDetails = New List(Of ReportDetailItem)()
 
 	End Sub
 	Public Sub New()
@@ -964,7 +969,7 @@ GetCustomReportDefinition_ERROR:
 		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
 		prstCustomReportsSortOrder = DB.GetDataTable(strTempSQL)
 
-		colSortOrder = New Collection(Of ReportSortItem)
+		colSortOrder = New List(Of ReportSortItem)
 
 		With prstCustomReportsSortOrder
 			If .Rows.Count = 0 Then
@@ -3820,7 +3825,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 	Public Function PopulateGrid_HideColumns() As Boolean
 
 		' Purpose : This function hides any columns we don't want the user to see.
-		Dim iCount As Short
 		Dim pblnOK As Boolean
 		Dim intColCounter As Short
 		Dim intVisColCount As Short
@@ -3830,8 +3834,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 		intVisColCount = 0
 		intColCounter = 0
-		'		mintVisibleColumnCount = 0
-		'Hide the pagebreak column regardless
 
 		'If report contains no summary info, hide the column
 		intColCounter = intColCounter + 1
@@ -4171,24 +4173,6 @@ Check_ERROR:
 
 	End Function
 
-	Private Function AddToArray_Columns(ByRef pstrRowToAdd As String) As Boolean
-
-		On Error GoTo AddError
-
-		ReDim Preserve mvarOutputArray_Columns(UBound(mvarOutputArray_Columns) + 1)
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarOutputArray_Columns(UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarOutputArray_Columns(UBound(mvarOutputArray_Columns)) = pstrRowToAdd
-
-		AddToArray_Columns = True
-		Exit Function
-
-AddError:
-
-		AddToArray_Columns = False
-		mstrErrorString = "Error adding to columns array:" & vbNewLine & Err.Description
-
-	End Function
-
 	Public ReadOnly Property ReportCaption() As String
 		Get
 
@@ -4214,51 +4198,6 @@ AddError:
 			End Try
 		End Get
 	End Property
-
-	'	Public Function OutputGridColumns() As Boolean
-
-	'		On Error GoTo ErrTrap
-
-	'		Dim iLoop As Short
-	'		Dim pblnOK As Boolean
-	'		Dim intColCounter As Short
-
-	'		pblnOK = True
-
-	'		'Pagebreak
-	'		intColCounter = 0
-
-	'		AddToArray_Columns("<th class='hiddentablecolumn'>PageBreak</th>")
-
-	'		'Summary Info
-	'		intColCounter = intColCounter + 1
-	'		AddToArray_Columns("<th class='summarytablecolumn'>Summary Info</th>")
-
-	'		' Now loop through the recordset fields, adding the data columns
-	'		For iLoop = 0 To (mrstCustomReportsOutput.Fields.Count - 1)
-
-	'			intColCounter = intColCounter + 1
-
-	'			If Not mvarColDetails(24, iLoop + 1) Then
-	'				If (mrstCustomReportsOutput.Fields(iLoop).Name.Substring(0, 1) = "?" Or (mbIsBradfordIndexReport And iLoop > 12)) Then
-	'					pblnOK = AddToArray_Columns("<th class='hiddentablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-	'				Else
-	'					pblnOK = AddToArray_Columns("<th class='tablecolumn'>" & Replace(Replace(mrstCustomReportsOutput.Fields(iLoop).Name, "_", " "), """", "&quot;") & "</th>")
-	'				End If
-	'			End If
-
-	'		Next iLoop
-
-	'		OutputGridColumns = True
-
-	'		Exit Function
-
-	'ErrTrap:
-
-	'		OutputGridColumns = False
-	'		mstrErrorString = "Error with OutputGridColumns: " & vbNewLine & Err.Description
-
-	'	End Function
 
 	Private Function NEW_AddToArray_Data(ByVal RowType As RowType, data As IEnumerable) As Boolean
 
@@ -4287,9 +4226,7 @@ AddError:
 
 	End Function
 
-	Private Function AddToArray_Data(ByRef pstrRowToAdd As String, rowType As RowType) As Boolean
-
-		On Error GoTo AddError
+	Private Sub AddToArray_Data(pstrRowToAdd As String, rowType As RowType)
 
 		Dim sClassName As String = "rowdata"
 
@@ -4313,14 +4250,7 @@ AddError:
 
 		End If
 
-		Return True
-
-AddError:
-
-		mstrErrorString = "Error adding to data array additem:" & vbNewLine & Err.Description
-		Return False
-
-	End Function
+	End Sub
 
 	Public Function GenerateSQLBradford(ByRef pstrIncludeTypes As String) As Boolean
 
@@ -4615,7 +4545,7 @@ GetBradfordReportDefinition_ERROR:
 		Dim objExpr As clsExprExpression
 		Dim objReportItem As ReportDetailItem
 
-		ColumnDetails = New Collection(Of ReportDetailItem)
+		ColumnDetails = New List(Of ReportDetailItem)
 		For iCount = 1 To UBound(aStrRequiredFields, 1)
 
 			If CDbl(aStrRequiredFields(iCount, 1)) <> -1 Then
@@ -4723,7 +4653,7 @@ GetBradfordReportDefinition_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.TableID = lngTableID
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				objReportItem.TableName = GetTableName(CInt(lngTableID))
+				objReportItem.TableName = GetTableName(lngTableID)
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.Type = "C" Then
@@ -4752,7 +4682,7 @@ GetBradfordReportDefinition_ERROR:
 					objExpr = NewExpression()
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objExpr.ExpressionID = CInt(objReportItem.ColExprID)
+					objExpr.ExpressionID = objReportItem.ColExprID
 					objExpr.ConstructExpression()
 
 					Select Case objExpr.ReturnType
@@ -4802,7 +4732,7 @@ GetBradfordReportDefinition_ERROR:
 
 		' Get those columns defined as a SortOrder and load into array
 		Dim objSortItem As ReportSortItem
-		colSortOrder = New Collection(Of ReportSortItem)()
+		colSortOrder = New List(Of ReportSortItem)()
 
 		'Employee surname
 		objSortItem = New ReportSortItem
@@ -4831,8 +4761,8 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Public Function SetBradfordDisplayOptions(ByVal pbSRV As Boolean, ByRef pbShowTotals As Boolean, ByVal pbShowCount As Boolean, ByVal pbShowWorkings As Boolean _
-																						, ByVal pbShowBasePicklistFilter As Boolean, ByVal pbDisplayBradfordDetail As Boolean) As Boolean
+	Public Function SetBradfordDisplayOptions(pbSRV As Boolean, pbShowTotals As Boolean, pbShowCount As Boolean, pbShowWorkings As Boolean _
+																						, pbShowBasePicklistFilter As Boolean, pbDisplayBradfordDetail As Boolean) As Boolean
 
 		' Set Report Display Options
 		mbBradfordSRV = pbSRV

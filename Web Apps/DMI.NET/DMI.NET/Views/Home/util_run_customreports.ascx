@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -499,11 +500,20 @@
 			
 			Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
 
-				Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
-				Dim objThisColumn As HR.Intranet.Server.Structures.ReportDetailItem
+				Dim objReport As Report = CType(Session("CustomReport"), Report)
+				Dim objThisColumn As ReportDetailItem
+				Dim bGroupWithNext As Boolean
 				
 				If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 					e.Row.CssClass = "header"
+					
+					For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+						objThisColumn = objReport.DisplayColumns(iCount - 2)
+
+						e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
+						bGroupWithNext = objThisColumn.GroupWithNextColumn						
+
+					Next
 					
 				Else
 
@@ -520,20 +530,21 @@
 				e.Row.Cells(0).Visible = False
 				
 				If Not objReport.HasSummaryColumns Then
-					e.Row.Cells(1).Visible = False					
+					e.Row.Cells(1).Visible = False
 				End If
 
-				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 2
 						
-					objThisColumn = objReport.ColumnDetails(iCount - 2)
+					objThisColumn = objReport.DisplayColumns(iCount - 1)
 					
-					If objThisColumn.IsNumeric Then					
+					If objThisColumn.IsNumeric Then
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
 					Else
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
 					End If
 
-					e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
+					
+					'		e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
 									
 				Next
 				
