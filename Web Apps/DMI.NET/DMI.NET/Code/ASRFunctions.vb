@@ -1,4 +1,7 @@
-﻿Imports HR.Intranet.Server
+﻿Option Strict On
+Option Explicit On
+
+Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 
 Public Module ASRFunctions
