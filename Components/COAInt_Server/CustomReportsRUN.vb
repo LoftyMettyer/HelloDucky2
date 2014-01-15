@@ -2011,7 +2011,7 @@ GenerateSQLJoin_ERROR:
 
 							iTempCounter = iNextIndex
 
-							psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(("TableID"))) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+							psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objRow("TableID"))) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
 						End If
 
 						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & objRow("ColumnName").ToString() & IIf(objRow("Ascending"), "", " DESC")
