@@ -1030,63 +1030,41 @@ LocalErr:
 				Exit Sub
 			End If
 
-			'blnOffice2007 = (OfficeVersion >= 12)
-			' TODO: mxlFirstSheet.Activate()
 			_mxlWorkBook.Worksheets.ActiveSheetIndex = 0
 
 			'SAVE
-			If _mblnSave Then
-				_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
+			'If _mblnSave Then
+			' Always Save - we need the temporary file. 
+			_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
 
-				'strFormat = GetOfficeSaveAsFormat(_mstrFileName, OfficeVersion, OfficeApp.oaExcel)
-				'If strFormat = "" Then
-				'	_mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
-				'	GoTo TidyAndExit
-				'End If
+			' calculate the appropriate output type
+			aryFileBits = Split(_mstrFileName, ".")
+			strExtension = aryFileBits(UBound(aryFileBits))
 
-				' calculate the appropriate output type
-				aryFileBits = Split(_mstrFileName, ".")
-				strExtension = aryFileBits(UBound(aryFileBits))
-
-				Select Case UCase(strExtension)
-					Case "XLSX"
-						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
-					Case "XLS"
-						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
-					Case "HTML"
-						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
-					Case "PDF"
-						_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
-					Case "CSV"
-						_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
-				End Select
-
-			End If
+			Select Case UCase(strExtension)
+				Case "XLSX"
+					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
+				Case "XLS"
+					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
+				Case "HTML"
+					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
+				Case "PDF"
+					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
+				Case "CSV"
+					_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
+			End Select
+			'End If
 
 			'EMAIL
 			If _mblnEmail Then
 				_mstrErrorMessage = "Error sending email"
-
-				'strFormat = GetOfficeSaveAsFormat((_mobjParent.EmailAttachAs), OfficeVersion, OfficeApp.oaExcel)
-				'If strFormat = "" Then
-				'	_mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
-				'	GoTo TidyAndExit
-				'End If
-
-				strTempFile = _mobjParent.GetTempFileName((_mobjParent.EmailAttachAs))
-				' mxlWorkBook.SaveAs(strTempFile, Val(strFormat))
-				_mxlWorkBook.Save(strTempFile)
-				' mxlWorkBook.Close(False)
-				_mobjParent.SendEmail(strTempFile)
-				_mxlWorkBook = New Workbook(strTempFile)
+				_mobjParent.SendEmail(_mstrFileName)
 			End If
 
 			'PRINTER
 			Dim strCurrentPrinter As String
 			If _mblnPrinter Then
-				'TM23122003 FAULT - DEFAULT PRINTER
 				_mstrErrorMessage = "Error printing"
-				'mobjParent.SetPrinter
 
 				If _mblnChart Then
 					' TODO: Charts

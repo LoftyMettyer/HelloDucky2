@@ -2774,7 +2774,7 @@ Namespace Controllers
 
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
-			Session("CT_Mode") = Request("txtMode")
+			'Session("CT_Mode") = Request("txtMode")
 			Session("OutputOptions_Format") = Request("txtFormat")
 			Session("OutputOptions_Screen") = False	' Request("txtScreen")
 			Session("OutputOptions_Printer") = Request("txtPrinter")
@@ -2791,13 +2791,18 @@ Namespace Controllers
 
 			Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
 			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim objUser As New HR.Intranet.Server.clsSettings
+			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim fOK As Boolean
 			Dim bBradfordFactor As Boolean
 			Dim strDesiredFileName As String
 
 			strDesiredFileName = Request("txtFilename")	' Path.GetFileName(objReport.OutputFilename)
+			If strDesiredFileName = "" Then strDesiredFileName = "ReportOutput.xlsx"
 			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace(".tmp", Path.GetExtension(strDesiredFileName))
 
 			ClientDLL.ResetColumns()
@@ -2862,7 +2867,8 @@ Namespace Controllers
 			Dim arrayColumnsDefinition() As String
 			Dim arrayPageBreakValues
 			Dim arrayVisibleColumns
-
+			Dim sEmailAddresses As String = ""
+			Dim sErrorDescription As String = ""
 
 			'Set Options
 			'	If Not objReport.OutputPreview Then
@@ -2879,61 +2885,57 @@ Namespace Controllers
 			strEmailAttachAs = objReport.OutputEmailAttachAs
 			strFileName = objReport.OutputFilename
 
-			'If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
+			If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
 
-			'	cmdEmailAddr = New Command()
-			'	cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-			'	cmdEmailAddr.CommandType = CommandTypeEnum.adCmdStoredProc
-			'	cmdEmailAddr.ActiveConnection = Session("databaseConnection")
+				Try
+					Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+	, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(lngEmailGroupID)})
 
-			'	prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			'	cmdEmailAddr.Parameters.Append(prmEmailGroupID)
-			'	prmEmailGroupID.Value = CleanNumeric(lngEmailGroupID)
+					If Not rstEmailAddr Is Nothing Then
+						For Each objRow In rstEmailAddr.Rows
+							sEmailAddresses = sEmailAddresses & objRow(0) & ";"
+						Next
+					End If
 
-			'	Err.Clear()
-			'	rstEmailAddr = cmdEmailAddr.Execute
+					'If Len(sErrorDescription) = 0 Then
+					'	iLoop = 1
+					'	Do While Not rstEmailAddr.EOF
+					'		If iLoop > 1 Then
+					'			sEmailAddresses = sEmailAddresses & ";"
+					'		End If
+					'		sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
+					'		rstEmailAddr.MoveNext()
+					'		iLoop = iLoop + 1
+					'	Loop
 
-			'	If (Err.Number <> 0) Then
-			'		sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-			'	End If
+					'	' Release the ADO recordset object.
+					'	rstEmailAddr.Close()
+					'End If
+				Catch ex As Exception
+					sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
+				End Try
 
-			'	'If Len(sErrorDescription) = 0 Then
-			'	'	iLoop = 1
-			'	'	Do While Not rstEmailAddr.EOF
-			'	'		If iLoop > 1 Then
-			'	'			sEmailAddresses = sEmailAddresses & ";"
-			'	'		End If
-			'	'		sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-			'	'		rstEmailAddr.MoveNext()
-			'	'		iLoop = iLoop + 1
-			'	'	Loop
 
-			'	'	' Release the ADO recordset object.
-			'	'	rstEmailAddr.Close()
-			'	'End If
+				'rstEmailAddr = Nothing
+				'cmdEmailAddr = Nothing
+				'End If
 
-			'	rstEmailAddr = Nothing
-			'	cmdEmailAddr = Nothing
-			'End If
+				fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
+					, strEmailSubject, strEmailAttachAs, strFileName)
 
-			'	fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
-			'		, strEmailSubject, strEmailAttachAs, strFileName)
+			Else
 
-			'Else
+				'fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
+				'	, Session("OutputOptions_PrinterName"), Session("OutputOptions_Save"), Session("OutputOptions_SaveExisting") _
+				'	, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
+				'	, Session("OutputOptions_EmailAttachAs"), Session("OutputOptions_Filename"))
 
-			'fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
-			'	, Session("OutputOptions_PrinterName"), Session("OutputOptions_Save"), Session("OutputOptions_SaveExisting") _
-			'	, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
-			'	, Session("OutputOptions_EmailAttachAs"), Session("OutputOptions_Filename"))
-
-			fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
+				fOK = ClientDLL.SetOptions(False, lngFormat, Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
 				, Session("OutputOptions_PrinterName"), True, Session("OutputOptions_SaveExisting") _
 				, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
 				, Session("OutputOptions_EmailAttachAs"), objReport.OutputFilename)
 
-
-
-			'	End If
+			End If
 
 			arrayColumnsDefinition = objReport.OutputArray_Columns
 			arrayPageBreakValues = objReport.OutputArray_PageBreakValues

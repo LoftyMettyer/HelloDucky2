@@ -1,10 +1,16 @@
 ﻿Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.ExClientCode
 Imports HR.Intranet.Server.Enums
+Imports System.Data.SqlClient
+Imports System.Net.Mail
+Imports System.Net.Mime
+Imports System.IO
 
 Public Class clsOutputRun
+	Inherits basefordmi
 
 
 	Private mobjOutputType As Object
@@ -671,80 +677,72 @@ LocalErr:
 	End Function
 
 
-	Public Function SendEmail(ByRef strAttachment As String) As Boolean
+	Public Function SendEmail(strAttachment As String) As Boolean
 
-		Dim objOutputEmail As clsGeneral
-		'Dim strAddress() As String
-		'Dim lngCount As Long
-
-		On Error GoTo LocalErr
-
-		If gblnEmailSystemPermission = False Then
+		If Not Permissions.GetByKey("EMAILGROUPS_VIEW") Then
 			mstrErrorMessage = "You do not have permission to use email groups."
 			SendEmail = False
 			Exit Function
 		End If
 
+		If Trim(Replace(mstrEmailAddresses, ";", "")) = vbNullString Then
+			mstrErrorMessage = "Error sending email (invalid email address)"
+			SendEmail = False
+			Exit Function
+		End If
 
-		'  Screen.MousePointer = vbHourglass
-		'
-		'  If Trim(Replace(mstrEmailAddresses, ";", "")) = vbNullString Then
-		'    mstrErrorMessage = "Error sending email (invalid email address)"
-		'    SendEmail = False
-		'    Exit Function
-		'  End If
-		'
-		'  frmEmailSel.MAPISignon
-		'  If frmEmailSel.MAPISession1.SessionID <> 0 Then
-		'    With frmEmailSel.MAPIMessages1
-		'      .Compose
-		'
-		'      strAddress = Split(mstrEmailAddresses, ";")
-		'
-		'      For lngCount = 0 To UBound(strAddress)
-		'        If Trim(strAddress(lngCount)) <> vbNullString Then
-		'          .RecipIndex = .RecipCount
-		'          .RecipAddress = Trim(strAddress(lngCount))
-		'          .RecipType = mapToList
-		'          .ResolveName
-		'        End If
-		'      Next
-		'
-		'
-		'      .MsgSubject = mstrEmailSubject
-		'      .MsgNoteText = " "
-		'      If strAttachment <> "" Then
-		'        .AttachmentPosition = 0
-		'        .AttachmentType = 0
-		'        .AttachmentPathName = strAttachment
-		'        .AttachmentName = mstrEmailAttachAs
-		'      End If
-		'      .Send False
-		'    End With
-		'  End If
-		'  'frmEmailSel.MAPIsignoff
-
-		objOutputEmail = New clsGeneral
-
-		'TODO email stuff
-	'	mstrErrorMessage = objOutputEmail.SendEmailFromClientUsingMAPI(mstrEmailAddresses, "", "", mstrEmailSubject, "", strAttachment, False)
-		'UPGRADE_NOTE: Object objOutputEmail may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objOutputEmail = Nothing
-
-		'Set frmEmailSel = Nothing
+		SendMailWithAttachment(strAttachment, mstrEmailAddresses, mstrEmailAttachAs)
+		
 		SendEmail = True
 
 		Exit Function
 
-LocalErr:
-		mstrErrorMessage = "Error sending email" & IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
-		'On Error Resume Next
-		'frmEmailSel.MAPIsignoff
-		'Set frmEmailSel = Nothing
-		SendEmail = False
-
 	End Function
 
+	'' The following example sends a binary file as an e-mail attachment.
+	Public Shared Sub SendMailWithAttachment(ByVal strAttachment As String, ByRef recipientList As String, mstrEmailAttachAs As String)
+
+		Dim message As New MailMessage()
+		message.Subject = "OpenHR Report"
+
+		If recipientList.Contains(";") = True Then
+			Dim aRecipientList = Split(recipientList, ";")
+
+			For iLoop = 0 To UBound(aRecipientList) - 1
+				message.To.Add(aRecipientList(iLoop))
+			Next
+		Else
+			message.To.Add(recipientList)
+		End If
+
+		Dim fileName As String = strAttachment
+		' Get the file stream for the error log.
+		' Requires the System.IO namespace.
+		Dim fs As New FileStream(fileName, FileMode.Open, FileAccess.Read)
+		message.Body = "Your report is attached."
+		' Make a contentType indicating that the file is octet
+		Dim ct As New ContentType(MediaTypeNames.Application.Octet)
+		' Attach the file stream to the e-mail message.
+		Dim data As New Attachment(fs, ct)
+		Dim disposition As ContentDisposition = data.ContentDisposition
+		' Suggest a file name for the attachment.
+		disposition.FileName = mstrEmailAttachAs
+		' Add the attachment to the message.
+		message.Attachments.Add(data)
+		' Send the message.
+		' The smtpClient settings come from web.config
+		Dim client As New SmtpClient()
+
+		Try
+			client.Send(message)
+		Catch ex As Exception
+			' Console.WriteLine("Exception caught in SendErrorLog: {0}", ex.ToString())
+		End Try
+		data.Dispose()
+		' Close the log file.
+		fs.Close()
+
+	End Sub
 
 	Public Function GetTempFileName(ByRef strFilename As String) As String
 
@@ -873,7 +871,7 @@ LocalErr:
 		mblnPrintData = (mlngFormat = OutputFormats.fmtDataOnly And blnPrinter)
 
 		If strPrinterName = "<Default Printer>" Then
-			mstrPrinterName = printer.PrinterName
+			mstrPrinterName = Printer.PrinterName
 		Else
 			mstrPrinterName = strPrinterName
 		End If
@@ -997,7 +995,7 @@ LocalErr:
 
 	Public Function ArrayDim(ByRef lngCol As Integer, ByRef lngRow As Integer) As Boolean
 		ReDim mstrArray(lngCol, lngRow)
-'				ReDim mstrArray(50, 12)
+		'				ReDim mstrArray(50, 12)
 	End Function
 
 	Public Function ArrayReDim() As Boolean
