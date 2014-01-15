@@ -318,8 +318,7 @@
 							fFirstValueDone = False
 							sFirstValue = ""
 
-							rstLookupValues = objDatabaseAccess.GetDataTable("sp_ASRIntGetLookupValues", CommandType.StoredProcedure, _
-											New SqlParameter("piColumnID", SqlDbType.Int) With {.Value = CInt(objRow("fieldColumnID"))})
+							rstLookupValues = GetLookupValues(CInt(objRow("fieldColumnID")))
 							
 							For Each objLookupRow As DataRow In rstLookupValues.Rows
 								

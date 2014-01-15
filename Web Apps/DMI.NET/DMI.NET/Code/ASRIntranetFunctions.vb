@@ -225,4 +225,12 @@ Public Module ASRIntranetFunctions
 
 		Return ThousandColumns
 	End Function
+
+	Public Function GetLookupValues(ColumnID As Integer) As DataTable
+		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+		Dim piColumnID As New SqlParameter("@piColumnID", SqlDbType.Int) With {.Value = ColumnID}
+
+		Return objDataAccess.GetDataTable("sp_ASRIntGetLookupValues", CommandType.StoredProcedure, piColumnID)
+	End Function
 End Module

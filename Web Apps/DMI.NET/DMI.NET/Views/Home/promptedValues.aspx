@@ -1,6 +1,9 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <!DOCTYPE html>
 
@@ -486,25 +489,21 @@
 	<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="promptedValues_submit">
 
 		<%		
+			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 			Dim iPromptCount As Long
 			Dim fDefaultFound As Boolean
 			Dim fFirstValueDone As Boolean
 			Dim sFirstValue As String
 			Dim sDefaultValue As String
 			
-			Dim cmdDefn = CreateObject("ADODB.Command")
-			cmdDefn.CommandText = "sp_ASRIntGetFilterPromptedValuesRecordset"
-			cmdDefn.CommandType = 4	' Stored Procedure
-			cmdDefn.ActiveConnection = Session("databaseConnection")
-
-			Dim prmFilterID = cmdDefn.CreateParameter("filterID", 3, 1)	' 3=integer, 1=input
-			cmdDefn.Parameters.Append(prmFilterID)
-			prmFilterID.value = CleanNumeric(Session("filterID"))
-
-			Err.Clear()
-			Dim rstPromptedValue = cmdDefn.Execute
-
-			If Not (rstPromptedValue.EOF And rstPromptedValue.BOF) Then
+			Dim rstPromptedValue As DataTable = objDataAccess.GetDataTable( _
+							"sp_ASRIntGetFilterPromptedValuesRecordset", _
+							CommandType.StoredProcedure, _
+							New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = CleanNumeric(Session("filterID"))} _
+			)
+			
+			If rstPromptedValue.Rows.Count > 0 Then
 		%>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
@@ -516,17 +515,17 @@
 							</td>
 						</tr>
 						<%
-							Do While Not rstPromptedValue.EOF
+							For Each rowPromptedValues As DataRow In rstPromptedValue.Rows
 								iPromptCount = iPromptCount + 1
 						%>
 						<tr height="10">
 							<td width="20" height="10"></td>
 							<td nowrap height="10">
 								<%
-									If NullSafeString(rstPromptedValue.fields("ValueType").value) = "3" Then
+									If NullSafeString(rowPromptedValues("ValueType")) = "3" Then
 								%>
 								<label
-									for="prompt_3_<%=rstPromptedValue.fields("componentID").value%>"
+									for="prompt_3_<%=rowPromptedValues("componentID").ToString%>"
 									class="checkbox"
 									tabindex="0"
 									onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
@@ -538,9 +537,9 @@
 									End If
 									%>
 
-									<%=rstPromptedValue.fields("PromptDescription").value%>
+									<%=rowPromptedValues("PromptDescription").ToString%>
 									<%
-										If NullSafeString(rstPromptedValue.fields("ValueType").value) = "3" Then
+										If NullSafeString(rowPromptedValues("ValueType").ToString) = "3" Then
 									%>
 								</label>
 								<%
@@ -551,69 +550,69 @@
 							<td width="200" height="10">
 								<%
 									' Character Prompted Value
-									If NullSafeString(rstPromptedValue.fields("ValueType").value) = "1" Then
+									If NullSafeString(rowPromptedValues("ValueType").ToString) = "1" Then
 								%>
-								<input type="text" class="text" id='prompt_1_<%=rstPromptedValue.fields("componentID").value%>' name='prompt_1_<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=replace(rstpromptedvalue.fields("valuecharacter").value, """", "&quot;")%>" maxlength='<%=rstPromptedValue.fields("promptsize").value%>'
+								<input type="text" class="text" id='prompt_1_<%=rowPromptedValues("componentID").ToString%>' name='prompt_1_<%=rowPromptedValues("componentID").ToString%>'
+									value="<%=Replace(rowPromptedValues("valuecharacter").ToString, """", "&quot;")%>" maxlength='<%=rowPromptedValues("promptsize").ToString%>'
 									style="WIDTH: 100%">
-								<input type="hidden" id='promptMask_<%=rstPromptedValue.fields("componentID").value%>' name='promptMask_<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=Replace(rstPromptedValue.fields("promptMask").value, """", "&quot;")%>">
+								<input type="hidden" id='promptMask_<%=rowPromptedValues("componentID").ToString%>' name='promptMask_<%=rowPromptedValues("componentID").ToString%>'
+									value="<%=Replace(rowPromptedValues("promptMask").ToString, """", "&quot;")%>">
 								<%
 									' Numeric Prompted Value
-								ElseIf NullSafeString(rstPromptedValue.fields("ValueType").value) = "2" Then
+								ElseIf NullSafeString(rowPromptedValues("ValueType").ToString) = "2" Then
 								%>
-								<input type="text" class="text" id='prompt_2_<%=rstPromptedValue.fields("componentID").value%>' name='prompt_2_<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=Replace(rstPromptedValue.fields("valuenumeric").value, ".", Session("LocaleDecimalSeparator"))%>"
+								<input type="text" class="text" id='prompt_2_<%=rowPromptedValues("componentID").ToString%>' name='prompt_2_<%=rowPromptedValues("componentID").ToString%>'
+									value="<%=Replace(rowPromptedValues("valuenumeric").ToString, ".", Session("LocaleDecimalSeparator"))%>"
 									style="WIDTH: 100%">
-								<input type="hidden" id='promptSize_<%=rstPromptedValue.fields("componentID").value%>' name='promptSize<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=rstPromptedValue.fields("promptSize").value%>">
-								<input type="hidden" id='promptDecs_<%=rstPromptedValue.fields("componentID").value%>' name='promptDecs<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=rstPromptedValue.fields("promptDecimals").value%>">
+								<input type="hidden" id='promptSize_<%=rowPromptedValues("componentID").ToString%>' name='promptSize<%=rowPromptedValues("componentID").ToString%>'
+									value="<%=rowPromptedValues("promptSize").ToString%>">
+								<input type="hidden" id='promptDecs_<%=rowPromptedValues("componentID").ToString%>' name='promptDecs<%=rowPromptedValues("componentID").ToString%>'
+									value="<%=rowPromptedValues("promptDecimals").ToString%>">
 								<%
 									' Logic Prompted Value
-								ElseIf NullSafeString(rstPromptedValue.fields("ValueType").value) = "3" Then
+								ElseIf NullSafeString(rowPromptedValues("ValueType").ToString) = "3" Then
 								%>
-								<input type="checkbox" id='prompt_3_<%=rstPromptedValue.fields("componentID").value%>' name='prompt_3_<%=rstPromptedValue.fields("componentID").value%>'
-									<%If rstPromptedValue.fields("valuelogic").value Then%> checked <%End If%>
-									onclick="checkboxClick(<%=rstPromptedValue.fields("componentID").value%>)"
+								<input type="checkbox" id='prompt_3_<%=rowPromptedValues("componentID").ToString%>' name='prompt_3_<%=rowPromptedValues("componentID").ToString%>'
+									<%If rowPromptedValues("valuelogic").ToString Then%> checked <%End If%>
+									onclick="checkboxClick(<%=rowPromptedValues("componentID").ToString%>)"
 									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
 									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-								<input type="hidden" id='promptChk_<%=rstPromptedValue.fields("componentID").value%>' name='promptChk_<%=rstPromptedValue.fields("componentID").value%>'
-									value='<%=rstPromptedValue.fields("valuelogic").value%>'>
+								<input type="hidden" id='promptChk_<%=rowPromptedValues("componentID").ToString%>' name='promptChk_<%=rowPromptedValues("componentID").ToString%>'
+									value='<%=rowPromptedValues("valuelogic").ToString%>'>
 								<%			  
 									' Date Prompted Value
-								ElseIf NullSafeString(rstPromptedValue.fields("ValueType").value) = "4" Then
+								ElseIf NullSafeString(rowPromptedValues("ValueType").ToString) = "4" Then
 
-									Response.Write("        <input type=text class=""text"" id=prompt_4_" & rstPromptedValue.fields("componentID").value & " name=prompt_4_" & rstPromptedValue.fields("componentID").value & " value=""")
+									Response.Write("        <input type=text class=""text"" id=prompt_4_" & rowPromptedValues("componentID").ToString & " name=prompt_4_" & rowPromptedValues("componentID").ToString & " value=""")
 	
 									Dim iDay As Integer, iMonth As Integer, dtDate As DateTime
 	
-									Select Case rstPromptedValue.fields("promptDateType").value
+									Select Case rowPromptedValues("promptDateType")
 										Case 0
 											' Explicit value
-											Response.Write(ConvertSqlDateToLocale(rstPromptedValue.fields("valuedate").value))
+											Response.Write(ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString))
 										Case 1
 											' Current date
-											Response.Write(ConvertSqlDateToLocale(Now()))
+											Response.Write(ConvertSQLDateToLocale(Now()))
 										Case 2
 											' Start of current month
 											iDay = (Day(Now()) * -1) + 1
 											dtDate = DateAdd("d", iDay, Now())
-											Response.Write(ConvertSqlDateToLocale(dtDate))
+											Response.Write(ConvertSQLDateToLocale(dtDate))
 										Case 3
 											' End of current month
 											iDay = (Day(Now()) * -1) + 1
 											dtDate = DateAdd("d", iDay, Now())
 											dtDate = DateAdd("m", 1, dtDate)
 											dtDate = DateAdd("d", -1, dtDate)
-											Response.Write(ConvertSqlDateToLocale(dtDate))
+											Response.Write(ConvertSQLDateToLocale(dtDate))
 										Case 4
 											' Start of current year
 											iDay = (Day(Now()) * -1) + 1
 											iMonth = (Month(Now()) * -1) + 1
 											dtDate = DateAdd("d", iDay, Now())
 											dtDate = DateAdd("m", iMonth, dtDate)
-											Response.Write(ConvertSqlDateToLocale(dtDate))
+											Response.Write(ConvertSQLDateToLocale(dtDate))
 										Case 5
 											' End of current year
 											iDay = (Day(Now()) * -1) + 1
@@ -622,109 +621,90 @@
 											dtDate = DateAdd("m", iMonth, dtDate)
 											dtDate = DateAdd("yyyy", 1, dtDate)
 											dtDate = DateAdd("d", -1, dtDate)
-											Response.Write(ConvertSqlDateToLocale(dtDate))
+											Response.Write(ConvertSQLDateToLocale(dtDate))
 									End Select
 									Response.Write(""" style=""WIDTH: 100%"">" & vbCrLf)
 
 									' Lookup Prompted Value
-								ElseIf NullSafeString(rstPromptedValue.fields("ValueType").value) = "5" Then
-									Response.Write("        		<SELECT id=promptLookup_" & rstPromptedValue.fields("componentID").value & " name=promptLookup_" & rstPromptedValue.fields("componentID").value & " style=""WIDTH: 100%"" class=""combo"" onchange=""comboChange(" & rstPromptedValue.fields("componentID").value & ")"">" & vbCrLf)
+								ElseIf NullSafeString(rowPromptedValues("ValueType").ToString) = "5" Then
+									Response.Write("        		<SELECT id=promptLookup_" & rowPromptedValues("componentID").ToString & " name=promptLookup_" & rowPromptedValues("componentID").ToString & " style=""WIDTH: 100%"" class=""combo"" onchange=""comboChange(" & rowPromptedValues("componentID").ToString & ")"">" & vbCrLf)
 
 									fDefaultFound = False
 									fFirstValueDone = False
 									sFirstValue = ""
 					
-									' Get the lookup values.
-									Dim cmdLookupValues = CreateObject("ADODB.Command")
-									cmdLookupValues.CommandText = "sp_ASRIntGetLookupValues"
-									cmdLookupValues.CommandType = 4	' Stored Procedure
-									cmdLookupValues.ActiveConnection = Session("databaseConnection")
+									Dim rstLookupValues = ASRIntranetFunctions.GetLookupValues(CInt(CleanNumeric(rowPromptedValues("fieldColumnID").ToString)))
 
-									Dim prmColumnID = cmdLookupValues.CreateParameter("columnID", 3, 1)
-									cmdLookupValues.Parameters.Append(prmColumnID)
-									prmColumnID.value = CleanNumeric(rstPromptedValue.fields("fieldColumnID").value)
-
-									Err.Clear()
-									Dim rstLookupValues = cmdLookupValues.Execute
-
-									Do While Not rstLookupValues.EOF
+									For Each rowLookupValues As DataRow In rstLookupValues.Rows
 										Response.Write("        		  <OPTION")
 					
 										If Not fFirstValueDone Then
-											sFirstValue = rstLookupValues.Fields(0).Value
+											sFirstValue = rowLookupValues(0).ToString
 											fFirstValueDone = True
 										End If
 						
-										If rstLookupValues.fields(0).type = 135 Then
+										If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
 											' Field is a date so format as such.
-											Dim sOptionValue = ConvertSqlDateToLocale(rstLookupValues.Fields(0).Value)
-											If sOptionValue = ConvertSqlDateToLocale(rstPromptedValue.fields("valuecharacter").value) Then
+											Dim sOptionValue = ConvertSQLDateToLocale(rowLookupValues(0).ToString)
+											If sOptionValue = ConvertSQLDateToLocale(rowPromptedValues("valuecharacter").ToString) Then
 												Response.Write(" SELECTED")
 												fDefaultFound = True
 											End If
 											Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-										ElseIf rstLookupValues.fields(0).type = 131 Then
+										ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
 											' Field is a numeric so format as such.
-											Dim sOptionValue = Replace(rstLookupValues.Fields(0).Value, ".", Session("LocaleDecimalSeparator"))
-											If (Not IsDBNull(rstLookupValues.Fields(0).Value)) And (Not IsDBNull(rstPromptedValue.fields("valuecharacter").value)) Then
-												If FormatNumber(rstLookupValues.Fields(0).Value) = FormatNumber(rstPromptedValue.fields("valuecharacter").value) Then
+											Dim sOptionValue = Replace(rowLookupValues(0).ToString, ".", Session("LocaleDecimalSeparator"))
+											If (Not IsDBNull(rstLookupValues(0))) And (Not IsDBNull(rowPromptedValues("valuecharacter").ToString)) Then
+												If FormatNumber(rowLookupValues(0)) = FormatNumber(rowPromptedValues("valuecharacter").ToString) Then
 													Response.Write(" SELECTED")
 													fDefaultFound = True
 												End If
 											End If
 											Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-										ElseIf rstLookupValues.fields(0).type = 11 Then
+										ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
 											' Field is a logic so format as such.
-											Dim sOptionValue = rstLookupValues.Fields(0).Value
-											If sOptionValue = rstPromptedValue.fields("valuecharacter").value Then
+											Dim sOptionValue As String = rowLookupValues(0).ToString
+											If sOptionValue = rowPromptedValues("valuecharacter").ToString Then
 												Response.Write(" SELECTED")
 												fDefaultFound = True
 											End If
 											Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
 										Else
-											Dim sOptionValue = rstLookupValues.Fields(0).Value
-											If sOptionValue = rstPromptedValue.fields("valuecharacter").value Then
+											Dim sOptionValue As String = rowLookupValues(0).ToString
+											If sOptionValue = rowPromptedValues("valuecharacter").ToString Then
 												Response.Write(" SELECTED")
 												fDefaultFound = True
 											End If
 											Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
 										End If
-
-										rstLookupValues.MoveNext()
-									Loop
+									Next
 
 									Response.Write("   		     </SELECT>" & vbCrLf)
 
 									If fDefaultFound Then
-										sDefaultValue = rstPromptedValue.Fields("valuecharacter").value
+										sDefaultValue = rowPromptedValues("valuecharacter").ToString
 									Else
 										sDefaultValue = sFirstValue
 									End If
 					
-									If rstLookupValues.fields(0).type = 135 Then
+									If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
 										' Date.
-										Response.Write("        <input type=hidden id=prompt_4_" & rstPromptedValue.fields("componentID").value & " name=prompt_4_" & rstPromptedValue.fields("componentID").value & " value=" & ConvertSqlDateToLocale(sDefaultValue) & ">" & vbCrLf)
-									ElseIf rstLookupValues.fields(0).type = 131 Then
+										Response.Write("        <input type=hidden id=prompt_4_" & rowPromptedValues("componentID").ToString & " name=prompt_4_" & rowPromptedValues("componentID").ToString & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
+									ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
 										' Numeric
-										Response.Write("        <input type=hidden id=prompt_2_" & rstPromptedValue.fields("componentID").value & " name=prompt_2_" & rstPromptedValue.fields("componentID").value & " value=" & Replace(sDefaultValue, ".", Session("LocaleDecimalSeparator")) & ">" & vbCrLf)
-									ElseIf rstLookupValues.fields(0).type = 11 Then
+										Response.Write("        <input type=hidden id=prompt_2_" & rowPromptedValues("componentID").ToString & " name=prompt_2_" & rowPromptedValues("componentID").ToString & " value=" & Replace(sDefaultValue, ".", Session("LocaleDecimalSeparator")) & ">" & vbCrLf)
+									ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
 										' Logic
-										Response.Write("        <input type=hidden id=prompt_3_" & rstPromptedValue.fields("componentID").value & " name=prompt_3_" & rstPromptedValue.fields("componentID").value & " value=" & sDefaultValue & ">" & vbCrLf)
+										Response.Write("        <input type=hidden id=prompt_3_" & rowPromptedValues("componentID").value & " name=prompt_3_" & rowPromptedValues("componentID").value & " value=" & sDefaultValue & ">" & vbCrLf)
 									Else
-										Response.Write("        <input type=hidden id=prompt_1_" & rstPromptedValue.fields("componentID").value & " name=prompt_1_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
+										Response.Write("        <input type=hidden id=prompt_1_" & rowPromptedValues("componentID").value & " name=prompt_1_" & rowPromptedValues("componentID").value & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
 									End If
-
-									' Release the ADO recordset object.
-									rstLookupValues.close()
-									rstLookupValues = Nothing
 								End If
 				
 								Response.Write("					</td>" & vbCrLf)
 								Response.Write("					<td width=20 height=10></td>" & vbCrLf)
 								Response.Write("				</tr>" & vbCrLf)
-
-								rstPromptedValue.MoveNext()
-							Loop
+							Next 
 
 							Response.Write("				<tr>" & vbCrLf)
 							Response.Write("					<td colspan=5 height=10>&nbsp;</td>" & vbCrLf)
@@ -766,9 +746,6 @@
 									Response.Write("	</tr>" & vbCrLf)
 									Response.Write("</table>" & vbCrLf)
 								End If
-		
-								rstPromptedValue.close()
-								rstPromptedValue = Nothing
 
 								Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCount"" value=" & iPromptCount & ">" & vbCrLf)
 								%>
