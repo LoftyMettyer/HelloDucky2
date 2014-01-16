@@ -2783,15 +2783,9 @@ Namespace Controllers
 
 			Dim fOK As Boolean
 			Dim bBradfordFactor As Boolean
-			Dim strDesiredFileName As String
-
-			strDesiredFileName = Request("txtFilename")	' Path.GetFileName(objReport.OutputFilename)
-			If strDesiredFileName = "" Then strDesiredFileName = "ReportOutput.xlsx"
-			objReport.OutputFilename = My.Computer.FileSystem.GetTempFileName.Replace(".tmp", Path.GetExtension(strDesiredFileName))
 
 			ClientDLL.ResetColumns()
 			ClientDLL.ResetStyles()
-			ClientDLL.UserName = Session("Username").ToString()
 			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
 
 			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
@@ -2836,7 +2830,7 @@ Namespace Controllers
 				, False) 'emailnotimplementedyet
 
 
-			Dim lngFormat As Long
+			Dim lngFormat As OutputFormats
 			Dim blnScreen As Boolean
 			Dim blnPrinter As Boolean
 			Dim strPrinterName As String
@@ -2846,7 +2840,7 @@ Namespace Controllers
 			Dim lngEmailGroupID As Long
 			Dim strEmailSubject As String
 			Dim strEmailAttachAs As String
-			Dim strFileName As String
+			'	Dim strFileName As String
 
 			Dim arrayColumnsDefinition() As String
 			Dim arrayPageBreakValues
@@ -2854,26 +2848,44 @@ Namespace Controllers
 			Dim sEmailAddresses As String = ""
 			Dim sErrorDescription As String = ""
 
-			'Set Options
-			'	If Not objReport.OutputPreview Then
+			Dim strDownloadFileName As String
+			Dim strDownloadExtension As String
 
-			lngFormat = NullSafeInteger(Session("OutputOptions_Format"))		' objReport.OutputFormat
-			blnScreen = objReport.OutputScreen
-			blnPrinter = objReport.OutputPrinter
-			strPrinterName = objReport.OutputPrinterName
-			blnSave = objReport.OutputSave
-			lngSaveExisting = objReport.OutputSaveExisting
-			blnEmail = objReport.OutputEmail
-			lngEmailGroupID = CLng(objReport.OutputEmailID)
-			strEmailSubject = objReport.OutputEmailSubject
-			strEmailAttachAs = objReport.OutputEmailAttachAs
-			strFileName = objReport.OutputFilename
+			'Set Options
+			If objReport.OutputPreview Then
+				lngFormat = NullSafeInteger(Session("OutputOptions_Format"))
+				blnScreen = False
+				blnPrinter = False
+				strPrinterName = ""
+				blnSave = False
+				lngSaveExisting = False
+				blnEmail = Session("OutputOptions_Email")
+				lngEmailGroupID = CLng(Session("OutputOptions_EmailGroupID"))
+				strEmailSubject = Session("OutputOptions_EmailSubject")
+				strEmailAttachAs = Session("OutputOptions_EmailAttachAs")
+				strDownloadFileName = Request("txtFilename")
+
+			Else
+				lngFormat = objReport.OutputFormat
+				blnScreen = objReport.OutputScreen
+				blnPrinter = objReport.OutputPrinter
+				strPrinterName = objReport.OutputPrinterName
+				blnSave = objReport.OutputSave
+				lngSaveExisting = objReport.OutputSaveExisting
+				blnEmail = objReport.OutputEmail
+				lngEmailGroupID = CLng(objReport.OutputEmailID)
+				strEmailSubject = objReport.OutputEmailSubject
+				strEmailAttachAs = objReport.OutputEmailAttachAs
+				strDownloadFileName = objReport.DownloadFileName
+			End If
+
+			strDownloadExtension = Path.GetExtension(strDownloadFileName)
 
 			If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
 
 				Try
 					Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
-	, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(lngEmailGroupID)})
+								, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(lngEmailGroupID)})
 
 					If Not rstEmailAddr Is Nothing Then
 						For Each objRow In rstEmailAddr.Rows
@@ -2881,43 +2893,19 @@ Namespace Controllers
 						Next
 					End If
 
-					'If Len(sErrorDescription) = 0 Then
-					'	iLoop = 1
-					'	Do While Not rstEmailAddr.EOF
-					'		If iLoop > 1 Then
-					'			sEmailAddresses = sEmailAddresses & ";"
-					'		End If
-					'		sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-					'		rstEmailAddr.MoveNext()
-					'		iLoop = iLoop + 1
-					'	Loop
-
-					'	' Release the ADO recordset object.
-					'	rstEmailAddr.Close()
-					'End If
 				Catch ex As Exception
 					sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
 				End Try
 
-
-				'rstEmailAddr = Nothing
-				'cmdEmailAddr = Nothing
-				'End If
-
 				fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
-					, strEmailSubject, strEmailAttachAs, strFileName)
+					, strEmailSubject, strEmailAttachAs, strDownloadExtension)
 
 			Else
-
-				'fOK = ClientDLL.SetOptions(False, Session("OutputOptions_Format"), Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
-				'	, Session("OutputOptions_PrinterName"), Session("OutputOptions_Save"), Session("OutputOptions_SaveExisting") _
-				'	, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
-				'	, Session("OutputOptions_EmailAttachAs"), Session("OutputOptions_Filename"))
 
 				fOK = ClientDLL.SetOptions(False, lngFormat, Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
 				, Session("OutputOptions_PrinterName"), True, Session("OutputOptions_SaveExisting") _
 				, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
-				, Session("OutputOptions_EmailAttachAs"), objReport.OutputFilename)
+				, Session("OutputOptions_EmailAttachAs"), strDownloadExtension)
 
 			End If
 
@@ -3076,15 +3064,15 @@ Namespace Controllers
 			ClientDLL.Complete()
 
 			' Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
-			If IO.File.Exists(objReport.OutputFilename) Then
+			If IO.File.Exists(ClientDLL.GeneratedFile) Then
 				Try
 					Response.ClearContent()
-					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDesiredFileName)
-					Response.TransmitFile(objReport.OutputFilename)
+					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+					Response.TransmitFile(ClientDLL.GeneratedFile)
 					Response.Flush()
 				Catch ex As Exception
 				Finally
-					IO.File.Delete(objReport.OutputFilename)
+					IO.File.Delete(ClientDLL.GeneratedFile)
 				End Try
 			End If
 

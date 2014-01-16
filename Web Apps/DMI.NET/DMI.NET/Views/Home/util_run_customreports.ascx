@@ -114,217 +114,217 @@
 				Dim bPrintFilterPickList As Boolean
 
 	' Default output options
-				Dim bOutputPreview As Boolean
-				Dim lngOutputFormat As Long
-				Dim pblnOutputScreen As Boolean
-				Dim pblnOutputPrinter As Boolean
-				Dim pstrOutputPrinterName As String
-				Dim pblnOutputSave As Boolean
-				Dim plngOutputSaveExisting As Long
-				Dim pblnOutputEmail As Boolean
-				Dim plngOutputEmailID As Long
-				Dim pstrOutputEmailName As String
-				Dim pstrOutputEmailSubject As String
-				Dim pstrOutputEmailAttachAs As String
-				Dim pstrOutputFilename As String
+	             	 Dim bOutputPreview As Boolean
+	             	 Dim lngOutputFormat As Long
+	             	 Dim pblnOutputScreen As Boolean
+	             	 Dim pblnOutputPrinter As Boolean
+	             	 Dim pstrOutputPrinterName As String
+	             	 Dim pblnOutputSave As Boolean
+	             	 Dim plngOutputSaveExisting As Long
+	             	 Dim pblnOutputEmail As Boolean
+	             	 Dim plngOutputEmailID As Long
+	             	 Dim pstrOutputEmailName As String
+	             	 Dim pstrOutputEmailSubject As String
+	             	 Dim pstrOutputEmailAttachAs As String
+	             	 Dim pstrOutputFilename As String
 
-				Dim bMinBradford As Boolean
-				Dim lngMinBradfordAmount As Long
-				Dim pbDisplayBradfordDetail As Boolean
+	             	 Dim bMinBradford As Boolean
+	             	 Dim lngMinBradfordAmount As Long
+	             	 Dim pbDisplayBradfordDetail As Boolean
 				
-	fok = true
-	fNotCancelled = true
+	             	 fok = True
+	             	 fNotCancelled = True
 
-	' Create the reference to the DLL (Report Class)
-	objReport = New HR.Intranet.Server.Report
-	objReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	             	 ' Create the reference to the DLL (Report Class)
+	             	 objReport = New HR.Intranet.Server.Report
+	             	 objReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 				
-	' Pass required info to the DLL			
-	objReport.CustomReportID = session("utilid")
-	objReport.ClientDateFormat = session("LocaleDateFormat")
-	objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")
+	             	 ' Pass required info to the DLL			
+	             	 objReport.CustomReportID = session("utilid")
+	             	 objReport.ClientDateFormat = session("LocaleDateFormat")
+	             	 objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")
 
-	if fok and bBradfordFactor then
-						dtStartDate = convertLocaleDateToSQL(Session("stdReport_StartDate"))
-						dtEndDate = convertLocaleDateToSQL(Session("stdReport_EndDate"))
+	             	 If fok And bBradfordFactor Then
+	             		 dtStartDate = convertLocaleDateToSQL(Session("stdReport_StartDate"))
+	             		 dtEndDate = convertLocaleDateToSQL(Session("stdReport_EndDate"))
 						
-		strAbsenceTypes = session("stdReport_AbsenceTypes")
-		lngFilterID = session("stdReport_FilterID")
-		lngPicklistID = session("stdReport_PicklistID")
-		lngPersonnelID = session("optionRecordID")
+	             		 strAbsenceTypes = session("stdReport_AbsenceTypes")
+	             		 lngFilterID = session("stdReport_FilterID")
+	             		 lngPicklistID = session("stdReport_PicklistID")
+	             		 lngPersonnelID = session("optionRecordID")
 
-		bBradford_SRV = session("stdReport_Bradford_SRV")
-		bBradford_ShowDurations = session("stdReport_Bradford_ShowDurations")
-		bBradford_ShowInstances = session("stdReport_Bradford_ShowInstances")
-		bBradford_ShowFormula = session("stdReport_Bradford_ShowFormula")
-		bBradford_OmitBeforeStart = session("stdReport_Bradford_OmitBeforeStart")
-		bBradford_OmitAfterEnd = session("stdReport_Bradford_OmitAfterEnd")
-		bBradford_txtOrderBy1 = session("stdReport_Bradford_txtOrderBy1")
-		lngBradford_txtOrderBy1ID = Clng(session("stdReport_Bradford_txtOrderBy1ID"))
-		bBradford_txtOrderBy1Asc = session("stdReport_Bradford_txtOrderBy1Asc")
-		bBradford_txtOrderBy2 = session("stdReport_Bradford_txtOrderBy2")
-		lngBradford_txtOrderBy2ID = Clng(session("stdReport_Bradford_txtOrderBy2ID"))
-		bBradford_txtOrderBy2Asc = session("stdReport_Bradford_txtOrderBy2Asc")
-		bPrintFilterPickList = session("stdReport_PrintFilterPicklistHeader")
+	             		 bBradford_SRV = session("stdReport_Bradford_SRV")
+	             		 bBradford_ShowDurations = session("stdReport_Bradford_ShowDurations")
+	             		 bBradford_ShowInstances = session("stdReport_Bradford_ShowInstances")
+	             		 bBradford_ShowFormula = session("stdReport_Bradford_ShowFormula")
+	             		 bBradford_OmitBeforeStart = session("stdReport_Bradford_OmitBeforeStart")
+	             		 bBradford_OmitAfterEnd = session("stdReport_Bradford_OmitAfterEnd")
+	             		 bBradford_txtOrderBy1 = session("stdReport_Bradford_txtOrderBy1")
+	             		 lngBradford_txtOrderBy1ID = CLng(session("stdReport_Bradford_txtOrderBy1ID"))
+	             		 bBradford_txtOrderBy1Asc = session("stdReport_Bradford_txtOrderBy1Asc")
+	             		 bBradford_txtOrderBy2 = session("stdReport_Bradford_txtOrderBy2")
+	             		 lngBradford_txtOrderBy2ID = CLng(session("stdReport_Bradford_txtOrderBy2ID"))
+	             		 bBradford_txtOrderBy2Asc = session("stdReport_Bradford_txtOrderBy2Asc")
+	             		 bPrintFilterPickList = session("stdReport_PrintFilterPicklistHeader")
 
-		bMinBradford = session("stdReport_MinimumBradfordFactor")
-						lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
-		pbDisplayBradfordDetail	= session("stdReport_DisplayBradfordDetail")
+	             		 bMinBradford = session("stdReport_MinimumBradfordFactor")
+	             		 lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
+	             		 pbDisplayBradfordDetail = session("stdReport_DisplayBradfordDetail")
 
-		' Default output options
-		bOutputPreview = session("stdReport_OutputPreview")
-		lngOutputFormat = session("stdReport_OutputFormat")
-		pblnOutputScreen = session("stdReport_OutputScreen")
-		pblnOutputPrinter = session("stdReport_OutputPrinter")
-		pstrOutputPrinterName = session("stdReport_OutputPrinterName")
-		pblnOutputSave = session("stdReport_OutputSave")
-		plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
-		pblnOutputEmail = session("stdReport_OutputEmail")
-		plngOutputEmailID = session("stdReport_OutputEmailAddr")
-		pstrOutputEmailName = session("stdReport_OutputEmailName")
-		pstrOutputEmailSubject = session("stdReport_OutputEmailSubject")
-		pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
-		pstrOutputFilename = session("stdReport_OutputFilename")
-	end if
+	             		 ' Default output options
+	             		 bOutputPreview = session("stdReport_OutputPreview")
+	             		 lngOutputFormat = session("stdReport_OutputFormat")
+	             		 pblnOutputScreen = session("stdReport_OutputScreen")
+	             		 pblnOutputPrinter = session("stdReport_OutputPrinter")
+	             		 pstrOutputPrinterName = session("stdReport_OutputPrinterName")
+	             		 pblnOutputSave = session("stdReport_OutputSave")
+	             		 plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
+	             		 pblnOutputEmail = session("stdReport_OutputEmail")
+	             		 plngOutputEmailID = session("stdReport_OutputEmailAddr")
+	             		 pstrOutputEmailName = session("stdReport_OutputEmailName")
+	             		 pstrOutputEmailSubject = session("stdReport_OutputEmailSubject")
+	             		 pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
+	             		 pstrOutputFilename = session("stdReport_OutputFilename")
+	             	 End If
 
-	if fok and not bBradfordFactor then 
-		fok = objReport.GetCustomReportDefinition
-		session("utilname") = objReport.CustomReportsName
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And Not bBradfordFactor Then
+	             		 fok = objReport.GetCustomReportDefinition
+	             		 session("utilname") = objReport.CustomReportsName
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and not bBradfordFactor then 
-		fok = objReport.GetDetailsRecordsets
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And Not bBradfordFactor Then
+	             		 fok = objReport.GetDetailsRecordsets
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and bBradfordFactor then 
-		fok = objReport.SetBradfordDisplayOptions(bBradford_SRV, bBradford_ShowDurations, bBradford_ShowInstances, bBradford_ShowFormula, bPrintFilterPickList, pbDisplayBradfordDetail)
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objReport.SetBradfordDisplayOptions(bBradford_SRV, bBradford_ShowDurations, bBradford_ShowInstances, bBradford_ShowFormula, bPrintFilterPickList, pbDisplayBradfordDetail)
 
-		if lngPersonnelID = 0 then
-			fok = objReport.SetBradfordOrders(bBradford_txtOrderBy1, bBradford_txtOrderBy2, bBradford_txtOrderBy1Asc, bBradford_txtOrderBy2Asc, lngBradford_txtOrderBy1ID, lngBradford_txtOrderBy2ID)
-		else
-			fok = objReport.SetBradfordOrders("None", "None", false, false, 0, 0)		
-		end if 
+	             		 If lngPersonnelID = 0 Then
+	             			 fok = objReport.SetBradfordOrders(bBradford_txtOrderBy1, bBradford_txtOrderBy2, bBradford_txtOrderBy1Asc, bBradford_txtOrderBy2Asc, lngBradford_txtOrderBy1ID, lngBradford_txtOrderBy2ID)
+	             		 Else
+	             			 fok = objReport.SetBradfordOrders("None", "None", False, False, 0, 0)
+	             		 End If
 
-		fok = objReport.SetBradfordIncludeOptions(bBradford_OmitBeforeStart, bBradford_OmitAfterEnd, lngPersonnelID, lngFilterID, lngPicklistID, bMinBradford, lngMinBradfordAmount)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             		 fok = objReport.SetBradfordIncludeOptions(bBradford_OmitBeforeStart, bBradford_OmitAfterEnd, lngPersonnelID, lngFilterID, lngPicklistID, bMinBradford, lngMinBradfordAmount)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and bBradfordFactor then 
-		fok = objReport.GetBradfordReportDefinition(dtStartDate, dtEndDate)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objReport.GetBradfordReportDefinition(dtStartDate, dtEndDate)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and bBradfordFactor then 
-		fok = objReport.GetBradfordRecordSet
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objReport.GetBradfordRecordSet
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	Dim aPrompts
+	             	 Dim aPrompts
 				
-	aPrompts =  Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
-	if fok then 
-		fok = objReport.SetPromptedValues(aPrompts)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 aPrompts = Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
+	             	 If fok Then
+	             		 fok = objReport.SetPromptedValues(aPrompts)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.GenerateSQL 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.GenerateSQL
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and bBradfordFactor then 
-		fok = objReport.GenerateSQLBradford(strAbsenceTypes)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objReport.GenerateSQLBradford(strAbsenceTypes)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.AddTempTableToSQL 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.AddTempTableToSQL
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.MergeSQLStrings 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.MergeSQLStrings
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then
-		fok = objReport.UDFFunctions(true)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.UDFFunctions(True)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.ExecuteSql 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.ExecuteSql
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.UDFFunctions(false)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.UDFFunctions(False)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok and bBradfordFactor then 
-		fok = objreport.CalculateBradfordFactors()
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objreport.CalculateBradfordFactors()
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	If fok And objReport.ChildCount > 1 And objReport.UsedChildCount > 1 Then
-		fok = objReport.CreateMutipleChildTempTable
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+	             	 If fok And objReport.ChildCount > 1 And objReport.UsedChildCount > 1 Then
+	             		 fok = objReport.CreateMutipleChildTempTable
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	if fok then 
-		fok = objReport.CheckRecordSet 
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	             	 If fok Then
+	             		 fok = objReport.CheckRecordSet
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 		
 
-	' Need to pass in defined output options 
-	'	(standard report reads from definition, which of course we don't have in a standard report)
-	if fok and bBradfordFactor then
-		fok = objreport.SetBradfordDefaultOutputOptions(bOutputPreview, lngOutputFormat, pblnOutputScreen, pblnOutputPrinter, pstrOutputPrinterName, pblnOutputSave, plngOutputSaveExisting, pblnOutputEmail, plngOutputEmailID, pstrOutputEmailName, pstrOutputEmailSubject, pstrOutputEmailAttachAs, pstrOutputFilename)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if		
+	             	 ' Need to pass in defined output options 
+	             	 '	(standard report reads from definition, which of course we don't have in a standard report)
+	             	 If fok And bBradfordFactor Then
+	             		 fok = objreport.SetBradfordDefaultOutputOptions(bOutputPreview, lngOutputFormat, pblnOutputScreen, pblnOutputPrinter, pstrOutputPrinterName, pblnOutputSave, plngOutputSaveExisting, pblnOutputEmail, plngOutputEmailID, pstrOutputEmailName, pstrOutputEmailSubject, pstrOutputEmailAttachAs, pstrOutputFilename)
+	             		 fNotCancelled = Response.IsClientConnected
+	             		 If fok Then fok = fNotCancelled
+	             	 End If
 
-	If fok Then
+	             	 If fok Then
 
-		If fok Then
-			fok = objReport.PopulateGrid_LoadRecords
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	             		 If fok Then
+	             			 fok = objReport.PopulateGrid_LoadRecords
+	             			 fNotCancelled = Response.IsClientConnected
+	             			 If fok Then fok = fNotCancelled
+	             		 End If
 		
-		If fok Then
-			fok = objReport.PopulateGrid_HideColumns
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	             		 If fok Then
+	             			 fok = objReport.PopulateGrid_HideColumns
+	             			 fNotCancelled = Response.IsClientConnected
+	             			 If fok Then fok = fNotCancelled
+	             		 End If
 				
-	End If
+	             	 End If
 
-	Session("CustomReport") = objReport
+	             	 Session("CustomReport") = objReport
 	
-	gridReportData.DataSource = objReport.datCustomReportOutput
-	gridReportData.DataBind()
+	             	 gridReportData.DataSource = objReport.datCustomReportOutput
+	             	 gridReportData.DataBind()
 		
 		Dim fNoRecords As Boolean
 		

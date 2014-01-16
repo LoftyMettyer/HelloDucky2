@@ -112,6 +112,8 @@
   <ItemGroup>
     <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
+    <Compile Include="BaseClasses\BaseOutput.vb" />
+    <Compile Include="BaseClasses\BaseReport.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
     <Compile Include="clsBankHolidays.vb" />
@@ -176,7 +178,6 @@
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
     <Compile Include="Enums\WorkingPatternType.vb" />
-    <Compile Include="ExClientCode\clsColumn.vb" />
     <Compile Include="ExClientCode\clsOutputCSV.vb" />
     <Compile Include="ExClientCode\clsOutputExcel.vb" />
     <Compile Include="ExClientCode\clsOutputGrid.vb" />

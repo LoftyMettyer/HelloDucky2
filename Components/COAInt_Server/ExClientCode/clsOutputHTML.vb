@@ -1,9 +1,11 @@
 ﻿Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports VB = Microsoft.VisualBasic
 Friend Class clsOutputHTML
+	Inherits BaseOutputFormat
 
 	Private mobjParent As clsOutputRun
 
@@ -463,7 +465,6 @@ LocalErr:
 
 	Public Sub DataArray(ByRef strArray(,) As String, ByRef colColumns As Collection, ByRef colStyles As Collection, ByRef colMerges As Collection)
 
-		Dim objColumn As clsColumn
 		Dim strOutput As String
 		Dim lngGridCol As Integer
 		Dim lngGridRow As Integer
@@ -578,7 +579,6 @@ LocalErr:
 		Dim objStyle As clsOutputStyle
 		Dim objMerge As clsOutputStyle
 		Dim objTemp As clsOutputStyle
-		Dim objColumn As clsColumn
 		Dim strTemp As String
 
 		On Error GoTo LocalErr

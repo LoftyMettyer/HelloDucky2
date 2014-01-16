@@ -1,9 +1,14 @@
 ﻿Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.BaseClasses
+
 Friend Class clsOutputGrid
+	Inherits BaseOutputFormat
+
 
 	'''Private WithEvents mgrdPrintGrid As SSDBGrid
-'	Private mobjPrintGrid As clsPrintGrid
+	'	Private mobjPrintGrid As clsPrintGrid
 	Private mobjParent As clsOutputRun
 
 	Private mstrDefTitle As String

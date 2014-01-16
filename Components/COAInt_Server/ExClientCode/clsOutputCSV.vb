@@ -1,6 +1,10 @@
 ﻿Option Strict Off
 Option Explicit On
+
+Imports HR.Intranet.Server.BaseClasses
+
 Friend Class clsOutputCSV
+	Inherits BaseOutputFormat
 
 	Private mobjParent As clsOutputRun
 
@@ -188,7 +192,6 @@ LocalErr:
 
 	Public Sub DataArray(ByRef strArray(,) As String, ByRef colColumns As Collection, ByRef colStyles As Collection, ByRef colMerges As Collection)
 
-		Dim objColumn As clsColumn
 		Dim strOutput As String
 		Dim strTemp As String
 		Dim lngGridCol As Integer

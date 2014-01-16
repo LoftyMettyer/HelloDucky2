@@ -10,7 +10,7 @@ Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
 
 Public Class Report
-	Inherits BaseForDMI
+	Inherits BaseReport
 
 	' To hold Properties
 	Private mlngCustomReportID As Integer
@@ -31,8 +31,8 @@ Public Class Report
 	Private mblnCustomReportsPrintFilterHeader As Boolean
 
 	'New Default Output Variables
-	Private mlngOutputFormat As Integer
-	Private mblnOutputScreen As Boolean
+
+	'	Private mblnOutputScreen As Boolean
 	Private mblnOutputPrinter As Boolean
 	Private mstrOutputPrinterName As String
 	Private mblnOutputSave As Boolean
@@ -42,8 +42,6 @@ Public Class Report
 	Private mstrOutputEmailName As String
 	Private mstrOutputEmailSubject As String
 	Private mstrOutputEmailAttachAs As String
-	Private mstrOutputFilename As String
-	Private mblnOutputPreview As Boolean
 
 	Private mvarChildTables(,) As Object
 	Private miChildTablesCount As Integer
@@ -54,7 +52,7 @@ Public Class Report
 
 	' Recordsets to store the definition and column information
 	Private mrstCustomReportsDetails As DataTable
-	
+
 	' TableViewsGuff
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
@@ -351,24 +349,6 @@ Public Class Report
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputPreview() As Boolean
-		Get
-			Return mblnOutputPreview
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputFormat() As Integer
-		Get
-			Return mlngOutputFormat
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputScreen() As Boolean
-		Get
-			Return mblnOutputScreen
-		End Get
-	End Property
-
 	Public ReadOnly Property OutputPrinter() As Boolean
 		Get
 			Return mblnOutputPrinter
@@ -424,15 +404,6 @@ Public Class Report
 		Get
 			Return mstrOutputEmailAttachAs
 		End Get
-	End Property
-
-	Public Property OutputFilename As String
-		Get
-			Return mstrOutputFilename
-		End Get
-		Set(value As String)
-			mstrOutputFilename = value
-		End Set
 	End Property
 
 	Public Property EventLogID() As Integer
@@ -637,9 +608,8 @@ AddTempTableToSQL_ERROR:
 			mlngCustomReportsParent2PickListID = CInt(rowData("parent2Picklist"))
 
 			'New Default Output Variables
-			mblnOutputPreview = CBool(rowData("OutputPreview"))
-			mlngOutputFormat = CInt(rowData("OutputFormat"))
-			mblnOutputScreen = CBool(rowData("OutputScreen"))
+			OutputFormat = CInt(rowData("OutputFormat"))
+			OutputScreen = CBool(rowData("OutputScreen"))
 			mblnOutputPrinter = CBool(rowData("OutputPrinter"))
 			mstrOutputPrinterName = rowData("OutputPrinterName").ToString()
 			mblnOutputSave = CBool(rowData("OutputSave"))
@@ -649,8 +619,8 @@ AddTempTableToSQL_ERROR:
 			mstrOutputEmailName = rowData("EmailGroupName").ToString()
 			mstrOutputEmailSubject = rowData("OutputEmailSubject").ToString()
 			mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs").ToString()
-			mstrOutputFilename = rowData("OutputFilename").ToString()
-			mblnOutputPreview = (CBool(rowData("OutputPreview")) Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			OutputFilename = rowData("OutputFilename").ToString()
+			OutputPreview = CBool(rowData("OutputPreview"))
 
 		End With
 
@@ -4787,14 +4757,13 @@ GetBradfordRecordSet_ERROR:
 
 	' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
 	'    which don't exist for standard reports)
-	Public Function SetBradfordDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Long, ByRef pblnOutputScreen As Boolean, ByRef pblnOutputPrinter As Boolean _
-																									, ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean _
-																									, ByRef plngOutputEmailID As Long, ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String _
-																									, ByRef pstrOutputFilename As String) As Boolean
+	Public Function SetBradfordDefaultOutputOptions(pbOutputPreview As Boolean, plngOutputFormat As Long, pblnOutputScreen As Boolean, pblnOutputPrinter As Boolean _
+																									, pstrOutputPrinterName As String, pblnOutputSave As Boolean, plngOutputSaveExisting As Long, pblnOutputEmail As Boolean _
+																									, plngOutputEmailID As Long, pstrOutputEmailName As String, pstrOutputEmailSubject As String, pstrOutputEmailAttachAs As String _
+																									, pstrOutputFilename As String) As Boolean
 
-		mblnOutputPreview = pbOutputPreview
-		mlngOutputFormat = plngOutputFormat
-		mblnOutputScreen = pblnOutputScreen
+		OutputFormat = plngOutputFormat
+		OutputScreen = pblnOutputScreen
 		mblnOutputPrinter = pblnOutputPrinter
 		mstrOutputPrinterName = pstrOutputPrinterName
 		mblnOutputSave = pblnOutputSave
@@ -4804,8 +4773,8 @@ GetBradfordRecordSet_ERROR:
 		mstrOutputEmailName = GetEmailGroupName(CInt(plngOutputEmailID))
 		mstrOutputEmailSubject = pstrOutputEmailSubject
 		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-		mstrOutputFilename = pstrOutputFilename
-		mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+		OutputFilename = pstrOutputFilename
+		OutputPreview = pbOutputPreview
 
 		Return True
 

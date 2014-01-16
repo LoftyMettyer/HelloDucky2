@@ -18,19 +18,19 @@ Public Class clsGeneral
 
 	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
 
-	Public Function ConvertNumberForSQL(ByVal strInput As String) As String
+	Public Function ConvertNumberForSQL(strInput As String) As String
 		'Get a number in the correct format for a SQL string
 		'(e.g. on french systems replace decimal comma for a decimal point)
-		ConvertNumberForSQL = Replace(strInput, CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")
+		Return Replace(strInput, CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")
 	End Function
 
-	Public Function ConvertNumberForDisplay(ByVal strInput As String) As String
+	Public Function ConvertNumberForDisplay(strInput As String) As String
 		'Get a number in the correct format for display
 		'(e.g. on french systems replace decimal point for a decimal comma)
-		ConvertNumberForDisplay = Replace(strInput, ".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+		Return Replace(strInput, ".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
 	End Function
 
-	Public Function ConvertSQLDateToSystemFormat(ByRef pstrDateString As String) As Date
+	Public Function ConvertSQLDateToSystemFormat(pstrDateString As String) As Date
 
 		Dim dtTemp As Date
 		Dim strDateFormat As String
@@ -101,7 +101,7 @@ Public Class clsGeneral
 			Case "ymd" : dtTemp = CDate(lngYear_CR & strDateSeparator & lngMonth_CR & strDateSeparator & lngDay_CR)
 		End Select
 
-		ConvertSQLDateToSystemFormat = dtTemp
+		Return dtTemp
 
 	End Function
 
@@ -120,8 +120,6 @@ Public Class clsGeneral
 			End If
 
 		End With
-		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objExpr = Nothing
 
 		Return fOK
 
@@ -173,15 +171,15 @@ LocalErr:
 
 	End Function
 
-	Friend Function GetReadOnlyRecords(ByRef sSQL As String) As DataTable
+	Friend Function GetReadOnlyRecords(sSQL As String) As DataTable
 		Return DB.GetDataTable(sSQL)
 	End Function
 
-	Public Function GetTableName(ByVal plngTableID As Integer) As String
+	Public Function GetTableName(plngTableID As Integer) As String
 		Return Tables.GetById(plngTableID).Name
 	End Function
 
-	Public Function GetFilterName(ByVal lFilterID As Integer) As String
+	Public Function GetFilterName(lFilterID As Integer) As String
 
 		Dim sSQL As String = String.Format("SELECT name FROM ASRSysExpressions WHERE ExprID={0}", lFilterID)
 		With DB.GetDataTable(sSQL)
@@ -194,7 +192,7 @@ LocalErr:
 
 	End Function
 
-	Public Function GetPicklistName(ByVal lPicklistID As Integer) As String
+	Public Function GetPicklistName(lPicklistID As Integer) As String
 
 		Dim sSQL As String = String.Format("SELECT Name FROM ASRSysPicklistName WHERE PicklistID={0}", lPicklistID)
 		With DB.GetDataTable(sSQL)
@@ -207,7 +205,7 @@ LocalErr:
 
 	End Function
 
-	Public Function GetRecDescExprID(ByVal TableID As Integer) As Integer
+	Public Function GetRecDescExprID(TableID As Integer) As Integer
 
 		Dim sSQL As String = String.Format("SELECT recordDescExprID FROM ASRSysTables WHERE TableID={0}", TableID)
 		With DB.GetDataTable(sSQL)
@@ -220,19 +218,19 @@ LocalErr:
 
 	End Function
 
-	Public Function GetDataType(ByRef lTableID As Integer, ByRef lngColumnID As Integer) As SQLDataType
+	Public Function GetDataType(lTableID As Integer, lngColumnID As Integer) As SQLDataType
 		Return Columns.GetById(lngColumnID).DataType
 	End Function
 
-	Public Function GetColumnTable(ByRef plngColumnID As Integer) As Integer
+	Public Function GetColumnTable(plngColumnID As Integer) As Integer
 		Return Columns.GetById(plngColumnID).TableID
 	End Function
 
-	Public Function GetDefaultOrder(ByRef plngTableID As Integer) As Integer
+	Public Function GetDefaultOrder(plngTableID As Integer) As Integer
 		Return Tables.GetById(plngTableID).DefaultOrderID
 	End Function
 
-	Public Function GetColumnName(ByVal plngColumnID As Integer) As String
+	Public Function GetColumnName(plngColumnID As Integer) As String
 		If plngColumnID = 0 Then
 			Return ""
 		Else
@@ -240,11 +238,11 @@ LocalErr:
 		End If
 	End Function
 
-	Shared Function GetModuleParameter(ByRef psModuleKey As String, ByRef psParameterKey As String) As String
+	Shared Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
 		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
 	End Function
 
-	Public Function GetUserSetting(ByRef strSection As String, ByRef strKey As String, ByRef varDefault As Object) As Object
+	Public Function GetUserSetting(strSection As String, strKey As String, ByRef varDefault As Object) As Object
 		Dim objData = UserSettings.GetUserSetting(strSection, strKey)
 
 		If objData Is Nothing Then
@@ -255,7 +253,7 @@ LocalErr:
 
 	End Function
 
-	Friend Function UniqueSQLObjectName(ByRef strPrefix As String, ByRef intType As Integer) As String
+	Friend Function UniqueSQLObjectName(strPrefix As String, intType As Integer) As String
 
 		Try
 
@@ -279,7 +277,7 @@ LocalErr:
 
 	End Function
 
-	Public Function DropUniqueSQLObject(ByVal sSQLObjectName As String, ByRef iType As Short) As Boolean
+	Public Function DropUniqueSQLObject(sSQLObjectName As String, iType As Short) As Boolean
 
 		Try
 
@@ -300,24 +298,24 @@ LocalErr:
 
 	End Function
 
-	Public Function DoesColumnUseSeparators(ByVal plngColumnID As Integer) As Boolean
+	Public Function DoesColumnUseSeparators(plngColumnID As Integer) As Boolean
 		Return Columns.GetById(plngColumnID).Use1000Separator
 	End Function
 
 	' Returns the amount of decimals that are specificed for a column
-	Public Function GetDecimalsSize(ByVal plngColumnID As Integer) As Short
+	Public Function GetDecimalsSize(plngColumnID As Integer) As Integer
 		Return Columns.GetById(plngColumnID).Decimals
 	End Function
 
-	Public Function IsAChildOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
+	Public Function IsAChildOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
 		Return Relations.IsRelation(lBaseTableID, lTestTableID)
 	End Function
 
-	Public Function IsAParentOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
+	Public Function IsAParentOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
 		Return Relations.IsRelation(lTestTableID, lBaseTableID)
 	End Function
 
-	Public Function DateColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
+	Public Function DateColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
 
 		Select Case strType
 			Case "C" 'Column
@@ -339,11 +337,11 @@ LocalErr:
 
 	End Function
 
-	Public Function GetColumnDataType(ByVal plngColumnID As Integer) As SQLDataType
+	Public Function GetColumnDataType(plngColumnID As Integer) As SQLDataType
 		Return Columns.GetById(plngColumnID).DataType
 	End Function
 
-	Public Function BitColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
+	Public Function BitColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
 
 		'RH20000713
 		Dim objCalcExpr As clsExprExpression
@@ -364,11 +362,11 @@ LocalErr:
 
 	End Function
 
-	Public Function GetColumnTableName(ByVal plngColumnID As Integer) As String
+	Public Function GetColumnTableName(plngColumnID As Integer) As String
 		Return Columns.GetById(plngColumnID).TableName
 	End Function
 
-	Public Function IsPhotoDataType(ByVal lngColumnID As Integer) As Boolean
+	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
 		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
 	End Function
 

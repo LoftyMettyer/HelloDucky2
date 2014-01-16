@@ -49,7 +49,7 @@ Public Class CrossTab
 	'Private mstrDefaultSaveAs As String
 	'Private mblnDefaultCloseApp As Boolean
 	Private mblnOutputPreview As Boolean
-	Private mlngOutputFormat As Integer
+	Private mlngOutputFormat As OutputFormats
 	Private mblnOutputScreen As Boolean
 	Private mblnOutputPrinter As Boolean
 	Private mstrOutputPrinterName As String

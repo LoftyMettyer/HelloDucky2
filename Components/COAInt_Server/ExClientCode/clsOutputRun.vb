@@ -1,26 +1,25 @@
 ﻿Option Strict Off
 Option Explicit On
 
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.ExClientCode
 Imports HR.Intranet.Server.Enums
-Imports System.Data.SqlClient
 Imports System.Net.Mail
 Imports System.Net.Mime
 Imports System.IO
+Imports HR.Intranet.Server.Metadata
 
 Public Class clsOutputRun
-	Inherits basefordmi
+	Inherits BaseForDMI
 
-
-	Private mobjOutputType As Object
-	'Private mfrmOutput As frmOutputOptions
+	Private mobjOutputType As Object ' IOutputFile
 	Private mcolStyles As Collection
 	Private mcolMerges As Collection
-	Private mcolColumns As Collection
+	Private mcolColumns As List(Of Column)
 	Private mstrErrorMessage As String
 
-	Private mlngFormat As Integer
+	Private mlngFormat As OutputFormats
 	Private mstrFunction As String
 	Private mstrEmailAddresses As String
 	Private mstrEmailSubject As String
@@ -48,11 +47,13 @@ Public Class clsOutputRun
 	Private mblnIndicatorColumn As Boolean
 	Private mblnPageTitles As Boolean
 
+	Public GeneratedFile As String
+
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
 		'Set mfrmOutput = New frmOutputOptions
-		mcolColumns = New Collection
+		mcolColumns = New List(Of Column)
 
 		mlngHeaderRows = 1
 		mlngHeaderCols = 0
@@ -156,18 +157,17 @@ Public Class clsOutputRun
 	End Sub
 
 
-	Public Function AddColumn(ByRef strHeading As String, ByRef lngDataType As Integer, ByRef lngDecimals As Integer, ByRef bThousandSeparator As Boolean) As Boolean
+	Public Function AddColumn(strHeading As String, lngDataType As SQLDataType, lngDecimals As Integer, bThousandSeparator As Boolean) As Boolean
 
-		Dim objColumn As clsColumn
+		Dim objColumn As New Metadata.Column
 
 		On Error GoTo LocalErr
 		AddColumn = True
 
-		objColumn = New clsColumn
-		objColumn.Heading = strHeading
+		objColumn.Name = strHeading
 		objColumn.DataType = lngDataType
-		objColumn.DecPlaces = lngDecimals
-		objColumn.ThousandSeparator = bThousandSeparator
+		objColumn.Decimals = lngDecimals
+		objColumn.Use1000Separator = bThousandSeparator
 
 		mcolColumns.Add(objColumn)
 
@@ -291,23 +291,23 @@ LocalErr:
 
 	End Function
 
-	Public Function ResetColumns() As Object
+	Public Sub ResetColumns()
 		'UPGRADE_NOTE: Object mcolColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolColumns = Nothing
-		mcolColumns = New Collection
-	End Function
+		mcolColumns = New List(Of Column)
+	End Sub
 
-	Public Function ResetStyles() As Object
+	Public Sub ResetStyles()
 		'UPGRADE_NOTE: Object mcolStyles may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolStyles = Nothing
 		InitialiseStyles()
-	End Function
+	End Sub
 
-	Public Function ResetMerges() As Object
-		'UPGRADE_NOTE: Object mcolMerges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolMerges = Nothing
-		mcolMerges = New Collection
-	End Function
+	'Public Function ResetMerges() As Object
+	'	'UPGRADE_NOTE: Object mcolMerges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+	'	mcolMerges = Nothing
+	'	mcolMerges = New Collection
+	'End Function
 
 	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Terminate_Renamed()
@@ -321,11 +321,11 @@ LocalErr:
 		'UPGRADE_NOTE: Object mobjOutputType may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjOutputType = Nothing
 	End Sub
+
 	Protected Overrides Sub Finalize()
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
 	End Sub
-
 
 	Public Function GetFile() As Object
 		On Error Resume Next
@@ -347,38 +347,6 @@ LocalErr:
 			mblnSizeColumnsIndependently = Value
 		End Set
 	End Property
-
-	''Public Function DataArrayToGrid(strArray() As String, pgrdNew As SSDBGrid)
-	''
-	''  'Not all classes support all properties so catch any errors...
-	''  On Local Error Resume Next
-	''  mobjOutputType.SizeColumnsIndependently = mblnSizeColumnsIndependently
-	''  mobjOutputType.HeaderCols = mlngHeaderCols
-	''  mobjOutputType.HeaderRows = mlngHeaderRows
-	''
-	''  'On Local Error GoTo 0
-	''  If mblnPrintData Then
-	''    DataGrid ConvertToGrid(strArray(), pgrdNew)
-	''  Else
-	''    mobjOutputType.DataArray strArray(), mcolColumns, mcolStyles, mcolMerges
-	''  End If
-	''
-	''End Function
-
-	'Public Function RecordProfilePage(pfrmRecProfile As Form, _
-	''  piPageNumber As Integer) As Boolean
-	'  'Not all classes support all properties so catch any errors...
-	'  On Local Error Resume Next
-	''''  mobjOutputType.SizeColumnsIndependently = mblnSizeColumnsIndependently
-	''''  mobjOutputType.HeaderCols = mlngHeaderCols
-	''''  mobjOutputType.HeaderRows = mlngHeaderRows
-	'
-	'  On Local Error GoTo 0
-	'
-	''''  mobjOutputType.DataArray strArray(), mcolColumns, mcolStyles, mcolMerges
-	'  RecordProfilePage = mobjOutputType.RecordProfilePage(pfrmRecProfile, piPageNumber, mcolStyles)
-	'
-	'End Function
 
 	Public ReadOnly Property PrintData() As Boolean
 		Get
@@ -443,25 +411,6 @@ LocalErr:
 		End Get
 	End Property
 
-
-	Public Property UserName() As String
-		Get
-			UserName = gsUsername
-		End Get
-		Set(ByVal Value As String)
-			gsUsername = Value
-		End Set
-	End Property
-
-	'Public Property Get Format() As OutputFormats
-	'  Format = mlngFormat
-	'End Property
-	'
-	'Public Property Let Format(lngNewValue As OutputFormats)
-	'  mlngFormat = Format
-	'End Property
-
-
 	Public Property PageTitles() As Boolean
 		Get
 			PageTitles = mblnPageTitles
@@ -477,7 +426,6 @@ LocalErr:
 		End Get
 	End Property
 
-
 	Public ReadOnly Property PrintPrompt() As Boolean
 		Get
 
@@ -488,7 +436,6 @@ LocalErr:
 		End Get
 	End Property
 
-
 	Public Property PivotSuppressBlanks() As Boolean
 		Get
 			PivotSuppressBlanks = mblnPivotSuppressBlanks
@@ -497,7 +444,6 @@ LocalErr:
 			mblnPivotSuppressBlanks = Value
 		End Set
 	End Property
-
 
 	Public Property PivotDataFunction() As String
 		Get
@@ -509,7 +455,6 @@ LocalErr:
 		End Set
 	End Property
 
-
 	Public Property IndicatorColumn() As Boolean
 		Get
 			IndicatorColumn = mblnIndicatorColumn
@@ -519,7 +464,6 @@ LocalErr:
 		End Set
 	End Property
 
-
 	Public Property SaveAsValues() As String
 		Get
 			SaveAsValues = mstrSaveAsValues
@@ -528,7 +472,6 @@ LocalErr:
 			mstrSaveAsValues = Value
 		End Set
 	End Property
-
 
 	Public Function DataArray() As Object
 
@@ -552,99 +495,6 @@ LocalErr:
 
 	End Function
 
-
-	'Public Function DataGrid(objNewValue As SSDBGrid)
-	'
-	'  Dim strArray() As String
-	'  Dim lngGridGrp As Long
-	'  Dim lngGridCol As Long
-	'  Dim lngGridRow As Long
-	'  Dim lngGrp As Long
-	'  Dim lngCol As Long
-	'  Dim lngRow As Long
-	'  Dim blnGroupHeaders As Boolean
-	'
-	'  On Local Error GoTo LocalErr
-	'
-	'  If mblnPrintData Then
-	'    mobjOutputType.DataGrid objNewValue
-	'    Exit Function
-	'  End If
-	'
-	'
-	'  With objNewValue
-	'
-	'    ResetMerges
-	'    blnGroupHeaders = (.GroupHeaders And .Groups.Count > 0)
-	'
-	'    .Redraw = False
-	'
-	'    'Get count of visible columns
-	'    lngCol = 0
-	'    For lngGridCol = 0 To .Cols - 1
-	'      If .Columns(lngGridCol).Visible Then
-	'        lngCol = lngCol + 1
-	'
-	'        'Check if this is a header column...
-	'        If .Columns(lngGridCol).ButtonsAlways Then
-	'          If mlngHeaderCols = lngCol - 1 Then
-	'            mlngHeaderCols = lngCol
-	'          End If
-	'        End If
-	'      End If
-	'    Next
-	'    ReDim Preserve strArray(lngCol - 1, .Rows + IIf(blnGroupHeaders, 1, 0))
-	'
-	'    'GROUP HEADERS
-	'    lngCol = 0
-	'    If blnGroupHeaders Then
-	'      mlngHeaderRows = 2
-	'      For lngGridGrp = 0 To .Groups.Count - 1
-	'        If .Groups(lngGridGrp).Visible Then
-	'          strArray(lngCol, 0) = .Groups(lngGridGrp).Caption
-	'          AddMerge lngCol, 0, lngCol + .Groups(lngGridGrp).Columns.Count - 1, 0
-	'          lngCol = lngCol + .Groups(lngGridGrp).Columns.Count
-	'        End If
-	'      Next
-	'    End If
-	'
-	'    'COLUMN HEADERS
-	'    lngCol = 0
-	'    lngRow = IIf(blnGroupHeaders, 1, 0)
-	'    For lngGridCol = 0 To .Cols - 1
-	'      If .Columns(lngGridCol).Visible Then
-	'        strArray(lngCol, lngRow) = .Columns(lngGridCol).Caption
-	'        lngCol = lngCol + 1
-	'      End If
-	'    Next
-	'
-	'    'DATA ROWS
-	'    For lngGridRow = 0 To .Rows - 1
-	'      lngCol = 0
-	'      lngRow = lngRow + 1
-	'      For lngGridCol = 0 To .Cols - 1
-	'
-	'        If .Columns(lngGridCol).Visible Then
-	'          strArray(lngCol, lngRow) = .Columns(lngGridCol).CellText(.AddItemBookmark(lngGridRow))
-	'          lngCol = lngCol + 1
-	'        End If
-	'
-	'      Next
-	'
-	'    Next
-	'    .Redraw = True
-	'
-	'  End With
-	'
-	'  DataArray strArray()
-	'
-	'Exit Function
-	'
-	'LocalErr:
-	'  mstrErrorMessage = Err.Description
-	'
-	'End Function
-
 	Public Sub Complete()
 
 		If mstrErrorMessage = vbNullString Then
@@ -662,7 +512,6 @@ LocalErr:
 		mobjOutputType.ClearUp()
 	End Sub
 
-
 	Private Function CheckEmailAttachment(ByRef strExt As String) As Object
 
 		Dim lngFound As Integer
@@ -675,7 +524,6 @@ LocalErr:
 		End If
 
 	End Function
-
 
 	Public Function SendEmail(strAttachment As String) As Boolean
 
@@ -692,10 +540,8 @@ LocalErr:
 		End If
 
 		SendMailWithAttachment(strAttachment, mstrEmailAddresses, mstrEmailAttachAs)
-		
-		SendEmail = True
 
-		Exit Function
+		Return True
 
 	End Function
 
@@ -799,14 +645,15 @@ LocalErr:
 	'End Property
 
 
-	Public Function SetOptions(ByRef blnPrompt As Boolean, ByRef lngFormat As Integer, ByRef blnScreen As Boolean, ByRef blnPrinter As Boolean, ByRef strPrinterName As String, ByRef blnSave As Boolean, ByRef lngSaveExisting As Integer, ByRef blnEmail As Boolean, ByRef strEmailAddresses As String, ByRef strEmailSubject As String, ByRef strEmailAttachAs As String, ByRef strFilename As String) As Boolean
+	Public Function SetOptions(blnPrompt As Boolean, lngFormat As OutputFormats, blnScreen As Boolean, blnPrinter As Boolean, strPrinterName As String _
+															, blnSave As Boolean, lngSaveExisting As Integer, blnEmail As Boolean, strEmailAddresses As String, strEmailSubject As String _
+															, strEmailAttachAs As String, strDownloadExtension As String) As Boolean
 		Dim Printer As New Printing.PrinterSettings
 
 		Dim blnCancelled As Boolean
 		'Dim lngSaveExisting As Long
 
 		On Error GoTo LocalErr
-
 
 		blnCancelled = False
 
@@ -815,39 +662,46 @@ LocalErr:
 		mstrEmailSubject = strEmailSubject
 		mstrEmailAttachAs = strEmailAttachAs
 
-
 		mlngFormat = lngFormat
 		Select Case mlngFormat
 			Case OutputFormats.fmtDataOnly
 				mobjOutputType = New clsOutputGrid
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".txt")
 
 			Case OutputFormats.fmtCSV, OutputFormats.fmtFixedLengthFile
 				mobjOutputType = New clsOutputCSV
 				CheckEmailAttachment("csv")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".csv")
 
 			Case OutputFormats.fmtHTML
 				mobjOutputType = New clsOutputHTML
 				CheckEmailAttachment("htm")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".htm")
 
 			Case OutputFormats.fmtWordDoc
 				mobjOutputType = New clsOutputWord
 				CheckEmailAttachment("doc")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".doc")
 
 			Case OutputFormats.fmtExcelWorksheet
 				mobjOutputType = New clsOutputExcel
 				CheckEmailAttachment("xls")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
 			Case OutputFormats.fmtExcelGraph
 				mobjOutputType = New clsOutputExcel
 				'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.Chart. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mobjOutputType.Chart = True
 				CheckEmailAttachment("xls")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
 			Case OutputFormats.fmtExcelPivotTable
 				mobjOutputType = New clsOutputExcel
 				'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.PivotTable. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mobjOutputType.PivotTable = True
 				CheckEmailAttachment("xls")
+				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
+
 
 		End Select
 
@@ -866,7 +720,8 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.Email. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.Email = blnEmail
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.FileName. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mobjOutputType.FileName = strFilename
+		mobjOutputType.FileName = GeneratedFile
+		mobjOutputType.DownloadExtension = strDownloadExtension
 
 		mblnPrintData = (mlngFormat = OutputFormats.fmtDataOnly And blnPrinter)
 
@@ -930,7 +785,9 @@ LocalErr:
 	End Sub
 
 
-	Public Function SettingOptions(ByRef strSettingWordTemplate As String, ByRef strSettingExcelTemplate As String, ByRef blnSettingExcelGridlines As Boolean, ByRef blnSettingExcelHeaders As Boolean, ByRef blnSettingExcelOmitSpacerRow As Boolean, ByRef blnSettingExcelOmitSpacerCol As Boolean, ByRef blnSettingAutoFitCols As Boolean, ByRef blnSettingLandscape As Boolean, ByRef blnEmailSystemPermission As Boolean) As Boolean
+	Public Sub SettingOptions(strSettingWordTemplate As String, strSettingExcelTemplate As String, blnSettingExcelGridlines As Boolean, blnSettingExcelHeaders As Boolean _
+														 , blnSettingExcelOmitSpacerRow As Boolean, blnSettingExcelOmitSpacerCol As Boolean, blnSettingAutoFitCols As Boolean _
+														 , blnSettingLandscape As Boolean, blnEmailSystemPermission As Boolean)
 
 		gstrSettingWordTemplate = strSettingWordTemplate
 		gstrSettingExcelTemplate = strSettingExcelTemplate
@@ -942,20 +799,20 @@ LocalErr:
 		gblnSettingLandscape = blnSettingLandscape
 		gblnEmailSystemPermission = blnEmailSystemPermission
 
-	End Function
+	End Sub
 
-
-	Public Function SettingLocations(ByRef lngSettingTitleCol As Integer, ByRef lngSettingTitleRow As Integer, ByRef lngSettingDataCol As Integer, ByRef lngSettingDataRow As Integer) As Boolean
+	Public Sub SettingLocations(lngSettingTitleCol As Integer, lngSettingTitleRow As Integer, lngSettingDataCol As Integer, lngSettingDataRow As Integer)
 
 		glngSettingTitleCol = lngSettingTitleCol
 		glngSettingTitleRow = lngSettingTitleRow
 		glngSettingDataCol = lngSettingDataCol
 		glngSettingDataRow = lngSettingDataRow
 
-	End Function
+	End Sub
 
-
-	Public Function SettingTitle(ByRef blnSettingTitleGridlines As Boolean, ByRef blnSettingTitleBold As Boolean, ByRef blnSettingTitleUnderline As Boolean, ByRef lngSettingTitleBackcolour As Integer, ByRef lngSettingTitleForecolour As Integer, ByRef lngSettingTitleBackcolour97 As Integer, ByRef lngSettingTitleForecolour97 As Integer) As Boolean
+	Public Sub SettingTitle(blnSettingTitleGridlines As Boolean, blnSettingTitleBold As Boolean, blnSettingTitleUnderline As Boolean _
+																, lngSettingTitleBackcolour As Integer, lngSettingTitleForecolour As Integer, lngSettingTitleBackcolour97 As Integer _
+																, lngSettingTitleForecolour97 As Integer)
 
 		gblnSettingTitleGridlines = blnSettingTitleGridlines
 		gblnSettingTitleBold = blnSettingTitleBold
@@ -965,10 +822,11 @@ LocalErr:
 		glngSettingTitleBackcolour97 = lngSettingTitleBackcolour97
 		glngSettingTitleForecolour97 = lngSettingTitleForecolour97
 
-	End Function
+	End Sub
 
-
-	Public Function SettingHeading(ByRef blnSettingHeadingGridlines As Boolean, ByRef blnSettingHeadingBold As Boolean, ByRef blnSettingHeadingUnderline As Boolean, ByRef lngSettingHeadingBackcolour As Integer, ByRef lngSettingHeadingForecolour As Integer, ByRef lngSettingHeadingBackcolour97 As Integer, ByRef lngSettingHeadingForecolour97 As Integer) As Boolean
+	Public Sub SettingHeading(blnSettingHeadingGridlines As Boolean, blnSettingHeadingBold As Boolean, blnSettingHeadingUnderline As Boolean _
+														 , lngSettingHeadingBackcolour As Integer, lngSettingHeadingForecolour As Integer, lngSettingHeadingBackcolour97 As Integer _
+														 , lngSettingHeadingForecolour97 As Integer)
 
 		gblnSettingHeadingGridlines = blnSettingHeadingGridlines
 		gblnSettingHeadingBold = blnSettingHeadingBold
@@ -978,10 +836,10 @@ LocalErr:
 		glngSettingHeadingBackcolour97 = lngSettingHeadingBackcolour97
 		glngSettingHeadingForecolour97 = lngSettingHeadingForecolour97
 
-	End Function
+	End Sub
 
-
-	Public Function SettingData(ByRef blnSettingDataGridlines As Boolean, ByRef blnSettingDataBold As Boolean, ByRef blnSettingDataUnderline As Boolean, ByRef lngSettingDataBackcolour As Integer, ByRef lngSettingDataForecolour As Integer, ByRef lngSettingDataBackcolour97 As Integer, ByRef lngSettingDataForecolour97 As Integer) As Boolean
+	Public Sub SettingData(blnSettingDataGridlines As Boolean, blnSettingDataBold As Boolean, blnSettingDataUnderline As Boolean, lngSettingDataBackcolour As Integer _
+													, lngSettingDataForecolour As Integer, lngSettingDataBackcolour97 As Integer, lngSettingDataForecolour97 As Integer)
 
 		gblnSettingDataGridlines = blnSettingDataGridlines
 		gblnSettingDataBold = blnSettingDataBold
@@ -991,11 +849,10 @@ LocalErr:
 		glngSettingDataBackcolour97 = lngSettingDataBackcolour97
 		glngSettingDataForecolour97 = lngSettingDataForecolour97
 
-	End Function
+	End Sub
 
-	Public Function ArrayDim(ByRef lngCol As Integer, ByRef lngRow As Integer) As Boolean
+	Public Function ArrayDim(lngCol As Integer, lngRow As Integer) As Boolean
 		ReDim mstrArray(lngCol, lngRow)
-		'				ReDim mstrArray(50, 12)
 	End Function
 
 	Public Function ArrayReDim() As Boolean
@@ -1015,7 +872,7 @@ LocalErr:
 		Return True
 
 LocalErr:
-		mstrErrorMessage = "Error overwriting file '" & strFilename & "'" & IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", vbNullString)
+		mstrErrorMessage = "Error overwriting file '" & strFilename & "'" & IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", vbNullString).ToString()
 		'mstrErrorMessage = "Cannot access read-only document '" & Mid(strFileName, InStrRev(strFileName, "\") + 1) & "'."
 		KillFile = False
 
@@ -1033,7 +890,7 @@ LocalErr:
 		Do While Dir(Left(strFilename, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFilename, lngFound)) <> vbNullString
 			lngCount = lngCount + 1
 		Loop
-		GetSequentialNumberedFile = Left(strFilename, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFilename, lngFound)
+		Return Left(strFilename, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFilename, lngFound)
 
 	End Function
 
@@ -1059,7 +916,4 @@ LocalErr:
 
 	End Function
 
-	Public Function GetSaveAsFormat(ByRef strFilename As String) As String
-		GetSaveAsFormat = GetSaveAsFormat2(strFilename, mstrSaveAsValues)
-	End Function
 End Class

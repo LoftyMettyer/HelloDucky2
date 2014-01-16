@@ -10,7 +10,7 @@ Namespace Metadata
 			Public TableName As String
 			Public DataType As SQLDataType
 			Public Size As Long									' Needs to be long to handle ole embedded ole types.
-			Public Decimals As Short
+		Public Decimals As Integer
 			Public Use1000Separator As Boolean
 	End Class
 End Namespace

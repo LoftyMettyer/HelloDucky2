@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Drawing.Imaging
 Imports ADODB
 Imports System.Data.OleDb
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 
@@ -191,13 +192,13 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
-	Public Function GetReportNameByReportType(ReportType As Integer) As String
+	Public Function GetReportNameByReportType(ReportType As utilityType) As String
 		Select Case ReportType
-			Case 15
+			Case UtilityType.utlAbsenceBreakdown
 				Return "Absence Breakdown"
-			Case 16
+			Case UtilityType.utlBradfordFactor
 				Return "Bradford Factor"
-			Case Else	'Does anybody know more of this 'magic numbers' so we can add to this Case? Should we have an enum?
+			Case Else
 				Return ""
 		End Select
 	End Function

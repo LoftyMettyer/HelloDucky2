@@ -2,14 +2,16 @@
 Option Explicit On
 
 Imports Aspose.Cells.Charts
+Imports System.Collections.Generic
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
 
 Namespace ExClientCode
 
 	Friend Class clsOutputExcel
+		Inherits BaseOutputFormat
 
-		' Private mxlApp As Microsoft.Office.Interop.Excel.Application
 		Private _mxlWorkBook As Workbook
 		Private _mxlWorkSheet As Worksheet
 		Private _mxlTemplateBook As Workbook
@@ -84,6 +86,7 @@ Namespace ExClientCode
 			_mblnApplyStyles = True
 
 		End Sub
+
 		Public Sub New()
 			MyBase.New()
 			Class_Initialize_Renamed()
@@ -183,7 +186,7 @@ Namespace ExClientCode
 		End Property
 
 		Private Function CreateExcelApplication() As Boolean
-			CreateExcelApplication = True
+			Return True
 		End Function
 
 		Public Function GetFile(ByRef objParent As clsOutputRun, ByRef colStyles As Collection) As Boolean
@@ -235,31 +238,13 @@ Namespace ExClientCode
 					Exit Sub
 				End If
 
-				' we stream at the end, so no need for this:
-				'Save a temp template in the format of the output...
-				'If _mstrFileName <> vbNullString Then
-				'	strFormat = GetOfficeSaveAsFormat(_mstrFileName, OfficeVersion, OfficeApp.oaExcel)
-				'	If strFormat <> "" Then
-				'		strTempFile = _mobjParent.GetTempFileName("")
-				'		_mxlTemplateBook.Save(strTempFile, SaveFormat.Xltx)
-				'		_mxlTemplateBook = New Workbook(strTempFile)
-				'	End If
-				'End If
-
-
 			End If
 
 			_mstrSheetMode = strWorksheet
 			Select Case strWorkbook
-				Case "New"					
+				Case "New"
 					If _mstrXlTemplate <> vbNullString Then
-						'	'Make sure the new workbook is in the same format as the template
-						'	'otherwise we won't be able to copy sheets into the new workbook.
-						'	'lngOriginalFormat = mxlApp.DefaultSaveFormat
-						'	'mxlApp.DefaultSaveFormat = CShort(GetOfficeSaveAsFormat(mstrXLTemplate, OfficeVersion, modIntClient.OfficeApp.oaExcel))
-						'	'mxlWorkBook = mxlApp.Workbooks.Add					
-						'	'mxlApp.DefaultSaveFormat = lngOriginalFormat
-						_mxlWorkBook = New Workbook(_mstrXlTemplate)						
+						_mxlWorkBook = New Workbook(_mstrXlTemplate)
 					Else
 						_mxlWorkBook = New Workbook()
 						' remove ALL worksheets.
@@ -355,7 +340,7 @@ Namespace ExClientCode
 		End Sub
 
 
-		Public Sub DataArray(ByRef strArray(,) As String, ByRef colColumns As Collection, ByRef colStyles As Collection, ByRef colMerges As Collection)
+		Public Sub DataArray(ByRef strArray(,) As String, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection, ByRef colMerges As Collection)
 
 			Dim lngGridCol As Integer
 			Dim lngGridRow As Integer
@@ -398,7 +383,7 @@ Namespace ExClientCode
 						stlGeneral.Number = 49
 						stlDate.Number = 14
 
-						Select Case colColumns.Item(lngGridCol + 1).DataType
+						Select Case colColumns.Item(lngGridCol).DataType
 
 							Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
 								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
@@ -426,7 +411,7 @@ Namespace ExClientCode
 								.SetStyle(stlGeneral)
 								.PutValue(strArray(lngGridCol, lngGridRow))
 						End Select
-						
+
 
 						'MH20031113 Fault 7602
 						' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
@@ -503,7 +488,7 @@ Namespace ExClientCode
 			xlCategories.Name = "xlCategories"
 			xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol + dataColumnCount, dataRowCount, 1)
 			xlData.Name = "xlData"
-			
+
 
 			' xlChart = mxlApp.Charts.Add(After:=mxlWorkSheet)
 
@@ -600,7 +585,7 @@ LocalErr:
 			'		On Error GoTo LocalErr
 
 			'		mxlApp.DisplayAlerts = True
-			
+
 			'		xlData = mxlWorkSheet.Range(mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells._Default(lngMaxRows, lngMaxCols))
 			'		strSheetName = Mid(mxlWorkSheet.Name, 6)
 			'		'SetSheetName mxlWorkSheet, "Data " & mxlWorkSheet.Name
@@ -695,27 +680,14 @@ LocalErr:
 		End Sub
 
 
-		Private Sub PrepareRows(ByRef lngRowCount As Integer, ByRef colColumns As Collection, ByRef colStyles As Collection)
+		Private Sub PrepareRows(lngRowCount As Integer, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection)
 
-			Dim objColumn As clsColumn
-			Dim lngCount As Integer
+			Dim objColumn As Metadata.Column
+			Dim lngCount As Integer = 0
 
 			On Error GoTo LocalErr
 
 			With _mxlWorkSheet
-
-				' NOTE: no templates
-				'    If mstrXLTemplate <> vbNullString Then
-				'      For lngCount = 1 To lngRowCount
-				'        .Rows(mlngDataCurrentRow + mlngHeaderRows).Select
-				'        mxlApp.Selection.Copy
-				'        mxlApp.Selection.Insert Shift:=xlDown
-				'      Next
-				'      mxlApp.CutCopyMode = False
-				'    End If
-				'If .Visible Then
-				'	.Range("A1").Select()
-				'End If
 
 				If _mlngHeaderRows > 0 Then
 					' Define style for header row and apply it.
@@ -729,15 +701,15 @@ LocalErr:
 
 				Dim stlColumnStyleTmp As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
 
-				For lngCount = 0 To colColumns.Count() - 1
-					objColumn = colColumns.Item(lngCount + 1)
+				For Each objColumn In colColumns
+
 					Dim columnRange As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow + _mlngHeaderRows - 1, _mlngDataStartCol - 1 + lngCount, _mlngDataCurrentRow + lngRowCount, 1)
 					Select Case objColumn.DataType
 						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-							If objColumn.DecPlaces > 0 Then
-								If objColumn.DecPlaces > 100 Then objColumn.DecPlaces = 100
+							If objColumn.Decimals > 0 Then
+								If objColumn.Decimals > 100 Then objColumn.Decimals = 100
 								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-								stlColumnStyleTmp.Custom = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
+								stlColumnStyleTmp.Custom = IIf(objColumn.Use1000Separator, "#,##0", "0") & IIf(objColumn.Decimals, "." & New String("0", objColumn.Decimals), "")
 								' 								stlColumnStyleTmp.Number = 4
 							Else
 								stlColumnStyleTmp.Custom = "@"
@@ -1038,21 +1010,23 @@ LocalErr:
 			_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
 
 			' calculate the appropriate output type
-			aryFileBits = Split(_mstrFileName, ".")
-			strExtension = aryFileBits(UBound(aryFileBits))
+			'	aryFileBits = Split(_mstrFileName, ".")
+			'	strExtension = aryFileBits(UBound(aryFileBits))
 
-			Select Case UCase(strExtension)
-				Case "XLSX"
-					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
-				Case "XLS"
-					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
-				Case "HTML"
-					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
-				Case "PDF"
-					_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
-				Case "CSV"
-					_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
-			End Select
+			_mxlWorkBook.Save(_mstrFileName, SaveAsFormat(DownloadExtension))
+
+			'Select Case UCase(strExtension)
+			'	Case "XLSX"
+			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
+			'	Case "XLS"
+			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
+			'	Case "HTML"
+			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
+			'	Case "PDF"
+			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
+			'	Case "CSV"
+			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
+			'End Select
 			'End If
 
 			'EMAIL
@@ -1108,7 +1082,7 @@ TidyAndExit:
 			Exit Sub
 
 LocalErr:
-			_mstrErrorMessage = _mstrErrorMessage & IIf(Err.Description <> vbNullString, vbCrLf & " (" & Err.Description & ")", vbNullString)
+			_mstrErrorMessage = _mstrErrorMessage & IIf(Err.Description <> vbNullString, vbCrLf & " (" & Err.Description & ")", vbNullString).ToString()
 			Resume TidyAndExit
 
 		End Sub
@@ -1231,6 +1205,28 @@ LocalErr:
 			End If
 
 			Return returnValue
+
+		End Function
+
+		Private Shared Function SaveAsFormat(strExtension As String) As SaveFormat
+
+			strExtension = strExtension.Replace(".", "")
+
+			Select Case UCase(strExtension)
+				Case "XLS"
+					Return SaveFormat.Excel97To2003
+				Case "HTML"
+					Return SaveFormat.Html
+				Case "PDF"
+					Return SaveFormat.Pdf
+				Case "CSV"
+					Return SaveFormat.CSV
+				Case "TIFF"
+					Return SaveFormat.TIFF
+				Case Else
+					Return SaveFormat.Xlsx
+
+			End Select
 
 		End Function
 

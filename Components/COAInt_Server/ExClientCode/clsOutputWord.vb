@@ -1,9 +1,11 @@
 ﻿Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Friend Class clsOutputWord
+	Inherits BaseOutputFormat
 
 	Private mwrdApp As Microsoft.Office.Interop.Word.Application
 	Private mwrdDoc As Microsoft.Office.Interop.Word.Document
@@ -861,7 +863,6 @@ LocalErr:
 	Public Sub DataArray(ByRef strArray(,) As String, ByRef colColumns As Collection, ByRef colStyles As Collection, ByRef colMerges As Collection)
 
 		Const strBookMark As String = "ASRSysTableStart"
-		Dim objColumn As clsColumn
 		Dim strOutput As String
 		Dim lngGridCol As Integer
 		Dim lngGridRow As Integer
@@ -1145,7 +1146,6 @@ LocalErr:
 
 	Public Sub Complete()
 
-		Dim objDefPrinter As cSetDfltPrinter
 		Dim strDefaultPrinter As String
 		Dim strFormat As String
 		Dim strTempFile As String

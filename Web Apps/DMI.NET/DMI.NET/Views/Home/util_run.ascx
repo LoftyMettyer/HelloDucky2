@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -180,7 +181,7 @@
 			<span class="pageTitleSmaller" id="PageDivTitle">
 				<% 
 					If Session("StandardReport_Type") <> "" Then
-						Response.Write(GetReportNameByReportType(Session("StandardReport_Type")))
+						Response.Write(GetReportNameByReportType(CType(Session("StandardReport_Type"), UtilityType)))
 						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
 							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")
 						End If
@@ -273,7 +274,7 @@ End If
 
 	//$('.popup').css({ top: '50%', left: '50%', margin: '-' + ($('.popup').height() / 2) + 'px 0 0 -' + ($('.popup').width() / 2) + 'px' });
 
-	$('.popup').bind('dialogclose', function (event) {
+	$('.popup').bind('dialogclose', function () {
 		closeclick();
 	});
 
@@ -289,5 +290,12 @@ End If
 	//$("#cmdCancel").hide();	
 	$("#cmdCancel").button({ disabled: true });
 	$("#cmdOK").hide();
+
+	if ($("#txtPreview")[0].value == "False") {
+		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
+		frmGetDataForm.submit();
+		closeclick();
+	}
+	
 
 </script>
