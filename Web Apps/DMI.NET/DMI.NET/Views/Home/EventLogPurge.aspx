@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
 <html>
@@ -8,15 +9,15 @@
 	<title>Event Log Selection - OpenHR Intranet</title>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<link href="/Content/general_enclosed_foundicons.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link href="/Content/font-awesome.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link href="/Content/fonts/SSI80v194934/style.css?v=8.0.9.0" rel="stylesheet" />
-	<link href="/Content/Site.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link href="/Content/OpenHR.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link href="/Content/contextmenustyle.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link id="Link1" href="/Content/themes/redmond/jquery-ui.min.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
-	<link href="/Content/ui.jqgrid.css?v=8.0.9.0" rel="stylesheet" type="text/css" />
+		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 	<style type="text/css">
 		.auto-style1
 		{
