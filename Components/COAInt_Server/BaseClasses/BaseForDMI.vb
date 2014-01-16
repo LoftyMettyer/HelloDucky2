@@ -139,15 +139,7 @@ Namespace BaseClasses
 #Region "From modUtilityAccess"
 
 		Protected Function CurrentUserIsSysSecMgr() As Boolean
-			Dim sSQL As String
-			Dim rsAccess As DataTable
-
-			sSQL = "SELECT count(*) AS [result] FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "   AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "   OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & " WHERE ASRSysGroupPermissions.permitted = 1" & "   AND ASRSysGroupPermissions.groupname = '" & gsUserGroup & "'"
-
-			rsAccess = DB.GetDataTable(sSQL)
-			Return CBool(CInt(rsAccess.Rows(0)("Result")) > 0)
-
-
+			Return _login.IsSystemOrSecurityAdmin
 		End Function
 
 

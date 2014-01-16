@@ -38,6 +38,8 @@ Public Class Database
 	' Return 0 or an error code
 	Public Sub CheckLogin(ByRef Login As LoginInfo, ApplicationVersion As String)
 
+		Dim sSQL As String
+
 		Try
 
 			Dim prmSuccessFlag = New SqlParameter("piSuccessFlag", SqlDbType.Int)
@@ -72,6 +74,17 @@ Public Class Database
 			Login.SelfServiceUserType = CInt(prmSelfServiceUserType.Value)
 			Login.UserGroup = prmUserGroup.Value.ToString()
 			Login.LoginFailReason = prmErrorMessage.Value.ToString()
+
+			' Are we system or security manager (merge in with check login when we do license changes?)
+			sSQL = "SELECT count(*) AS [result] FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" _
+				& " AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER' OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" _
+				& " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" _
+				& "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS') WHERE ASRSysGroupPermissions.permitted = 1 AND ASRSysGroupPermissions.groupname = '" _
+				& Login.UserGroup & "'"
+			Dim rowPermission = DB.GetDataTable(sSQL).Rows(0)
+
+			Login.IsSystemOrSecurityAdmin = (CInt(rowPermission(0)) > 0)
+
 
 		Catch ex As Exception
 			Throw
