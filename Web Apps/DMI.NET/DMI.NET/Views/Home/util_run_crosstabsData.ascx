@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 
 <%		
@@ -241,8 +242,8 @@
 				 Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
 
 		objUser = New HR.Intranet.Server.clsSettings
+		objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-		Response.Write("  ClientDLL.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
 		Response.Write("  ClientDLL.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
 		Response.Write("  ClientDLL.SettingOptions(")
 		Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
@@ -656,20 +657,20 @@
 </script>
 
 <form action="util_run_crosstabsDataSubmit" method="post" id="frmGetReportData" name="frmGetReportData">
-		<input type="hidden" id="txtMode" name="txtMode" value="<%=Session("CT_Mode")%>">
-		<input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%=Session("CT_PageNumber")%>">
-		<input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%=Session("CT_ShowPercentage")%>">
-		<input type="hidden" id="txtPercentageOfPage" name="txtPercentageOfPage" value="<%=Session("CT_PercentageOfPage")%>">
-		<input type="hidden" id="txtSuppressZeros" name="txtSuppressZeros" value="<%=Session("CT_SuppressZeros")%>">
-		<input type="hidden" id="txtUse1000" name="txtUse1000" value="<%=Session("CT_Use1000")%>">
-		<input type="hidden" id="txtHor" name="txtHor" value="<%=Session("CT_Hor")%>">
-		<input type="hidden" id="txtVer" name="txtVer" value="<%=Session("CT_Ver")%>">
-		<input type="hidden" id="txtPgb" name="txtPgb" value="<%=Session("CT_Pgb")%>">
-		<input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="<%=Session("CT_IntersectionType")%>">
+	<input type="hidden" id="txtMode" name="txtMode" value="<%=Session("CT_Mode")%>">
+	<input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%=Session("CT_PageNumber")%>">
+	<input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%=Session("CT_ShowPercentage")%>">
+	<input type="hidden" id="txtPercentageOfPage" name="txtPercentageOfPage" value="<%=Session("CT_PercentageOfPage")%>">
+	<input type="hidden" id="txtSuppressZeros" name="txtSuppressZeros" value="<%=Session("CT_SuppressZeros")%>">
+	<input type="hidden" id="txtUse1000" name="txtUse1000" value="<%=Session("CT_Use1000")%>">
+	<input type="hidden" id="txtHor" name="txtHor" value="<%=Session("CT_Hor")%>">
+	<input type="hidden" id="txtVer" name="txtVer" value="<%=Session("CT_Ver")%>">
+	<input type="hidden" id="txtPgb" name="txtPgb" value="<%=Session("CT_Pgb")%>">
+	<input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="<%=Session("CT_IntersectionType")%>">
 	<input type="hidden" id="txtDataIntersectionType" name="txtDataIntersectionType" value="<%=Session("CT_IntersectionType")%>">
-		<input type="hidden" id="txtCellValue" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
-		<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("CT_UtilID")%>">
-		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">
+	<input type="hidden" id="txtCellValue" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
+	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("CT_UtilID")%>">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">
 </form>
 
 

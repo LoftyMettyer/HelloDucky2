@@ -6,7 +6,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
 Public Class CrossTab
-	Inherits BaseForDMI
+	Inherits BaseReport
 
 	Private mstrSQLSelect As String
 	Private mstrSQLFrom As String
@@ -33,7 +33,6 @@ Public Class CrossTab
 	Private mstrReportEndDate As String
 
 	Private mstrCrossTabName As String
-	'Private mlngIntersectionType As Long
 	Private mblnShowPercentage As Boolean
 	Private mblnPercentageofPage As Boolean
 	Private mbUse1000Separator As Boolean
@@ -43,13 +42,6 @@ Public Class CrossTab
 	Private mstrPicklistFilterName As String
 	Private mblnChkPicklistFilter As Boolean
 
-	'Private mintDefaultOutput As Integer
-	'Private mintDefaultExportTo As Integer
-	'Private mblnDefaultSave As Boolean
-	'Private mstrDefaultSaveAs As String
-	'Private mblnDefaultCloseApp As Boolean
-	Private mblnOutputPreview As Boolean
-	Private mlngOutputFormat As OutputFormats
 	Private mblnOutputScreen As Boolean
 	Private mblnOutputPrinter As Boolean
 	Private mstrOutputPrinterName As String
@@ -57,11 +49,9 @@ Public Class CrossTab
 	Private mlngOutputSaveExisting As Integer
 	Private mblnOutputEmail As Boolean
 	Private mlngOutputEmailID As Integer
-	'Private mstrOutputEmailAddr As String
 	Private mstrOutputEmailName As String
 	Private mstrOutputEmailSubject As String
 	Private mstrOutputEmailAttachAs As String
-	Private mstrOutputFilename As String
 	Private mstrOutputPivotArray() As String
 
 	Private Const HOR As Short = 0 'Horizontal
@@ -90,27 +80,20 @@ Public Class CrossTab
 	Private mlngIntersectionDecimals As Integer
 	Private mstrIntersectionMask As String
 	Private mdblPercentageFactor As Double
-	'Private mblnInvalidPicklistFilter As Boolean
 
 	Private mstrType() As String 'e.g. mstrtype(TYPETOTAL) = for example: "Total"
 	Private mlngColID(3) As Integer
 	Private mstrColName(3) As String 'e.g. mstrColName(INS) = "Salary" (the name of the intersection field)
 	Private mlngColDataType(3) As String
-	Private mstrColCase(3) As String
 	Private mstrFormat(3) As String
 	Private mdblMin(2) As Double
 	Private mdblMax(2) As Double
 	Private mdblStep(2) As Double
 
-	' Classes
-	Private mclsData As clsDataAccess
-	'Private mobjEventLog As clsEventLog
-
 	Private mlngType As Integer
 
 	Private msAbsenceBreakdownTypes As String
 
-	Private mstrOutputArray_Data() As Object
 	Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
 	Private mstrLocalDecimalSeparator As String
@@ -211,10 +194,9 @@ Public Class CrossTab
 		End Set
 	End Property
 
-	Public ReadOnly Property OutputArrayData(ByVal lngIndex As Integer) As String
+	Public ReadOnly Property OutputArrayData(lngIndex As Integer) As String
 		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArrayData = mstrOutput(lngIndex)
+			Return mstrOutput(lngIndex)
 		End Get
 	End Property
 
@@ -244,7 +226,7 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property ColumnHeading(ByVal lngArray As Integer, ByVal lngIndex As Integer) As String
+	Public ReadOnly Property ColumnHeading(lngArray As Integer, lngIndex As Integer) As String
 		Get
 			'ColumnHeading = Replace(mvarHeadings(lngArray)(CLng(lngIndex)), Chr(34), Chr(34) & " + String.fromCharCode(34) + " & Chr(34))
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -253,14 +235,14 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property ColumnDataType(ByVal lngIndex As Integer) As Integer
+	Public ReadOnly Property ColumnDataType(lngIndex As Integer) As Integer
 		Get
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			ColumnDataType = CInt(mlngColDataType(lngIndex))
 		End Get
 	End Property
 
-	Public ReadOnly Property ColumnHeadingUbound(ByVal lngIndex As Integer) As Integer
+	Public ReadOnly Property ColumnHeadingUbound(lngIndex As Integer) As Integer
 		Get
 			If Not mvarHeadings(lngIndex) Is Nothing Then
 				ColumnHeadingUbound = UBound(mvarHeadings(lngIndex))
@@ -331,18 +313,6 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputPreview() As Boolean
-		Get
-			OutputPreview = mblnOutputPreview
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputFormat() As Integer
-		Get
-			OutputFormat = mlngOutputFormat
-		End Get
-	End Property
-
 	Public ReadOnly Property OutputScreen() As Boolean
 		Get
 			OutputScreen = mblnOutputScreen
@@ -403,45 +373,37 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputFilename() As String
-		Get
-			OutputFilename = mstrOutputFilename
-		End Get
-	End Property
-
 	Public ReadOnly Property IntersectionDecimals() As Integer
 		Get
 			IntersectionDecimals = mlngIntersectionDecimals
 		End Get
 	End Property
 
-
-	Public ReadOnly Property Heading(ByVal lngCol As Integer, ByVal lngRow As Integer) As String
+	Public ReadOnly Property Heading(lngCol As Integer, lngRow As Integer) As String
 		Get
 			'Heading = Replace(mvarHeadings(lngCol)(lngRow), Chr(34), Chr(34) & " + String.fromCharCode(34) + " & Chr(34))
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			Heading = mvarHeadings(lngCol)(lngRow)
+			Return mvarHeadings(lngCol)(lngRow)
 		End Get
 	End Property
 
 	Public ReadOnly Property DataArrayCols() As Integer
 		Get
-			DataArrayCols = UBound(Split(mstrOutput(0), vbTab))
+			Return UBound(Split(mstrOutput(0), vbTab))
 		End Get
 	End Property
 
 	Public ReadOnly Property DataArrayRows() As Integer
 		Get
-			DataArrayRows = UBound(mstrOutput)
+			Return UBound(mstrOutput)
 		End Get
 	End Property
 
-	Public ReadOnly Property DataArray(ByVal lngCol As Integer, ByVal lngRow As Integer) As String
+	Public ReadOnly Property DataArray(lngCol As Integer, lngRow As Integer) As String
 		Get
-			DataArray = Split(mstrOutput(lngRow), vbTab)(lngCol)
+			Return Split(mstrOutput(lngRow), vbTab)(lngCol)
 		End Get
 	End Property
-
 
 	Public Property Use1000Separator() As Boolean
 		Get
@@ -452,16 +414,16 @@ Public Class CrossTab
 		End Set
 	End Property
 
-	Public ReadOnly Property OutputPivotArrayData(ByVal lngIndex As Integer) As String
+	Public ReadOnly Property OutputPivotArrayData(lngIndex As Integer) As String
 		Get
 			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputPivotArrayData = mstrOutputPivotArray(lngIndex)
+			Return mstrOutputPivotArray(lngIndex)
 		End Get
 	End Property
 
 	Public ReadOnly Property OutputPivotArrayDataUBound() As String
 		Get
-			OutputPivotArrayDataUBound = CStr(UBound(mstrOutputPivotArray))
+			Return CStr(UBound(mstrOutputPivotArray))
 		End Get
 	End Property
 
@@ -474,38 +436,11 @@ Public Class CrossTab
 			Logs.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
 		End If
 
-		EventLogAddHeader = Logs.EventLogID
+		Return Logs.EventLogID
 	End Function
 
-	Public Sub EventLogChangeHeaderStatus(ByRef lngStatus As Integer)
+	Public Sub EventLogChangeHeaderStatus(lngStatus As EventLog_Status)
 		Logs.ChangeHeaderStatus(lngStatus)
-	End Sub
-
-	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Initialize_Renamed()
-
-		' Initialise the the classes/arrays to be used
-		mclsData = New clsDataAccess
-
-		ReDim mstrOutputArray_Data(0)
-
-	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-
-	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-	Private Sub Class_Terminate_Renamed()
-
-		' Clear references to classes and clear collection objects
-		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsData = Nothing
-
-	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
 	End Sub
 
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
@@ -628,8 +563,8 @@ ErrorTrap:
 			mblnSuppressZeros = CBool(objRow("SuppressZeros"))
 			mbUse1000Separator = CBool(objRow("ThousandSeparators"))
 
-			mblnOutputPreview = CBool(objRow("OutputPreview"))
-			mlngOutputFormat = CInt(objRow("OutputFormat"))
+			OutputPreview = CBool(objRow("OutputPreview"))
+			OutputFormat = CType(objRow("OutputFormat"), OutputFormats)
 			mblnOutputScreen = CBool(objRow("OutputScreen"))
 			mblnOutputPrinter = CBool(objRow("OutputPrinter"))
 			mstrOutputPrinterName = objRow("OutputPrinterName").ToString()
@@ -641,9 +576,7 @@ ErrorTrap:
 			mstrOutputEmailSubject = objRow("OutputEmailSubject").ToString()
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mstrOutputEmailAttachAs = IIf(IsDBNull(objRow("OutputEmailAttachAs")), vbNullString, objRow("OutputEmailAttachAs"))
-			mstrOutputFilename = objRow("OutputFilename").ToString()
-
-			mblnOutputPreview = (CBool(objRow("OutputPreview")) Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+			OutputFilename = objRow("OutputFilename").ToString()
 
 			mlngColID(HOR) = CInt(objRow("HorizontalColID"))
 			mdblMin(HOR) = Val(objRow("HorizontalStart"))
@@ -714,7 +647,7 @@ LocalErr:
 
 	End Function
 
-	Private Function IsRecordSelectionValid(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As Boolean
+	Private Function IsRecordSelectionValid(lngPicklistID As Integer, lngFilterID As Integer) As Boolean
 
 		Dim iResult As RecordSelectionValidityCodes
 		Dim fCurrentUserIsSysSecMgr As Boolean
@@ -752,7 +685,7 @@ LocalErr:
 
 	End Function
 
-	Private Function GetPicklistFilterSelect(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As String
+	Private Function GetPicklistFilterSelect(lngPicklistID As Integer, lngFilterID As Integer) As String
 
 		Dim rsTemp As DataTable
 
@@ -816,7 +749,7 @@ LocalErr:
 
 	End Function
 
-	Private Function GetFormat(ByVal lngColumnID As Integer) As String
+	Private Function GetFormat(lngColumnID As Integer) As String
 
 		Dim objColumn = Columns.GetById(lngColumnID)
 		Dim sFormat As String = ""
@@ -1189,7 +1122,7 @@ LocalErr:
 
 	End Function
 
-	Private Sub GetHeadingsAndSearchesForColumns(ByRef lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
+	Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
 
 		Dim rsTemp As DataTable
 		Dim strSQL As String
@@ -1320,7 +1253,7 @@ LocalErr:
 
 	End Sub
 
-	Private Function GetSmallestUnit(ByRef lngLoop As Integer) As Double
+	Private Function GetSmallestUnit(lngLoop As Integer) As Double
 
 		'e.g. mstrFormat(lngLoop) = 0.0,   GetSmallestUnit = 0.1
 		'     mstrFormat(lngLoop) = 0.000, GetSmallestUnit = 0.001
@@ -1340,13 +1273,11 @@ LocalErr:
 
 	End Function
 
-	Public Function IntersectionTypeValue(ByVal index) As String
+	Public Function IntersectionTypeValue(index As Integer) As String
 		Return mstrType(index)
 	End Function
 
 	Public Function BuildTypeArray() As Boolean
-
-		On Error GoTo LocalErr
 
 		If mblnIntersection Then
 
@@ -1364,13 +1295,8 @@ LocalErr:
 
 		End If
 
-		BuildTypeArray = True
+		Return True
 
-		Exit Function
-
-LocalErr:
-		mstrStatusMessage = "Error building type array"
-		BuildTypeArray = False
 
 	End Function
 
@@ -1510,9 +1436,8 @@ LocalErr:
 
 		'UPGRADE_NOTE: Object rsCrossTabData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		rsCrossTabData = Nothing
-		BuildDataArrays = True
+		Return True
 
-		Exit Function
 
 LocalErr:
 		mstrStatusMessage = "Error processing data"
@@ -1652,22 +1577,7 @@ LocalErr:
 
 	End Function
 
-	Public Function HTMLText(ByRef strInput As String) As String
-
-		HTMLText = Replace(strInput, "<", "&LT;")
-		HTMLText = Replace(HTMLText, ">", "&GT;")
-		HTMLText = Replace(HTMLText, vbTab, "</TD><TD>")
-		HTMLText = Replace(HTMLText, "<TD></TD>", "<TD>&nbsp;</TD>")
-		If Left(HTMLText, 5) = "</TD>" Then
-			HTMLText = "&nbsp;" & HTMLText
-		End If
-		If Right(HTMLText, 4) = "<TD>" Then
-			HTMLText = HTMLText & "&nbsp;"
-		End If
-
-	End Function
-
-	Public Sub BuildOutputStrings(ByRef lngSinglePage As Long)
+	Public Sub BuildOutputStrings(lngSinglePage As Integer)
 
 		Const strDelim As String = vbTab
 		Dim strTempDelim As String
@@ -1781,7 +1691,7 @@ LocalErr:
 
 	End Sub
 
-	Private Function FormatCell(ByVal dblCellValue As Double, Optional ByRef lngHOR As Integer = 0) As String
+	Private Function FormatCell(dblCellValue As Double, Optional lngHOR As Integer = 0) As String
 
 		Dim strMask As String
 
@@ -1844,7 +1754,7 @@ LocalErr:
 
 	End Function
 
-	Private Sub GetPercentageFactor(ByRef lngPage As Integer, ByRef mlngType As Integer)
+	Private Sub GetPercentageFactor(lngPage As Integer, mlngType As Integer)
 
 		'mdblPercentageFactor will be used in FORMATCELL, if required
 		mdblPercentageFactor = 0
@@ -1862,7 +1772,7 @@ LocalErr:
 
 	End Sub
 
-	Public Sub BuildBreakdownStrings(ByRef lngHOR As Integer, ByRef lngVER As Integer, ByRef lngPGB As Integer)
+	Public Sub BuildBreakdownStrings(lngHOR As Integer, lngVER As Integer, lngPGB As Integer)
 
 		Dim rsTemp As DataTable
 		Dim strSQL As String
@@ -2118,16 +2028,14 @@ LocalErr:
 
 	End Function
 
-	Public Function AbsenceBreakdownRetreiveDefinition(ByRef pdtStartDate As Object, ByRef pdtEndDate As Object, ByRef plngHorColID As Object, ByRef plngVerColID As Object, ByRef plngPicklistID As Object, ByRef plngFilterID As Object, ByRef plngPersonnelID As Object, ByRef pstrIncludedTypes As Object) As Boolean
+	Public Function AbsenceBreakdownRetreiveDefinition(pdtStartDate As Object, pdtEndDate As Object, plngHorColID As Long, plngVerColID As Long _
+																										 , plngPicklistID As Integer, plngFilterID As Integer, plngPersonnelID As Integer, pstrIncludedTypes As Integer) As Boolean
 
-		Dim iCount As Short
 		Dim lngHorColID As Integer
 		Dim lngVerColID As Integer
 		Dim lngPicklistID As Integer
 		Dim lngFilterID As Integer
 		Dim lngPersonnelID As Integer
-		Dim dtStartDate As Date
-		Dim dtEndDate As Date
 		Dim strIncludedTypes As String
 
 		ReDim mastrUDFsRequired(0)
@@ -2179,7 +2087,7 @@ LocalErr:
 		End If
 
 
-		mlngBaseTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))
+		mlngBaseTableID = CInt(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))
 		mstrBaseTable = GetTableName(mlngBaseTableID)
 
 		mlngRecordDescExprID = CInt(General.GetRecDescExprID(mlngBaseTableID))
@@ -2212,16 +2120,15 @@ LocalErr:
 		mblnIntersection = False
 		mblnShowAllPagesTogether = False
 
-		AbsenceBreakdownRetreiveDefinition = True
+		Return True
 
 	End Function
 
-	Public Function SetAbsenceBreakDownDisplayOptions(ByRef pbShowBasePicklistFilter As Object) As Boolean
+	Public Function SetAbsenceBreakDownDisplayOptions(pbShowBasePicklistFilter As Boolean) As Boolean
 
 		' Set Report Display Options
-		'UPGRADE_WARNING: Couldn't resolve default property of object pbShowBasePicklistFilter. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mblnChkPicklistFilter = pbShowBasePicklistFilter
-		SetAbsenceBreakDownDisplayOptions = True
+		Return True
 
 	End Function
 
@@ -2272,14 +2179,14 @@ LocalErr:
 
 	' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
 	'    which don't exist for standard reports)
-	Public Function SetAbsenceBreakDownDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Integer, ByRef pblnOutputScreen As Boolean, _
-																													ByRef pblnOutputPrinter As Boolean, ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, _
-																													ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean, ByRef plngOutputEmailID As Long, _
-																													ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String, _
-																													ByRef pstrOutputFilename As String) As Boolean
+	Public Function SetAbsenceBreakDownDefaultOutputOptions(pbOutputPreview As Boolean, plngOutputFormat As Integer, pblnOutputScreen As Boolean, _
+																													 pblnOutputPrinter As Boolean, pstrOutputPrinterName As String, pblnOutputSave As Boolean, _
+																													 plngOutputSaveExisting As Long, pblnOutputEmail As Boolean, plngOutputEmailID As Long, _
+																													 pstrOutputEmailName As String, pstrOutputEmailSubject As String, pstrOutputEmailAttachAs As String, _
+																													 pstrOutputFilename As String) As Boolean
 
-		mblnOutputPreview = pbOutputPreview
-		mlngOutputFormat = plngOutputFormat
+		OutputPreview = pbOutputPreview
+		OutputFormat = plngOutputFormat
 		mblnOutputScreen = pblnOutputScreen
 		mblnOutputPrinter = pblnOutputPrinter
 		mstrOutputPrinterName = pstrOutputPrinterName
@@ -2290,12 +2197,11 @@ LocalErr:
 		mstrOutputEmailName = GetEmailGroupName(mlngOutputEmailID)
 		mstrOutputEmailSubject = pstrOutputEmailSubject
 		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-		mstrOutputFilename = pstrOutputFilename
-		mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = OutputFormats.fmtDataOnly And mblnOutputScreen))
+		OutputFilename = pstrOutputFilename
 
 	End Function
 
-	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+	Public Function UDFFunctions(pbCreate As Boolean) As Boolean
 		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
@@ -2402,7 +2308,7 @@ LocalErr:
 
 	End Sub
 
-	Private Function PivotAddToArray(ByRef strInput As String) As Object
+	Private Sub PivotAddToArray(strInput As String)
 
 		Dim lngIndex As Integer
 
@@ -2410,9 +2316,9 @@ LocalErr:
 		ReDim Preserve mstrOutputPivotArray(lngIndex)
 		mstrOutputPivotArray(lngIndex) = strInput & vbNewLine
 
-	End Function
+	End Sub
 
-	Private Function FormatSQLColumn(ByVal sColumn As String) As String
+	Private Function FormatSQLColumn(sColumn As String) As String
 
 		Dim sReturnValue As String
 
@@ -2422,11 +2328,11 @@ LocalErr:
 		sReturnValue = "replace(" & sReturnValue & ",char(10),'')"
 		sReturnValue = "replace(" & sReturnValue & ",char(13),'')"
 
-		FormatSQLColumn = sReturnValue
+		Return sReturnValue
 
 	End Function
 
-	Private Function FormatString(ByVal sHeading As String) As String
+	Private Function FormatString(sHeading As String) As String
 
 		Dim sReturnValue As String
 
@@ -2436,7 +2342,7 @@ LocalErr:
 		sReturnValue = Replace(sReturnValue, Chr(13), "")
 		sReturnValue = Replace(sReturnValue, "'", "&apos;")
 
-		FormatString = sReturnValue
+		Return sReturnValue
 
 	End Function
 
