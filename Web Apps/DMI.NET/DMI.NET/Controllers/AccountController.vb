@@ -225,6 +225,9 @@ Namespace Controllers
 			' Store the username, for use in forcedchangepassword.
 			Session("Username") = LCase(sUserName)
 
+			' HRPRO-3531
+			Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
+
 			' Check if the server DLL is registered.
 			Try
 
@@ -334,6 +337,16 @@ Namespace Controllers
 					FormatError(objServerSession.LoginInfo.LoginFailReason)
 					Return RedirectToAction("Loginerror")
 				End If
+
+
+				'Bounce non-IE users who have no SSI access...
+				If Session("MSBrowser") = False And
+					(objServerSession.LoginInfo.SelfServiceUserType = 1 Or objServerSession.LoginInfo.SelfServiceUserType = 2) Then
+					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
+					"You are not permitted to use the Self-service Intranet module with this user name."
+					Return RedirectToAction("Loginerror")
+				End If
+
 
 			Catch ex As Exception
 				' These error codes need updating
@@ -874,9 +887,6 @@ Namespace Controllers
 				cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 				Response.Cookies.Add(cookie)
 
-				' HRPRO-3531
-				Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
-
 				If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
 					' non-IE browsers don't get DMI access yet.
 					ViewBag.SSIMode = True
@@ -894,6 +904,9 @@ Namespace Controllers
 						Case 4		'IF SSI Only
 							' Return RedirectToAction("LinksMain", "Home")
 							ViewBag.SSIMode = True
+						Case 5		'IF DMI Multi AND SSI
+							' Return RedirectToAction("Main", "Home")
+							ViewBag.SSIMode = False
 						Case Else
 							Return RedirectToAction("login", "account")
 					End Select

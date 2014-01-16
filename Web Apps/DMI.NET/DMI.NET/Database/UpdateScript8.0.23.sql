@@ -1,4 +1,16 @@
-﻿CREATE PROCEDURE [dbo].[spASRIntGetUserGroup]
+﻿/****** Object:  StoredProcedure [dbo].[spASRIntGetUserGroup]    Script Date: 13/09/2013 08:57:58 ******/
+DROP PROCEDURE [dbo].[spASRIntGetUserGroup]
+GO
+
+/****** Object:  StoredProcedure [dbo].[spASRIntGetUserGroup]    Script Date: 13/09/2013 08:58:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[spASRIntGetUserGroup]
 	( 
 	@psItemKey				varchar(50),
 	@psUserGroup			varchar(250)	OUTPUT,
@@ -107,3 +119,54 @@ END
 		SET @iSelfServiceUserType = 5
 		SET @fSelfService = 0
 	END
+
+GO
+
+DECLARE @sSQL nvarchar(MAX),
+		@sGroup sysname,
+		@sObject sysname,
+		@sObjectType char(2);
+
+/*---------------------------------------------*/
+/* Ensure the required permissions are granted */
+/*---------------------------------------------*/
+DECLARE curObjects CURSOR LOCAL FAST_FORWARD FOR
+SELECT sysobjects.name, sysobjects.xtype
+FROM sysobjects
+		 INNER JOIN sysusers ON sysobjects.uid = sysusers.uid
+WHERE (((sysobjects.xtype = 'p') AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%'))
+		OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))
+		OR ((sysobjects.xtype = 'fn') AND (sysobjects.name LIKE 'udf_ASRFn%')))
+		AND (sysusers.name = 'dbo')
+
+OPEN curObjects
+FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+WHILE (@@fetch_status = 0)
+BEGIN
+		IF rtrim(@sObjectType) = 'P' OR rtrim(@sObjectType) = 'FN'
+		BEGIN
+				SET @sSQL = 'GRANT EXEC ON [' + @sObject + '] TO [ASRSysGroup]'
+				EXEC(@sSQL)
+		END
+		ELSE
+		BEGIN
+				SET @sSQL = 'GRANT SELECT,INSERT,UPDATE,DELETE ON [' + @sObject + '] TO [ASRSysGroup]'
+				EXEC(@sSQL)
+		END
+
+		FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+END
+CLOSE curObjects
+DEALLOCATE curObjects
+
+GO
+
+GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
+
+GO
+
+EXEC spsys_setsystemsetting 'database', 'version', '8.0';
+EXEC spsys_setsystemsetting 'intranet', 'version', '8.0.22';
+EXEC spsys_setsystemsetting 'ssintranet', 'version', '8.0.22';
+
+GO
