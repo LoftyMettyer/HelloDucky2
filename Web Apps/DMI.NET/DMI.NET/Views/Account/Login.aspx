@@ -162,8 +162,7 @@
 	End If
 %>
 
-<script type="text/javascript">
-
+<script type="text/javascript">	
 	function HelpAbout() {
 		$("#About").dialog( "open" );
 	}
@@ -238,7 +237,7 @@
 			//Splash
 			$(".splashDiv").show();
 						
-				frmLoginForm.submit();			
+			frmLoginForm.submit();			
 
 		}
 
@@ -327,18 +326,6 @@
 		$('.loginframetheme img').toggle();		
 	}	
 
-
-	$(document).ready(function () {
-		
-		//HRPRO-3531 - Feature Detection		
-		if ("ActiveXObject" in window) {
-			$('#txtMSBrowser').val('true');
-		};
-
-		toggleChromeIfAndroid();
-	});
-
-
 	function toggleChromeIfAndroid() {
 		var is_keyboard = false;
 		var is_landscape = false;
@@ -404,14 +391,14 @@
 				<td colSpan=5></td>
 			</tr>
 <%
-	If (Session("MSBrowser") = True) And (Session("IEVersion") < 9.0) Then
+	If (Session("MSBrowser") = True) And (Session("IEVersion") < 10.0) Then
 %>
 				<tr height=10>
 					<td colSpan=5></td>
 			</tr>
 			<tr height=10>
 				<td width=15></td>
-				<td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 9 or later.</td>
+				<td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 10 or later.</td>
 				<td width=15></td>
 			</tr>
 <%
@@ -573,7 +560,7 @@ End If
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
 	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="" />
 
-<%If (Session("MSBrowser") = False) Or (Session("MSBrowser") = True) And (Session("IEVersion") > 8.0) Then%>
+<%If (Session("MSBrowser") = False) Or ((Session("MSBrowser") = True) And (Session("IEVersion") > 9.0)) Then%>
 
 	<script type="text/javascript">
 		
@@ -587,12 +574,25 @@ End If
 
 <%end if %>
 
-<%If (Session("MSBrowser") = True) And (Session("IEVersion") < 9.0) Then%>
+
 	<script type="text/javascript">
-		$("#ForgotPasswordLink").css("display", "none");
+
+		if ("ActiveXObject" in window) {
+			//IE Browser.
+			try {
+				$('#txtMSBrowser').val('true');
+			} catch (e) {				
+			}
+			if (Number('<%=Session("IEVersion")%>') < '10.0') {
+				var fgpl = document.getElementById('ForgotPasswordLink');
+				fgpl.style.display = 'none';
+			}
+			toggleChromeIfAndroid();
+		}
+
 	</script>
-<%End If%>
-<%	Html.EndForm()%>
+
+	<%	Html.EndForm()%>
 </div>
 
 <div class="splashDiv hidden"></div>
