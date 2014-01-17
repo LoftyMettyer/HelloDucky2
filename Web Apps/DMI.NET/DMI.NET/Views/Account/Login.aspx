@@ -544,7 +544,7 @@ End If
 			<tr height=10>
 				<td width="15"></td>
 				<td colSpan=2>
-					<p id="ForgotPasswordLink" style="text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+					<p id="ForgotPasswordLink" style="display: none;text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 				</td>
 				<td width="15"></td>
 			</tr>
@@ -583,9 +583,9 @@ End If
 				$('#txtMSBrowser').val('true');
 			} catch (e) {				
 			}
-			if (Number('<%=Session("IEVersion")%>') < '10.0') {
+			if (Number('<%=Session("IEVersion")%>') >= '10.0') {
 				var fgpl = document.getElementById('ForgotPasswordLink');
-				fgpl.style.display = 'none';
+				fgpl.style.display = 'block';
 			}
 			toggleChromeIfAndroid();
 		}
