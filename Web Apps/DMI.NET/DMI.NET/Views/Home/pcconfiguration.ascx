@@ -3,347 +3,347 @@
 
 <script type="text/javascript">
 
-		function pcconfiguration_window_onload() {
-				
-				$("#workframe").attr("data-framesource", "PCCONFIGURATION");
-				var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+    function pcconfiguration_window_onload() {
 
-				showDefaultRibbon();
+        $("#workframe").attr("data-framesource", "PCCONFIGURATION");
+        var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
-				// Get menu to refresh the menu.
-				menu_refreshMenu();
+        showDefaultRibbon();
 
-				// Load the original Network File Location values. 
-				sKey = new String("documentspath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        // Get menu to refresh the menu.
+        menu_refreshMenu();
 
-
-				frmConfiguration.txtDocuments.value = sPath;
-				frmOriginalConfiguration.txtDocumentsPath.value = sPath;
-
-				sKey = new String("olePath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-				frmConfiguration.txtOLEServer.value = sPath;
-				frmOriginalConfiguration.txtOLEServerPath.value = sPath;
-
-				sKey = new String("localolePath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-				frmConfiguration.txtOLELocal.value = sPath;
-				frmOriginalConfiguration.txtOLELocalPath.value = sPath;
-
-				sKey = new String("photoPath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-				frmConfiguration.txtPhoto.value = sPath;
-				frmOriginalConfiguration.txtPhotoPath.value = sPath;
-
-				sKey = new String("imagePath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-				frmConfiguration.txtImage.value = sPath;
-				frmOriginalConfiguration.txtImagePath.value = sPath;
-
-				sKey = new String("tempMenuFilePath_");
-				sKey = sKey.concat(frmMenu.txtDatabase.value);
-				sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-				if (sPath == "") {
-						sPath = "c:\\";
-				}
-				if (sPath == "<NONE>") {
-						sPath = "";
-				}
-				frmConfiguration.txtTempMenuFile.value = sPath;
-				frmOriginalConfiguration.txtTempMenuFilePath.value = sPath;
-
-				frmConfiguration.txtDocuments.focus();
-
-				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
-				menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
-			;
-				// $('#mnutoolSaveAdminConfig').click('okClick()');
-
-				$('#btnDiv2OK').hide();
-				$('#btnDiv2Cancel').hide();
-
-				$("#toolbarAdminConfig").parent().show();
-				$("#toolbarAdminConfig").click();
-
-				$('input[name^="txt"]').on("change", function () { enableSaveButton(); });
-
-				$("#optionframe").hide();
-				$("#workframe").show();
-		}
-
-		function enableSaveButton() {
-			if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
-		}
+        // Load the original Network File Location values. 
+        sKey = new String("documentspath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 
 
-		function clearPath(psKey) {
-				if (psKey == "DOCUMENTS") {
-						frmConfiguration.txtDocuments.value = "";
-				}
-				if (psKey == "OLESERVER") {
-						frmConfiguration.txtOLEServer.value = "";
-				}
-				if (psKey == "OLELOCAL") {
-						frmConfiguration.txtOLELocal.value = "";
-				}
-				if (psKey == "PHOTO") {
-						frmConfiguration.txtPhoto.value = "";
-				}
-				if (psKey == "IMAGE") {
-						frmConfiguration.txtImage.value = "";
-				}
-				if (psKey == "TEMPMENUFILE") {
-						frmConfiguration.txtTempMenuFile.value = "";
-				}
-		}
+        frmConfiguration.txtDocuments.value = sPath;
+        frmOriginalConfiguration.txtDocumentsPath.value = sPath;
 
-		function selectPath(psKey) {
+        sKey = new String("olePath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        frmConfiguration.txtOLEServer.value = sPath;
+        frmOriginalConfiguration.txtOLEServerPath.value = sPath;
 
-				if (psKey == "DOCUMENTS") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtDocuments.value, "", "Document Default Output Path"));
-						frmConfiguration.txtDocuments.value = sPath;
-				}
+        sKey = new String("localolePath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        frmConfiguration.txtOLELocal.value = sPath;
+        frmOriginalConfiguration.txtOLELocalPath.value = sPath;
 
-				if (psKey == "OLESERVER") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtOLEServer.value, "", "OLE Path (Server)"));
-						frmConfiguration.txtOLEServer.value = sPath;
-				}
-				if (psKey == "OLELOCAL") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtOLELocal.value, "", "OLE Path (Local)"));
-						frmConfiguration.txtOLELocal.value = sPath;
-				}
-				if (psKey == "PHOTO") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtPhoto.value, "", "Photograph Path (non-linked)"));
-						frmConfiguration.txtPhoto.value = sPath;
-				}
-				if (psKey == "IMAGE") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtImage.value, "", "Image Path"));
-						frmConfiguration.txtImage.value = sPath;
-				}
-				if (psKey == "TEMPMENUFILE") {
-						var sPath = new String(menu_selectFolder(frmConfiguration.txtDocuments.value, "", "Temporary Menu File Path "));
-						frmConfiguration.txtTempMenuFile.value = sPath;
-				}
-		}
+        sKey = new String("photoPath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        frmConfiguration.txtPhoto.value = sPath;
+        frmOriginalConfiguration.txtPhotoPath.value = sPath;
 
-		function saveConfiguration() {
+        sKey = new String("imagePath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        frmConfiguration.txtImage.value = sPath;
+        frmOriginalConfiguration.txtImagePath.value = sPath;
 
-				var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
+        sKey = new String("tempMenuFilePath_");
+        sKey = sKey.concat(frmMenu.txtDatabase.value);
+        sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+        if (sPath == "") {
+            sPath = "c:\\";
+        }
+        if (sPath == "<NONE>") {
+            sPath = "";
+        }
+        frmConfiguration.txtTempMenuFile.value = sPath;
+        frmOriginalConfiguration.txtTempMenuFilePath.value = sPath;
 
-				// Validate the Documents path.
-				var sPath = new String(frmConfiguration.txtDocuments.value);
-				if (sPath.length > 0) {
+        frmConfiguration.txtDocuments.focus();
 
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The Documents Path is not valid.");
-								return false;
-						}
-				}
+        menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+        menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
+        ;
+        // $('#mnutoolSaveAdminConfig').click('okClick()');
 
-				// Validate the OLE (server) path.
-				var sPath = new String(frmConfiguration.txtOLEServer.value);
-				if (sPath.length > 0) {
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The OLE Path (server) is not valid.");
-								return false;
-						}
-				}
+        $('#btnDiv2OK').hide();
+        $('#btnDiv2Cancel').hide();
 
-				// Validate the OLE (local) path.
-				sPath = frmConfiguration.txtOLELocal.value;
-				if (sPath.length > 0) {
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The OLE Path (local) is not valid.");
-								return false;
-						}
-				}
+        $("#toolbarAdminConfig").parent().show();
+        $("#toolbarAdminConfig").click();
 
-				// Validate the Photo path.
-				sPath = frmConfiguration.txtPhoto.value;
-				if (sPath.length > 0) {
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The Photo Path is not valid.");
-								return false;
-						}
-				}
+        $('input[name^="txt"]').on("change", function () { enableSaveButton(); });
 
-				// Validate the Image path.
-				sPath = frmConfiguration.txtImage.value;
-				if (sPath.length > 0) {
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The Image Path is not valid.");
-								return false;
-						}
-				}
+        $("#optionframe").hide();
+        $("#workframe").show();
+    }
 
-				// Validate the Temp Menu File path.
-				sPath = frmConfiguration.txtTempMenuFile.value;
-				if (sPath.length > 0) {
-						if (!OpenHR.ValidateDir(sPath)) {
-								OpenHR.messageBox("The Temporary Menu File Path is not valid.");
-								return false;
-						}
-
-						try {
-								sTestPath = sPath;
-								if (sTestPath.substr(sTestPath.length - 1, 1) != "\\") {
-										sTestPath = sTestPath.concat("\\");
-								}
-								sTestPath = sTestPath.concat("testmenu");
-
-								//window.parent.frames("menuframe").abMainMenu.save(sTestPath, "");
-						}
-						catch (e) {
-								OpenHR.messageBox("The Temporary Menu File Path cannot be written to.");
-								return false;
-						}
-				}
-
-				// Save the registry values.
-			var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
-				sKey = new String("documentspath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtDocuments.value);
-
-				sKey = new String("olePath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLEServer.value);
-
-				sKey = new String("localolePath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLELocal.value);
-
-				sKey = new String("photoPath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtPhoto.value);
-
-				sKey = new String("imagePath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtImage.value);
-
-				sKey = new String("tempMenuFilePath_");
-				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-				if (frmConfiguration.txtTempMenuFile.value.length == 0) {
-						OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
-				}
-				else {
-						OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtTempMenuFile.value);
-				}
-
-				// Try to use the height property of the menu.
-				// If this fails then the menu has failed to load properly, so we need to define
-				// a temporary menu file path.
-				//        try 
-				//      {
-				//        a = window.parent.frames("menuframe").abMainMenu.Bands.Item("mnuMainMenu").height;
-				//  }
-				//        catch (e) 
-				//        {
-				// The menu has failed to load properly, so we now need to reload
-				// the menu.
-				//            window.parent.location.replace("main");
-				//            return;
-				//        }
-
-				OpenHR.submitForm(frmConfiguration);
-
-		}
-
-		function Configuration_okClick() {
-				frmConfiguration.txtReaction.value = "DEFAULT";
-				saveConfiguration();
-		}
-
-		// Return to the default page. //
-		/* Not used anymore -----------------------------------------------------------------------------------
-		function cancelClick() {
-				// Try to use the height property of the menu.
-				// If this fails then the menu has failed to load properly, so we need to define
-				// a temporary menu file path.
-				//     try 
-				//     {
-				//         a = window.parent.frames("menuframe").abMainMenu.Bands.Item("mnuMainMenu").height;
-				//     }
-				//     catch (e) 
-				//     {
-				// The menu has failed to load properly, so we now need to reload
-				// the menu.
-				//         okClick();
-				//         return;
-				//     }
-
-				if (definitionChanged() == false) {
-						window.location.href = "main";
-						return;
-				}
+    function enableSaveButton() {
+        if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
+    }
 
 
-				answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 3, "");
-				if (answer == 7) {
-						// No
-						window.location.href = "main";
-						return (false);
-				}
-				if (answer == 6) {
-						// Yes
-						frmConfiguration.txtReaction.value = "DEFAULT";
-						saveConfiguration();
-				}
-		}
-		---------------------------------------------------------------------------------------------------*/
+    function clearPath(psKey) {
+        if (psKey == "DOCUMENTS") {
+            frmConfiguration.txtDocuments.value = "";
+        }
+        if (psKey == "OLESERVER") {
+            frmConfiguration.txtOLEServer.value = "";
+        }
+        if (psKey == "OLELOCAL") {
+            frmConfiguration.txtOLELocal.value = "";
+        }
+        if (psKey == "PHOTO") {
+            frmConfiguration.txtPhoto.value = "";
+        }
+        if (psKey == "IMAGE") {
+            frmConfiguration.txtImage.value = "";
+        }
+        if (psKey == "TEMPMENUFILE") {
+            frmConfiguration.txtTempMenuFile.value = "";
+        }
+    }
 
-		function saveChanges(psAction, pfPrompt, pfTBOverride) {
-				if (definitionChanged() == false) {
-						return 7; //No to saving the changes, as none have been made.
-				}
+    function selectPath(psKey) {
 
-				answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "PC Configuration");
-				if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-						return 2;
-				}
-				else if (answer == 6) { // 'OK' -> discard changes and continue navigation
-					return 6;
-				}
-				else 
-				  return 2; //Cancel.
-		}
+        if (psKey == "DOCUMENTS") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtDocuments.value, "", "Document Default Output Path"));
+            frmConfiguration.txtDocuments.value = sPath;
+        }
 
-		function definitionChanged() {
-			
-				// Compare the network file location values with the original values.
-				if (frmConfiguration.txtDocuments.value != frmOriginalConfiguration.txtDocumentsPath.value) {
-						return true;
-				}
+        if (psKey == "OLESERVER") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtOLEServer.value, "", "OLE Path (Server)"));
+            frmConfiguration.txtOLEServer.value = sPath;
+        }
+        if (psKey == "OLELOCAL") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtOLELocal.value, "", "OLE Path (Local)"));
+            frmConfiguration.txtOLELocal.value = sPath;
+        }
+        if (psKey == "PHOTO") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtPhoto.value, "", "Photograph Path (non-linked)"));
+            frmConfiguration.txtPhoto.value = sPath;
+        }
+        if (psKey == "IMAGE") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtImage.value, "", "Image Path"));
+            frmConfiguration.txtImage.value = sPath;
+        }
+        if (psKey == "TEMPMENUFILE") {
+            var sPath = new String(menu_selectFolder(frmConfiguration.txtDocuments.value, "", "Temporary Menu File Path "));
+            frmConfiguration.txtTempMenuFile.value = sPath;
+        }
+    }
 
-				if (frmConfiguration.txtOLEServer.value != frmOriginalConfiguration.txtOLEServerPath.value) {
-						return true;
-				}
+    function saveConfiguration() {
 
-				if (frmConfiguration.txtOLELocal.value != frmOriginalConfiguration.txtOLELocalPath.value) {
-						return true;
-				}
+        var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
 
-				if (frmConfiguration.txtPhoto.value != frmOriginalConfiguration.txtPhotoPath.value) {
-						return true;
-				}
+        // Validate the Documents path.
+        var sPath = new String(frmConfiguration.txtDocuments.value);
+        if (sPath.length > 0) {
 
-				if (frmConfiguration.txtImage.value != frmOriginalConfiguration.txtImagePath.value) {
-						return true;
-				}
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The Documents Path is not valid.");
+                return false;
+            }
+        }
 
-				if (frmConfiguration.txtTempMenuFile.value != frmOriginalConfiguration.txtTempMenuFilePath.value) {
-						return true;
-				}
+        // Validate the OLE (server) path.
+        var sPath = new String(frmConfiguration.txtOLEServer.value);
+        if (sPath.length > 0) {
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The OLE Path (server) is not valid.");
+                return false;
+            }
+        }
 
-				// If you reach here then nothing has changed.
-				return false;
-		}
+        // Validate the OLE (local) path.
+        sPath = frmConfiguration.txtOLELocal.value;
+        if (sPath.length > 0) {
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The OLE Path (local) is not valid.");
+                return false;
+            }
+        }
+
+        // Validate the Photo path.
+        sPath = frmConfiguration.txtPhoto.value;
+        if (sPath.length > 0) {
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The Photo Path is not valid.");
+                return false;
+            }
+        }
+
+        // Validate the Image path.
+        sPath = frmConfiguration.txtImage.value;
+        if (sPath.length > 0) {
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The Image Path is not valid.");
+                return false;
+            }
+        }
+
+        // Validate the Temp Menu File path.
+        sPath = frmConfiguration.txtTempMenuFile.value;
+        if (sPath.length > 0) {
+            if (!OpenHR.ValidateDir(sPath)) {
+                OpenHR.messageBox("The Temporary Menu File Path is not valid.");
+                return false;
+            }
+
+            try {
+                sTestPath = sPath;
+                if (sTestPath.substr(sTestPath.length - 1, 1) != "\\") {
+                    sTestPath = sTestPath.concat("\\");
+                }
+                sTestPath = sTestPath.concat("testmenu");
+
+                //window.parent.frames("menuframe").abMainMenu.save(sTestPath, "");
+            }
+            catch (e) {
+                OpenHR.messageBox("The Temporary Menu File Path cannot be written to.");
+                return false;
+            }
+        }
+
+        // Save the registry values.
+        var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
+        sKey = new String("documentspath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtDocuments.value);
+
+        sKey = new String("olePath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLEServer.value);
+
+        sKey = new String("localolePath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLELocal.value);
+
+        sKey = new String("photoPath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtPhoto.value);
+
+        sKey = new String("imagePath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtImage.value);
+
+        sKey = new String("tempMenuFilePath_");
+        sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
+        if (frmConfiguration.txtTempMenuFile.value.length == 0) {
+            OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
+        }
+        else {
+            OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtTempMenuFile.value);
+        }
+
+        // Try to use the height property of the menu.
+        // If this fails then the menu has failed to load properly, so we need to define
+        // a temporary menu file path.
+        //        try 
+        //      {
+        //        a = window.parent.frames("menuframe").abMainMenu.Bands.Item("mnuMainMenu").height;
+        //  }
+        //        catch (e) 
+        //        {
+        // The menu has failed to load properly, so we now need to reload
+        // the menu.
+        //            window.parent.location.replace("main");
+        //            return;
+        //        }
+
+        OpenHR.submitForm(frmConfiguration);
+
+    }
+
+    function Configuration_okClick() {
+        frmConfiguration.txtReaction.value = "DEFAULT";
+        saveConfiguration();
+    }
+
+    // Return to the default page. //
+    /* Not used anymore -----------------------------------------------------------------------------------
+    function cancelClick() {
+            // Try to use the height property of the menu.
+            // If this fails then the menu has failed to load properly, so we need to define
+            // a temporary menu file path.
+            //     try 
+            //     {
+            //         a = window.parent.frames("menuframe").abMainMenu.Bands.Item("mnuMainMenu").height;
+            //     }
+            //     catch (e) 
+            //     {
+            // The menu has failed to load properly, so we now need to reload
+            // the menu.
+            //         okClick();
+            //         return;
+            //     }
+
+            if (definitionChanged() == false) {
+                    window.location.href = "main";
+                    return;
+            }
+
+
+            answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 3, "");
+            if (answer == 7) {
+                    // No
+                    window.location.href = "main";
+                    return (false);
+            }
+            if (answer == 6) {
+                    // Yes
+                    frmConfiguration.txtReaction.value = "DEFAULT";
+                    saveConfiguration();
+            }
+    }
+    ---------------------------------------------------------------------------------------------------*/
+
+    function saveChanges(psAction, pfPrompt, pfTBOverride) {
+        if (definitionChanged() == false) {
+            return 7; //No to saving the changes, as none have been made.
+        }
+
+        answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "PC Configuration");
+        if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+            return 2;
+        }
+        else if (answer == 6) { // 'OK' -> discard changes and continue navigation
+            return 6;
+        }
+        else
+            return 2; //Cancel.
+    }
+
+    function definitionChanged() {
+
+        // Compare the network file location values with the original values.
+        if (frmConfiguration.txtDocuments.value != frmOriginalConfiguration.txtDocumentsPath.value) {
+            return true;
+        }
+
+        if (frmConfiguration.txtOLEServer.value != frmOriginalConfiguration.txtOLEServerPath.value) {
+            return true;
+        }
+
+        if (frmConfiguration.txtOLELocal.value != frmOriginalConfiguration.txtOLELocalPath.value) {
+            return true;
+        }
+
+        if (frmConfiguration.txtPhoto.value != frmOriginalConfiguration.txtPhotoPath.value) {
+            return true;
+        }
+
+        if (frmConfiguration.txtImage.value != frmOriginalConfiguration.txtImagePath.value) {
+            return true;
+        }
+
+        if (frmConfiguration.txtTempMenuFile.value != frmOriginalConfiguration.txtTempMenuFilePath.value) {
+            return true;
+        }
+
+        // If you reach here then nothing has changed.
+        return false;
+    }
 
 </script>
 
@@ -391,7 +391,7 @@
 		<param name="Orientation" value="1">
 </object>
 
-<%--<form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration">
+<form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration">
 		<br>
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -571,7 +571,7 @@
 				</tr>
 		</table>
 		<input type="hidden" id="txtReaction" name="txtReaction">
-</form>--%>
+</form>
 
 <form id="frmOriginalConfiguration" name="frmOriginalConfiguration">
 		<input type="hidden" id="txtDocumentsPath" name="txtDocumentsPath">
@@ -587,5 +587,5 @@
 </form>
 
 <script type="text/javascript">
-		pcconfiguration_window_onload();
+    pcconfiguration_window_onload();
 </script>
