@@ -2756,6 +2756,210 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
+		Public Function util_run_crosstab_downloadoutput() As FilePathResult
+
+			Dim lngFormat As OutputFormats = Request("txtFormat")
+			Dim blnScreen As Boolean = False
+			Dim blnPrinter As Boolean = Request("txtPrinter")
+			Dim strPrinterName As String = Request("txtPrinterName")
+			Dim blnSave As Boolean = Request("txtSave")
+			Dim lngSaveExisting As Long = Request("txtSaveExisting")
+			Dim blnEmail As Boolean = Request("txtEmail")
+			Dim lngEmailGroupID As Integer = Request("txtEmailGroupID")
+			Dim strEmailSubject As String = Request("txtEmailSubject")
+			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
+			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim strDownloadExtension As String
+			Dim strInterSectionType As String
+
+			Dim lngLoopMin As Long
+			Dim lngLoopMax As Long
+
+			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
+
+			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+			Dim objUser As New HR.Intranet.Server.clsSettings
+			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+
+			'ClientDLL.ResetColumns()
+			'ClientDLL.ResetStyles()
+			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
+
+			ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
+				, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
+				, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
+				, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
+				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
+				, False)
+
+			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
+				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
+				, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
+
+			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
+				, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
+
+			ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
+
+			ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
+				, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
+				, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
+
+			ClientDLL.InitialiseStyles()
+			ClientDLL.HeaderCols = 1
+
+			'Set Options
+			If Not objCrossTab.OutputPreview Then
+				lngFormat = objCrossTab.OutputFormat
+				blnScreen = objCrossTab.OutputScreen
+				blnPrinter = objCrossTab.OutputPrinter
+				strPrinterName = objCrossTab.OutputPrinterName
+				blnSave = objCrossTab.OutputSave
+				lngSaveExisting = objCrossTab.OutputSaveExisting
+				blnEmail = objCrossTab.OutputEmail
+				lngEmailGroupID = objCrossTab.OutputEmailID
+				strEmailSubject = objCrossTab.OutputEmailSubject
+				strEmailAttachAs = objCrossTab.OutputEmailAttachAs
+				strDownloadFileName = objCrossTab.DownloadFileName
+			End If
+
+			strDownloadExtension = Path.GetExtension(strDownloadFileName)
+
+			Dim fOK = ClientDLL.SetOptions(False, lngFormat, False, False, strPrinterName, True, lngSaveExisting _
+				, blnEmail, lngEmailGroupID, strEmailSubject, strEmailAttachAs, strDownloadExtension)
+
+			If fOK Then
+				If ClientDLL.GetFile() Then
+					If lngFormat = OutputFormats.fmtDataOnly Then
+
+
+					ElseIf lngFormat = OutputFormats.fmtExcelPivotTable Then
+
+						''PIVOT TABLE
+						'Response.Write("  else if (frmExportData.txtFormat.value == 6) {" & vbCrLf)
+
+						'Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
+						'Response.Write("  ClientDLL.PivotDataFunction = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text;" & vbCrLf)
+
+						'Response.Write("  ClientDLL.AddColumn("" "", 12, 0,false);" & vbCrLf)
+						'For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+						'	Response.Write("  ClientDLL.AddColumn(""" & _
+						'				CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, 2, " & _
+						'				objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+						'Next
+						'Response.Write("  ClientDLL.AddColumn(window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text, 2, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+
+						'objCrossTab.GetPivotRecordset()
+						'For intCount = 1 To objCrossTab.OutputPivotArrayDataUBound
+						'	Response.Write(CleanStringForJavaScript_NotDoubleQuotes(objCrossTab.OutputPivotArrayData(intCount)))
+						'Next
+
+						'Response.Write("  ClientDLL.Complete();" & vbCrLf)
+						'Response.Write("  ShowDataFrame();" & vbCrLf)
+						'Response.Write("  }" & vbCrLf)
+
+					Else
+
+
+						''MH20040219
+						'Response.Write("  var lngExcelDataType;")
+						'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
+						'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
+						'Response.Write("  }" & vbCrLf)
+						'Response.Write("  else {" & vbCrLf)
+						'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
+						'Response.Write("  }" & vbCrLf)
+
+						Dim lngExcelDataType = 0 '?????
+
+						ClientDLL.AddColumn(" ", 12, 0, False)
+						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
+								, LCase(objCrossTab.Use1000Separator))
+						Next
+
+						strInterSectionType = "TODO Intersection type"
+						ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+
+
+						If objCrossTab.PageBreakColumn = True Then
+							lngLoopMin = 0
+							lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+						Else
+							lngLoopMin = 0
+							lngLoopMax = 0
+						End If
+
+						Dim sOutputGridCaption As String = objCrossTab.CrossTabName
+
+						For lngCount = lngLoopMin To lngLoopMax
+							If objCrossTab.PageBreakColumn = True Then
+								ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
+							Else
+								If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+									ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
+								Else
+									ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
+								End If
+							End If
+
+							objCrossTab.BuildOutputStrings(lngCount)
+							ClientDLL.ArrayDim(CStr(objCrossTab.DataArrayCols), CStr(objCrossTab.DataArrayRows))
+							For intCol = 0 To objCrossTab.DataArrayCols
+								For intRow = 0 To objCrossTab.DataArrayRows
+									ClientDLL.ArrayAddTo(intCol, intRow, Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255))
+								Next
+							Next
+
+							ClientDLL.DataArray()
+						Next
+
+						ClientDLL.Complete()
+
+					End If
+
+				End If
+			End If
+
+
+			If IO.File.Exists(ClientDLL.GeneratedFile) Then
+				Try
+					Response.ClearContent()
+					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+					Response.TransmitFile(ClientDLL.GeneratedFile)
+					Response.Flush()
+				Catch ex As Exception
+				Finally
+					IO.File.Delete(ClientDLL.GeneratedFile)
+				End Try
+			End If
+
+
+		End Function
+
+
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
 			'Session("CT_Mode") = Request("txtMode")

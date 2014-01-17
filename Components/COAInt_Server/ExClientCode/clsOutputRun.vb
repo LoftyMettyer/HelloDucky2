@@ -73,6 +73,7 @@ Public Class clsOutputRun
 		mcolMerges = New Collection
 
 	End Sub
+
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
@@ -156,30 +157,20 @@ Public Class clsOutputRun
 
 	End Sub
 
+	Public Sub AddColumn(Heading As String, DataType As SQLDataType, Decimals As Integer, ThousandSeparator As Boolean)
 
-	Public Function AddColumn(strHeading As String, lngDataType As SQLDataType, lngDecimals As Integer, bThousandSeparator As Boolean) As Boolean
-
-		Dim objColumn As New Metadata.Column
-
-		On Error GoTo LocalErr
-		AddColumn = True
-
-		objColumn.Name = strHeading
-		objColumn.DataType = lngDataType
-		objColumn.Decimals = lngDecimals
-		objColumn.Use1000Separator = bThousandSeparator
-
+		Dim objColumn As New Column With {
+					.Name = Heading,
+					.DataType = DataType,
+					.Decimals = Decimals,
+					.Use1000Separator = ThousandSeparator}
 		mcolColumns.Add(objColumn)
 
-		Exit Function
+	End Sub
 
-LocalErr:
-		AddColumn = False
-
-	End Function
-
-
-	Public Function AddStyle(ByRef strType As String, ByRef lngStartCol As Integer, ByRef lngStartRow As Integer, ByRef lngEndCol As Integer, ByRef lngEndRow As Integer, Optional ByRef lngBackCol As Object = Nothing, Optional ByRef lngForeCol As Object = Nothing, Optional ByRef blnBold As Object = Nothing, Optional ByRef blnUnderline As Object = Nothing, Optional ByRef blnGridLines As Object = Nothing, Optional ByRef lngBackCol97 As Object = Nothing, Optional ByRef lngForeCol97 As Object = Nothing) As Boolean
+	Public Function AddStyle(strType As String, lngStartCol As Integer, lngStartRow As Integer, lngEndCol As Integer, lngEndRow As Integer, Optional lngBackCol As Object = Nothing _
+													, Optional lngForeCol As Object = Nothing, Optional blnBold As Object = Nothing, Optional blnUnderline As Object = Nothing _
+													, Optional blnGridLines As Object = Nothing, Optional lngBackCol97 As Object = Nothing, Optional lngForeCol97 As Object = Nothing) As Boolean
 
 		Dim objStyle As clsOutputStyle
 
@@ -264,7 +255,6 @@ LocalErr:
 
 	End Function
 
-
 	Public Function AddMerge(ByRef lngStartCol As Integer, ByRef lngStartRow As Integer, ByRef lngEndCol As Integer, ByRef lngEndRow As Integer) As Boolean
 
 		Dim objMerge As clsOutputStyle
@@ -328,15 +318,10 @@ LocalErr:
 	End Sub
 
 	Public Function GetFile() As Object
-		On Error Resume Next
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetFile. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetFile = True
-		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.GetFile. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetFile. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetFile = mobjOutputType.GetFile(Me, mcolStyles)
+		Return mobjOutputType.GetFile(Me, mcolStyles)
 	End Function
 
-	Public Function AddPage(ByRef strDefTitle As String, Optional ByRef mstrSheetName As String = "") As Object
+	Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String = "") As Object
 		On Error Resume Next
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.AddPage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.AddPage(strDefTitle, mstrSheetName, mcolStyles)
@@ -512,7 +497,7 @@ LocalErr:
 		mobjOutputType.ClearUp()
 	End Sub
 
-	Private Function CheckEmailAttachment(ByRef strExt As String) As Object
+	Private Function CheckEmailAttachment(strExt As String) As Object
 
 		Dim lngFound As Integer
 
@@ -546,7 +531,7 @@ LocalErr:
 	End Function
 
 	'' The following example sends a binary file as an e-mail attachment.
-	Public Shared Sub SendMailWithAttachment(ByVal strAttachment As String, ByRef recipientList As String, mstrEmailAttachAs As String)
+	Public Shared Sub SendMailWithAttachment(strAttachment As String, recipientList As String, mstrEmailAttachAs As String)
 
 		Dim message As New MailMessage()
 		message.Subject = "OpenHR Report"
@@ -590,7 +575,7 @@ LocalErr:
 
 	End Sub
 
-	Public Function GetTempFileName(ByRef strFilename As String) As String
+	Public Function GetTempFileName(strFilename As String) As String
 
 		Dim strTempFileName As String
 
@@ -625,8 +610,7 @@ LocalErr:
 
 	End Function
 
-
-	Public Sub ShowFormats(ByRef blnData As Boolean, ByRef blnCSV As Boolean, ByRef blnHTML As Boolean, ByRef blnWord As Boolean, ByRef blnExcel As Boolean, ByRef blnChart As Boolean, ByRef blnPivot As Boolean)
+	Public Sub ShowFormats(blnData As Boolean, blnCSV As Boolean, blnHTML As Boolean, blnWord As Boolean, blnExcel As Boolean, blnChart As Boolean, blnPivot As Boolean)
 
 		mblnData = blnData
 		mblnCSV = blnCSV
@@ -637,13 +621,6 @@ LocalErr:
 		mblnPivot = blnPivot
 
 	End Sub
-
-
-	'Public Property Get cboPageBreak() As ComboBox
-	'Set cboPageBreak = mfrmOutput.cboPageBreak
-	'  mblnPageRange = True
-	'End Property
-
 
 	Public Function SetOptions(blnPrompt As Boolean, lngFormat As OutputFormats, blnScreen As Boolean, blnPrinter As Boolean, strPrinterName As String _
 															, blnSave As Boolean, lngSaveExisting As Integer, blnEmail As Boolean, strEmailAddresses As String, strEmailSubject As String _
@@ -755,11 +732,8 @@ LocalErr:
 
 	End Function
 
-
 	Public Sub SetPrinter()
 		'Dim Printer As New Printing.PrinterSettings
-
-		Dim objDefPrinter As cSetDfltPrinter
 
 		'If mstrPrinterName <> "<Default Printer>" Then
 		'	mstrDefaultPrinter = Printer.PrinterName
@@ -783,7 +757,6 @@ LocalErr:
 		End If
 
 	End Sub
-
 
 	Public Sub SettingOptions(strSettingWordTemplate As String, strSettingExcelTemplate As String, blnSettingExcelGridlines As Boolean, blnSettingExcelHeaders As Boolean _
 														 , blnSettingExcelOmitSpacerRow As Boolean, blnSettingExcelOmitSpacerCol As Boolean, blnSettingAutoFitCols As Boolean _
@@ -859,12 +832,12 @@ LocalErr:
 		ReDim Preserve mstrArray(UBound(mstrArray, 1), UBound(mstrArray, 2) + 1)
 	End Function
 
-	Public Function ArrayAddTo(ByRef lngCol As Integer, ByRef lngRow As Integer, ByRef strInput As Object) As Boolean
+	Public Function ArrayAddTo(lngCol As Integer, lngRow As Integer, strInput As Object) As Boolean
 		'UPGRADE_WARNING: Couldn't resolve default property of object strInput. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mstrArray(lngCol, lngRow) = strInput
 	End Function
 
-	Public Function KillFile(ByRef strFilename As String) As Boolean
+	Public Function KillFile(strFilename As String) As Boolean
 
 		On Error GoTo LocalErr
 
@@ -878,8 +851,7 @@ LocalErr:
 
 	End Function
 
-
-	Public Function GetSequentialNumberedFile(ByVal strFilename As String) As String
+	Public Function GetSequentialNumberedFile(strFilename As String) As String
 
 		Dim lngFound As Integer
 		Dim lngCount As Integer
@@ -894,7 +866,7 @@ LocalErr:
 
 	End Function
 
-	Private Function ValidPrinter(ByRef strName As String) As Boolean
+	Private Function ValidPrinter(strName As String) As Boolean
 		Return True
 		'TODO Implement printing
 		'Dim objPrinter As New Printing.PrinterSettings

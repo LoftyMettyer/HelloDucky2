@@ -18,7 +18,6 @@ Public Class CrossTab
 
 	Private fOK As Boolean
 	Private mstrStatusMessage As String
-	Private mblnUserCancelled As Boolean
 
 	Private mlngCrossTabType As CrossTabType
 	Private mstrTempTableName As String
@@ -140,12 +139,6 @@ Public Class CrossTab
 	Public ReadOnly Property ErrorString() As String
 		Get
 			ErrorString = mstrStatusMessage
-		End Get
-	End Property
-
-	Public ReadOnly Property UserCancelled() As Boolean
-		Get
-			UserCancelled = mblnUserCancelled
 		End Get
 	End Property
 
@@ -307,7 +300,7 @@ Public Class CrossTab
 	End Property
 
 	' What type of cross tab are we running as
-	Public ReadOnly Property CrossTabType() As Integer
+	Public ReadOnly Property CrossTabType() As CrossTabType
 		Get
 			Return mlngCrossTabType
 		End Get
@@ -2029,7 +2022,7 @@ LocalErr:
 	End Function
 
 	Public Function AbsenceBreakdownRetreiveDefinition(pdtStartDate As Object, pdtEndDate As Object, plngHorColID As Long, plngVerColID As Long _
-																										 , plngPicklistID As Integer, plngFilterID As Integer, plngPersonnelID As Integer, pstrIncludedTypes As Integer) As Boolean
+																										 , plngPicklistID As Integer, plngFilterID As Integer, plngPersonnelID As Integer, pstrIncludedTypes As String) As Boolean
 
 		Dim lngHorColID As Integer
 		Dim lngVerColID As Integer

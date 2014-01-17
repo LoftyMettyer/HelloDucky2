@@ -370,7 +370,7 @@ Namespace ExClientCode
 			lngExcelRow = _mlngDataCurrentRow
 
 			For lngGridRow = 0 To UBound(strArray, 2)
-				For lngGridCol = 0 To UBound(strArray, 1)
+				For lngGridCol = 0 To colColumns.Count - 1
 
 					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 

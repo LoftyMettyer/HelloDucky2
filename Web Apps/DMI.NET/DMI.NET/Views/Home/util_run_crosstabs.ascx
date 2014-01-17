@@ -214,7 +214,7 @@ Session("utiltype = 17 		Calendar Report--%>
 	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 </form>
 
-<form target="Output" action="util_run_outputoptions" method="post" id="frmExportData" name="frmExportData">
+<form action="util_run_crosstab_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="">
 	<input type="hidden" id="txtFormat" name="txtFormat" value="0">
 	<input type="hidden" id="txtScreen" name="txtScreen" value="">
@@ -228,6 +228,7 @@ Session("utiltype = 17 		Calendar Report--%>
 	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="">
 	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="">
 	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
 	<input type="hidden" id="txtFileName" name="txtFileName" value="">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 </form>
