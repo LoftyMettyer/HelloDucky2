@@ -391,7 +391,7 @@
 		<param name="Orientation" value="1">
 </object>
 
-<form action="confirmok" method="post" id="frmConfiguration" name="frmConfiguration">
+<%--<form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration">
 		<br>
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -571,7 +571,7 @@
 				</tr>
 		</table>
 		<input type="hidden" id="txtReaction" name="txtReaction">
-</form>
+</form>--%>
 
 <form id="frmOriginalConfiguration" name="frmOriginalConfiguration">
 		<input type="hidden" id="txtDocumentsPath" name="txtDocumentsPath">
