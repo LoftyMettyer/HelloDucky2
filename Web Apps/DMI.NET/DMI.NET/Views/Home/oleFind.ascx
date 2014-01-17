@@ -558,14 +558,15 @@
 		//		OpenHR.messageBox("File is too large to embed. \nMaximum for this column is " + frmFindForm.txtOLEMaxEmbedSize.value + "KB", 48);
 		//		bOK = false;
 		//	}
-		//}		
-
+		//}				
 		// Check that the filename/unc isn't too long
-		if ((sFile.length > 0) && (plngOleType > 1)) {
-			var sMessage = new String(OpenHR.CheckOLEFileNameLength(filSelectFile.value));
-			if (sMessage.length > 0) {
-				OpenHR.messageBox(sMessage, 48);
-				bOK = false;
+		if (plngOleType != 2) {
+			if ((sFile.length > 0) && (plngOleType > 1)) {
+				var sMessage = new String(OpenHR.CheckOLEFileNameLength(filSelectFile.value));
+				if (sMessage.length > 0) {
+					OpenHR.messageBox(sMessage, 48);
+					bOK = false;
+				}
 			}
 		}
 
