@@ -1,10 +1,12 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 
 <%		
-	Dim objCrossTab As HR.Intranet.Server.CrossTab
+	Dim objCrossTab As CrossTab
 	Dim intCount As Integer
 	Dim strCrossTabName As String
 	Dim lngCount As Long
@@ -12,12 +14,10 @@
 	Dim lngLoopMin As Long
 	Dim lngLoopMax As Long
 	Dim strEmailAddresses As String
-	Dim cmdReportsCols As ADODB.Command
-	Dim prmEmailGroupID As ADODB.Parameter
-	Dim rstReportColumns As ADODB.Recordset
-	Dim iLoop As Integer
 	Dim sErrorDescription As String
-		
+
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 		
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
 	Response.Write("  //" & Session("CT_Mode") & vbCrLf)
@@ -526,39 +526,21 @@
 				 Session("CT_Mode") = "EMAILGROUPTHENCLOSE" Then
 		strEmailAddresses = ""
 		If Session("CT_EmailGroupID") > 0 Then
-			cmdReportsCols = New ADODB.Command
-			cmdReportsCols.CommandText = "spASRIntGetEmailGroupAddresses"
-			cmdReportsCols.CommandType = 4 ' Stored procedure
-			cmdReportsCols.ActiveConnection = Session("databaseConnection")
-
-			prmEmailGroupID = cmdReportsCols.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
-			cmdReportsCols.Parameters.Append(prmEmailGroupID)
-			prmEmailGroupID.value = CleanNumeric(Session("CT_EmailGroupID"))
-
-			Err.Clear()
-			rstReportColumns = cmdReportsCols.Execute
-
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				iLoop = 1
-				Do While Not rstReportColumns.EOF
-					If iLoop > 1 Then
-						strEmailAddresses = strEmailAddresses & ";"
-					End If
-					strEmailAddresses = strEmailAddresses & rstReportColumns.Fields("Fixed").Value
-					rstReportColumns.MoveNext()
-					iLoop = iLoop + 1
-				Loop
-
-				' Release the ADO recordset object.
-				rstReportColumns.close()
-			End If
 					
-			rstReportColumns = Nothing
-			cmdReportsCols = Nothing
+			Try
+				Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+							, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(Session("CT_EmailGroupID"))})
+
+				If Not rstEmailAddr Is Nothing Then
+					For Each objRow In rstEmailAddr.Rows
+						strEmailAddresses = strEmailAddresses & objRow(0).ToString() & ";"
+					Next
+				End If
+
+			Catch ex As Exception
+				sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
+			End Try
+			
 
 		End If
 		'Session("CT_EmailGroupAddr") = strEmailAddresses

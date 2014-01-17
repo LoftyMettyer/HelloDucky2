@@ -4,6 +4,8 @@
 <%@ Import Namespace="System.Data" %>
 
 <%@ Register Assembly="DayPilot" Namespace="DayPilot.Web.Ui" TagPrefix="DayPilot" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Drawing" %>
 
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
@@ -287,51 +289,40 @@
 
 <form id="frmCalendarData" name="frmCalendarData" style="visibility: visible; display: block">
 <%
-	on error resume next
 	
 	Dim sErrorDescription As String = ""
 
-	Dim cmdEmailGroup As Command
-	Dim prmEmailGroupID As ADODB.Parameter
-	Dim rstEmails As Recordset
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			
 	Dim iLoop As Integer
 
 	If Session("EmailGroupID") > 0 Then
-		cmdEmailGroup = New Command
-		cmdEmailGroup.CommandText = "spASRIntGetEmailGroupAddresses"
-		cmdEmailGroup.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdEmailGroup.ActiveConnection = Session("databaseConnection")
+		
+		Try
+			Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+						, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(Session("EmailGroupID"))})
 
-		prmEmailGroupID = cmdEmailGroup.CreateParameter("EmailGroupID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-		cmdEmailGroup.Parameters.Append(prmEmailGroupID)
-		prmEmailGroupID.Value = CleanNumeric(Session("EmailGroupID"))
-
-		Err.Clear()
-		rstEmails = cmdEmailGroup.Execute
-
-		If (Err.Number <> 0) Then
-			sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-		End If
-
-		If Len(sErrorDescription) = 0 Then
 			iLoop = 1
-			Response.Write("<INPUT id=txtEmailGroupAddr name=txtEmailGroupAddr value=""")
-			Do While Not rstEmails.EOF
-				If iLoop > 1 Then
-					Response.Write(";")
-				End If
-				Response.Write(Replace(rstEmails.Fields("Fixed").Value, """", "&quot;"))
-				rstEmails.MoveNext()
-				iLoop = iLoop + 1
-			Loop
-			Response.Write(""">" & vbCrLf)
+			If Not rstEmailAddr Is Nothing Then
+				Response.Write("<input id=txtEmailGroupAddr name=txtEmailGroupAddr value=""")
 
-			' Release the ADO recordset object.
-			rstEmails.Close()
-		End If
-					
-		rstEmails = Nothing
-		cmdEmailGroup = Nothing
+				For Each objRow In rstEmailAddr.Rows
+					If iLoop > 1 Then
+						Response.Write(";")
+					End If
+
+					Response.Write(Replace(objRow("Fixed").ToString(), """", "&quot;"))
+
+				Next
+				
+				Response.Write(""">" & vbCrLf)
+				
+			End If
+
+		Catch ex As Exception
+			sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
+		End Try
+									
 	Else
 		Response.Write("<input type=hidden id=txtEmailGroupAddr name=txtEmailGroupAddr value=''>" & vbCrLf)
 	End If

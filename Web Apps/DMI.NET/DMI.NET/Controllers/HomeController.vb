@@ -2894,7 +2894,7 @@ Namespace Controllers
 					End If
 
 				Catch ex As Exception
-					sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
+					sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
 				End Try
 
 				fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _

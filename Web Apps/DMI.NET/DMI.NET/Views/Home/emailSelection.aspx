@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 <!DOCTYPE html>
 
 <html>
@@ -428,6 +430,7 @@
 
 		<%
 
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			
 			'Get the required Email information
 			Dim sErrorDescription As String
@@ -436,10 +439,7 @@
 			Dim i
 			Dim sAddline
 			Dim sEmailAddresses
-			Dim cmdEmailAddr
-			Dim rstEmailAddr
 			Dim iLoop
-			Dim prmEmailGroupID
 	
 			i = 0
 			iLoop = 0
@@ -468,40 +468,27 @@
 						sAddline = sAddline & rsEmail.Fields("Name").value
 					Else
 
-						cmdEmailAddr = CreateObject("ADODB.Command")
-						cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-						cmdEmailAddr.CommandType = 4 ' Stored procedure
-						cmdEmailAddr.ActiveConnection = Session("databaseConnection")
+						Try
+							Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+										, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = rsEmail.Fields("EmailGroupID").Value})
 
-						prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
-						cmdEmailAddr.Parameters.Append(prmEmailGroupID)
-						prmEmailGroupID.value = CleanNumeric(rsEmail.Fields("EmailGroupID").Value)
+							iLoop = 0
+							If Not rstEmailAddr Is Nothing Then
+								For Each objRow In rstEmailAddr.Rows
+									
+									If iLoop > 1 Then
+										sEmailAddresses = sEmailAddresses & ";"
+									End If
+									
+									sEmailAddresses = sEmailAddresses & objRow(0).ToString()
+									iLoop += 1
+								Next
+							End If
 
-						Err.Clear()
-						rstEmailAddr = cmdEmailAddr.Execute
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
-						End If
-
-						If Len(sErrorDescription) = 0 Then
-							iLoop = 1
-							Do While Not rstEmailAddr.EOF
-								If iLoop > 1 Then
-									sEmailAddresses = sEmailAddresses & ";"
-								End If
-								sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-								rstEmailAddr.MoveNext()
-								iLoop = iLoop + 1
-							Loop
-					
-							' Release the ADO recordset object.
-							rstEmailAddr.close()
-						End If
-						
-						rstEmailAddr = Nothing
-						cmdEmailAddr = Nothing
-				
+						Catch ex As Exception
+							sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
+						End Try
+									
 						sAddline = sAddline & sEmailAddresses
 					End If
 			
