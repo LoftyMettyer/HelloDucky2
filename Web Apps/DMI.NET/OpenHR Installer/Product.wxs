@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+	 xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+		 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+		 xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+	<Product Id="{FA1B9338-B6F6-413e-B67F-86CA8BCED6E8}"
+			 Name="OpenHR Web 8.0"
+			 Language="1033"
+			 Version="8.0.22"
+			 Manufacturer="Advanced Computer Software"
+			 UpgradeCode="{E5C9F391-5787-4fd1-81E6-D1A4A91D226D}" > 
+
+		<Package InstallerVersion="200" Compressed="yes" />
+
+		<Media Id="1" Cabinet="OpenHR.cab" EmbedCab="yes" />
+
+		<!-- Variables -->
+		<?define publishDir="..\DMI.NET\obj\Release\Package\PackageTmp\"?>
+		<?define MyWebResourceDir="."?>
+
+		<!-- Configurable install location -->
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+
+		<!-- Creating directories -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INETPUB" Name="Inetpub" ComponentGuidGenerationSeed="60f8e27d82ad4207b784e13305dd18dc">
+				<Directory Id="WWWROOT" Name="wwwroot" ComponentGuidGenerationSeed="d6ee5f504eb5453587abbf467ed4375a">
+					<!-- This is the folder where the website content will be located -->
+					<Directory Id="INSTALLLOCATION" Name="OpenHR" ComponentGuidGenerationSeed="f42c48f5f76444628078f9470422592b">
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+
+		<!-- Complete feature which will be installed. -->
+		<Feature Id="Complete"
+						 Title="OpenHR"
+						 Level="1"
+						 Display="expand"
+						 ConfigurableDirectory="INSTALLLOCATION">
+
+			<!-- Main content of the Complete feature. -->
+			<Feature Id="MainContent"
+					 Title="OpenHR"
+					 Description="The website content"
+					 Level="1">
+
+				<!-- Include IIS Configuration. -->
+				<ComponentGroupRef Id="MyWebIssConfiguration" />
+
+				<!-- Include web content. -->
+				<ComponentGroupRef Id="DMI.NET_Project" />
+
+				<!-- Perform changes in the web.config file. -->
+				<ComponentRef Id="WebConfigCmp" />
+
+			</Feature>
+		</Feature>
+
+		<DirectoryRef Id="INSTALLLOCATION">
+			<!-- Component handling the web.config -->
+			<Component Id="WebConfigCmp" Guid="">
+				<!-- Copy web.config to website folder. -->
+				<File Id="WebConfigFile" KeyPath="yes" Source="$(var.publishDir)\Web.config" Vital="yes" />
+				<!-- Modify Web.config with the setting entered by the user during installation -->
+				<util:XmlFile Id="ModifyServerSetting"
+										 Action="setValue"
+										 Permanent="yes"
+										 ElementPath="/configuration/appSettings/add[\[]@key='LoginPage:Server'[\]]"
+										 Name="value"
+										 File="[#WebConfigFile]"
+										 Value="[SERVER_STRING]"
+										 SelectionLanguage="XSLPattern"
+										 Sequence="1" />
+				<util:XmlFile Id="ModifyDatabaseSetting"
+										 Action="setValue"
+										 Permanent="yes"
+										 ElementPath="/configuration/appSettings/add[\[]@key='LoginPage:Database'[\]]"
+										 Name="value"
+										 File="[#WebConfigFile]"
+										 Value="[DATABASE_STRING]"
+										 SelectionLanguage="XSLPattern"
+										 Sequence="1" />
+			</Component>
+		</DirectoryRef>
+
+		<!-- .NET Framework 4.0 must be installed -->
+		<Property Id="FRAMEWORKBASEPATH">
+			<RegistrySearch Id="FindFrameworkDir" Root="HKLM" Key="SOFTWARE\Microsoft\.NETFramework" Name="InstallRoot" Type="raw"/>
+		</Property>
+
+		<Property Id="ASPNETREGIIS" >
+			<DirectorySearch Path="[FRAMEWORKBASEPATH]" Depth="4" Id="FindAspNetRegIis">
+				<FileSearch Name="aspnet_regiis.exe" MinVersion="4.0"/>
+			</DirectorySearch>
+		</Property>
+
+		<!-- Switch ASP.NET to version 4.0 -->
+		<!--<CustomAction Id="MakeWepApp40" Directory="INSTALLLOCATION" ExeCommand="[ASPNETREGIIS] -norestart -s W3SVC/1/ROOT/[VIRTUAL_DIR_VAL]" Return="check"/>
+
+		<InstallExecuteSequence>
+			<Custom Action="MakeWepApp40" After="InstallFinalize">ASPNETREGIIS AND NOT Installed</Custom>
+		</InstallExecuteSequence>-->
+
+		<!-- License and images -->
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />
+
+		<!-- Specify UI -->
+		<UIRef Id="OpenHRUI" />
+
+	</Product>
+</Wix>
