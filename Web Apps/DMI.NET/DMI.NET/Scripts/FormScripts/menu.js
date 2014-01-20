@@ -1629,14 +1629,14 @@ function menu_refreshMenu() {
 
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecordFind", true);
-			
-			menu_toolbarEnableItem("mnutoolNewRecordFind", ((frmFind.txtInsertGranted.value.toUpperCase() == "TRUE") &&
-					((frmMenuInfo.txtUserType.value == 0) ||
+			var fMnutoolNewRecordFind = ((frmFind.txtInsertGranted.value.toUpperCase() == "TRUE") &&
+				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmFind.txtCurrentParentTableID.value > 0) ||
 					(frmFind.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-					(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE"))));
+					(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE")));
+			menu_toolbarEnableItem("mnutoolNewRecordFind", fMnutoolNewRecordFind);
 			menu_setVisibleMenuItem("mnutoolCopyRecordFind", true);
-			menu_toolbarEnableItem("mnutoolCopyRecordFind", (lngRecordID > 0));
+			menu_toolbarEnableItem("mnutoolCopyRecordFind", fMnutoolNewRecordFind && (lngRecordID > 0));
 			menu_setVisibleMenuItem("mnutoolEditRecordFind", true);
 			menu_toolbarEnableItem("mnutoolEditRecordFind", (lngRecordID > 0));
 			menu_setVisibleMenuItem("mnutoolDeleteRecordFind", true);
