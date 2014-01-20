@@ -911,7 +911,7 @@
 	//}
 
 	function refreshControls() {
-
+		
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
 		
@@ -953,6 +953,13 @@
 
 		if (frmFindForm.txtOLEReadOnly.value == 'true')
 			frmFindForm.cmdEdit.value = "View";
+
+
+		//Disabled Link/Unlink buttons for non-IE browsers. (FF and Chrome don't support file upload paths)
+		if (!("ActiveXObject" in window)) {
+			button_disable(frmFindForm.cmdLink, true);
+			button_disable(frmFindForm.cmdRemove, (frmFindForm.cmdRemove.value == 'Unlink'));
+		}
 
 	}
 </script>
