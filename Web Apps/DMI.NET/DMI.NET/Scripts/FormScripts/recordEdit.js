@@ -2031,7 +2031,7 @@ function updateControl(lngColumnID, value) {
 								strOLEType = '(Server)';
 								break;
 							case 2:
-								strOLEType = '(Embedded)';
+								strOLEType = (filename.length > 0 ? '(Embedded)': '(Embed)');
 								break;
 							case 3:
 								strOLEType = (filename.length > 0 ? '(Linked)' : '(Link)');								

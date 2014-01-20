@@ -100,7 +100,7 @@
 				//frmFindForm.ASRIntOLE1.FileName = frmGotoOption.txtOLEFile.value;				
 				//frmFindForm.ASRIntOLE1.IsFileEncrypted = frmGotoOption.txtOLEEncryption.value;
 				//frmFindForm.ASRIntOLE1.DisplayFileImage();
-
+				
 				if (frmGotoOption.txtOLEFile.value == "") {
 					button_disable(frmFindForm.cmdEmbed, ((frmFindForm.txtOLEReadOnly.value == 'true') ||
 						(frmFindForm.txtOLEMaxEmbedSize.value == 0)));
@@ -914,7 +914,7 @@
 
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
-
+		
 		if (frmFindForm.txtFFOLEType.value < 2) {
 			
 			if (rowCount() > 0) {
@@ -945,7 +945,7 @@
 		}
 		else {			
 			button_disable(frmFindForm.cmdEdit, (frmGotoOption.txtOLEFile.value == ""));
-			button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
+			//button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
 			$('#oleCaption').show();
 			$('#fileUpload').hide();
 		}
@@ -1251,7 +1251,7 @@
 				strDateModified = objOLE.DocumentModifyDate
 				bIsNew = (Len(strJustFileName) = 0)
 				Session("OLEObject") = objOLE
-				objOLE = Nothing
+				objOLE = Nothing				
 			End If
 			
 			

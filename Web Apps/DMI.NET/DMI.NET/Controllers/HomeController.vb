@@ -5937,8 +5937,24 @@ Namespace Controllers
 
 		End Function
 
-
 		Function oleFind() As ActionResult
+
+			If Session("optionOLEType") > 1 Then
+				Dim objOLE As HR.Intranet.Server.Ole = Session("OLEObject")
+				Dim sFile As String = ""
+
+				If NullSafeString(Session("optionFile")) <> vbNullString Then
+					sFile = Session("optionFile")
+				End If
+
+				objOLE.IsPhoto = False
+				objOLE.OLEType = Session("optionOLEType")
+				objOLE.DisplayFilename = Path.GetFileName(sFile)
+				objOLE.FileName = sFile
+				Session("OLEObject") = objOLE
+				objOLE = Nothing
+			End If
+
 			Return View()
 		End Function
 
