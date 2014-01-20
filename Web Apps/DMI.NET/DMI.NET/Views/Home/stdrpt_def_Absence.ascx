@@ -1,7 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
@@ -68,91 +70,56 @@
 		End If
 	Next
 
+	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	
 	' Settings objects
 	Dim objSettings As New HR.Intranet.Server.clsSettings
 	objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 	
 	Dim aColumnNames
 	Dim aAbsenceTypes
-	Dim cmdReportsCols As Command
-	Dim prmBaseTableID As ADODB.Parameter
-	Dim rstReportColumns As Recordset
 	Dim sErrorDescription As String
 	Dim iCount As Integer
 		
 	' Load Absence Types and Personnel columns into array
 	ReDim aColumnNames(1, 0)
 	ReDim aAbsenceTypes(0)
+	
+	' Retreive the absence options	
+	Try
 
-	' Get the table records.
-	cmdReportsCols = New Command
-	cmdReportsCols.CommandText = "sp_ASRIntGetColumns"
-	cmdReportsCols.CommandType = CommandTypeEnum.adCmdStoredProc
-	cmdReportsCols.ActiveConnection = Session("databaseConnection")
-																				
-	prmBaseTableID = cmdReportsCols.CreateParameter("piTableID", 3, 1) ' 3=integer, 1=input
-	cmdReportsCols.Parameters.Append(prmBaseTableID)
-	prmBaseTableID.value = CleanNumeric(Session("Personnel_EmpTableID"))
+		Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetColumns", CommandType.StoredProcedure _
+			, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")})
 
-	Err.Clear()
-	rstReportColumns = cmdReportsCols.Execute
-																																			
-	If (Err.Number <> 0) Then
-		sErrorDescription = "The personnel column information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-	End If
-
-	If Len(sErrorDescription) = 0 Then
 		iCount = 0
-		Do While Not rstReportColumns.EOF
+		For Each objRow As DataRow In rstReportColumns.Rows
+
+			If CInt(objRow("OLEType")) <> 2 Then
 		
-			If rstReportColumns.fields("OLEType").value <> 2 Then
-		
-				aColumnNames(0, iCount) = rstReportColumns.fields("ColumnID").value
-				aColumnNames(1, iCount) = rstReportColumns.fields("ColumnName").value
+				aColumnNames(0, iCount) = CInt(objRow("ColumnID"))
+				aColumnNames(1, iCount) = objRow("ColumnName").ToString()
 			
 				ReDim Preserve aColumnNames(1, UBound(aColumnNames, 2) + 1)
-				iCount = iCount + 1
+				iCount += 1
 			End If
 			
-			rstReportColumns.MoveNext()
-			
-		Loop
+		Next
 
-		rstReportColumns.close()
+		Dim rstTablesInfo = objDataAccess.GetDataTable("sp_ASRIntGetAbsenceTypes", CommandType.StoredProcedure)
 
-	End If
-
-	' Load absence types
-	Dim cmdTables As Command
-	Dim rstTablesInfo As Recordset
-		
-	cmdTables = New Command
-	cmdTables.CommandText = "sp_ASRIntGetAbsenceTypes"
-	cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
-	cmdTables.ActiveConnection = Session("databaseConnection")
-
-	rstTablesInfo = cmdTables.Execute
-																			
-	If (Err.Number <> 0) Then
-		sErrorDescription = "The absence type information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-	End If
-
-	If Len(sErrorDescription) = 0 Then
 		iCount = 0
-		Do While Not rstTablesInfo.EOF
-			aAbsenceTypes(iCount) = rstTablesInfo.fields("Type").value
+		For Each objRow As DataRow In rstTablesInfo.Rows
+			aAbsenceTypes(iCount) = objRow("Type").ToString()
 			ReDim Preserve aAbsenceTypes(UBound(aAbsenceTypes) + 1)
-			iCount = iCount + 1
-			rstTablesInfo.MoveNext()
-		Loop
-
-		rstTablesInfo.close()
-
-	End If
-												
-	' Release the ADO objects.
-	cmdTables = Nothing
-	cmdReportsCols = Nothing
+			iCount += 1
+		Next
+		
+		
+	Catch ex As Exception
+		sErrorDescription = "The personnel column information could not be retrieved." & vbCrLf & FormatError(ex.Message)
+		
+	End Try
 
 
 	' Set the default settings
@@ -169,11 +136,11 @@
 	Response.Write("   var frmAbsenceDefinition = OpenHR.getForm(""frmAbsenceDefinitiontabs"",""frmAbsenceDefinition"");" & vbCrLf)
 		
 	' Type of standard report being run
-	If Session("StandardReport_Type") = 16 Then
+	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 		strReportType = "BradfordFactor"
 	End If
 
-	If Session("StandardReport_Type") = 15 Then
+	If Session("StandardReport_Type") = UtilityType.utlAbsenceBreakdown Then
 		strReportType = "AbsenceBreakdown"
 		Response.Write("frmAbsenceDefinition.btnTab2.style.visibility = ""hidden"";" & vbCrLf)
 	End If
@@ -1217,7 +1184,6 @@
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("StandardReport_Type")%>'>
 	<%
 			
-		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
 		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
 		Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)

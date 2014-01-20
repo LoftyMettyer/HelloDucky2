@@ -42,7 +42,7 @@ Public Class clsSettings
 
 		Dim objSetting As UserSetting
 
-		objSetting = SystemSettings.GetUserSetting(strSection, strKey)
+		objSetting = SystemSettings.GetUserSetting(strSection.ToLower(), strKey.ToLower())
 		If objSetting Is Nothing Then
 			Return varDefault
 		Else
