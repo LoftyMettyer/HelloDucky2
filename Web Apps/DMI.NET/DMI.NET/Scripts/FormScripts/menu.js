@@ -3288,7 +3288,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	//	}
 
 
-	window.location.href = "LogOff";
+	window.location.href = window.ROOT + "Account/LogOff";
 
 }
 
