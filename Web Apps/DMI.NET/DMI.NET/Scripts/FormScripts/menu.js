@@ -1550,8 +1550,7 @@ function menu_refreshMenu() {
 				menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
 				menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
-				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
-				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
+				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Toolbar Icon
 				//Hide Calendar Reports Group if all items are hidden.
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
 		}
@@ -1567,7 +1566,6 @@ function menu_refreshMenu() {
 		    menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
 		}
 	    
-
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
 			//menu_enableMenuItem("mnutoolHistory", false)
@@ -2059,9 +2057,6 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
 	
-	menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarVisible);
-	menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fStdRptAbsenceCalendarEnabled);
-
 	//New functionality
 			//if all these are false, then hide the Training Booking group.			
 	menu_setVisibletoolbarGroupById("mnutoolTransferBookingRecordFind", ((fBulkBookingVisible) ||
