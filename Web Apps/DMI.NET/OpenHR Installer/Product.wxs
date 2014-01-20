@@ -87,7 +87,7 @@
 
 		<!-- Check if IIS is installed -->
 		<PropertyRef Id="IISMAJORVERSION"/>
-		<Condition Message="OpenHR Web requires IIS 7 or above; as part of the IIS installation, please also install support for ASP.NET">
+		<Condition Message="OpenHR Web requires IIS 7 or above; as part of the IIS installation, if the Server is Microsoft Server 2008, please also install support for ASP.NET; if the Server is Microsoft Server 2012, make sure ASP.NET 3.5 and ASP.NET 4.5 are also installed">
 			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8"))]]>
 		</Condition>
 
@@ -96,6 +96,20 @@
 		<Condition Message="OpenHR requires .NET Framework 4.0. Please download it from http://www.microsoft.com/en-gb/download/details.aspx?id=17851">
 			<![CDATA[Installed OR NETFRAMEWORK40FULL]]>
 		</Condition>
+		
+		<!-- Get location of aspnet_regiis -->
+		<!--<Property Id="ASPNETREGIIS" >
+			<DirectorySearch Path="[FRAMEWORKBASEPATH]" Depth="4" Id="FindAspNetRegIis">
+				<FileSearch Name="aspnet_regiis.exe" MinVersion="4.0"/>
+			</DirectorySearch>
+		</Property>-->
+
+		<!-- Make app run on .NET version 4.0 -->
+		<!--<CustomAction Id="MakeWepApp40" Directory="INSTALLLOCATION" ExeCommand="[ASPNETREGIIS] -norestart -s W3SVC/1/ROOT/[VIRTUAL_DIR_VAL]" Return="check"/>-->
+
+		<!--<InstallExecuteSequence>
+			<Custom Action="MakeWepApp40" After="InstallFinalize">ASPNETREGIIS AND NOT Installed</Custom>
+		</InstallExecuteSequence>-->
 
 		<!-- License and images -->
 		<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />
