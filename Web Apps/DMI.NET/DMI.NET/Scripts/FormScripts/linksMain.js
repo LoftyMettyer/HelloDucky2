@@ -111,7 +111,7 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('&ColourID=' + iChart_ColourID + '";');
 	w.document.write('document.getElementById("chartImage").src = psURL;');
 	w.document.write('}');
-	w.document.write('loadChart();');
+	w.document.write('setTimeout("loadChart()", 500);');
 	w.document.write('</scri');
 	w.document.write('pt>');
 	w.document.close();
