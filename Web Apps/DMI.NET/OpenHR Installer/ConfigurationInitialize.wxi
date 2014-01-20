@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
-	<!-- +++++++++++++++++++++++++++ VIRTUAL_DIR_VAL property initialize +++++++++++++++++++++++++++ -->
+	<!-- Virtual directory name -->
 	<Property Id="VIRTUAL_DIR_VAL" Value="OpenHR" />
 
 	<!-- Website pool name -->
@@ -9,5 +9,4 @@
 	<!-- Server and database -->
 	<Property Id="SERVER_STRING" Value="Server" />
 	<Property Id="DATABASE_STRING" Value="Database" />
-
 </Include>

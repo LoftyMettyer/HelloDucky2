@@ -13,24 +13,23 @@
 
 		<DirectoryRef Id="INSTALLLOCATION">
 			<!-- Configuring app pool -->
-			<Component Id="MyWebAppPoolCmp" Guid="" KeyPath="yes">
-				<iis:WebAppPool Id="MyWebAppPool" Name="[POOL_NAME]" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="Integrated" />
+			<Component Id="WebAppPoolComponent" Guid="" KeyPath="yes">
+				<iis:WebAppPool Id="WebAppPool" Name="[POOL_NAME]" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="Integrated" />
 				<CreateFolder />
 			</Component>
 		
 			<!-- Configure virtual dir -->
-			<Component Id="MyWebVirtualDirCmp" Guid="{751DEB01-ECC1-48ff-869A-65BCEE9E0528}" KeyPath="yes" >
-				<iis:WebVirtualDir Id="MyWebVirtualDir" Alias="[VIRTUAL_DIR_VAL]" Directory="INSTALLLOCATION" WebSite="DefaultWebSite">
-					<iis:WebDirProperties Id="MyWebVirtDirProperties" AnonymousAccess="no" BasicAuthentication="no" WindowsAuthentication="yes" />
-					<iis:WebApplication Id="MyWebWebApplication" Name="[VIRTUAL_DIR_VAL]" WebAppPool="MyWebAppPool" />
+			<Component Id="WebVirtualDirComponent" Guid="{751DEB01-ECC1-48ff-869A-65BCEE9E0528}" KeyPath="yes" >
+				<iis:WebVirtualDir Id="WebVirtualDir" Alias="[VIRTUAL_DIR_VAL]" Directory="INSTALLLOCATION" WebSite="DefaultWebSite">
+					<iis:WebDirProperties Id="WebVirtDirProperties" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="yes" />
+					<iis:WebApplication Id="WebWebApplication" Name="[VIRTUAL_DIR_VAL]" WebAppPool="WebAppPool" />
 				</iis:WebVirtualDir>
 			</Component>
 		</DirectoryRef>
 
-		<ComponentGroup Id="MyWebIssConfiguration">
-			<ComponentRef Id="MyWebVirtualDirCmp" />
-			<ComponentRef Id="MyWebAppPoolCmp" />
+		<ComponentGroup Id="WebIssConfiguration">
+			<ComponentRef Id="WebVirtualDirComponent" />
+			<ComponentRef Id="WebAppPoolComponent" />
 		</ComponentGroup>
-		
 	</Fragment>
 </Wix>
