@@ -1440,7 +1440,7 @@ function saveChanges(psAction, pfPrompt, pfTBOverride) {
 				return 7; //No to saving the changes, as none have been made.
 		}
 
-		answer = OpenHR.messageBox("You have changed the current definition. SClick 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Cross Tabs");
+		answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Cross Tabs");
 		if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
 			return 2;
 		}
