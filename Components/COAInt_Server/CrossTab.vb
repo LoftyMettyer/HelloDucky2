@@ -4,6 +4,7 @@ Option Explicit On
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports System.Web
 
 Public Class CrossTab
 	Inherits BaseReport
@@ -1179,7 +1180,7 @@ LocalErr:
 								strSearch(lngCount) = strColumnName & " = " & General.ConvertNumberForSQL(objRow(0))
 
 							Case Else
-								strHeading(lngCount) = HTMLEncode(objRow(0).ToString())
+								strHeading(lngCount) = HttpUtility.HtmlEncode(objRow(0).ToString)
 								strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
 
 						End Select
@@ -1514,7 +1515,7 @@ LocalErr:
 					Case Else
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If LCase(mvarHeadings(Index)(lngCount)) = LCase(HTMLEncode(strValue)) Then
+						If LCase(mvarHeadings(Index)(lngCount)) = LCase(HttpUtility.HtmlEncode(strValue)) Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							GetGroupNumber = lngCount
 							Exit For

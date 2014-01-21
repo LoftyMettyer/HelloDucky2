@@ -2163,7 +2163,7 @@ Namespace Controllers
 					If sViewDescription.Length > 0 Then
 						sViewDescription = " view - " & prmRecordDesc.Value
 					End If
-					
+
 					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
 					sViewName = rowViewName(0).ToString()
 
@@ -2981,53 +2981,53 @@ Namespace Controllers
 					Else
 
 
-							''MH20040219
-							'Response.Write("  var lngExcelDataType;")
-							'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
-							'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
-							'Response.Write("  }" & vbCrLf)
-							'Response.Write("  else {" & vbCrLf)
-							'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
-							'Response.Write("  }" & vbCrLf)
+						''MH20040219
+						'Response.Write("  var lngExcelDataType;")
+						'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
+						'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
+						'Response.Write("  }" & vbCrLf)
+						'Response.Write("  else {" & vbCrLf)
+						'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
+						'Response.Write("  }" & vbCrLf)
 
-							Dim lngExcelDataType = 0 '?????
+						Dim lngExcelDataType = 0 '?????
 
-							ClientDLL.AddColumn(" ", 12, 0, False)
-							For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-								ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
-									, LCase(objCrossTab.Use1000Separator))
-							Next
+						ClientDLL.AddColumn(" ", 12, 0, False)
+						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
+								, LCase(objCrossTab.Use1000Separator))
+						Next
 
-							strInterSectionType = "TODO Intersection type"
-							ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						strInterSectionType = "TODO Intersection type"
+						ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 
+						If objCrossTab.PageBreakColumn = True Then
+							lngLoopMin = 0
+							lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+						Else
+							lngLoopMin = 0
+							lngLoopMax = 0
+						End If
+
+						Dim sOutputGridCaption As String = objCrossTab.CrossTabName
+
+						For lngCount = lngLoopMin To lngLoopMax
 							If objCrossTab.PageBreakColumn = True Then
-								lngLoopMin = 0
-								lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+								ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
 							Else
-								lngLoopMin = 0
-								lngLoopMax = 0
+								If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+									ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
+								Else
+									ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
+								End If
 							End If
 
-							Dim sOutputGridCaption As String = objCrossTab.CrossTabName
-
-							For lngCount = lngLoopMin To lngLoopMax
-								If objCrossTab.PageBreakColumn = True Then
-									ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
-								Else
-									If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
-										ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
-									Else
-										ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
-									End If
-								End If
-
-								objCrossTab.BuildOutputStrings(lngCount)
+							objCrossTab.BuildOutputStrings(lngCount)
 							ClientDLL.ArrayDim(objCrossTab.DataArrayCols, objCrossTab.DataArrayRows)
-								For intCol = 0 To objCrossTab.DataArrayCols
-									For intRow = 0 To objCrossTab.DataArrayRows
-										ClientDLL.ArrayAddTo(intCol, intRow, Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255))
+							For intCol = 0 To objCrossTab.DataArrayCols
+								For intRow = 0 To objCrossTab.DataArrayRows
+									ClientDLL.ArrayAddTo(intCol, intRow, HttpUtility.HtmlDecode(Left(objCrossTab.DataArray(intCol, intRow), 255)))
 									Next
 								Next
 

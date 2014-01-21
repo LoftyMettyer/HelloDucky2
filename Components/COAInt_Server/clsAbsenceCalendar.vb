@@ -5,6 +5,7 @@ Imports System.Globalization
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
+Imports System.Web
 Imports VB = Microsoft.VisualBasic
 
 Public Class AbsenceCalendar
@@ -442,7 +443,7 @@ Public Class AbsenceCalendar
 								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexAM), 10), mstrClientDateFormat) & "','" _
 								& mavAbsences(CInt(iIndexAM), 11) & "','" & VB6.Format(mavAbsences(CInt(iIndexAM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexAM), 13) & "','" & mavAbsences(CInt(iIndexAM), 9) & "','" _
 								& Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 5), "'", "") & "','" _
-								& Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexAM), 7), 100)) & "','" & mavAbsences(CInt(iIndexAM), 14) & "','" _
+								& Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(CInt(iIndexAM), 7), 100)) & "','" & mavAbsences(CInt(iIndexAM), 14) & "','" _
 								& mavAbsences(CInt(iIndexAM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
 					Else
 						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" _
@@ -481,7 +482,7 @@ Public Class AbsenceCalendar
 								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexPM), 10), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 11) & "','" _
 								& VB6.Format(mavAbsences(CInt(iIndexPM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 13) & "','" & mavAbsences(CInt(iIndexPM), 9) _
 								& "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 5), "'", "") _
-								& "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexPM), 7), 100)) & "','" _
+								& "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(CInt(iIndexPM), 7), 100)) & "','" _
 								& mavAbsences(CInt(iIndexPM), 14) & "','" & mavAbsences(CInt(iIndexPM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
 					Else
 						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>"

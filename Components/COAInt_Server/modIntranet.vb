@@ -52,41 +52,6 @@ Module modIntranet
 
 	End Function
 
-	' Encode an string so that it can be displayed correctly
-	' inside the browser.
-	'
-	' Same effect as the Server.HTMLEncode method in ASP
-	Public Function HTMLEncode(ByVal Text As String) As String
-		Dim i As Integer
-		Dim acode As Integer
-		Dim repl As String
-
-		HTMLEncode = Text
-
-		For i = Len(HTMLEncode) To 1 Step -1
-			acode = Asc(Mid(HTMLEncode, i, 1))
-			Select Case acode
-				Case 32
-					repl = "&nbsp;"
-				Case 34
-					repl = "&quot;"
-				Case 38
-					repl = "&amp;"
-				Case 60
-					repl = "&lt;"
-				Case 62
-					repl = "&gt;"
-				Case 32 To 127
-					' don't touch alphanumeric chars
-				Case Else
-					repl = "&#" & CStr(acode) & ";"
-			End Select
-			If Len(repl) Then
-				HTMLEncode = Left(HTMLEncode, i - 1) & repl & Mid(HTMLEncode, i + 1)
-				repl = ""
-			End If
-		Next
-	End Function
 
 	Friend Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
 
