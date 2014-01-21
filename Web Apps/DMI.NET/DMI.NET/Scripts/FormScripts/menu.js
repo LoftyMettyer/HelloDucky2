@@ -1001,26 +1001,6 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
-		if (sToolName == "mnutoolFirstEventLogFind") {
-			menu_moveRecord("MOVEFIRST");
-			return false;
-		}
-
-		if (sToolName == "mnutoolPreviousEventLogFind") {
-			menu_moveRecord("MOVEPREVIOUS");
-			return false;
-		}
-
-		if (sToolName == "mnutoolNextEventLogFind") {
-			menu_moveRecord("MOVENEXT");
-			return false;
-		}
-
-		if (sToolName == "mnutoolLastEventLogFind") {
-			menu_moveRecord("MOVELAST");
-			return false;
-		}
-
 
 		// User Config and PC Config
 		if (sToolName == "mnutoolSaveAdminConfig") {
@@ -1958,34 +1938,25 @@ function menu_refreshMenu() {
 							menu_setVisibleMenuItem("mnutoolPurgeEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolEmailEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolDeleteEventLogFind", true);
-							menu_setVisibleMenuItem("mnutoolFirstEventLogFind", true);
-							menu_setVisibleMenuItem("mnutoolPreviousEventLogFind", true);
-							menu_setVisibleMenuItem("mnutoolNextEventLogFind", true);
-							menu_setVisibleMenuItem("mnutoolLastEventLogFind", true);
 							
 							// Enable the Event Log tab
 							$("#toolbarEventLogFind").parent().show();
 							$("#toolbarEventLogFind").click();
 
-			var frmLog = document.getElementById("frmLog");
+							var frmLog = document.getElementById("frmLog");
 
-		if (frmLog.txtELLoaded.value == 1) {
-				frmData = OpenHR.getForm("dataframe", "frmData");
-			var bLastPage = frmData.txtELIsLastPage.value;
-			var bFirstPage = frmData.txtELIsFirstPage.value;
-
-								menu_enableMenuItem("mnutoolFirstEventLogFind", bFirstPage.toUpperCase() == "FALSE");
-								menu_enableMenuItem("mnutoolPreviousEventLogFind", bFirstPage.toUpperCase() == "FALSE");
-								menu_enableMenuItem("mnutoolNextEventLogFind", bLastPage.toUpperCase() == "FALSE");
-								menu_enableMenuItem("mnutoolLastEventLogFind", bLastPage.toUpperCase() == "FALSE");
+							if (frmLog.txtELLoaded.value == 1) {
+								frmData = OpenHR.getForm("dataframe", "frmData");
+								var bLastPage = frmData.txtELIsLastPage.value;
+								var bFirstPage = frmData.txtELIsFirstPage.value;
+								}
 							}
+							else {
+								if ((sCurrentWorkPage == "PCCONFIGURATION") ||
+										(sCurrentWorkPage == "CONFIGURATION")) {
+									// handled in configuration.configuration_window_onload()
+								}
 						}
-		else {
-			if ((sCurrentWorkPage == "PCCONFIGURATION") ||
-					(sCurrentWorkPage == "CONFIGURATION")) {
-				// handled in configuration.configuration_window_onload()
-			}
-	}
 					}
 				}
 			}

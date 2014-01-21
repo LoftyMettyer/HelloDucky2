@@ -925,36 +925,6 @@
 								</a>
 							</div>
 						</li>
-						<li><span>Navigate</span>
-							<div id="mnutoolFirstEventLogFind" class="button">
-								<a href="#" rel="table" title="First Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
-									<i class="icon-step-backward"></i>
-									<h6>First</h6>
-								</a>
-							</div>
-							<div id="mnutoolPreviousEventLogFind" class="button">
-								<a href="#" rel="table" title="Previous Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
-									<i class="icon-backward"></i>
-									<h6>Back</h6>
-								</a>
-							</div>
-							<div id="mnutoolNextEventLogFind" class="button">
-								<a href="#" rel="table" title="Next Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
-									<i class="icon-forward"></i>
-									<h6>Next</h6>
-								</a>
-							</div>
-							<div id="mnutoolLastEventLogFind" class="button">
-								<a href="#" rel="table" title="Last Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
-									<i class="icon-step-forward"></i>
-									<h6>Last</h6>
-								</a>
-							</div>
-						</li>
 					</ul>
 				</li>
 
