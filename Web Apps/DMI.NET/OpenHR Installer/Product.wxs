@@ -9,7 +9,7 @@
 			 Language="1033"
 			 Version="8.0.22"
 			 Manufacturer="Advanced Computer Software"
-			 UpgradeCode="{E5C9F391-5787-4fd1-81E6-D1A4A91D226D}" > 
+			 UpgradeCode="{E5C9F391-5787-4fd1-81E6-D1A4A91D226D}" >
 
 		<Package InstallerVersion="200" Compressed="yes" />
 
@@ -96,7 +96,33 @@
 		<Condition Message="OpenHR requires .NET Framework 4.0. Please download it from http://www.microsoft.com/en-gb/download/details.aspx?id=17851">
 			<![CDATA[Installed OR NETFRAMEWORK40FULL]]>
 		</Condition>
-		
+
+		<!-- Check that SQL Client is installed -->
+		<!--<Property Id="SQLCLIENTCHECK" Value="0">
+			<RegistrySearch Id="SQLClientCurrentVersion"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Native Client\CurrentVersion"
+											Name="Version"
+											Root="HKLM"
+											Type="raw" />
+		</Property>-->
+		<Property Id="SQLCLIENT10INSTALLED" Value="0">
+			<RegistrySearch Id="SQLClient10Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+		</Property>
+		<Property Id="SQLCLIENT11INSTALLED" Value="0">
+			<RegistrySearch Id="SQLClient11Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+		</Property>
+		<Condition Message="OpenHR requires SQL Server client; please install it an then re-run the OpenHR setup">
+			<![CDATA[Installed OR (SQLCLIENT10INSTALLED > "#0" OR SQLCLIENT11INSTALLED > "#0"]]>
+		</Condition>
+
 		<!-- Get location of aspnet_regiis -->
 		<!--<Property Id="ASPNETREGIIS" >
 			<DirectorySearch Path="[FRAMEWORKBASEPATH]" Depth="4" Id="FindAspNetRegIis">
