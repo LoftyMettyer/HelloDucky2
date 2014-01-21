@@ -2160,12 +2160,15 @@ Namespace Controllers
 
 					sViewDescription = prmRecordDesc.Value
 
-
+					If sViewDescription.Length > 0 Then
+						sViewDescription = " view - " & prmRecordDesc.Value
+					End If
+					
 					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
 					sViewName = rowViewName(0).ToString()
 
 					' get the view name, and append it.
-					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & " view - " & sViewDescription
+					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & sViewDescription
 
 					Session("ViewDescription") = sViewDescription
 
