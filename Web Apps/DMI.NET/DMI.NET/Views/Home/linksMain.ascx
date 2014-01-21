@@ -216,9 +216,12 @@
 							
 					Dim sDestination As String
 							
-					For Each objNavLink In objNavigation.GetNavigationLinks(False)
+					For Each objNavLink In objNavigation.GetNavigationLinks(False, LinkType.HyperLink)
 							
-						sText = Html.Encode(objNavLink.Text1)
+						Dim sLinkText As New StringBuilder
+						If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
+						sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
+						sText = sLinkText.ToString()
 		
 						If objNavLink.LinkToFind = 0 Then
 							sDestination = "linksMain?" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
@@ -932,7 +935,85 @@
 
 				tileCount += 1
 			Next
+
+			'objNavigation = New HR.Intranet.Server.clsNavigationLinks
+			'objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 								
+			' Get the navigation hypertext links.
+							
+			'Dim sDestination As String
+							
+			For Each objNavLink In objNavigation.GetNavigationLinks(False, LinkType.Button)
+	
+				Dim sLinkText As New StringBuilder
+				If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
+				sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
+				sText = sLinkText.ToString()
+
+		
+				If objNavLink.LinkToFind = 0 Then
+					sDestination = "linksMain?" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+			
+					If objNavLink.SingleRecord = 1 Then
+						sDestination = sDestination & "_0"
+					Else
+						sDestination = sDestination & "_" & CStr(Session("TopLevelRecID"))
+					End If
+				Else
+					sDestination = "recordEditMain?multifind_0_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+				End If
+				If fFirstSeparator Then		' add a separator
+					iRowNum = 1
+					iColNum = 1
+					If fFirstSeparator Then
+						fFirstSeparator = False
+					Else
+						%>
+					</ul>
+				</div>
+			</li>
+		</ul>
+
+		<%
+		End If
+		iSeparatorNum += 1
+			
+		%>
+
+		<ul class="linkspagebuttonseparatorframe" id="linkspagebuttonseparatorframe_<%=iSeparatorNum %>">
+			<li class="linkspagebutton-displaytype">
+				<div class="wrapupcontainer linkspagebuttonseparator-bordercolour" style="">
+					<div class="wrapuptext">
+						<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics">Fixed Links</p>
+					</div>
+				</div>
+				<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
+					<ul>
+						<%
+						End If
+						If iRowNum > iMaxRows Then
+							iColNum += 1
+							iRowNum = 1
+						%>
+						<script type="text/javascript">
+							$("#linkspagebuttonseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+							$("#linkspagebuttonseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+						</script>
+						<%
+						End If
+
+						%>
+						<li class="linkspagebuttontext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+							data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
+							<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><%=sText%></a>
+							<p class="linkspagebuttontileIcon"><i class="icon-external-link-sign"></i></p>
+						</li>
+						<%
+							iRowNum += 1
+							tileCount += 1
+						Next						
+						
+						
 			If Not fFirstSeparator Then%>
 					</ul>
 				</div>
@@ -1026,7 +1107,61 @@
 					</li>
 					<%iRowNum += 1
 
-						Next%>
+					Next
+			
+					For Each objNavLink In objNavigation.GetNavigationLinks(False, LinkType.DropDown)
+	
+						Dim sLinkText As New StringBuilder
+						If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
+						sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
+						sText = sLinkText.ToString()
+
+						Dim sValue As String = ""
+
+		
+						If objNavLink.LinkToFind = 0 Then
+							sValue = "7_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+							'sDestination = "linksMain?" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+			
+							If objNavLink.SingleRecord = 1 Then
+								'sDestination = sDestination & "_0"
+								sValue &= "_0"
+							Else
+								'sDestination = sDestination & "_" & CStr(Session("TopLevelRecID"))
+								sValue &= "_" & CStr(Session("TopLevelRecID"))
+							End If
+						Else
+							'sDestination = "recordEditMain?multifind_0_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+							sValue = "4_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
+						End If
+						
+						sOnClick = "goDropLink('" + sValue + "')"
+
+						If iRowNum > iMaxRows Then
+							iColNum += 1
+							iRowNum = 1
+						%>
+						<script type="text/javascript">
+							$("#dropdownlinksseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+							$("#dropdownlinksseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+						</script>
+						<%End If%>
+					<li class="dropdownlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
+						data-sizey="1" onclick="<%=sOnClick%>">
+						<p class="dropdownlinktileIcon">
+							<i class="icon-external-link"></i>
+						</p>
+						<p>
+							<a href="#" data-ddlvalue="<%=sValue%>">
+								<%=sText %></a>
+						</p>
+					</li>					
+						<%
+							iRowNum += 1
+							tileCount += 1
+						Next						
+
+%>
 				</ul>
 				<a class="DropLinkGoText" style="text-decoration: none; margin-left: 10px;" href="#" onclick="goDropLink()">Go...</a>
 			</div>

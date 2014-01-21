@@ -367,48 +367,50 @@ function goDropLink(sLinkInfo) {
 		sLinkInfo = $('.DropdownlistSelect').val();				
 	}
 
-
+	
 	var sLinkType = sLinkInfo.substr(0, 1);
 	sLinkInfo = sLinkInfo.substr(2);
 	var sNewWindow;
 	var sAppFilePath;
 	var sAppParameters;
 
-	if (sLinkType == "0") {
-		// URL link
-		sNewWindow = sLinkInfo.substr(0, 1);
-		sLinkInfo = sLinkInfo.substr(2);
-
-		goURL(sLinkInfo, sNewWindow);
-	}
-	else {
-		if (sLinkType == "2") {
+	switch (sLinkType) {
+		case "0":
+			// URL link
+			sNewWindow = sLinkInfo.substr(0, 1);
+			sLinkInfo = sLinkInfo.substr(2);
+			goURL(sLinkInfo, sNewWindow);
+			break;
+		case "2":
 			// Utility link
 			goUtility(sLinkInfo);
-		}
-			// Org Chart
-		else if (sLinkType == "6") {
-			loadPartialView('OrgChart', 'home', 'workframe')
-
-		}
-		else if (sLinkType == "5") {
+			break;
+		case "4":
+			// Mulitple record find page
+			sLinkInfo = "recordEditMain?multifind_0_" + sLinkInfo;
+			goURL(sLinkInfo, 0, false);
+			break;
+		case "5":
 			// Application link
 			sAppFilePath = sLinkInfo.substr(0, sLinkInfo.indexOf('_', 0));
 			sAppParameters = sLinkInfo.substr(sLinkInfo.indexOf('_', 0) + 1);
 			goApp(sAppFilePath, sAppParameters);
-		}
-		else {
-			if (sLinkType == "4") {
-				// Mulitple record find page
-				sLinkInfo = "recordEditMain.asp?multifind_0_" + sLinkInfo;
-				goURL(sLinkInfo, 0);
-			}
-			else {
-				// HR Pro screen link
-				goScreen(sLinkInfo);
-			}
-		}
+			break;
+		case "6":
+			//Org Chart
+			loadPartialView('OrgChart', 'home', 'workframe');
+			break;
+		case 7:
+			//linksMain link
+			sLinkInfo = "linksMain?" + sLinkInfo;
+			goURL(sLinkInfo, 0, false);
+			break;
+		default:
+			// HR Pro screen link
+			goScreen(sLinkInfo);
+			break;
 	}
+
 }
 
 function launchWorkflow(url, name) {

@@ -213,8 +213,8 @@ Public Class clsNavigationLinks
 
 	End Sub
 
-	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of Link)
-		Return gcolNavigationLinks.FindAll(Function(n) n.FindPage = pbShowFindPages Or pbShowFindPages)
+	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean, ByVal piLinkType As LinkType) As List(Of Link)
+		Return gcolNavigationLinks.FindAll(Function(n) (n.FindPage = pbShowFindPages Or pbShowFindPages) And n.LinkType = piLinkType)
 	End Function
 
 	Public Function NavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of Link)
