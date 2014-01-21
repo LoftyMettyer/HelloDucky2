@@ -9,6 +9,7 @@ Namespace BaseClasses
 		Inherits BaseForDMI
 
 		Public OutputScreen As Boolean
+		Public Property Name() As String
 
 		Private _outputFormat As OutputFormats
 		Private _outputFilename As String
@@ -61,14 +62,17 @@ Namespace BaseClasses
 		Public ReadOnly Property DownloadFileName As String
 			Get
 				If _outputFilename = "" Then
-					Return "ReportOutput.xlsx"
+					Return Name & DefaultFileExtension(_outputFormat)
 				Else
 
 					Select Case _outputFormat
 						Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
 							Return Path.GetFileName(_outputFilename)
+
 						Case Else
-							Return Path.GetFileNameWithoutExtension(_outputFilename) + ".xlsx"
+							'Return Path.GetFileNameWithoutExtension(_outputFilename) & DefaultFileExtension(_outputFormat)
+							Return Path.GetFileNameWithoutExtension(_outputFilename) & DefaultFileExtension(_outputFormat)
+
 					End Select
 
 				End If
@@ -76,6 +80,19 @@ Namespace BaseClasses
 			End Get
 		End Property
 
+		Private Function DefaultFileExtension(OutputType As OutputFormats) As String
+
+			Select Case OutputType
+				Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
+					Return ".xlsx"
+				Case OutputFormats.fmtWordDoc
+					Return ".docx"
+				Case Else
+					Return ".txt"
+
+			End Select
+
+		End Function
 
 	End Class
 End Namespace

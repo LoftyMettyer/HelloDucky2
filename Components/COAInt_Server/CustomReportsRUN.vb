@@ -17,7 +17,7 @@ Public Class Report
 	Private mstrErrorString As String
 
 	' Variables to store definition
-	Private mstrCustomReportsName As String
+	'	Private mstrCustomReportsName As String
 	Private mlngCustomReportsBaseTable As Integer
 	Private mstrCustomReportsBaseTableName As String
 	Private mlngCustomReportsPickListID As Integer
@@ -289,12 +289,6 @@ Public Class Report
 	Public ReadOnly Property CustomReportsSummaryReport() As Boolean
 		Get
 			Return mblnCustomReportsSummaryReport
-		End Get
-	End Property
-
-	Public ReadOnly Property CustomReportsName() As String
-		Get
-			Return mstrCustomReportsName
 		End Get
 	End Property
 
@@ -591,7 +585,7 @@ AddTempTableToSQL_ERROR:
 				Exit Function
 			End If
 
-			mstrCustomReportsName = rowData("Name").ToString()
+			Name = rowData("Name").ToString()
 			mlngCustomReportsBaseTable = CInt(rowData("BaseTable"))
 			mstrCustomReportsBaseTableName = rowData("TableName").ToString()
 			mlngCustomReportsPickListID = CInt(rowData("picklist"))
@@ -654,7 +648,7 @@ AddTempTableToSQL_ERROR:
 
 		GetCustomReportDefinition = True
 
-		Logs.AddHeader(EventLog_Type.eltCustomReport, mstrCustomReportsName)
+		Logs.AddHeader(EventLog_Type.eltCustomReport, Name)
 
 TidyAndExit:
 
@@ -4077,7 +4071,7 @@ Check_ERROR:
 	Public ReadOnly Property ReportCaption() As String
 		Get
 
-			Dim sCaption As String = mstrCustomReportsName
+			Dim sCaption As String = Name
 
 			Try
 
@@ -4316,7 +4310,7 @@ CalculateBradfordFactors_ERROR:
 
 
 		'Set the grid header with no picklist/filter information
-		mstrCustomReportsName = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
+		Name = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
 
 		mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
 		mstrCustomReportsBaseTableName = GetTableName(mlngCustomReportsBaseTable)

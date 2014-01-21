@@ -190,7 +190,7 @@
 
 	             	 If fok And Not bBradfordFactor Then
 	             		 fok = objReport.GetCustomReportDefinition
-	             		 session("utilname") = objReport.CustomReportsName
+		Session("utilname") = objReport.Name
 	             		 fNotCancelled = Response.IsClientConnected
 	             		 If fok Then fok = fNotCancelled
 	             	 End If

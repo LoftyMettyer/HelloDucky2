@@ -1,4 +1,7 @@
-﻿Imports System.Web.Mvc
+﻿Option Explicit On
+Option Strict Off
+
+Imports System.Web.Mvc
 Imports System.Web.UI.DataVisualization.Charting
 Imports System.IO
 Imports System.Web
@@ -2688,6 +2691,8 @@ Namespace Controllers
 
 #End Region
 
+
+
 #Region "Running Reports"
 
 		Function util_run_crosstabsMain() As ActionResult
@@ -2775,6 +2780,7 @@ Namespace Controllers
 			Dim lngLoopMin As Long
 			Dim lngLoopMax As Long
 
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
 
 			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
@@ -2783,9 +2789,6 @@ Namespace Controllers
 			Dim objUser As New HR.Intranet.Server.clsSettings
 			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-
-			'ClientDLL.ResetColumns()
-			'ClientDLL.ResetStyles()
 			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
 
 			ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
@@ -2845,6 +2848,12 @@ Namespace Controllers
 				strDownloadFileName = objCrossTab.DownloadFileName
 			End If
 
+			If strDownloadFileName.Length = 0 Then
+				objCrossTab.OutputFormat = lngFormat
+				objCrossTab.OutputFilename = ""
+				strDownloadFileName = objCrossTab.DownloadFileName
+			End If
+
 			strDownloadExtension = Path.GetExtension(strDownloadFileName)
 
 			Dim fOK = ClientDLL.SetOptions(False, lngFormat, False, False, strPrinterName, True, lngSaveExisting _
@@ -2857,105 +2866,192 @@ Namespace Controllers
 
 					ElseIf lngFormat = OutputFormats.fmtExcelPivotTable Then
 
-						''PIVOT TABLE
-						'Response.Write("  else if (frmExportData.txtFormat.value == 6) {" & vbCrLf)
-
 						'Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
 						'Response.Write("  ClientDLL.PivotDataFunction = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text;" & vbCrLf)
 
-						'Response.Write("  ClientDLL.AddColumn("" "", 12, 0,false);" & vbCrLf)
-						'For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-						'	Response.Write("  ClientDLL.AddColumn(""" & _
-						'				CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, 2, " & _
-						'				objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-						'Next
+						ClientDLL.AddColumn(" ", SQLDataType.sqlVarChar, 0, False)
+						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+							ClientDLL.AddColumn(objCrossTab.ColumnHeading(0, intCount), SQLDataType.sqlVarChar, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						Next
+
 						'Response.Write("  ClientDLL.AddColumn(window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text, 2, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+						strInterSectionType = "TODO Intersection type"
+						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlInteger, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
-						'objCrossTab.GetPivotRecordset()
-						'For intCount = 1 To objCrossTab.OutputPivotArrayDataUBound
-						'	Response.Write(CleanStringForJavaScript_NotDoubleQuotes(objCrossTab.OutputPivotArrayData(intCount)))
-						'Next
+						Dim rsPivot As DataTable
+						Dim strSQL As String
 
-						'Response.Write("  ClientDLL.Complete();" & vbCrLf)
-						'Response.Write("  ShowDataFrame();" & vbCrLf)
-						'Response.Write("  }" & vbCrLf)
+						Dim strOutput(,) As String
+						Dim strPageValue As String
+						Dim lngGroupNum As Integer
+						Dim lngCol As Integer
+						Dim lngRow As Integer
+
+
+						strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(objCrossTab.PageBreakColumn, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(objCrossTab.IntersectionColumn, ", Ins as 'Intersection'", vbNullString) & IIf(objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & objCrossTab.mstrTempTableName
+
+						If lngFormat = CrossTabType.cttAbsenceBreakdown Then
+							strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
+
+						ElseIf objCrossTab.PageBreakColumn Then
+							strSQL = strSQL & " ORDER BY PGB"
+						End If
+
+						rsPivot = objDataAccess.GetDataTable(strSQL)
+
+						'------------
+
+						With rsPivot
+
+							'			ReDim mstrOutputPivotArray(0)
+
+							If Not objCrossTab.PageBreakColumn Then
+								lngRow = 1
+								ReDim strOutput(.Columns.Count, 0)
+								For lngCol = 0 To .Columns.Count - 1
+									strOutput(lngCol, 0) = rsPivot.Columns(lngCol).ColumnName
+								Next
+							End If
+
+							For Each objRow As DataRow In rsPivot.Rows
+
+								If objCrossTab.PageBreakColumn Then
+									If strPageValue <> objRow("Page Break") Then
+
+										If strPageValue <> vbNullString Then
+
+											ClientDLL.AddPage(objCrossTab.Name, strPageValue)
+											ClientDLL.ArrayDim(UBound(strOutput, 1), UBound(strOutput, 2))
+											For lngCol = 0 To UBound(strOutput, 1)
+												For lngRow = 0 To UBound(strOutput, 2)
+													ClientDLL.ArrayAddTo(lngCol, lngRow, strOutput(lngCol, lngRow))
+												Next
+											Next
+
+											ClientDLL.DataArray()
+
+										End If
+										strPageValue = objRow("Page Break").ToString()
+
+										lngRow = 1
+										ReDim strOutput(.Columns.Count - 1, 0)
+										For lngCol = 0 To .Columns.Count - 1
+											strOutput(lngCol, 0) = objRow(lngCol).ColumnName
+										Next
+
+									End If
+								Else
+									strPageValue = objCrossTab.BaseTableName
+
+								End If
+
+								ReDim Preserve strOutput(.Columns.Count, lngRow)
+								For lngCol = 0 To .Columns.Count - 1
+
+									If lngCol < 2 Or (lngCol = 2 And objCrossTab.PageBreakColumn) Then
+
+										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+										'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										lngGroupNum = objCrossTab.GetGroupNumber(CStr(IIf(IsDBNull(objRow(lngCol)), vbNullString, objRow(lngCol))), CShort(lngCol))
+										'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										strOutput(lngCol, lngRow) = objCrossTab.ColumnHeading(lngCol, lngGroupNum)
+									Else
+										strOutput(lngCol, lngRow) = objRow(lngCol)
+									End If
+								Next
+								lngRow += 1
+							Next
+						End With
+
+						ClientDLL.AddPage(objCrossTab.Name, strPageValue)
+
+						ClientDLL.ArrayDim(UBound(strOutput, 1), UBound(strOutput, 2))
+						For lngCol = 0 To UBound(strOutput, 1)
+							For lngRow = 0 To UBound(strOutput, 2) - 1
+								ClientDLL.ArrayAddTo(lngCol, lngRow, strOutput(lngCol, lngRow))
+							Next
+						Next
+
+						ClientDLL.DataArray()
+						ClientDLL.Complete()
 
 					Else
 
 
-						''MH20040219
-						'Response.Write("  var lngExcelDataType;")
-						'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
-						'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
-						'Response.Write("  }" & vbCrLf)
-						'Response.Write("  else {" & vbCrLf)
-						'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
-						'Response.Write("  }" & vbCrLf)
+							''MH20040219
+							'Response.Write("  var lngExcelDataType;")
+							'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
+							'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
+							'Response.Write("  }" & vbCrLf)
+							'Response.Write("  else {" & vbCrLf)
+							'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
+							'Response.Write("  }" & vbCrLf)
 
-						Dim lngExcelDataType = 0 '?????
+							Dim lngExcelDataType = 0 '?????
 
-						ClientDLL.AddColumn(" ", 12, 0, False)
-						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
-								, LCase(objCrossTab.Use1000Separator))
-						Next
-
-						strInterSectionType = "TODO Intersection type"
-						ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
-
-
-						If objCrossTab.PageBreakColumn = True Then
-							lngLoopMin = 0
-							lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
-						Else
-							lngLoopMin = 0
-							lngLoopMax = 0
-						End If
-
-						Dim sOutputGridCaption As String = objCrossTab.CrossTabName
-
-						For lngCount = lngLoopMin To lngLoopMax
-							If objCrossTab.PageBreakColumn = True Then
-								ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
-							Else
-								If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
-									ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
-								Else
-									ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
-								End If
-							End If
-
-							objCrossTab.BuildOutputStrings(lngCount)
-							ClientDLL.ArrayDim(CStr(objCrossTab.DataArrayCols), CStr(objCrossTab.DataArrayRows))
-							For intCol = 0 To objCrossTab.DataArrayCols
-								For intRow = 0 To objCrossTab.DataArrayRows
-									ClientDLL.ArrayAddTo(intCol, intRow, Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255))
-								Next
+							ClientDLL.AddColumn(" ", 12, 0, False)
+							For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+								ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
+									, LCase(objCrossTab.Use1000Separator))
 							Next
 
-							ClientDLL.DataArray()
-						Next
+							strInterSectionType = "TODO Intersection type"
+							ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
-						ClientDLL.Complete()
+
+							If objCrossTab.PageBreakColumn = True Then
+								lngLoopMin = 0
+								lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+							Else
+								lngLoopMin = 0
+								lngLoopMax = 0
+							End If
+
+							Dim sOutputGridCaption As String = objCrossTab.CrossTabName
+
+							For lngCount = lngLoopMin To lngLoopMax
+								If objCrossTab.PageBreakColumn = True Then
+									ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
+								Else
+									If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+										ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
+									Else
+										ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
+									End If
+								End If
+
+								objCrossTab.BuildOutputStrings(lngCount)
+							ClientDLL.ArrayDim(objCrossTab.DataArrayCols, objCrossTab.DataArrayRows)
+								For intCol = 0 To objCrossTab.DataArrayCols
+									For intRow = 0 To objCrossTab.DataArrayRows
+										ClientDLL.ArrayAddTo(intCol, intRow, Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255))
+									Next
+								Next
+
+								ClientDLL.DataArray()
+							Next
+
+							ClientDLL.Complete()
 
 					End If
 
 				End If
 			End If
 
-
-			If IO.File.Exists(ClientDLL.GeneratedFile) Then
-				Try
-					Response.ClearContent()
-					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-					Response.TransmitFile(ClientDLL.GeneratedFile)
-					Response.Flush()
-				Catch ex As Exception
-				Finally
-					IO.File.Delete(ClientDLL.GeneratedFile)
-				End Try
+			' Only send output if not email
+			If Not (objCrossTab.OutputEmail And objCrossTab.OutputEmailID > 0) Then
+				If IO.File.Exists(ClientDLL.GeneratedFile) Then
+					Try
+						Response.ClearContent()
+						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+						Response.TransmitFile(ClientDLL.GeneratedFile)
+						Response.Flush()
+					Catch ex As Exception
+					Finally
+						IO.File.Delete(ClientDLL.GeneratedFile)
+					End Try
+				End If
 			End If
-
 
 		End Function
 
@@ -3080,6 +3176,11 @@ Namespace Controllers
 				lngEmailGroupID = CLng(objReport.OutputEmailID)
 				strEmailSubject = objReport.OutputEmailSubject
 				strEmailAttachAs = objReport.OutputEmailAttachAs
+				strDownloadFileName = objReport.DownloadFileName
+			End If
+
+			If strDownloadFileName.Length = 0 Then
+				objReport.OutputFormat = lngFormat
 				strDownloadFileName = objReport.DownloadFileName
 			End If
 
@@ -3267,19 +3368,21 @@ Namespace Controllers
 
 			ClientDLL.Complete()
 
-			' Return File(objReport.OutputFilename, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", strDesiredFileName)
-			If IO.File.Exists(ClientDLL.GeneratedFile) Then
-				Try
-					Response.ClearContent()
-					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-					Response.TransmitFile(ClientDLL.GeneratedFile)
-					Response.Flush()
-				Catch ex As Exception
-				Finally
-					IO.File.Delete(ClientDLL.GeneratedFile)
-				End Try
-			End If
+			' Only send output if not email
+			If Not (objReport.OutputEmail And objReport.OutputEmailID > 0) Then
 
+				If IO.File.Exists(ClientDLL.GeneratedFile) Then
+					Try
+						Response.ClearContent()
+						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+						Response.TransmitFile(ClientDLL.GeneratedFile)
+						Response.Flush()
+					Catch ex As Exception
+					Finally
+						IO.File.Delete(ClientDLL.GeneratedFile)
+					End Try
+				End If
+			End If
 
 		End Function
 

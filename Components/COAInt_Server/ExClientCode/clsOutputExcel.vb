@@ -6,6 +6,8 @@ Imports System.Collections.Generic
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
+Imports System.Collections.ObjectModel
+Imports Aspose.Cells.Pivot
 
 Namespace ExClientCode
 
@@ -371,92 +373,92 @@ Namespace ExClientCode
 
 			For lngGridRow = 0 To UBound(strArray, 2)
 				For lngGridCol = 0 To colColumns.Count - 1
+					
+						With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 
-					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
+							Dim stlNumeric As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+							Dim stlGeneral As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+							Dim stlDate As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+							Dim flag As StyleFlag = New StyleFlag()
 
-						Dim stlNumeric As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-						Dim stlGeneral As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-						Dim stlDate As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-						Dim flag As StyleFlag = New StyleFlag()
+							stlNumeric.Number = 4
+							stlGeneral.Number = 49
+							stlDate.Number = 14
 
-						stlNumeric.Number = 4
-						stlGeneral.Number = 49
-						stlDate.Number = 14
+							Select Case colColumns.Item(lngGridCol).DataType
 
-						Select Case colColumns.Item(lngGridCol).DataType
-
-							Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-								.SetStyle(stlNumeric)
-								If lngGridRow = 0 Then
+								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+									' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
+									.SetStyle(stlNumeric)
+									If lngGridRow = 0 Then
+										.PutValue(strArray(lngGridCol, lngGridRow))
+									Else
+										.PutValue(CLng(NullSafeInteger(strArray(lngGridCol, lngGridRow))))
+									End If
+								Case SQLDataType.sqlBoolean
+									.SetStyle(stlGeneral)
 									.PutValue(strArray(lngGridCol, lngGridRow))
-								Else
-									.PutValue(CLng(NullSafeInteger(strArray(lngGridCol, lngGridRow))))
-								End If
-							Case SQLDataType.sqlBoolean
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case SQLDataType.sqlUnknown
-								'Leave it alone! (Required for percentages on Standard Reports)
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case SQLDataType.sqlDate
-								.SetStyle(stlDate)
-								'MH20050104 Fault 9695 & 9696
-								'Adding ;@ to the end formats it as "short date" so excel will look at the
-								'regional settings when opening the workbook rather than force it to always
-								'be in the format of the user who created the workbook.
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case Else
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-						End Select
+								Case SQLDataType.sqlUnknown
+									'Leave it alone! (Required for percentages on Standard Reports)
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case SQLDataType.sqlDate
+									.SetStyle(stlDate)
+									'MH20050104 Fault 9695 & 9696
+									'Adding ;@ to the end formats it as "short date" so excel will look at the
+									'regional settings when opening the workbook rather than force it to always
+									'be in the format of the user who created the workbook.
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case Else
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
+							End Select
 
 
-						'MH20031113 Fault 7602
-						' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
-						'If lngGridRow < mlngHeaderRows Then
-						'  .HorizontalAlignment = xlCenter
-						'End If
-					End With
+							'MH20031113 Fault 7602
+							' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
+							'If lngGridRow < mlngHeaderRows Then
+							'  .HorizontalAlignment = xlCenter
+							'End If
+						End With
+					Next
 				Next
-			Next
 
-			If _mblnChart Then
-				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+				If _mblnChart Then
+					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+					ApplyCellOptions(UBound(strArray, 1), colStyles, True)
 
-				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, False)
+					CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
+					ApplyCellOptions(UBound(strArray, 1), colStyles, False)
 
-				'Delete superfluous rows and cols if setup in User Config reports section
-				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+					'Delete superfluous rows and cols if setup in User Config reports section
+					If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+					If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
 
-			ElseIf _mblnPivotTable Then
+				ElseIf _mblnPivotTable Then
 
-				If UBound(strArray, 1) < 1 Then
-					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
+					If UBound(strArray, 1) < 1 Then
+						_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
+					Else
+						ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+
+						CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+					End If
+
 				Else
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+					If _mblnApplyStyles Then
+						ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+						ApplyMerges(colMerges)
+					End If
+					ApplyCellOptions(UBound(strArray, 1), colStyles, True)
 
-					' CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+					'Delete superfluous rows and cols if setup in User Config reports section
+					If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+					If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+
 				End If
 
-			Else
-				If _mblnApplyStyles Then
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-					ApplyMerges(colMerges)
-				End If
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
-
-				'Delete superfluous rows and cols if setup in User Config reports section
-				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
-
-			End If
-
-			_mlngDataCurrentRow = _mlngDataCurrentRow + UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
+				_mlngDataCurrentRow = _mlngDataCurrentRow + UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
 
 		End Sub
 
@@ -538,144 +540,42 @@ LocalErr:
 
 		End Sub
 
+		Private Sub CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, strHor As String, strVer As String, strInt As String _
+																 , colStyles As Collection, colColumns As List(Of Metadata.Column))
 
-		Private Sub CreatePivotTable(ByRef lngMaxRows As Integer, ByRef lngMaxCols As Integer, ByRef strHor As String, ByRef strVer As String, ByRef strInt As String, ByRef colStyles As Collection, ByRef colColumns As Collection)
+			Dim pivotSheet As Worksheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
 
-			''Adding a new sheet
-			'Dim sheet2 As Worksheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-			''Naming the sheet
-			'sheet2.Name = "PivotTable"
-			''Getting the pivottables collection in the sheet
-			'Dim pivotTables As Aspose.Cells.Pivot.PivotTableCollection = sheet2.PivotTables
-			''Adding a PivotTable to the worksheet
-			'Dim index As Integer = pivotTables.Add("=Data!B4:J206", "B3", "PivotTable1")
-			''Accessing the instance of the newly added PivotTable
-			'Dim mxlpivotTable As Aspose.Cells.Pivot.PivotTable = pivotTables(index)
-			''Showing the grand totals
-			'mxlpivotTable.RowGrand = True
-			'mxlpivotTable.ColumnGrand = True
-			''Setting the PivotTable report is automatically formatted
-			'mxlpivotTable.IsAutoFormat = True
-			''Setting the PivotTable autoformat type.
-			'mxlpivotTable.AutoFormatType = Aspose.Cells.Pivot.PivotTableAutoFormatType.Report6
-			''Draging the first field to the row area.
-			'mxlpivotTable.AddFieldToArea(Aspose.Cells.Pivot.PivotFieldType.Row, 0)
-			''Draging the third field to the row area.
-			'mxlpivotTable.AddFieldToArea(Aspose.Cells.Pivot.PivotFieldType.Row, 2)
-			''Draging the second field to the row area.
-			'mxlpivotTable.AddFieldToArea(Aspose.Cells.Pivot.PivotFieldType.Row, 1)
-			''Draging the fourth field to the column area.
-			'mxlpivotTable.AddFieldToArea(Aspose.Cells.Pivot.PivotFieldType.Column, 3)
-			''Draging the fifth field to the data area.
-			'mxlpivotTable.AddFieldToArea(Aspose.Cells.Pivot.PivotFieldType.Data, 5)
-			''Setting the number format of the first data field
-			'mxlpivotTable.DataFields(0).NumberFormat = "$#,##0.00"
-			''Saving the Excel file
-			'' Workbook.Save("f:\test\pivotTable_test.xls")
+			pivotSheet.Name = "PivotTable"
 
+			Dim pivotTables As PivotTableCollection = pivotSheet.PivotTables
 
-			'		Dim xlPivot As Microsoft.Office.Interop.Excel.PivotTable
-			'		Dim xlDataSheet As Microsoft.Office.Interop.Excel.Worksheet
-			'		Dim xlData As Microsoft.Office.Interop.Excel.Range
-			'		Dim xlStart As Microsoft.Office.Interop.Excel.Range
-			'		Dim objColumn As clsColumn
-			'		Dim strSheetName As String
-			'		Dim xlFunc As Microsoft.Office.Interop.Excel.XlConsolidationFunction
+			Dim sRange = String.Format("={0}!{1}:{2}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, _mxlWorkBook.Worksheets(0).Cells.LastCell.Name)
+			Dim index As Integer = pivotTables.Add(sRange, "B2", "PivotTable1")
 
-			'		On Error GoTo LocalErr
+			With pivotTables(index)
+				.AddFieldToArea(PivotFieldType.Row, 1)
+				.AddFieldToArea(PivotFieldType.Column, 0)
+				.AddFieldToArea(PivotFieldType.Data, 1)
 
-			'		mxlApp.DisplayAlerts = True
+				.RowGrand = True
+				.ColumnGrand = True
+				.IsAutoFormat = True
 
-			'		xlData = mxlWorkSheet.Range(mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells._Default(lngMaxRows, lngMaxCols))
-			'		strSheetName = Mid(mxlWorkSheet.Name, 6)
-			'		'SetSheetName mxlWorkSheet, "Data " & mxlWorkSheet.Name
-			'		xlDataSheet = mxlWorkSheet
+				.AutoFormatType = PivotTableAutoFormatType.Classic
+				.PageFieldOrder = PrintOrderType.DownThenOver
 
-			'		GetWorksheet(strSheetName)
-			'		If mxlFirstSheet Is Nothing Then
-			'			mxlFirstSheet = mxlWorkSheet
-			'		End If
+				.RowFields(0).IsAscendSort = True
+				.ColumnFields(0).IsAscendSort = True
+				.PivotTableStyleType = PivotTableStyleType.PivotTableStyleMedium9
+				.ShowPivotStyleRowHeader = True
+				.ShowPivotStyleColumnHeader = True
 
-			'		xlDataSheet.Visible = Microsoft.Office.Interop.Excel.XlSheetVisibility.xlSheetHidden
-			'		xlStart = mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol)
+			End With
 
-			'		mxlApp.DisplayAlerts = False
+			pivotSheet.AutoFitColumns()
 
-
-			'		'MH20100628
-			'		If OfficeVersion > 12 Then
-			'			xlPivot = mxlWorkBook.PivotCaches.Create(SourceType:=Microsoft.Office.Interop.Excel.XlPivotTableSourceType.xlDatabase, SourceData:=xlData).CreatePivotTable(TableDestination:=xlStart)
-			'		Else
-			'			xlPivot = mxlWorkSheet.PivotTableWizard(SourceType:=Microsoft.Office.Interop.Excel.XlPivotTableSourceType.xlDatabase, SourceData:=xlData, TableDestination:=xlStart)
-			'		End If
-
-
-			'		With xlPivot
-			'			.AddFields(RowFields:=strVer, ColumnFields:=strHor)
-
-			'			'AE20071017 Fault #12540
-			'			Select Case mobjParent.PivotDataFunction
-			'				Case "Count"
-			'					xlFunc = Microsoft.Office.Interop.Excel.XlConsolidationFunction.xlCount
-			'				Case "Average"
-			'					xlFunc = Microsoft.Office.Interop.Excel.XlConsolidationFunction.xlAverage
-			'				Case "Maximum"
-			'					xlFunc = Microsoft.Office.Interop.Excel.XlConsolidationFunction.xlMax
-			'				Case "Minimum"
-			'					xlFunc = Microsoft.Office.Interop.Excel.XlConsolidationFunction.xlMin
-			'				Case "Total"
-			'					xlFunc = Microsoft.Office.Interop.Excel.XlConsolidationFunction.xlSum
-			'			End Select
-
-			'			'.PivotFields(strInt).Orientation = xlDataField
-
-			'			With .PivotFields(strInt)
-			'				'UPGRADE_WARNING: Couldn't resolve default property of object xlPivot.PivotFields().Orientation. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'				.Orientation = Microsoft.Office.Interop.Excel.XlPivotFieldOrientation.xlDataField
-			'				'UPGRADE_WARNING: Couldn't resolve default property of object xlPivot.PivotFields().Name. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'				.Name = mobjParent.PivotDataFunction & " of " & strInt
-			'				'UPGRADE_WARNING: Couldn't resolve default property of object xlPivot.PivotFields().Function. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'				.Function = xlFunc
-			'			End With
-
-			'			.NullString = IIf(mobjParent.PivotSuppressBlanks, "", "0")
-
-			'			objColumn = colColumns.Item(colColumns.Count())
-			'			If objColumn.DecPlaces > 0 Then
-			'				If objColumn.DecPlaces > 100 Then objColumn.DecPlaces = 100
-			'				.DataBodyRange.NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-			'			End If
-			'			'UPGRADE_NOTE: Object objColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			'			objColumn = Nothing
-
-			'			mxlApp.DisplayAlerts = True
-			'		End With
-
-			'		'UPGRADE_WARNING: Couldn't resolve default property of object colStyles(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'		ApplyStyleToRange(xlStart, colStyles.Item("Heading"))
-			'		'UPGRADE_WARNING: Couldn't resolve default property of object colStyles(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'		ApplyStyleToRange(xlPivot.RowRange, colStyles.Item("Heading"))
-			'		'UPGRADE_WARNING: Couldn't resolve default property of object colStyles(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'		ApplyStyleToRange(xlPivot.ColumnRange, colStyles.Item("Heading"))
-			'		'UPGRADE_WARNING: Couldn't resolve default property of object colStyles(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'		ApplyStyleToRange(xlPivot.DataBodyRange, colStyles.Item("Data"))
-			'		mxlWorkSheet.Range("A1").Select()
-			'		mlngHeaderCols = 1
-
-			'		ApplyCellOptions(xlPivot.ColumnRange.Columns.Count, colStyles, True)
-
-			'		'Delete superfluous rows and cols if setup in User Config reports section
-			'		If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete()
-			'		If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete()
-
-			'		'UPGRADE_NOTE: Object xlPivot may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			'		xlPivot = Nothing
-			'		mxlApp.DisplayAlerts = False
-
-			'		Exit Sub
-
-			'LocalErr:
-			'		mstrErrorMessage = Err.Description
+			' Save the file
+			'_mxlWorkBook.Save("c:\temp\pivotTable_test.xls")
 
 		End Sub
 

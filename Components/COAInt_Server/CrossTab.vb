@@ -20,7 +20,7 @@ Public Class CrossTab
 	Private mstrStatusMessage As String
 
 	Private mlngCrossTabType As CrossTabType
-	Private mstrTempTableName As String
+	Public mstrTempTableName As String
 
 	Private mstrBaseTable As String
 	Private mlngBaseTableID As Integer
@@ -31,7 +31,6 @@ Public Class CrossTab
 	Private mstrReportStartDate As String
 	Private mstrReportEndDate As String
 
-	Private mstrCrossTabName As String
 	Private mblnShowPercentage As Boolean
 	Private mblnPercentageofPage As Boolean
 	Private mbUse1000Separator As Boolean
@@ -202,9 +201,7 @@ Public Class CrossTab
 	Public ReadOnly Property CrossTabName() As String
 		Get
 
-			Dim strOutput As String
-
-			strOutput = mstrCrossTabName
+			Dim strOutput As String = Name
 
 			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 				strOutput = strOutput & " (" & ConvertSQLDateToLocale(mstrReportStartDate) & " -> " & ConvertSQLDateToLocale(mstrReportEndDate) & ")"
@@ -214,7 +211,7 @@ Public Class CrossTab
 				strOutput = strOutput & mstrPicklistFilterName
 			End If
 
-			CrossTabName = strOutput
+			Return strOutput
 
 		End Get
 	End Property
@@ -414,19 +411,13 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputPivotArrayDataUBound() As String
-		Get
-			Return CStr(UBound(mstrOutputPivotArray))
-		End Get
-	End Property
-
 	Public Function EventLogAddHeader() As Integer
 
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 			Logs.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
 		Else
-			Logs.AddHeader(EventLog_Type.eltCrossTab, mstrCrossTabName)
+			Logs.AddHeader(EventLog_Type.eltCrossTab, Name)
 		End If
 
 		Return Logs.EventLogID
@@ -548,7 +539,7 @@ ErrorTrap:
 			mlngBaseTableID = CInt(objRow("TableID"))
 			mstrBaseTable = objRow("TableName").ToString()
 			mlngRecordDescExprID = CInt(objRow("RecordDescExprID"))
-			mstrCrossTabName = objRow("Name").ToString()
+			Name = objRow("Name").ToString()
 			mblnChkPicklistFilter = CBool(objRow("PrintFilterHeader"))
 
 			mblnShowPercentage = CBool(objRow("Percentage"))
@@ -1438,7 +1429,7 @@ LocalErr:
 
 	End Function
 
-	Private Function GetGroupNumber(strValue As String, Index As Integer) As Integer
+	Public Function GetGroupNumber(strValue As String, Index As Integer) As Integer
 
 		'This returns which array element a particular value should be added to
 		'Examples:
@@ -2057,7 +2048,7 @@ LocalErr:
 		strIncludedTypes = "'" & Replace(strIncludedTypes, ",", "','")
 		strIncludedTypes = Mid(strIncludedTypes, 1, Len(strIncludedTypes) - 2)
 
-		mstrCrossTabName = "Absence Breakdown"
+		Name = "Absence Breakdown"
 
 		' Dates coming in are always in SQL (American) format
 		'UPGRADE_WARNING: Couldn't resolve default property of object pdtStartDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -2197,119 +2188,6 @@ LocalErr:
 	Public Function UDFFunctions(pbCreate As Boolean) As Boolean
 		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
-
-	Public Sub GetPivotRecordset()
-
-		Dim rsPivot As DataTable
-		Dim strSQL As String
-
-		Dim strOutput(,) As String
-		Dim strPageValue As String
-		Dim lngGroupNum As Integer
-		Dim lngCol As Integer
-		Dim lngRow As Integer
-
-
-		strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(mblnPageBreak, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(mblnIntersection, ", Ins as 'Intersection'", vbNullString) & IIf(mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & mstrTempTableName
-
-		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-			strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
-
-		ElseIf mblnPageBreak Then
-			strSQL = strSQL & " ORDER BY PGB"
-		End If
-
-		rsPivot = DB.GetDataTable(strSQL)
-
-		'------------
-
-		With rsPivot
-
-			ReDim mstrOutputPivotArray(0)
-
-			If Not mblnPageBreak Then
-				lngRow = 1
-				ReDim strOutput(.Columns.Count - 1, 0)
-				For lngCol = 0 To .Columns.Count - 1
-					strOutput(lngCol, 0) = rsPivot.Columns(lngCol).ColumnName
-				Next
-			End If
-
-			For Each objRow As DataRow In rsPivot.Rows
-
-				If mblnPageBreak Then
-					If strPageValue <> objRow("Page Break") Then
-
-						If strPageValue <> vbNullString Then
-
-							PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Left(Replace(strPageValue, """", "\"""), 255) & """);")
-							PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
-							For lngCol = 0 To UBound(strOutput, 1)
-								For lngRow = 0 To UBound(strOutput, 2)
-									PivotAddToArray("  ClientDLL.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
-								Next
-							Next
-
-							PivotAddToArray("  ClientDLL.DataArray();")
-
-						End If
-						strPageValue = objRow("Page Break").Value
-
-						lngRow = 1
-						ReDim strOutput(.Columns.Count - 1, 0)
-						For lngCol = 0 To .Columns.Count - 1
-							strOutput(lngCol, 0) = objRow(lngCol).Name
-						Next
-
-					End If
-				Else
-					strPageValue = mstrBaseTable
-
-				End If
-
-				ReDim Preserve strOutput(.Columns.Count - 1, lngRow)
-				For lngCol = 0 To .Columns.Count - 1
-
-					If lngCol < 2 Or (lngCol = 2 And mblnPageBreak) Then
-
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						lngGroupNum = GetGroupNumber(CStr(IIf(IsDBNull(objRow(lngCol)), vbNullString, objRow(lngCol))), CShort(lngCol))
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strOutput(lngCol, lngRow) = mvarHeadings(lngCol)(lngGroupNum)
-					Else
-						strOutput(lngCol, lngRow) = objRow(lngCol)
-					End If
-				Next
-				lngRow = lngRow + 1
-			Next
-		End With
-
-		PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
-
-		PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
-		For lngCol = 0 To UBound(strOutput, 1)
-			For lngRow = 0 To UBound(strOutput, 2)
-				PivotAddToArray("  ClientDLL.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
-			Next
-		Next
-
-		PivotAddToArray("  ClientDLL.DataArray();")
-
-		'UPGRADE_NOTE: Object rsPivot may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsPivot = Nothing
-
-	End Sub
-
-	Private Sub PivotAddToArray(strInput As String)
-
-		Dim lngIndex As Integer
-
-		lngIndex = UBound(mstrOutputPivotArray) + 1
-		ReDim Preserve mstrOutputPivotArray(lngIndex)
-		mstrOutputPivotArray(lngIndex) = strInput & vbNewLine
-
-	End Sub
 
 	Private Function FormatSQLColumn(sColumn As String) As String
 

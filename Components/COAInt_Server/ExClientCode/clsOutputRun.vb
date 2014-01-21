@@ -458,15 +458,14 @@ LocalErr:
 		End Set
 	End Property
 
-	Public Function DataArray() As Object
+	Public Sub DataArray()
 
 		If UBound(mstrArray, 2) < 1 Then
 			mstrErrorMessage = "No data to output."
-			Exit Function
+			Exit Sub
 		End If
 
 		'Not all classes support all properties so catch any errors...
-		On Error Resume Next
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.SizeColumnsIndependently. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.SizeColumnsIndependently = mblnSizeColumnsIndependently
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.HeaderCols. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -474,11 +473,10 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.HeaderRows. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.HeaderRows = mlngHeaderRows
 
-		On Error GoTo 0
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.DataArray. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.DataArray(mstrArray, mcolColumns, mcolStyles, mcolMerges)
 
-	End Function
+	End Sub
 
 	Public Sub Complete()
 
