@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -10,6 +12,7 @@
 	Response.Expires = 0
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 	Dim sMessage = ""
 	Dim sFormElements = ""
@@ -23,71 +26,28 @@
 	Session("utilname") = Request.Form("utilname")
 	
 	If Len(sURL) > 0 Then
-		Dim cmdInitiate = CreateObject("ADODB.Command")
-		cmdInitiate.CommandText = "spASRInstantiateWorkflow"
-		cmdInitiate.CommandType = 4	' Stored Procedure
-		cmdInitiate.ActiveConnection = Session("databaseConnection")
+		
+		Try
+			Dim prmInstanceID = New SqlParameter("piInstanceID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFormElements = New SqlParameter("psFormElements", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmMessage = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-		Dim prmUtilID = cmdInitiate.CreateParameter("WorkflowID", 3, 1)
-		cmdInitiate.Parameters.Append(prmUtilID)
-		prmUtilID.value = CleanNumeric(CType(Session("utilid"), String))
+			objDataAccess.ExecuteSP("spASRInstantiateWorkflow", _
+						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = CleanNumeric(CType(Session("utilid"), String))}, _
+						prmInstanceID, prmFormElements, prmMessage)
 
-		Dim prmInstanceID = cmdInitiate.CreateParameter("instanceID", 3, 2)	' 3=integer, 2=output
-		cmdInitiate.Parameters.Append(prmInstanceID)
+			sInstanceID = prmInstanceID.Value.ToString()
+			sFormElements = prmFormElements.Value.ToString()
+			sMessage = prmMessage.Value.ToString()
 
-		Dim prmFormElements = cmdInitiate.CreateParameter("formElements", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-		cmdInitiate.Parameters.Append(prmFormElements)
+		Catch ex As Exception
+			Throw
 
-		Dim prmMessage = cmdInitiate.CreateParameter("message", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-		cmdInitiate.Parameters.Append(prmMessage)
-
-		Err.Clear()
-		cmdInitiate.Execute()
-			
-		If (Err.Number = 0) Then
-			sInstanceID = CType(cmdInitiate.Parameters("instanceID").Value, String)
-			sFormElements = CType(cmdInitiate.Parameters("formElements").Value, String)
-			sMessage = CType(cmdInitiate.Parameters("message").Value, String)
-		End If
-	
-		' Release the ADO command object.
-		cmdInitiate = Nothing
+		End Try
+		
 	End If
 %>
 <script type="text/JavaScript">
-
-	// Resize the popup.
-	//iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-	//if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
-	//	try {
-	//		window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
-	//		window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.availHeight);
-	//	}
-	//	catch (e) { }
-	//}
-	//else {
-	//	try {
-	//		window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
-	//		window.parent.resizeBy(0, iResizeByHeight);
-	//	}
-	//	catch (e) { }
-	//}
-
-	//iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
-	//if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
-	//	try {
-	//		window.parent.moveTo(0, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-	//		window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
-	//	}
-	//	catch (e) { }
-	//}
-	//else {
-	//	try {
-	//		window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-	//		window.parent.resizeBy(iResizeByWidth, 0);
-	//	}
-	//	catch (e) { }
-	//}
 
 	//Show optionframe and hide workframe
 	$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
@@ -184,32 +144,23 @@ End If
 					Dim iIndex = InStr(sFormElements, vbTab)
 
 					Dim sStep = Left(sFormElements, iIndex - 1)
+					
+					Try
 
-					Dim cmdQs = CreateObject("ADODB.Command")
-					cmdQs.CommandText = "spASRGetWorkflowQueryString"
-					cmdQs.CommandType = 4	' Stored Procedure
-					cmdQs.ActiveConnection = Session("databaseConnection")
+						Dim prmQueryString = New SqlParameter("psQueryString", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						objDataAccess.ExecuteSP("spASRGetWorkflowQueryString", _
+									New SqlParameter("piInstanceID", SqlDbType.Int) With {.Value = CInt(sInstanceID)}, _
+									New SqlParameter("piElementID", SqlDbType.Int) With {.Value = CInt(sStep)}, _
+									prmQueryString)
 
-					Dim prmInstance = cmdQs.CreateParameter("instance", 3, 1)
-					cmdQs.Parameters.Append(prmInstance)
-					prmInstance.value = CLng(sInstanceID)
+						sTemp = prmQueryString.Value.ToString()
+						
+					Catch ex As Exception
+						Throw
+						
+					End Try
+					
 
-					Dim prmElement = cmdQs.CreateParameter("element", 200, 1, 8000)
-					cmdQs.Parameters.Append(prmElement)
-					prmElement.value = CLng(sStep)
-
-					Dim prmQs = cmdQs.CreateParameter("qs", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-					cmdQs.Parameters.Append(prmQs)
-
-					Err.Clear()
-					cmdQs.Execute()
-			
-					If Err.Number = 0 Then
-						sTemp = CType(cmdQs.Parameters("qs").Value, String)
-					End If
-	
-					' Release the ADO command object.
-					cmdQs = Nothing
 		%>
 		<input type="hidden" id="utilform_<%=iFormCount%>" name="utilform_<%=iFormCount%>" value="<%=sTemp%>">
 		<%
@@ -262,11 +213,7 @@ End If
 						<tr>
 							<td colspan="3" height="10" align="center">
 								<input type="button" value="OK" name="cmdClose" class="btn" style="WIDTH: 80px" width="80" id="cmdClose"
-									onclick="util_run_workflow_okClick();//window.parent.parent.self.close();"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="util_run_workflow_okClick();"/>
 							</td>
 						</tr>
 						<tr>
