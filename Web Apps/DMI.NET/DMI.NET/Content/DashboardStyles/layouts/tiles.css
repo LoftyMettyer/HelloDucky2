@@ -23,71 +23,25 @@ body
 
 #workframeset
 {
-	/*background: url("../../../Content/images/Default Background.jpg") no-repeat center center fixed;
+	/*
+	background: url("../../../Content/images/Default Background.jpg") no-repeat center center fixed;
 	background: url("../../../Content/images/TilesBackground.jpg") no-repeat center center fixed;
-	background: url("../../../Content/images/ABSYellowGradient_64colors.png") no-repeat center center fixed;*/
+	background: url("../../../Content/images/ABSYellowGradient_64colors.png") no-repeat center center fixed;
 	background: url("../../../Content/images/ABSLittleLessBrightTilesBackground.png") no-repeat center center fixed;
+	*/
 	background-size: cover;
 	background-color: rgb(4, 106, 169);
 	top: 0!important;
 	left: 0!important;
-	background: rgb(246,248,249); /* Old browsers */
-	background: -moz-linear-gradient(left, rgba(246,248,249,1) 0%, rgba(120,198,237,1) 20%, rgba(215,222,227,1) 46%, rgba(215,222,227,1) 73%, rgba(245,247,249,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(246,248,249,1)), color-stop(20%,rgba(120,198,237,1)), color-stop(46%,rgba(215,222,227,1)), color-stop(73%,rgba(215,222,227,1)), color-stop(100%,rgba(245,247,249,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(246,248,249,1) 0%,rgba(120,198,237,1) 20%,rgba(215,222,227,1) 46%,rgba(215,222,227,1) 73%,rgba(245,247,249,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(246,248,249,1) 0%,rgba(120,198,237,1) 20%,rgba(215,222,227,1) 46%,rgba(215,222,227,1) 73%,rgba(245,247,249,1) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, rgba(246,248,249,1) 0%,rgba(120,198,237,1) 20%,rgba(215,222,227,1) 46%,rgba(215,222,227,1) 73%,rgba(245,247,249,1) 100%); /* IE10+ */
-	background: linear-gradient(to right, rgba(246,248,249,1) 0%,rgba(120,198,237,1) 20%,rgba(215,222,227,1) 46%,rgba(215,222,227,1) 73%,rgba(245,247,249,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=1 ); /* IE6-9 */
-
-	background: rgb(122,188,255) center center no-repeat; /* Old browsers */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%); /* FF3.6+ */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1))); /* Chrome,Safari4+ */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, -webkit-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, -o-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* Opera 11.10+ */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* IE10+ */
-	background: url(../../images/ABSLogo/BOB1024x768.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 ); /* IE6-9 */
-
-	background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px, linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
-	background-color: #131313;
-	background-size: 20px 20px;
-
-	background: rgb(76,76,76); /* Old browsers */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, -moz-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%); /* FF3.6+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(76,76,76,1)), color-stop(12%,rgba(89,89,89,1)), color-stop(25%,rgba(102,102,102,1)), color-stop(39%,rgba(71,71,71,1)), color-stop(50%,rgba(44,44,44,1)), color-stop(51%,rgba(0,0,0,1)), color-stop(60%,rgba(17,17,17,1)), color-stop(76%,rgba(43,43,43,1)), color-stop(91%,rgba(28,28,28,1)), color-stop(100%,rgba(19,19,19,1))); /* Chrome,Safari4+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, -webkit-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, -o-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* Opera 11.10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, -ms-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* IE10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity.png) center center no-repeat, linear-gradient(to bottom, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
-
-	background: rgb(76,76,76); /* Old browsers */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -moz-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(44,44,44,1) 51%, rgba(0,0,0,1) 76%, rgba(19,19,19,1) 100%); /* FF3.6+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(76,76,76,1)), color-stop(51%,rgba(44,44,44,1)), color-stop(76%,rgba(0,0,0,1)), color-stop(100%,rgba(19,19,19,1))); /* Chrome,Safari4+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(44,44,44,1) 51%,rgba(0,0,0,1) 76%,rgba(19,19,19,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -o-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(44,44,44,1) 51%,rgba(0,0,0,1) 76%,rgba(19,19,19,1) 100%); /* Opera 11.10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -ms-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(44,44,44,1) 51%,rgba(0,0,0,1) 76%,rgba(19,19,19,1) 100%); /* IE10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, linear-gradient(to bottom, rgba(76,76,76,1) 0%,rgba(44,44,44,1) 51%,rgba(0,0,0,1) 76%,rgba(19,19,19,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
-
-	background: rgb(199,34,0); /* Old browsers */
-	background: -moz-linear-gradient(left, rgba(199,34,0,1) 0%, rgba(255,102,0,1) 32%, rgba(232,157,143,1) 57%, rgba(232,108,87,1) 78%, rgba(243,197,189,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(199,34,0,1)), color-stop(32%,rgba(255,102,0,1)), color-stop(57%,rgba(232,157,143,1)), color-stop(78%,rgba(232,108,87,1)), color-stop(100%,rgba(243,197,189,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(199,34,0,1) 0%,rgba(255,102,0,1) 32%,rgba(232,157,143,1) 57%,rgba(232,108,87,1) 78%,rgba(243,197,189,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(199,34,0,1) 0%,rgba(255,102,0,1) 32%,rgba(232,157,143,1) 57%,rgba(232,108,87,1) 78%,rgba(243,197,189,1) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, rgba(199,34,0,1) 0%,rgba(255,102,0,1) 32%,rgba(232,157,143,1) 57%,rgba(232,108,87,1) 78%,rgba(243,197,189,1) 100%); /* IE10+ */
-	background: linear-gradient(to right, rgba(199,34,0,1) 0%,rgba(255,102,0,1) 32%,rgba(232,157,143,1) 57%,rgba(232,108,87,1) 78%,rgba(243,197,189,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c72200', endColorstr='#f3c5bd',GradientType=1 ); /* IE6-9 */
-
-	background: rgb(122,188,255) center center no-repeat; /* Old browsers */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1))); /* Chrome,Safari4+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -o-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* Opera 11.10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* IE10+ */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%); /* W3C */
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%); /* FF3.6+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 ); /* IE6-9 */
+	
+	background: rgb(122,188,255) center center no-repeat;
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1)));
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -o-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 );
 }
 
 .DashContent {	
@@ -267,11 +221,6 @@ li {list-style: none;}
 	 margin: 0 auto;
 }
 
-
-
-
-
-
 .greenTile {
 	 /* Chuck all possibilities at the browser for gradients... */
 	 background-color: #1a82f7; 
@@ -333,7 +282,8 @@ li {list-style: none;}
 	 color: White;        
 }
 
-
+/*Original multi-coloured tiles*/
+/*
 .Colour1 {background-color: rgb(0, 142, 0);color: white;}
 .Colour1 a {color: white;}
 .Colour2 { background-color: rgb(0, 127, 156);color: white;}
@@ -351,33 +301,109 @@ li {list-style: none;}
 .Colour8 {background-color: rgb(9, 76, 181);color: white;}
 .Colour8 a {color: white;}
 .White { background-color: white;color: gray;}
-.White a { color: gray;}
+.White a { color: gray;}*/
 
-/*ABS Colour Scheme*/
-/*Primary Colour Pallete*/
-.absColour1 {background-color: rgb(238, 175, 0);color: white;}  /*Pantone 7409*/
-.absColour1 a {color: white;}
-.absColour2 { background-color: rgb(0, 84, 159);color: white;}  /*Pantone 2945*/ 
-.absColour2 a { color: white;}
-/*Secondary Colour Pallete*/
-.absColour3 {background-color: rgba(98, 164,211, 0.36);color: white;} /*Pantone 542 (iNurse) */
-.absColour3 a {color: white;}
-.absColour4 {background-color: rgb(93, 0, 74);color: white;} /*Pantone 262 (Staffplan)*/
-.absColour4 a {color: white;}
-.absColour5 {background-color: rgba(0, 144, 137, 0.36);color: white;} /*Pantone 3285 (Crosscare)*/
-.absColour5 a {color: white;}
-.absColour6 {background-color: rgb(0, 70,135);color: white;} /*Pantone 288 (Adastra)*/
-.absColour6 a {color: white;}
-.absColour7 {background-color: rgba(132, 134, 135, 0.36);color: rgb(10, 10, 10);} /*Pantone 424 (Healthchecks)*/
-.absColour7 a {color: black;}
-.absColour8 {background-color: rgb(170, 1, 50);color: white;} /*Pantone 194 (Saturn)*/
-.absColour8 a {color: white;}
+/*Multi coloured tiles but in ABS colour scheme*/
+.Colour1 {background-color: rgb(238, 175, 0);color: white;}				/*Pantone 7409*/
+.Colour2 {background-color: rgb(0, 84, 159);color: white;}				/*Pantone 2945*/ 
+.Colour3 {background-color: rgba(98, 164,211, 0.36);color: white;}/*Pantone 542 (iNurse) */
+.Colour4 {background-color: rgb(93, 0, 74);color: white;}					/*Pantone 262 (Staffplan)*/
+.Colour5 {background-color: rgba(0, 144, 137, 0.36);color: white;}/*Pantone 3285 (Crosscare)*/
+.Colour6 {background-color: rgb(0, 70,135);color: white;}					/*Pantone 288 (Adastra)*/
+.Colour7 {background-color: rgba(132, 134, 135, 0.36);color: rgb(10, 10, 10);} /*Pantone 424 (Healthchecks)*/
+.Colour8 {background-color: rgb(170, 1, 50);color: white;}				/*Pantone 194 (Saturn)*/
+
+/*Just Pantone 542 (iNurse) */
+/*.Colour1 {background-color: rgb(98, 164,211);color: white;} 
+.Colour2 {background-color: rgb(98,164,211);color: white;} 
+.Colour3 {background-color: rgb(98,164,211);color: white;} 
+.Colour4 {background-color: rgb(98,164,211);color: white;} 
+.Colour5 {background-color: rgb(98,164,211);color: white;} 
+.Colour6 {background-color: rgb(98,164,211);color: white;} 
+.Colour7 {background-color: rgb(98,164,211);color: white;} 
+.Colour8 {background-color: rgb(98,164,211);color: white;}*/ 
+/*Just Pantone 262 (Staffplan)*/
+/*.Colour1 {background-color: rgb(93, 0, 74);color: white;}  
+.Colour2 {background-color: rgb(93,0,74);color: white;} 
+.Colour3 {background-color: rgb(93,0,74);color: white;} 
+.Colour4 {background-color: rgb(93,0,74);color: white;} 
+.Colour5 {background-color: rgb(93,0,74);color: white;} 
+.Colour6 {background-color: rgb(93,0,74);color: white;} 
+.Colour7 {background-color: rgb(93,0,74);color: white;} 
+.Colour8 {background-color: rgb(93,0,74);color: white;}*/ 
+/*Just Pantone 3285 (Crosscare)*/
+/*.Colour1 {background-color: rgb(0, 144, 137);color: white;} 
+.Colour2 {background-color: rgb(0,144,137);color: white;} 
+.Colour3 {background-color: rgb(0,144,137);color: white;} 
+.Colour4 {background-color: rgb(0,144,137);color: white;} 
+.Colour5 {background-color: rgb(0,144,137);color: white;} 
+.Colour6 {background-color: rgb(0,144,137);color: white;} 
+.Colour7 {background-color: rgb(0,144,137);color: white;} 
+.Colour8 {background-color: rgb(0,144,137);color: white;}*/ 
+/*Just Pantone 288 (Adastra)*/
+/*.Colour1 {background-color: rgb(0, 70,135);color: white;}  
+.Colour2 {background-color: rgb(0,70,135);color: white;} 
+.Colour3 {background-color: rgb(0,70,135);color: white;} 
+.Colour4 {background-color: rgb(0,70,135);color: white;} 
+.Colour5 {background-color: rgb(0,70,135);color: white;} 
+.Colour6 {background-color: rgb(0,70,135);color: white;} 
+.Colour7 {background-color: rgb(0,70,135);color: white;} 
+.Colour8 {background-color: rgb(0,70,135);color: white;} 
+.Colour1 {background-color: rgb(0,70,135);color: white;}*/ 
+/*Just Pantone 424 (Healthchecks)*/
+/*.Colour1{background-color: rgb(132, 134, 135);color: white;}
+.Colour2 {background-color: rgb(132,134,135);color: white;} 
+.Colour3 {background-color: rgb(132,134,135);color: white;} 
+.Colour4 {background-color: rgb(132,134,135);color: white;} 
+.Colour5 {background-color: rgb(132,134,135);color: white;} 
+.Colour6 {background-color: rgb(132,134,135);color: white;} 
+.Colour7 {background-color: rgb(132,134,135);color: white;} 
+.Colour8 {background-color: rgb(132,134,135);color: white;}*/ 
+/*Just Pantone 194 (Saturn)*/
+/*.Colour1{background-color: rgb(170, 1, 50);color: white;}
+.Colour2 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour3 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour4 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour5 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour6 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour7 {background-color: rgb(170, 1, 50);color: white;} 
+.Colour8 {background-color: rgb(170, 1, 50);color: white;} 
+*/
+/*Just Pantone 7409*/
+/*.Colour1 {background-color: rgb(238, 175, 0);color: white;} 
+.Colour2 {background-color: rgb(238,175,0);color: white;} 
+.Colour3 {background-color: rgb(238,175,0);color: white;} 
+.Colour4 {background-color: rgb(238,175,0);color: white;} 
+.Colour5 {background-color: rgb(238,175,0);color: white;} 
+.Colour6 {background-color: rgb(238,175,0);color: white;} 
+.Colour7 {background-color: rgb(238,175,0);color: white;} 
+.Colour8 {background-color: rgb(238,175,0);color: white;} 
+*/
+/*Just Pantone 2945*/ 
+/*.Colour1 {background-color: rgb(0, 84, 159);color: white;}  
+.Colour2 {background-color: rgb(0,84,159);color: white;} 
+.Colour3 {background-color: rgb(0,84,159);color: white;} 
+.Colour4 {background-color: rgb(0,84,159);color: white;} 
+.Colour5 {background-color: rgb(0,84,159);color: white;} 
+.Colour6 {background-color: rgb(0,84,159);color: white;} 
+.Colour7 {background-color: rgb(0,84,159);color: white;} 
+.Colour8 {background-color: rgb(0,84,159);color: white;}*/ 
+
+.Colour1 a {color: white;}
+.Colour2 a {color: white;}
+.Colour3 a {color: white;}
+.Colour4 a {color: white;}
+.Colour5 a {color: white;}
+.Colour6 a {color: white;}
+.Colour7 a {color: black;}
+.Colour8 a {color: white;}
+
+.White { background-color: white;color: gray;}
+.White a { color: gray;}
 
 .holidaycontainer { display: none;}
 
-
 /* === Fixed Links === */
-
 .RecDescPhoto { display: none;}
 
 .ViewDescription {
@@ -660,7 +686,12 @@ div#pwfs {
 	cursor: pointer;
 }
 
-.FixedLinksRight { bottom: 0;width: 300px;}
+.FixedLinksRight
+{
+	bottom: 0;
+	width: 300px;
+}
+
 .FixedLinksRight .userdetails {
 	float: left;
 	margin-right: 5px;

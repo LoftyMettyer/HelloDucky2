@@ -127,11 +127,11 @@ Public Class MvcApplication
 				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
 				Session("Config-banner-graphic-left-width") = newImageWidth
 			Catch ex As Exception
-				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.jpg")
+				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.png")
 				Session("Config-banner-graphic-left-width") = "138"
 			End Try
 		Else
-			Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.jpg")
+			Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.png")
 			Session("Config-banner-graphic-left-width") = "138"
 		End If
 
@@ -145,11 +145,11 @@ Public Class MvcApplication
 				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
 				Session("Config-banner-graphic-right-width") = newImageWidth
 			Catch ex As Exception
-				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_banner.jpg")
+				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABSLogo/stretchedswirls.png")
 				Session("Config-banner-graphic-right-width") = "600"
 			End Try
 		Else
-			Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_banner.jpg")
+			Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABSLogo/stretchedswirls.png")
 			Session("Config-banner-graphic-right-width") = "600"
 		End If
 
