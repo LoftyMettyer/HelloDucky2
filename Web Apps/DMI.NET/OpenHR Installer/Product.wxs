@@ -141,7 +141,7 @@
 		<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />
 
 		<!-- Specify UI -->
-		<UIRef Id="OpenHRUI" />
+		<UIRef Id="WixUI_OpenHR" />
 
 	</Product>
 </Wix>

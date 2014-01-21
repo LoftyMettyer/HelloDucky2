@@ -8,7 +8,7 @@
 				<Control Id="VirtualDirEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="VIRTUAL_DIR_VAL" Text="{80}" />
 				<!-- Back and next buttons -->
 				<Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
-					<Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+					<Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
 				</Control>
 				<Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
 					<Publish Event="NewDialog" Value="ServerAndDatabaseStringDlg">
