@@ -549,13 +549,18 @@ LocalErr:
 
 			Dim pivotTables As PivotTableCollection = pivotSheet.PivotTables
 
-			Dim sRange = String.Format("={0}!{1}:{2}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, _mxlWorkBook.Worksheets(0).Cells.LastCell.Name)
+			Dim sRange = String.Format("={0}!{1}:{2}{3}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, NumberToExcelColumn(lngMaxCols), lngMaxRows)
 			Dim index As Integer = pivotTables.Add(sRange, "B2", "PivotTable1")
 
 			With pivotTables(index)
 				.AddFieldToArea(PivotFieldType.Row, 1)
 				.AddFieldToArea(PivotFieldType.Column, 0)
-				.AddFieldToArea(PivotFieldType.Data, 1)
+
+				If lngMaxCols > 3 Then
+					.AddFieldToArea(PivotFieldType.Data, 2)
+				Else
+					.AddFieldToArea(PivotFieldType.Data, 1)
+				End If
 
 				.RowGrand = True
 				.ColumnGrand = True
@@ -1087,6 +1092,7 @@ LocalErr:
 		'****************************************************************
 		' NullSafeInteger
 		'****************************************************************
+
 		Function NullSafeInteger(ByVal arg As Object, _
 		Optional ByVal returnIfEmpty As Integer = 0) As String
 
@@ -1130,6 +1136,27 @@ LocalErr:
 
 		End Function
 
+		Private Shared Function NumberToExcelColumn(num As Integer) As String
+			' Subtract one to make modulo/divide cleaner. '
+
+			num = num - 1
+
+			' Select return value based on invalid/one-char/two-char input. '
+
+			If num < 0 Or num >= 27 * 26 Then
+				Return "-"
+			Else
+				' Single char, just get the letter. '
+
+				If num < 26 Then
+					Return Chr(num + 65)
+				Else
+					' Double char, get letters based on integer divide and modulus. '
+
+					Return Chr(num \ 26 + 64) + Chr(num Mod 26 + 65)
+				End If
+			End If
+		End Function
 
 	End Class
 End Namespace

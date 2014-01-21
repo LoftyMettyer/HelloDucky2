@@ -2866,7 +2866,6 @@ Namespace Controllers
 				If ClientDLL.GetFile() Then
 					If lngFormat = OutputFormats.fmtDataOnly Then
 
-
 					ElseIf lngFormat = OutputFormats.fmtExcelPivotTable Then
 
 						'Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
@@ -3184,6 +3183,7 @@ Namespace Controllers
 
 			If strDownloadFileName.Length = 0 Then
 				objReport.OutputFormat = lngFormat
+				objReport.OutputFilename = ""
 				strDownloadFileName = objReport.DownloadFileName
 			End If
 
