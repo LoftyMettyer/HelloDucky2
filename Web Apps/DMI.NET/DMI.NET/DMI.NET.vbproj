@@ -657,6 +657,7 @@
     <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
     <Content Include="Database\UpdateScript8.0.18.sql" />
     <Content Include="Database\UpdateScript8.0.21.sql" />
+    <Content Include="Database\UpdateScript8.0.sql" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />
