@@ -110,7 +110,7 @@
 
 		iCount = 0
 		For Each objRow As DataRow In rstTablesInfo.Rows
-			aAbsenceTypes(iCount) = objRow("Type").ToString()
+			aAbsenceTypes(iCount) = objRow(0).ToString()
 			ReDim Preserve aAbsenceTypes(UBound(aAbsenceTypes) + 1)
 			iCount += 1
 		Next
