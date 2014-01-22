@@ -182,6 +182,13 @@
     <Content Include="Content\images\ABSLogo\OpenHRLogo72.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo748x1024.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo768x1004.png" />
+    <Content Include="Content\images\ABSLogo\smallswirlsgreyscale.png" />
+    <Content Include="Content\images\ABSLogo\squashedswirls.png" />
+    <Content Include="Content\images\ABSLogo\stretchedswirls.png" />
+    <Content Include="Content\images\ABSLogo\swirls.png" />
+    <Content Include="Content\images\ABSLogo\swirlsgreyscale.png" />
+    <Content Include="Content\images\ABSLogo\swirlsgreyscaleopacity.png" />
+    <Content Include="Content\images\ABSLogo\swirlsgreyscaleopacity26.png" />
     <Content Include="Content\images\ABSYellowGradient_64colors.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\anonymous.png" />

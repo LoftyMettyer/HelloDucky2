@@ -402,6 +402,27 @@
                         <Component Id="cmp1D58B1C5632B91DE490879F48E9E307C" Guid="*">
                             <File Id="filD309A1D9814746F26DBD00913C227EB0" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\OpenHRLogo768x1004.png" />
                         </Component>
+                        <Component Id="cmpF1245774882A06DC2B6DB90502BC8014" Guid="*">
+                            <File Id="fil6E5930B034849C21785FDFE1112EB21B" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\smallswirlsgreyscale.png" />
+                        </Component>
+                        <Component Id="cmp3689CC7F8844A295300B3EB6B994AA41" Guid="*">
+                            <File Id="fil2A281584B64847D8ADB98A2723EEAF02" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\squashedswirls.png" />
+                        </Component>
+                        <Component Id="cmpE0372FD44C009CED002A6AE55248899C" Guid="*">
+                            <File Id="filF384F1EFA9C31824147A2BC2FA60548D" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\stretchedswirls.png" />
+                        </Component>
+                        <Component Id="cmpC2E4EF4FD7A2170428CB4FCD4C39E92E" Guid="*">
+                            <File Id="fil36E30C83FA83DD668D82AF3E972663AC" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\swirls.png" />
+                        </Component>
+                        <Component Id="cmpF32F8047725A00946B86C322B5DF4399" Guid="*">
+                            <File Id="filEB04F474122D55BF3E2953EE66183E71" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\swirlsgreyscale.png" />
+                        </Component>
+                        <Component Id="cmp0533BB88FA3B1FE8E09D82128CDF5A01" Guid="*">
+                            <File Id="fil893BE376029C4EF537898352C04004EC" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\swirlsgreyscaleopacity.png" />
+                        </Component>
+                        <Component Id="cmp0EE9331F9CE805128FA73B9CD895394E" Guid="*">
+                            <File Id="fil8124B614F5172CA06151F29E4732A149" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\swirlsgreyscaleopacity26.png" />
+                        </Component>
                     </Directory>
                     <Directory Id="dir1C97F33C166E6520D8371DEA4FE683BB" Name="CalendarReports">
                         <Component Id="cmp6C64A0D7A3ACA1372148EA5153569B7F" Guid="*">
@@ -3484,6 +3505,13 @@
             <ComponentRef Id="cmpDF48B8BF259209F2CBC065BE7AE2F4C1" />
             <ComponentRef Id="cmp1596A5ACCECACD1A497C101BBF7B54C3" />
             <ComponentRef Id="cmp1D58B1C5632B91DE490879F48E9E307C" />
+            <ComponentRef Id="cmpF1245774882A06DC2B6DB90502BC8014" />
+            <ComponentRef Id="cmp3689CC7F8844A295300B3EB6B994AA41" />
+            <ComponentRef Id="cmpE0372FD44C009CED002A6AE55248899C" />
+            <ComponentRef Id="cmpC2E4EF4FD7A2170428CB4FCD4C39E92E" />
+            <ComponentRef Id="cmpF32F8047725A00946B86C322B5DF4399" />
+            <ComponentRef Id="cmp0533BB88FA3B1FE8E09D82128CDF5A01" />
+            <ComponentRef Id="cmp0EE9331F9CE805128FA73B9CD895394E" />
             <ComponentRef Id="cmp6C64A0D7A3ACA1372148EA5153569B7F" />
             <ComponentRef Id="cmp26DC926AFAEB2AD387724FA35E045B26" />
             <ComponentRef Id="cmpFF44420A64EE300CDFD59E30887979CA" />
