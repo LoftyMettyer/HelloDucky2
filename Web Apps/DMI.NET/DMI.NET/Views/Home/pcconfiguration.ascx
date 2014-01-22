@@ -205,35 +205,43 @@
             }
         }
 
+        menu_refreshMenu();
         // Save the registry values.
         var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
         sKey = new String("documentspath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtDocuments.value);
+        frmOriginalConfiguration.txtDocumentsPath.value = frmConfiguration.txtDocuments.value;      
 
         sKey = new String("olePath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLEServer.value);
+        frmOriginalConfiguration.txtOLEServerPath.value = frmConfiguration.txtOLEServer.value;
 
         sKey = new String("localolePath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtOLELocal.value);
+        frmOriginalConfiguration.txtOLELocalPath.value = frmConfiguration.txtOLELocal.value;
 
         sKey = new String("photoPath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtPhoto.value);
+        frmOriginalConfiguration.txtPhotoPath.value = frmConfiguration.txtPhoto.value;
 
         sKey = new String("imagePath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtImage.value);
+        frmOriginalConfiguration.txtImagePath.value = frmConfiguration.txtImage.value;
 
         sKey = new String("tempMenuFilePath_");
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
         if (frmConfiguration.txtTempMenuFile.value.length == 0) {
             OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
+            frmOriginalConfiguration.txtTempMenuFilePath.value = frmConfiguration.txtTempMenuFile.value;
         }
         else {
             OpenHR.SaveRegistrySetting("HR Pro", "DataPaths", sKey, frmConfiguration.txtTempMenuFile.value);
+            frmOriginalConfiguration.txtTempMenuFilePath.value = frmConfiguration.txtTempMenuFile.value;
         }
 
         // Try to use the height property of the menu.
@@ -251,7 +259,7 @@
         //            return;
         //        }
 
-        OpenHR.submitForm(frmConfiguration);
+       
 
     }
 
