@@ -258,6 +258,16 @@ function find_window_onload() {
 			}
 		}
 	}
+	
+	$("#findGridTable").keydown(function (event) {
+		//If keyboard pressed while grid is in focus, check it's not the grid keys, then pass focus to locate box...
+		
+		var keyPressed = event.which;
+		//up arrow, down arrow, Enter, spacebar, home, end, pgup and pgdn.
+		if((keyPressed!=40) && (keyPressed!=38) && (keyPressed!=13) && (keyPressed!=32) && (keyPressed!=33) && (keyPressed!=34) && (keyPressed!=35) && (keyPressed!=36))
+			$('#txtLocateRecordFind').focus();
+	});
+
 }
 
 /* Return the ID of the record selected in the find form. */

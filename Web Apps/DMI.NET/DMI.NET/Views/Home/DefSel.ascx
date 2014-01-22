@@ -1358,3 +1358,20 @@ End If
 <script type="text/javascript">
     defsel_window_onload();
 </script>
+
+
+<script>
+	$(".ui-jqgrid").keydown(function (event) {
+		//Add first letter search to the grid...
+		try {
+			var id = $('#DefSelRecords td:visible').filter(function () {
+				return $(this).text().substring(0, 1) == String.fromCharCode(event.which);
+			}).first().closest('tr').attr('id');
+			if (Number(id) > 0)
+				$("#DefSelRecords").jqGrid('setSelection', id);
+		}
+		catch(e) {}
+	});
+		
+</script>
+
