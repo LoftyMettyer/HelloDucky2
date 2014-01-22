@@ -2200,6 +2200,9 @@
                 <Component Id="cmpF9018DD2E4AA33AE7B809895DF9B1F1C" Guid="*">
                     <File Id="fil87EE3E521F8239DC6FC7B5520EDB7AC8" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.9.sql" />
                 </Component>
+                <Component Id="cmp19DCA78F9C64B19AB436074021EE1C27" Guid="*">
+                    <File Id="fil450A71336E891720EB383CDF88F4C441" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.sql" />
+                </Component>
             </Directory>
             <Directory Id="dir59D122CD76F794ED10D204EA31C4C7A0" Name="lpks">
                 <Component Id="cmp74E0D75FC9D3BB05698089A1367B9BD5" Guid="*">
@@ -4051,6 +4054,7 @@
             <ComponentRef Id="cmpB09F13269CC3C2902BD49C715E451ADE" />
             <ComponentRef Id="cmpAAD7E3AFD092280B63D6875285B51341" />
             <ComponentRef Id="cmpF9018DD2E4AA33AE7B809895DF9B1F1C" />
+            <ComponentRef Id="cmp19DCA78F9C64B19AB436074021EE1C27" />
             <ComponentRef Id="cmp74E0D75FC9D3BB05698089A1367B9BD5" />
             <ComponentRef Id="cmpC4808980385226448A5E5606225E9155" />
             <ComponentRef Id="cmpE7D207690E0EA181C64E2500BB1ED48B" />
