@@ -1191,8 +1191,8 @@ function showDefaultRibbon() {
 }
 
 function menu_refreshMenu() {	
-	// Refresh the menu.
-	var lngRecordID;
+    // Refresh the menu.
+   	var lngRecordID;
 	var sCaption;
 	var fCancelCourseVisible;
 	var fCancelCourseEnabled;
@@ -1954,7 +1954,8 @@ function menu_refreshMenu() {
 							else {
 								if ((sCurrentWorkPage == "PCCONFIGURATION") ||
 										(sCurrentWorkPage == "CONFIGURATION")) {
-									// handled in configuration.configuration_window_onload()
+								    // handled in configuration.configuration_window_onload()
+								    menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
 								}
 						}
 					}
