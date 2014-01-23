@@ -1365,7 +1365,7 @@ End If
 		//Add first letter search to the grid...
 		try {
 			var id = $('#DefSelRecords td:visible').filter(function () {
-				return $(this).text().substring(0, 1) == String.fromCharCode(event.which);
+				return $(this).text().substring(0, 1).toLowerCase() == String.fromCharCode(event.which).toLowerCase();
 			}).first().closest('tr').attr('id');
 			if (Number(id) > 0)
 				$("#DefSelRecords").jqGrid('setSelection', id);
