@@ -2675,28 +2675,30 @@ CheckRecordSet_ERROR:
 										' The column breaks. Check if its changed.
 										If IsDBNull(objRow(iOtherColumnIndex)) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
 											' Field value is null but a character data type, so set it to be "".
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											vValue = ""
 
 										ElseIf otherColumnDetail.IsNumeric Then	'Numeric
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
+											If IsDBNull(objRow(iOtherColumnIndex)) Then
+												vValue = "0"
+											Else
+												vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
+											End If
+
 
 										ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If (objRow(iOtherColumnIndex) = True) Or (objRow(iOtherColumnIndex) = 1) Then vValue = "Y"
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If (objRow(iOtherColumnIndex) = False) Or (objRow(iOtherColumnIndex) = 0) Then vValue = "N"
-											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											If IsDBNull(objRow(iOtherColumnIndex)) Then vValue = ""
+											If IsDBNull(objRow(iOtherColumnIndex)) Then
+												vValue = ""
+											Else
+												If (objRow(iOtherColumnIndex) = True) Or (objRow(iOtherColumnIndex) = 1) Then vValue = "Y"
+												If (objRow(iOtherColumnIndex) = False) Or (objRow(iOtherColumnIndex) = 0) Then vValue = "N"
+											End If
 
 										Else
 											'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
+											vValue = Left(objRow(iOtherColumnIndex).ToString(), otherColumnDetail.Size)
 
-										End If
+									End If
 
 										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 										If IsDBNull(vValue) Or IsDBNull(objRow(iOtherColumnIndex)) Then
