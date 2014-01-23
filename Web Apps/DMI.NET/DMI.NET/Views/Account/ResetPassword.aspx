@@ -1,4 +1,6 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
+
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="System.Web.Configuration" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
@@ -17,8 +19,8 @@
 		End If
  
 		Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
-		objResetPwd.Database = WebConfigurationManager.AppSettings("LoginPage:Database")
-		objResetPwd.ServerName = WebConfigurationManager.AppSettings("LoginPage:Server")
+		objResetPwd.Database = ApplicationSettings.LoginPage_Database
+		objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
 		
 		' Retrieve the username from the encrypted string 
 		' NB this returns null if validation fails, i.e. expired link.

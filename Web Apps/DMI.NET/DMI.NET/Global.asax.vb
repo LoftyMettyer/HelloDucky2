@@ -1,4 +1,5 @@
 ﻿Imports System.Web.Optimization
+Imports DMI.NET.Code
 Imports DMI.NET.App_Start
 Imports System.Drawing
 Imports HR.Intranet.Server
@@ -98,21 +99,21 @@ Public Class MvcApplication
 		'End If
 
 		' get the theme out the web config.
-		Session("ui-theme") = ConfigurationManager.AppSettings("ui-theme")
+		Session("ui-theme") = ApplicationSettings.UI_Theme
 		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
 
-		Session("Config-banner-colour") = ConfigurationManager.AppSettings("ui-banner-colour")
+		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
 		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
 
-		Session("Config-banner-justification") = ConfigurationManager.AppSettings("ui-banner-justification")
+		Session("Config-banner-justification") = ApplicationSettings.UI_Banner_Justification
 		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
 
 		' get the WIREFRAME theme out the web config.
-		Session("ui-wireframe-theme") = ConfigurationManager.AppSettings("ui-wireframe-theme")
+		Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
 		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
 
 		' Set browser compatibility
-		Session("DMIRequiresIE") = ConfigurationManager.AppSettings("DMIRequiresIE")
+		Session("DMIRequiresIE") = ApplicationSettings.DMIRequiresIE
 		If Session("DMIRequiresIE") Is Nothing Or Len(Session("DMIRequiresIE")) <= 0 Then Session("DMIRequiresIE") = "true"
 		Session("DMIRequiresIE") = Session("DMIRequiresIE").ToString().ToUpper()
 

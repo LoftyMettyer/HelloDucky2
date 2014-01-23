@@ -3,6 +3,7 @@ Imports System.Web.Configuration
 Imports ADODB
 Imports System.IO
 Imports System.Drawing
+Imports DMI.NET.Code
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
@@ -1117,8 +1118,8 @@ Namespace Controllers
 			' run the sp's through the object
 			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
 
-			objResetPwd.Database = WebConfigurationManager.AppSettings("LoginPage:Database")
-			objResetPwd.ServerName = WebConfigurationManager.AppSettings("LoginPage:Server")
+			objResetPwd.Database = ApplicationSettings.LoginPage_Database
+			objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
 			objResetPwd.Username = Request.Form("txtUserName")
 
 			' Force password change only if there are no other users logged in with the same name.
@@ -1162,8 +1163,8 @@ Namespace Controllers
 			Dim Message As String
 			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
 
-			objResetPwd.Database = WebConfigurationManager.AppSettings("LoginPage:Database")
-			objResetPwd.ServerName = WebConfigurationManager.AppSettings("LoginPage:Server")
+			objResetPwd.Database = ApplicationSettings.LoginPage_Database
+			objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
 
 			' Force password change only if there are no other users logged in with the same name.
 			Message = objResetPwd.ResetPassword(QueryString, Password)

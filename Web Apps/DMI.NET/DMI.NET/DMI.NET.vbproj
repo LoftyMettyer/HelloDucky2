@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
+    <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
     <Compile Include="Code\CalendarOutput.vb" />
@@ -708,6 +709,9 @@
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
+    <Content Include="Web.custom.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.dll" />

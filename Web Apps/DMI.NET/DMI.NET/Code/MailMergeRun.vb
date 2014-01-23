@@ -35,8 +35,8 @@ Namespace Code
 			Dim objErrorLog As New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 			Dim objDatabase As Database = CType(context.Session("DatabaseFunctions"), Database)
 
-			Dim config = Web.Configuration.WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath)
-			mailClient = New Aspose.Email.Mail.SmtpClient(config)
+
+			mailClient = New Aspose.Email.Mail.SmtpClient(ApplicationSettings.SMTP_Host, ApplicationSettings.SMTP_Port)
 
 			objOptions.MessageFormat = MessageFormat.Mht
 
@@ -71,7 +71,7 @@ Namespace Code
 				End If
 
 				message.Subject = EmailSubject
-				message.From = New Aspose.Email.Mail.MailAddress("todo@company.com", "OpenHR")
+				message.From = New Aspose.Email.Mail.MailAddress(ApplicationSettings.MailMerge_From, "OpenHR")
 
 				' TODO - Alter this to read with initial dataset - would speed up performance
 				strToEmail = objDatabase.GetEmailAddress(objRow("ID").ToString(), EmailCalculationID)

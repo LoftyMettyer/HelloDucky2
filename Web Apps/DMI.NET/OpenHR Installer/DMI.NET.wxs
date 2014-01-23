@@ -11,6 +11,9 @@
             <Component Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" Guid="*">
                 <File Id="fil0AB648957C4B57849C7F7229ADDD83F2" KeyPath="yes" Source="SourceDir\Web.config" />
             </Component>
+            <Component Id="cmp74A5BA9D478EE8714F906C8CBA8693AF" Guid="*">
+                <File Id="fil9C5014C05B208CC97988A7B1EB0320BA" KeyPath="yes" Source="SourceDir\Web.custom.config" />
+            </Component>
             <Directory Id="dirBD8892FBCC64DA5924D7F747259B8B87" Name="bin">
                 <Component Id="cmp0F823E39B332D3F6A873CD2D666A2B62" Guid="*">
                     <File Id="fil528FCAABED5A2FECB9F5CEA00C8EAF45" KeyPath="yes" Source="SourceDir\bin\ADODB.dll" />
@@ -65,6 +68,9 @@
                 </Component>
                 <Component Id="cmpFC1F31B00D2B9E90825341706D7B5C63" Guid="*">
                     <File Id="filC4F818B533E46901A67113A6A6F62900" KeyPath="yes" Source="SourceDir\bin\System.Web.WebPages.Razor.dll" />
+                </Component>
+                <Component Id="cmp5528D1AA2F60460085964D838EBD0F2D" Guid="*">
+                    <File Id="fil8407BC71914BEC78D7E8A21696276D3B" KeyPath="yes" Source="SourceDir\bin\Web.custom.config" />
                 </Component>
                 <Component Id="cmp1D6184B64F3F1969AF56912F31422062" Guid="*">
                     <File Id="fil4738D99EE8C94A9F1F6B77A9CEC21B43" KeyPath="yes" Source="SourceDir\bin\WebGrease.dll" />
@@ -3383,6 +3389,7 @@
             <ComponentRef Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" />
             <ComponentRef Id="cmpFED9CE4C040C6D017106CB6B92C2F157" />
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
+            <ComponentRef Id="cmp74A5BA9D478EE8714F906C8CBA8693AF" />
             <ComponentRef Id="cmp0F823E39B332D3F6A873CD2D666A2B62" />
             <ComponentRef Id="cmpA426106E50E83F038FBE746C1E09504B" />
             <ComponentRef Id="cmp4620207BA46725D23ED359B68B7D53B2" />
@@ -3401,6 +3408,7 @@
             <ComponentRef Id="cmpB52A1BBF5DED33C834CCF11A935BFDE4" />
             <ComponentRef Id="cmp88F8A681B67CF6A2591F23432807E568" />
             <ComponentRef Id="cmpFC1F31B00D2B9E90825341706D7B5C63" />
+            <ComponentRef Id="cmp5528D1AA2F60460085964D838EBD0F2D" />
             <ComponentRef Id="cmp1D6184B64F3F1969AF56912F31422062" />
             <ComponentRef Id="cmp8510D7A715EBC2C3561B2473214E652E" />
             <ComponentRef Id="cmp5039BE9CACE657C7F3DA2C7B95AA1855" />

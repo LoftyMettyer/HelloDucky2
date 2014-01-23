@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="VB" Inherits="System.Web.Mvc.ViewPage" MasterPageFile="~/Views/Shared/Site.Master" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ import Namespace="System.Web.Configuration" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 
 <script runat="server">
 		Private _txtDatabaseValue As String = "" 'To set the value of the txtDatabase input tag
@@ -25,10 +26,10 @@
 
 				'If no override values were provided in the querystring, use default values from web.config
 				If String.IsNullOrEmpty(_txtDatabaseValue) Then
-						_txtDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")
+						_txtDatabaseValue = ApplicationSettings.LoginPage_Database
 				End If
 				If String.IsNullOrEmpty(_txtServerValue) Then
-						_txtServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")
+						_txtServerValue = ApplicationSettings.LoginPage_Server
 				End If
 		End Sub
 </script>

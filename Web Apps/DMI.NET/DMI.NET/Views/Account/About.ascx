@@ -1,4 +1,5 @@
 ﻿<%@ import Namespace="System.Web.Configuration" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%
 	Dim iNumRows As Integer
 %>
@@ -11,8 +12,8 @@
 			return false;
 		}
 
-		<%_txtLocalServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")%>
-		<%_txtLocalDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")%>
+		<%_txtLocalServerValue = ApplicationSettings.LoginPage_Server%>
+		<%_txtLocalDatabaseValue = ApplicationSettings.LoginPage_Database%>
 	
 	</script>
 	<script runat="server">
