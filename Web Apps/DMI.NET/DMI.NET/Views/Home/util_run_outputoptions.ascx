@@ -421,17 +421,18 @@
 
 	function populateSaveExisting() {
 
+
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		var oOption;
 
 		var lngCurrentOption = 0;
 		var selectedIndex = frmOutputDef.cboSaveExisting.selectedIndex;
-
-		frmOutputDef.cboSaveExisting.length = 0;
 		
 		if (selectedIndex > 0) {
-			lngCurrentOption = options[selectedIndex].value;
+			lngCurrentOption = frmOutputDef.cboSaveExisting.options[selectedIndex].value;
 		}
+
+		frmOutputDef.cboSaveExisting.length = 0;
 
 		oOption = document.createElement("OPTION");
 		frmOutputDef.cboSaveExisting.options.add(oOption);
