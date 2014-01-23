@@ -35,10 +35,10 @@ Friend Class clsExprPromptedValue
 		Return False
 	End Function
 
-	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
-															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
-															, ByRef psUDFs() As String _
-															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+	Public Function RuntimeCode(ByRef psRuntimeCode As String, palngSourceTables(,) As Integer, pfApplyPermissions As Boolean _
+															, pfValidating As Boolean, pavPromptedValues As Object _
+															, psUDFs() As String _
+															, Optional plngFixedExprID As Integer = 0, Optional psFixedSQLCode As String = "") As Boolean
 
 		On Error GoTo ErrorTrap
 
@@ -103,8 +103,7 @@ TidyUpAndExit:
 			psRuntimeCode = ""
 		End If
 
-		RuntimeCode = fOK
-		Exit Function
+		Return fOK
 
 ErrorTrap:
 		fOK = False

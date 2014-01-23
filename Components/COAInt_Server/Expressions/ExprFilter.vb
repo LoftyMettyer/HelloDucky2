@@ -23,7 +23,7 @@ Friend Class clsExprFilter
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables(,) As Integer, ByRef pfApplyPermissions As Boolean _
 															, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object _
 															, ByRef psUDFs() As String _
-															, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
+															, Optional plngFixedExprID As Integer = 0, Optional psFixedSQLCode As String = "") As Boolean
 
 		Dim objFilter As clsExprExpression
 
@@ -35,7 +35,7 @@ Friend Class clsExprFilter
 		With objFilter
 			.ExpressionID = mlngFilterID
 			.ConstructExpression()
-			bOK = .RuntimeCode(strRuntimeCode, palngSourceTables, Nothing, pfApplyPermissions, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)
+			bOK = .RuntimeCode(strRuntimeCode, palngSourceTables, pfApplyPermissions, pfValidating, pavPromptedValues, psUDFs, plngFixedExprID, psFixedSQLCode)
 		End With
 
 		' Return different value depending on passed in parameters
