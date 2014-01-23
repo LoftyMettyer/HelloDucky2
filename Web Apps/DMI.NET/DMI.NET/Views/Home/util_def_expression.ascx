@@ -1,10 +1,10 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
-
 
 <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
 	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;">
@@ -415,10 +415,11 @@
 	<%
 		
 		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-		Dim sReaction As String
+		Dim sReaction As String = ""
 		Dim sUtilTypeName As String
-		Dim sErrMsg As String
+		Dim sErrMsg As String = ""
 		Dim iCount As Integer
 		
 		sUtilTypeName = "expression"
@@ -433,58 +434,36 @@
 		End If
 
 		If Session("action") <> "new" Then
-			Dim cmdDefn As Command = New Command
-			cmdDefn.CommandText = "sp_ASRIntGetExpressionDefinition"
-			cmdDefn.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdDefn.ActiveConnection = Session("databaseConnection")
 
-			Dim prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
-			cmdDefn.Parameters.Append(prmUtilID)
-			prmUtilID.value = CleanNumeric(Session("utilid"))
+			Try
 
-			Dim prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmAction)
-			prmAction.value = Session("action")
+				Dim prmErrMsg As New SqlParameter("psErrMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmTimestamp As New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-			Dim prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmErrMsg)
+				Dim rstDefinition = objDataAccess.GetFromSP("sp_ASRIntGetExpressionDefinition" _
+					, New SqlParameter("piExprID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))} _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("action")} _
+					, prmErrMsg _
+					, prmTimestamp)
 
-			Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmTimestamp)
+				iCount = 0
+				For Each objRow As DataRow In rstDefinition.Rows
+					Response.Write("<input type='hidden' id=txtDefn_" & objRow("type").ToString() & "_" & iCount & " name=txtDefn_" & objRow("type").ToString() & "_" & iCount & " value=""" & Replace(objRow("definition").ToString(), """", "&quot;") & """>" & vbCrLf)
+					iCount += 1
+				Next
 
-			Err.Clear()
-			Dim rstDefinition = cmdDefn.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstDefinition.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstDefinition.EOF
-						Response.Write("<INPUT type='hidden' id=txtDefn_" & rstDefinition.fields("type").value & "_" & iCount & " name=txtDefn_" & rstDefinition.fields("type").value & "_" & iCount & " value=""" & Replace(rstDefinition.fields("definition").value, """", "&quot;") & """>" & vbCrLf)
-
-						iCount = iCount + 1
-						rstDefinition.MoveNext()
-					Loop
+				If Len(prmErrMsg.Value.ToString()) > 0 Then
+					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value.ToString()
+				End If
+				
+				Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value.ToString() & ">" & vbCrLf)
+				
+				
+			Catch ex As Exception
+				sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
+				
+			End Try	
 	
-					' Release the ADO recordset object.
-					rstDefinition.close()
-				End If
-				rstDefinition = Nothing
-			
-				' NB. IMPORTANT ADO NOTE.
-				' When calling a stored procedure which returns a recordset AND has output parameters
-				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdDefn.Parameters("errMsg").Value) > 0 Then
-					sErrMsg = "'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").Value
-				End If
-
-				Response.Write("<INPUT type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").Value & ">" & vbCrLf)
-			End If
-
-			' Release the ADO command object.
-			cmdDefn = Nothing
-
 			If Len(sErrMsg) > 0 Then
 				Session("confirmtext") = sErrMsg
 				Session("confirmtitle") = "OpenHR Intranet"
@@ -571,46 +550,33 @@
 
 <form id="frmShortcutKeys" name="frmShortcutKeys" style="visibility: hidden; display: none">
 	<%
-		Dim sShortcutKeys As String
-		
-		sShortcutKeys = ""
-	
-		Dim cmdShortcutKeys As Command = New Command()
-		cmdShortcutKeys.CommandText = "spASRIntGetOpFuncShortcuts"
-		cmdShortcutKeys.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdShortcutKeys.ActiveConnection = Session("databaseConnection")
 
-		Err.Clear()
-		Dim rstShortcutKeys = cmdShortcutKeys.Execute
-		If (Err.Number <> 0) Then
-			sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(Err.Description)
-		Else
-			If rstShortcutKeys.state <> 0 Then
-				' Read recordset values.
-				iCount = 0
-				Do While Not rstShortcutKeys.EOF
-					sShortcutKeys = sShortcutKeys & rstShortcutKeys.fields("shortcutKeys").value
+		Dim sShortcutKeys As String = ""
 
-					Response.Write("<INPUT type='hidden' id=txtShortcutKeys_" & iCount & " name=txtShortcutKeys_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("shortcutKeys").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtShortcutType_" & iCount & " name=txtShortcutType_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("componentType").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtShortcutID_" & iCount & " name=txtShortcutID_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("ID").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtShortcutParams_" & iCount & " name=txtShortcutParams_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("params").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtShortcutName_" & iCount & " name=txtShortcutName_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("name").value, """", "&quot;") & """>" & vbCrLf)
+		Try
+			Dim rstShortcutKeys = objDataAccess.GetFromSP("spASRIntGetOpFuncShortcuts")
 
-					iCount = iCount + 1
-					rstShortcutKeys.MoveNext()
-				Loop
-	
-				' Release the ADO recordset object.
-				rstShortcutKeys.close()
-			End If
-			rstShortcutKeys = Nothing
-		End If
+			iCount = 0
+			
+			For Each objRow As DataRow In rstShortcutKeys.Rows
 
-		Response.Write("<INPUT type='hidden' id=txtShortcutKeys name=txtShortcutKeys value=""" & Replace(sShortcutKeys, """", "&quot;") & """>" & vbCrLf)
+				sShortcutKeys = sShortcutKeys & objRow("shortcutKeys").ToString()
+				Response.Write("<input type='hidden' id=txtShortcutKeys_" & iCount & " name=txtShortcutKeys_" & iCount & " value=""" & Replace(objRow("shortcutKeys").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtShortcutType_" & iCount & " name=txtShortcutType_" & iCount & " value=""" & Replace(objRow("componentType").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtShortcutID_" & iCount & " name=txtShortcutID_" & iCount & " value=""" & Replace(objRow("ID").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtShortcutParams_" & iCount & " name=txtShortcutParams_" & iCount & " value=""" & Replace(objRow("params").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtShortcutName_" & iCount & " name=txtShortcutName_" & iCount & " value=""" & Replace(objRow("name").ToString(), """", "&quot;") & """>" & vbCrLf)
 
-		' Release the ADO command object.
-		cmdShortcutKeys = Nothing
+				iCount += 1
+			Next
+
+			Response.Write("<input type='hidden' id=txtShortcutKeys name=txtShortcutKeys value=""" & Replace(sShortcutKeys, """", "&quot;") & """>" & vbCrLf)
+
+		Catch ex As Exception
+			sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
+
+		End Try
+
 	
 	%>
 </form>

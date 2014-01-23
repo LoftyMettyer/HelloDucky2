@@ -123,13 +123,6 @@
 			Dim prmExpectedCount As ADODB.Parameter
 			Dim cmdBulkBook As ADODB.Command
 			Dim prmEmployeeRecordIDs As ADODB.Parameter
-			Dim prmOnlyNumerics As ADODB.Parameter
-			Dim cmdExprColumns As ADODB.Command
-			Dim prmComponentType As ADODB.Parameter
-			Dim rstExprColumns As ADODB.Recordset
-			Dim cmdExprValues As ADODB.Command
-			Dim rstExprValues As ADODB.Recordset
-			Dim prmDataType As ADODB.Parameter
 		
 			Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
@@ -1810,123 +1803,85 @@
 
 			ElseIf (Session("optionAction") = "LOADEXPRFIELDCOLUMNS") Or _
 					(Session("optionAction") = "LOADEXPRLOOKUPCOLUMNS") Then
-		
-				cmdExprColumns = New ADODB.Command
-				cmdExprColumns.CommandText = "sp_ASRIntGetExprColumns"
-				cmdExprColumns.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdExprColumns.CommandTimeout = 180
-				cmdExprColumns.ActiveConnection = Session("databaseConnection")
-					
-				prmTableID = cmdExprColumns.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-				cmdExprColumns.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
+				
+				Try
 
-				prmComponentType = cmdExprColumns.CreateParameter("componentType", 3, 1) ' 3=integer, 1=input
-				cmdExprColumns.Parameters.Append(prmComponentType)
-				If Session("optionAction") = "LOADEXPRFIELDCOLUMNS" Then
-					prmComponentType.Value = 1
-				Else
-					prmComponentType.Value = 0
-				End If
-
-				prmOnlyNumerics = cmdExprColumns.CreateParameter("onlyNumerics", 3, 1) ' 3=integer, 1=input
-				cmdExprColumns.Parameters.Append(prmOnlyNumerics)
-				prmOnlyNumerics.Value = CleanNumeric(Session("optionOnlyNumerics"))
-
-				Err.Clear()
-				rstExprColumns = cmdExprColumns.Execute
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error reading component columns." & vbCrLf & formatError(Err.Description)
-				Else
-					If rstExprColumns.State <> 0 Then
-						' Read recordset values.
-						iCount = 0
-						Do While Not rstExprColumns.EOF
-							iCount = iCount + 1
-							Response.Write("<INPUT type='hidden' id=txtColumn_" & iCount & " name=txtColumn_" & iCount & " value=""" & rstExprColumns.Fields("definitionString").Value & """>" & vbCrLf)
-							rstExprColumns.MoveNext()
-						Loop
-
-						' Release the ADO recordset object.
-						rstExprColumns.Close()
+					Dim prmComponentType = New SqlParameter("piComponentType", SqlDbType.Int)
+					If Session("optionAction") = "LOADEXPRFIELDCOLUMNS" Then
+						prmComponentType.Value = 1
+					Else
+						prmComponentType.Value = 0
 					End If
-					rstExprColumns = Nothing
-				End If
-				cmdExprColumns = Nothing
+								
+					Dim rstExprColumns = objDataAccess.GetFromSP("sp_ASRIntGetExprColumns" _
+							, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+							, prmComponentType _
+							, New SqlParameter("piNumericsOnly", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionOnlyNumerics"))})
+
+					iCount = 0					
+					For Each objRow As DataRow In rstExprColumns.Rows
+						iCount += 1
+						Response.Write("<input type='hidden' id=txtColumn_" & iCount & " name=txtColumn_" & iCount & " value=""" & objRow("definitionString").ToString() & """>" & vbCrLf)
+					Next
+					
+				Catch ex As Exception
+					sErrorDescription = "Error reading component columns." & vbCrLf & formatError(ex.Message)
+
+				End Try
+				
 
 			ElseIf Session("optionAction") = "LOADEXPRLOOKUPVALUES" Then
 		
-				cmdExprValues = New ADODB.Command
-				cmdExprValues.CommandText = "sp_ASRIntGetExprLookupValues"
-				cmdExprValues.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdExprValues.CommandTimeout = 180
-				cmdExprValues.ActiveConnection = Session("databaseConnection")
+				Try
+										
+					Dim prmDataType = New SqlParameter("piDataType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+					Dim rstExprValues = objDataAccess.GetFromSP("sp_ASRIntGetExprLookupValues" _
+							, New SqlParameter("piColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
+							, prmDataType)
+
+					iCount = 0
+					For Each objRow As DataRow In rstExprValues.Rows
+						iCount += 1
+						Response.Write("<input type='hidden' id=txtValue_" & iCount & " name=txtValue_" & iCount & " value=""" & objRow("lookupValue").ToString & """>" & vbCrLf)
+					Next
 					
-				prmColumnID = cmdExprValues.CreateParameter("columnID", 3, 1)	' 3=integer, 1=input
-				cmdExprValues.Parameters.Append(prmColumnID)
-				prmColumnID.Value = CleanNumeric(Session("optionColumnID"))
-
-				prmDataType = cmdExprValues.CreateParameter("dataType", 3, 2)	' 3=integer, 2=output
-				cmdExprValues.Parameters.Append(prmDataType)
-
-				Err.Clear()
-				rstExprValues = cmdExprValues.Execute
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error reading component values." & vbCrLf & formatError(Err.Description)
-				Else
-					If rstExprValues.State <> 0 Then
-						' Read recordset values.
-						iCount = 0
-						Do While Not rstExprValues.EOF
-							iCount = iCount + 1
-							Response.Write("<INPUT type='hidden' id=txtValue_" & iCount & " name=txtValue_" & iCount & " value=""" & rstExprValues.Fields("lookupValue").Value & """>" & vbCrLf)
-							rstExprValues.MoveNext()
-						Loop
-
-						' Release the ADO recordset object.
-						rstExprValues.Close()
-					End If
-					rstExprValues = Nothing
-
-					' NB. IMPORTANT ADO NOTE.
-					' When calling a stored procedure which returns a recordset AND has output parameters
-					' you need to close the recordset and set it to nothing before using the output parameters. 
-					Response.Write("<INPUT type='hidden' id=txtLookupDataType name=txtLookupDataType value=" & cmdExprValues.Parameters("dataType").Value & ">" & vbCrLf)
-				End If
-				cmdExprValues = Nothing
-
+					Response.Write("<input type='hidden' id=txtLookupDataType name=txtLookupDataType value=" & prmDataType.Value.ToString() & ">" & vbCrLf)
+					
+				Catch ex As Exception
+					sErrorDescription = "Error reading component values." & vbCrLf & formatError(ex.Message)
+				End Try
+								
 			End If
-				'	end if
 
-				Response.Write("<INPUT type='hidden' id=txtOptionAction name=txtOptionAction value=" & Session("optionAction") & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtOptionTableID name=txtOptionTableID value=" & Session("optionTableID") & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtOptionViewID name=txtOptionViewID value=" & Session("optionViewID") & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtOptionOrderID name=txtOptionOrderID value=" & Session("optionOrderID") & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtOptionColumnID name=txtOptionColumnID value=" & Session("optionColumnID") & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtOptionLocateValue name=txtOptionLocateValue value=""" & Replace(Session("optionLocateValue"), """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
-				Response.Write("<INPUT type='hidden' id=txtNonFatalErrorDescription name=txtNonFatalErrorDescription value=""" & sNonFatalErrorDescription & """>")
+			Response.Write("<input type='hidden' id=txtOptionAction name=txtOptionAction value=" & Session("optionAction") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionTableID name=txtOptionTableID value=" & Session("optionTableID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionViewID name=txtOptionViewID value=" & Session("optionViewID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionOrderID name=txtOptionOrderID value=" & Session("optionOrderID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionColumnID name=txtOptionColumnID value=" & Session("optionColumnID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionLocateValue name=txtOptionLocateValue value=""" & Replace(Session("optionLocateValue"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+			Response.Write("<input type='hidden' id=txtNonFatalErrorDescription name=txtNonFatalErrorDescription value=""" & sNonFatalErrorDescription & """>")
 		%>
 </form>
 
 <script runat="server" language="vb">
 
-		Function formatError(psErrMsg)
-				Dim iStart As Integer
-				Dim iFound As Integer
+	Function formatError(psErrMsg As String) As String
+		Dim iStart As Integer
+		Dim iFound As Integer
 	
-				iFound = 0
-				Do
-						iStart = iFound
-						iFound = InStr(iStart + 1, psErrMsg, "]")
-				Loop While iFound > 0
+		iFound = 0
+		Do
+			iStart = iFound
+			iFound = InStr(iStart + 1, psErrMsg, "]")
+		Loop While iFound > 0
 	
-				If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-						formatError = Trim(Mid(psErrMsg, iStart + 1))
-				Else
-						formatError = psErrMsg
-				End If
-		End Function
+		If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
+			formatError = Trim(Mid(psErrMsg, iStart + 1))
+		Else
+			formatError = psErrMsg
+		End If
+	End Function
 
 		Function convertSQLDateToLocale(psDate)
 				Dim sLocaleFormat As String

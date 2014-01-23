@@ -1,51 +1,40 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
 
 <form action="" method="POST" id="frmMainForm" name="frmMainForm">
 	<%
-		Dim cmdParameter As Command
-		Dim prmFunctionID As ADODB.Parameter
-		Dim prmParameterIndex As ADODB.Parameter
-		Dim prmPassByType As ADODB.Parameter
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 		
 		Dim iPassBy As Integer
-		Dim sErrMsg As String
-		
+		Dim sErrMsg As String	
 		
 		iPassBy = 1
 		If (Len(sErrMsg) = 0) And (Session("optionFunctionID") > 0) Then
-			cmdParameter = New Command
-			cmdParameter.CommandText = "spASRIntGetParameterPassByType"
-			cmdParameter.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdParameter.ActiveConnection = Session("databaseConnection")
+		
+			Try
 
-			prmFunctionID = cmdParameter.CreateParameter("functionID", 3, 1) ' 3=integer, 1=input
-			cmdParameter.Parameters.Append(prmFunctionID)
-			prmFunctionID.value = CleanNumeric(CLng(Session("optionFunctionID")))
+				Dim prmPassByType As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-			prmParameterIndex = cmdParameter.CreateParameter("parameterIndex", 3, 1) ' 3=integer, 1=input
-			cmdParameter.Parameters.Append(prmParameterIndex)
-			prmParameterIndex.value = CleanNumeric(CLng(Session("optionParameterIndex")))
+				objDataAccess.ExecuteSP("spASRIntGetParameterPassByType" _
+					, New SqlParameter("piFunctionID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionFunctionID")))} _
+					, New SqlParameter("piParamIndex", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionParameterIndex")))} _
+					, prmPassByType)
 
-			prmPassByType = cmdParameter.CreateParameter("passByType", 3, 2) ' 3=integer, 2=output
-			cmdParameter.Parameters.Append(prmPassByType)
-
-			Err.Clear()
-			cmdParameter.Execute()
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error checking parameter pass-by type." & vbCrLf & FormatError(Err.Description)
-			Else
-				iPassBy = cmdParameter.Parameters("passByType").Value
-			End If
-
-			' Release the ADO command object.
-			cmdParameter = Nothing
+				iPassBy = CInt(prmPassByType.Value)
+				
+			Catch ex As Exception
+				sErrMsg = "Error checking parameter pass-by type." & vbCrLf & FormatError(ex.Message)
+				
+			End Try
+			
 		End If
-		Response.Write("<INPUT type='hidden' id=txtPassByType name=txtPassByType value=" & iPassBy & ">" & vbCrLf)
+		Response.Write("<input type='hidden' id=txtPassByType name=txtPassByType value=" & iPassBy & ">" & vbCrLf)
 	%>
 
 	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
@@ -1543,8 +1532,7 @@
 		Dim sFieldColumnID As String
 		Dim sLookupTableID As String
 		Dim sLookupColumnID As String
-		
-		On Error Resume Next
+	
 		sErrMsg = ""
 
 		If Session("optionAction") = "EDITEXPRCOMPONENT" Then
@@ -1601,252 +1589,150 @@
 
 <form id="frmTables" name="frmTables">
 	<%
-		Dim cmdTables As Command
-		Dim prmTableID As ADODB.Parameter
-		Dim rstTables As Recordset
+
 		Dim iCount As Integer
 		
 		If Len(sErrMsg) = 0 Then
-			cmdTables = New Command
-			cmdTables.CommandText = "sp_ASRIntGetExprTables"
-			cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdTables.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				Dim rstTables = objDataAccess.GetFromSP("sp_ASRIntGetExprTables" _
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))})
 
-			prmTableID = cmdTables.CreateParameter("tableID", 3, 1)	' 3=integer, 1=input
-			cmdTables.Parameters.Append(prmTableID)
-			prmTableID.value = CleanNumeric(Session("optionTableID"))
-
-			Err.Clear()
-			rstTables = cmdTables.Execute
-			If (Err.Number <> 0) Then
+				iCount = 0				
+				For Each objRow As DataRow In rstTables.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & objRow("definitionString").ToString & """>" & vbCrLf)
+				Next
+				
+			Catch ex As Exception
 				sErrMsg = "Error reading component tables." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstTables.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstTables.EOF
-						iCount = iCount + 1
-						Response.Write("<input type='hidden' id=txtTable_" & iCount & " name=txtTable_" & iCount & " value=""" & rstTables.Fields("definitionString").Value & """>" & vbCrLf)
-						rstTables.MoveNext()
-					Loop
 
-					' Release the ADO recordset object.
-					rstTables.close()
-				End If
-				rstTables = Nothing
-			End If
-
-			' Release the ADO command object.
-			cmdTables = Nothing
+			End Try
 		End If
 	%>
 </form>
 
 <form id="frmFunctions" name="frmFunctions">
 	<%
-		Dim cmdFunctions As Command
-		Dim rstFunctions As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFunctions = New Command
-			cmdFunctions.CommandText = "sp_ASRIntGetExprFunctions"
-			cmdFunctions.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdFunctions.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				Dim rstFunctions = objDataAccess.GetFromSP("sp_ASRIntGetExprFunctions" _
+						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))})
 
-			prmTableID = cmdFunctions.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-			cmdFunctions.Parameters.Append(prmTableID)
-			prmTableID.value = CleanNumeric(Session("optionTableID"))
+				iCount = 0			
+				For Each objRow As DataRow In rstFunctions.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & objRow("definitionString").ToString() & """>" & vbCrLf)
+				Next
 
-			Err.Clear()
-			rstFunctions = cmdFunctions.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstFunctions.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstFunctions.EOF
-						iCount = iCount + 1
-						Response.Write("<input type='hidden' id=txtFunction_" & iCount & " name=txtFunction_" & iCount & " value=""" & rstFunctions.Fields("definitionString").Value & """>" & vbCrLf)
-						rstFunctions.MoveNext()
-					Loop
+			Catch ex As Exception
+				sErrMsg = "Error reading component functions." & vbCrLf & FormatError(ex.Message)
 
-					' Release the ADO recordset object.
-					rstFunctions.close()
-				End If
-				rstFunctions = Nothing
-			End If
-
-			' Release the ADO command object.
-			cmdFunctions = Nothing
+			End Try
+			
 		End If
 	%>
 </form>
 
 <form id="frmFunctionParameters" name="frmFunctionParameters">
 	<%
-		Dim cmdFunctionParameters As Command
-		Dim rstFunctionParameters As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFunctionParameters = New Command()
-			cmdFunctionParameters.CommandText = "sp_ASRIntGetExprFunctionParameters"
-			cmdFunctionParameters.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdFunctionParameters.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				Dim rstFunctionParameters = objDataAccess.GetFromSP("sp_ASRIntGetExprFunctionParameters")
 
-			Err.Clear()
-			rstFunctionParameters = cmdFunctionParameters.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error reading component functions." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstFunctionParameters.state <> 0 Then
-					' Read recordset values.
-					iCount = 1
-					Do While Not rstFunctionParameters.EOF
-						Response.Write("<input type='hidden' id=txtFunctionParameters_" & rstFunctionParameters.Fields("functionID").Value & "_" & iCount & " name=txtFunctionParameters_" & rstFunctionParameters.Fields("functionID").Value & "_" & iCount & " value=""" & rstFunctionParameters.Fields("parameterName").Value & """>" & vbCrLf)
-						iCount = iCount + 1
-						rstFunctionParameters.MoveNext()
-					Loop
+				iCount = 0
+				For Each objRow As DataRow In rstFunctionParameters.Rows
+					Response.Write("<input type='hidden' id=txtFunctionParameters_" & objRow("functionID").ToString() & "_" & iCount & " name=txtFunctionParameters_" & objRow("functionID").ToString() & "_" & iCount & " value=""" & objRow("parameterName").ToString() & """>" & vbCrLf)
+					iCount += 1
+				Next
 
-					' Release the ADO recordset object.
-					rstFunctionParameters.close()
-				End If
-				rstFunctionParameters = Nothing
-			End If
+			Catch ex As Exception
+				sErrMsg = "Error reading component functions." & vbCrLf & FormatError(ex.Message)
 
-			' Release the ADO command object.
-			cmdFunctionParameters = Nothing
+			End Try
+			
 		End If
 	%>
 </form>
 
 <form id="frmOperators" name="frmOperators">
 	<%
-		Dim cmdOperators As Command
-		Dim rstOperators As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdOperators = New Command()
-			cmdOperators.CommandText = "sp_ASRIntGetExprOperators"
-			cmdOperators.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdOperators.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				Dim rstOperators = objDataAccess.GetFromSP("sp_ASRIntGetExprOperators")
 
-			Err.Clear()
-			rstOperators = cmdOperators.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error reading component operators." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstOperators.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstOperators.EOF
-						iCount = iCount + 1
-						Response.Write("<input type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & rstOperators.Fields("definitionString").Value & """>" & vbCrLf)
-						rstOperators.MoveNext()
-					Loop
+				iCount = 0
+				For Each objRow As DataRow In rstOperators.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtOperator_" & iCount & " name=txtOperator_" & iCount & " value=""" & objRow("definitionString").ToString & """>" & vbCrLf)
+				Next
 
-					' Release the ADO recordset object.
-					rstOperators.close()
-				End If
-				rstOperators = Nothing
-			End If
+			Catch ex As Exception
+				sErrMsg = "Error reading component operators." & vbCrLf & FormatError(ex.Message)
 
-			' Release the ADO command object.
-			cmdOperators = Nothing
+			End Try	
+			
 		End If
 	%>
 </form>
 
 <form id="frmCalcs" name="frmCalcs">
 	<%
-		Dim cmdCalcs As Command
-		Dim rstCalcs As Recordset
-		Dim prmExprID As ADODB.Parameter
-		Dim prmBaseTableID As ADODB.Parameter	
-		
+	
 		If Len(sErrMsg) = 0 Then
-			cmdCalcs = New Command
-			cmdCalcs.CommandText = "sp_ASRIntGetExprCalcs"
-			cmdCalcs.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdCalcs.ActiveConnection = Session("databaseConnection")
 
-			prmExprID = cmdCalcs.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
-			cmdCalcs.Parameters.Append(prmExprID)
-			prmExprID.value = CleanNumeric(CLng(Session("optionExprID")))
+			Try
+				Dim rstCalcs = objDataAccess.GetFromSP("sp_ASRIntGetExprCalcs" _
+					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionExprID")))} _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionTableID")))})
 
-			prmBaseTableID = cmdCalcs.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-			cmdCalcs.Parameters.Append(prmBaseTableID)
-			prmBaseTableID.value = CleanNumeric(CLng(Session("optionTableID")))
+				iCount = 0
+				
+				For Each objRow As DataRow In rstCalcs.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(objRow("definitionString").ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(objRow("description").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Next
+				
+			Catch ex As Exception
+				sErrMsg = "Error reading component calculations." & vbCrLf & FormatError(ex.Message)
+				
+			End Try
 
-			Err.Clear()
-			rstCalcs = cmdCalcs.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error reading component calculations." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstCalcs.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstCalcs.EOF
-						iCount = iCount + 1
-						Response.Write("<input type='hidden' id=txtCalc_" & iCount & " name=txtCalc_" & iCount & " value=""" & Replace(rstCalcs.Fields("definitionString").Value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtCalcDesc_" & iCount & " name=txtCalcDesc_" & iCount & " value=""" & Replace(rstCalcs.Fields("description").Value, """", "&quot;") & """>" & vbCrLf)
-						rstCalcs.MoveNext()
-					Loop
-
-					' Release the ADO recordset object.
-					rstCalcs.close()
-				End If
-				rstCalcs = Nothing
-			End If
-
-			' Release the ADO command object.
-			cmdCalcs = Nothing
 		End If
 	%>
 </form>
 
 <form id="frmFilters" name="frmFilters">
 	<%
-		Dim cmdFilters As Command
-		Dim rstFilters As Recordset
 		
 		If Len(sErrMsg) = 0 Then
-			cmdFilters = New Command
-			cmdFilters.CommandText = "sp_ASRIntGetExprFilters"
-			cmdFilters.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdFilters.ActiveConnection = Session("databaseConnection")
+			
+			Try
+				
+				Dim rstFilters = objDataAccess.GetFromSP("sp_ASRIntGetExprFilters" _
+					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionExprID")))} _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionTableID")))})
 
-			prmExprID = cmdFilters.CreateParameter("exprID", 3, 1) ' 3=integer, 1=input
-			cmdFilters.Parameters.Append(prmExprID)
-			prmExprID.value = CleanNumeric(CLng(Session("optionExprID")))
+				iCount = 0
+				
+				For Each objRow As DataRow In rstFilters.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(objRow("definitionString").ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(objRow("description").ToString(), """", "&quot;") & """>" & vbCrLf)
+				Next
+								
+			Catch ex As Exception
+				sErrMsg = "Error reading component filters." & vbCrLf & FormatError(ex.Message)
 
-			prmBaseTableID = cmdFilters.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
-			cmdFilters.Parameters.Append(prmBaseTableID)
-			prmBaseTableID.value = CleanNumeric(CLng(Session("optionTableID")))
+			End Try
 
-			Err.Clear()
-			rstFilters = cmdFilters.Execute
-			If (Err.Number <> 0) Then
-				sErrMsg = "Error reading component filters." & vbCrLf & FormatError(Err.Description)
-			Else
-				If rstFilters.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstFilters.EOF
-						iCount = iCount + 1
-						Response.Write("<input type='hidden' id=txtFilter_" & iCount & " name=txtFilter_" & iCount & " value=""" & Replace(rstFilters.Fields("definitionString").Value, """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtFilterDesc_" & iCount & " name=txtFilterDesc_" & iCount & " value=""" & Replace(rstFilters.Fields("description").Value, """", "&quot;") & """>" & vbCrLf)
-						rstFilters.MoveNext()
-					Loop
-
-					' Release the ADO recordset object.
-					rstFilters.close()
-				End If
-				rstFilters = Nothing
-			End If
-
-			' Release the ADO command object.
-			cmdFilters = Nothing
 		End If
 	%>
 </form>
