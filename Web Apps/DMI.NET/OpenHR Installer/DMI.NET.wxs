@@ -287,6 +287,9 @@
                     <Component Id="cmpD525178D0539E9F8F33F00F8AA1DC96D" Guid="*">
                         <File Id="fil8425EC34C4D99BD4338894DDFA5D0483" KeyPath="yes" Source="SourceDir\Content\images\next_48.png" />
                     </Component>
+                    <Component Id="cmp9BB6963D0DF4D174FB4CD8877C3188E8" Guid="*">
+                        <File Id="fil2253D7D184BA353F0BFE11C9C18514CD" KeyPath="yes" Source="SourceDir\Content\images\OpenHR_Icon.ico" />
+                    </Component>
                     <Component Id="cmp38EC4352164928024930260DBD10AD56" Guid="*">
                         <File Id="fil32AD7640FF0208428AEDD0D2F8999968" KeyPath="yes" Source="SourceDir\Content\images\Penfold.png" />
                     </Component>
@@ -3473,6 +3476,7 @@
             <ComponentRef Id="cmp0195F455F57379E51182354CD402256F" />
             <ComponentRef Id="cmp74DDB480A70EC2127E7D92072DBF8ED6" />
             <ComponentRef Id="cmpD525178D0539E9F8F33F00F8AA1DC96D" />
+            <ComponentRef Id="cmp9BB6963D0DF4D174FB4CD8877C3188E8" />
             <ComponentRef Id="cmp38EC4352164928024930260DBD10AD56" />
             <ComponentRef Id="cmpA42022FDEF405B75ABCF0371ED2872EB" />
             <ComponentRef Id="cmpB21C30E31E5C27F1ED96885FA310A28D" />

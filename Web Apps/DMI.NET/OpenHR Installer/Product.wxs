@@ -19,9 +19,17 @@
 		<?define publishDir="..\DMI.NET\obj\Release\Package\PackageTmp\"?>
 		<?define MyWebResourceDir="."?>
 
+		<!-- Application icon -->
+		<Icon Id="OpenHR_Icon" SourceFile="$(var.publishDir)\Content\Images\OpenHR_Icon.ico"/>
+		<Property Id="ARPPRODUCTICON" Value="OpenHR_Icon" />
+
 		<!-- Configurable install location -->
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
 
+		<!-- Set some properties for the MSI installer -->
+		<Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+		<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+		
 		<!-- Creating directories -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="INETPUB" Name="Inetpub" ComponentGuidGenerationSeed="60f8e27d82ad4207b784e13305dd18dc">

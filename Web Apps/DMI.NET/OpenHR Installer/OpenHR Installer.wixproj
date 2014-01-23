@@ -6,7 +6,7 @@
     <ProductVersion>3.7</ProductVersion>
     <ProjectGuid>5df75109-5222-4494-ac8c-6aae5f93998a</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>OpenHR Installer</OutputName>
+    <OutputName>OpenHR Web Installer</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -47,6 +47,7 @@
     <Compile Include="UIDialogs.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdvancedPrivateCertificate.pfx" />
     <Content Include="build_setup.build" />
     <Content Include="ConfigurationInitialize.wxi" />
     <Content Include="License.rtf" />
@@ -91,4 +92,7 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>"c:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

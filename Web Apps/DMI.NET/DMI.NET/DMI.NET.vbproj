@@ -210,6 +210,7 @@
     <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\images\Default Background.jpg" />
     <Content Include="Content\images\dropdown_icon.gif" />
+    <Content Include="Content\images\OpenHR_Icon.ico" />
     <Content Include="Content\images\Penfold.png" />
     <Content Include="Content\images\ProgressBar.gif" />
     <Content Include="Content\images\PunchHole.png" />
