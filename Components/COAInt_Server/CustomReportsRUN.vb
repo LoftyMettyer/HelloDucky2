@@ -1897,8 +1897,7 @@ Error_Trap:
 		mstrSQLJoin = mstrSQLJoin & sChildJoinCode
 		mstrSQLJoin = mstrSQLJoin & sOtherParentJoinCode
 
-		GenerateSQLJoin = True
-		Exit Function
+		Return True
 
 GenerateSQLJoin_ERROR:
 
@@ -1909,7 +1908,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function DoChildOrderString(rsTemp As DataTable, psJoinCode As String, plngChildID As Integer) As String
+	Private Function DoChildOrderString(rsTemp As DataTable, ByRef psJoinCode As String, plngChildID As Integer) As String
 
 		' This function loops through the child tables default order
 		' checking if the user has privileges. If they do, add to the order string
