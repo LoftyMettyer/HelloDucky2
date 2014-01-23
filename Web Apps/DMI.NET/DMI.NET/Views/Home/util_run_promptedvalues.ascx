@@ -5,8 +5,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 
 <% 
-	Dim bStandardReportPrompt As Boolean
-		
+	
 	' This page is called from DefSel.asp.  If receives the following
 	' information via the request object:
 	'
@@ -16,16 +15,11 @@
 	' UtilID      - <the id of the utility>
 	' Action      - run/delete
 	' FollowPage  - page to go to if YES is clicked <util_run.asp>
-	If Session("action") = "STDREPORT_DATEPROMPT" Or Session("optionaction") = "STDREPORT_DATEPROMPT" Then
-		bStandardReportPrompt = True
-		Session("utilname") = ""
-	Else
-		bStandardReportPrompt = False
-		Session("utiltype") = Request.Form("utiltype")
-		Session("utilid") = Request.Form("utilid")
-		Session("utilname") = Request.Form("utilname")
-		Session("action") = Request.Form("action")
-	End If
+	Session("utiltype") = Request.Form("utiltype")
+	Session("utilid") = Request.Form("utilid")
+	Session("utilname") = Request.Form("utilname")
+	Session("action") = Request.Form("action")
+
 %>
 
 
@@ -51,22 +45,14 @@
 				$("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 			}
 
-			if (frmPromptedValues.StandardReportPrompt.value == "True") {
-				$("#reportframe").show();
-			}
 		}
 
 		if (frmPromptedValues.txtPromptCount.value == 0) {
 
-			if (frmPromptedValues.StandardReportPrompt.value == "True") {
-				OpenHR.submitForm(frmPromptedValues);
+			if (menu_isSSIMode() == true) {
+				OpenHR.submitForm(frmPromptedValues, "workframe", true);
 			} else {
-				if (menu_isSSIMode() == true) {
-					OpenHR.submitForm(frmPromptedValues, "workframe", true);
-				} else {
-					OpenHR.showInReportFrame(frmPromptedValues, true);
-				}
-
+				OpenHR.showInReportFrame(frmPromptedValues, true);
 			}
 
 		} else {
@@ -102,13 +88,7 @@
 			<span class="pageTitle"><% =Session("utilname")%></span>
 		</div>	
 	<div id="dataRow">
-		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action='<%
-			If bStandardReportPrompt Then
-				Response.Write("stdrpt_def_Absence")
-			Else
-				Response.Write("util_run")
-			End If
-		%>'>
+		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action='util_run'>
 
 			<%
 				' Get variables for Absence Breakdown / Bradford Factor
@@ -163,26 +143,17 @@
 	
 				iPromptCount = 0
 	
-				If bStandardReportPrompt Then
-					
-					rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetStandardReportDates", CommandType.StoredProcedure, _
-											New SqlParameter("piReportType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("StandardReport_Type")))})
-					
+				Dim prmRecordID As New SqlParameter("piRecordID", SqlDbType.Int)
+				If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
+					prmRecordID.Value = 0
 				Else
-
-					Dim prmRecordID As New SqlParameter("piRecordID", SqlDbType.Int)
-					If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
-						prmRecordID.Value = 0
-					Else
-						prmRecordID.Value = CleanNumeric(CLng(Session("singleRecordID")))
-					End If
+					prmRecordID.Value = CleanNumeric(CLng(Session("singleRecordID")))
+				End If
 								
-					rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
-											New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
-											New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
-											prmRecordID)
-
-				End If			
+				rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
+										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
+										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
+										prmRecordID)
 				
 				If rstPromptedValue.Rows.Count > 0 Then
 
@@ -246,68 +217,10 @@
 							' Date Prompted Value
 						ElseIf objRow("ValueType") = 4 Then
 
-							If bStandardReportPrompt Then
-								Response.Write("        <input type=text class=""text"" id=prompt_" & objRow("StartEndType") & "_" & objRow("componentID") & " name=prompt_" & objRow("StartEndType") & "_" & objRow("componentID") & " value=""")
-							Else
-								Response.Write("        <input type=text class=""text"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
-							End If
-					
-							If (IsDBNull(objRow("promptDateType"))) Or (objRow("promptDateType") = vbNullString) Then
-								iPromptDateType = 0
-							Else
-								iPromptDateType = objRow("promptDateType")
-							End If
-				
-							Dim iDay As Integer
-							Dim dtDate As Date
-							Dim iMonth As Integer
-								
-							Select Case iPromptDateType
-								Case 0
-									' Explicit value
-									If Not IsDBNull(objRow("valuedate")) Then
-										If (CStr(objRow("valuedate")) <> "00:00:00") And _
-												(CStr(objRow("valuedate")) <> "12:00:00 AM") Then
-											Response.Write(ConvertSQLDateToLocale(objRow("valuedate")))
-										End If
-									End If
-										
-								Case 1
-									' Current date
-									Response.Write(ConvertSQLDateToLocale(Date.Now))
-						
-								Case 2
-									' Start of current month
-									iDay = (Day(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									Response.Write(ConvertSQLDateToLocale(dtDate))
-						
-								Case 3
-									' End of current month
-									iDay = (Day(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", 1, dtDate)
-									dtDate = DateAdd("d", -1, dtDate)
-									Response.Write(ConvertSQLDateToLocale(dtDate))
-						
-								Case 4
-									' Start of current year
-									iDay = (Day(Date.Now) * -1) + 1
-									iMonth = (Month(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", iMonth, dtDate)
-									Response.Write(ConvertSQLDateToLocale(dtDate))
-						
-								Case 5
-									' End of current year
-									iDay = (Day(Date.Now) * -1) + 1
-									iMonth = (Month(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", iMonth, dtDate)
-									dtDate = DateAdd("yyyy", 1, dtDate)
-									dtDate = DateAdd("d", -1, dtDate)
-									Response.Write(ConvertSQLDateToLocale(dtDate))
-							End Select
+							Response.Write("        <input type=text class=""text"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
+									
+							Dim dtDate As Date = CalculatePromptedDate(objRow)
+							Response.Write(ConvertSQLDateToLocale(dtDate))
 							Response.Write(""" style=""WIDTH: 100%"">" & vbCrLf)
 
 							' Lookup Prompted Value
@@ -419,7 +332,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="80">
 							<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
-								onclick="CancelClick()" />
+								onclick="closeclick()" />
 						</td>
 					</table>
 				</td>
@@ -449,7 +362,6 @@
 			<input type="hidden" id="utilname" name="utilname" value="<%=Replace(Session("utilname").ToString(), """", "&quot;")%>">
 			<input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
 			<input type="hidden" id="lastPrompt" name="lastPrompt" value="">
-			<input type="hidden" id="StandardReportPrompt" name="StandardReportPrompt" value="<%=bStandardReportPrompt%>">
 			<input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = "STDREPORT_DATEPROMPT") %>'>
 			<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
@@ -492,28 +404,6 @@
 		}
 
 
-	}
-
-	function CancelClick() {
-
-		var frmPromptedValues = document.getElementById('frmPromptedValues');
-
-		if (frmPromptedValues.StandardReportPrompt.value == "True") {
-			if (frmPromptedValues.RunInOptionFrame.value == "True") {
-				var frmParent = window.dialogArguments.OpenHR.getForm("workframe", "frmRecordEditForm");
-				//window.parent.document.all.item("workframeset").cols = "*, 0";
-				//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-				$('#optionframe').hide();
-				$('#workframe').show();
-				window.dialogArguments.OpenHR.submitForm(frmParent, null, false);
-			}
-			else {
-				closeclick();
-			}
-		}
-		else {
-			closeclick();
-		}
 	}
 
 	function ValidatePrompt(pctlPrompt, piDataType) {

@@ -4442,7 +4442,7 @@ function menu_loadQuickFindNoSaveCheck()
 	var sUtilReportType;
 	var frmSendArea;
 	var bOK;
-	var sPage = "util_run_promptedValues";
+	var sPage = "stdrpt_def_absence";
 
 	bOK = false;
 

@@ -1,6 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 
@@ -17,5 +18,68 @@ Public Module ASRFunctions
 		)
 
 		Return CInt(iLoginCount.Value)
+
 	End Function
+
+	Public Function CalculatePromptedDate(objRow As DataRow) As Date
+
+		Dim iPromptDateType As PromptedDateType
+		Dim iDay As Integer
+		Dim dtDate As Date
+		Dim iMonth As Integer
+
+		If (IsDBNull(objRow("promptDateType"))) Or (objRow("promptDateType").ToString() = vbNullString) Then
+			iPromptDateType = 0
+		Else
+			iPromptDateType = CType(objRow("promptDateType"), PromptedDateType)
+		End If
+
+		Select Case iPromptDateType
+			Case PromptedDateType.Explicit
+				If Not IsDBNull(objRow("valuedate")) Then
+					If (CStr(objRow("valuedate")) <> "00:00:00") And _
+							(CStr(objRow("valuedate")) <> "12:00:00 AM") Then
+						Return CDate(objRow("valuedate"))
+
+					End If
+				End If
+
+			Case PromptedDateType.Current
+				Return Date.Now
+
+			Case PromptedDateType.MonthStart
+				iDay = (Day(Date.Now) * -1) + 1
+				dtDate = DateAdd("d", iDay, Date.Now)
+				Return dtDate
+
+			Case PromptedDateType.MonthEnd
+				iDay = (Day(Date.Now) * -1) + 1
+				dtDate = DateAdd("d", iDay, Date.Now)
+				dtDate = DateAdd("m", 1, dtDate)
+				dtDate = DateAdd("d", -1, dtDate)
+				Return dtDate
+
+			Case PromptedDateType.YearStart
+				iDay = (Day(Date.Now) * -1) + 1
+				iMonth = (Month(Date.Now) * -1) + 1
+				dtDate = DateAdd("d", iDay, Date.Now)
+				dtDate = DateAdd("m", iMonth, dtDate)
+				Return dtDate
+
+			Case PromptedDateType.YearEnd
+				iDay = (Day(Date.Now) * -1) + 1
+				iMonth = (Month(Date.Now) * -1) + 1
+				dtDate = DateAdd("d", iDay, Date.Now)
+				dtDate = DateAdd("m", iMonth, dtDate)
+				dtDate = DateAdd("yyyy", 1, dtDate)
+				dtDate = DateAdd("d", -1, dtDate)
+				Return dtDate
+
+		End Select
+
+		Return Date.Now
+
+	End Function
+
+
 End Module

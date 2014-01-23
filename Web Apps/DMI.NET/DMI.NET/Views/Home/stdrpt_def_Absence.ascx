@@ -53,23 +53,6 @@
 	Session("action") = ""
 	Session("optionaction") = ""
 
-	' Read the prompted start/end dates if there were any
-	Dim aPrompts(1)
-
-	For i = 0 To (Request.Form.Count) - 1
-		sKey = Request.Form.Keys(i)
-		If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
-				(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-			
-			If Mid(sKey, 8, 5) = "start" Then
-				aPrompts(0) = Request.Form.Item(i)
-			Else
-				aPrompts(1) = Request.Form.Item(i)
-			End If
-
-		End If
-	Next
-
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 	
@@ -78,7 +61,7 @@
 	objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 	
 	Dim aColumnNames
-	Dim aAbsenceTypes
+	Dim aAbsenceTypes() As String
 	Dim sErrorDescription As String
 	Dim iCount As Integer
 		
@@ -88,7 +71,7 @@
 	
 	' Retreive the absence options	
 	Try
-
+		
 		Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetColumns", CommandType.StoredProcedure _
 			, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")})
 
@@ -123,9 +106,12 @@
 
 
 	' Set the default settings
+	
+	Dim dtStartDate As Date
+	Dim dtEndDate As Date
+	
 	Dim strReportType As String = "AbsenceBreakdown"
-	Dim strDate
-	Dim strType
+	Dim strType As String
 	Dim lngDefaultColumnID As Long
 	Dim lngConfigColumnID As Long
 	Dim strSaveExisting As String
@@ -152,26 +138,27 @@
 		End If
 	Next
 
-	' Date range
-	If Len(aPrompts(0)) = 0 Then
-		strDate = ConvertSQLDateToLocale(objSettings.GetStandardReportDate(strReportType, "Start Date"))
-	Else
-		strDate = aPrompts(0)
-	End If
-	Response.Write("frmAbsenceDefinition.txtDateFrom.value = " & """" & CleanStringForJavaScript(strDate) & """" & ";" & vbCrLf)
+	' Report period	
+	Dim rstReportDates = objDataAccess.GetDataTable("spASRIntGetStandardReportDates", CommandType.StoredProcedure, _
+					New SqlParameter("piReportType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("StandardReport_Type")))})
 
-	' Date range
-	If Len(aPrompts(1)) = 0 Then
-		strDate = ConvertSQLDateToLocale(objSettings.GetStandardReportDate(strReportType, "End Date"))
+	If rstReportDates.Rows.Count > 0 Then
+		dtStartDate = CalculatePromptedDate(rstReportDates.Rows(0))
+		dtEndDate = CalculatePromptedDate(rstReportDates.Rows(1))
 	Else
-		strDate = aPrompts(1)
+		Dim thisMonth As New DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)	
+		dtStartDate = thisMonth.AddYears(-1)
+		dtEndDate = dtStartDate.AddYears(1).AddDays(-1)		
 	End If
-	Response.Write("frmAbsenceDefinition.txtDateTo.value = " & """" & CleanStringForJavaScript(strDate) & """" & ";" & vbCrLf)
+			
+	Response.Write("frmAbsenceDefinition.txtDateFrom.value = " & """" & ConvertSQLDateToLocale(dtStartDate) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtDateTo.value = " & """" & ConvertSQLDateToLocale(dtEndDate) & """" & ";" & vbCrLf)
 
+	
 	' Record Selection
 	If Session("optionRecordID") = "0" Then
 
-		strType = objSettings.GetSystemSetting(strReportType, "Type", "A")
+		strType = objSettings.GetSystemSetting(strReportType, "Type", "A").ToString()
 		
 		Select Case strType
 			Case "A"

@@ -51,55 +51,6 @@ Public Class clsSettings
 
 	End Function
 
-	' Return date of report in SQL (American date format)
-	Public Function GetStandardReportDate(ByRef psReportType As String, ByRef psReportDateType As String) As String
-
-		Dim blnCustom As Boolean
-		Dim strRecSelStatus As String
-		Dim lngDateExprID As Integer
-		Dim dEndDate As Date
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object psReportType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		blnCustom = (GetSystemSetting(psReportType, "Custom Dates", "0").ToString() = "1")
-
-		If blnCustom Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object psReportDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object psReportType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetSystemSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			lngDateExprID = CInt(GetSystemSetting(CStr(psReportType), CStr(psReportDateType), 0))
-			strRecSelStatus = IsCalcValid(lngDateExprID)
-
-			If strRecSelStatus <> vbNullString Then
-				dEndDate = DateAdd(Microsoft.VisualBasic.DateInterval.Day, VB.Day(Today) * -1, Today)
-				'UPGRADE_WARNING: Couldn't resolve default property of object psReportDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If psReportDateType = "End Date" Then
-					GetStandardReportDate = VB6.Format(dEndDate, "MM/dd/yyyy")
-				Else
-					GetStandardReportDate = VB6.Format(DateAdd(Microsoft.VisualBasic.DateInterval.Day, 1, DateAdd(Microsoft.VisualBasic.DateInterval.Year, -1, dEndDate)), "MM/dd/yyyy")
-				End If
-			Else
-				'UPGRADE_WARNING: Couldn't resolve default property of object datGeneral.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetStandardReportDate = VB6.Format(General.GetValueForRecordIndependantCalc(lngDateExprID), "MM/dd/yyyy")
-
-				dEndDate = CDate(General.GetValueForRecordIndependantCalc(lngDateExprID))
-				GetStandardReportDate = dEndDate.ToString("MM/dd/yyyy")
-
-
-			End If
-
-		Else
-			dEndDate = DateAdd(Microsoft.VisualBasic.DateInterval.Day, VB.Day(Today) * -1, Today)
-			'UPGRADE_WARNING: Couldn't resolve default property of object psReportDateType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If psReportDateType = "End Date" Then
-				GetStandardReportDate = VB6.Format(dEndDate, "MM/dd/yyyy")
-			Else
-				GetStandardReportDate = VB6.Format(DateAdd(Microsoft.VisualBasic.DateInterval.Day, 1, DateAdd(Microsoft.VisualBasic.DateInterval.Year, -1, dEndDate)), "MM/dd/yyyy")
-			End If
-		End If
-
-	End Function
-
 	Public Function GetPicklistFilterName(ByRef psReportType As String, ByRef pstrType As String) As String
 
 		Dim strRecSelStatus As String
