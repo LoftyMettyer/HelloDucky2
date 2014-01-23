@@ -446,7 +446,8 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function newUser_Submit(value As FormCollection) As JsonResult
-			On Error Resume Next
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim fSubmitNewUser = (Len(Request.Form("txtGotoPage")) = 0)
 
@@ -456,60 +457,52 @@ Namespace Controllers
 
 				' Create an OpenHR user associated with the
 				' given SQL Server login.
-				Dim cmdNewUser = CreateObject("ADODB.Command")
-				cmdNewUser.CommandText = "sp_ASRIntNewUser"
-				cmdNewUser.CommandType = 4 ' Stored Procedure
-				cmdNewUser.ActiveConnection = Session("databaseConnection")
 
-				Dim prmNewUser = cmdNewUser.CreateParameter("newUser", 200, 1, 255)
-				cmdNewUser.Parameters.Append(prmNewUser)
-				prmNewUser.value = sNewUserLogin
+				Try
+					objDataAccess.ExecuteSP("sp_ASRIntNewUser", _
+							New SqlParameter("@psUserName", SqlDbType.VarChar, 128) With {.Value = sNewUserLogin})
 
-				Err.Clear()
-				cmdNewUser.Execute()
 
-				' Release the ADO command object.
-				cmdNewUser = Nothing
-
-				If Err.Number <> 0 Then
+				Catch ex As Exception
 					Session("ErrorTitle") = "New User Page"
-					Session("ErrorText") = "You could not add the user because of the following error:<p>" & FormatError(Err.Description)
+					Session("ErrorText") = "You could not add the user because of the following error:<p>" & FormatError(ex.Message)
 					Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
 					Return Json(data1, JsonRequestBehavior.AllowGet)
-					'Response.Redirect("error")
-				Else
-					Session("ErrorTitle") = "New User Page"
-					Session("ErrorText") = "User added successfully."
-					Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-					Return Json(data, JsonRequestBehavior.AllowGet)
-					'Response.Redirect("message")
-				End If
-			Else
-				' Read the information from the calling form.
-				' Save the required table/view and screen IDs in session variables.
-				Session("action") = Request.Form("txtAction")
-				Session("tableID") = Request.Form("txtGotoTableID")
-				Session("viewID") = Request.Form("txtGotoViewID")
-				Session("screenID") = Request.Form("txtGotoScreenID")
-				Session("orderID") = Request.Form("txtGotoOrderID")
-				Session("recordID") = Request.Form("txtGotoRecordID")
-				Session("parentTableID") = Request.Form("txtGotoParentTableID")
-				Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
-				Session("realSource") = Request.Form("txtGotoRealSource")
-				Session("filterDef") = Request.Form("txtGotoFilterDef")
-				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
-				Session("lineage") = Request.Form("txtGotoLineage")
-				Session("defseltype") = Request.Form("txtGotoDefSelType")
-				Session("utilID") = Request.Form("txtGotoUtilID")
-				Session("locateValue") = Request.Form("txtGotoLocateValue")
-				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
-				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-				Session("fromMenu") = Request.Form("txtGotoFromMenu")
 
-				' Go to the requested page.
-				' Response.Redirect(Request.Form("txtGotoPage"))
-				Session("txtGotoPage") = Request.Form("txtGotoPage")
+				End Try
+
+				Session("ErrorTitle") = "New User Page"
+				Session("ErrorText") = "User added successfully."
+				Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+				Return Json(data, JsonRequestBehavior.AllowGet)
+
+			Else
+			' Read the information from the calling form.
+			' Save the required table/view and screen IDs in session variables.
+			Session("action") = Request.Form("txtAction")
+			Session("tableID") = Request.Form("txtGotoTableID")
+			Session("viewID") = Request.Form("txtGotoViewID")
+			Session("screenID") = Request.Form("txtGotoScreenID")
+			Session("orderID") = Request.Form("txtGotoOrderID")
+			Session("recordID") = Request.Form("txtGotoRecordID")
+			Session("parentTableID") = Request.Form("txtGotoParentTableID")
+			Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
+			Session("realSource") = Request.Form("txtGotoRealSource")
+			Session("filterDef") = Request.Form("txtGotoFilterDef")
+			Session("filterSQL") = Request.Form("txtGotoFilterSQL")
+			Session("lineage") = Request.Form("txtGotoLineage")
+			Session("defseltype") = Request.Form("txtGotoDefSelType")
+			Session("utilID") = Request.Form("txtGotoUtilID")
+			Session("locateValue") = Request.Form("txtGotoLocateValue")
+			Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
+			Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+			Session("fromMenu") = Request.Form("txtGotoFromMenu")
+
+			' Go to the requested page.
+			' Response.Redirect(Request.Form("txtGotoPage"))
+			Session("txtGotoPage") = Request.Form("txtGotoPage")
 			End If
+
 		End Function
 
 		<HttpPost()>

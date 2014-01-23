@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script type="text/javascript">
 	function newUser_window_onload() {
@@ -40,19 +42,15 @@
 <div <%=session("BodyTag")%>>
 	<form action="newUser_Submit" method="post" id="frmNewUserForm" name="frmNewUserForm">
 
-		<%
-			On Error Resume Next
+<%
+			
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			
+	Try
+		Dim rstLogins = objDataAccess.GetDataTable("spASRIntGetAvailableLoginsFromAssembly", CommandType.StoredProcedure)
 
-			' Display a list of available logins if there are any.
-			Dim cmdLogins = Server.CreateObject("ADODB.Command")
-			cmdLogins.CommandText = "spASRIntGetAvailableLoginsFromAssembly"
-			cmdLogins.CommandType = 4 ' Stored Procedure
-			cmdLogins.ActiveConnection = Session("databaseConnection")
-
-			Err.Clear()
-			Dim rstLogins = cmdLogins.Execute
-	
-			If (Err.Number <> 0) Then
+		If (rstLogins.Rows.Count = 0) Then
+			' No available logins.
 		%>
 		<br>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -67,73 +65,10 @@
 								<h3>New User</h3>
 							</td>
 						</tr>
-						<tr>
-							<td width="20"></td>
-							<td>Unable to get the list of available logins.
-												<br>
-								<%=formatError(err.description)%>
-							</td>
-							<td width="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" height="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" align="center">
-								<input type="button" value="OK" name="GoBack" class="btn" style="HEIGHT: 24px; WIDTH: 75px" width="75" id="cmdGoBack"
-									onclick="okClick()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="3" height="10"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<%
-		Else
-			If (rstLogins.BOF And rstLogins.EOF) Then
-				' No available logins.
-		%>
-		<br>
-		<table align="center" class="outline" cellpadding="5" cellspacing="0">
-			<tr>
-				<td>
-					<table align="center" class="invisible" cellpadding="0" cellspacing="0">
-						<tr>
-							<td colspan="3" height="10"></td>
-						</tr>
-						<tr>
-							<td colspan="3" align="center">
-								<h3>New User</h3>
-							</td>
-						</tr>
-
 						<tr>
 							<td width="20"></td>
 							<td>No available user logins.</td>
 							<td width="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" height="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" align="center">
-								<input type="button" class="btn" value="OK" name="GoBack" style="HEIGHT: 24px; WIDTH: 75px" width="75" id="Button1"
-									onclick="okClick()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="3" height="10"></td>
 						</tr>
 					</table>
 				</td>
@@ -163,12 +98,11 @@
 							<td align="left">
 								<select id="selNewUser" class="combo" name="selNewUser" style="WIDTH: 200px;">
 									<%
-										Do While Not rstLogins.EOF
-									%>
-									<option value="<%=replace(rstLogins.Fields("name").Value, """", "&quot;")%>"><%=rstLogins.Fields("name").Value%></option>
-									<%
-										rstLogins.MoveNext()
-									Loop
+										For Each objRow As DataRow In rstLogins.Rows
+										%>
+											<option value="<%=Replace(objRow("name").ToString(), """", "&quot;")%>"><%=objRow("name").ToString()%></option>
+										<%
+										Next
 									%>
 								</select>
 							</td>
@@ -183,20 +117,7 @@
 								<table class="invisible" cellspacing="0" cellpadding="0" align="center">
 									<td align="center">
 										<input id="submitNewUserDetails" name="submitNewUserDetails" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-											onclick="SubmitNewUserDetails()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
-									</td>
-									<td width="20"></td>
-									<td align="center">
-										<input id="btnCancel" name="btnCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-											onclick="cancelClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="SubmitNewUserDetails()" />
 									</td>
 								</table>
 							</td>
@@ -209,23 +130,59 @@
 			</tr>
 		</table>
 		<%
+
 		End If
 
-		' Release the ADO recordset and command objects.
-		rstLogins.close()
-	End If
+	Catch ex As Exception
+			%>
+		<br>
+		<table align="center" class="outline" cellpadding="5" cellspacing="0">
+			<tr>
+				<td>
+					<table align="center" class="invisible" cellpadding="0" cellspacing="0">
+						<tr>
+							<td colspan="3" height="10"></td>
+						</tr>
+						<tr>
+							<td colspan="3" align="center">
+								<h3>New User</h3>
+							</td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td>Unable to get the list of available logins.
+												<br>
+								<%=FormatError(ex.Message)%>
+							</td>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td colspan="3" height="20"></td>
+						</tr>
+						<tr>
+							<td colspan="3" align="center">
+								<input type="button" value="OK" name="GoBack" class="btn" style="HEIGHT: 24px; WIDTH: 75px" width="75" id="cmdGoBack"
+									onclick="okClick()" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" height="10"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<%
 
-	rstLogins = Nothing
-	cmdLogins = Nothing
+	End Try
+
 		%>
 	</form>
 
-	<script type="text/javascript">newUser_window_onload();</script>
-
-
-		<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-				<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-		</form>
-
+	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+			<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	</form>
 
 </div>
+
+<script type="text/javascript">newUser_window_onload();</script>
