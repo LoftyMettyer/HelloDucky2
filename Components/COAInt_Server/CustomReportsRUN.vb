@@ -8,6 +8,7 @@ Imports System.Collections.ObjectModel
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
+Imports System.Linq
 
 Public Class Report
 	Inherits BaseReport
@@ -502,6 +503,7 @@ ErrorTrap:
 		ColumnDetails = New List(Of ReportDetailItem)()
 
 	End Sub
+
 	Public Sub New()
 		MyBase.New()
 		Class_Initialize_Renamed()
@@ -676,7 +678,7 @@ GetCustomReportDefinition_ERROR:
 		On Error GoTo GetDetailsRecordsets_ERROR
 
 		Dim strTempSQL As String
-		Dim intTemp As Short
+		Dim intTemp As Integer
 		Dim prstCustomReportsSortOrder As DataTable
 		Dim lngTableID As Integer
 		Dim sMask As String
@@ -734,7 +736,7 @@ GetCustomReportDefinition_ERROR:
 				objReportItemDetail.IsValueOnChange = CBool(objRow("voc"))
 				objReportItemDetail.SuppressRepeated = CBool(objRow("srv"))
 				objReportItemDetail.LastValue = ""
-				objReportItemDetail.ColExprID = CInt(objRow("ColExprID"))
+				objReportItemDetail.ID = CInt(objRow("ColExprID"))
 				objReportItemDetail.ID = CInt(objRow("ColExprID"))
 
 				objReportItemDetail.Type = objRow("Type").ToString()
@@ -812,7 +814,7 @@ GetCustomReportDefinition_ERROR:
 		objReportItemDetail.IsValueOnChange = False
 		objReportItemDetail.SuppressRepeated = False
 		objReportItemDetail.LastValue = ""
-		objReportItemDetail.ColExprID = -1
+		objReportItemDetail.ID = -1
 		objReportItemDetail.Type = "C"
 		objReportItemDetail.TableID = mlngCustomReportsBaseTable
 		objReportItemDetail.TableName = GetTableName(objReportItemDetail.TableID)
@@ -848,7 +850,7 @@ GetCustomReportDefinition_ERROR:
 					objReportItemDetail.IsValueOnChange = False
 					objReportItemDetail.SuppressRepeated = False
 					objReportItemDetail.LastValue = ""
-					objReportItemDetail.ColExprID = -1
+					objReportItemDetail.ID = -1
 					objReportItemDetail.Type = "C"
 					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
 					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
@@ -875,7 +877,7 @@ GetCustomReportDefinition_ERROR:
 					objReportItemDetail.IsValueOnChange = False
 					objReportItemDetail.SuppressRepeated = False
 					objReportItemDetail.LastValue = ""
-					objReportItemDetail.ColExprID = -1
+					objReportItemDetail.ID = -1
 					objReportItemDetail.Type = "C"
 					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
 					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
@@ -909,7 +911,7 @@ GetCustomReportDefinition_ERROR:
 			objReportItemDetail.IsValueOnChange = False
 			objReportItemDetail.SuppressRepeated = False
 			objReportItemDetail.LastValue = ""
-			objReportItemDetail.ColExprID = -1
+			objReportItemDetail.ID = -1
 			objReportItemDetail.Type = "C"
 			objReportItemDetail.TableID = -1
 			objReportItemDetail.TableName = ""
@@ -966,15 +968,17 @@ GetDetailsRecordsets_ERROR:
 
 	End Function
 
-	Private Function IsChildTableUsed(ByRef iChildTableID As Integer) As Boolean
+	Private Function IsChildTableUsed(iChildTableID As Integer) As Boolean
 
-		For Each objItem In ColumnDetails
-			If objItem.TableID = iChildTableID Then
-				Return True
-			End If
-		Next
+		Return ColumnDetails.Any(Function(objItem) objItem.TableID = iChildTableID)
 
-		Return False
+		'For Each objItem In ColumnDetails
+		'	If objItem.TableID = iChildTableID Then
+		'		Return True
+		'	End If
+		'Next
+
+		'Return False
 
 	End Function
 
@@ -988,7 +992,7 @@ GetDetailsRecordsets_ERROR:
 		fOK = True
 
 		If fOK Then fOK = GenerateSQLSelect()
-		If fOK Then fOK = GenerateSQLFrom()
+		GenerateSQLFrom()
 		If fOK Then fOK = GenerateSQLJoin()
 		If fOK Then fOK = GenerateSQLWhere()
 		If fOK Then fOK = GenerateSQLOrderBy()
@@ -1224,7 +1228,7 @@ GetDetailsRecordsets_ERROR:
 				' Column 2 = table/view ID.
 				ReDim alngSourceTables(2, 0)
 				objCalcExpr = NewExpression()
-				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, CInt(objReportItem.ColExprID), ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, objReportItem.ID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 				If blnOK Then
 					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
 
@@ -1353,7 +1357,7 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function IsReportChildTable(ByRef lngTableID As Integer) As Boolean
+	Private Function IsReportChildTable(lngTableID As Integer) As Boolean
 
 		Dim i As Integer
 
@@ -1363,8 +1367,7 @@ GenerateSQLSelect_ERROR:
 			For i = 0 To UBound(mvarChildTables, 2) Step 1
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If lngTableID = mvarChildTables(0, i) Then
-					IsReportChildTable = True
-					Exit Function
+					Return True
 				End If
 			Next i
 		End If
@@ -1400,7 +1403,7 @@ Error_Trap:
 
 	End Function
 
-	Private Function OrderBy(ByRef plngTableID As Integer) As String
+	Private Function OrderBy(plngTableID As Integer) As String
 
 		' This function creates an ORDER BY statement by searching
 		' through the columns defined as the reports sort order, then
@@ -1413,7 +1416,7 @@ Error_Trap:
 
 		For Each objSort In colSortOrder
 			For Each objItem In ColumnDetails
-				If objSort.ColExprID = objItem.ColExprID And objSort.TableID = plngTableID Then
+				If objSort.ColExprID = objItem.ID And objSort.TableID = plngTableID Then
 					OrderBy = OrderBy & "[" & objItem.IDColumnName & "] " & objSort.AscDesc & ", "
 					bHasOrder = True
 					Exit For
@@ -1714,32 +1717,31 @@ Error_Trap:
 
 	End Function
 
-	Private Function IsReportParentTable(ByRef lngTableID As Integer) As Boolean
-
-		IsReportParentTable = False
+	Private Function IsReportParentTable(lngTableID As Integer) As Boolean
 
 		If lngTableID = mlngCustomReportsParent1Table Or lngTableID = mlngCustomReportsParent2Table Then
-			IsReportParentTable = True
+			Return True
 		End If
+
+		Return False
 
 	End Function
 
-	Private Function IsReportBaseTable(ByRef lngTableID As Integer) As Boolean
-
-		IsReportBaseTable = False
+	Private Function IsReportBaseTable(lngTableID As Integer) As Boolean
 
 		If lngTableID = mlngCustomReportsBaseTable Then
-			IsReportBaseTable = True
+			Return True
 		End If
 
+		Return False
+
 	End Function
 
-	Private Function GenerateSQLFrom() As Boolean
+	Private Sub GenerateSQLFrom()
 
 		mstrSQLFrom = gcoTablePrivileges.Item(mstrCustomReportsBaseTableName).RealSource
-		Return True
 
-	End Function
+	End Sub
 
 	Private Function GenerateSQLJoin() As Boolean
 
@@ -1907,7 +1909,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function DoChildOrderString(ByRef rsTemp As DataTable, ByRef psJoinCode As String, ByRef plngChildID As Integer) As String
+	Private Function DoChildOrderString(rsTemp As DataTable, psJoinCode As String, plngChildID As Integer) As String
 
 		' This function loops through the child tables default order
 		' checking if the user has privileges. If they do, add to the order string
@@ -2463,7 +2465,7 @@ GenerateSQLOrderBy_ERROR:
 
 			For Each objReportItem In ColumnDetails
 
-				If objSort.ColExprID = objReportItem.ColExprID Then
+				If objSort.ColExprID = objReportItem.ID Then
 					DoDefinedOrderBy = DoDefinedOrderBy & IIf(Len(DoDefinedOrderBy) > 0, ",", "") & "[" & objReportItem.IDColumnName & "] " & objSort.AscDesc
 					Exit For
 
@@ -2583,7 +2585,7 @@ CheckRecordSet_ERROR:
 		colColumns = New Collection(Of ReportColumn)
 		For Each objReportItem In ColumnDetails
 			objReportColumn = New ReportColumn()
-			objReportColumn.ID = objReportItem.ColExprID
+			objReportColumn.ID = objReportItem.ID
 			objReportColumn.BreakOrPageOnChange = objReportItem.IsBreakOnChange Or objReportItem.IsPageOnChange
 			objReportColumn.HasSummaryLine = objReportItem.IsAverage Or objReportItem.IsCount Or objReportItem.IsTotal
 			objReportColumn.LastValue = DBNull.Value
@@ -2612,7 +2614,7 @@ CheckRecordSet_ERROR:
 				' Put the values from the previous record in the column array.
 
 				For Each objReportItem In ColumnDetails
-					colColumns.GetById(objReportItem.ColExprID).LastValue = objReportItem.LastValue
+					colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
 				Next
 
 				' From last column in the order to first, check changes.
@@ -2621,7 +2623,7 @@ CheckRecordSet_ERROR:
 					iColumnIndex = 0
 					iLoop2 = 1
 					For Each objReportItem In ColumnDetails
-						If (objReportItem.ColExprID = colSortOrder.GetByIndex(iLoop7).ColExprID) And (objReportItem.Type = "C") Then
+						If (objReportItem.ID = colSortOrder.GetByIndex(iLoop7).ColExprID) And (objReportItem.Type = "C") Then
 							iColumnIndex = iLoop2 - 1
 							Exit For
 						End If
@@ -2662,7 +2664,7 @@ CheckRecordSet_ERROR:
 							For iLoop2 = iLoop7 - 1 To 0 Step -1
 								iOtherColumnIndex = 0
 								For Each objItem In ColumnDetails
-									If objItem.ColExprID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
+									If objItem.ID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
 										otherColumnDetail = objItem
 										Exit For
 									End If
@@ -2903,7 +2905,7 @@ CheckRecordSet_ERROR:
 		' Put the values from the previous record in the column array.
 
 		For Each objReportItem In ColumnDetails
-			colColumns.GetById(objReportItem.ColExprID).LastValue = objReportItem.LastValue
+			colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
 		Next
 
 
@@ -2915,7 +2917,7 @@ CheckRecordSet_ERROR:
 			iColumnIndex = 0
 			For Each objItem In ColumnDetails
 
-				If objItem.ColExprID = colSortOrder.GetByIndex(iLoop).ColExprID And objItem.Type = "C" Then
+				If objItem.ID = colSortOrder.GetByIndex(iLoop).ColExprID And objItem.Type = "C" Then
 					objColumnIndex = objItem
 					iColumnIndex = iLoop2
 					Exit For
@@ -3076,32 +3078,27 @@ LoadRecords_ERROR:
 
 	End Function
 
-	Private Function PopulateGrid_DoSummaryInfo(ByRef pavColumns As ICollection(Of ReportColumn), ByRef piColumnIndex As Integer, ByRef piSortIndex As Integer) As Boolean
+	Private Sub PopulateGrid_DoSummaryInfo(pavColumns As ICollection(Of ReportColumn), piColumnIndex As Integer, piSortIndex As Integer)
 
 		Dim fDoValue As Boolean
 		Dim iLoop As Integer
-		'	Dim iLoop2 As Short
-		'	Dim iColumnIndex As Short
 		Dim sSQL As String
 		Dim rsTemp As DataTable
 		Dim fHasAverage As Boolean
 		Dim fHasCount As Boolean
 		Dim fHasTotal As Boolean
-		Dim sWhereCode As String
+		Dim sWhereCode As String = ""
 		Dim sFromCode As String
 
 		Dim sTotalBradfordAddString As String
-		Dim iLogicValue As Short
+		Dim iLogicValue As Integer
 
 		Dim aryAverageAddString As ArrayList
 		Dim aryTotalAddString As ArrayList
 		Dim aryCountAddString As ArrayList
 
-		Dim miAmountOfRecords As Single
-		Dim sBradfordSummary As String
-		Dim asBradfordSummaryLine() As String
-
-		Dim intColCounter As Short
+		Dim miAmountOfRecords As Integer
+		Dim intColCounter As Integer = 1
 		Dim strAggrValue As String
 		Dim objLastItem As New ReportDetailItem
 		Dim objThisColumn As ReportColumn
@@ -3109,11 +3106,10 @@ LoadRecords_ERROR:
 		Dim objReportItem As ReportDetailItem
 		Dim objSortItem As ReportSortItem
 
-		intColCounter = 1
 		strAggrValue = vbNullString
 
 		' Construct the summary where clause.
-		sWhereCode = ""
+
 		For iLoop = 0 To piSortIndex
 
 			objSortItem = colSortOrder.GetByIndex(iLoop)
@@ -3328,7 +3324,7 @@ LoadRecords_ERROR:
 						If (objReportItem.IsValueOnChange) Then
 
 							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ColExprID Then
+								If objSort.ColExprID = objReportItem.ID Then
 									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
@@ -3363,7 +3359,7 @@ LoadRecords_ERROR:
 						fDoValue = False
 						If (objReportItem.IsValueOnChange) Then
 							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ColExprID Then
+								If objSort.ColExprID = objReportItem.ID Then
 									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
@@ -3418,7 +3414,7 @@ LoadRecords_ERROR:
 						fDoValue = False
 						If objReportItem.IsValueOnChange Then
 							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ColExprID Then
+								If objSort.ColExprID = objReportItem.ID Then
 									fDoValue = True	' (iLoop2 <= piSortIndex)
 									Exit For
 								End If
@@ -3480,56 +3476,42 @@ LoadRecords_ERROR:
 
 			mblnReportHasSummaryInfo = True
 
-			asBradfordSummaryLine = Split(sTotalBradfordAddString, vbTab)
-
 			' Build Bradford Total Summary
-			asBradfordSummaryLine(10) = "Total"
-			asBradfordSummaryLine(12) = CStr(Val(Str(CDbl(asBradfordSummaryLine(12)))))
-			asBradfordSummaryLine(13) = CStr(Val(Str(CDbl(asBradfordSummaryLine(13)))))
-			' TODO
-			'			sTotalAddString = Join(asBradfordSummaryLine, vbTab)
-
-
-			' Calculate Bradford index line
-			asBradfordSummaryLine(10) = "Bradford Factor"
-
-			If mbBradfordWorkings = True Then
-				asBradfordSummaryLine(12) = CStr(Val(asBradfordSummaryLine(12)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & asBradfordSummaryLine(12) & ")"
-				asBradfordSummaryLine(13) = CStr(Val(asBradfordSummaryLine(13)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & asBradfordSummaryLine(13) & ")"
-			Else
-				asBradfordSummaryLine(12) = CStr(CDbl(asBradfordSummaryLine(12)) * (miAmountOfRecords * miAmountOfRecords))
-				asBradfordSummaryLine(13) = CStr(CDbl(asBradfordSummaryLine(13)) * (miAmountOfRecords * miAmountOfRecords))
-			End If
-
-			If (mblnCustomReportsSummaryReport) And (mbBradfordCount Or mbBradfordTotals) Then
-				asBradfordSummaryLine(2) = vbNullString
-				asBradfordSummaryLine(3) = vbNullString
-				asBradfordSummaryLine(4) = vbNullString
-				asBradfordSummaryLine(5) = vbNullString
-			End If
-
-			sBradfordSummary = Join(asBradfordSummaryLine, vbTab)
+			aryTotalAddString(0) = vbNullString
+			aryTotalAddString(1) = vbNullString
+			aryTotalAddString(2) = vbNullString
+			aryTotalAddString(3) = vbNullString
+			aryTotalAddString(4) = vbNullString
+			aryTotalAddString(5) = vbNullString
 
 			' Add the summary lines
 			If mbBradfordCount Then
+				aryCountAddString(10) = "Instances"
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			If mbBradfordTotals Then
-				' TODO
-				'				AddToArray_Data(sTotalAddString, RowType.Total)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				aryTotalAddString(10) = "Total"
+				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
 			End If
 
-			AddToArray_Data(sBradfordSummary, RowType.Total)
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-			NEW_AddToArray_Data(RowType.Data, "")
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+			' Calculate Bradford index line
+			aryTotalAddString(10) = "Bradford Factor"
+			If mbBradfordWorkings = True Then
+				aryTotalAddString(12) = CStr(Val(aryTotalAddString(12)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(12) & ")"
+				aryTotalAddString(13) = CStr(Val(aryTotalAddString(13)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(13) & ")"
+			Else
+				aryTotalAddString(12) = CStr(CDbl(aryTotalAddString(12)) * (miAmountOfRecords * miAmountOfRecords))
+				aryTotalAddString(13) = CStr(CDbl(aryTotalAddString(13)) * (miAmountOfRecords * miAmountOfRecords))
+			End If
+			NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
+
+			mintPageBreakRowIndex += 1
 
 		End If
 
-	End Function
+	End Sub
 
 	Private Sub PopulateGrid_DoGrandSummary()
 
@@ -3874,7 +3856,6 @@ PopulateGrid_DoGrandSummary_ERROR:
 
 	End Function
 
-
 	Private Function IsRecordSelectionValid() As Boolean
 		Dim sSQL As String
 		Dim rsTemp As DataTable
@@ -4094,7 +4075,7 @@ Check_ERROR:
 		End Get
 	End Property
 
-	Private Function NEW_AddToArray_Data(ByVal RowType As RowType, data As IEnumerable) As Boolean
+	Private Function NEW_AddToArray_Data(RowType As RowType, data As IEnumerable) As Boolean
 
 		Dim dr As DataRow
 		Dim iColumn As Integer
@@ -4147,7 +4128,7 @@ Check_ERROR:
 
 	End Sub
 
-	Public Function GenerateSQLBradford(ByRef pstrIncludeTypes As String) As Boolean
+	Public Function GenerateSQLBradford(pstrIncludeTypes As String) As Boolean
 
 		' NOTE: Checks are made elsewhere to ensure that from and to dates are not blank
 		' NOTE: Put in some code to handle blank end dates (do we include as an option on the main screen ?)
@@ -4195,7 +4176,7 @@ Check_ERROR:
 		objBradfordDetail.IsValueOnChange = True
 		objBradfordDetail.SuppressRepeated = False
 		objBradfordDetail.LastValue = ""
-		objBradfordDetail.ColExprID = -1
+		objBradfordDetail.ID = -1
 		objBradfordDetail.Type = "C"
 		objBradfordDetail.TableID = 0
 		objBradfordDetail.TableName = ""
@@ -4221,7 +4202,7 @@ Check_ERROR:
 		objBradfordDetail.IsValueOnChange = True
 		objBradfordDetail.SuppressRepeated = False
 		objBradfordDetail.LastValue = ""
-		objBradfordDetail.ColExprID = -1
+		objBradfordDetail.ID = -1
 		objBradfordDetail.Type = "C"
 		objBradfordDetail.TableID = 0
 		objBradfordDetail.TableName = ""
@@ -4250,117 +4231,111 @@ GenerateSQLBradford_ERROR:
 		' Purpose : To calculate any bradford factors, and place into the created temporary table
 		Dim sSQL As String
 
-		On Error GoTo CalculateBradfordFactors_ERROR
+		Try
 
-		' Merge the absence records if the continuous field is defined.
-		If Not Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)) = CDbl("0") Then
-			sSQL = "EXECUTE sp_ASR_Bradford_MergeAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
+			' Merge the absence records if the continuous field is defined.
+			If Not CInt(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)) = 0 Then
+				sSQL = "EXECUTE sp_ASR_Bradford_MergeAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
+				DB.ExecuteSql(sSQL)
+			End If
+
+			' Delete unwanted absences from the table.
+			sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
 			DB.ExecuteSql(sSQL)
-		End If
 
-		' Delete unwanted absences from the table.
-		sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
-		DB.ExecuteSql(sSQL)
-
-		' Calculate the included durations for the absences.
-		sSQL = "EXECUTE sp_ASR_Bradford_CalculateDurations '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
-		DB.ExecuteSql(sSQL)
-
-		' Remove absences that are below the required Bradford Factor
-		If mbMinBradford Then
-			sSQL = "DELETE FROM " & mstrTempTableName & " WHERE personnel_id IN (SELECT personnel_id FROM " & mstrTempTableName & " GROUP BY personnel_id HAVING((count(duration)*count(duration))*sum(duration)) < " & Str(mlngMinBradfordAmount) & ")"
+			' Calculate the included durations for the absences.
+			sSQL = "EXECUTE sp_ASR_Bradford_CalculateDurations '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
 			DB.ExecuteSql(sSQL)
-		End If
 
-		CalculateBradfordFactors = True
-		Exit Function
+			' Remove absences that are below the required Bradford Factor
+			If mbMinBradford Then
+				sSQL = "DELETE FROM " & mstrTempTableName & " WHERE personnel_id IN (SELECT personnel_id FROM " & mstrTempTableName & " GROUP BY personnel_id HAVING((count(duration)*count(duration))*sum(duration)) < " & Str(mlngMinBradfordAmount) & ")"
+				DB.ExecuteSql(sSQL)
+			End If
 
-CalculateBradfordFactors_ERROR:
+		Catch ex As Exception
+			mstrErrorString = "Error while checking calculating Bradford factors." & vbNewLine & "(" & ex.Message & ")"
+			Return False
 
-		mstrErrorString = "Error while checking calculating Bradford factors." & vbNewLine & "(" & Err.Description & ")"
-		CalculateBradfordFactors = False
+		End Try
+
+		Return True
 
 	End Function
 
 	' Dates are in SQL (American format)
-	Public Function GetBradfordReportDefinition(ByRef pstrAbsenceFrom As String, ByRef pstrAbsenceTo As String) As Boolean
+	Public Function GetBradfordReportDefinition(pstrAbsenceFrom As String, pstrAbsenceTo As String) As Boolean
 
 		' Purpose : This function retrieves the basic definition details
 		'           and stores it in module level variables
 
-		On Error GoTo GetBradfordReportDefinition_ERROR
+		Try
 
-		mbIsBradfordIndexReport = True
+			mbIsBradfordIndexReport = True
 
-		' Dates coming in are in American format (if they're not we have a problem)
-		mstrBradfordStartDate = pstrAbsenceFrom
-		mstrBradfordEndDate = pstrAbsenceTo
+			' Dates coming in are in American format (if they're not we have a problem)
+			mstrBradfordStartDate = pstrAbsenceFrom
+			mstrBradfordEndDate = pstrAbsenceTo
 
-		'JPD 20041214 - ensure no injection can take place.
-		mstrBradfordStartDate = Replace(mstrBradfordStartDate, "'", "''")
-		mstrBradfordEndDate = Replace(mstrBradfordEndDate, "'", "''")
+			'JPD 20041214 - ensure no injection can take place.
+			mstrBradfordStartDate = Replace(mstrBradfordStartDate, "'", "''")
+			mstrBradfordEndDate = Replace(mstrBradfordEndDate, "'", "''")
 
-		If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
-			mstrErrorString = "The report end date is before the report start date."
+			If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
+				mstrErrorString = "The report end date is before the report start date."
+				Logs.AddDetailEntry(mstrErrorString)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+				Return False
+			End If
+
+
+			'Set the grid header with no picklist/filter information
+			Name = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
+
+			mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
+			mstrCustomReportsBaseTableName = GetTableName(mlngCustomReportsBaseTable)
+			mlngCustomReportsParent1Table = 0
+			mlngCustomReportsParent1FilterID = 0
+			mlngCustomReportsParent2Table = 0
+			mlngCustomReportsParent2FilterID = 0
+
+			ReDim Preserve mvarChildTables(5, 0)
+
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(0, 0) = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))	'Childs Table ID
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(1, 0) = 0	'Childs Filter ID (if any)
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(2, 0) = 0	'Number of records to take from child
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(3, 0) = GetTableName(mvarChildTables(0, 0))	'Child Table Name
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(4, 0) = True 'Boolean - True if table is used, False if not
+			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mvarChildTables(5, 0) = 0
+
+			miChildTablesCount = 1
+			'****************************************
+
+			mblnCustomReportsSummaryReport = False
+			mlngCustomReportsParent1PickListID = 0
+			mlngCustomReportsParent2PickListID = 0
+
+			If Not IsRecordSelectionValid() Then
+				Return False
+			End If
+
+			Logs.AddHeader(EventLog_Type.eltStandardReport, "Bradford Factor")
+			Return True
+
+		Catch ex As Exception
+			mstrErrorString = "Error whilst reading the Bradford Factor Report definition !" & vbNewLine & ex.Message
 			Logs.AddDetailEntry(mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-			GetBradfordReportDefinition = False
-			Exit Function
-		End If
+			Return False
 
-
-		'Set the grid header with no picklist/filter information
-		Name = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
-
-		mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
-		mstrCustomReportsBaseTableName = GetTableName(mlngCustomReportsBaseTable)
-		mlngCustomReportsParent1Table = 0
-		mlngCustomReportsParent1FilterID = 0
-		mlngCustomReportsParent2Table = 0
-		mlngCustomReportsParent2FilterID = 0
-
-		ReDim Preserve mvarChildTables(5, 0)
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(0, 0) = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))	'Childs Table ID
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(1, 0) = 0	'Childs Filter ID (if any)
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(2, 0) = 0	'Number of records to take from child
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(3, 0) = GetTableName(mvarChildTables(0, 0))	'Child Table Name
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(4, 0) = True 'Boolean - True if table is used, False if not
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarChildTables(5, 0) = 0
-
-		miChildTablesCount = 1
-		'****************************************
-
-		mblnCustomReportsSummaryReport = False
-		mlngCustomReportsParent1PickListID = 0
-		mlngCustomReportsParent2PickListID = 0
-
-		If Not IsRecordSelectionValid() Then
-			GetBradfordReportDefinition = False
-			Exit Function
-		End If
-
-		GetBradfordReportDefinition = True
-		Logs.AddHeader(EventLog_Type.eltStandardReport, "Bradford Factor")
-
-TidyAndExit:
-
-		Exit Function
-
-GetBradfordReportDefinition_ERROR:
-
-		GetBradfordReportDefinition = False
-		mstrErrorString = "Error whilst reading the Bradford Factor Report definition !" & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-		Resume TidyAndExit
+		End Try
 
 	End Function
 
@@ -4382,22 +4357,22 @@ GetBradfordReportDefinition_ERROR:
 
 		Dim aStrRequiredFields(15, 1) As String
 
-		aStrRequiredFields(1, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER)))
-		aStrRequiredFields(2, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)))
-		aStrRequiredFields(3, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME)))
-		aStrRequiredFields(4, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT)))
+		aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER)
+		aStrRequiredFields(2, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
+		aStrRequiredFields(3, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME)
+		aStrRequiredFields(4, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT)
 
-		aStrRequiredFields(5, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
-		aStrRequiredFields(6, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)))
-		aStrRequiredFields(7, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTSESSION)))
-		aStrRequiredFields(8, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE)))
-		aStrRequiredFields(9, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDSESSION)))
-		aStrRequiredFields(10, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON)))
-		aStrRequiredFields(11, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)))
-		aStrRequiredFields(12, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)))
+		aStrRequiredFields(5, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)
+		aStrRequiredFields(6, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)
+		aStrRequiredFields(7, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTSESSION)
+		aStrRequiredFields(8, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE)
+		aStrRequiredFields(9, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDSESSION)
+		aStrRequiredFields(10, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON)
+		aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)
+		aStrRequiredFields(12, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
 
 		'This field is later recalculated for the included days
-		aStrRequiredFields(13, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)))
+		aStrRequiredFields(13, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
 
 		'****************************************************************************
 		If mlngOrderByColumnID > 0 Then
@@ -4416,13 +4391,13 @@ GetBradfordReportDefinition_ERROR:
 		' Allow the staff number to be undefined (Let system read the surname field)
 		lbHideStaffNumber = False
 		If aStrRequiredFields(1, 1) = "0" Then
-			aStrRequiredFields(1, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)))
+			aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
 			lbHideStaffNumber = True
 		End If
 
 		' Allow the continuous field to be undefined (Let system read the absence reason)
 		If aStrRequiredFields(11, 1) = "0" Then
-			aStrRequiredFields(11, 1) = CStr(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)))
+			aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
 		End If
 
 		' Ensure that module setup has been run
@@ -4437,29 +4412,35 @@ GetBradfordReportDefinition_ERROR:
 		mblnCustomReportsSummaryReport = (Not mbDisplayBradfordDetail)
 
 		' Load the field list
-		Dim objExpr As clsExprExpression
 		Dim objReportItem As ReportDetailItem
 
 		ColumnDetails = New List(Of ReportDetailItem)
 		For iCount = 1 To UBound(aStrRequiredFields, 1)
 
-			If CDbl(aStrRequiredFields(iCount, 1)) <> -1 Then
+			If CInt(aStrRequiredFields(iCount, 1)) <> -1 Then
 
 				objReportItem = New ReportDetailItem
 
-				'intTemp = UBound(mvarColDetails, 2) + 1
-				'ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), intTemp)
-
-				ReDim Preserve mstrExcelFormats(iCount)	'MH20010307
+				ReDim Preserve mstrExcelFormats(iCount)
 
 				lngColumnID = CInt(aStrRequiredFields(iCount, 1))
 				lngTableID = GetTableIDFromColumn(lngColumnID)
+
+				objReportItem.IsBreakOnChange = False
+				objReportItem.Size = 99
+				objReportItem.Decimals = 0
+				objReportItem.IsNumeric = (General.GetDataType(lngTableID, lngColumnID) = 2)
+				objReportItem.IsAverage = False
+				objReportItem.IsCount = False
+				objReportItem.IsTotal = False
+
 
 				' Specify the column names and whether they are visible or not
 				Select Case iCount
 					Case 1
 						objReportItem.IDColumnName = "Staff_No"
 						objReportItem.IsHidden = lbHideStaffNumber
+						objReportItem.IsBreakOnChange = True
 					Case 2
 						objReportItem.IDColumnName = "Surname"
 						objReportItem.IsHidden = False
@@ -4498,10 +4479,17 @@ GetBradfordReportDefinition_ERROR:
 					Case 12
 						objReportItem.IDColumnName = "Duration"
 						objReportItem.IsHidden = False
+						objReportItem.IsCount = True
+						objReportItem.IsTotal = True
+						objReportItem.Decimals = 1
+						objReportItem.IsNumeric = True
 					Case 13
 						objReportItem.IDColumnName = "Included_Days"
 						objReportItem.IsHidden = False
-
+						objReportItem.IsCount = True
+						objReportItem.IsTotal = True
+						objReportItem.Decimals = 1
+						objReportItem.IsNumeric = True
 						'**********************************************************************
 					Case 14
 						objReportItem.IDColumnName = "Order_1"
@@ -4524,13 +4512,7 @@ GetBradfordReportDefinition_ERROR:
 
 				End Select
 
-				objReportItem.Size = 99
-				objReportItem.Decimals = IIf(iCount = 12 Or iCount = 13, 1, 0)	'Decimals
-				objReportItem.IsNumeric = IIf(General.GetDataType(lngTableID, lngColumnID) = 2, True, False)	'Is Numeric
-				objReportItem.IsAverage = False	'Average
-				objReportItem.IsCount = IIf(iCount = 12 Or iCount = 13, True, False)	'Count
-				objReportItem.IsTotal = IIf(iCount = 12 Or iCount = 13, True, False)	'Total
-				objReportItem.IsBreakOnChange = False	'Break on change
+
 				objReportItem.IsPageOnChange = False	'Page break on change
 				If mblnCustomReportsSummaryReport Then
 					objReportItem.IsValueOnChange = True	'Value on change
@@ -4539,75 +4521,19 @@ GetBradfordReportDefinition_ERROR:
 				End If
 				objReportItem.SuppressRepeated = IIf(iCount < 5 And mbBradfordSRV, True, False)	'Suppress repeated values
 				objReportItem.LastValue = ""
-				objReportItem.ColExprID = lngColumnID
+				objReportItem.ID = lngColumnID
 
 				' Set the expression/column type of this column
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.Type = "C"
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(14, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.TableID = lngTableID
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(15, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.TableName = GetTableName(lngTableID)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If objReportItem.Type = "C" Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objReportItem.ColumnName = General.GetColumnName(CInt(objReportItem.ColExprID))
-
-					'MH20010307
-					Select Case objReportItem.ColExprID
-						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mstrExcelFormats(iCount) = "0" & IIf(objReportItem.Decimals > 0, "." & New String("0", objReportItem.Decimals), "")
-						Case SQLDataType.sqlDate
-							mstrExcelFormats(iCount) = DateFormat()
-						Case Else
-							mstrExcelFormats(iCount) = "@"
-					End Select
-
-
-
-				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(16, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objReportItem.ColumnName = ""
-
-					'MH20010307
-					objExpr = NewExpression()
-
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					objExpr.ExpressionID = objReportItem.ColExprID
-					objExpr.ConstructExpression()
-
-					Select Case objExpr.ReturnType
-						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-							mstrExcelFormats(iCount) = "0.####"
-						Case ExpressionValueTypes.giEXPRVALUE_DATE
-							mstrExcelFormats(iCount) = DateFormat()
-						Case Else
-							mstrExcelFormats(iCount) = "@"
-					End Select
-
-					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					objExpr = Nothing
-
-				End If
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				objReportItem.ColumnName = General.GetColumnName(objReportItem.ID)
 				objReportItem.IsDateColumn = General.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.IsBitColumn = General.BitColumn("C", lngTableID, lngColumnID)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				objReportItem.Use1000Separator = General.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
 
 				'Adjust the size of the field if digit separator is used
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.Use1000Separator Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					objReportItem.Size = objReportItem.Size + Int((objReportItem.Size - objReportItem.Decimals) / 3)
 				End If
 
@@ -4641,13 +4567,18 @@ GetBradfordReportDefinition_ERROR:
 		objSortItem.AscDesc = "Asc"
 		colSortOrder.Add(objSortItem)
 
+		'Employee staff number
+		objSortItem = New ReportSortItem
+		objSortItem.ColExprID = aStrRequiredFields(1, 1)	'mstrGroupByColumn
+		objSortItem.AscDesc = "Asc"
+		colSortOrder.Add(objSortItem)
+
 		' Force duration and included days to be numeric format in Excel
 		iCount = 11 - IIf(lbHideStaffNumber = True, 1, 0)
 		mstrExcelFormats(iCount) = "0.0"
 		mstrExcelFormats(iCount + 1) = "0.0"
 
-		GetBradfordRecordSet = True
-		Exit Function
+		Return True
 
 GetBradfordRecordSet_ERROR:
 
@@ -4704,7 +4635,7 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Private Function ConvertSQLDateToLocale(ByRef psSQLDate As String) As Date
+	Private Function ConvertSQLDateToLocale(psSQLDate As String) As Date
 		' Convert the given date string (mm/dd/yyyy) into the locale format.
 		' NB. This function assumes a sensible locale format is used.
 		Dim fDaysDone As Boolean
@@ -4745,7 +4676,7 @@ GetBradfordRecordSet_ERROR:
 			End Select
 		Next iLoop
 
-		ConvertSQLDateToLocale = sFormattedDate
+		Return sFormattedDate
 
 	End Function
 
@@ -4774,7 +4705,7 @@ GetBradfordRecordSet_ERROR:
 
 	End Function
 
-	Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+	Public Function UDFFunctions(pbCreate As Boolean) As Boolean
 		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 

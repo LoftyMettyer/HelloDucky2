@@ -16,7 +16,6 @@ Namespace Structures
 		Public IsValueOnChange As Boolean
 		Public SuppressRepeated As Boolean
 		Public LastValue As String
-		Public ColExprID As Integer
 		Public Type As String
 		Public TableID As Integer
 		Public TableName As String
