@@ -2385,6 +2385,7 @@ Namespace Controllers
 
 							' Series - just one series as multiaxis = false.
 							chart1.Series.Add("Default")
+							chart1.Series("Default").IsVisibleInLegend = False
 							chart1.Series("Default").BorderColor = Color.FromArgb(180, 26, 59, 105)
 							chart1.Series("Default").Color = Color.FromArgb(220, 65, 140, 240)
 
@@ -2426,12 +2427,29 @@ Namespace Controllers
 
 							End Select
 
+							'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
+							Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
+							Dim pointNum As Integer
+
 							For Each objRow As DataRow In mrstChartData.Rows
 								If objRow(0).ToString() <> "No Access" And objRow(0).ToString() <> "No Data" Then
 
-									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}})
+									Dim pointBackColor As Color
+									If objRow(2) = 16777215 Then
+										pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+									Else
+										Try
+											pointBackColor = ColorTranslator.FromWin32(objRow(2))
+										Catch ex As Exception
+											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+										End Try
+									End If
 
+									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+									chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0), pointBackColor, ""))
 								End If
+
+								pointNum += 1
 							Next
 
 							Using ms = New MemoryStream()
@@ -2531,7 +2549,7 @@ Namespace Controllers
 							seriesName = "Default"
 
 							chart1.ChartAreas.Add(seriesName)
-
+							
 							chart1.ChartAreas(seriesName).BackColor = Color.Transparent
 							chart1.ChartAreas(seriesName).BackSecondaryColor = Color.Transparent
 							chart1.ChartAreas(seriesName).ShadowColor = Color.Transparent
@@ -2568,18 +2586,33 @@ Namespace Controllers
 							End If
 
 							Dim seriesNames As String = ""
+							'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
+							Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
+							Dim pointNum As Integer
 
 							For Each objRow As DataRow In mrstChartData.Rows
 
 								If TryCast(objRow(0), String) <> "No Access" And TryCast(objRow(0), String) <> "No Data" Then
 
-									seriesName = objRow(2).ToString()
+									seriesName = objRow(3).ToString()
 									Dim columnName As String = objRow(1).ToString()
 									Dim yVal As Integer = CInt(objRow(4))
+									Dim pointBackColor As Color
+									If objRow(5) = 16777215 Then
+										pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+									Else
+										Try
+											pointBackColor = ColorTranslator.FromWin32(objRow(5))
+										Catch ex As Exception
+											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+										End Try
+									End If
 
 									If Not seriesNames.Contains("<" & seriesName & ">") Then
 										' Add the series - ONLY if not already added.
 										chart1.Series.Add(seriesName)
+										chart1.Series(seriesName).IsVisibleInLegend = False
+
 										seriesNames &= "<" & seriesName & ">"
 
 										' Show Values/Percentages
@@ -2616,18 +2649,18 @@ Namespace Controllers
 										End Select
 									End If
 
-									chart1.Series(seriesName).Points.AddXY(columnName, yVal)
+									chart1.Series(seriesName).Points.Add(New DataPoint() With {.AxisLabel = columnName, .YValues = New Double() {yVal}, .Color = pointBackColor})
+
+									Dim legendAdded As Boolean = False
+									For Each legItem As LegendItem In chart1.Legends("Default").CustomItems
+										If legItem.Name = objRow(1) Then legendAdded = True
+									Next
+
+									If Not legendAdded Then chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(1), pointBackColor, ""))
 
 								End If
 
-							Next
-
-							chart1.ApplyPaletteColors()
-
-							For Each series As Series In chart1.Series
-								For Each dp As DataPoint In series.Points
-									dp.Color = Color.FromArgb(200, dp.Color.R, dp.Color.G, dp.Color.B)
-								Next
+								pointNum += 1
 							Next
 
 							Using ms = New MemoryStream()
