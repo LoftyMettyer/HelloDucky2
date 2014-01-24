@@ -21,7 +21,7 @@
 			<!-- Configure virtual dir -->
 			<Component Id="WebVirtualDirComponent" Guid="{751DEB01-ECC1-48ff-869A-65BCEE9E0528}" KeyPath="yes" >
 				<iis:WebVirtualDir Id="WebVirtualDir" Alias="[VIRTUAL_DIR_VAL]" Directory="INSTALLLOCATION" WebSite="DefaultWebSite">
-					<iis:WebDirProperties Id="WebVirtDirProperties" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="yes" />
+					<iis:WebDirProperties Id="WebVirtDirProperties" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" DigestAuthentication="no" PassportAuthentication="no" />
 					<iis:WebApplication Id="WebWebApplication" Name="[VIRTUAL_DIR_VAL]" WebAppPool="WebAppPool" />
 				</iis:WebVirtualDir>
 			</Component>
