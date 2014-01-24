@@ -9,9 +9,11 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OpenHR Database", "..\..\Da
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "OpenHR Installer", "OpenHR Installer\OpenHR Installer.wixproj", "{5DF75109-5222-4494-AC8C-6AAE5F93998A}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHR Wix Extensions", "OpenHR Wix Extensions\OpenHR Wix Extensions.vbproj", "{EAC8EB36-A66D-4441-9025-6C28879CBADD}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -27,6 +29,9 @@ Global
 		SccProjectUniqueName4 = OpenHR\u0020Installer\\OpenHR\u0020Installer.wixproj
 		SccProjectName4 = OpenHR\u0020Installer
 		SccLocalPath4 = OpenHR\u0020Installer
+		SccProjectUniqueName5 = OpenHR\u0020Wix\u0020Extensions\\OpenHR\u0020Wix\u0020Extensions.vbproj
+		SccProjectName5 = OpenHR\u0020Wix\u0020Extensions
+		SccLocalPath5 = OpenHR\u0020Wix\u0020Extensions
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,8 +66,18 @@ Global
 		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Release|Any CPU.ActiveCfg = Release|x86
 		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Release|Any CPU.Build.0 = Release|x86
+		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Release|Any CPU.Deploy.0 = Release|x86
 		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{5DF75109-5222-4494-AC8C-6AAE5F93998A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EAC8EB36-A66D-4441-9025-6C28879CBADD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

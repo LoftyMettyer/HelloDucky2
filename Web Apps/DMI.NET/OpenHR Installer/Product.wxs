@@ -4,20 +4,23 @@
 		 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
 		 xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
+	<!-- Define variables -->
+	<?define publishDir="..\DMI.NET\obj\Release\Package\PackageTmp\"?>
+	<?define MyWebResourceDir="."?>
+	<?define DMINET_DLL="..\DMI.NET\obj\Release\DMI.NET.DLL"?>
+	<?define MajorAndMinorProductVersion="$(fileVersion.MajorAndMinorProductVersion($(var.DMINET_DLL)))"?>
+	<?define FullProductVersion="$(fileVersion.FullProductVersion($(var.DMINET_DLL)))"?>
+	
 	<Product Id="{FA1B9338-B6F6-413e-B67F-86CA8BCED6E8}"
-			 Name="OpenHR Web 8.0"
+			 Name="OpenHR Web $(var.MajorAndMinorProductVersion)"
 			 Language="1033"
-			 Version="8.0.22"
+			 Version="$(var.FullProductVersion)"
 			 Manufacturer="Advanced Computer Software"
 			 UpgradeCode="{E5C9F391-5787-4fd1-81E6-D1A4A91D226D}" >
 
 		<Package InstallerVersion="200" Compressed="yes" />
 
 		<Media Id="1" Cabinet="OpenHR.cab" EmbedCab="yes" />
-
-		<!-- Variables -->
-		<?define publishDir="..\DMI.NET\obj\Release\Package\PackageTmp\"?>
-		<?define MyWebResourceDir="."?>
 
 		<!-- Application icon -->
 		<Icon Id="OpenHR_Icon" SourceFile="$(var.publishDir)\Content\Images\OpenHR_Icon.ico"/>

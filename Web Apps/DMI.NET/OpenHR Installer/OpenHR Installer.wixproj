@@ -27,8 +27,8 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <SuppressValidation>True</SuppressValidation>
     <SuppressPdbOutput>True</SuppressPdbOutput>
-    <CompilerAdditionalOptions>
-    </CompilerAdditionalOptions>
+    <CompilerAdditionalOptions>-ext "..\OpenHR Wix Extensions\bin\Release\OpenHR Wix Extensions.dll"</CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>-ext "..\OpenHR Wix Extensions\bin\Release\OpenHR Wix Extensions.dll"</LinkerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AdvancedPrivateCertificate.pfx" />
-    <Content Include="build_setup.build" />
     <Content Include="ConfigurationInitialize.wxi" />
     <Content Include="License.rtf" />
   </ItemGroup>
