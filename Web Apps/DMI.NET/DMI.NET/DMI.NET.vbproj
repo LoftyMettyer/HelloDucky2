@@ -191,6 +191,7 @@
     <Content Include="Content\images\ABSLogo\swirlsgreyscaleopacity.png" />
     <Content Include="Content\images\ABSLogo\swirlsgreyscaleopacity26.png" />
     <Content Include="Content\images\ABSYellowGradient_64colors.png" />
+    <Content Include="Content\images\ABS_TopBar.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\anonymous.png" />
     <Content Include="Content\images\CalendarReports\First_Disabled.gif" />
@@ -206,11 +207,10 @@
     <Content Include="Content\images\chartdata.gif" />
     <Content Include="Content\images\ChartGraph.gif" />
     <Content Include="Content\images\Chart_Popout.png" />
-    <Content Include="Content\images\COAInt_Splash.png" />
-    <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\images\Default Background.jpg" />
     <Content Include="Content\images\dropdown_icon.gif" />
     <Content Include="Content\images\OpenHR_Icon.ico" />
+    <Content Include="Content\images\OpenHRWeb_Splash.png" />
     <Content Include="Content\images\Penfold.png" />
     <Content Include="Content\images\ProgressBar.gif" />
     <Content Include="Content\images\PunchHole.png" />
@@ -758,8 +758,6 @@
     <Content Include="Content\images\arrow-right-white.png" />
     <Content Include="Content\images\back_48.png" />
     <Content Include="Content\images\COAInt_Banner.jpg" />
-    <Content Include="Content\images\COAInt_Splash.jpg" />
-    <Content Include="Content\images\COAInt_TopBar.jpg" />
     <Content Include="Content\images\DMIBackground.gif" />
     <Content Include="Content\images\Expand.png" />
     <Content Include="Content\images\Help32.png" />

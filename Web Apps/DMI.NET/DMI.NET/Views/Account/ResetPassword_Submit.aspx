@@ -18,7 +18,7 @@
 		<table style="margin: 0 auto; width: 1px;">
 			<tr> 
 				<td> 
-						<img height="188" src="<%=Url.Content("~/Content/images/COAInt_Splash.png")%>" style="width: 410px;" alt="">
+						<img height="188" src="<%=Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>" style="width: 410px;" alt="">
 				</td>
 			</tr>
 			<tr>

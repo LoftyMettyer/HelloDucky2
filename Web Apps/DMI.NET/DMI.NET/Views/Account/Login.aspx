@@ -196,7 +196,7 @@
 
 		if (fLoginOK) {
 			if (sUserName == "SA") {
-				alert("The System Administrator cannot use the OpenHR Intranet module.");
+				alert("The System Administrator cannot use the OpenHR Web module.");
 				fLoginOK = false;
 			}
 		}
@@ -376,7 +376,7 @@
 				<tr> 
 						<TD width=15></TD>
 						<td colSpan=3> 
-								<p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/COAInt_Splash.png")%>" width=410></p>
+								<p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>" width=410></p>
 						</td>
 						<TD width=15></TD>
 				</tr>
@@ -399,7 +399,7 @@
 			</tr>
 			<tr height=10>
 				<td width=15></td>
-				<td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 10 or later.</td>
+				<td colSpan=3>OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</td>
 				<td width=15></td>
 			</tr>
 <%
@@ -411,12 +411,12 @@ Else
 			</tr>
 			<tr class="" height=10>
 				<td width=15></td>
-				<td style="font-weight: bold;"  colSpan=3 >Unable to determine the intranet version.</td>
+				<td style="font-weight: bold;"  colSpan=3 >Unable to determine the OpenHR version.</td>
 				<td width=15></td>
 			</tr>
 			<tr  class="" height=10>
 				<td width=15></td>
-				<td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your intranet web server.</td>
+				<td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your web server.</td>
 				<td width=15></td>" & vbcrlf
 			</tr>
 <%

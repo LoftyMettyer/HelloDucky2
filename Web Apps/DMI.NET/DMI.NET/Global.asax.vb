@@ -128,11 +128,11 @@ Public Class MvcApplication
 				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
 				Session("Config-banner-graphic-left-width") = newImageWidth
 			Catch ex As Exception
-				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.png")
+				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABS_TopBar.png")
 				Session("Config-banner-graphic-left-width") = "138"
 			End Try
 		Else
-			Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/coaint_topbar.png")
+			Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABS_TopBar.png")
 			Session("Config-banner-graphic-left-width") = "138"
 		End If
 
