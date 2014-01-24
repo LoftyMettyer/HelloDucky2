@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@Import namespace="DMI.NET" %>
+<%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -20,9 +23,7 @@
 		tbrefreshControls();
 		menu_refreshMenu();
 	}
-</script>
 
-<script type="text/javascript">
 	function ok()
 	{  
 		var sSelectedIDs = "";
@@ -260,11 +261,6 @@
 			"status:no;";
 		window.showModalDialog(pDestination, self, dlgwinprops);
 	}
-</script>
-
-
-
-<script type="text/javascript">
 	
 	function tbBulkBooking_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", "ssOleDBGridRecords_KeyPress()");
@@ -321,6 +317,7 @@
 				</tr>
 
 <%
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 	Dim sErrorDescription = ""
 	
 	if session("TB_TBStatusPExists") then
@@ -353,28 +350,15 @@
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 					<td rowspan=13 width=100%>
 <%
-	' Get the employee find columns.
-	Dim cmdFindRecords = CreateObject("ADODB.Command")
-	cmdFindRecords.CommandText = "sp_ASRIntGetTBEmployeeColumns"
-	cmdFindRecords.CommandType = 4 ' Stored Procedure
-	cmdFindRecords.ActiveConnection = Session("databaseConnection")
-	cmdFindRecords.CommandTimeout = 180
+		
+	Try
+		Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prm1000SepCols As New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-	Dim prmErrorMsg = cmdFindRecords.CreateParameter("errorMsg", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-	cmdFindRecords.Parameters.Append(prmErrorMsg)
+		Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetTBEmployeeColumns" _
+						, prmErrorMsg _
+						, prm1000SepCols)
 
-	Dim prm1000SepCols = cmdFindRecords.CreateParameter("1000SepCols", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-	cmdFindRecords.Parameters.Append(prm1000SepCols)
-
-	Err.Clear()
-	Dim rstFindRecords = cmdFindRecords.Execute
-
-	If (Err.Number <> 0) Then
-		sErrorDescription = "The Employee table find columns could not be retrieved." & vbCrLf & formatError(Err.Description)
-	End If
-
-	if len(sErrorDescription) = 0 then
-		' Instantiate and initialise the grid. 
 		Response.Write("<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridFindRecords name=ssOleDBGridFindRecords  codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;"">" & vbCrLf)
 		Response.Write("	<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
 		Response.Write("	<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
@@ -443,24 +427,26 @@
 		Response.Write("	<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
 
 		Dim lngColCount = 0
-		do while not rstFindRecords.EOF
+
+		For Each objRow As DataRow In rstFindRecords.Rows
+			
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Width"" VALUE=""3200"">" & vbCrLf)
 	
-			if rstFindRecords.fields("columnName").value = "ID" then
+			If objRow("columnName").ToString() = "ID" Then
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""0"">" & vbCrLf)
-			else
+			Else
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""-1"">" & vbCrLf)
-			end if
+			End If
 	
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Caption"" VALUE=""" & Replace(rstFindRecords.fields("columnName").value, "_", " ") & """>" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Name"" VALUE=""" & rstFindRecords.fields("columnName").value & """>" & vbCrLf)
+			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Caption"" VALUE=""" & Replace(objRow("columnName").ToString(), "_", " ") & """>" & vbCrLf)
+			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Name"" VALUE=""" & objRow("columnName").ToString() & """>" & vbCrLf)
 				
-			if (rstFindRecords.fields("dataType").value = 131) or (rstFindRecords.fields("dataType").value = 3) then
+			If (CInt(objRow("dataType")) = 131) Or (CInt(objRow("dataType")) = 3) Then
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""1"">" & vbCrLf)
-			else
+			Else
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""0"">" & vbCrLf)
-			end if
+			End If
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Bound"" VALUE=""0"">" & vbCrLf)
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
@@ -473,12 +459,12 @@
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Locked"" VALUE=""0"">" & vbCrLf)
 				
-			if rstFindRecords.fields("dataType").value = -7 then
+			If CInt(objRow("dataType")) = -7 Then
 				' Find column is a logic column.
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Style"" VALUE=""2"">" & vbCrLf)
-			else	
+			Else
 				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Style"" VALUE=""0"">" & vbCrLf)
-			end if
+			End If
 
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").RowCount"" VALUE=""0"">" & vbCrLf)
@@ -499,9 +485,8 @@
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ClipMode"" VALUE=""0"">" & vbCrLf)
 			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").PromptChar"" VALUE=""95"">" & vbCrLf)
 
-			lngColCount = lngColCount + 1
-			rstFindRecords.MoveNext
-		loop
+			lngColCount += 1
+		Next
 		
 		Response.Write("	<PARAM NAME=""Columns.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
 		Response.Write("	<PARAM NAME=""Col.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
@@ -519,35 +504,26 @@
 
 		Response.Write("</OBJECT>" & vbCrLf)
 
-		' Release the ADO recordset object.
-		rstFindRecords.close
-		rstFindRecords = Nothing
-
-		' NB. IMPORTANT ADO NOTE.
-		' When calling a stored procedure which returns a recordset AND has output parameters
-		' you need to close the recordset and set it to nothing before using the output parameters. 
-		if len(cmdFindRecords.Parameters("errorMsg").Value) > 0 then
+		If Len(prmErrorMsg.Value) > 0 Then
 			Session("ErrorTitle") = "Bulk Booking Page"
-			Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
-			Response.Clear	  
+			Session("ErrorText") = prmErrorMsg.Value
+			Response.Clear()
 			Response.Redirect("error.asp")
-		else
-			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & cmdFindRecords.Parameters("1000SepCols").Value & """>" & vbCrLf)
-		end if
-	end if
-	
-	' Release the ADO command object.
-	cmdFindRecords = Nothing
+		Else
+			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
+		End If
+		
+	Catch ex As Exception
+		sErrorDescription = "The Employee table find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+		
+	End Try
+
 %>
 					</td>
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 					<TD width=100 height=10>
 						<input type="button" id=cmdAdd name=cmdAdd value="Add" style="WIDTH: 100%" class="btn"  
-								onclick="add()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="add()" />
 					</TD>
 					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
 				</tr>
@@ -559,11 +535,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdAddFilter id=cmdAddFilter value="Filtered Add" style="WIDTH: 100%; text-align:center"class="btn"
-								onclick="filteredAdd()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="filteredAdd()" />
 					</TD>
 				</TR>
 		
@@ -574,11 +546,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdAddPicklist id=cmdAddPicklist value="Picklist Add" style="WIDTH: 100%; text-align:center"  class="btn"
-								onclick="addPicklist()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="addPicklist()" />
 					</TD>
 				</TR>
 		
@@ -589,11 +557,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdRemove value="Remove" style="WIDTH: 100%"  class="btn"
-								onclick="remove()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="remove()" />
 					</TD>
 				</TR>
 
@@ -604,11 +568,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdRemoveAll value="Remove All" style="WIDTH: 100%"  class="btn"
-								onclick="removeAll()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="removeAll()" />
 					</TD>
 				</TR>
 
@@ -619,11 +579,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name=cmdOK value="OK" style="WIDTH: 100%"  id=cmdOK class="btn"
-								onclick="ok()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="ok()" />
 					</TD>
 				</TR>
 
@@ -634,11 +590,7 @@
 				<TR>
 					<TD height=10>
 						<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
-								onclick="cancel()" 
-														onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-														onmouseout="try{button_onMouseOut(this);}catch(e){}"
-														onfocus="try{button_onFocus(this);}catch(e){}"
-														onblur="try{button_onBlur(this);}catch(e){}" />
+								onclick="cancel()" />
 					</TD>
 				</TR>     
 

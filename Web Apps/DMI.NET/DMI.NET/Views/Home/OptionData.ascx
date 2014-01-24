@@ -110,7 +110,6 @@
 			Dim iIndex1 As Integer
 			Dim iIndex2 As Integer
 		
-			Dim cmdBulkBooking As ADODB.Command
 			Dim prmSelectionType As ADODB.Parameter
 			Dim prmSelectionID As ADODB.Parameter
 			Dim prmSelectedIDs As ADODB.Parameter
@@ -1476,113 +1475,80 @@
 					objUtilities = Nothing
 				End If
 
-				cmdBulkBooking = New Command
-				cmdBulkBooking.CommandText = "sp_ASRIntGetBulkBookingRecords"
-				cmdBulkBooking.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdBulkBooking.CommandTimeout = 180
-				cmdBulkBooking.ActiveConnection = Session("databaseConnection")
 
-				prmSelectionType = cmdBulkBooking.CreateParameter("selectionType", 200, 1, 8000) '200=varchar,1=input,8000=size
-				cmdBulkBooking.Parameters.Append(prmSelectionType)
-				prmSelectionType.Value = Session("optionPageAction")
-
-				prmSelectionID = cmdBulkBooking.CreateParameter("selectionID", 3, 1) '3=integer,1=input
-				cmdBulkBooking.Parameters.Append(prmSelectionID)
-				prmSelectionID.Value = CleanNumeric(Session("optionRecordID"))
-
-				prmSelectedIDs = cmdBulkBooking.CreateParameter("selectedIDs", 200, 1, 8000) '200=varchar,1=input,8000=size
-				cmdBulkBooking.Parameters.Append(prmSelectedIDs)
-				prmSelectedIDs.Value = Session("optionValue")
-
-				prmPromptSQL = cmdBulkBooking.CreateParameter("promptSQL", 200, 1, 8000) '200=varchar,1=input,8000=size
-				cmdBulkBooking.Parameters.Append(prmPromptSQL)
-				If Len(Session("optionPromptSQL")) = 0 Then
-					prmPromptSQL.Value = ""
-				Else
-					prmPromptSQL.Value = Session("optionPromptSQL")
-				End If
-						
-				prmErrMsg = cmdBulkBooking.CreateParameter("errMsg", 200, 2, 8000) '200=varchar,2=output,8000=size
-				cmdBulkBooking.Parameters.Append(prmErrMsg)
-						
-				objUtilities = Session("UtilitiesObject")
-
-				objUtilities.UDFFunctions(True)
-			
-				Err.Clear()
-				rstFindRecords = cmdBulkBooking.Execute
-			
-				objUtilities.UDFFunctions(False)
-			
-				objUtilities = Nothing
-			
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error reading the find records." & vbCrLf & formatError(Err.Description)
-				End If
-			
-				If Len(sErrorDescription) = 0 Then
-					If rstFindRecords.State = adStateOpen Then
-						iCount = 0
-						Do While Not rstFindRecords.EOF
-							sAddString = ""
-						
-							For iloop = 0 To (rstFindRecords.Fields.Count - 1)
-								If iloop > 0 Then
-									sAddString = sAddString & "	"
-								End If
-							
-								If iCount = 0 Then
-									sColDef = Replace(rstFindRecords.Fields(iloop).Name, "_", " ") & "	" & rstFindRecords.Fields(iloop).Type
-									Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-								End If
-							
-								If rstFindRecords.Fields(iloop).Type = 135 Then
-									' Field is a date so format as such.
-									sAddString = sAddString & convertSQLDateToLocale(rstFindRecords.Fields(iloop).Value)
-								ElseIf rstFindRecords.Fields(iloop).Type = 131 Then
-									' Field is a numeric so format as such.
-									If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-										If Mid(Session("option1000SepCols"), iloop + 1, 1) = "1" Then
-											sTemp = ""
-											sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, True)
-										Else
-											sTemp = ""
-											sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, False)
-										End If
-										sTemp = Replace(sTemp, ".", "x")
-										sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-										sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-										sAddString = sAddString & sTemp
-									End If
-								Else
-									If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-										sAddString = sAddString & Replace(rstFindRecords.Fields(iloop).Value, """", "&quot;")
-									End If
-								End If
-							Next
-
-							Response.Write("<INPUT type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+				Try
 					
-							iCount = iCount + 1
-							rstFindRecords.MoveNext()
-						Loop
-	
-						' Release the ADO recordset object.
-						rstFindRecords.Close()
+
+					Dim prmPromptSQL2 As New SqlParameter("psPromptSQL", SqlDbType.VarChar, -1)
+					Dim prmErrorMessage2 As New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+					'				Try
+
+					If Len(Session("optionPromptSQL")) = 0 Then
+						prmPromptSQL2.Value = ""
+					Else
+						prmPromptSQL2.Value = Session("optionPromptSQL")
 					End If
 
-				End If
-				rstFindRecords = Nothing
 
-				' NB. IMPORTANT ADO NOTE.
-				' When calling a stored procedure which returns a recordset AND has output parameters
-				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdGetFindRecords.Parameters("errMsg").Value) > 0 Then
-					sErrorDescription = cmdGetFindRecords.Parameters("errMsg").Value
-				End If
+					objUtilities = Session("UtilitiesObject")
+					objUtilities.UDFFunctions(True)
+
+					Dim rstFindRecords2 = objDataAccess.GetFromSP("sp_ASRIntGetBulkBookingRecords" _
+						, New SqlParameter("psSelectionType", SqlDbType.VarChar, -1) With {.Value = Session("optionPageAction")} _
+						, New SqlParameter("piSelectionID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+						, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")} _
+						, prmPromptSQL2 _
+						, prmErrorMessage2)
+
+					objUtilities.UDFFunctions(False)
+					
+					For Each objRow As DataRow In rstFindRecords2.Rows
+						sAddString = ""
+						
+						For iloop = 0 To (rstFindRecords2.Columns.Count - 1)
+							If iloop > 0 Then
+								sAddString = sAddString & "	"
+							End If
+							
+							If iCount = 0 Then
+								sColDef = Replace(rstFindRecords2.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords2.Columns(iloop).DataType.Name
+								Response.Write("<input type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+							End If
+							
+							If rstFindRecords2.Columns(iloop).DataType.Name.ToLower() = "system.datetime" Then
+								' Field is a date so format as such.
+								sAddString = sAddString & convertSQLDateToLocale(objRow(iloop))
+							ElseIf rstFindRecords2.Columns(iloop).DataType.Name.ToLower() = "system.decimal" Then
+								' Field is a numeric so format as such.
+								If Not IsDBNull(objRow(iloop)) Then
+									If Mid(Session("option1000SepCols"), iloop + 1, 1) = "1" Then
+										sTemp = FormatNumber(objRow(iloop), objRow(iloop).NumericScale, True, False, True)
+									Else
+										sTemp = FormatNumber(objRow(iloop), objRow(iloop).NumericScale, True, False, False)
+									End If
+									sTemp = Replace(sTemp, ".", "x")
+									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+									sAddString = sAddString & sTemp
+								End If
+							Else
+								If Not IsDBNull(objRow(iloop)) Then
+									sAddString = sAddString & Replace(objRow(iloop).ToString(), """", "&quot;")
+								End If
+							End If
+						Next
+
+						Response.Write("<input type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+					
+						iCount += 1
+					Next
+					
+				Catch ex As Exception
+					sErrorDescription = "Error reading the find records." & vbCrLf & formatError(ex.Message)
+					
+				End Try
 			
-				cmdBulkBooking = Nothing
-
+				
 			ElseIf Session("optionAction") = "GETPICKLISTSELECTION" Then
 				If UCase(Session("optionPageAction")) = "FILTER" Then
 					objUtilities = Session("UtilitiesObject")
@@ -1818,7 +1784,7 @@
 							, prmComponentType _
 							, New SqlParameter("piNumericsOnly", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionOnlyNumerics"))})
 
-					iCount = 0					
+					iCount = 0
 					For Each objRow As DataRow In rstExprColumns.Rows
 						iCount += 1
 						Response.Write("<input type='hidden' id=txtColumn_" & iCount & " name=txtColumn_" & iCount & " value=""" & objRow("definitionString").ToString() & """>" & vbCrLf)
