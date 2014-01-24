@@ -140,13 +140,13 @@
 					$(function () {
 						$("input[type=submit], input[type=button], button")
 							.button();
-						$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("input").addClass("ui-widget ui-corner-all");
 						$("input").removeClass("text");
 
-						$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("textarea").addClass("ui-widget ui-corner-all");
 						$("textarea").removeClass("text");
 
-						$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("select").addClass("ui-widget ui-corner-all");
 						$("select").removeClass("text");
 						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
 						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
@@ -237,17 +237,16 @@
 					$(function () {
 						$("input[type=submit], input[type=button], button")
 							.button();
-						$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("input").addClass("ui-widget ui-corner-all");
 						$("input").removeClass("text");
 
-						$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("textarea").addClass("ui-widget ui-corner-all");
 						$("textarea").removeClass("text");
 
-						$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+						$("select").addClass("ui-widget ui-corner-all");
 						$("select").removeClass("text");
 						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-
+						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");						
 					});
 
 				},

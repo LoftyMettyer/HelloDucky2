@@ -291,10 +291,10 @@ input.textwarning
 	background-color: transparent;
 }
 
-input[disabled=""], input[disabled="disabled"] {
+/*input[disabled=""], input[disabled="disabled"] {
 	color: black;
 	background-color: lightgray;
-}
+}*/
 
 input.textinformation
 {
@@ -320,6 +320,10 @@ select.combo
 	background-color: #f6f5f3;
 	border: 1px solid;
 	border-color: #9a7057;*/
+}
+
+select[disabled=""] {
+	background-color: rgb(240, 240, 240);
 }
 
 select.combodisabled

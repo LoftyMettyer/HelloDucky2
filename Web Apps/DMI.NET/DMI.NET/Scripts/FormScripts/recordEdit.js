@@ -963,8 +963,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			//Check if control should be disabled (read only or screen read only)
 			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
-				checkbox.setAttribute("disabled", "disabled");
-				$(checkbox).addClass("ui-state-disabled");
+				//checkbox.setAttribute("disabled", "disabled");
+				//$(checkbox).addClass("ui-state-disabled");
+				$(checkbox).prop('disabled', true);
 			}
 
 			//align left or right...
@@ -990,7 +991,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			checkbox.setAttribute('data-controlType', controlItemArray[3]);
 			checkbox.setAttribute("data-control-tag", key);
 
-			if (!fControlEnabled) span.disabled = true;
+			if (!fControlEnabled) $(span).prop('disabled', true);
 
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, span);
@@ -1002,7 +1003,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			var selector = document.createElement('select');
 			selector.id = controlID;
 			applyLocation(selector, controlItemArray, true);
-			selector.style.backgroundColor = "White";
+			//selector.style.backgroundColor = "White";
 			selector.style.color = "Black";
 			selector.style.fontFamily = controlItemArray[11];
 			selector.style.fontSize = controlItemArray[12] + 'pt';
@@ -1021,7 +1022,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				selector.setAttribute("data-Mandatory", controlItemArray[32]);
 			}
 
-			if (!fControlEnabled) selector.disabled = true;
+			if (!fControlEnabled) $(selector).prop('disabled', true);
 
 			if (tabIndex > 0) selector.tabindex = tabIndex;
 
@@ -1047,7 +1048,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			image.setAttribute('data-controlType', controlItemArray[3]);
 			image.setAttribute("data-control-key", key);
 
-			if (!fControlEnabled) image.disabled = true;
+			if (!fControlEnabled) $(image).prop('disabled', true);
 
 			var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
 
@@ -1147,7 +1148,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
 			}
 
-			if (!fControlEnabled) fieldset.disabled = true;
+			if (!fControlEnabled) $(fieldset).prop('disabled', true);
 			//No Option Group buttons - these are added as values next.
 
 			addControl(iPageNo, fieldset);
@@ -1260,7 +1261,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					}
 				}
 
-				if (!fControlEnabled) textbox.disabled = true;
+				if (!fControlEnabled) $(textbox).prop('disabled', true);
+				
 
 			}
 
@@ -1286,8 +1288,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			//Check if control should be disabled (read only or screen read only)
 			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
-				textbox.setAttribute("disabled", "disabled");
-				$(textbox).addClass("ui-state-disabled");
+				//textbox.setAttribute("disabled", "disabled");
+				//$(textbox).addClass("ui-state-disabled");
+				$(textbox).prop('disabled', true);
 			}
 
 			//Add control to relevant tab, create if required.                
