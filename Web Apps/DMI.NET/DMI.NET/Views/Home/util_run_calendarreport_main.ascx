@@ -297,7 +297,7 @@ objCalendar = Nothing
 	$("#reportframe").show();
 
 	$("#PageDivTitle").html($("#txtTitle").val());
-	$(".popup").dialog('option', 'title', "Calendar reports"); //Reports now have a title, so the window title here should be the generic one
+	$(".popup").dialog('option', 'title', "Calendar Reports"); //Reports now have a title, so the window title here should be the generic one
 	$("#top").hide();
 	$("#calendarframeset").show();
 
