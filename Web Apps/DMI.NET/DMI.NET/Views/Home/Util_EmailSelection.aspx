@@ -65,20 +65,24 @@
 <html>
 <head>
 	<title>OpenHR Intranet</title>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<script id="Script1" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/Site.css?v=8.0.8.0")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/themes/" & UITheme & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.Content("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & UITheme & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link id="Link1" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+	<style type="text/css">
+		.auto-style1
+		{
+			width: 307px;
+		}
+  </style>
 
 	<script type="text/javascript">
 		window.onload = function () {
