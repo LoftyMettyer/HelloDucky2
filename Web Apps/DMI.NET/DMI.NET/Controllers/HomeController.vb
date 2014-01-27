@@ -2351,7 +2351,9 @@ Namespace Controllers
 									End If
 
 									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
-									chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0), pointBackColor, ""))
+									If showLegend = True Then
+										chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0), pointBackColor, ""))
+									End If
 								End If
 
 								pointNum += 1
@@ -2556,12 +2558,14 @@ Namespace Controllers
 
 									chart1.Series(seriesName).Points.Add(New DataPoint() With {.AxisLabel = columnName, .YValues = New Double() {yVal}, .Color = pointBackColor})
 
-									Dim legendAdded As Boolean = False
-									For Each legItem As LegendItem In chart1.Legends("Default").CustomItems
-										If legItem.Name = objRow(1) Then legendAdded = True
-									Next
+									If showLegend = True Then
+										Dim legendAdded As Boolean = False
+										For Each legItem As LegendItem In chart1.Legends("Default").CustomItems
+											If legItem.Name = objRow(1) Then legendAdded = True
+										Next
 
-									If Not legendAdded Then chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(1), pointBackColor, ""))
+										If Not legendAdded Then chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(1), pointBackColor, ""))
+									End If
 
 								End If
 
@@ -2958,13 +2962,13 @@ Namespace Controllers
 							For intCol = 0 To objCrossTab.DataArrayCols
 								For intRow = 0 To objCrossTab.DataArrayRows
 									ClientDLL.ArrayAddTo(intCol, intRow, HttpUtility.HtmlDecode(Left(objCrossTab.DataArray(intCol, intRow), 255)))
-									Next
 								Next
-
-								ClientDLL.DataArray()
 							Next
 
-							ClientDLL.Complete()
+							ClientDLL.DataArray()
+						Next
+
+						ClientDLL.Complete()
 
 					End If
 
@@ -5019,7 +5023,7 @@ Namespace Controllers
 			If (sAction = "SELECTADDFROMWAITINGLIST_2") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					If Len(sErrorMsg) = 0 Then
-						' Validate the booking.					
+						' Validate the booking.
 						iTBResultCode = 0
 
 						Try
