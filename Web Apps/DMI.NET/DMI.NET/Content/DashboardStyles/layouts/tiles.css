@@ -33,27 +33,32 @@ body
 	background-color: rgb(4, 106, 169);
 	top: 0!important;
 	left: 0!important;
-
-/*	
-	background: rgb(122,188,255) center center no-repeat;
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1)));
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -webkit-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -o-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
-	background: url(../../images/ABSLogo/swirlsgreyscaleopacity26.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%);
+	background: #004c99;
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -moz-linear-gradient(left, #004c99 0%, #14304c 100%);
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,#004c99), color-stop(100%,#14304c));
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -webkit-linear-gradient(left, #004c99 0%,#14304c 100%);
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -o-linear-gradient(left, #004c99 0%,#14304c 100%);
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -ms-linear-gradient(left, #004c99 0%,#14304c 100%);
+	background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, linear-gradient(to right, #004c99 0%,#14304c 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#004c99', endColorstr='#14304c',GradientType=1 );
+	/*background: rgb(122,188,255) center center no-repeat;
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1)));
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -o-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 );
-*/
-
-background: #004c99; /* Old browsers */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -moz-linear-gradient(left,  #004c99 0%, #14304c 100%); /* FF3.6+ */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,#004c99), color-stop(100%,#14304c)); /* Chrome,Safari4+ */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -webkit-linear-gradient(left,  #004c99 0%,#14304c 100%); /* Chrome10+,Safari5.1+ */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -o-linear-gradient(left,  #004c99 0%,#14304c 100%); /* Opera 11.10+ */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, -ms-linear-gradient(left,  #004c99 0%,#14304c 100%); /* IE10+ */
-background: url(../../images/ABSLogo/hcm_alpha2.png) center center no-repeat, linear-gradient(to right,  #004c99 0%,#14304c 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#004c99', endColorstr='#14304c',GradientType=1 ); /* IE6-9 */
+	background: rgb(255,255,255);
+	background: url(../../images/abslogo/TilesWatermark.png) center center no-repeat, -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%, rgba(252,230,65,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(27%,rgba(255,255,255,1)), color-stop(100%,rgba(252,230,65,1)));
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%);
+	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, radial-gradient(ellipse at center, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fce641',GradientType=1 );*/
 }
+
 .DashContent {	
 	position: absolute; top: 95px; bottom: 2px;left: 0px; right: 0px;
 							margin: 0px 0px 0px 120px;
@@ -201,7 +206,11 @@ width:12em; */
 
 
 .gridster {
-	margin: 0px auto; transition:opacity 0.6s;  opacity: 0.8; -webkit-transition: opacity .6s; -moz-transition: opacity .6s; -o-transition: opacity .6s;
+	margin: 0px auto; 
+	transition: opacity .6s;  opacity: 1; 
+	-webkit-transition: opacity .6s; 
+	-moz-transition: opacity .6s; 
+	-o-transition: opacity .6s;
 }
 .gridster .gs_w {
 	border-radius: 00px; cursor: pointer; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -313,15 +322,16 @@ li {list-style: none;}
 .White { background-color: white;color: gray;}
 .White a { color: gray;}*/
 
-/*Multi coloured tiles but in ABS colour scheme*/
-.Colour1 {background-color: rgb(238, 175, 0);color: white;}				/*Pantone 7409*/
-.Colour2 {background-color: rgb(0, 84, 159);color: white;}				/*Pantone 2945*/ 
-.Colour3 {background-color: rgb(98, 164,211);color: white;}/*Pantone 542 (iNurse) */
-.Colour4 {background-color: rgb(93, 0, 74);color: white;}					/*Pantone 262 (Staffplan)*/
-.Colour5 {background-color: rgb(0, 144, 137);color: white;}/*Pantone 3285 (Crosscare)*/
-.Colour6 {background-color: rgb(0, 70,135);color: white;}					/*Pantone 288 (Adastra)*/
-.Colour7 {background-color: rgb(132, 134, 135);color: rgb(10, 10, 10);} /*Pantone 424 (Healthchecks)*/
-.Colour8 {background-color: rgb(170, 1, 50);color: white;}				/*Pantone 194 (Saturn)*/
+/*Just Orange*/
+/*.Colour1 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour2 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour3 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour4 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour5 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour6 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour7 {background-color: rgba(255,0,0,0.8);color: white;} 
+.Colour8 {background-color: rgba(255,0,0,0.8);color: white;}
+*/
 
 /*Just Pantone 542 (iNurse) */
 /*.Colour1 {background-color: rgb(98, 164,211);color: white;} 
@@ -399,13 +409,34 @@ li {list-style: none;}
 .Colour7 {background-color: rgb(0,84,159);color: white;} 
 .Colour8 {background-color: rgb(0,84,159);color: white;}*/ 
 
+/*ABS Colour Scheme for tiles */
+.Colour1 {background-color: rgb(238, 175, 0);color: white;}				
+.Colour2 {background-color: rgb(0, 84, 159);color: white;}				
+.Colour3 {background-color: rgba(98, 164,211, 0.36);color: white;}
+.Colour4 {background-color: rgb(93, 0, 74);color: white;}					
+.Colour5 {background-color: rgba(0, 144, 137, 0.36);color: white;}
+.Colour6 {background-color: rgb(0, 70,135);color: white;}					
+.Colour7 {background-color: rgba(132, 134, 135, 0.36);color: rgb(10, 10, 10);} 
+.Colour8 {background-color: rgb(170, 1, 50);color: white;}				
+
+/*Sunnside Colour Scheme for tiles 
+COMMENT OUT COLOURS 1 TO 8 BELOW TO GET ABS COLOURS ABOVE */
+/*.Colour1 {background-color: rgba(238,175,0,1);color: white;}	
+.Colour2 {background-color: rgba(0,84,159,1);color: white;}
+.Colour3 {background-color: rgba(255,0,0,1);color: white;}
+.Colour4 {background-color: rgba(93,0,74,1);color: white;}
+.Colour5 {background-color: rgba(255,0,0,1);color: white;}
+.Colour6 {background-color: rgba(0,70,135,1);color: white;}					
+.Colour7 {background-color: rgba(132,134,135,1);color: white;}
+.Colour8 {background-color: rgba(255,0,0,1);color: white;}*/
+
 .Colour1 a {color: white;}
 .Colour2 a {color: white;}
 .Colour3 a {color: white;}
 .Colour4 a {color: white;}
 .Colour5 a {color: white;}
 .Colour6 a {color: white;}
-.Colour7 a {color: black;}
+.Colour7 a {color: white;}
 .Colour8 a {color: white;}
 
 .White { background-color: white;color: gray;}
