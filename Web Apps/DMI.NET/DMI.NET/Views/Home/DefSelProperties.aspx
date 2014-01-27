@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <% 
 	Response.Expires = -1 
@@ -32,17 +32,6 @@
 			$("input").addClass("ui-widget ui-widget-content ui-corner-all");
 			$("input").removeClass("text");
 
-			// Resize the popup.
-			//var frmPopup = document.getElementById("frmPopup");
-			//var iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-			//if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
-			//	window.parent.dialogHeight = new String(screen.height) + "px";
-			//}
-			//else {
-			//	var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
-			//	iNewHeight = iNewHeight + iResizeBy;
-			//	window.parent.dialogHeight = new String(iNewHeight) + "px";
-			//}
 		}
 
 	</script>
@@ -66,41 +55,27 @@
 <%
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-	
-	Dim cmdDefPropRecords As Command = New Command()
-	cmdDefPropRecords.CommandText = "sp_ASRIntDefProperties"
-	cmdDefPropRecords.CommandType = CommandTypeEnum.adCmdStoredProc
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-	cmdDefPropRecords.ActiveConnection = Session("databaseConnection")
-
-	Dim prmType = cmdDefPropRecords.CreateParameter("type", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-	cmdDefPropRecords.Parameters.Append(prmType)
-	prmType.Value = CleanNumeric(CLng(Request("utiltype")))
-
-	Dim prmID = cmdDefPropRecords.CreateParameter("id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-	cmdDefPropRecords.Parameters.Append(prmID)
-	prmID.Value = CleanNumeric(CLng(Request("prop_id")))
-
-	Err.Clear()
-	Dim rsDefProp = cmdDefPropRecords.Execute()
-
+	Dim rsDefProp = objDataAccess.GetFromSP("sp_ASRIntDefProperties" _
+		, New SqlParameter("intType", SqlDbType.Int) With {.Value = CInt(Request("utiltype"))} _
+		, New SqlParameter("intID", SqlDbType.Int) With {.Value = CInt(Request("prop_id"))})
+								
 	Dim sCreated As String, sSaved As String, sRun As String
 	
-	If rsDefProp.BOF And rsDefProp.EOF Then
+	If rsDefProp.Rows.Count = 0 Then
 		sCreated = "<Unknown>"
 		sSaved = "<Unknown>"
 		sRun = "<Unknown>"
 	Else
-		sCreated = rsDefProp.Fields("CreatedDate").Value & "  by " & rsDefProp.Fields("Createdby").Value
+		sCreated = rsDefProp.Rows(0)("CreatedDate").ToString() & "  by " & rsDefProp.Rows(0)("Createdby").ToString
 		If sCreated = "  by " Then sCreated = "<Unknown>"
-		sSaved = rsDefProp.Fields("SavedDate").Value & "  by " & rsDefProp.Fields("Savedby").Value
+		sSaved = rsDefProp.Rows(0)("SavedDate").ToString() & "  by " & rsDefProp.Rows(0)("Savedby").ToString()
 		If sSaved = "  by " Then sSaved = "<Unknown>"
-		sRun = rsDefProp.Fields("RunDate").Value & "  by " & rsDefProp.Fields("Runby").Value
+		sRun = rsDefProp.Rows(0)("RunDate").ToString() & "  by " & rsDefProp.Rows(0)("Runby").ToString()
 		If sRun = "  by " Then sRun = "<Unknown>"
 	End If
 					 
-	rsDefProp = Nothing
-	cmdDefPropRecords = Nothing
 %>
 					<tr height=10> 
 						<td width=20></td>
@@ -171,8 +146,6 @@
 		
 	End Try
 					 
-	rsDefProp = Nothing
-	cmdDefPropRecords = Nothing
 %>
 						</select>
 						</td>
