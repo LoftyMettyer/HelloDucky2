@@ -3356,7 +3356,10 @@ Namespace Controllers
 			Dim datWorkingPatterns As DataTable = objCalendar.rsCareerChange
 			sSQL = String.Format("BaseID = {0} AND [WP_Date] <= '{1}'", objCalendarEvent.BaseID, objCalendarEvent.StartDate)
 			objRow = datWorkingPatterns.Select(sSQL, "[WP_Date]").FirstOrDefault()
-			objCalendarEvent.WorkingPattern = objRow.Item("WP_Pattern").ToString()
+
+			If Not objRow Is Nothing Then
+				objCalendarEvent.WorkingPattern = objRow.Item("WP_Pattern").ToString()
+			End If
 
 			Return View(objCalendarEvent)
 
