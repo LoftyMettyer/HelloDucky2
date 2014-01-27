@@ -304,7 +304,7 @@
 										</td>
 										<td style="width: 10px">&nbsp;</td>
 										<td>
-											<select name="cboPeriod" id="cboPeriod" class="combo ui-widget ui-widget-content ui-corner-all">
+											<select name="cboPeriod" id="cboPeriod" class="combo ui-widget ui-widget-content ui-corner-tl ui-corner-bl">
 												<option name="Day" value="0">Day(s)
 												<option name="Week" value="1">Week(s)
 												<option name="Month" value="2">Month(s)

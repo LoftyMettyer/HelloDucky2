@@ -394,10 +394,10 @@
 				$("input").addClass("ui-widget ui-widget-content ui-corner-all");
 				$("input").removeClass("text");
 
-				$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("textarea").addClass("ui-widget ui-widget-content ui-corner-tl ui-corner-bl");
 				$("textarea").removeClass("text");
 
-				$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("select").addClass("ui-widget ui-widget-content ui-corner-tl ui-corner-bl");
 				$("select").removeClass("text");
 				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
 				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");

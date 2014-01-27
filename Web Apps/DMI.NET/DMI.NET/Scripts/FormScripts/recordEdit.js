@@ -1003,6 +1003,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			var selector = document.createElement('select');
 			selector.id = controlID;
 			applyLocation(selector, controlItemArray, true);
+			//override default height calc:
+			selector.style.height = (Number(controlItemArray[6]) / 15) + "px";
 			//selector.style.backgroundColor = "White";
 			selector.style.color = "Black";
 			selector.style.fontFamily = controlItemArray[11];
@@ -1158,7 +1160,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		case 32: //ctlSpinner
 			var spinnerContainer = document.createElement('div');
 			applyLocation(spinnerContainer, controlItemArray, true);
-			spinnerContainer.style.padding = "0px";
+			spinnerContainer.style.padding = "0 0 0 0";
 
 			var spinner = spinnerContainer.appendChild(document.createElement("input"));						
 			spinner.className = "spinner";
@@ -1270,7 +1272,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			applyLocation(textbox, controlItemArray, true);
 			textbox.style.fontFamily = controlItemArray[11];
 			textbox.style.fontSize = controlItemArray[12] + 'pt';
-			textbox.style.padding = "0px";
+			textbox.style.padding = "0 2px 0 2px";
 			textbox.setAttribute("data-columnID", columnID);
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
@@ -1820,6 +1822,7 @@ function addHTMLControlValues(controlValues) {
 							radio.style.top = (i * 16) + "px";
 							radio.style.left = "12px";
 							radio.style.padding = "0px";
+							radio.style.margin = "0px";
 
 							//add text to radio button
 							label.style.position = "absolute";

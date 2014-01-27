@@ -291,6 +291,19 @@ input.textwarning
 	background-color: transparent;
 }
 
+input, textarea { border-width: 1px!important;
+	border-color: #E3E3E3!important;
+}
+
+.ui-spinner {
+	vertical-align: top!important;
+}
+.ui-spinner-input {
+	padding: 0 2px 0 2px!important;
+}
+
+
+
 /*input[disabled=""], input[disabled="disabled"] {
 	color: black;
 	background-color: lightgray;

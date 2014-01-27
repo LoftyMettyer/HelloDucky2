@@ -33,7 +33,7 @@
 				$("input").addClass("ui-widget ui-widget-content ui-corner-all");
 				$("input").removeClass("text");
 
-				$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("select").addClass("ui-widget ui-widget-content ui-corner-tl ui-corner-bl");
 				$("select").removeClass("text");
 
 
