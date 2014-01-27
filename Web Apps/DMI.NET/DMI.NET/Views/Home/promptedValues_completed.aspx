@@ -5,6 +5,10 @@
 <html>
 <head runat="server">
 		<title></title>
+	
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+
 	<script type="text/javascript">
 		function promptedValues_completed_onload() {
 			try {				
@@ -25,6 +29,7 @@
 
 </head>
 <body>
+		<input type="hidden" id="txtDummyForJQuery" name="txtDummyForJQuery" value="0">
 </body>
 	
 <script type="text/javascript"> promptedValues_completed_onload();</script>

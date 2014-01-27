@@ -138,8 +138,7 @@
 
 					//jQuery styling
 					$(function () {
-						$("input[type=submit], input[type=button], button")
-							.button();
+						$("input[type=submit], input[type=button], button").button();
 						$("input").addClass("ui-widget ui-corner-all");
 						$("input").removeClass("text");
 
@@ -235,8 +234,7 @@
 
 					//jQuery styling
 					$(function () {
-						$("input[type=submit], input[type=button], button")
-							.button();
+						$("input[type=submit], input[type=button], button").button();
 						$("input").addClass("ui-widget ui-corner-all");
 						$("input").removeClass("text");
 

@@ -469,12 +469,10 @@
 						<td>
 							<%
 								Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+								Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 								
+								Dim rstSelRecords As DataTable
 								Dim sErrorDescription As String
-								Dim cmdSelRecords As Command
-								Dim prmTableID As ADODB.Parameter
-								Dim prmUser As ADODB.Parameter
-								Dim rstSelRecords As Recordset
 								Dim lngRowCount As Long
 								Dim sFailureDescription As String
 																		
@@ -486,34 +484,18 @@
 								If (UCase(Session("selectionType")) = UCase("picklist")) Or _
 										(UCase(Session("selectionType")) = UCase("filter")) Then
 
-									cmdSelRecords = New Command
-									cmdSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-									cmdSelRecords.ActiveConnection = Session("databaseConnection")
-
 									If UCase(Session("selectionType")) = UCase("picklist") Then
-										cmdSelRecords.CommandText = "spASRIntGetAvailablePicklists"
+										rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailablePicklists" _
+											, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
+											, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
 
-										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)	' 3 = integer, 1 = input
-										cmdSelRecords.Parameters.Append(prmTableID)
-										prmTableID.Value = CleanNumeric(CLng(Session("selectionTableID")))
-			
-										prmUser = cmdSelRecords.CreateParameter("user", 200, ParameterDirectionEnum.adParamInput, 255)
-										cmdSelRecords.Parameters.Append(prmUser)
-										prmUser.Value = Session("username")
 									Else
-										cmdSelRecords.CommandText = "spASRIntGetAvailableFilters"
 
-										prmTableID = cmdSelRecords.CreateParameter("tableID", 3, ParameterDirectionEnum.adParamInput)	' 3 = integer, 1 = input
-										cmdSelRecords.Parameters.Append(prmTableID)
-										prmTableID.Value = CleanNumeric(CLng(Session("selectionTableID")))
-			
-										prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 255)
-										cmdSelRecords.Parameters.Append(prmUser)
-										prmUser.Value = Session("username")
+										rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailableFilters" _
+											, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
+											, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
+
 									End If
-
-									Err.Clear()
-									rstSelRecords = cmdSelRecords.Execute
 
 									' Instantiate and initialise the grid. 
 							%>
@@ -531,7 +513,7 @@
 								<param name="HeadLines" value="0">
 								<param name="FieldDelimiter" value="(None)">
 								<param name="FieldSeparator" value="(Tab)">
-								<param name="Col.Count" value="<%=rstSelRecords.fields.count%>">
+								<param name="Col.Count" value="<%=rstSelRecords.Columns.Count%>">
 								<param name="stylesets.count" value="0">
 								<param name="TagVariant" value="EMPTY">
 								<param name="UseGroups" value="0">
@@ -583,10 +565,10 @@
 								<param name="CaptionAlignment" value="2">
 								<param name="SplitterPos" value="0">
 								<param name="SplitterVisible" value="0">
-								<param name="Columns.Count" value="<%=rstSelRecords.fields.count%>">
+								<param name="Columns.Count" value="<%=rstSelRecords.Columns.Count%>">
 								<%
-									For iLoop = 0 To (rstSelRecords.Fields.Count - 1)
-										If rstSelRecords.Fields(iLoop).Name <> "name" Then
+									For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
+										If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
 								%>
 								<param name="Columns(<%=iLoop%>).Width" value="0">
 								<param name="Columns(<%=iLoop%>).Visible" value="0">
@@ -599,8 +581,8 @@
 								End If
 								%>
 								<param name="Columns(<%=iLoop%>).Columns.Count" value="1">
-								<param name="Columns(<%=iLoop%>).Caption" value="<%=replace(rstSelRecords.fields(iLoop).name, "_", "> ")%>">
-								<param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.fields(iLoop).name%>">
+								<param name="Columns(<%=iLoop%>).Caption" value="<%=Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", "> ")%>">
+								<param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.Columns(iLoop).ColumnName%>">
 								<param name="Columns(<%=iLoop%>).Alignment" value="0">
 								<param name="Columns(<%=iLoop%>).CaptionAlignment" value="3">
 								<param name="Columns(<%=iLoop%>).Bound" value="0">
@@ -647,24 +629,20 @@
 								<param name="DataMember" value="">
 								<% 
 									lngRowCount = 0
-									Do While Not rstSelRecords.EOF
-										For iLoop = 0 To (rstSelRecords.Fields.Count - 1)
+									For Each objRow As DataRow In rstSelRecords.Rows
+
+
+										For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
 								%>
-								<param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=replace(rstSelRecords.Fields(iLoop).Value, "_", " ")%>">
+								<param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=Replace(objRow(iLoop).ToString(), "_", " ")%>">
 								<%
 								Next
-								lngRowCount = lngRowCount + 1
-								rstSelRecords.MoveNext()
-							Loop
-								%>
+								lngRowCount += 1
+								Next%>
 								<param name="Row.Count" value="<%=lngRowCount%>">
 							</object>
 							<%	
-								rstSelRecords.Close()
-								rstSelRecords = Nothing
 
-								' Release the ADO command object.
-								cmdSelRecords = Nothing
 		
 							Else
 								' Select individual employee records.

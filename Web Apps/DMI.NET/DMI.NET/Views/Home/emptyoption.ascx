@@ -195,7 +195,7 @@
 					$("#optionframe").hide();
 					$("#workframe").show();
 
-					menu_refreshMenu();
+					//menu_refreshMenu();
 
 					var fTransferOK = true;
 

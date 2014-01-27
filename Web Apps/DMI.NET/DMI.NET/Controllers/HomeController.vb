@@ -5023,7 +5023,7 @@ Namespace Controllers
 			If (sAction = "SELECTADDFROMWAITINGLIST_2") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					If Len(sErrorMsg) = 0 Then
-						' Validate the booking.
+						' Validate the booking.					
 						iTBResultCode = 0
 
 						Try
@@ -5196,7 +5196,8 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function tbBulkBooking_Submit(value As FormCollection)
-			On Error Resume Next
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
@@ -5243,56 +5244,37 @@ Namespace Controllers
 
 			If (sAction = "SELECTBULKBOOKINGS") Then
 				If Len(Session("optionLinkRecordID")) > 0 Then
-					' Validate the bulk bookings.
-					Dim cmdTBCheck = CreateObject("ADODB.Command")
-					cmdTBCheck.CommandText = "sp_ASRIntValidateBulkBookings"
-					cmdTBCheck.CommandType = 4 ' Stored procedure
-					cmdTBCheck.ActiveConnection = Session("databaseConnection")
 
-					Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-					prmTBCourseRecordID.value = CleanNumeric(Session("optionRecordID"))
+					Try
 
-					Dim prmTBEmployeeRecordIDs = cmdTBCheck.CreateParameter("employeeRecIDs", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-					cmdTBCheck.Parameters.Append(prmTBEmployeeRecordIDs)
-					prmTBEmployeeRecordIDs.value = Session("optionLinkRecordID")
+						Dim prmResult = New SqlParameter("piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						Dim prmErrorMsg = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmPreRequisites = New SqlParameter("psWhoFailedPreReqCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmAvailability = New SqlParameter("psWhoFailedUnavailabilityCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmOverLapping = New SqlParameter("psWhoFailedOverlapCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmOverBooking = New SqlParameter("psWhoFailedOverbookingCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-					Dim prmTBStatus = cmdTBCheck.CreateParameter("status", 200, 1, 8000) '200=varchar, 1=input, 8000=size
-					cmdTBCheck.Parameters.Append(prmTBStatus)
-					prmTBStatus.value = Session("optionLookupValue")
+						objDataAccess.ExecuteSP("sp_ASRIntValidateBulkBookings" _
+							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionLinkRecordID")} _
+							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+							, prmResult _
+							, prmErrorMsg _
+							, prmPreRequisites _
+							, prmAvailability _
+							, prmOverLapping _
+							, prmOverBooking)
 
-					Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
-					cmdTBCheck.Parameters.Append(prmResult)
+						iTBResultCode = prmResult.Value
+						sPreReqFails = prmPreRequisites.Value.ToString()
+						sUnAvailFails = prmAvailability.Value.ToString()
+						sOverlapFails = prmOverLapping.Value.ToString()
+						sOverBookFails = prmOverBooking.Value.ToString()
 
-					Dim prmErrorMsg = cmdTBCheck.CreateParameter("errorMessage", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmErrorMsg)
+					Catch ex As Exception
+						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(ex.Message)
+					End Try
 
-					Dim prmPreRequisites = cmdTBCheck.CreateParameter("PreRequisites", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmPreRequisites)
-
-					Dim prmAvailability = cmdTBCheck.CreateParameter("Availability", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmAvailability)
-
-					Dim prmOverLapping = cmdTBCheck.CreateParameter("Overlapping", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmOverLapping)
-
-					Dim prmOverBooking = cmdTBCheck.CreateParameter("Overbooking", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmOverBooking)
-
-					Err.Clear()
-					cmdTBCheck.Execute()
-					If (Err.Number <> 0) Then
-						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(Err.Description)
-					End If
-
-					iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-
-					sPreReqFails = cmdTBCheck.Parameters("PreRequisites").Value
-					sUnAvailFails = cmdTBCheck.Parameters("Availability").Value
-					sOverlapFails = cmdTBCheck.Parameters("Overlapping").Value
-					sOverBookFails = cmdTBCheck.Parameters("Overbooking").Value
-
-					cmdTBCheck = Nothing
 				End If
 			End If
 
@@ -5374,7 +5356,7 @@ Namespace Controllers
 			Dim j = 0
 			sPrompts = ""
 			' ReDim Preserve aPrompts(1, 0)
-			For i = 1 To (Request.Form.Count)
+			For i = 0 To Request.Form.Count - 1
 				Dim sKey = Request.Form.Keys(i)
 				If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
 					(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
@@ -5399,7 +5381,7 @@ Namespace Controllers
 
 					sPrompts = sPrompts & aPrompts(0, j) & vbTab & aPrompts(1, j) & vbTab
 
-					j = j + 1
+					j += 1
 				End If
 			Next
 
@@ -5738,38 +5720,6 @@ Namespace Controllers
 
 			Return RedirectToAction(sNextPage)
 
-		End Function
-
-
-
-
-		Private Function convertLocaleDateToSQL(psDate)
-			Dim sLocaleFormat
-			Dim sSQLFormat
-			Dim iLocaleIndex
-
-			If Len(psDate) > 0 Then
-				sLocaleFormat = Session("LocaleDateFormat")
-
-				Dim iIndex = InStr(sLocaleFormat, "mm")
-				If iIndex > 0 Then
-					sSQLFormat = Mid(psDate, iIndex, 2) & "/"
-				End If
-
-				iIndex = InStr(sLocaleFormat, "dd")
-				If iIndex > 0 Then
-					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
-				End If
-
-				iIndex = InStr(sLocaleFormat, "yyyy")
-				If iIndex > 0 Then
-					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
-				End If
-
-				convertLocaleDateToSQL = sSQLFormat
-			Else
-				convertLocaleDateToSQL = ""
-			End If
 		End Function
 
 

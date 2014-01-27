@@ -13,11 +13,11 @@
 
 <html>
 <head>
-	
-		<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/jQueryUI")%>" type="text/javascript"></script>
-		<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
-		<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
+
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 
 	<title>OpenHR Intranet</title>
 
@@ -58,8 +58,8 @@
 	</script>
 
 	<script type="text/javascript">
-		function SubmitPrompts()
-		{
+		function SubmitPrompts() {
+			
 			// Validate the prompt values before submitting the form.
 			var frmPromptedValues = document.getElementById("frmPromptedValues");
 		
@@ -158,7 +158,8 @@
 				else {
 					// Convert the date to SQL format (use this as a validation check).
 					// An empty string is returned if the date is invalid.
-					sValue = convertLocaleDateToSQL(sValue);
+
+					sValue =  OpenHR.convertLocaleDateToSQL(sValue);
 					if (sValue.length == 0) {
 						fOK = false;
 					}
@@ -304,153 +305,6 @@
 			return fOK;
 		}
 
-		function convertLocaleDateToSQL(psDateString)
-		{ 
-			/* Convert the given date string (in locale format) into 
-			SQL format (mm/dd/yyyy). */
-			var sDateFormat;
-			var iDays;
-			var iMonths;
-			var iYears;
-			var sDays;
-			var sMonths;
-			var sYears;
-			var iValuePos;
-			var sTempValue;
-			var sValue;
-			var iLoop;
-		
-			sDateFormat = OpenHR.LocaleDateFormat;
-
-			sDays="";
-			sMonths="";
-			sYears="";
-			iValuePos = 0;
-
-			// Trim leading spaces.
-			sTempValue = psDateString.substr(iValuePos,1);
-			while (sTempValue.charAt(0) == " ") 
-			{
-				iValuePos = iValuePos + 1;		
-				sTempValue = psDateString.substr(iValuePos,1);
-			}
-
-			for (iLoop=0; iLoop<sDateFormat.length; iLoop++)  {
-				if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'D') && (sDays.length==0)){
-					sDays = psDateString.substr(iValuePos,1);
-					iValuePos = iValuePos + 1;
-					sTempValue = psDateString.substr(iValuePos,1);
-
-					if (isNaN(sTempValue) == false) {
-						sDays = sDays.concat(sTempValue);			
-					}
-					iValuePos = iValuePos + 1;		
-				}
-
-				if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'M') && (sMonths.length==0)){
-					sMonths = psDateString.substr(iValuePos,1);
-					iValuePos = iValuePos + 1;
-					sTempValue = psDateString.substr(iValuePos,1);
-
-					if (isNaN(sTempValue) == false) {
-						sMonths = sMonths.concat(sTempValue);			
-					}
-					iValuePos = iValuePos + 1;
-				}
-
-				if ((sDateFormat.substr(iLoop,1).toUpperCase() == 'Y') && (sYears.length==0)){
-					sYears = psDateString.substr(iValuePos,1);
-					iValuePos = iValuePos + 1;
-					sTempValue = psDateString.substr(iValuePos,1);
-
-					if (isNaN(sTempValue) == false) {
-						sYears = sYears.concat(sTempValue);			
-					}
-					iValuePos = iValuePos + 1;
-					sTempValue = psDateString.substr(iValuePos,1);
-
-					if (isNaN(sTempValue) == false) {
-						sYears = sYears.concat(sTempValue);			
-					}
-					iValuePos = iValuePos + 1;
-					sTempValue = psDateString.substr(iValuePos,1);
-
-					if (isNaN(sTempValue) == false) {
-						sYears = sYears.concat(sTempValue);			
-					}
-					iValuePos = iValuePos + 1;
-				}
-
-				// Skip non-numerics
-				sTempValue = psDateString.substr(iValuePos,1);
-				while (isNaN(sTempValue) == true) {
-					iValuePos = iValuePos + 1;		
-					sTempValue = psDateString.substr(iValuePos,1);
-				}
-			}
-
-			while (sDays.length < 2) {
-				sTempValue = "0";
-				sDays = sTempValue.concat(sDays);
-			}
-
-			while (sMonths.length < 2) {
-				sTempValue = "0";
-				sMonths = sTempValue.concat(sMonths);
-			}
-
-			while (sYears.length < 2) {
-				sTempValue = "0";
-				sYears = sTempValue.concat(sYears);
-			}
-
-			if (sYears.length == 2) {
-				var iValue = parseInt(sYears);
-				if (iValue < 30) {
-					sTempValue = "20";
-				}
-				else {
-					sTempValue = "19";
-				}
-		
-				sYears = sTempValue.concat(sYears);
-			}
-
-			while (sYears.length < 4) {
-				sTempValue = "0";
-				sYears = sTempValue.concat(sYears);
-			}
-
-			sTempValue = sMonths.concat("/");
-			sTempValue = sTempValue.concat(sDays);
-			sTempValue = sTempValue.concat("/");
-			sTempValue = sTempValue.concat(sYears);
-	
-			sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
-
-			iYears = parseInt(sYears);
-	
-			while (sMonths.substr(0, 1) == "0") {
-				sMonths = sMonths.substr(1);
-			}
-			iMonths = parseInt(sMonths);
-	
-			while (sDays.substr(0, 1) == "0") {
-				sDays = sDays.substr(1);
-			}
-			iDays = parseInt(sDays);
-
-			var newDateObj = new Date(iYears, iMonths - 1, iDays);
-			if ((newDateObj.getDate() != iDays) || 
-				(newDateObj.getMonth() + 1 != iMonths) || 
-				(newDateObj.getFullYear() != iYears)) {
-				return "";
-			}
-			else {
-				return sTempValue;
-			}
-		}
-
 		function checkboxClick(piPromptID) {
 			var sSource = "prompt_3_" + piPromptID;
 			var sDest = "promptChk_" + piPromptID;
@@ -574,9 +428,7 @@
 								%>
 								<input type="checkbox" id='prompt_3_<%=rowPromptedValues("componentID").ToString%>' name='prompt_3_<%=rowPromptedValues("componentID").ToString%>'
 									<%If rowPromptedValues("valuelogic").ToString Then%> checked <%End If%>
-									onclick="checkboxClick(<%=rowPromptedValues("componentID").ToString%>)"
-									onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-									onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+									onclick="checkboxClick(<%=rowPromptedValues("componentID").ToString%>)" />
 								<input type="hidden" id='promptChk_<%=rowPromptedValues("componentID").ToString%>' name='promptChk_<%=rowPromptedValues("componentID").ToString%>'
 									value='<%=rowPromptedValues("valuelogic").ToString%>'>
 								<%			  
@@ -718,20 +570,12 @@
 							Response.Write("							<td width=80>" & vbCrLf)
 								%>
 								<input type="button" name="Submit" value="OK" style="WIDTH: 80px" class="btn"
-									onclick="SubmitPrompts()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="SubmitPrompts()" />
 							</td>
 							<td width="20"></td>
 							<td width="80">
 								<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
-									onclick="CancelClick()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="CancelClick()" />
 								<%
 									Response.Write("							</td>" & vbCrLf)
 									Response.Write("						</table>" & vbCrLf)

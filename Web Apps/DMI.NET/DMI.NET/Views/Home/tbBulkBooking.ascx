@@ -4,7 +4,9 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function tbBulkBooking_onload() {		

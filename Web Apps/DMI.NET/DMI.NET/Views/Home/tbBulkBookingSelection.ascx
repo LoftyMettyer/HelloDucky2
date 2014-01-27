@@ -817,6 +817,9 @@
 <%
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+	Dim rstSelRecords As DataTable
 	
 	session("optionLinkViewID") = session("TB_BulkBookingDefaultViewID")
 	session("optionLinkOrderID") = 0
@@ -826,34 +829,20 @@
 	if (ucase(session("selectionType")) = ucase("picklist")) or _
 		(ucase(session("selectionType")) = ucase("filter")) then 
 
-		Dim cmdSelRecords = CreateObject("ADODB.Command")
-		cmdSelRecords.CommandType = 4
-		cmdSelRecords.ActiveConnection = Session("databaseConnection")
-
-		if ucase(session("selectionType")) = ucase("picklist") then
-			cmdSelRecords.CommandText = "spASRIntGetAvailablePicklists"
-
-			Dim prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
-			cmdSelRecords.Parameters.Append(prmTableID)
-			prmTableID.value = cleanNumeric(clng(session("TB_EmpTableID")))
+		If UCase(Session("selectionType")) = UCase("picklist") Then
 			
-			Dim prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 255)
-			cmdSelRecords.Parameters.Append(prmUser)
-			prmUser.value = session("username")
-		else
-			cmdSelRecords.CommandText = "spASRIntGetAvailableFilters"
+			rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailablePicklists" _
+				, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_EmpTableID"))} _
+				, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
 
-			Dim prmTableID = cmdSelRecords.CreateParameter("tableID", 3, 1)	' 3 = integer, 1 = input
-			cmdSelRecords.Parameters.Append(prmTableID)
-			prmTableID.value = cleanNumeric(clng(session("TB_EmpTableID")))
-			
-			Dim prmUser = cmdSelRecords.CreateParameter("user", 200, 1, 255)
-			cmdSelRecords.Parameters.Append(prmUser)
-			prmUser.value = session("username")
-		end if
+		Else
 
-		Err.Clear()
-		Dim rstSelRecords = cmdSelRecords.Execute
+			rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailableFilters" _
+				, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_EmpTableID"))} _
+				, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
+
+		End If
+
 
 		' Instantiate and initialise the grid. 
 		Response.Write("					<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridSelRecords name=ssOleDBGridSelRecords codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;"">" & vbCrLf)
@@ -870,7 +859,7 @@
 		Response.Write("						<PARAM NAME=""HeadLines"" VALUE=""0"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Col.Count"" VALUE=""" & rstSelRecords.fields.count & """>" & vbCrLf)
+		Response.Write("						<PARAM NAME=""Col.Count"" VALUE=""" & rstSelRecords.Columns.Count & """>" & vbCrLf)
 		Response.Write("						<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
@@ -922,20 +911,20 @@
 		Response.Write("						<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Columns.Count"" VALUE=""" & rstSelRecords.fields.count & """>" & vbCrLf)
+		Response.Write("						<PARAM NAME=""Columns.Count"" VALUE=""" & rstSelRecords.Columns.Count & """>" & vbCrLf)
 
-		for iLoop = 0 to (rstSelRecords.fields.count - 1)
-			if rstSelRecords.fields(iLoop).name <> "name" then
+		For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
+			If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
 				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""0"">" & vbCrLf)
 				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""0"">" & vbCrLf)
-			else
+			Else
 				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""100000"">" & vbCrLf)
 				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""-1"">" & vbCrLf)
 			End If
 								
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(rstSelRecords.fields(iLoop).name, "_", " ") & """>" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstSelRecords.fields(iLoop).name & """>" & vbCrLf)
+			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", " ") & """>" & vbCrLf)
+			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstSelRecords.Columns(iLoop).ColumnName & """>" & vbCrLf)
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""0"">" & vbCrLf)
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Bound"" VALUE=""0"">" & vbCrLf)
@@ -967,7 +956,7 @@
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").ClipMode"" VALUE=""0"">" & vbCrLf)
 			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").PromptChar"" VALUE=""95"">" & vbCrLf)
-		next 
+		Next
 
 		Response.Write("						<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
 		Response.Write("						<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
@@ -981,23 +970,19 @@
 		Response.Write("						<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
 								
 		Dim lngRowCount = 0
-		do while not rstSelRecords.EOF
-			for iLoop = 0 to (rstSelRecords.fields.count - 1)							
-				Response.Write("						<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(rstSelRecords.Fields(iLoop).Value, "_", " "), """", "&quot;") & """>" & vbCrLf)
-			next 				
-			lngRowCount = lngRowCount + 1
-			rstSelRecords.MoveNext
-		loop
+		
+		For Each objRow As DataRow In rstSelRecords.Rows
+			For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
+				Response.Write("						<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;") & """>" & vbCrLf)
+			Next
+			lngRowCount += 1
+		Next
+
 		Response.Write("						<PARAM NAME=""Row.Count"" VALUE=""" & lngRowCount & """>" & vbCrLf)
 		Response.Write("					</OBJECT>" & vbCrLf)
 	
-		rstSelRecords.close
-		rstSelRecords = Nothing
-
-		' Release the ADO command object.
-		cmdSelRecords = Nothing
 		
-	else 
+	Else
 		' Select individual employee records.
 %>
 						<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -1191,20 +1176,12 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdOK type=button value=OK name=cmdOK style="WIDTH: 80px" width="80" class="btn"
-											onclick="Selection_makeSelection()" 
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="Selection_makeSelection()" />
 								</TD>
 								<TD width=10>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdCancel type=button value=Cancel name=cmdCancel style="WIDTH: 80px" width="80" class="btn"
-											onclick="window.parent.close();" 
-																				onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																				onfocus="try{button_onFocus(this);}catch(e){}"
-																				onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="window.parent.close();" />
 								</TD>
 							</TR>
 						</TABLE>
