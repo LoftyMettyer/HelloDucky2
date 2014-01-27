@@ -1006,7 +1006,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//override default height calc:
 			selector.style.height = (Number(controlItemArray[6]) / 15) + "px";
 			//selector.style.backgroundColor = "White";
-			selector.style.color = "Black";
+			//selector.style.color = "Black";
 			selector.style.fontFamily = controlItemArray[11];
 			selector.style.fontSize = controlItemArray[12] + 'pt';
 			selector.style.borderWidth = "1px";
