@@ -171,6 +171,8 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
     <Content Include="Content\images\ABSLittleLessBrightTilesBackground.png" />
+    <Content Include="Content\images\ABSLogo\HCM_alpha1.png" />
+    <Content Include="Content\images\ABSLogo\HCM_alpha2.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo144.png" />
