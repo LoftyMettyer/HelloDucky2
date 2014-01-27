@@ -87,35 +87,6 @@ ErrorTrap:
 		Return General.UDFFunctions(mastrUDFsRequired, pbCreate)
 	End Function
 
-	Public Function FormatEventDuration(ByRef lngSeconds As Integer) As String
-
-		Dim strHours As String
-		Dim strMins As String
-		Dim strSeconds As String
-		Dim dblRemainder As Double
-
-		Const TIME_SEPARATOR As String = ":"
-
-		If Not (lngSeconds < 0) Then
-			strHours = CStr(Fix(lngSeconds / 3600))
-			strHours = New String("0", 2 - Len(strHours)) & strHours
-			dblRemainder = CDbl(lngSeconds Mod 3600)
-
-			strMins = CStr(Fix(dblRemainder / 60))
-			strMins = New String("0", 2 - Len(strMins)) & strMins
-			'UPGRADE_WARNING: Mod has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-			dblRemainder = CDbl(dblRemainder Mod 60)
-
-			strSeconds = CStr(Fix(dblRemainder))
-			strSeconds = New String("0", 2 - Len(strSeconds)) & strSeconds
-
-			FormatEventDuration = strHours & TIME_SEPARATOR & strMins & TIME_SEPARATOR & strSeconds
-		Else
-			FormatEventDuration = ""
-		End If
-
-	End Function
-
 	Public Function GetFilteredIDs(ByRef plngExprID As Integer, ByRef pavPromptedValues As Object) As String
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.

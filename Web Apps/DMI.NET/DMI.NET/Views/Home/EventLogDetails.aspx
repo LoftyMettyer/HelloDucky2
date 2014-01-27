@@ -49,9 +49,7 @@
 
 				Dim i As Integer
 				Dim sValue As String
-
-				Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
-				
+			
 				Session("eventName") = Request("txtEventName")
 				Session("eventID") = Request("txtEventID")
 				Session("cboString") = vbNullString
@@ -94,7 +92,7 @@
 							Response.Write("<input type='hidden' Name='txtEventEndTime_" & objRow("ID") & "' id='txtEventEndTime_" & objRow("ID") & "' value='" & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & "'>" & vbCrLf)
 						End If
 				
-						Response.Write("<input type='hidden' Name='txtEventDuration_" & objRow("ID") & "' id='txtEventDuration_" & objRow("ID") & "' value='" & objUtilities.FormatEventDuration(CLng(objRow("Duration"))) & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventDuration_" & objRow("ID") & "' id='txtEventDuration_" & objRow("ID") & "' value='" & FormatEventDuration(CLng(objRow("Duration"))) & "'>" & vbCrLf)
 
 						Response.Write("<input type='hidden' Name='txtEventType_" & objRow("ID") & "' id='txtEventType_" & objRow("ID") & "' value='" & Replace(objRow("Type"), """", "&quot;") & "'>" & vbCrLf)
 						Response.Write("<input type='hidden' Name='txtEventStatus_" & objRow("ID") & "' id='txtEventStatus_" & objRow("ID") & "' value='" & Replace(objRow("Status"), """", "&quot;") & "'>" & vbCrLf)
@@ -127,7 +125,6 @@
 				End With
 	
 				rsAllBatchJobs = Nothing
-				objUtilities = Nothing
 	
 				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & Request("txtEventID") & "'>" & vbCrLf)
 			%>

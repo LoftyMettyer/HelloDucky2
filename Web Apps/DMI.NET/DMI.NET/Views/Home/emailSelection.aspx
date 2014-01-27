@@ -371,25 +371,16 @@
 									</tr>
 									<tr>
 									<td>
-											<%--<TABLE WIDTH=100% class="invisible" CELLSPACING=0 CELLPADDING=0>--%>
 											<table class="invisible">
 												<tr>
 													<td>
 														<input id="cmdOK" type="button" value="OK" name="cmdOK" style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="emailEvent();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="emailEvent();" />
 													</td>
 
 													<td>
 														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="cancelClick();"
-															onmouseover="try{button_onMouseOver(this);}catch(e){}"
-															onmouseout="try{button_onMouseOut(this);}catch(e){}"
-															onfocus="try{button_onFocus(this);}catch(e){}"
-															onblur="try{button_onBlur(this);}catch(e){}" />
+															onclick="cancelClick();" />
 													</td>
 												</tr>
 											</table>
@@ -434,72 +425,58 @@
 			
 			'Get the required Email information
 			Dim sErrorDescription As String
-			Dim cmdEmail
-			Dim rsEmail
-			Dim i
-			Dim sAddline
-			Dim sEmailAddresses
-			Dim iLoop
+
+			Dim i As Integer = 0
+			Dim sAddline As String
+			Dim sEmailAddresses As String
+			Dim iLoop As Integer
 	
-			i = 0
 			iLoop = 0
 			sAddline = vbNullString
 			sEmailAddresses = vbNullString
-	
-			cmdEmail = CreateObject("ADODB.Command")
-			cmdEmail.CommandText = "spASRIntGetEventLogEmails"
-			cmdEmail.CommandType = 4 'Stored Procedure
-			cmdEmail.ActiveConnection = Session("databaseConnection")
-	
-			Err.Clear()
-			rsEmail = cmdEmail.Execute
-	
-			If Not (rsEmail.bof And rsEmail.eof) Then
-		
-				Do Until rsEmail.eof
-					i = i + 1
-					sEmailAddresses = vbNullString
-					sAddline = vbNullString
-					sAddline = "0" & vbTab & "0" & vbTab & "0" & vbTab
-					sAddline = sAddline & rsEmail.Fields("Name").Value & vbTab
-					sAddline = sAddline & rsEmail.Fields("EmailGroupID").Value & vbTab
 			
-					If rsEmail.Fields("EmailGroupID").Value < 1 Then
-						sAddline = sAddline & rsEmail.Fields("Name").value
-					Else
+			Dim rsEmail = objDataAccess.GetFromSP("spASRIntGetEventLogEmails")
 
-						Try
-							Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
-										, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = rsEmail.Fields("EmailGroupID").Value})
-
-							iLoop = 0
-							If Not rstEmailAddr Is Nothing Then
-								For Each objRow In rstEmailAddr.Rows
-									
-									If iLoop > 1 Then
-										sEmailAddresses = sEmailAddresses & ";"
-									End If
-									
-									sEmailAddresses = sEmailAddresses & objRow(0).ToString()
-									iLoop += 1
-								Next
-							End If
-
-						Catch ex As Exception
-							sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
-						End Try
-									
-						sAddline = sAddline & sEmailAddresses
-					End If
+			For Each objOuterRow As DataRow In rsEmail.Rows
+				
+				i = i + 1
+				sEmailAddresses = vbNullString
+				sAddline = "0" & vbTab & "0" & vbTab & "0" & vbTab
+				sAddline = sAddline & objOuterRow("Name").ToString() & vbTab
+				sAddline = sAddline & objOuterRow("EmailGroupID").ToString() & vbTab
 			
-					Response.Write("<INPUT type=hidden name=txtEmailGroup_" & i & " id=txtEmailGroup_" & i & " value=""" & sAddline & """>" & vbCrLf)
+				If CInt(objOuterRow("EmailGroupID")) < 1 Then
+					sAddline = sAddline & objOuterRow("Name").ToString()
+				Else
+
+					Try
+						Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+									, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CInt(objOuterRow("EmailGroupID"))})
+
+						iLoop = 0
+						If Not rstEmailAddr Is Nothing Then
+							For Each objRow In rstEmailAddr.Rows
+									
+								If iLoop > 1 Then
+									sEmailAddresses = sEmailAddresses & ";"
+								End If
+									
+								sEmailAddresses = sEmailAddresses & objRow(0).ToString()
+								iLoop += 1
+							Next
+						End If
+
+					Catch ex As Exception
+						sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
+					End Try
+									
+					sAddline = sAddline & sEmailAddresses
+				End If
 			
-					rsEmail.movenext()
-				Loop
-			End If
-	
-			rsEmail = Nothing
-			cmdEmail = Nothing
+				Response.Write("<input type=hidden name=txtEmailGroup_" & i & " id=txtEmailGroup_" & i & " value=""" & sAddline & """>" & vbCrLf)
+			
+			Next
+
 		%>
 	</form>
 
@@ -507,107 +484,71 @@
 
 		<%
 			'Get the required Email information
-			Dim cmdEmailDetails
-			Dim rsEmailDetails
-			Dim sEmailInfo
-			Dim iLastEventID
-			Dim iDetailCount
-	
-			Dim objUtilities
-			Dim prmSelectedIDs
-			Dim prmSubject
-			Dim prmEmailOrderColumn
-			Dim prmEmailOrderOrder
-		
-			objUtilities = Session("UtilitiesObject")
-		
-			cmdEmailDetails = CreateObject("ADODB.Command")
-			cmdEmailDetails.CommandText = "spASRIntGetEventLogEmailInfo"
-			cmdEmailDetails.CommandType = 4	'Stored Procedure
-			cmdEmailDetails.ActiveConnection = Session("databaseConnection")
-	
-			prmSelectedIDs = cmdEmailDetails.CreateParameter("selectedids", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdEmailDetails.Parameters.Append(prmSelectedIDs)
-			prmSelectedIDs.value = Request("txtSelectedEventIDs")
+			Dim sEmailInfo As String = vbNullString
+			Dim iLastEventID As Integer = -1
+			Dim iDetailCount As Integer = 0
+			Dim EventCounter As Integer = 0
 
-			prmSubject = cmdEmailDetails.CreateParameter("subject", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
-			cmdEmailDetails.Parameters.Append(prmSubject)
-	
-			prmEmailOrderColumn = cmdEmailDetails.CreateParameter("emailOrderColumn", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdEmailDetails.Parameters.Append(prmEmailOrderColumn)
-			prmEmailOrderColumn.value = CStr(Request("txtEmailOrderColumn"))
-		
-			prmEmailOrderOrder = cmdEmailDetails.CreateParameter("emailOrderOrder", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdEmailDetails.Parameters.Append(prmEmailOrderOrder)
-			prmEmailOrderOrder.value = CStr(Request("txtEmailOrderOrder"))
-	
-	
-			Err.Clear()
-			rsEmailDetails = cmdEmailDetails.Execute
-	
-			sEmailInfo = vbNullString
-			iDetailCount = 0
-			iLastEventID = -1
-	
-			Dim EventCounter
-			EventCounter = 0
-	
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				If Not (rsEmailDetails.bof And rsEmailDetails.eof) Then
-					Do Until rsEmailDetails.eof
+			Try
+								
+				Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
+					, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
+					, prmSubject _
+					, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
+					, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
 			
-						If iLastEventID <> rsEmailDetails.Fields("ID").value Then
+				If rsEmailDetails.Rows.Count > 0 Then
+					For Each objRow As DataRow In rsEmailDetails.Rows
+					
+						If iLastEventID <> CInt(objRow("ID")) Then
 					
 							EventCounter = EventCounter + 1
 							Response.Write(CStr(EventCounter))
 
-							sEmailInfo = sEmailInfo & StrDup(Len(rsEmailDetails.Fields("Name").Value) + 30, "-") & vbCrLf
-							sEmailInfo = sEmailInfo & "Event Name : " & rsEmailDetails.Fields("Name").Value & vbCrLf
-							sEmailInfo = sEmailInfo & StrDup(Len(rsEmailDetails.Fields("Name").Value) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
 					
-							sEmailInfo = sEmailInfo & "Mode :		" & rsEmailDetails.Fields("Mode").Value & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
 					
-							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(rsEmailDetails.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(rsEmailDetails.Fields("DateTime").Value) & vbCrLf
-							If IsDBNull(rsEmailDetails.Fields("EndTime").Value) Then
+							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
+							If IsDBNull(objRow("EndTime")) Then
 								sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
 							Else
-								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(rsEmailDetails.Fields("DateTime").Value) & " " & ConvertSqlDateToTime(rsEmailDetails.Fields("EndTime").Value) & vbCrLf
+								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
 							End If
-							sEmailInfo = sEmailInfo & "Duration :	" & objUtilities.FormatEventDuration(CLng(rsEmailDetails.Fields("Duration").Value)) & vbCrLf
+							sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
 					
-							sEmailInfo = sEmailInfo & "Type :		" & rsEmailDetails.Fields("Type").Value & vbCrLf
-							sEmailInfo = sEmailInfo & "Status :		" & rsEmailDetails.Fields("Status").Value & vbCrLf
-							sEmailInfo = sEmailInfo & "User name :	" & rsEmailDetails.Fields("Username").Value & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
 					
 							If Request("txtFromMain") = 0 Then
 								If Request("txtBatchy") Then
 									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
 								End If
 							Else
-								If (Not IsDBNull(rsEmailDetails.Fields("BatchName"))) And (Len(rsEmailDetails.Fields("BatchName").Value) > 0) Then
-									sEmailInfo = sEmailInfo & "Batch Job Name	: " & rsEmailDetails.Fields("BatchName").Value & vbCrLf & vbCrLf
+								If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
+									sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
 								End If
 							End If
 										
-							sEmailInfo = sEmailInfo & "Records Successful :	" & rsEmailDetails.Fields("SuccessCount").Value & vbCrLf
-							sEmailInfo = sEmailInfo & "Records Failed :		" & rsEmailDetails.Fields("FailCount").Value & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
 					
 							sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
 					
-							iLastEventID = rsEmailDetails.Fields("ID").Value
+							iLastEventID = CInt(objRow("ID"))
 							iDetailCount = 0
 						End If
 				
 						iDetailCount = iDetailCount + 1
 				
-						If rsEmailDetails.Fields("count").Value > 0 Then
-							If (Not IsDBNull(rsEmailDetails.Fields("Notes"))) And (Len(rsEmailDetails.Fields("Notes").Value) > 0) Then
-								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(rsEmailDetails.Fields("count").Value) & " ***" & vbCrLf
-								sEmailInfo = sEmailInfo & rsEmailDetails.Fields("Notes").Value
+						If objRow("count") > 0 Then
+							If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
+								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
+								sEmailInfo = sEmailInfo & objRow("Notes").ToString()
 							End If
 						Else
 							sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
@@ -615,71 +556,61 @@
 				
 						sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
 				
-						rsEmailDetails.Movenext()
-					Loop
-		
-					Response.Write("<INPUT type=hidden name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
+					Next
+						
+					Response.Write("<input type=hidden name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
 			
 				Else
-					Response.Write("<INPUT type=hidden name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
+					Response.Write("<input type=hidden name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
 				End If
-			End If
-	
-			rsEmailDetails.close()
-			rsEmailDetails = Nothing
 
-			Response.Write("<INPUT type=hidden name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
-			Response.Write("<INPUT type=hidden name=txtSubject id=txtSubject value=""" & Replace(cmdEmailDetails.Parameters("subject").Value, """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type=hidden name=txtSubject id=txtSubject value=""" & Replace(prmSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
 	
-			cmdEmailDetails = Nothing
-			objUtilities = Nothing
-	
-		%>
+
+			Catch ex As Exception
+				sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
+				
+			End Try
+
+				%>
 	</form>
 
+<script type="text/javascript">
+	
+	function emailSelection_window_onload() {
 
+		if (frmEmailDetails.txtEventDeleted.value == 1) {
+			OpenHR.messageBox("This record no longer exists in the event log.", 48, "Event Log");
 
-	<script type="text/javascript">
-		function emailSelection_window_onload() {
-
-
-			if (frmEmailDetails.txtEventDeleted.value == 1) {
-				OpenHR.messageBox("This record no longer exists in the event log.", 48, "Event Log");
-						
-				try {               
-					window.dialogArguments.parent.frames("workframe").refreshGrid();
-				} catch(e) {
-				}
-
-				self.close();
-			} else {
-				setGridFont(frmEmail.ssOleDBGridEmail);
-
-				populateEmailList();
+			try {
+				window.dialogArguments.parent.frames("workframe").refreshGrid();
+			} catch (e) {
 			}
-		}
-	</script>
 
-	<script type="text/javascript" id="scptGeneralFunctions">
-<!--
+			self.close();
+		} else {
+			setGridFont(frmEmail.ssOleDBGridEmail);
+			populateEmailList();
+		}
+	}
 
 	function populateEmailList() {
+
 		var sAddLine = '';
-	
+
 		frmEmail.ssOleDBGridEmail.focus();
 		frmEmail.ssOleDBGridEmail.Redraw = false;
-	
-		for (var i=0; i<frmList.elements.length; i++)
-		{
+
+		for (var i = 0; i < frmList.elements.length; i++) {
 			sAddLine = frmList.elements[i].value;
 			frmEmail.ssOleDBGridEmail.AddItem(sAddLine);
 		}
-		
+
 		frmEmail.ssOleDBGridEmail.Redraw = true;
 	}
-	
-	function emailEvent()
-	{
+
+	function emailEvent() {
 		var bOK = false;
 		var sTo = getEmailList(0);
 		var sCC = getEmailList(1);
@@ -687,28 +618,20 @@
 		var sSubject = getSubject();
 		var sBody = getBody();
 
-		bOK = OpenHR.sendMail(sTo,sSubject,sBody,sCC,sBCC);
-				
-		//  OpenHR.SendMail()
-				
+		bOK = OpenHR.sendMail(sTo, sSubject, sBody, sCC, sBCC);
 
-	
 		self.close();
 		return bOK;
 	}
-	
-	function getEmailList(iSendType)
-	{
+
+	function getEmailList(iSendType) {
 		var sEmailList = '';
-	
+
 		frmEmail.ssOleDBGridEmail.Redraw = false;
 		frmEmail.ssOleDBGridEmail.MoveFirst();
-		for (var i=0; i < frmEmail.ssOleDBGridEmail.Rows; i++)
-		{
-			if (frmEmail.ssOleDBGridEmail.Columns(iSendType).value == -1)
-			{
-				if (sEmailList.length > 0)
-				{
+		for (var i = 0; i < frmEmail.ssOleDBGridEmail.Rows; i++) {
+			if (frmEmail.ssOleDBGridEmail.Columns(iSendType).value == -1) {
+				if (sEmailList.length > 0) {
 					sEmailList = sEmailList + '; ';
 				}
 				sEmailList = sEmailList + frmEmail.ssOleDBGridEmail.Columns("EmailAddresses").Text;
@@ -716,30 +639,26 @@
 			frmEmail.ssOleDBGridEmail.MoveNext();
 		}
 		frmEmail.ssOleDBGridEmail.Redraw = true;
-		
+
 		return (sEmailList);
 	}
 
-	function getSubject()
-	{
+	function getSubject() {
 		return frmEmailDetails.txtSubject.value;
 	}
 
-	function getBody()
-	{
+	function getBody() {
 		return frmEmailDetails.txtBody.value;
 	}
 
-	function cancelClick()
-	{
+	function cancelClick() {
 		self.close();
 	}
-	
-	-->
-	</script>
+
+</script>
 
 	<script type="text/javascript">
-		emailSelection_window_onload();
+		setTimeout("emailSelection_window_onload()", 100);
 	</script>
 
 

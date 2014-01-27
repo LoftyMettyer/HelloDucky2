@@ -907,7 +907,6 @@
 				
 		Try
 			
-			Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
 			Dim prmError As New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 			Dim prmIsFirstPage As New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 			Dim prmIsLastPage As New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -947,7 +946,7 @@
 						sAddString = sAddString & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbTab
 					End If
 						
-					sAddString = sAddString & objUtilities.FormatEventDuration(CInt(objRow("Duration"))) & vbTab
+					sAddString = sAddString & FormatEventDuration(CInt(objRow("Duration"))) & vbTab
 					
 					sAddString = sAddString & Replace(objRow("EventInfo").ToString(), """", "&quot;")
 					
