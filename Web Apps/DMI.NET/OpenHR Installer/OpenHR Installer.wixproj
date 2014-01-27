@@ -21,6 +21,8 @@
     <DefineConstants>Debug</DefineConstants>
     <SuppressPdbOutput>True</SuppressPdbOutput>
     <SuppressValidation>True</SuppressValidation>
+    <CompilerAdditionalOptions>-ext "..\OpenHR Wix Extensions\bin\Release\OpenHR Wix Extensions.dll"</CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>-ext "..\OpenHR Wix Extensions\bin\Release\OpenHR Wix Extensions.dll"</LinkerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
