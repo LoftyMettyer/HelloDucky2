@@ -1161,7 +1161,11 @@ function menu_CloseWait() {
 
 function showDefaultRibbon() {
 	// Hide all tabs except FixedLinks
-	$("#toolbarHome").parent().show();
+	if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) {
+		$("#toolbarHome").parent().hide();
+	} else {
+		$("#toolbarHome").parent().show();
+	}
 	$("#toolbarRecordFind").parent().hide();
 	$("#toolbarRecord").parent().hide();
 	$("#toolbarRecordAbsence").parent().hide();

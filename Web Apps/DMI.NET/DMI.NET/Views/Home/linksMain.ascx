@@ -1272,11 +1272,16 @@
 		$("#fixedlinksframe").show();
 
 		//Hide DMI button for non-IE browsers			
-		if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) $('#mnutoolFixedOpenHR').hide();
-
-		showDefaultRibbon();
-		$("#toolbarHome").show();
-		$("#toolbarHome").click();
+		if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) {
+			$('#mnutoolFixedOpenHR').hide();
+			$("#toolbarHome").parent().hide();
+		}
+		else
+		{
+			showDefaultRibbon();
+			$("#toolbarHome").show();
+			$("#toolbarHome").click();
+		}
 
 
 		$("#workframe").attr("data-framesource", "linksmain");
