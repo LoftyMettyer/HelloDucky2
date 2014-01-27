@@ -1530,40 +1530,25 @@ Namespace Controllers
 
 				If (Not fTBOverride) And (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID"))) Then
 					' Training Booking check.
-					Dim cmdTBCheck = CreateObject("ADODB.Command")
-					cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
-					cmdTBCheck.CommandType = 4		' Stored procedure
-					cmdTBCheck.ActiveConnection = Session("databaseConnection")
 
-					Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2)		' 3=integer, 2=output
-					cmdTBCheck.Parameters.Append(prmResult)
+					Try
 
-					Dim prmTBEmployeeRecordID = cmdTBCheck.CreateParameter("empRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBEmployeeRecordID)
-					prmTBEmployeeRecordID.value = CleanNumeric(iTBEmployeeRecordID)
+						Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-					Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-					prmTBCourseRecordID.value = CleanNumeric(iTBCourseRecordID)
+						objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
+							, prmResult _
+							, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBEmployeeRecordID)} _
+							, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBCourseRecordID)} _
+							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = sTBBookingStatusValue} _
+							, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)})
 
-					Dim prmTBStatus = cmdTBCheck.CreateParameter("tbStatus", 200, 1, 8000) '200=varchar, 1=input, 8000=size
-					cmdTBCheck.Parameters.Append(prmTBStatus)
-					prmTBStatus.value = sTBBookingStatusValue
+						iTBResultCode = prmResult.Value
 
-					Dim prmTBRecordID = cmdTBCheck.CreateParameter("tbRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBRecordID)
-					prmTBRecordID.value = CleanNumeric(lngRecordID)
+					Catch ex As Exception
+						sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
 
-					Err.Clear()
-					cmdTBCheck.Execute()
-					If (Err.Number <> 0) Then
-						sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
-					End If
+					End Try
 
-					If Len(sErrorMsg) = 0 Then
-						iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-					End If
-					cmdTBCheck = Nothing
 
 					If Len(sErrorMsg) = 0 Then
 						If iTBResultCode > 0 Then
@@ -1776,178 +1761,98 @@ Namespace Controllers
 
 
 			ElseIf sAction = "CANCELCOURSE" Then
-				' Check number of bookings made.
-				Dim cmdCancelCourse = CreateObject("ADODB.Command")
-				cmdCancelCourse.CommandText = "sp_ASRIntCancelCourse"
-				cmdCancelCourse.CommandType = 4	' Stored procedure
-				cmdCancelCourse.ActiveConnection = Session("databaseConnection")
 
-				Dim prmNumberOfBookings = cmdCancelCourse.CreateParameter("numberOfBookings", 3, 2)	' 3=integer, 2=output
-				cmdCancelCourse.Parameters.Append(prmNumberOfBookings)
+				Try
 
-				Dim prmCourseRecordID = cmdCancelCourse.CreateParameter("courseRecordID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmCourseRecordID)
-				prmCourseRecordID.value = CleanNumeric(lngRecordID)
+					' Check number of bookings made.
+					Dim prmNumberOfBookings = New SqlParameter("piNumberOfBookings", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+					Dim prmCourseTitle = New SqlParameter("psCourseTitle", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				Dim prmTBTableID = cmdCancelCourse.CreateParameter("tbTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmTBTableID)
-				prmTBTableID.value = CleanNumeric(Session("TB_TBTableID"))
+					objDataAccess.ExecuteSP("sp_ASRIntCancelCourse" _
+						, prmNumberOfBookings _
+						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
+						, New SqlParameter("piTrainBookTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBTableID"))} _
+						, New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseTableID"))} _
+						, New SqlParameter("piTrainBookStatusColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBStatusColumnID"))} _
+						, New SqlParameter("psCourseRealSource", SqlDbType.VarChar, -1) With {.Value = sRealSource} _
+					, prmErrorMessage _
+					, prmCourseTitle)
 
-				Dim prmCourseTableID = cmdCancelCourse.CreateParameter("courseTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmCourseTableID)
-				prmCourseTableID.value = CleanNumeric(Session("TB_CourseTableID"))
-
-				Dim prmTrainBookStatusColumnID = cmdCancelCourse.CreateParameter("tbStatusColumnID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmTrainBookStatusColumnID)
-				prmTrainBookStatusColumnID.value = CleanNumeric(Session("TB_TBStatusColumnID"))
-
-				Dim prmCourseRealSource = cmdCancelCourse.CreateParameter("courseRealSource", 200, 1, 8000)
-				cmdCancelCourse.Parameters.Append(prmCourseRealSource)
-				prmCourseRealSource.value = sRealSource
-
-				Dim prmErrorMessage = cmdCancelCourse.CreateParameter("errorMessage", 200, 2, 8000)
-				cmdCancelCourse.Parameters.Append(prmErrorMessage)
-
-				Dim prmCourseTitle = cmdCancelCourse.CreateParameter("courseTitle", 200, 2, 8000)
-				cmdCancelCourse.Parameters.Append(prmCourseTitle)
-
-				Err.Clear()
-				cmdCancelCourse.Execute()
-				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(Err.Description)
-					sAction = "SAVEERROR"
-				Else
 					sAction = "CANCELCOURSE_1"
-					Session("numberOfBookings") = cmdCancelCourse.Parameters("numberOfBookings").Value
-					Session("tbErrorMessage") = cmdCancelCourse.Parameters("errorMessage").Value
-					Session("tbCourseTitle") = cmdCancelCourse.Parameters("courseTitle").Value
-				End If
+					Session("numberOfBookings") = prmNumberOfBookings.Value
+					Session("tbErrorMessage") = prmErrorMessage.Value
+					Session("tbCourseTitle") = prmCourseTitle.Value
 
-				cmdCancelCourse = Nothing
-			ElseIf sAction = "CANCELCOURSE_2" Then
-				Dim cmdCancelCourse = CreateObject("ADODB.Command")
-				cmdCancelCourse.CommandText = "sp_ASRIntCancelCoursePart2"
-				cmdCancelCourse.CommandType = 4	' Stored procedure
-				cmdCancelCourse.ActiveConnection = Session("databaseConnection")
-
-				Dim prmEmployeeTableID = cmdCancelCourse.CreateParameter("employeeTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmEmployeeTableID)
-				prmEmployeeTableID.value = CleanNumeric(Session("TB_EmpTableID"))
-
-				Dim prmCourseTableID = cmdCancelCourse.CreateParameter("courseTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmCourseTableID)
-				prmCourseTableID.value = CleanNumeric(Session("TB_CourseTableID"))
-
-				Dim prmCourseRealSource = cmdCancelCourse.CreateParameter("courseRealSource", 200, 1, 8000)
-				cmdCancelCourse.Parameters.Append(prmCourseRealSource)
-				prmCourseRealSource.value = sRealSource
-
-				Dim prmCourseRecordID = cmdCancelCourse.CreateParameter("courseRecordID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmCourseRecordID)
-				prmCourseRecordID.value = CleanNumeric(lngRecordID)
-
-				Dim prmNewCourseRecordID = cmdCancelCourse.CreateParameter("newCourseRecordID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmNewCourseRecordID)
-				prmNewCourseRecordID.value = CleanNumeric(iTBCourseRecordID)
-
-				Dim prmCourseCancelDateColumnID = cmdCancelCourse.CreateParameter("courseCancelDateColumnID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmCourseCancelDateColumnID)
-				prmCourseCancelDateColumnID.value = CleanNumeric(Session("TB_CourseCancelDateColumnID"))
-
-				Dim prmCourseTitle = cmdCancelCourse.CreateParameter("courseTitle", 200, 1, 8000)
-				cmdCancelCourse.Parameters.Append(prmCourseTitle)
-				prmCourseTitle.value = Session("tbCourseTitle")
-
-				Dim prmTBTableID = cmdCancelCourse.CreateParameter("tbTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmTBTableID)
-				prmTBTableID.value = CleanNumeric(Session("TB_TBTableID"))
-
-				Dim prmTBTableInsert = cmdCancelCourse.CreateParameter("tbTableInsert", 11, 1)	' 11=boolean, 1=input
-				cmdCancelCourse.Parameters.Append(prmTBTableInsert)
-				prmTBTableInsert.value = CleanBoolean(Session("TB_TBTableInsert"))
-
-				Dim prmTrainBookStatusColumnID = cmdCancelCourse.CreateParameter("tbStatusColumnID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmTrainBookStatusColumnID)
-				prmTrainBookStatusColumnID.value = CleanNumeric(Session("TB_TBStatusColumnID"))
-
-				Dim prmTrainBookCancelDateColumnID = cmdCancelCourse.CreateParameter("tbCancelDateColumnID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmTrainBookCancelDateColumnID)
-				prmTrainBookCancelDateColumnID.value = CleanNumeric(Session("TB_TBCancelDateColumnID"))
-
-				Dim prmWLTableID = cmdCancelCourse.CreateParameter("wlTableID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmWLTableID)
-				prmWLTableID.value = CleanNumeric(Session("TB_WaitListTableID"))
-
-				Dim prmWLTableInsert = cmdCancelCourse.CreateParameter("wlTableInsert", 11, 1)	' 11=boolean, 1=input
-				cmdCancelCourse.Parameters.Append(prmWLTableInsert)
-				prmWLTableInsert.value = CleanBoolean(Session("TB_WaitListTableInsert"))
-
-				Dim prmWLCourseTitleColumnID = cmdCancelCourse.CreateParameter("wlCourseTitleColumnID", 3, 1)
-				cmdCancelCourse.Parameters.Append(prmWLCourseTitleColumnID)
-				prmWLCourseTitleColumnID.value = CleanNumeric(Session("TB_WaitListCourseTitleColumnID"))
-
-				Dim prmWLCourseTitleColumnUpdate = cmdCancelCourse.CreateParameter("wlCourseTitleColumnUpdate", 11, 1)	' 11=boolean, 1=input
-				cmdCancelCourse.Parameters.Append(prmWLCourseTitleColumnUpdate)
-				prmWLCourseTitleColumnUpdate.value = CleanBoolean(Session("TB_WaitListCourseTitleColumnUpdate"))
-
-				Dim prmCreateWaitListRecords = cmdCancelCourse.CreateParameter("createWaitListRecords", 11, 1) ' 11=boolean, 1=input
-				cmdCancelCourse.Parameters.Append(prmCreateWaitListRecords)
-				prmCreateWaitListRecords.value = CleanBoolean(Request.Form("txtTBCreateWLRecords"))
-
-				Dim prmErrorMessage = cmdCancelCourse.CreateParameter("errorMessage", 200, 2, 8000)
-				cmdCancelCourse.Parameters.Append(prmErrorMessage)
-
-				Err.Clear()
-				cmdCancelCourse.Execute()
-
-				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(Err.Description)
+				Catch ex As Exception
+					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(ex.Message)
 					sAction = "SAVEERROR"
-				Else
-					sErrorMsg = cmdCancelCourse.Parameters("errorMessage").Value
+
+				End Try
+
+			ElseIf sAction = "CANCELCOURSE_2" Then
+
+				Try
+
+					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+					objDataAccess.ExecuteSP("sp_ASRIntCancelCoursePart2" _
+						, New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_EmpTableID"))} _
+						, New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseTableID"))} _
+						, New SqlParameter("psCourseRealSource", SqlDbType.VarChar, -1) With {.Value = sRealSource} _
+						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
+						, New SqlParameter("piTransferCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(iTBCourseRecordID)} _
+						, New SqlParameter("piCourseCancelDateColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseCancelDateColumnID"))} _
+						, New SqlParameter("psCourseTitle", SqlDbType.VarChar, -1) With {.Value = Session("tbCourseTitle")} _
+						, New SqlParameter("piTrainBookTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBTableID"))} _
+						, New SqlParameter("pfTrainBookTableInsert", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_TBTableInsert"))} _
+						, New SqlParameter("piTrainBookStatusColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBStatusColumnID"))} _
+						, New SqlParameter("piTrainBookCancelDateColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBCancelDateColumnID"))} _
+						, New SqlParameter("piWaitListTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_WaitListTableID"))} _
+						, New SqlParameter("pfWaitListTableInsert", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListTableInsert"))} _
+						, New SqlParameter("piWaitListCourseTitleColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_WaitListCourseTitleColumnID"))} _
+						, New SqlParameter("pfWaitListCourseTitleColumnUpdate", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListCourseTitleColumnUpdate"))} _
+						, New SqlParameter("pfCreateWaitListRecords", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtTBCreateWLRecords"))} _
+						, prmErrorMessage)
+
+					sErrorMsg = prmErrorMessage.Value.ToString()
 
 					If Len(sErrorMsg) > 0 Then
 						sAction = "SAVEERROR"
 					Else
 						sAction = "LOAD"
 					End If
-				End If
 
-				cmdCancelCourse = Nothing
+				Catch ex As Exception
+					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(ex.Message)
+					sAction = "SAVEERROR"
+
+				End Try
+
 
 			ElseIf sAction = "CANCELBOOKING" Then
-				Dim cmdCancelBooking = CreateObject("ADODB.Command")
-				cmdCancelBooking.CommandText = "sp_ASRIntCancelBooking"
-				cmdCancelBooking.CommandType = 4		' Stored procedure
-				cmdCancelBooking.ActiveConnection = Session("databaseConnection")
 
-				Dim prmTransferBooking = cmdCancelBooking.CreateParameter("transferBooking", 11, 1)	'11=boolean, 1=input
-				cmdCancelBooking.Parameters.Append(prmTransferBooking)
-				prmTransferBooking.value = CleanBoolean(fUserChoice)
+				Try
 
-				Dim prmTBRecordID = cmdCancelBooking.CreateParameter("tbRecordID", 3, 1)	'3=integer, 1=input
-				cmdCancelBooking.Parameters.Append(prmTBRecordID)
-				prmTBRecordID.value = CleanNumeric(lngRecordID)
+					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				Dim prmErrorMessage = cmdCancelBooking.CreateParameter("errorMessage", 200, 2, 8000)	'2=varchar, 2=output, 8000=size
-				cmdCancelBooking.Parameters.Append(prmErrorMessage)
+					objDataAccess.ExecuteSP("sp_ASRIntCancelBooking" _
+						, New SqlParameter("pfTransferBookings", SqlDbType.Bit) With {.Value = CleanBoolean(fUserChoice)} _
+						, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
+						, prmErrorMessage)
 
-				Err.Clear()
-				cmdCancelBooking.Execute()
-				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the booking." & vbCrLf & FormatError(Err.Description)
-					sAction = "SAVEERROR"
-				Else
-					sErrorMsg = cmdCancelBooking.Parameters("errorMessage").Value
-
-					If Len(sErrorMsg) > 0 Then
+					If Len(prmErrorMessage.Value.ToString()) > 0 Then
 						sAction = "SAVEERROR"
 					Else
 						sAction = "CANCELBOOKING_1"
 					End If
-				End If
 
-				cmdCancelBooking = Nothing
+				Catch ex As Exception
+					sErrorMsg = "Error cancelling the booking." & vbCrLf & FormatError(ex.Message)
+					sAction = "SAVEERROR"
+
+				End Try
+
 			End If
 
 			Session("selectSQL") = Request.Form("txtSelectSQL")
@@ -2549,7 +2454,7 @@ Namespace Controllers
 							seriesName = "Default"
 
 							chart1.ChartAreas.Add(seriesName)
-							
+
 							chart1.ChartAreas(seriesName).BackColor = Color.Transparent
 							chart1.ChartAreas(seriesName).BackSecondaryColor = Color.Transparent
 							chart1.ChartAreas(seriesName).ShadowColor = Color.Transparent
@@ -5050,7 +4955,7 @@ Namespace Controllers
 		<HttpPost()>
 	 Function tbAddFromWaitingListFind_Submit(value As FormCollection)
 
-			On Error Resume Next
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
@@ -5114,45 +5019,27 @@ Namespace Controllers
 			If (sAction = "SELECTADDFROMWAITINGLIST_2") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					If Len(sErrorMsg) = 0 Then
-						' Validate the booking.
-						Dim sTBErrorMsg = ""
-						Dim sTBWarningMsg = ""
+						' Validate the booking.					
 						iTBResultCode = 0
 
-						Dim cmdTBCheck = CreateObject("ADODB.Command")
-						cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
-						cmdTBCheck.CommandType = 4 ' Stored procedure
-						cmdTBCheck.ActiveConnection = Session("databaseConnection")
+						Try
 
-						Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
-						cmdTBCheck.Parameters.Append(prmResult)
+							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-						Dim prmTBEmployeeRecordID = cmdTBCheck.CreateParameter("empRecID", 3, 1) '3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBEmployeeRecordID)
-						prmTBEmployeeRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
+								, prmResult _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
 
-						Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-						prmTBCourseRecordID.value = CleanNumeric(Session("optionRecordID"))
+							iTBResultCode = prmResult.Value
 
-						Dim prmTBStatus = cmdTBCheck.CreateParameter("tbStatus", 200, 1, 8000) '200=varchar, 1=input, 8000=size
-						cmdTBCheck.Parameters.Append(prmTBStatus)
-						prmTBStatus.value = Session("optionLookupValue")
+						Catch ex As Exception
+							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
 
-						Dim prmTBRecordID = cmdTBCheck.CreateParameter("tbRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBRecordID)
-						prmTBRecordID.value = 0
+						End Try
 
-						Err.Clear()
-						cmdTBCheck.Execute()
-						If (Err.Number <> 0) Then
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
-						End If
-
-						If Len(sErrorMsg) = 0 Then
-							iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-						End If
-						cmdTBCheck = Nothing
 					End If
 				End If
 			End If
@@ -5175,7 +5062,8 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function tbBookCourseFind_Submit(value As FormCollection)
-			On Error Resume Next
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
@@ -5267,44 +5155,26 @@ Namespace Controllers
 
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
-						Dim sTBErrorMsg = ""
-						Dim sTBWarningMsg = ""
 						iTBResultCode = 0
 
-						Dim cmdTBCheck = CreateObject("ADODB.Command")
-						cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
-						cmdTBCheck.CommandType = 4 ' Stored procedure
-						cmdTBCheck.ActiveConnection = Session("databaseConnection")
+						Try
 
-						Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
-						cmdTBCheck.Parameters.Append(prmResult)
+							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-						prmTBEmployeeRecordID = cmdTBCheck.CreateParameter("empRecID", 3, 1) '3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBEmployeeRecordID)
-						prmTBEmployeeRecordID.value = CleanNumeric(iEmpRecID)
+							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
+								, prmResult _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
 
-						Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-						prmTBCourseRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+							iTBResultCode = prmResult.Value
 
-						Dim prmTBStatus = cmdTBCheck.CreateParameter("tbStatus", 200, 1, 8000) '200=varchar, 1=input, 8000=size
-						cmdTBCheck.Parameters.Append(prmTBStatus)
-						prmTBStatus.value = Session("optionLookupValue")
+						Catch ex As Exception
+							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
 
-						Dim prmTBRecordID = cmdTBCheck.CreateParameter("tbRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBRecordID)
-						prmTBRecordID.value = 0
+						End Try
 
-						Err.Clear()
-						cmdTBCheck.Execute()
-						If (Err.Number <> 0) Then
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
-						End If
-
-						If Len(sErrorMsg) = 0 Then
-							iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-						End If
-						cmdTBCheck = Nothing
 					End If
 				End If
 			End If
@@ -5551,7 +5421,8 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function tbTransferBookingFind_Submit(value As FormCollection)
-			On Error Resume Next
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
@@ -5597,73 +5468,48 @@ Namespace Controllers
 					' Get the employee record ID from the given Training Booking record.
 					Dim iEmpRecID = 0
 
-					Dim cmdEmpIDFromTBID = CreateObject("ADODB.Command")
-					cmdEmpIDFromTBID.CommandText = "sp_ASRIntGetEmpIDFromTBID"
-					cmdEmpIDFromTBID.CommandType = 4 ' Stored procedure
-					cmdEmpIDFromTBID.ActiveConnection = Session("databaseConnection")
+					Try
 
-					Dim prmEmployeeRecordID = cmdEmpIDFromTBID.CreateParameter("empRecID", 3, 2) '3=integer, 2=output
-					cmdEmpIDFromTBID.Parameters.Append(prmEmployeeRecordID)
+						Dim prmEmployeeRecordID = New SqlParameter("piEmpRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-					Dim prmTBRecordID = cmdEmpIDFromTBID.CreateParameter("TBRecID", 3, 1)	'3=integer, 1=input
-					cmdEmpIDFromTBID.Parameters.Append(prmTBRecordID)
-					prmTBRecordID.value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))
+						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromTBID" _
+							, prmEmployeeRecordID _
+							, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))})
 
-					Err.Clear()
-					cmdEmpIDFromTBID.Execute()
-					If (Err.Number() <> 0) Then
-						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(Err.Description)
-					End If
-
-					If Len(sErrorMsg) = 0 Then
-						iEmpRecID = cmdEmpIDFromTBID.Parameters("empRecID").Value
+						iEmpRecID = prmEmployeeRecordID.Value
 
 						If iEmpRecID = 0 Then
 							sErrorMsg = "Error getting employee ID."
 						End If
-					End If
-					cmdEmpIDFromTBID = Nothing
+
+					Catch ex As Exception
+						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(ex.Message)
+
+					End Try
+
 
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
-						Dim sTBErrorMsg = ""
-						Dim sTBWarningMsg = ""
 						iTBResultCode = 0
 
-						Dim cmdTBCheck = CreateObject("ADODB.Command")
-						cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
-						cmdTBCheck.CommandType = 4 ' Stored procedure
-						cmdTBCheck.ActiveConnection = Session("databaseConnection")
+						Try
 
-						Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
-						cmdTBCheck.Parameters.Append(prmResult)
+							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-						Dim prmTBEmployeeRecordID = cmdTBCheck.CreateParameter("empRecID", 3, 1) '3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBEmployeeRecordID)
-						prmTBEmployeeRecordID.value = CleanNumeric(iEmpRecID)
+							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
+								, prmResult _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
 
-						Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-						prmTBCourseRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+							iTBResultCode = prmResult.Value
 
-						Dim prmTBStatus = cmdTBCheck.CreateParameter("tbStatus", 200, 1, 8000) '200=varchar, 1=input, 8000=size
-						cmdTBCheck.Parameters.Append(prmTBStatus)
-						prmTBStatus.value = Session("optionLookupValue")
+						Catch ex As Exception
+							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
 
-						prmTBRecordID = cmdTBCheck.CreateParameter("tbRecID", 3, 1)	'3=integer, 1=input
-						cmdTBCheck.Parameters.Append(prmTBRecordID)
-						prmTBRecordID.value = 0
+						End Try
 
-						Err.Clear()
-						cmdTBCheck.Execute()
-						If (Err.Number() <> 0) Then
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
-						End If
-
-						If Len(sErrorMsg) = 0 Then
-							iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-						End If
-						cmdTBCheck = Nothing
 					End If
 				End If
 			End If
@@ -5703,10 +5549,11 @@ Namespace Controllers
 
 		<HttpPost()>
 	 Function tbTransferCourseFind_Submit(value As FormCollection)
-			On Error Resume Next
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			' Read the information from the calling form.
 			Dim sNextPage = Request.Form("txtGotoOptionPage")
@@ -5753,54 +5600,33 @@ Namespace Controllers
 
 				If Session("optionLinkRecordID") > 0 Then
 					' Validate the booking transfers.
-					Dim cmdTBCheck = CreateObject("ADODB.Command")
-					cmdTBCheck.CommandText = "sp_ASRIntValidateTransfers"
-					cmdTBCheck.CommandType = 4 ' Stored procedure
-					cmdTBCheck.ActiveConnection = Session("databaseConnection")
 
-					Dim prmTBEmployeeTableID = cmdTBCheck.CreateParameter("empTableID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBEmployeeTableID)
-					prmTBEmployeeTableID.value = CleanNumeric(Session("TB_EmpTableID"))
+					Try
 
-					Dim prmTBCourseTableID = cmdTBCheck.CreateParameter("courseTableID", 3, 1) '3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBCourseTableID)
-					prmTBCourseTableID.value = CleanNumeric(Session("TB_CourseTableID"))
+						Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						Dim prmErrorMessage = New SqlParameter("@psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-					Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
-					prmTBCourseRecordID.value = CleanNumeric(Session("optionRecordID"))
+						objDataAccess.ExecuteSP("sp_ASRIntValidateTransfers" _
+							, New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_EmpTableID"))} _
+							, New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseTableID"))} _
+							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+							, New SqlParameter("piTransferCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
+							, New SqlParameter("piTrainBookTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBTableID"))} _
+							, New SqlParameter("piTrainBookStatusColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBStatusColumnID"))} _
+							, prmResult _
+							, prmErrorMessage)
 
-					Dim prmTBNewCourseRecordID = cmdTBCheck.CreateParameter("newCourseRecID", 3, 1)	'3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBNewCourseRecordID)
-					prmTBNewCourseRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+						If (Len(sErrorMsg) = 0) And Len(prmErrorMessage.Value.ToString()) > 0 Then
+							sErrorMsg = "Error validating training booking transfers." & vbCrLf & prmErrorMessage.Value.ToString
+						End If
 
-					Dim prmTBTrainBookTableID = cmdTBCheck.CreateParameter("trainBookTableID", 3, 1) '3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBTrainBookTableID)
-					prmTBTrainBookTableID.value = CleanNumeric(Session("TB_TBTableID"))
+						iTBResultCode = prmResult.Value
 
-					Dim prmTBTrainBookStatusColumnID = cmdTBCheck.CreateParameter("trainBookStatusColumnID", 3, 1) '3=integer, 1=input
-					cmdTBCheck.Parameters.Append(prmTBTrainBookStatusColumnID)
-					prmTBTrainBookStatusColumnID.value = CleanNumeric(Session("TB_TBStatusColumnID"))
+					Catch ex As Exception
+						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(ex.Message)
 
-					Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
-					cmdTBCheck.Parameters.Append(prmResult)
+					End Try
 
-					Dim prmErrorMsg = cmdTBCheck.CreateParameter("errorMessage", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-					cmdTBCheck.Parameters.Append(prmErrorMsg)
-
-					Err.Clear()
-					cmdTBCheck.Execute()
-					If (Err.Number <> 0) Then
-						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(Err.Description)
-					End If
-
-					If (Len(sErrorMsg) = 0) And Len(cmdTBCheck.Parameters("errorMessage").Value) > 0 Then
-						sErrorMsg = "Error validating training booking transfers." & vbCrLf & cmdTBCheck.Parameters("errorMessage").Value
-					End If
-
-					iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
-
-					cmdTBCheck = Nothing
 				End If
 
 				Session("TBResultCode") = iTBResultCode

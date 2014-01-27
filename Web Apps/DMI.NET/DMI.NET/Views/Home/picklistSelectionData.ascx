@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
 
@@ -125,182 +127,109 @@
 
 <form id="frmPicklistData" name="frmPicklistData">
 	<%
-		Dim sErrorDescription As String = ""
-		Dim sThousandColumns As String
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 		
-		Dim prmError As ADODB.Parameter
-		Dim prmTableID As ADODB.Parameter
-		Dim prmViewID As ADODB.Parameter
-		Dim prmOrderID As ADODB.Parameter
-		Dim cmdGetFindRecords As Command
-		Dim prmReqRecs As ADODB.Parameter
-		Dim prmIsFirstPage As ADODB.Parameter
-		Dim prmIsLastPage As ADODB.Parameter
-		Dim prmLocateValue As ADODB.Parameter
-		Dim prmColumnType As ADODB.Parameter
-		Dim prmAction As ADODB.Parameter
-		Dim prmTotalRecCount As ADODB.Parameter
-		Dim prmFirstRecPos As ADODB.Parameter
-		Dim prmCurrentRecCount As ADODB.Parameter
-		Dim prmExcludedIDs As ADODB.Parameter
-		Dim prmColumnSize As ADODB.Parameter
-		Dim prmColumnDecimals As ADODB.Parameter
-		Dim rstFindRecords As Recordset
+		Dim sErrorDescription As String = ""
+		Dim sThousandColumns As String		
 		Dim iCount As Integer
 		Dim sAddString As String
 		Dim sColDef As String
 		Dim sTemp As String
-		
-		
+			
 		Response.Write("<input type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
 		' Get the required record count if we have a query.
 		If Session("picklistSelectionDataLoading") = False Then
-			sThousandColumns = ""
 			
 			Try
 				sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")))
+
+				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+				Dim prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		
+				Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetLinkFindRecords" _
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+					, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))} _
+					, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))} _
+					, prmError _
+					, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 1000000} _
+					, prmIsFirstPage _
+					, prmIsLastPage _
+					, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")} _
+					, prmColumnType _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("pageAction")} _
+					, prmTotalRecCount _
+					, prmFirstRecPos _
+					, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))} _
+					, New SqlParameter("psExcludedIDs", SqlDbType.VarChar, -1) With {.Value = Session("selectedIDs1")} _
+					, prmColumnSize _
+					, prmColumnDecimals)
+
+				For Each objRow As DataRow In rstFindRecords.Rows
+
+					sAddString = ""
+					
+					For iloop = 0 To (rstFindRecords.Columns.Count - 1)
+						If iloop > 0 Then
+							sAddString = sAddString & "	"
+						End If
+							
+						If iCount = 0 Then
+							sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString()
+							Response.Write("<input type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+						End If
+							
+						If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
+							' Field is a date so format as such.
+							sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
+						ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
+							' Field is a numeric so format as such.
+							If Not IsDBNull(objRow(iloop)) Then
+								If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
+									sTemp = FormatNumber(objRow(iloop), , True, False, True)
+								Else
+									sTemp = FormatNumber(objRow(iloop), , True, False, False)
+								End If
+								sTemp = Replace(sTemp, ".", "x")
+								sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+								sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+								sAddString = sAddString & sTemp
+							End If
+						Else
+							If Not IsDBNull(objRow(iloop)) Then
+								sAddString = sAddString & Replace(objRow(iloop).ToString(), """", "&quot;")
+							End If
+						End If
+					Next
+
+					Response.Write("<input type='hidden' id=txtData_" & iCount & " name=txtData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+					
+					iCount += 1
+				Next
+	
+
+				Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & prmTotalRecCount.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & prmFirstRecPos.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & prmColumnSize.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
+			
+			
+				
 			Catch ex As Exception
 				sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 			End Try
 
-			cmdGetFindRecords = New Command
-			cmdGetFindRecords.CommandText = "sp_ASRIntGetLinkFindRecords"
-			cmdGetFindRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdGetFindRecords.ActiveConnection = Session("databaseConnection")
-			cmdGetFindRecords.CommandTimeout = 180
-			
-			prmTableID = cmdGetFindRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdGetFindRecords.Parameters.Append(prmTableID)
-			prmTableID.Value = CleanNumeric(Session("tableID"))
-			
-			prmViewID = cmdGetFindRecords.CreateParameter("viewID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdGetFindRecords.Parameters.Append(prmViewID)
-			prmViewID.Value = CleanNumeric(Session("viewID"))
-
-			prmOrderID = cmdGetFindRecords.CreateParameter("orderID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdGetFindRecords.Parameters.Append(prmOrderID)
-			prmOrderID.Value = CleanNumeric(Session("orderID"))
-
-			prmError = cmdGetFindRecords.CreateParameter("error", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmError)
-
-			prmReqRecs = cmdGetFindRecords.CreateParameter("reqRecs", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdGetFindRecords.Parameters.Append(prmReqRecs)
-			prmReqRecs.Value = 1000000 ' CleanNumeric(Session("FindRecords"))
-
-			prmIsFirstPage = cmdGetFindRecords.CreateParameter("isFirstPage", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmIsFirstPage)
-
-			prmIsLastPage = cmdGetFindRecords.CreateParameter("isLastPage", DataTypeEnum.adBoolean, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmIsLastPage)
-
-			prmLocateValue = cmdGetFindRecords.CreateParameter("locateValue", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
-			cmdGetFindRecords.Parameters.Append(prmLocateValue)
-			prmLocateValue.Value = Session("locateValue")
-
-			prmColumnType = cmdGetFindRecords.CreateParameter("columnType", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmColumnType)
-
-			prmAction = cmdGetFindRecords.CreateParameter("action", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 100)
-			cmdGetFindRecords.Parameters.Append(prmAction)
-			prmAction.Value = Session("pageAction")
-
-			prmTotalRecCount = cmdGetFindRecords.CreateParameter("totalRecCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmTotalRecCount)
-
-			prmFirstRecPos = cmdGetFindRecords.CreateParameter("firstRecPos", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInputOutput)
-			cmdGetFindRecords.Parameters.Append(prmFirstRecPos)
-			prmFirstRecPos.Value = CleanNumeric(Session("firstRecPos"))
-
-			prmCurrentRecCount = cmdGetFindRecords.CreateParameter("currentRecCount", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-			cmdGetFindRecords.Parameters.Append(prmCurrentRecCount)
-			prmCurrentRecCount.Value = CleanNumeric(Session("currentRecCount"))
-
-			prmExcludedIDs = cmdGetFindRecords.CreateParameter("excludedIDs", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 2147483646)
-			cmdGetFindRecords.Parameters.Append(prmExcludedIDs)
-			prmExcludedIDs.Value = Session("selectedIDs1")
-		
-			prmColumnSize = cmdGetFindRecords.CreateParameter("columnSize", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmColumnSize)
-
-			prmColumnDecimals = cmdGetFindRecords.CreateParameter("columnDecimals", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamOutput)
-			cmdGetFindRecords.Parameters.Append(prmColumnDecimals)
-
-			rstFindRecords = cmdGetFindRecords.Execute
-	
-			If (Err.Number <> 0) Then
-				sErrorDescription = "Error reading the find records." & vbCrLf & formatError(Err.Description)
-			End If
-
-			If Len(sErrorDescription) = 0 Then
-				If rstFindRecords.State = 1 Then
-					iCount = 0
-					Do While Not rstFindRecords.EOF
-						sAddString = ""
-					
-						For iloop = 0 To (rstFindRecords.Fields.Count - 1)
-							If iloop > 0 Then
-								sAddString = sAddString & "	"
-							End If
-							
-							If iCount = 0 Then
-								sColDef = Replace(rstFindRecords.Fields(iloop).Name, "_", " ") & "	" & rstFindRecords.Fields(iloop).Type
-								Response.Write("<input type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-							End If
-							
-							If rstFindRecords.Fields(iloop).Type = 135 Then
-								' Field is a date so format as such.
-								sAddString = sAddString & convertSQLDateToLocale(rstFindRecords.Fields(iloop).Value)
-							ElseIf rstFindRecords.Fields(iloop).Type = 131 Then
-								' Field is a numeric so format as such.
-								If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-										sTemp = ""
-										sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, True)
-									Else
-										sTemp = ""
-										sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, False)
-									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-									sAddString = sAddString & sTemp
-								End If
-							Else
-								If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-									sAddString = sAddString & Replace(rstFindRecords.Fields(iloop).Value, """", "&quot;")
-								End If
-							End If
-						Next
-
-						Response.Write("<input type='hidden' id=txtData_" & iCount & " name=txtData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-					
-						iCount = iCount + 1
-						rstFindRecords.MoveNext()
-					Loop
-	
-					' Release the ADO recordset object.
-					rstFindRecords.Close()
-				End If
-			End If
-			rstFindRecords = Nothing
-
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and set it to nothing before using the output parameters. 
-
-			Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & cmdGetFindRecords.Parameters("isFirstPage").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & cmdGetFindRecords.Parameters("isLastPage").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & cmdGetFindRecords.Parameters("columnType").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & cmdGetFindRecords.Parameters("totalRecCount").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & cmdGetFindRecords.Parameters("firstRecPos").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & cmdGetFindRecords.Parameters("columnSize").Value & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & cmdGetFindRecords.Parameters("columnDecimals").Value & ">" & vbCrLf)
-
-			cmdGetFindRecords = Nothing
-			
 		End If
 
 		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
