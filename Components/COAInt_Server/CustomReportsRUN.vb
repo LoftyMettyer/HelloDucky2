@@ -3057,24 +3057,6 @@ LoadRecords_ERROR:
 			End If
 		End If
 
-
-
-		''UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		'If Not IsDBNull(vData) Then
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbNewLine, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbCr, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbLf, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, vbTab, " ")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, Chr(10), "")
-		'	'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'	vData = Replace(vData, Chr(13), "")
-		'End If
-
 		Return vData
 
 	End Function
@@ -3291,28 +3273,8 @@ LoadRecords_ERROR:
 						' Average.
 						If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
 							strAggrValue = "0"
-							'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
-							'do not format the data, show it as it is.
-						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-							strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
-						ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
-							strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "#0")
-						ElseIf objReportItem.Decimals = 0 Then
-							strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 						Else
-							strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
-						End If
-
-						If objReportItem.Use1000Separator Then
-							If objReportItem.Decimals = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-								strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
-							ElseIf (objReportItem.Size > 0) And (objReportItem.Decimals = 0) Then
-								strAggrValue = Format(strAggrValue, "#,0")
-							ElseIf objReportItem.Decimals = 0 Then
-								strAggrValue = Format(strAggrValue, "#,0.#")
-							Else
-								strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
-							End If
+							strAggrValue = FormatNumber(rowData("avg_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
 						End If
 
 						aryAverageAddString.Add(strAggrValue)
@@ -3386,23 +3348,10 @@ LoadRecords_ERROR:
 							fHasTotal = True
 						End If
 
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(rowData("ttl_" & Trim(Str(iLoop)))) Then
+						If IsDBNull(rowData("ttl_" & iLoop.ToString)) Then
 							strAggrValue = "0"
-						ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-							strAggrValue = rowData("ttl_" & Trim(Str(iLoop)))
-						ElseIf objReportItem.Decimals = 0 Then
-							strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0")
 						Else
-							strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
-						End If
-
-						If objReportItem.Use1000Separator Then
-							If objReportItem.Decimals = 0 Then
-								strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
-							Else
-								strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
-							End If
+							strAggrValue = FormatNumber(rowData("ttl_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
 						End If
 
 						aryTotalAddString.Add(strAggrValue)
@@ -3647,28 +3596,8 @@ LoadRecords_ERROR:
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
 						strAggrValue = "0"
-						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
-						'do not format the data, show it as it is.
-					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-						strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
-					ElseIf objReportItem.Size > 0 And objReportItem.Decimals = 0 Then
-						strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "#0")
-					ElseIf objReportItem.Decimals = 0 Then
-						strAggrValue = rowData("avg_" & Trim(Str(iLoop)))
 					Else
-						strAggrValue = Format(rowData("avg_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
-					End If
-
-					If objReportItem.Use1000Separator Then
-						If objReportItem.Decimals = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-							strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
-						ElseIf (objReportItem.Size > 0) And (objReportItem.Decimals = 0) Then
-							strAggrValue = Format(strAggrValue, "#,0")
-						ElseIf objReportItem.Decimals = 0 Then
-							strAggrValue = Format(strAggrValue, "#,0.#")
-						Else
-							strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
-						End If
+						strAggrValue = FormatNumber(rowData("avg_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
 					End If
 
 					aryAverageAddString.Add(strAggrValue)
@@ -3701,24 +3630,10 @@ LoadRecords_ERROR:
 					End If
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(rowData("ttl_" & Trim(Str(iLoop)))) Then
+					If IsDBNull(rowData("ttl_" & iLoop.ToString())) Then
 						strAggrValue = "0"
-						'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
-						'do not format the data, show it as it is.
-					ElseIf objReportItem.Decimals = 0 And objReportItem.Size = 0 Then
-						strAggrValue = rowData("ttl_" & Trim(Str(iLoop)))
-					ElseIf objReportItem.Decimals = 0 Then
-						strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0")
 					Else
-						strAggrValue = Format(rowData("ttl_" & Trim(Str(iLoop))), "0." & New String("0", objReportItem.Decimals))
-					End If
-
-					If objReportItem.Use1000Separator Then
-						If (objReportItem.Decimals = 0) Then
-							strAggrValue = Format(strAggrValue, "#,0" & New String("0", objReportItem.Decimals))
-						Else
-							strAggrValue = Format(strAggrValue, "#,0." & New String("0", objReportItem.Decimals))
-						End If
+						strAggrValue = FormatNumber(rowData("ttl_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
 					End If
 
 					aryTotalAddString.Add(strAggrValue)

@@ -388,31 +388,26 @@ Namespace ExClientCode
 							Select Case colColumns.Item(lngGridCol).DataType
 
 								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-									' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-									.SetStyle(stlNumeric)
-									If lngGridRow = 0 Then
-										.PutValue(strArray(lngGridCol, lngGridRow))
-									Else
-										.PutValue(CLng(NullSafeInteger(strArray(lngGridCol, lngGridRow))))
-									End If
-								Case SQLDataType.sqlBoolean
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))
-								Case SQLDataType.sqlUnknown
-									'Leave it alone! (Required for percentages on Standard Reports)
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))
-								Case SQLDataType.sqlDate
-									.SetStyle(stlDate)
-									'MH20050104 Fault 9695 & 9696
-									'Adding ;@ to the end formats it as "short date" so excel will look at the
-									'regional settings when opening the workbook rather than force it to always
-									'be in the format of the user who created the workbook.
-									.PutValue(strArray(lngGridCol, lngGridRow))
-								Case Else
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))
-							End Select
+								.SetStyle(stlNumeric)
+								.PutValue(strArray(lngGridCol, lngGridRow))
+							Case SQLDataType.sqlBoolean
+								.SetStyle(stlGeneral)
+								.PutValue(strArray(lngGridCol, lngGridRow))
+							Case SQLDataType.sqlUnknown
+								'Leave it alone! (Required for percentages on Standard Reports)
+								.SetStyle(stlGeneral)
+								.PutValue(strArray(lngGridCol, lngGridRow))
+							Case SQLDataType.sqlDate
+								.SetStyle(stlDate)
+								'MH20050104 Fault 9695 & 9696
+								'Adding ;@ to the end formats it as "short date" so excel will look at the
+								'regional settings when opening the workbook rather than force it to always
+								'be in the format of the user who created the workbook.
+								.PutValue(strArray(lngGridCol, lngGridRow))
+							Case Else
+								.SetStyle(stlGeneral)
+								.PutValue(strArray(lngGridCol, lngGridRow))
+						End Select
 
 
 							'MH20031113 Fault 7602
