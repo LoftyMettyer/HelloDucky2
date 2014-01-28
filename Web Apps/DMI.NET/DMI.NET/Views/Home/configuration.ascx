@@ -6,88 +6,99 @@
 	Dim sTemp As String
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-
-	Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
-	Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
-	Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
-	Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
-	Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
-	Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
-	Session("FindRecords") = CLng(objDatabase.GetUserSetting("recordediting", "BlockSize", 1000))
+    If objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow) <> "" Then
+        Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
+    End If
+    If (objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow) <> "") Then
+        Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
+    End If
+    If (objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow) <> "") Then
+        Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
+    End If
+    If (objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow) <> "") Then
+        Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
+    End If
+    If (objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1) <> "") Then
+        Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
+    End If
+    If (objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1) <> "") Then
+        Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
+    End If
+    Session("FindRecords") = CLng(objDatabase.GetUserSetting("IntranetFindWindow", "BlockSize", 1000))
 	
-	' Get the DefSel 'only mine' settings.
-	For i = 0 To 20
-		sTemp = "onlymine "
+    ' Get the DefSel 'only mine' settings.
+    For i = 0 To 20
+        sTemp = "onlymine "
 
-		Select Case i
-			Case 0
-				sTemp = sTemp & "BatchJobs"
-			Case 1
-				sTemp = sTemp & "Calculations"
-			Case 2
-				sTemp = sTemp & "CrossTabs"
-			Case 3
-				sTemp = sTemp & "CustomReports"
-			Case 4
-				sTemp = sTemp & "DataTransfer"
-			Case 5
-				sTemp = sTemp & "Export"
-			Case 6
-				sTemp = sTemp & "Filters"
-			Case 7
-				sTemp = sTemp & "GlobalAdd"
-			Case 8
-				sTemp = sTemp & "GlobalUpdate"
-			Case 9
-				sTemp = sTemp & "GlobalDelete"
-			Case 10
-				sTemp = sTemp & "Import"
-			Case 11
-				sTemp = sTemp & "MailMerge"
-			Case 12
-				sTemp = sTemp & "Picklists"
-			Case 13
-				sTemp = sTemp & "CalendarReports"
-			Case 14
-				sTemp = sTemp & "Labels"
-			Case 15
-				sTemp = sTemp & "LabelDefinition"
-			Case 16
-				sTemp = sTemp & "MatchReports"
-			Case 17
-				sTemp = sTemp & "CareerProgression"
-			Case 18
-				sTemp = sTemp & "EmailGroups"
-			Case 19
-				sTemp = sTemp & "RecordProfile"
-			Case 20
-				sTemp = sTemp & "SuccessionPlanning"
-		End Select
+        Select Case i
+            Case 0
+                sTemp = sTemp & "BatchJobs"
+            Case 1
+                sTemp = sTemp & "Calculations"
+            Case 2
+                sTemp = sTemp & "CrossTabs"
+            Case 3
+                sTemp = sTemp & "CustomReports"
+            Case 4
+                sTemp = sTemp & "DataTransfer"
+            Case 5
+                sTemp = sTemp & "Export"
+            Case 6
+                sTemp = sTemp & "Filters"
+            Case 7
+                sTemp = sTemp & "GlobalAdd"
+            Case 8
+                sTemp = sTemp & "GlobalUpdate"
+            Case 9
+                sTemp = sTemp & "GlobalDelete"
+            Case 10
+                sTemp = sTemp & "Import"
+            Case 11
+                sTemp = sTemp & "MailMerge"
+            Case 12
+                sTemp = sTemp & "Picklists"
+            Case 13
+                sTemp = sTemp & "CalendarReports"
+            Case 14
+                sTemp = sTemp & "Labels"
+            Case 15
+                sTemp = sTemp & "LabelDefinition"
+            Case 16
+                sTemp = sTemp & "MatchReports"
+            Case 17
+                sTemp = sTemp & "CareerProgression"
+            Case 18
+                sTemp = sTemp & "EmailGroups"
+            Case 19
+                sTemp = sTemp & "RecordProfile"
+            Case 20
+                sTemp = sTemp & "SuccessionPlanning"
+        End Select
 
-		Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
+        Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
 
-	Next
+    Next
 
-		' Get the Utility Warning settings.
-		For i = 0 To 4
-				sTemp = "warning "
+    ' Get the Utility Warning settings.
+    For i = 0 To 4
+        sTemp = "warning "
 
-				Select Case i
-						Case 0
-								sTemp = sTemp & "DataTransfer"
-						Case 1
-								sTemp = sTemp & "GlobalAdd"
-						Case 2
-								sTemp = sTemp & "GlobalUpdate"
-						Case 3
-								sTemp = sTemp & "GlobalDelete"
-						Case 4
-								sTemp = sTemp & "Import"
-				End Select
+        Select Case i
+            Case 0
+                sTemp = sTemp & "DataTransfer"
+            Case 1
+                sTemp = sTemp & "GlobalAdd"
+            Case 2
+                sTemp = sTemp & "GlobalUpdate"
+            Case 3
+                sTemp = sTemp & "GlobalDelete"
+            Case 4
+                sTemp = sTemp & "Import"
+        End Select
 			
-		Session(sTemp) = CLng(objDatabase.GetUserSetting("warningmsg", sTemp, 1))
+        Session(sTemp) = CLng(objDatabase.GetUserSetting("warningmsg", sTemp, 1))
 		
-	Next
+    Next
 %>
 
 
@@ -227,6 +238,7 @@
 		}
 
 		function saveConfiguration() {
+		   
 				var chkControl;
 				var txtControl;
 				var sType;
@@ -242,7 +254,9 @@
 				frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options(frmConfiguration.cboQuickAccessDisplay.options.selectedIndex).value;
 				frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
 				frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
-
+				frmConfiguration.txtFindSize.value = frmConfiguration.txtFindSize.value;
+				
+				menu_refreshMenu();
 				var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
 				menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;
 				menuForm.txtHistoryStartMode.value = frmConfiguration.txtHistoryStartMode.value;
@@ -277,9 +291,10 @@
 				//if (frmConfiguration.chkWarn_GlobalUpdate.checked == true) frmConfiguration.txtWarn_GlobalUpdate.value = 1;
 				//if (frmConfiguration.chkWarn_Import.checked == true) frmConfiguration.txtWarn_Import.value = 1;
 
-				//frmConfiguration.submit();
+			    //frmConfiguration.submit();
+				debugger;
 				OpenHR.submitForm(frmConfiguration);
-
+                    
 		}
 
 		function validateFindBlockSize() {
@@ -358,8 +373,9 @@
 		}
 
 		function Configuration_okClick() {
-				frmConfiguration.txtReaction.value = "DEFAULT";
-				saveConfiguration();
+		    frmConfiguration.txtReaction.value = "CONFIGURATION";
+		   		    saveConfiguration();
+		    configuration_window_onload();
 		}
 
 		/* Return to the default page. */
@@ -1064,7 +1080,7 @@
 		<input type="hidden" id="Hidden4" name="txtQuickAccessStartMode" value='<%=session("QuickAccessStartMode")%>'>
 		<input type="hidden" id="Hidden5" name="txtExprColourMode" value='<%=session("ExprColourMode")%>'>
 		<input type="hidden" id="Hidden6" name="txtExprNodeMode" value='<%=session("ExprNodeMode")%>'>
-		<input type="hidden" id="Hidden7" name="txtFindSize" value='<%=session("FindRecords")%>'>
+		<input type="hidden" id="Hidden7" name="txtFindSize" value='<%=Session("FindRecords")%>'>
 		<input type="hidden" id="txtLastFindSize" name="txtLastFindSize" value='<%=session("FindRecords")%>'>
 
 		<input type="hidden" id="txtOnlyMineBatchJobs" name="txtOnlyMineBatchJobs" value='<%=session("onlyMine BatchJobs")%>'>
