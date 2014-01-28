@@ -6,25 +6,13 @@
 	Dim sTemp As String
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-    If objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow) <> "" Then
-        Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
-    End If
-    If (objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow) <> "") Then
-        Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
-    End If
-    If (objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow) <> "") Then
-        Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
-    End If
-    If (objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow) <> "") Then
-        Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
-    End If
-    If (objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1) <> "") Then
-        Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
-    End If
-    If (objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1) <> "") Then
-        Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
-    End If
-    Session("FindRecords") = CLng(objDatabase.GetUserSetting("IntranetFindWindow", "BlockSize", 1000))
+    Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
+    Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
+    Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
+    Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
+    Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
+    Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
+    Session("FindRecords") = CLng(objDatabase.GetUserSetting("recordediting", "BlockSize", 1000))
 	
     ' Get the DefSel 'only mine' settings.
     For i = 0 To 20
@@ -104,71 +92,72 @@
 
 <script type="text/javascript">
     function configuration_window_onload() {
-        
 
-				$("#workframe").attr("data-framesource", "CONFIGURATION");
 
-////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
+        $("#workframe").attr("data-framesource", "CONFIGURATION");
 
-				showDefaultRibbon();
+        ////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
-				var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+        showDefaultRibbon();
 
-                //// Get menu to refresh the menu.
-				menu_refreshMenu();
+        var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
-				// Load the original values into tab 1.
-				setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
-				setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
-				setComboValue("LOOKUP", frmOriginalConfiguration.txtLookupStartMode.value);
-				setComboValue("QUICKACCESS", frmOriginalConfiguration.txtQuickAccessStartMode.value);
-				setComboValue("EXPRCOLOURMODE", frmOriginalConfiguration.txtExprColourMode.value);
-				setComboValue("EXPRNODEMODE", frmOriginalConfiguration.txtExprNodeMode.value);
-				frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
+        //// Get menu to refresh the menu.
+        menu_refreshMenu();
 
-				// Load the original values into tab 2. 
-				//frmConfiguration.chkOwner_BatchJobs.checked = (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1);
-				frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
-				frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
-				frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
-				//frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
-				//frmConfiguration.chkOwner_Export.checked = (frmOriginalConfiguration.txtOnlyMineExport.value == 1);
-				frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
-				//frmConfiguration.chkOwner_GlobalAdd.checked = (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1);
-				//frmConfiguration.chkOwner_GlobalUpdate.checked = (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1);
-				//frmConfiguration.chkOwner_GlobalDelete.checked = (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1);
-				//frmConfiguration.chkOwner_Import.checked = (frmOriginalConfiguration.txtOnlyMineImport.value == 1);
-				frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
-				frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
-				frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
-				//frmConfiguration.chkOwner_CareerProgression.checked = (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1);
-				//frmConfiguration.chkOwner_EmailGroups.checked = (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1);
-				//frmConfiguration.chkOwner_Labels.checked = (frmOriginalConfiguration.txtOnlyMineLabels.value == 1);
-				//frmConfiguration.chkOwner_LabelDefinition.checked = (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1);
-				//frmConfiguration.chkOwner_MatchReports.checked = (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1);
-				//frmConfiguration.chkOwner_RecordProfile.checked = (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1);
-				//frmConfiguration.chkOwner_SuccessionPlanning.checked = (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1);
+        // Load the original values into tab 1.
+        setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
+        setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
+        setComboValue("LOOKUP", frmOriginalConfiguration.txtLookupStartMode.value);
+        setComboValue("QUICKACCESS", frmOriginalConfiguration.txtQuickAccessStartMode.value);
+        setComboValue("EXPRCOLOURMODE", frmOriginalConfiguration.txtExprColourMode.value);
+        setComboValue("EXPRNODEMODE", frmOriginalConfiguration.txtExprNodeMode.value);
+        frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
 
-				//frmConfiguration.chkWarn_DataTransfer.checked = (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1);
-				//frmConfiguration.chkWarn_GlobalAdd.checked = (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1);
-				//frmConfiguration.chkWarn_GlobalUpdate.checked = (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1);
-				//frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
-				//frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
+        // Load the original values into tab 2. 
+        //frmConfiguration.chkOwner_BatchJobs.checked = (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1);
+        frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
+        frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
+        frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
+        //frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
+        //frmConfiguration.chkOwner_Export.checked = (frmOriginalConfiguration.txtOnlyMineExport.value == 1);
+        frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
+        //frmConfiguration.chkOwner_GlobalAdd.checked = (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1);
+        //frmConfiguration.chkOwner_GlobalUpdate.checked = (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1);
+        //frmConfiguration.chkOwner_GlobalDelete.checked = (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1);
+        //frmConfiguration.chkOwner_Import.checked = (frmOriginalConfiguration.txtOnlyMineImport.value == 1);
+        frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
+        frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
+        frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
+        //frmConfiguration.chkOwner_CareerProgression.checked = (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1);
+        //frmConfiguration.chkOwner_EmailGroups.checked = (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1);
+        //frmConfiguration.chkOwner_Labels.checked = (frmOriginalConfiguration.txtOnlyMineLabels.value == 1);
+        //frmConfiguration.chkOwner_LabelDefinition.checked = (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1);
+        //frmConfiguration.chkOwner_MatchReports.checked = (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1);
+        //frmConfiguration.chkOwner_RecordProfile.checked = (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1);
+        //frmConfiguration.chkOwner_SuccessionPlanning.checked = (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1);
 
-				display_Configuration_Page(1);
-			
-				menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
-				menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
-			  // $('#mnutoolSaveAdminConfig').click('okClick()');
+        //frmConfiguration.chkWarn_DataTransfer.checked = (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1);
+        //frmConfiguration.chkWarn_GlobalAdd.checked = (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1);
+        //frmConfiguration.chkWarn_GlobalUpdate.checked = (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1);
+        //frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
+        //frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
-				$("#toolbarAdminConfig").parent().show();
-				$("#toolbarAdminConfig").click();
-				$('input[name^="txt"]').on("blur", function () { enableSaveButton(); });
-				$('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
-				$('input[name^="chk"]').on("change", function () { enableSaveButton(); });
-		
-				$("#optionframe").hide();
-				$("#workframe").show();
+        display_Configuration_Page(1);
+
+        menu_setVisibleMenuItem("mnutoolSaveAdminConfig", true);
+        menu_toolbarEnableItem('mnutoolSaveAdminConfig', (!definitionChanged() == false))
+        // $('#mnutoolSaveAdminConfig').click('okClick()');
+
+        $("#toolbarAdminConfig").parent().show();
+        $("#toolbarAdminConfig").click();
+        //$('input[name^="txt"]').on("blur", function () { enableSaveButton(); });
+        $('input[name^="txt"]').on("input", function () { enableSaveButton(); });
+        $('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
+        $('input[name^="chk"]').on("change", function () { enableSaveButton(); });
+
+        $("#optionframe").hide();
+        $("#workframe").show();
     }
 
     function enableSaveButton() {
@@ -179,363 +168,363 @@
 
 <script type="text/javascript">
 
-    
+
     function display_Configuration_Page(piPageNumber) {
 
-				if (piPageNumber == 1) {
-						div1.style.visibility = "visible";
-						div1.style.display = "block";
-						div2.style.visibility = "hidden";
-						div2.style.display = "none";
-						$('#btnDiv1OK').hide();
-						$('#btnDiv1Cancel').hide();
+        if (piPageNumber == 1) {
+            div1.style.visibility = "visible";
+            div1.style.display = "block";
+            div2.style.visibility = "hidden";
+            div2.style.display = "none";
+            $('#btnDiv1OK').hide();
+            $('#btnDiv1Cancel').hide();
 
 
-						frmConfiguration.cboPrimaryTableDisplay.focus();
-				}
+            frmConfiguration.cboPrimaryTableDisplay.focus();
+        }
 
-				if (piPageNumber == 2) {
-						div1.style.visibility = "hidden";
-						div1.style.display = "none";
-						div2.style.visibility = "visible";
-						div2.style.display = "block";
-						$('#btnDiv2OK').hide();
-						$('#btnDiv2Cancel').hide();
-				}
-		}
+        if (piPageNumber == 2) {
+            div1.style.visibility = "hidden";
+            div1.style.display = "none";
+            div2.style.visibility = "visible";
+            div2.style.display = "block";
+            $('#btnDiv2OK').hide();
+            $('#btnDiv2Cancel').hide();
+        }
+    }
 
-		function setComboValue(psCombo, piValue) {
-				var i;
-				var cboCombo;
+    function setComboValue(psCombo, piValue) {
+        var i;
+        var cboCombo;
 
-				if (psCombo == "PARENT") {
-						cboCombo = frmConfiguration.cboPrimaryTableDisplay;
-				}
-				if (psCombo == "HISTORY") {
-						cboCombo = frmConfiguration.cboHistoryTableDisplay;
-				}
-				if (psCombo == "LOOKUP") {
-						cboCombo = frmConfiguration.cboLookupTableDisplay;
-				}
-				if (psCombo == "QUICKACCESS") {
-						cboCombo = frmConfiguration.cboQuickAccessDisplay;
-				}
-				if (psCombo == "EXPRCOLOURMODE") {
-						cboCombo = frmConfiguration.cboViewInColour;
-				}
-				if (psCombo == "EXPRNODEMODE") {
-						cboCombo = frmConfiguration.cboExpandNodes;
-				}
+        if (psCombo == "PARENT") {
+            cboCombo = frmConfiguration.cboPrimaryTableDisplay;
+        }
+        if (psCombo == "HISTORY") {
+            cboCombo = frmConfiguration.cboHistoryTableDisplay;
+        }
+        if (psCombo == "LOOKUP") {
+            cboCombo = frmConfiguration.cboLookupTableDisplay;
+        }
+        if (psCombo == "QUICKACCESS") {
+            cboCombo = frmConfiguration.cboQuickAccessDisplay;
+        }
+        if (psCombo == "EXPRCOLOURMODE") {
+            cboCombo = frmConfiguration.cboViewInColour;
+        }
+        if (psCombo == "EXPRNODEMODE") {
+            cboCombo = frmConfiguration.cboExpandNodes;
+        }
 
-				for (i = 0; i < cboCombo.options.length; i++) {
-						if (cboCombo.options[i].value == piValue) {
-								cboCombo.selectedIndex = i;
-								return;
-						}
-				}
+        for (i = 0; i < cboCombo.options.length; i++) {
+            if (cboCombo.options[i].value == piValue) {
+                cboCombo.selectedIndex = i;
+                return;
+            }
+        }
 
-				cboCombo.selectedIndex = 0;
-		}
+        cboCombo.selectedIndex = 0;
+    }
 
-		function saveConfiguration() {
-		   
-				var chkControl;
-				var txtControl;
-				var sType;
-				var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
-				// Validate the find window block size.
-				if (validateFindBlockSize == false) {
-						return (false);
-				}
+    function saveConfiguration() {
 
-				frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options(frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex).value;
-				frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options(frmConfiguration.cboHistoryTableDisplay.options.selectedIndex).value;
-				frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options(frmConfiguration.cboLookupTableDisplay.options.selectedIndex).value;
-				frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options(frmConfiguration.cboQuickAccessDisplay.options.selectedIndex).value;
-				frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
-				frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
-				frmConfiguration.txtFindSize.value = frmConfiguration.txtFindSize.value;
-				
-				menu_refreshMenu();
-				var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
-				menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;
-				menuForm.txtHistoryStartMode.value = frmConfiguration.txtHistoryStartMode.value;
-				menuForm.txtLookupStartMode.value = frmConfiguration.txtLookupStartMode.value;
-				menuForm.txtQuickAccessStartMode.value = frmConfiguration.txtQuickAccessStartMode.value;
+        var chkControl;
+        var txtControl;
+        var sType;
+        var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
+        // Validate the find window block size.
+        if (validateFindBlockSize == false) {
+            return (false);
+        }
 
-				//if (frmConfiguration.chkOwner_BatchJobs.checked == true) frmConfiguration.txtOwner_BatchJobs.value = 1;
-				if (frmConfiguration.chkOwner_Calculations.checked == true) frmConfiguration.txtOwner_Calculations.value = 1;
-				if (frmConfiguration.chkOwner_CrossTabs.checked == true) frmConfiguration.txtOwner_CrossTabs.value = 1;
-				if (frmConfiguration.chkOwner_CustomReports.checked == true) frmConfiguration.txtOwner_CustomReports.value = 1;
-				//if (frmConfiguration.chkOwner_DataTransfer.checked == true) frmConfiguration.txtOwner_DataTransfer.value = 1;
-				//if (frmConfiguration.chkOwner_Export.checked == true) frmConfiguration.txtOwner_Export.value = 1;
-				if (frmConfiguration.chkOwner_Filters.checked == true) frmConfiguration.txtOwner_Filters.value = 1;
-				//if (frmConfiguration.chkOwner_GlobalAdd.checked == true) frmConfiguration.txtOwner_GlobalAdd.value = 1;
-				//if (frmConfiguration.chkOwner_GlobalDelete.checked == true) frmConfiguration.txtOwner_GlobalDelete.value = 1;
-				//if (frmConfiguration.chkOwner_GlobalUpdate.checked == true) frmConfiguration.txtOwner_GlobalUpdate.value = 1;
-				//if (frmConfiguration.chkOwner_Import.checked == true) frmConfiguration.txtOwner_Import.value = 1;
-				if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
-				if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
-				if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
-				//if (frmConfiguration.chkOwner_CareerProgression.checked == true) frmConfiguration.txtOwner_CareerProgression.value = 1;
-				//if (frmConfiguration.chkOwner_EmailGroups.checked == true) frmConfiguration.txtOwner_EmailGroups.value = 1;
-				//if (frmConfiguration.chkOwner_Labels.checked == true) frmConfiguration.txtOwner_Labels.value = 1;
-				//if (frmConfiguration.chkOwner_LabelDefinition.checked == true) frmConfiguration.txtOwner_LabelDefinition.value = 1;
-				//if (frmConfiguration.chkOwner_MatchReports.checked == true) frmConfiguration.txtOwner_MatchReports.value = 1;
-				//if (frmConfiguration.chkOwner_RecordProfile.checked == true) frmConfiguration.txtOwner_RecordProfile.value = 1;
-				//if (frmConfiguration.chkOwner_SuccessionPlanning.checked == true) frmConfiguration.txtOwner_SuccessionPlanning.value = 1;
+        frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options(frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex).value;
+        frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options(frmConfiguration.cboHistoryTableDisplay.options.selectedIndex).value;
+        frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options(frmConfiguration.cboLookupTableDisplay.options.selectedIndex).value;
+        frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options(frmConfiguration.cboQuickAccessDisplay.options.selectedIndex).value;
+        frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
+        frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
+        frmConfiguration.txtFindSize.value = frmConfiguration.txtFindSize.value;
 
-				//if (frmConfiguration.chkWarn_DataTransfer.checked == true) frmConfiguration.txtWarn_DataTransfer.value = 1;
-				//if (frmConfiguration.chkWarn_GlobalAdd.checked == true) frmConfiguration.txtWarn_GlobalAdd.value = 1;
-				//if (frmConfiguration.chkWarn_GlobalDelete.checked == true) frmConfiguration.txtWarn_GlobalDelete.value = 1;
-				//if (frmConfiguration.chkWarn_GlobalUpdate.checked == true) frmConfiguration.txtWarn_GlobalUpdate.value = 1;
-				//if (frmConfiguration.chkWarn_Import.checked == true) frmConfiguration.txtWarn_Import.value = 1;
+        menu_refreshMenu();
+        var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
+        menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;
+        menuForm.txtHistoryStartMode.value = frmConfiguration.txtHistoryStartMode.value;
+        menuForm.txtLookupStartMode.value = frmConfiguration.txtLookupStartMode.value;
+        menuForm.txtQuickAccessStartMode.value = frmConfiguration.txtQuickAccessStartMode.value;
 
-			    //frmConfiguration.submit();
-				debugger;
-				OpenHR.submitForm(frmConfiguration);
-                    
-		}
+        //if (frmConfiguration.chkOwner_BatchJobs.checked == true) frmConfiguration.txtOwner_BatchJobs.value = 1;
+        if (frmConfiguration.chkOwner_Calculations.checked == true) frmConfiguration.txtOwner_Calculations.value = 1;
+        if (frmConfiguration.chkOwner_CrossTabs.checked == true) frmConfiguration.txtOwner_CrossTabs.value = 1;
+        if (frmConfiguration.chkOwner_CustomReports.checked == true) frmConfiguration.txtOwner_CustomReports.value = 1;
+        //if (frmConfiguration.chkOwner_DataTransfer.checked == true) frmConfiguration.txtOwner_DataTransfer.value = 1;
+        //if (frmConfiguration.chkOwner_Export.checked == true) frmConfiguration.txtOwner_Export.value = 1;
+        if (frmConfiguration.chkOwner_Filters.checked == true) frmConfiguration.txtOwner_Filters.value = 1;
+        //if (frmConfiguration.chkOwner_GlobalAdd.checked == true) frmConfiguration.txtOwner_GlobalAdd.value = 1;
+        //if (frmConfiguration.chkOwner_GlobalDelete.checked == true) frmConfiguration.txtOwner_GlobalDelete.value = 1;
+        //if (frmConfiguration.chkOwner_GlobalUpdate.checked == true) frmConfiguration.txtOwner_GlobalUpdate.value = 1;
+        //if (frmConfiguration.chkOwner_Import.checked == true) frmConfiguration.txtOwner_Import.value = 1;
+        if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
+        if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
+        if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
+        //if (frmConfiguration.chkOwner_CareerProgression.checked == true) frmConfiguration.txtOwner_CareerProgression.value = 1;
+        //if (frmConfiguration.chkOwner_EmailGroups.checked == true) frmConfiguration.txtOwner_EmailGroups.value = 1;
+        //if (frmConfiguration.chkOwner_Labels.checked == true) frmConfiguration.txtOwner_Labels.value = 1;
+        //if (frmConfiguration.chkOwner_LabelDefinition.checked == true) frmConfiguration.txtOwner_LabelDefinition.value = 1;
+        //if (frmConfiguration.chkOwner_MatchReports.checked == true) frmConfiguration.txtOwner_MatchReports.value = 1;
+        //if (frmConfiguration.chkOwner_RecordProfile.checked == true) frmConfiguration.txtOwner_RecordProfile.value = 1;
+        //if (frmConfiguration.chkOwner_SuccessionPlanning.checked == true) frmConfiguration.txtOwner_SuccessionPlanning.value = 1;
 
-		function validateFindBlockSize() {
-				var sConvertedFindSize;
-				var sDecimalSeparator;
-				var sThousandSeparator;
-				var sPoint;
-				var iValue;
+        //if (frmConfiguration.chkWarn_DataTransfer.checked == true) frmConfiguration.txtWarn_DataTransfer.value = 1;
+        //if (frmConfiguration.chkWarn_GlobalAdd.checked == true) frmConfiguration.txtWarn_GlobalAdd.value = 1;
+        //if (frmConfiguration.chkWarn_GlobalDelete.checked == true) frmConfiguration.txtWarn_GlobalDelete.value = 1;
+        //if (frmConfiguration.chkWarn_GlobalUpdate.checked == true) frmConfiguration.txtWarn_GlobalUpdate.value = 1;
+        //if (frmConfiguration.chkWarn_Import.checked == true) frmConfiguration.txtWarn_Import.value = 1;
 
-				sDecimalSeparator = "\\";
-				sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
-				var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
+        //frmConfiguration.submit();
+        
+        OpenHR.submitForm(frmConfiguration);
 
-				sThousandSeparator = "\\";
-				sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
-				var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+    }
 
-				sPoint = "\\.";
-				var rePoint = new RegExp(sPoint, "gi");
+    function validateFindBlockSize() {
+        var sConvertedFindSize;
+        var sDecimalSeparator;
+        var sThousandSeparator;
+        var sPoint;
+        var iValue;
 
-				if (frmConfiguration.txtFindSize.value == '') {
-						frmConfiguration.txtFindSize.value = 0;
-				}
+        sDecimalSeparator = "\\";
+        sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
+        var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
-				// Convert the find size value from locale to UK settings for use with the isNaN funtion.
-				sConvertedFindSize = new String(frmConfiguration.txtFindSize.value);
-				// Remove any thousand separators.
-				sConvertedFindSize = sConvertedFindSize.replace(reThousandSeparator, "");
-				frmConfiguration.txtFindSize.value = sConvertedFindSize;
+        sThousandSeparator = "\\";
+        sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
+        var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
-				// Convert any decimal separators to '.'.
-				if (OpenHR.LocaleDecimalSeparator() != ".") {
-						// Remove decimal points.
-						sConvertedFindSize = sConvertedFindSize.replace(rePoint, "A");
-						// replace the locale decimal marker with the decimal point.
-						sConvertedFindSize = sConvertedFindSize.replace(reDecimalSeparator, ".");
-				}
+        sPoint = "\\.";
+        var rePoint = new RegExp(sPoint, "gi");
 
-				if (isNaN(sConvertedFindSize) == true) {
-						OpenHR.messageBox("Find window block size must be numeric.");
-						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Configuration_Page(1);
-						frmConfiguration.txtFindSize.focus();
-						return false;
-				}
+        if (frmConfiguration.txtFindSize.value == '') {
+            frmConfiguration.txtFindSize.value = 0;
+        }
 
-				if (frmConfiguration.txtFindSize.value <= 0) {
-						OpenHR.messageBox("Find window block size must be greater than 0.");
-						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Configuration_Page(1);
-						frmConfiguration.txtFindSize.focus();
-						return false;
-				}
+        // Convert the find size value from locale to UK settings for use with the isNaN funtion.
+        sConvertedFindSize = new String(frmConfiguration.txtFindSize.value);
+        // Remove any thousand separators.
+        sConvertedFindSize = sConvertedFindSize.replace(reThousandSeparator, "");
+        frmConfiguration.txtFindSize.value = sConvertedFindSize;
 
-				// Find size must be integer.		
-				if (sConvertedFindSize.indexOf(".") >= 0) {
-						OpenHR.messageBox("Find window block size must be an integer value.");
-						frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
-						display_Configuration_Page(1);
-						frmConfiguration.txtFindSize.focus();
-						return false;
-				}
+        // Convert any decimal separators to '.'.
+        if (OpenHR.LocaleDecimalSeparator() != ".") {
+            // Remove decimal points.
+            sConvertedFindSize = sConvertedFindSize.replace(rePoint, "A");
+            // replace the locale decimal marker with the decimal point.
+            sConvertedFindSize = sConvertedFindSize.replace(reDecimalSeparator, ".");
+        }
 
-				iValue = new Number(frmConfiguration.txtFindSize.value);
-				if (iValue > 100000) {
-						OpenHR.messageBox("Find window block size cannot be greater than 100000.");
-						frmConfiguration.txtFindSize.value = "100000";
-						display_Configuration_Page(1);
-						frmConfiguration.txtFindSize.focus();
-						return false;
-				}
+        if (isNaN(sConvertedFindSize) == true) {
+            OpenHR.messageBox("Find window block size must be numeric.");
+            frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
+            display_Configuration_Page(1);
+            frmConfiguration.txtFindSize.focus();
+            return false;
+        }
 
-				frmOriginalConfiguration.txtLastFindSize.value = frmConfiguration.txtFindSize.value;
+        if (frmConfiguration.txtFindSize.value <= 0) {
+            OpenHR.messageBox("Find window block size must be greater than 0.");
+            frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
+            display_Configuration_Page(1);
+            frmConfiguration.txtFindSize.focus();
+            return false;
+        }
 
-				return true;
-		}
+        // Find size must be integer.		
+        if (sConvertedFindSize.indexOf(".") >= 0) {
+            OpenHR.messageBox("Find window block size must be an integer value.");
+            frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
+            display_Configuration_Page(1);
+            frmConfiguration.txtFindSize.focus();
+            return false;
+        }
 
-		function Configuration_okClick() {
-		    frmConfiguration.txtReaction.value = "CONFIGURATION";
-		   		    saveConfiguration();
-		    configuration_window_onload();
-		}
+        iValue = new Number(frmConfiguration.txtFindSize.value);
+        if (iValue > 100000) {
+            OpenHR.messageBox("Find window block size cannot be greater than 100000.");
+            frmConfiguration.txtFindSize.value = "100000";
+            display_Configuration_Page(1);
+            frmConfiguration.txtFindSize.focus();
+            return false;
+        }
 
-		/* Return to the default page. */
-		function cancelClick() {
-			/* ------------------------------------ Not used anymore ---------------------------------------------------
-				if (definitionChanged() == false) {
-						window.location.href = "main";
-						return;
-				}
+        frmOriginalConfiguration.txtLastFindSize.value = frmConfiguration.txtFindSize.value;
 
-				answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 36);
-				if (answer == 7) {
-						// No
-						window.location.href = "main";
-						return (false);
-				}
-				if (answer == 6) {
-						// Yes
-						frmConfiguration.txtReaction.value = "DEFAULT";
-						saveConfiguration();
-				}
-				-----------------------------------------------------------------------------------------------------------*/
-		}
+        return true;
+    }
 
-		function saveChanges(psAction, pfPrompt, pfTBOverride) {
-			
-				if (definitionChanged() == false) {
-						return 6; //No to saving the changes, as none have been made.
-				}
+    function Configuration_okClick() {
+        frmConfiguration.txtReaction.value = "CONFIGURATION";
+        saveConfiguration();
+        configuration_window_onload();
+    }
 
-				answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3);
-				if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-						return 2;
-				}
-				else if (answer == 6) { // 'OK' -> discard changes and continue navigation
-						// Yes
-						//frmConfiguration.txtReaction.value = psAction;
-						//saveConfiguration();
-					return 6;
-				}
-				else
-					return 2; //Cancel.
-		}
+    /* Return to the default page. */
+    function cancelClick() {
+        /* ------------------------------------ Not used anymore ---------------------------------------------------
+            if (definitionChanged() == false) {
+                    window.location.href = "main";
+                    return;
+            }
 
-		function definitionChanged() {
-				// Compare the tab 1 controls with the original values.
-				if (frmConfiguration.cboPrimaryTableDisplay.options[frmConfiguration.cboPrimaryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtPrimaryStartMode.value) {
-						return true;
-				}
+            answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 36);
+            if (answer == 7) {
+                    // No
+                    window.location.href = "main";
+                    return (false);
+            }
+            if (answer == 6) {
+                    // Yes
+                    frmConfiguration.txtReaction.value = "DEFAULT";
+                    saveConfiguration();
+            }
+            -----------------------------------------------------------------------------------------------------------*/
+    }
 
-				if (frmConfiguration.cboHistoryTableDisplay.options[frmConfiguration.cboHistoryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtHistoryStartMode.value) {
-						return true;
-				}
+    function saveChanges(psAction, pfPrompt, pfTBOverride) {
 
-				if (frmConfiguration.cboLookupTableDisplay.options[frmConfiguration.cboLookupTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtLookupStartMode.value) {
-						return true;
-				}
-				if (frmConfiguration.cboQuickAccessDisplay.options[frmConfiguration.cboQuickAccessDisplay.selectedIndex].value != frmOriginalConfiguration.txtQuickAccessStartMode.value) {
-						return true;
-				}
-				if (frmConfiguration.cboViewInColour.options[frmConfiguration.cboViewInColour.selectedIndex].value != frmOriginalConfiguration.txtExprColourMode.value) {
-						return true;
-				}
-				if (frmConfiguration.cboExpandNodes.options[frmConfiguration.cboExpandNodes.selectedIndex].value != frmOriginalConfiguration.txtExprNodeMode.value) {
-						return true;
-				}
+        if (definitionChanged() == false) {
+            return 6; //No to saving the changes, as none have been made.
+        }
 
-				if (frmConfiguration.txtFindSize.value != frmOriginalConfiguration.txtFindSize.value) {
-						return true;
-				}
+        answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3);
+        if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+            return 2;
+        }
+        else if (answer == 6) { // 'OK' -> discard changes and continue navigation
+            // Yes
+            //frmConfiguration.txtReaction.value = psAction;
+            //saveConfiguration();
+            return 6;
+        }
+        else
+            return 2; //Cancel.
+    }
 
-				// Compare the tab 2 controls with the original values.
-				/*if ((frmConfiguration.chkOwner_BatchJobs.checked != (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1)) ||
-						(frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
-						(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
-						(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
-						(frmConfiguration.chkOwner_DataTransfer.checked != (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1)) ||
-						(frmConfiguration.chkOwner_Export.checked != (frmOriginalConfiguration.txtOnlyMineExport.value == 1)) ||
-						(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
-						(frmConfiguration.chkOwner_GlobalAdd.checked != (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1)) ||
-						(frmConfiguration.chkOwner_GlobalUpdate.checked != (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1)) ||
-						(frmConfiguration.chkOwner_GlobalDelete.checked != (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1)) ||
-						(frmConfiguration.chkOwner_Import.checked != (frmOriginalConfiguration.txtOnlyMineImport.value == 1)) ||
-						(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
-						(frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
-						(frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1)) ||
-						(frmConfiguration.chkOwner_CareerProgression.checked != (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1)) ||
-						(frmConfiguration.chkOwner_EmailGroups.checked != (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1)) ||
-						(frmConfiguration.chkOwner_Labels.checked != (frmOriginalConfiguration.txtOnlyMineLabels.value == 1)) ||
-						(frmConfiguration.chkOwner_LabelDefinition.checked != (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1)) ||
-						(frmConfiguration.chkOwner_MatchReports.checked != (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1)) ||
-						(frmConfiguration.chkOwner_RecordProfile.checked != (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1)) ||
-						(frmConfiguration.chkOwner_SuccessionPlanning.checked != (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1))) 
-						{*/
-				if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
-						(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
-						(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
-						(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
-						(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
-						(frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
-						(frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
-						return true;
-				}
+    function definitionChanged() {
+        // Compare the tab 1 controls with the original values.
+        if (frmConfiguration.cboPrimaryTableDisplay.options[frmConfiguration.cboPrimaryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtPrimaryStartMode.value) {
+            return true;
+        }
 
-				/*if ((frmConfiguration.chkWarn_DataTransfer.checked != (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1)) ||
-						(frmConfiguration.chkWarn_GlobalAdd.checked != (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1)) ||
-						(frmConfiguration.chkWarn_GlobalDelete.checked != (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1)) ||
-						(frmConfiguration.chkWarn_GlobalUpdate.checked != (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1)) ||
-						(frmConfiguration.chkWarn_Import.checked != (frmOriginalConfiguration.txtUtilWarnImport.value == 1))) {
-						return true;
-				}*/
+        if (frmConfiguration.cboHistoryTableDisplay.options[frmConfiguration.cboHistoryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtHistoryStartMode.value) {
+            return true;
+        }
 
-				// If you reach here then nothing has changed.
-				return false;
-		}
+        if (frmConfiguration.cboLookupTableDisplay.options[frmConfiguration.cboLookupTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtLookupStartMode.value) {
+            return true;
+        }
+        if (frmConfiguration.cboQuickAccessDisplay.options[frmConfiguration.cboQuickAccessDisplay.selectedIndex].value != frmOriginalConfiguration.txtQuickAccessStartMode.value) {
+            return true;
+        }
+        if (frmConfiguration.cboViewInColour.options[frmConfiguration.cboViewInColour.selectedIndex].value != frmOriginalConfiguration.txtExprColourMode.value) {
+            return true;
+        }
+        if (frmConfiguration.cboExpandNodes.options[frmConfiguration.cboExpandNodes.selectedIndex].value != frmOriginalConfiguration.txtExprNodeMode.value) {
+            return true;
+        }
 
-		function restoreDefaults() {
-				var answer;
+        if (frmConfiguration.txtFindSize.value != frmOriginalConfiguration.txtFindSize.value) {
+            return true;
+        }
 
-				answer = OpenHR.messageBox("Are you sure you want to restore all default settings?", 36);
-				if (answer == 6) {
-						setComboValue("PARENT", 3);
-						setComboValue("HISTORY", 3);
-						setComboValue("LOOKUP", 3);
-						setComboValue("QUICKACCESS", 1);
+        // Compare the tab 2 controls with the original values.
+        /*if ((frmConfiguration.chkOwner_BatchJobs.checked != (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1)) ||
+                (frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
+                (frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
+                (frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
+                (frmConfiguration.chkOwner_DataTransfer.checked != (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1)) ||
+                (frmConfiguration.chkOwner_Export.checked != (frmOriginalConfiguration.txtOnlyMineExport.value == 1)) ||
+                (frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
+                (frmConfiguration.chkOwner_GlobalAdd.checked != (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1)) ||
+                (frmConfiguration.chkOwner_GlobalUpdate.checked != (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1)) ||
+                (frmConfiguration.chkOwner_GlobalDelete.checked != (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1)) ||
+                (frmConfiguration.chkOwner_Import.checked != (frmOriginalConfiguration.txtOnlyMineImport.value == 1)) ||
+                (frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
+                (frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
+                (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1)) ||
+                (frmConfiguration.chkOwner_CareerProgression.checked != (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1)) ||
+                (frmConfiguration.chkOwner_EmailGroups.checked != (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1)) ||
+                (frmConfiguration.chkOwner_Labels.checked != (frmOriginalConfiguration.txtOnlyMineLabels.value == 1)) ||
+                (frmConfiguration.chkOwner_LabelDefinition.checked != (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1)) ||
+                (frmConfiguration.chkOwner_MatchReports.checked != (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1)) ||
+                (frmConfiguration.chkOwner_RecordProfile.checked != (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1)) ||
+                (frmConfiguration.chkOwner_SuccessionPlanning.checked != (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1))) 
+                {*/
+        if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
+                (frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
+                (frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
+                (frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
+                (frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
+                (frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
+                (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
+            return true;
+        }
 
-						setComboValue("EXPRCOLOURMODE", 1);
-						setComboValue("EXPRNODEMODE", 1);
+        /*if ((frmConfiguration.chkWarn_DataTransfer.checked != (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1)) ||
+                (frmConfiguration.chkWarn_GlobalAdd.checked != (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1)) ||
+                (frmConfiguration.chkWarn_GlobalDelete.checked != (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1)) ||
+                (frmConfiguration.chkWarn_GlobalUpdate.checked != (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1)) ||
+                (frmConfiguration.chkWarn_Import.checked != (frmOriginalConfiguration.txtUtilWarnImport.value == 1))) {
+                return true;
+        }*/
 
-						frmConfiguration.txtFindSize.value = 1000;
+        // If you reach here then nothing has changed.
+        return false;
+    }
 
-						//frmConfiguration.chkOwner_BatchJobs.checked = false;
-						frmConfiguration.chkOwner_Calculations.checked = false;
-						frmConfiguration.chkOwner_CrossTabs.checked = false;
-						frmConfiguration.chkOwner_CustomReports.checked = false;
-						//frmConfiguration.chkOwner_DataTransfer.checked = false;
-						//frmConfiguration.chkOwner_Export.checked = false;
-						frmConfiguration.chkOwner_Filters.checked = false;
-						//frmConfiguration.chkOwner_GlobalAdd.checked = false;
-						//frmConfiguration.chkOwner_GlobalDelete.checked = false;
-						//frmConfiguration.chkOwner_GlobalUpdate.checked = false;
-						//frmConfiguration.chkOwner_Import.checked = false;
-						frmConfiguration.chkOwner_MailMerge.checked = false;
-						frmConfiguration.chkOwner_Picklists.checked = false;
-						frmConfiguration.chkOwner_CalendarReports.checked = false;
-						//frmConfiguration.chkOwner_CareerProgression.checked = false;
-						//frmConfiguration.chkOwner_EmailGroups.checked = false;
-						//frmConfiguration.chkOwner_Labels.checked = false;
-						//frmConfiguration.chkOwner_LabelDefinition.checked = false;
-						//frmConfiguration.chkOwner_MatchReports.checked = false;
-						//frmConfiguration.chkOwner_RecordProfile.checked = false;
-						//frmConfiguration.chkOwner_SuccessionPlanning.checked = false;
+    function restoreDefaults() {
+        var answer;
 
-						//frmConfiguration.chkWarn_DataTransfer.checked = true;
-						//frmConfiguration.chkWarn_GlobalAdd.checked = true;
-						//frmConfiguration.chkWarn_GlobalDelete.checked = true;
-						//frmConfiguration.chkWarn_GlobalUpdate.checked = true;
-						//frmConfiguration.chkWarn_Import.checked = true;
-				}
-		}
+        answer = OpenHR.messageBox("Are you sure you want to restore all default settings?", 36);
+        if (answer == 6) {
+            setComboValue("PARENT", 3);
+            setComboValue("HISTORY", 3);
+            setComboValue("LOOKUP", 3);
+            setComboValue("QUICKACCESS", 1);
+
+            setComboValue("EXPRCOLOURMODE", 1);
+            setComboValue("EXPRNODEMODE", 1);
+
+            frmConfiguration.txtFindSize.value = 1000;
+
+            //frmConfiguration.chkOwner_BatchJobs.checked = false;
+            frmConfiguration.chkOwner_Calculations.checked = false;
+            frmConfiguration.chkOwner_CrossTabs.checked = false;
+            frmConfiguration.chkOwner_CustomReports.checked = false;
+            //frmConfiguration.chkOwner_DataTransfer.checked = false;
+            //frmConfiguration.chkOwner_Export.checked = false;
+            frmConfiguration.chkOwner_Filters.checked = false;
+            //frmConfiguration.chkOwner_GlobalAdd.checked = false;
+            //frmConfiguration.chkOwner_GlobalDelete.checked = false;
+            //frmConfiguration.chkOwner_GlobalUpdate.checked = false;
+            //frmConfiguration.chkOwner_Import.checked = false;
+            frmConfiguration.chkOwner_MailMerge.checked = false;
+            frmConfiguration.chkOwner_Picklists.checked = false;
+            frmConfiguration.chkOwner_CalendarReports.checked = false;
+            //frmConfiguration.chkOwner_CareerProgression.checked = false;
+            //frmConfiguration.chkOwner_EmailGroups.checked = false;
+            //frmConfiguration.chkOwner_Labels.checked = false;
+            //frmConfiguration.chkOwner_LabelDefinition.checked = false;
+            //frmConfiguration.chkOwner_MatchReports.checked = false;
+            //frmConfiguration.chkOwner_RecordProfile.checked = false;
+            //frmConfiguration.chkOwner_SuccessionPlanning.checked = false;
+
+            //frmConfiguration.chkWarn_DataTransfer.checked = true;
+            //frmConfiguration.chkWarn_GlobalAdd.checked = true;
+            //frmConfiguration.chkWarn_GlobalDelete.checked = true;
+            //frmConfiguration.chkWarn_GlobalUpdate.checked = true;
+            //frmConfiguration.chkWarn_Import.checked = true;
+        }
+    }
 
 </script>
 
@@ -1117,5 +1106,5 @@
 </form>
 
 <script type="text/javascript">
-		configuration_window_onload();
+    configuration_window_onload();
 </script>
