@@ -1085,8 +1085,8 @@
 			|| (fViewing == true)));
 
 		button_disable(frmDefinition.cmdAddChild, ((iCurrentChildCount < 1) || (fViewing == true)));
-		button_disable(frmDefinition.cmdEditChild, ((frmDefinition.ssOleDBGridChildren.Rows < 1) || (frmDefinition.ssOleDBGridChildren.SelBookmarks.Count != 1) || (fViewing == true)));
-		button_disable(frmDefinition.cmdRemoveChild, ((frmDefinition.ssOleDBGridChildren.Rows < 1) || (frmDefinition.ssOleDBGridChildren.SelBookmarks.Count != 1) || (fViewing == true)));
+		button_disable(frmDefinition.cmdEditChild, ((frmDefinition.ssOleDBGridChildren.Rows < 1) || (fViewing == true)));
+		button_disable(frmDefinition.cmdRemoveChild, ((frmDefinition.ssOleDBGridChildren.Rows < 1) || (fViewing == true)));
 		button_disable(frmDefinition.cmdRemoveAllChilds, ((frmDefinition.ssOleDBGridChildren.Rows < 1) || (fViewing == true)));
 
 		frmDefinition.ssOleDBGridChildren.Enabled = true;

@@ -1,28 +1,16 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script runat="server">
 	Private _RecordSelectionHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 	
 	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-		Dim cmdDefSelRecords As New Command
-		
-		cmdDefSelRecords.CommandText = "spASRIntGetRecordSelection"
-		cmdDefSelRecords.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
-		Dim prmType = cmdDefSelRecords.CreateParameter("type", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-		cmdDefSelRecords.Parameters.Append(prmType)
-		prmType.Value = Request("recseltype")
-
-		Dim prmTableID = cmdDefSelRecords.CreateParameter("tableID", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-		cmdDefSelRecords.Parameters.Append(prmTableID)
-		prmTableID.Value = CleanNumeric(Request("recseltableID"))
-
-		Err.Clear()
-		Dim rstDefSelRecords As Recordset = cmdDefSelRecords.Execute
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 		
 		Dim IDFieldName As String = "" 'The name of the ID field varies depending on the recseltype; check spASRIntGetRecordSelection for a possible list of values
 		Select Case UCase(Request("recseltype"))
@@ -43,23 +31,26 @@
 			.Append("<th id='Access'>Access</th>")
 			.Append("</tr>")
 		End With
+
+		Dim rstDefSelRecords = objDataAccess.GetFromSP("spASRIntGetRecordSelection" _
+			, New SqlParameter("psType", SqlDbType.VarChar, 255) With {.Value = Request("recseltype")} _
+			, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Request("recseltableID"))})
+
 		'Loop over the records
-		Do Until rstDefSelRecords.EOF
+		For Each objRow As DataRow In rstDefSelRecords.Rows
+				
 			With _RecordSelectionHTMLTable
 				.Append("<tr>")
-				.Append("<td>" & rstDefSelRecords.Fields(IDFieldName).Value & "</td>")
-				.Append("<td>" & rstDefSelRecords.Fields("name").Value & "</td>")
-				.Append("<td>" & rstDefSelRecords.Fields("username").Value & "</td>")
-				.Append("<td>" & rstDefSelRecords.Fields("access").Value & "</td>")
+				.Append("<td>" & objRow(IDFieldName) & "</td>")
+				.Append("<td>" & objRow("name") & "</td>")
+				.Append("<td>" & objRow("username") & "</td>")
+				.Append("<td>" & objRow("access") & "</td>")
 				.Append("</tr>")
 			End With
-			rstDefSelRecords.MoveNext()
-		Loop
-            
+		Next
+
 		_RecordSelectionHTMLTable.Append("</table>")
      
-		rstDefSelRecords.Close()
-		rstDefSelRecords = Nothing
 	End Sub
 </script>
 

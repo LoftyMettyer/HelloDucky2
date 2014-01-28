@@ -1,6 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Diagnostics" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <head>
 	<title>OpenHR Intranet</title>
@@ -242,26 +245,20 @@
 						<td style="width: 20px;height: 350px">
 							<%
 								' Get the order records.
-								Dim cmdDefSelRecords = CreateObject("ADODB.Command")
-								cmdDefSelRecords.CommandText = "spASRIntGetRecordSelection" 
-								cmdDefSelRecords.CommandType = 4 ' Stored Procedure
-								cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
+								Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 								
-								Dim prmType = cmdDefSelRecords.CreateParameter("type", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-								cmdDefSelRecords.Parameters.Append(prmType)
-								'prmType.value = Request("calcSelType")
-								prmType.value = "CALC"
+								Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int)
 
-								Dim prmTableID = cmdDefSelRecords.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
-								cmdDefSelRecords.Parameters.Append(prmTableID)
 								If CBool(Request("calcSelRecInd")) = True Then
-									prmTableID.value = 0
+									prmTableID.Value = 0
 								Else
-									prmTableID.value = CleanNumeric(Request("calcSelTableID"))
+									prmTableID.Value = CleanNumeric(Request("calcSelTableID"))
 								End If
-	
-								Err.Clear()
-								Dim rstDefSelRecords = cmdDefSelRecords.Execute
+
+								Dim rstDefSelRecords = objDataAccess.GetFromSP("spASRIntGetRecordSelection" _
+									, New SqlParameter("psType", SqlDbType.VarChar, 255) With {.Value = "CALC"} _
+									, prmTableID)
+
 
 								' Instantiate and initialise the grid. 
 								Response.Write("			<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridDefSelRecords name=ssOleDBGridDefselRecords codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%"">" & vbCrLf)
@@ -278,7 +275,7 @@
 								Response.Write("				<PARAM NAME=""HeadLines"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-								Response.Write("				<PARAM NAME=""Col.Count"" VALUE=""" & rstDefSelRecords.fields.count & """>" & vbCrLf)
+								Response.Write("				<PARAM NAME=""Col.Count"" VALUE=""" & rstDefSelRecords.Columns.Count & """>" & vbCrLf)
 								Response.Write("				<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
@@ -330,12 +327,12 @@
 								Response.Write("				<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-								Response.Write("				<PARAM NAME=""Columns.Count"" VALUE=""" & rstDefSelRecords.fields.count & """>" & vbCrLf)
+								Response.Write("				<PARAM NAME=""Columns.Count"" VALUE=""" & rstDefSelRecords.Columns.Count & """>" & vbCrLf)
 								
 
-								For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
+								For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
 
-									If rstDefSelRecords.fields(iLoop).name <> "name" Then
+									If rstDefSelRecords.Columns(iLoop).ColumnName <> "name" Then
 										Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""0"">" & vbCrLf)
 										Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""0"">" & vbCrLf)
 									Else
@@ -344,8 +341,8 @@
 									End If
 							
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(CType(rstDefSelRecords.fields(iLoop).name, String), "_", " ") & """>" & vbCrLf)
-									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstDefSelRecords.fields(iLoop).name & """>" & vbCrLf)
+									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(CType(rstDefSelRecords.Columns(iLoop).ColumnName, String), "_", " ") & """>" & vbCrLf)
+									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstDefSelRecords.Columns(iLoop).ColumnName & """>" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""0"">" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Bound"" VALUE=""0"">" & vbCrLf)
@@ -391,13 +388,13 @@
 								Response.Write("				<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
 
 								Dim lngRowCount = 0
-								Do While Not rstDefSelRecords.EOF
-									For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
-										Response.Write("				<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(CType(rstDefSelRecords.Fields(iLoop).Value, String), "_", " "), """", "&quot;") & """>" & vbCrLf)
+								For Each objRow As DataRow In rstDefSelRecords.Rows
+
+									For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
+										Response.Write("				<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;") & """>" & vbCrLf)
 									Next
-									lngRowCount = lngRowCount + 1
-									rstDefSelRecords.MoveNext()
-								Loop
+									lngRowCount += 1
+								Next
 								Response.Write("				<PARAM NAME=""Row.Count"" VALUE=""" & lngRowCount & """>" & vbCrLf)
 								Response.Write("			</OBJECT>" & vbCrLf)
 								
@@ -419,33 +416,21 @@
 										<input id="cmdok" type="button" value="OK" name="cmdok" 
 											style="WIDTH: 80px" 
 											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-											onclick="setForm();"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="setForm();" />
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
 										<input id="cmdnone" type="button" value="None" name="cmdnone" 
 											style="WIDTH: 80px" 
 											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-											onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
 									</td>
 									<td width="10">&nbsp;</td>
 									<td width="10">
 										<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
 											style="WIDTH: 80px" 
 											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-											onclick="self.close();"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="self.close();" />
 									</td>
 								</tr>
 							</table>
