@@ -1037,7 +1037,7 @@
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
-						<a id="mnutoolFixedAbout" href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="About OpenHR 8">
+						<a id="mnutoolFixedAbout" href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="">
 							<span>About</span>
 						</a>
 					</li>
