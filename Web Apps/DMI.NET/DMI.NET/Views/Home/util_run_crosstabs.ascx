@@ -214,24 +214,5 @@ Session("utiltype = 17 		Calendar Report--%>
 	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 </form>
 
-<form action="util_run_crosstab_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
-	<input type="hidden" id="txtPreview" name="txtPreview" value="">
-	<input type="hidden" id="txtFormat" name="txtFormat" value="0">
-	<input type="hidden" id="txtScreen" name="txtScreen" value="">
-	<input type="hidden" id="txtPrinter" name="txtPrinter" value="">
-	<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="">
-	<input type="hidden" id="txtSave" name="txtSave" value="">
-	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="">
-	<input type="hidden" id="txtEmail" name="txtEmail" value="">
-	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="">
-	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="">
-	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="">
-	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="">
-	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
-	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
-	<input type="hidden" id="txtFileName" name="txtFileName" value="">
-	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
-</form>
-
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>

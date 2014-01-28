@@ -36,7 +36,7 @@ Namespace BaseClasses
 
 		Public Property OutputPreview() As Boolean
 			Get
-				Return _outputPreview Or (_outputFormat = OutputFormats.fmtDataOnly Or OutputScreen)
+				Return _outputPreview Or (_outputFormat = OutputFormats.fmtDataOnly) Or (_outputFormat = OutputFormats.fmtWordDoc)
 			End Get
 
 			<DebuggerStepThrough()> _

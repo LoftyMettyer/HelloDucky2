@@ -124,6 +124,28 @@
 
 <div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block">
 	<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
+		
+	<form action="util_run_crosstab_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
+		<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCrossTab.OutputPreview%>">	
+		<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCrossTab.OutputFormat%>">
+		<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCrossTab.OutputScreen%>">
+		<input type="hidden" id="txtPrinter" name="txtPrinter" value="<%=objCrossTab.OutputPrinter%>">
+		<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="<%=objCrossTab.OutputPrinterName%>">
+		<input type="hidden" id="txtSave" name="txtSave" value="<%=objCrossTab.OutputSave%>">
+		<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=objCrossTab.OutputSaveExisting%>">
+		<input type="hidden" id="txtEmail" name="txtEmail" value="<%=objCrossTab.OutputEmail%>">
+		<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=objCrossTab.OutputEmailID%>">
+		<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=objCrossTab.OutputEmailGroupName%>">
+		<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=objCrossTab.OutputEmailSubject%>">
+		<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objCrossTab.OutputEmailAttachAs%>">
+		<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
+		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
+		<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCrossTab.OutputFilename%>">
+		<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+	</form>
+	
+	<iframe name="submit-iframe" style="display: none;"></iframe>
+
 </div>
 
 <div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">
@@ -143,6 +165,9 @@
 	<input type="hidden" id="cancelled" name="cancelled" value="">
 	<input type="hidden" id="statusmessage" name="statusmessage" value="">
 </form>
+
+
+
 
 <script type="text/javascript">
 

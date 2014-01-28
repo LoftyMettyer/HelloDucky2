@@ -80,19 +80,6 @@
 			Response.Write("  control_disable(cboPage, true);" & vbCrLf)
 		End If
 			 
-		Response.Write("  frmExportData.txtPreview.value = """ & objCrossTab.OutputPreview & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtFormat.value = " & objCrossTab.OutputFormat & ";" & vbCrLf)
-		Response.Write("  frmExportData.txtScreen.value = """ & objCrossTab.OutputScreen & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtPrinter.value = """ & objCrossTab.OutputPrinter & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtPrinterName.value = """ & CleanStringForJavaScript(objCrossTab.OutputPrinterName) & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtSave.value = """ & objCrossTab.OutputSave & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtSaveExisting.value = """ & objCrossTab.OutputSaveExisting & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtEmail.value = """ & objCrossTab.OutputEmail & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtEmailAddr.value = " & objCrossTab.OutputEmailID & ";" & vbCrLf)
-		Response.Write("  frmExportData.txtEmailAddrName.value = """ & CleanStringForJavaScript(objCrossTab.OutputEmailGroupName) & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtEmailSubject.value = """ & CleanStringForJavaScript(objCrossTab.OutputEmailSubject) & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtEmailAttachAs.value = """ & CleanStringForJavaScript(objCrossTab.OutputEmailAttachAs) & """;" & vbCrLf)
-		Response.Write("  frmExportData.txtFileName.value = """ & CleanStringForJavaScript(objCrossTab.OutputFilename) & """;" & vbCrLf)
 	End If
 
 	
@@ -402,9 +389,6 @@
 
 
 <textarea id="holdtext" style="display: none;"></textarea>
-
-<iframe name="submit-iframe" style="display: none;"></iframe>
-
 
 <script type="text/javascript">
 
