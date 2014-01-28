@@ -82,11 +82,13 @@
 		Response.Write("    var sDatabase;" & vbCrLf)
 		Response.Write("	  var sServer;" & vbCrLf)
 		Response.Write("    var sWindowsAuthentication;" & vbCrLf)
-		'if Request.QueryString("msoffice") = "" then
-		'    Response.Write "    frmLoginForm.txtWordVer.value = ASRIntranetFunctions.GetOfficeWordVersion();" & vbcrlf
-		'    Response.Write "    frmLoginForm.txtExcelVer.value = ASRIntranetFunctions.GetOfficeExcelVersion();" & vbcrlf
-		'end if
-		'Response.Write("alert(window.isMobileBrowser);" & vbCrLf)
+		Response.Write("		var frmLoginForm = document.getElementById('frmLoginForm');" & vbCrLf)
+		Response.Write("if(!(frmLoginForm.txtUserName)) {" & vbCrLf)
+		Response.Write("	//An error message has been displayed and no tags configured, so quit." & vbCrLf)
+		Response.Write("	return false;" & vbCrLf)
+		Response.Write("	}" & vbCrLf)
+		
+		
 		If Request.QueryString("user") <> "" Then
 			Response.Write("    frmLoginForm.txtUserName.value = """ & CleanStringForJavaScript(Request.QueryString("user")) & """;" & vbCrLf)
 			Response.Write("    if(!window.isMobileBrowser) frmLoginForm.txtPassword.focus();" & vbCrLf)
@@ -391,9 +393,9 @@
 			<tr height=10 class="android-padding">
 				<td colSpan=5></td>
 			</tr>
-<%
-	If (Session("MSBrowser") = True) And (Session("IEVersion") < 10.0) Then
-%>
+		</table>
+
+	<table id="ancientBrowser" CELLSPACING="0" CELLPADDING="0" align="center" class="hidden invisible loginframetheme ui-widget-content" >
 				<tr height=10>
 					<td colSpan=5></td>
 			</tr>
@@ -402,10 +404,12 @@
 				<td colSpan=3>OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</td>
 				<td width=15></td>
 			</tr>
+		</table>
 <%
-Else
+
 	If Len(Session("version")) = 0 Then
 %>
+	<table id="noAppVersion" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
 			<tr height=10>
 				<td colSpan=5></td>
 			</tr>
@@ -417,11 +421,13 @@ Else
 			<tr  class="" height=10>
 				<td width=15></td>
 				<td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your web server.</td>
-				<td width=15></td>" & vbcrlf
+				<td width=15></td>
 			</tr>
+		</table>
 <%
 Else
 %>
+	<table id="loginFrame" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
 				<tr style="height: 10px">
 				<td style="height: 15px"></td>
 				<td colspan="3" align="center">
@@ -531,11 +537,12 @@ End If
 				</td>
 				<td width="15"></td>
 		</tr>
+		</table>
 <%
 End If
-End If
-%>
 
+%>
+	<table id="forgotPassword" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
 			<tr height=10>
 				<td colSpan=5></td>
 			</tr>
@@ -559,40 +566,35 @@ End If
 	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
 	<input type="hidden" id="txtWordVer" name="txtWordVer" value="12">
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
-	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="" />
+	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="false" />
 
-<%If (Session("MSBrowser") = False) Or ((Session("MSBrowser") = True) And (Session("IEVersion") > 9.0)) Then%>
 
-	<script type="text/javascript">
+	<script type="text/javascript">		
+		//Set MS browser flag
+		if ("ActiveXObject" in window) {			
+			document.getElementById("txtMSBrowser").value = 'true';
+		}
 		
+		//Is this a browser that supports file API; which is OK for all modern browsers (IE10+ etc)
+		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+			//Show 'browser not supported' message...
+			$('#ancientBrowser').removeClass('hidden');
+			$('#loginFrame').addClass('hidden');
+		}
+		else {
+			//This browser meets requirements. Do what we need to do...
+			var fgpl = document.getElementById('ForgotPasswordLink');
+			fgpl.style.display = 'block';
+			
+			window_onload();
+			window.onunload = function () { };
 
-		window_onload();
-		
-
-		window.onunload = function () { };
-
-	</script>	
-
-<%end if %>
-
-
-	<script type="text/javascript">
-
-		if ("ActiveXObject" in window) {
-			//IE Browser.
-			try {
-				$('#txtMSBrowser').val('true');
-			} catch (e) {				
-			}
-			if (Number('<%=Session("IEVersion")%>') >= '10.0') {
-				var fgpl = document.getElementById('ForgotPasswordLink');
-				fgpl.style.display = 'block';
-			}
-			toggleChromeIfAndroid();
 		}
 
-	</script>
+		toggleChromeIfAndroid();
 
+
+	</script>
 	<%	Html.EndForm()%>
 </div>
 

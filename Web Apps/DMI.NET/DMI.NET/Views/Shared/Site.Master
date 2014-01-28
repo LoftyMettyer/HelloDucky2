@@ -140,6 +140,11 @@
 		
 		$(document).ready(function () {
 
+			if (!(window.jQuery.ui)) {
+				//no jQuery! so quit out - compatibility mode(?) should be a message on login.aspx...
+				return false;
+			}
+
 			$("#About").dialog({
 				autoOpen: false,
 				modal: true,

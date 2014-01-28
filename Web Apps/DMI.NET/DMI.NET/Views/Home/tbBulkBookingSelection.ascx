@@ -1197,7 +1197,6 @@
 <INPUT type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
 <FORM id="frmUseful" name="frmUseful" style="visibility:hidden;display:none">
-	<INPUT type="hidden" id="txtIEVersion" name="txtIEVersion" value="<%=session("IEVersion")%>">
 	<INPUT type='hidden' id="txtSelectionType" name="txtSelectionType" value="<%=session("selectionType")%>">
 	<INPUT type='hidden' id="txtTableID" name="txtTableID" value="<%=session("TB_EmpTableID")%>">
 	<INPUT type="hidden" id="txtMenuSaved" name="txtMenuSaved" value=0>

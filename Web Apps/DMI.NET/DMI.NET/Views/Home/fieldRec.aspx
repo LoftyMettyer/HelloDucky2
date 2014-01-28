@@ -487,19 +487,18 @@
 <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
 <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
 
-<FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtIEVersion name=txtIEVersion value=<%=session("IEVersion")%>>
-	<INPUT type='hidden' id=txtSelectionType name=txtSelectionType value=<%=Request("selectionType")%>>
-	<INPUT type='hidden' id=txtTableID name=txtTableID value=<%=Request("txtTableID")%>>
-	<INPUT type='hidden' id=txtSelectedID name=txtSelectedID value=<%=Request("selectedID")%>>
-</FORM>
+	<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
+		<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=Request("selectionType")%>'>
+		<input type='hidden' id="txtTableID" name="txtTableID" value='<%=Request("txtTableID")%>'>
+		<input type='hidden' id="txtSelectedID" name="txtSelectedID" value='<%=Request("selectedID")%>'>
+	</form>
 
-<FORM id=frmPopup name=frmPopup style="visibility:hidden;display:none">
-	<INPUT type=hidden id=Hidden1 name=txtSelectedID>
-	<INPUT type=hidden id=txtSelectedName name=txtSelectedName>
-	<INPUT type=hidden id=txtSelectedAccess name=txtSelectedAccess>
-	<INPUT type=hidden id=txtSelectedUserName name=txtSelectedUserName>
-</FORM>
+	<form id="frmPopup" name="frmPopup" style="visibility: hidden; display: none">
+		<input type="hidden" id="Hidden1" name="txtSelectedID">
+		<input type="hidden" id="txtSelectedName" name="txtSelectedName">
+		<input type="hidden" id="txtSelectedAccess" name="txtSelectedAccess">
+		<input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
+	</form>
 
 </body>
 </html>

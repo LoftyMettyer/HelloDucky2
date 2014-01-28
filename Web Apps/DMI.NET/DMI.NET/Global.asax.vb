@@ -42,9 +42,6 @@ Public Class MvcApplication
 	Sub Session_Start()
 
 		'If the user isn't requesting the Login form, redirect them there.
-		'Dim sDefaultStartPage As String
-		Dim sBrowserInfo As String
-		Dim iIEVersion As Integer
 
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
 		Session.Timeout = 20
@@ -60,43 +57,6 @@ Public Class MvcApplication
 		If Request.QueryString("username") = "" Then
 			Session("username") = Request.QueryString("user")
 		End If
-
-		' Check what browser is being used.
-		Dim sBrowserName As String = Request.Browser.Browser
-
-		If sBrowserName = "IE" Or sBrowserName = "InternetExplorer" Then
-			Session("MSBrowser") = True
-			Session("IEVersion") = Request.Browser.MajorVersion()
-		Else
-			Session("MSBrowser") = False
-			Session("IEVersion") = 0
-		End If
-
-		'sBrowserInfo = Request.ServerVariables("HTTP_USER_AGENT")
-		'If InStr(sBrowserInfo, "MSIE") Then
-		'	' Microsoft browser.
-		'	sBrowserInfo = Mid(sBrowserInfo, InStr(sBrowserInfo, "MSIE") + 5)
-
-		'	If InStr(sBrowserInfo, ".") > 0 Then
-		'		sBrowserInfo = Left(sBrowserInfo, InStr(sBrowserInfo, ".") + 1)
-		'	End If
-
-		'	iIEVersion = CDbl(sBrowserInfo)
-		'	Session("MSBrowser") = True
-		'	Session("IEVersion") = iIEVersion
-		'Else
-		'	' Non Microsoft browser.
-		'	Session("MSBrowser") = False
-		'	Session("IEVersion") = 0
-		'End If
-
-
-		'TODO USE MAYBE OR MAYBE NOT WHO KNOWS???
-		'Dim cookies = Request.Headers("Cookie")
-		'If cookies IsNot Nothing AndAlso cookies.IndexOf("ASP.NET_SessionId") >= 0 Then
-		'	'cookie existed, so it must now have expired.
-		'	Response.Redirect("Account/Login")
-		'End If
 
 		' get the theme out the web config.
 		Session("ui-theme") = ApplicationSettings.UI_Theme
