@@ -50,8 +50,8 @@ body
 	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -ms-linear-gradient(left, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
 	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, linear-gradient(to right, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%);
 	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -moz-linear-gradient(left, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 );*/
-	/*background: rgb(255,255,255);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=1 );
+	background: rgb(255,255,255);
 	background: url(../../images/abslogo/TilesWatermark.png) center center no-repeat, -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%, rgba(252,230,65,1) 100%);
 	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(27%,rgba(255,255,255,1)), color-stop(100%,rgba(252,230,65,1)));
 	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%);

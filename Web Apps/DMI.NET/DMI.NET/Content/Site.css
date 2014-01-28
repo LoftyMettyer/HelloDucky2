@@ -4,15 +4,6 @@ html
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-
-	background: rgb(255,255,255); /* Old browsers */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%, rgba(252,230,65,1) 100%); /* FF3.6+ */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(27%,rgba(255,255,255,1)), color-stop(100%,rgba(252,230,65,1))); /* Chrome,Safari4+ */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%); /* Opera 12+ */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%); /* IE10+ */
-	background: url(../content/images/ABSLogo/TilesWatermark.png) center center no-repeat, radial-gradient(ellipse at center, rgba(255,255,255,1) 27%,rgba(252,230,65,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fce641',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
 }	
 		
 .header-banner {
