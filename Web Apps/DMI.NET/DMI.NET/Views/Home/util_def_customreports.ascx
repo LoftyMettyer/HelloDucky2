@@ -1210,18 +1210,11 @@
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();"/>
 																					<label
 																						for="chkDestination1"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Send to printer 
 																					</label>
 																				</td>
@@ -1320,12 +1313,7 @@
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailSubject"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Email subject :</label>
 																				</td>
 																				<td>
@@ -1345,12 +1333,7 @@
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailAttachAs"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" 
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" 
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" 
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Attach as : 
 																					</label>
 																				</td>
@@ -1463,344 +1446,221 @@
 	<form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
 		<%
 			Dim sErrMsg = ""
-
+			
 			If Session("action") <> "new" Then
-				Dim cmdDefn As New Command
-				cmdDefn.CommandText = "sp_ASRIntGetReportDefinition"
-				cmdDefn.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdDefn.ActiveConnection = Session("databaseConnection")
-		
-				Dim prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
-				cmdDefn.Parameters.Append(prmUtilID)
-				prmUtilID.Value = CleanNumeric(Session("utilid"))
-
-				Dim prmUser = cmdDefn.CreateParameter("user", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefn.Parameters.Append(prmUser)
-				prmUser.Value = Session("username")
-
-				Dim prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefn.Parameters.Append(prmAction)
-				prmAction.Value = Session("action")
-
-				Dim prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmErrMsg)
-
-				Dim prmName = cmdDefn.CreateParameter("name", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmName)
-
-				Dim prmOwner = cmdDefn.CreateParameter("owner", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOwner)
-
-				Dim prmDescription = cmdDefn.CreateParameter("description", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmDescription)
-
-				Dim prmBaseTableID = cmdDefn.CreateParameter("baseTableID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmBaseTableID)
-
-				Dim prmAllRecords = cmdDefn.CreateParameter("allRecords", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmAllRecords)
-
-				Dim prmPicklistID = cmdDefn.CreateParameter("picklistID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmPicklistID)
-
-				Dim prmPicklistName = cmdDefn.CreateParameter("picklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmPicklistName)
-
-				Dim prmPicklistHidden = cmdDefn.CreateParameter("picklistHidden", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPicklistHidden)
-
-				Dim prmFilterID = cmdDefn.CreateParameter("filterID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmFilterID)
-
-				Dim prmFilterName = cmdDefn.CreateParameter("filterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmFilterName)
-
-				Dim prmFilterHidden = cmdDefn.CreateParameter("filterHidden", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmFilterHidden)
-
-				Dim prmParent1TableID = cmdDefn.CreateParameter("parent1TableID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent1TableID)
-
-				Dim prmParent1TableName = cmdDefn.CreateParameter("parent1TableName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent1TableName)
-
-				Dim prmParent1FilterID = cmdDefn.CreateParameter("parent1FilterID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent1FilterID)
-
-				Dim prmParent1FilterName = cmdDefn.CreateParameter("parent1FilterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent1FilterName)
-
-				Dim prmParent1FilterHidden = cmdDefn.CreateParameter("parent1FilterHidden", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent1FilterHidden)
-
-				Dim prmParent2TableID = cmdDefn.CreateParameter("parent2TableID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent2TableID)
-
-				Dim prmParent2TableName = cmdDefn.CreateParameter("parent2TableName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent2TableName)
-
-				Dim prmParent2FilterID = cmdDefn.CreateParameter("parent2FilterID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent2FilterID)
-
-				Dim prmParent2FilterName = cmdDefn.CreateParameter("parent2FilterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent2FilterName)
-		
-				Dim prmParent2FilterHidden = cmdDefn.CreateParameter("parent2FilterHidden", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent2FilterHidden)
-
+								
 				'********************************************************************************
-
-				Dim cmdReportChilds As New Command
-				cmdReportChilds.CommandText = "sp_ASRIntGetReportChilds"
-				cmdReportChilds.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdReportChilds.ActiveConnection = Session("databaseConnection")
-		
-				Dim prmUtilID2 = cmdReportChilds.CreateParameter("utilID2", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput)
-				cmdReportChilds.Parameters.Append(prmUtilID2)
-				prmUtilID2.Value = CleanNumeric(Session("utilid"))
-		
-				Err.Clear()
-				Dim rstChilds = cmdReportChilds.Execute
 				Dim iHiddenChildFilterCount = 0
 				Dim iCount = 0
 				Dim sChildInfo = ""
-		
-				If (Err.Number <> 0) Then
-					sErrMsg = "'" & Session("utilname") & "' report definition could not be read." & vbCrLf & FormatError(Err.Description)
-				Else
-					If rstChilds.State <> 0 Then
-						' Read recordset values.
 				
-						Do While Not rstChilds.EOF
-							iCount = iCount + 1
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildTableID_" & iCount & " name=txtReportDefnChildTableID_" & iCount & " value=""" & rstChilds.Fields("TableID").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildTable_" & iCount & " name=txtReportDefnChildTable_" & iCount & " value=""" & rstChilds.Fields("Table").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildFilterID_" & iCount & " name=txtReportDefnChildFilterID_" & iCount & " value=""" & rstChilds.Fields("FilterID").Value & """>" & vbCrLf)
+				Try
+
+					Dim rstChilds = objDataAccess.GetFromSP("sp_ASRIntGetReportChilds" _
+						, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))})
+								
+					For Each objRow As DataRow In rstChilds.Rows
+
+						iCount += 1
+						Response.Write("<input type='hidden' id=txtReportDefnChildTableID_" & iCount & " name=txtReportDefnChildTableID_" & iCount & " value=""" & objRow("TableID") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildTable_" & iCount & " name=txtReportDefnChildTable_" & iCount & " value=""" & objRow("Table") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildFilterID_" & iCount & " name=txtReportDefnChildFilterID_" & iCount & " value=""" & objRow("FilterID") & """>" & vbCrLf)
 					
-							Dim sTemp As String
-							If IsDBNull(rstChilds.Fields("Filter").Value) Then
-								sTemp = ""
-							Else
-								sTemp = Replace(rstChilds.Fields("Filter").Value, """", "&quot;")
-							End If
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildFilter_" & iCount & " name=txtReportDefnChildFilter_" & iCount & " value=""" & sTemp & """>" & vbCrLf)
+						Dim sTemp As String
+						If IsDBNull(objRow("Filter")) Then
+							sTemp = ""
+						Else
+							sTemp = Replace(objRow("Filter"), """", "&quot;")
+						End If
+						Response.Write("<input type='hidden' id=txtReportDefnChildFilter_" & iCount & " name=txtReportDefnChildFilter_" & iCount & " value=""" & sTemp & """>" & vbCrLf)
 					
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildOrderID_" & iCount & " name=txtReportDefnChildOrderID_" & iCount & " value=""" & rstChilds.Fields("OrderID").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildOrder_" & iCount & " name=txtReportDefnChildOrder_" & iCount & " value=""" & rstChilds.Fields("Order").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildRecords_" & iCount & " name=txtReportDefnChildRecords_" & iCount & " value=""" & rstChilds.Fields("Records").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildGridString_" & iCount & " name=txtReportDefnChildGridString_" & iCount & " value=""" & Replace(rstChilds.Fields("gridstring").Value, """", "&quot;") & vbTab & rstChilds.Fields("FilterHidden").Value & """>" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtReportDefnChildFilterHidden_" & iCount & " name=txtReportDefnChildFilterHidden_" & iCount & " value=""" & rstChilds.Fields("FilterHidden").Value & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildOrderID_" & iCount & " name=txtReportDefnChildOrderID_" & iCount & " value=""" & objRow("OrderID") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildOrder_" & iCount & " name=txtReportDefnChildOrder_" & iCount & " value=""" & objRow("Order") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildRecords_" & iCount & " name=txtReportDefnChildRecords_" & iCount & " value=""" & objRow("Records") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildGridString_" & iCount & " name=txtReportDefnChildGridString_" & iCount & " value=""" & Replace(objRow("gridstring"), """", "&quot;") & vbTab & objRow("FilterHidden") & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtReportDefnChildFilterHidden_" & iCount & " name=txtReportDefnChildFilterHidden_" & iCount & " value=""" & objRow("FilterHidden") & """>" & vbCrLf)
 
-							' Check if the child table filter is a hidden calc.
-							If rstChilds.Fields("FilterHidden").Value = "Y" Then
-								iHiddenChildFilterCount = iHiddenChildFilterCount + 1
+						' Check if the child table filter is a hidden calc.
+						If objRow("FilterHidden") = "Y" Then
+							iHiddenChildFilterCount = iHiddenChildFilterCount + 1
+						End If
+
+						If objRow("OrderDeleted") = "Y" Then
+							If Len(sChildInfo) > 0 Then
+								sChildInfo = sChildInfo & vbCrLf
 							End If
+							sChildInfo = sChildInfo & "The '" & objRow("Table") & "' table order will be removed from this definition as it has been deleted by another user."
+						End If
 
-							If rstChilds.Fields("OrderDeleted").Value = "Y" Then
-								If Len(sChildInfo) > 0 Then
-									sChildInfo = sChildInfo & vbCrLf
-								End If
-								sChildInfo = sChildInfo & "The '" & rstChilds.Fields("Table").Value & "' table order will be removed from this definition as it has been deleted by another user."
+						If objRow("FilterDeleted") = "Y" Then
+							If Len(sChildInfo) > 0 Then
+								sChildInfo = sChildInfo & vbCrLf
 							End If
+							sChildInfo = sChildInfo & "The '" & objRow("Table") & "' table filter will be removed from this definition as it has been deleted by another user."
+						End If
 
-							If rstChilds.Fields("FilterDeleted").Value = "Y" Then
-								If Len(sChildInfo) > 0 Then
-									sChildInfo = sChildInfo & vbCrLf
-								End If
-								sChildInfo = sChildInfo & "The '" & rstChilds.Fields("Table").Value & "' table filter will be removed from this definition as it has been deleted by another user."
+						If objRow("FilterHiddenByOther") = "Y" Then
+							If Len(sChildInfo) > 0 Then
+								sChildInfo = sChildInfo & vbCrLf
 							End If
+							sChildInfo = sChildInfo & "The '" & objRow("Table") & "' table filter will be removed from this definition as it has been made hidden by another user."
+						End If
 
-							If rstChilds.Fields("FilterHiddenByOther").Value = "Y" Then
-								If Len(sChildInfo) > 0 Then
-									sChildInfo = sChildInfo & vbCrLf
-								End If
-								sChildInfo = sChildInfo & "The '" & rstChilds.Fields("Table").Value & "' table filter will be removed from this definition as it has been made hidden by another user."
-							End If
+					Next
+					
+				Catch ex As Exception
+					sErrMsg = "'" & Session("utilname") & "' report definition could not be read." & vbCrLf & FormatError(ex.Message)
 
-							rstChilds.MoveNext()
-						Loop
-						' Release the ADO recordset object.
-						rstChilds.Close()
-					End If
-					rstChilds = Nothing
-				End If
-				cmdReportChilds = Nothing
-
+				End Try
+		
 				Session("childcount") = iCount
 				Session("hiddenfiltercount") = iHiddenChildFilterCount
 		
 				'********************************************************************************
-		
-				Dim prmSummary = cmdDefn.CreateParameter("summary", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmSummary)
+				Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmAllRecords = New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1TableID = New SqlParameter("piParent1TableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1TableName = New SqlParameter("psParent1Name", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1FilterID = New SqlParameter("piParent1FilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1FilterName = New SqlParameter("psParent1FilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1FilterHidden = New SqlParameter("pfParent1FilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2TableID = New SqlParameter("piParent2TableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2TableName = New SqlParameter("psParent2Name", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2FilterID = New SqlParameter("piParent2FilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2FilterName = New SqlParameter("psParent2FilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2FilterHidden = New SqlParameter("pfParent2FilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 
-				Dim prmPrintFilterHeader = cmdDefn.CreateParameter("printFilterHeader", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPrintFilterHeader)
+				Dim prmSummary = New SqlParameter("pfSummary", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmPrintFilterHeader = New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputPreview = New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputSaveExisting = New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputEmail = New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputEmailAddr = New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputEmailName = New SqlParameter("psOutputEmailName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputEmailSubject = New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputEmailAttachAs = New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmOutputFilename = New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1AllRecords = New SqlParameter("pfParent1AllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1PicklistID = New SqlParameter("piParent1PicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1PicklistName = New SqlParameter("psParent1PicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent1PicklistHidden = New SqlParameter("pfParent1PicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2AllRecords = New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2PicklistID = New SqlParameter("piParent2PicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2PicklistName = New SqlParameter("psParent2PicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmParent2PicklistHidden = New SqlParameter("pfParent2PicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmInfo = New SqlParameter("psInfoMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmIgnoreZeros = New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 
-				'-----------------------------------------
-				Dim prmOutputPreview = cmdDefn.CreateParameter("outputPreview", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputPreview)
+				Try
+					
+					Dim rstDefinition = objDataAccess.GetFromSP("sp_ASRIntGetReportDefinition" _
+						, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))} _
+						, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = Session("username")} _
+						, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Session("action")} _
+						, prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID, prmAllRecords, prmPicklistID, prmPicklistName, prmPicklistHidden _
+						, prmFilterID, prmFilterName, prmFilterHidden _
+						, prmParent1TableID, prmParent1TableName, prmParent1FilterID, prmParent1FilterName, prmParent1FilterHidden _
+						, prmParent2TableID, prmParent2TableName, prmParent2FilterID, prmParent2FilterName, prmParent2FilterHidden _
+						, prmSummary, prmPrintFilterHeader, prmOutputPreview, prmOutputFormat, prmOutputScreen, prmOutputPrinter, prmOutputPrinterName _
+						, prmOutputSave, prmOutputSaveExisting _
+						, prmOutputEmail, prmOutputEmailAddr, prmOutputEmailName, prmOutputEmailSubject, prmOutputEmailAttachAs _
+						, prmOutputFilename, prmTimestamp, prmParent1AllRecords, prmParent1PicklistID, prmParent1PicklistName, prmParent1PicklistHidden _
+						, prmParent2AllRecords, prmParent2PicklistID, prmParent2PicklistName, prmParent2PicklistHidden _
+						, prmInfo, prmIgnoreZeros)
 		
-				Dim prmOutputFormat = cmdDefn.CreateParameter("outputFormat", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputFormat)
-		
-				Dim prmOutputScreen = cmdDefn.CreateParameter("outputScreen", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputScreen)
-		
-				Dim prmOutputPrinter = cmdDefn.CreateParameter("outputPrinter", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputPrinter)
-		
-				Dim prmOutputPrinterName = cmdDefn.CreateParameter("outputPrinterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputPrinterName)
-		
-				Dim prmOutputSave = cmdDefn.CreateParameter("outputSave", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputSave)
-		
-				Dim prmOutputSaveExisting = cmdDefn.CreateParameter("outputSaveExisting", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputSaveExisting)
-		
-				Dim prmOutputEmail = cmdDefn.CreateParameter("outputEmail", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputEmail)
-		
-				Dim prmOutputEmailAddr = cmdDefn.CreateParameter("outputEmailAddr", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputEmailAddr)
-		
-				Dim prmOutputEmailName = cmdDefn.CreateParameter("outputEmailName", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 8000)
-				cmdDefn.Parameters.Append(prmOutputEmailName)
-		
-				Dim prmOutputEmailSubject = cmdDefn.CreateParameter("outputEmailSubject", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputEmailSubject)
+					Dim iHiddenCalcCount = 0
 
-				Dim prmOutputEmailAttachAs = cmdDefn.CreateParameter("outputEmailAttachAs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputEmailAttachAs)
-
-				Dim prmOutputFilename = cmdDefn.CreateParameter("outputFilename", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputFilename)
-		
-				Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	' 3=integer, 2=output
-				cmdDefn.Parameters.Append(prmTimestamp)
-
-				Dim prmParent1AllRecords = cmdDefn.CreateParameter("parent1AllRecords", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent1AllRecords)
-
-				Dim prmParent1PicklistID = cmdDefn.CreateParameter("parent1PicklistID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent1PicklistID)
-
-				Dim prmParent1PicklistName = cmdDefn.CreateParameter("parent1PicklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent1PicklistName)
-
-				Dim prmParent1PicklistHidden = cmdDefn.CreateParameter("parent1PicklistHidden", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent1PicklistHidden)
-
-				Dim prmParent2AllRecords = cmdDefn.CreateParameter("parent2AllRecords", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent2AllRecords)
-
-				Dim prmParent2PicklistID = cmdDefn.CreateParameter("parent2PicklistID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmParent2PicklistID)
-
-				Dim prmParent2PicklistName = cmdDefn.CreateParameter("parent2PicklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmParent2PicklistName)
-
-				Dim prmParent2PicklistHidden = cmdDefn.CreateParameter("parent2PicklistHidden", 11, 2)	'11=bit, 2=output
-				cmdDefn.Parameters.Append(prmParent2PicklistHidden)
-
-				Dim prmInfo = cmdDefn.CreateParameter("info", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmInfo)
-
-				Dim prmIgnoreZeros = cmdDefn.CreateParameter("ignoreZeros", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmIgnoreZeros)
-		
-				Err.Clear()
-				Dim rstDefinition = cmdDefn.Execute
-		
-				Dim iHiddenCalcCount = 0
-				If (Err.Number <> 0) Then
-					sErrMsg = "'" & Session("utilname") & "' report definition could not be read." & vbCrLf & FormatError(Err.Description)
-				Else
-					If rstDefinition.State <> 0 Then
-						' Read recordset values.
-						iCount = 0
-						Do While Not rstDefinition.EOF
-							iCount = iCount + 1
-							If rstDefinition.Fields("definitionType").Value = "ORDER" Then
-								Response.Write("<INPUT type='hidden' id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & rstDefinition.Fields("definitionString").Value & """>" & vbCrLf)
-							ElseIf rstDefinition.Fields("definitionType").Value = "REPETITION" Then
-								Response.Write("<INPUT type='hidden' id=txtReportDefnRepetition_" & iCount & " name=txtReportDefnRepetition_" & iCount & " value=""" & rstDefinition.Fields("definitionString").Value & """>" & vbCrLf)
-							Else
-								Response.Write("<INPUT type='hidden' id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(rstDefinition.Fields("definitionString").Value, """", "&quot;") & """>" & vbCrLf)
+					' Read recordset values.
+					iCount = 0
+					For Each objRow As DataRow In rstDefinition.Rows
+							
+						iCount += 1
+						If objRow("definitionType").ToString() = "ORDER" Then
+							Response.Write("<input type='hidden' id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & objRow("definitionString").ToString() & """>" & vbCrLf)
+						ElseIf objRow("definitionType").ToString() = "REPETITION" Then
+							Response.Write("<input type='hidden' id=txtReportDefnRepetition_" & iCount & " name=txtReportDefnRepetition_" & iCount & " value=""" & objRow("definitionString").ToString & """>" & vbCrLf)
+						Else
+							Response.Write("<input type='hidden' id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(objRow("definitionString").ToString(), """", "&quot;") & """>" & vbCrLf)
 	
-								' Check if the report column is a hidden calc.
-								If rstDefinition.Fields("hidden").Value = "Y" Then
-									iHiddenCalcCount = iHiddenCalcCount + 1
-								End If
+							' Check if the report column is a hidden calc.
+							If objRow("hidden").ToString = "Y" Then
+								iHiddenCalcCount += 1
 							End If
-							rstDefinition.MoveNext()
-						Loop
+						End If
+					Next
 
-						' Release the ADO recordset object.
-						rstDefinition.Close()
+					If Len(prmErrMsg.Value.ToString()) > 0 Then
+						sErrMsg = "'" & Session("utilname").ToString() & "' " & prmErrMsg.Value.ToString
 					End If
-					rstDefinition = Nothing
+						
+					Response.Write("<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(prmName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(prmOwner.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(prmDescription.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & prmBaseTableID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & prmAllRecords.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & prmPicklistID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(prmPicklistName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & prmPicklistHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & prmFilterID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(prmFilterName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & prmFilterHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1TableID name=txtDefn_Parent1TableID value=" & prmParent1TableID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1TableName name=txtDefn_Parent1TableName value=""" & prmParent1TableName.Value & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1FilterID name=txtDefn_Parent1FilterID value=" & prmParent1FilterID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1FilterName name=txtDefn_Parent1FilterName value=""" & Replace(prmParent1FilterName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1FilterHidden name=txtDefn_Parent1FilterHidden value=" & prmParent1FilterHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2TableID name=txtDefn_Parent2TableID value=" & prmParent2TableID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2TableName name=txtDefn_Parent2TableName value=""" & prmParent2TableName.Value & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2FilterID name=txtDefn_Parent2FilterID value=" & prmParent2FilterID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2FilterName name=txtDefn_Parent2FilterName value=""" & Replace(prmParent2FilterName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2FilterHidden name=txtDefn_Parent2FilterHidden value=" & prmParent2FilterHidden.Value & ">" & vbCrLf)
+						
+					Response.Write("<input type='hidden' id=txtDefn_Summary name=txtDefn_Summary value=" & prmSummary.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PrintFilterHeader name=txtDefn_PrintFilterHeader value=" & prmPrintFilterHeader.Value & ">" & vbCrLf)
+
+					Response.Write("<input type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & prmOutputPreview.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & prmOutputFormat.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & prmOutputScreen.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & prmOutputPrinter.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & prmOutputPrinterName.Value & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & prmOutputSave.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & prmOutputSaveExisting.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & prmOutputEmail.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & prmOutputEmailAddr.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailAddrName value=""" & Replace(prmOutputEmailName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(prmOutputEmailSubject.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(prmOutputEmailAttachAs.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & prmOutputFilename.Value & """>" & vbCrLf)
+						
+					Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1AllRecords name=txtDefn_Parent1AllRecords value=" & prmParent1AllRecords.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1PicklistID name=txtDefn_Parent1PicklistID value=" & prmParent1PicklistID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1PicklistName name=txtDefn_Parent1PicklistName value=""" & Replace(prmParent1PicklistName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent1PicklistHidden name=txtDefn_Parent1PicklistHidden value=" & prmParent1PicklistHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2AllRecords name=txtDefn_Parent2AllRecords value=" & prmParent2AllRecords.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2PicklistID name=txtDefn_Parent2PicklistID value=" & prmParent2PicklistID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2PicklistName name=txtDefn_Parent2PicklistName value=""" & Replace(prmParent2PicklistName.Value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Parent2PicklistHidden name=txtDefn_Parent2PicklistHidden value=" & prmParent2PicklistHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_IgnoreZeros name=txtDefn_IgnoreZeros value=" & prmIgnoreZeros.Value & ">" & vbCrLf)
 			
-					' NB. IMPORTANT ADO NOTE.
-					' When calling a stored procedure which returns a recordset AND has output parameters
-					' you need to close the recordset and set it to nothing before using the output parameters. 
-					If Len(cmdDefn.Parameters("errMsg").Value) > 0 Then
-						sErrMsg = "'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").Value
-					End If
-
-					Response.Write("<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & cmdDefn.Parameters("allRecords").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & cmdDefn.Parameters("picklistHidden").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & cmdDefn.Parameters("filterHidden").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1TableID name=txtDefn_Parent1TableID value=" & cmdDefn.Parameters("parent1TableID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1TableName name=txtDefn_Parent1TableName value=""" & cmdDefn.Parameters("parent1TableName").Value & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1FilterID name=txtDefn_Parent1FilterID value=" & cmdDefn.Parameters("parent1FilterID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1FilterName name=txtDefn_Parent1FilterName value=""" & Replace(cmdDefn.Parameters("parent1FilterName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1FilterHidden name=txtDefn_Parent1FilterHidden value=" & cmdDefn.Parameters("parent1FilterHidden").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2TableID name=txtDefn_Parent2TableID value=" & cmdDefn.Parameters("parent2TableID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2TableName name=txtDefn_Parent2TableName value=""" & cmdDefn.Parameters("parent2TableName").Value & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2FilterID name=txtDefn_Parent2FilterID value=" & cmdDefn.Parameters("parent2FilterID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2FilterName name=txtDefn_Parent2FilterName value=""" & Replace(cmdDefn.Parameters("parent2FilterName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2FilterHidden name=txtDefn_Parent2FilterHidden value=" & cmdDefn.Parameters("parent2FilterHidden").Value & ">" & vbCrLf)
-
-					Response.Write("<INPUT type='hidden' id=txtDefn_Summary name=txtDefn_Summary value=" & cmdDefn.Parameters("summary").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_PrintFilterHeader name=txtDefn_PrintFilterHeader value=" & cmdDefn.Parameters("printFilterHeader").Value & ">" & vbCrLf)
-
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & cmdDefn.Parameters("OutputPreview").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & cmdDefn.Parameters("OutputScreen").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & cmdDefn.Parameters("OutputPrinter").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").Value & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & cmdDefn.Parameters("OutputSave").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & cmdDefn.Parameters("OutputSaveExisting").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & cmdDefn.Parameters("OutputEmail").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & cmdDefn.Parameters("OutputEmailAddr").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailAddrName value=""" & Replace(cmdDefn.Parameters("outputEmailName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(cmdDefn.Parameters("OutputEmailSubject").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(cmdDefn.Parameters("OutputEmailAttachAs").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & cmdDefn.Parameters("OutputFilename").Value & """>" & vbCrLf)
-
-					Response.Write("<INPUT type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1AllRecords name=txtDefn_Parent1AllRecords value=" & cmdDefn.Parameters("parent1AllRecords").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1PicklistID name=txtDefn_Parent1PicklistID value=" & cmdDefn.Parameters("parent1PicklistID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1PicklistName name=txtDefn_Parent1PicklistName value=""" & Replace(cmdDefn.Parameters("parent1PicklistName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent1PicklistHidden name=txtDefn_Parent1PicklistHidden value=" & cmdDefn.Parameters("parent1PicklistHidden").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2AllRecords name=txtDefn_Parent2AllRecords value=" & cmdDefn.Parameters("parent2AllRecords").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2PicklistID name=txtDefn_Parent2PicklistID value=" & cmdDefn.Parameters("parent2PicklistID").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2PicklistName name=txtDefn_Parent2PicklistName value=""" & Replace(cmdDefn.Parameters("parent2PicklistName").Value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_Parent2PicklistHidden name=txtDefn_Parent2PicklistHidden value=" & cmdDefn.Parameters("parent2PicklistHidden").Value & ">" & vbCrLf)
-					Response.Write("<INPUT type='hidden' id=txtDefn_IgnoreZeros name=txtDefn_IgnoreZeros value=" & cmdDefn.Parameters("ignoreZeros").Value & ">" & vbCrLf)
-			
-					Dim sInfo = cmdDefn.Parameters("info").Value
+					Dim sInfo = prmInfo.Value.ToString
 					If Len(sChildInfo) > 0 Then
 						If Len(sInfo) > 0 Then
 							sInfo = sInfo & vbCrLf
@@ -1808,11 +1668,13 @@
 				
 						sInfo = sInfo & sChildInfo
 					End If
-					Response.Write("<INPUT type='hidden' id=txtDefn_Info name=txtDefn_Info value=""" & Replace(sInfo, """", "&quot;") & """>" & vbCrLf)
-				End If
+					Response.Write("<input type='hidden' id=txtDefn_Info name=txtDefn_Info value=""" & Replace(sInfo, """", "&quot;") & """>" & vbCrLf)
 
-				' Release the ADO command object.
-				cmdDefn = Nothing
+
+				Catch ex As Exception
+					sErrMsg = "'" & Session("utilname") & "' report definition could not be read." & vbCrLf & FormatError(ex.Message)
+
+				End Try
 
 			Else
 				Session("childcount") = 0
