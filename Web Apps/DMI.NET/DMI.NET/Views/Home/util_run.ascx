@@ -297,5 +297,4 @@ End If
 		closeclick();
 	}
 	
-
 </script>
