@@ -325,7 +325,7 @@
 				<li id="mnutoolQuickEntry"><a href="#">Quick Access Screens</a>
 					<ul id="mnubandQuickEntry"></ul>
 				</li>
-				<li id="mnutoolTableScreens"><a href="#">Table Screens</a>
+				<li id="mnutoolTableScreens"><a href="#">Lookup Table Screens</a>
 					<ul id="mnubandTableScreens"></ul>
 				</li>
 				<li id="mnutoolLogoff"><a href="#">Log Off...</a></li>
