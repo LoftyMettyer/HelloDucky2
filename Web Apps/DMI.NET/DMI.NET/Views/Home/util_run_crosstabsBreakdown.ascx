@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <form action="util_run_CrossTabsBreakdown" method="post" id="frmBreakdown" name="frmBreakdown">
@@ -16,11 +17,11 @@
 	
 		If Session("CT_Mode") = "BREAKDOWN" Then
 
-				If objCrossTab.CrossTabType = 3 Then
-						Response.Write("Absence Breakdown Cell Breakdown")
-				Else
-						Response.Write("Cross Tabs Cell Breakdown")
-				End If
+		If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+			Response.Write("Absence Breakdown Cell Breakdown")
+		Else
+			Response.Write("Cross Tabs Cell Breakdown")
+		End If
 		
 %>
 
@@ -77,11 +78,11 @@
 											Response.Write("  <TD>" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & " :</TD>" & vbCrLf)
 												Response.Write("  <TD><INPUT id=txtCellValue name=txtCellValue value="" ")
 				
-												If objCrossTab.CrossTabType = 3 Then
-														Response.Write(objCrossTab.OutputArrayDataUBound)
-												Else
-														Response.Write(Session("CT_CellValue"))
-												End If
+											If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+												Response.Write(objCrossTab.OutputArrayDataUBound)
+											Else
+												Response.Write(Session("CT_CellValue"))
+											End If
 
 												Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
 												Response.Write("</TR>" & vbCrLf)
@@ -128,16 +129,16 @@
 		Response.Write("	colMode.push({ name: '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' });" & vbCrLf)	
 		
 		' Absence Breakdown
-		If objCrossTab.CrossTabType = 3 Then
+			If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
 
-			Response.Write("  colNames.push('Start Date');" & vbCrLf)
-			Response.Write("	colMode.push({ name: 'Start Date' });" & vbCrLf)
+				Response.Write("  colNames.push('Start Date');" & vbCrLf)
+				Response.Write("	colMode.push({ name: 'Start Date' });" & vbCrLf)
 
-			Response.Write("  colNames.push('End Date');" & vbCrLf)
-			Response.Write("	colMode.push({ name: 'End Date' });" & vbCrLf)
+				Response.Write("  colNames.push('End Date');" & vbCrLf)
+				Response.Write("	colMode.push({ name: 'End Date' });" & vbCrLf)
 
-			Response.Write("  colNames.push(""" & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """);" & vbCrLf)
-			Response.Write("	colMode.push({ name: """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """ });" & vbCrLf)
+				Response.Write("  colNames.push(""" & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """);" & vbCrLf)
+				Response.Write("	colMode.push({ name: """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """ });" & vbCrLf)
 				
 			End If
 		

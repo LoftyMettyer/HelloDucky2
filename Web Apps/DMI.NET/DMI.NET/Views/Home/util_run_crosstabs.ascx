@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
@@ -15,7 +16,7 @@
 
 
 <%
-	Dim objCrossTab As HR.Intranet.Server.CrossTab
+	Dim objCrossTab As CrossTab
 		
 	objCrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
 	If (objCrossTab.ErrorString = "") Then
@@ -28,7 +29,7 @@
 		Response.Write("  }" & vbCrLf)
 		Response.Write("</script>" & vbCrLf)
 
-		objCrossTab.EventLogChangeHeaderStatus(3)	 'Successful
+		objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
 
 	Else
 		Response.Write("<form Name=frmPopup ID=frmPopup>" & vbCrLf)
@@ -44,9 +45,9 @@
 		Response.Write("			    <td align=center> " & vbCrLf)
 
 		If objCrossTab.NoRecords Then
-			objCrossTab.EventLogChangeHeaderStatus(3)		 'Successful
+			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
 		Else
-			objCrossTab.EventLogChangeHeaderStatus(2)		 'Failed
+			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
 		End If
 
 		Response.Write("			    </td>" & vbCrLf)
@@ -156,7 +157,7 @@ Session("utiltype = 17 		Calendar Report--%>
 			class="checkbox"
 			tabindex="0">
 			<%
-				If objCrossTab.CrossTabType <> 3 Then
+				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 					Response.Write(" Percentage of Type")
 				End If
 			%>
@@ -169,7 +170,7 @@ Session("utiltype = 17 		Calendar Report--%>
 			class="checkbox"
 			tabindex="0">
 			<%
-				If objCrossTab.CrossTabType <> 3 Then
+				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 					Response.Write(" Percentage of Page")
 				End If
 			%>
@@ -182,7 +183,7 @@ Session("utiltype = 17 		Calendar Report--%>
 			class="checkbox"
 			tabindex="0">
 			<%
-				If objCrossTab.CrossTabType <> 3 Then
+				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 					Response.Write(" Use 1000 Separators (,)")
 				End If
 			%>

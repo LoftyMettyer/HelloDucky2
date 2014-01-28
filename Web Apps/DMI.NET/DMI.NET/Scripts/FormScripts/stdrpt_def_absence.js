@@ -191,59 +191,8 @@ function validateDate(pobjDateControl)
     }
 }
 
-function validateAbsenceTab3()
-{
-    var sErrMsg;
-	
-    sErrMsg = "";
-	
-    if (!frmAbsenceDefinition.chkDestination0.checked 
-        && !frmAbsenceDefinition.chkDestination1.checked 
-        && !frmAbsenceDefinition.chkDestination2.checked 
-        && !frmAbsenceDefinition.chkDestination3.checked)
-    {
-        sErrMsg = "You must select a destination";
-    }
-
-    if ((frmAbsenceDefinition.txtFilename.value == "") &&
-        (frmAbsenceDefinition.cmdFilename.disabled == false)) {
-        sErrMsg = "You must enter a file name";
-    }
-
-    if ((frmAbsenceDefinition.txtEmailGroup.value == "") &&
-        (frmAbsenceDefinition.cmdEmailGroup.disabled == false)) {
-        sErrMsg = "You must select an email group";
-    }
-	
-    if ((frmAbsenceDefinition.chkDestination3 .checked) 
-        && (frmAbsenceDefinition.txtEmailAttachAs.value == ''))
-    {
-        sErrMsg = "You must enter an email attachment file name.";
-    }
-
-    if (frmAbsenceDefinition.chkDestination3.checked &&
-        (frmAbsenceDefinition.optOutputFormat3.checked || frmAbsenceDefinition.optOutputFormat4.checked || frmAbsenceDefinition.optOutputFormat5.checked || frmAbsenceDefinition.optOutputFormat6.checked) &&
-        frmAbsenceDefinition.txtEmailAttachAs.value.match(/.html$/)) {
-        sErrMsg = "You cannot email html output from word or excel.";
-    }
-
-    if (sErrMsg.length > 0) 
-    {    
-        OpenHR.messageBox(sErrMsg,48);
-        display_Absence_Page(3);
-        return (false);
-    }
-	
-    try 
-    {
-        var testDataCollection = frmRefresh.elements;
-        OpenHR.submitForm(frmRefresh);
-    }
-    catch(e) 
-    {
-    }
-		
-    return (true);
+function validateAbsenceTab3() {
+	return (true);
 }
 
 function absence_returnToRecEdit() {

@@ -837,8 +837,7 @@ LocalErr:
 		fOK = True
 		Call GetSQL2(strColumn)
 		If fOK = False Then
-			CreateTempTable = False
-			Exit Function
+			Return False
 		End If
 
 		mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
@@ -868,14 +867,12 @@ LocalErr:
 			DB.ExecuteSql("EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID))
 		End If
 
-		CreateTempTable = fOK
-
-		Exit Function
+		Return fOK
 
 LocalErr:
 
 		mstrStatusMessage = Err.Description
-		CreateTempTable = False
+		Return False
 
 	End Function
 
@@ -1927,20 +1924,19 @@ LocalErr:
 		' Because the stored procedure has run we need to requery the recordset
 
 		If rsCrossTabData.Rows.Count = 0 Then
-			AbsenceBreakdownBuildDataArrays = False
-			Exit Function
+			Return False
 		End If
+
+		rsCrossTabData = DB.GetDataTable("SELECT * FROM " & mstrTempTableName)
 
 		For Each objRow As DataRow In rsCrossTabData.Rows
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR"), vbNullString)
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR").ToString().Trim(), vbNullString)
 			lngCol = GetGroupNumber(strTempValue, HOR)
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER"), vbNullString)
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER").ToString().Trim(), vbNullString)
 			lngRow = GetGroupNumber(strTempValue, VER)
 
 			'Count
@@ -1966,7 +1962,6 @@ LocalErr:
 		Next
 
 		Return True
-		Exit Function
 
 LocalErr:
 		mstrStatusMessage = "Error processing data"
@@ -2159,30 +2154,6 @@ LocalErr:
 		Next iLoop
 
 		ConvertSQLDateToLocale = sFormattedDate
-
-	End Function
-
-	' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
-	'    which don't exist for standard reports)
-	Public Function SetAbsenceBreakDownDefaultOutputOptions(pbOutputPreview As Boolean, plngOutputFormat As Integer, pblnOutputScreen As Boolean, _
-																													 pblnOutputPrinter As Boolean, pstrOutputPrinterName As String, pblnOutputSave As Boolean, _
-																													 plngOutputSaveExisting As Long, pblnOutputEmail As Boolean, plngOutputEmailID As Long, _
-																													 pstrOutputEmailName As String, pstrOutputEmailSubject As String, pstrOutputEmailAttachAs As String, _
-																													 pstrOutputFilename As String) As Boolean
-
-		OutputPreview = pbOutputPreview
-		OutputFormat = plngOutputFormat
-		mblnOutputScreen = pblnOutputScreen
-		mblnOutputPrinter = pblnOutputPrinter
-		mstrOutputPrinterName = pstrOutputPrinterName
-		mblnOutputSave = pblnOutputSave
-		mlngOutputSaveExisting = plngOutputSaveExisting
-		mblnOutputEmail = pblnOutputEmail
-		mlngOutputEmailID = plngOutputEmailID
-		mstrOutputEmailName = GetEmailGroupName(mlngOutputEmailID)
-		mstrOutputEmailSubject = pstrOutputEmailSubject
-		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-		OutputFilename = pstrOutputFilename
 
 	End Function
 

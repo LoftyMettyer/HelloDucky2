@@ -214,14 +214,6 @@
 		if fok then fok = fNotCancelled
 	end if
 
-	' Need to pass in defined output options 
-	'	(standard cross tab reads from definition, which of course we don't have in a standard report)
-	if fok then
-		fok = objCrossTab.SetAbsenceBreakDownDefaultOutputOptions(bOutputPreview, lngOutputFormat, pblnOutputScreen, pblnOutputPrinter, pstrOutputPrinterName, pblnOutputSave, plngOutputSaveExisting, pblnOutputEmail, plngOutputEmailID, pstrOutputEmailName, pstrOutputEmailSubject, pstrOutputEmailAttachAs, pstrOutputFilename)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if		
-
 		Session("objCrossTab" & Session("utilid")) = objCrossTab
 
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)

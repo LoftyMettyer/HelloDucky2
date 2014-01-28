@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
@@ -8,11 +9,7 @@
 <%		
 	Dim objCrossTab As CrossTab
 	Dim intCount As Integer
-	Dim strCrossTabName As String
 	Dim lngCount As Long
-	Dim objUser As HR.Intranet.Server.clsSettings
-	Dim lngLoopMin As Long
-	Dim lngLoopMax As Long
 	Dim strEmailAddresses As String
 	Dim sErrorDescription As String
 
@@ -95,7 +92,6 @@
 		'Initalise Grid
 
 		objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
-		strCrossTabName = CleanStringForJavaScript(Replace(objCrossTab.CrossTabName, "&", "&&"))
 
 		Response.Write("  colNames.push('');" & vbCrLf)
 		Response.Write("	colMode.push({ name: '', classes: 'ui-state-default ui-widget-content ui-state-default ui-widget-header ui-state-default' });" & vbCrLf)
@@ -111,7 +107,7 @@
 			
 		Next
 
-		If objCrossTab.CrossTabType <> 3 Then
+		If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 			If Session("CT_Mode") = "LOAD" Then
 				Session("CT_ShowPercentage") = objCrossTab.ShowPercentage
 				Session("CT_PercentageOfPage") = objCrossTab.PercentageOfPage
@@ -120,11 +116,12 @@
 				Session("CT_Use1000") = objCrossTab.Use1000Separator
 				Session("CT_PageNumber") = 0
 			End If
-			
+
 			Response.Write("  colNames.push('" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "');" & vbCrLf)
 			Response.Write("	colMode.push({ name: '" & objCrossTab.IntersectionTypeValue(Session("CT_IntersectionType")) & "', cellattr: function(rowId, value, rowObject, colModel, arrData) { return 'style=""text-align: right;""'; } });" & vbCrLf)
 
 		End If
+
 	End If
 
 
@@ -178,7 +175,7 @@
 
 
 		' JDM - Fault 4849 - Disable these controls in absence breakdown mode
-		If objCrossTab.CrossTabType = 3 Then
+		If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
 			Response.Write("  CrossTabPage.style.visibility = ""hidden"" ;" & vbCrLf)
 			Response.Write("  chkPercentPage.style.visibility = ""hidden"" ;" & vbCrLf)
 			Response.Write("  chkPercentType.style.visibility = ""hidden"" ;" & vbCrLf)
@@ -188,12 +185,12 @@
 	End If
 
 
-	If Session("CT_Mode") = "LOAD" Then
-		If objCrossTab.OutputPreview = False Then
-			Response.Write("        frmGetReportData.txtEmailGroupID.value = frmExportData.txtEmailAddr.value;" & vbCrLf)
-			Response.Write("        ExportData(""EMAILGROUPTHENCLOSE"");" & vbCrLf)
-		End If
-	End If
+	'If Session("CT_Mode") = "LOAD" Then
+	'	If objCrossTab.OutputPreview = False Then
+	'		Response.Write("        frmGetReportData.txtEmailGroupID.value = frmExportData.txtEmailAddr.value;" & vbCrLf)
+	'		Response.Write("        ExportData(""EMAILGROUPTHENCLOSE"");" & vbCrLf)
+	'	End If
+	'End If
 
 
 	'**************************************
