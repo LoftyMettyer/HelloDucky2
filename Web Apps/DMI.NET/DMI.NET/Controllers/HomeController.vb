@@ -979,34 +979,24 @@ Namespace Controllers
 							sTitle = sTitle & " for " & sRecDesc
 						End If
 					Else
-						Dim cmdGetPageTitle = CreateObject("ADODB.Command")
-						cmdGetPageTitle.CommandText = "spASRIntGetPageTitle"
-						cmdGetPageTitle.CommandType = 4	' Stored procedure
-						cmdGetPageTitle.ActiveConnection = Session("databaseConnection")
 
-						Dim prmTableID = cmdGetPageTitle.CreateParameter("TableID", 3, 1)
-						cmdGetPageTitle.Parameters.Append(prmTableID)
-						prmTableID.value = CleanNumeric(Session("TableID"))
+						Try
 
-						Dim prmViewID = cmdGetPageTitle.CreateParameter("ViewID", 3, 1)
-						cmdGetPageTitle.Parameters.Append(prmViewID)
-						prmViewID.value = CleanNumeric(Session("ViewID"))
+							Dim prmPageTitle = New SqlParameter("psPageTitle", SqlDbType.VarChar, 200) With {.Direction = ParameterDirection.Output}
 
-						Dim prmPageTitle = cmdGetPageTitle.CreateParameter("PageTitle", 200, 2, 200) ' 200=varchar, 2=output, 200=size
-						cmdGetPageTitle.Parameters.Append(prmPageTitle)
-						Err.Clear()
-						cmdGetPageTitle.Execute()
+							objDataAccess.ExecuteSP("spASRIntGetPageTitle" _
+								, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TableID"))} _
+								, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ViewID"))} _
+								, prmPageTitle)
 
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Error getting the page title." & vbCrLf & FormatError(Err.Description)
-						Else
-							sTitle = Replace(cmdGetPageTitle.Parameters("PageTitle").Value, "_", " ")
-						End If
+							sTitle = Replace(prmPageTitle.Value.ToString(), "_", " ")
 
-						cmdGetPageTitle = Nothing
+						Catch ex As Exception
+							sErrorDescription = "Error getting the page title." & vbCrLf & FormatError(ex.Message)
+
+						End Try
 					End If
 
-					' sTitle = Server.UrlEncode(sTitle)
 					ViewBag.pageTitle = sTitle
 				End If
 
@@ -1014,38 +1004,28 @@ Namespace Controllers
 
 					If NullSafeInteger(Session("SSILinkViewID")) > -1 Then
 
-						Dim cmdGetViewName = CreateObject("ADODB.Command")
-						cmdGetViewName.CommandText = "spASRIntGetViewName"
-						cmdGetViewName.CommandType = 4 ' Stored procedure
-						cmdGetViewName.ActiveConnection = Session("databaseConnection")
+						Try
+							sViewName = ""
 
-						Dim prmViewID = cmdGetViewName.CreateParameter("ViewID", 3, 1)
-						cmdGetViewName.Parameters.Append(prmViewID)
+							Dim prmViewName = New SqlParameter("psViewName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+							Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int)
 
-						If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And _
-							(Session("linkType") <> "multifind") Then
-							prmViewID.value = CleanNumeric(Session("SSILinkViewID"))
-						Else
-							prmViewID.value = CleanNumeric(Session("SingleRecordViewID"))
-						End If
-
-						Dim prmViewName = cmdGetViewName.CreateParameter("ViewName", 200, 2, 255)
-						cmdGetViewName.Parameters.Append(prmViewName)
-
-						Err.Clear()
-						cmdGetViewName.Execute()
-
-						If (Err.Number <> 0) Then
-							sErrorDescription = "Error getting the link view name." & vbCrLf & FormatError(Err.Description)
-						Else
-							If Not IsDBNull(cmdGetViewName.Parameters("ViewName").Value) Then
-								sViewName = Replace(cmdGetViewName.Parameters("ViewName").Value, "_", " ")
+							If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And (Session("linkType") <> "multifind") Then
+								prmViewID.Value = CleanNumeric(Session("SSILinkViewID"))
 							Else
-								sViewName = ""
+								prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
 							End If
-						End If
 
-						cmdGetViewName = Nothing
+							objDataAccess.ExecuteSP("spASRIntGetViewName", prmViewID, prmViewName)
+
+							If Not IsDBNull(prmViewName.Value) Then
+								sViewName = Replace(prmViewName.Value.ToString(), "_", " ")
+							End If
+
+						Catch ex As Exception
+							sErrorDescription = "Error getting the link view name." & vbCrLf & FormatError(ex.Message)
+
+						End Try
 
 					Else
 
