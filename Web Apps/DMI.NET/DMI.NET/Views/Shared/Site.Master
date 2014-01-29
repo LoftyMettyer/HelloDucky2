@@ -276,9 +276,15 @@
 		}
 
 		}
-			
-			//Apply ajax please wait message
-			$(document).ajaxStart(function () {
+		//Save some cookies we will need in other parts of the system
+		setCookie("SSIMode", SSIMode, 100);
+		setCookie("currentLayout", "<%=currentLayout%>", 100);
+		setCookie("currentTheme", currentTheme, 100);
+		setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
+		setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
+
+		//Apply ajax please wait message
+		$(document).ajaxStart(function () {
 			$("body").addClass("loading");
 		});
 

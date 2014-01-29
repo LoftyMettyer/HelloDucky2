@@ -2,19 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <script runat="server">
-	Private UITheme As String = ""
-	
-	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-		Select Case Request.Cookies("Intranet_Layout").Value
-			Case "winkit"
-				UITheme = Session("ui-theme").ToString
-			Case "wireframe"
-				UITheme = Session("ui-wireframe-theme").ToString
-			Case Else 'Tiles
-				UITheme = "jMetro"
-		End Select
-	End Sub
-	
 	Private Function GetEmailSelection() As String
 		Dim emailSelectionHtmlTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
 
@@ -65,15 +52,14 @@
 <html>
 <head>
 	<title>OpenHR Intranet</title>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script id="Script1" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>\
 	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	<link id="Link1" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
@@ -86,6 +72,56 @@
 
 	<script type="text/javascript">
 		window.onload = function () {
+			//Get some cookies that we need to determine the CSS to apply
+			var SSIMode = OpenHR.getCookie("SSIMode");
+			var currentLayout = OpenHR.getCookie("currentLayout");
+			var currentTheme = OpenHR.getCookie("currentTheme");
+			var cookiewireframeTheme = OpenHR.getCookie("cookiewireframeTheme");
+			var cookieapplyWireframeTheme = OpenHR.getCookie("cookieapplyWireframeTheme");
+
+			if (($("#fixedlinksframe").length > 0) && (currentLayout != "winkit"))
+				$("link[id=DMIthemeLink]").attr({ href: "" });
+
+			//The logic below is taken from Site.Master, it should be abstracted somewhere else, but no time to do that now
+			if (SSIMode != "True") {
+				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
+				$('body').addClass('DMI');
+			} else {
+				switch (OpenHR.getCookie("Intranet_Layout")) {
+				case "winkit":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					break;
+				case "wireframe":
+					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
+
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					break;
+				case "tiles":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					break;
+				}
+
+				switch (currentTheme) {
+				case "red":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+					break;
+				case "blue":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+					break;
+				case "white":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+				default:
+					break;
+				}
+			}
+
 			var iResizeBy, iNewWidth, iNewHeight;
 
 			// Resize the popup.
