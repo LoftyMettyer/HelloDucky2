@@ -67,6 +67,7 @@
 				modal: true,
 				width: 'auto',
 				height: 'auto',
+				close: Cancel,
 				closeOnEscape: false,
 				open: function (event, ui) {
 					$(".ui-dialog-titlebar-close", ui.dialog || ui).hide();
@@ -309,7 +310,7 @@
 		}, 100);
 	}
 
-	function Cancel() {
+	function Cancel() {		
 		var bOK;
 		var iAnswer;
 		var frmFindForm = document.getElementById('frmFindForm');
