@@ -99,10 +99,12 @@ body
 {
 	position: fixed;
 	left: 0;
-	width: 220px;
+	width: 290px;
+	padding-top: 10px;
 	top: 170px;
 	bottom: 50px;
 	overflow: auto;
+	
 	
 	/*height: 100%;
 	width: 220px;
@@ -120,6 +122,7 @@ body
 	margin: 0px;
 	display: block;
 	cursor: default;
+	padding-left: 10px;
 }
 
 .hypertextlinkseparatorframe 
@@ -128,9 +131,10 @@ body
 	 padding: 0px;
 	 border-style: solid;
 	 border-width: 2px;
+	 height: 99.5%;
 }
 															
-.hypertextlinkseparatorframe ul {padding: 0px;}
+.hypertextlinkseparatorframe ul {padding: 0 0 0 10px;}
 
 .hypertextlink-displaytype
 {
@@ -270,12 +274,20 @@ body
 
 
 
-.dropdownlinks 
+.dropdownlinks
 {
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
-	padding-bottom: 20px;
+	padding: 10px;
+	background: rgb(26,130,247); 
+	background: -moz-radial-gradient(center, ellipse cover, rgba(26,130,247,1) 0%, rgba(125,185,232,1) 100%); 
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(26,130,247,1)), color-stop(100%,rgba(125,185,232,1))); 
+	background: -webkit-radial-gradient(center, ellipse cover, rgba(26,130,247,1) 0%,rgba(125,185,232,1) 100%); 
+	background: -o-radial-gradient(center, ellipse cover, rgba(26,130,247,1) 0%,rgba(125,185,232,1) 100%);
+	background: -ms-radial-gradient(center, ellipse cover, rgba(26,130,247,1) 0%,rgba(125,185,232,1) 100%); 
+	background: radial-gradient(ellipse at center, rgba(26,130,247,1) 0%,rgba(125,185,232,1) 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a82f7', endColorstr='#7db9e8',GradientType=1 ); 
 }
 
 .DropdownlistSelect {
