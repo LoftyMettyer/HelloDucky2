@@ -423,7 +423,7 @@ table.calendarcell
 
 .ContextMenu-panel .ContextMenu-tab
 {
-	width: 15px;
+	width: 30px;
 	position: absolute;
 	top: 0px;
 	bottom: 0px;
@@ -444,7 +444,7 @@ table.calendarcell
 .ContextMenu-panel .ContextMenu-content {
 	position: absolute;
 	left: 0px;
-	right: 15px;
+	right: 30px;
 	top: 0px;
 	bottom:0px;
 	overflow: auto;
@@ -707,7 +707,7 @@ header {
 .absolutefull {
 	position: absolute;
 	top: 0;
-	left: 0;
+	left: 0px ;
 	right: 0;
 	bottom: 40px;
 	padding-right: 20px;
