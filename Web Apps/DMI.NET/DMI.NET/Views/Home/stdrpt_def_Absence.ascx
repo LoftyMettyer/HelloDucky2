@@ -118,8 +118,9 @@
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
 	Response.Write("function SetReportDefaults(){" & vbCrLf)
-	Response.Write("   var frmAbsenceDefinition = OpenHR.getForm(""frmAbsenceDefinitiontabs"",""frmAbsenceDefinition"");" & vbCrLf)
-		
+	Response.Write("   	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];" & vbCrLf)
+	Response.Write("   	var frmPostDefinition = $('#frmPostDefinition')[0];" & vbCrLf)
+	
 	' Type of standard report being run
 	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 		strReportType = "BradfordFactor"
@@ -287,7 +288,6 @@
 	Response.Write("frmAbsenceDefinition.chkDestination2.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Save", 0)) & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtFilename.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "FileName", "")) & """" & ";" & vbCrLf)
 
-	Response.Write("populateSaveExisting();" & vbCrLf)
 	Select Case objSettings.GetSystemSetting(strReportType, "SaveExisting", 0)
 		Case 0
 			strSaveExisting = "Overwrite"
@@ -828,11 +828,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
 															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
-																onclick="formatAbsenceClick(5);"
-																onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																onfocus="try{radio_onFocus(this);}catch(e){}"
-																onblur="try{radio_onBlur(this);}catch(e){}" />
+																onclick="formatAbsenceClick(5);" />
 														</td>
 														<td>
 															<label
@@ -1065,29 +1061,11 @@
 		<input type="hidden" id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
 		<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 		<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
+
+		<input type="hidden" id="txtAction" name="txtAction" value="<%=Session("action")%>">
+		<input type="hidden" id="txtUtilID" name="txtUtilID" value='<%=session("utilid")%>'>	
 </form>
 </div>
-
-<form id="frmAbsenceUseful" name="frmAbsenceUseful" style="visibility: hidden; display: none">
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-	<input type="hidden" id="txtLoading" name="txtLoading" value="Y">
-	<input type="hidden" id="txtCurrentBaseTableID" name="txtCurrentBaseTableID">
-	<input type="hidden" id="txtCurrentChildTableID" name="txtCurrentChildTableID" value="0">
-	<input type="hidden" id="txtTablesChanged" name="txtTablesChanged">
-	<input type="hidden" id="txtSelectedColumnsLoaded" name="txtSelectedColumnsLoaded" value="0">
-	<input type="hidden" id="txtSortLoaded" name="txtSortLoaded" value="0">
-	<input type="hidden" id="txtRepetitionLoaded" name="txtRepetitionLoaded" value="0">
-	<input type="hidden" id="txtChildsLoaded" name="txtChildsLoaded" value="0">
-	<input type="hidden" id="txtChanged" name="txtChanged" value="0">
-	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<%=session("utilid")%>'>
-	<input type="hidden" id="txtChildCount" name="txtChildCount" value='<%=session("childcount")%>'>
-	<input type="hidden" id="txtHiddenChildFilterCount" name="txtHiddenChildFilterCount" value='<%=session("hiddenfiltercount")%>'>
-	<input type="hidden" id="txtLockGridEvents" name="txtLockGridEvents" value="0">
-	<%
-		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-		Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
-	%>
-</form>
 
 <form action="util_run_promptedvalues" target="string(15)" method="post" id="frmPostDefinition" name="frmPostDefinition">
 	<input type="hidden" id="txtRecordSelectionType" name="txtRecordSelectionType">
@@ -1116,7 +1094,7 @@
 	<input type="hidden" id="txtPrintFPinReportHeader" name="txtPrintFPinReportHeader">
 	<input type="hidden" id="txtRecSelCurrentID" name="txtRecSelCurrentID" value='<%=Session("optionRecordID")%>'>
 	<input type="hidden" id="utiltype" name="utiltype" value='<%=Session("StandardReport_Type")%>'>
-	<input type="hidden" id="utilid" name="utilid" value="0">
+	<input type="hidden" id="utilid" name="utilid" value='<%=session("utilid")%>'>
 	<input type="hidden" id="utilname" name="utilname" value="Standard Report">
 	<input type="hidden" id="action" name="action" value="run">
 	<input type="hidden" id="txtSend_OutputPreview" name="txtSend_OutputPreview">
@@ -1133,11 +1111,10 @@
 	<input type="hidden" id="txtSend_OutputFilename" name="txtSend_OutputFilename">
 	<input type="hidden" id="txtFilterName" name="txtFilterName">
 	<input type="hidden" id="txtPicklistName" name="txtPicklistName">
-</form>
-
-<!-- Stuff required to make record selection stuff work -->
-<form id="frmCustomReportStuff" name="frmCustomReportStuff">
-	<input type="hidden" id="baseHidden" name="baseHidden">
+	<% 	
+		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
+		Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)
+	%>
 </form>
 
 <form id="frmEmailSelection" name="frmEmailSelection" target="emailSelection" action="util_emailSelection.asp" method="post" style="visibility: hidden; display: none">
@@ -1149,6 +1126,7 @@
 	<input type="hidden" id="recSelType" name="recSelType">
 	<input type="hidden" id="recSelTableID" name="recSelTableID">
 	<input type="hidden" id="recSelCurrentID" name="recSelCurrentID" value='<%=Session("optionRecordID")%>'>
+	<input type="hidden" id="baseHidden" name="baseHidden" value="N">
 </form>
 
 <form action="default_submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
@@ -1163,27 +1141,10 @@
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
 
-<form id="frmSessionInformation" name="frmSessionInformation" style="visibility: hidden; display: none">
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-	<input type="hidden" id="txtLoading" name="txtLoading" value="Y">
-	<input type="hidden" id="txtChanged" name="txtChanged" value="0">
-	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("StandardReport_Type")%>'>
-	<%
-			
-
-		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
-		Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)
-					
-	%>
-</form>
 
 <script type="text/javascript">
 	stdrpt_def_absence_window_onload();
 
-	// doesn't yet work.TODO
-//	menu_toolbarEnableItem("mnutillRunUtil", true);
-
-	
 	menu_setVisibleMenuItem("mnutoolNewReportFind", false);
 	menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
 	menu_setVisibleMenuItem("mnutoolEditReportFind", false);
@@ -1195,10 +1156,9 @@
 	
 	//only display the 'close' button for defsel when called from rec edit...
 	<% If Not Session("optionRecordID") = "0" Then%>
-	menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-	menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+		menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+		menu_toolbarEnableItem('mnutoolCloseReportFind', true);
 	<% End If%>
-
 
 	// Show and select the tab
 	$("#toolbarReportFind").parent().show();
