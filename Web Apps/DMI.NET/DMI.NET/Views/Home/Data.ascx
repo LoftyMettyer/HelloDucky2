@@ -714,7 +714,7 @@
 							If rstRecord.Columns(iloop).DataType.ToString().ToLower = "system.byte[]" Then
 								oleColumnData.Add(rstRecord.Columns(iloop).ColumnName)
 							Else
-								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Replace(objRow(iloop).ToString(), """", "&quot;") & "'>" & vbCrLf)
+								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Html.Encode(objRow(iloop).ToString()) & "'>" & vbCrLf)
 							End If
 						End If
 					Next
@@ -811,8 +811,8 @@
 			End Try
 			
 		End If
-		
-		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Replace(sRecDesc, """", "&quot;") & "'>" & vbCrLf)
+				
+		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Html.Encode(sRecDesc) & "'>" & vbCrLf)
 	Else
 		Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
 		Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)

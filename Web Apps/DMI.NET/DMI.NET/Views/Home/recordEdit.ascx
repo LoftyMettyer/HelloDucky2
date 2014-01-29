@@ -738,7 +738,7 @@
 			
 			iloop = 1
 			For Each objRow As DataRow In rstScreenControlValues.Rows
-				Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Replace(objRow("valueDefinition").ToString(), """", "&quot;") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Html.Encode(objRow("valueDefinition").ToString()) & "'>" & vbCrLf)
 				iloop += 1
 			Next
 			
