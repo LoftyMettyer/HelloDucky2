@@ -17,7 +17,7 @@
 %>
 
 <script type="text/javascript">
-	function emptyoption_onload() {
+	function emptyoption_onload() {		
 		var fNoAction;
 		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource").replace(".asp", ""); //OpenHR.currentWorkPage();
 		var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
@@ -45,7 +45,8 @@
 					var txtOverlapFails = div.querySelector("#txtOverlapFails");
 					var txtOverBookFails = div.querySelector("#txtOverBookFails");
 					var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
-
+					var txtErrorMessage = div.querySelector("#txtErrorMessage");
+				
 				if (txtAction.value == "SELECTORDER") {
 					fNoAction = false;
 
@@ -148,22 +149,24 @@
 				}
 
 				if (txtAction.value == "LINKOLE") {
-					fNoAction = false;
-					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
-					if (txtFileValue.value.length > 0) {						
-						// set the new photo value if applicable.
-						$('#txtData_' + txtColumnID.value).attr('data-Img', txtFileValue.value);
+					if (txtErrorMessage.value == "") {
+						fNoAction = false;
+						recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
+						if (txtFileValue.value.length > 0) {
+							// set the new photo value if applicable.
+							$('#txtData_' + txtColumnID.value).attr('data-Img', txtFileValue.value);
+						}
+
+						recEdit_setData(txtColumnID.value, txtFile.value);
+
+						$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
+						$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+
+						//Update the ID badge picture
+						$("#UserPicture").attr("src", "<%=Session("SelfServicePhotograph_src")%>");
+
+						menu_refreshMenu();
 					}
-
-					recEdit_setData(txtColumnID.value, txtFile.value);
-
-					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
-					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-					
-					//Update the ID badge picture
-					$("#UserPicture").attr("src", "<%=Session("SelfServicePhotograph_src")%>");
-					
-					menu_refreshMenu();
 				}
 
 
@@ -382,10 +385,10 @@
 					menu_refreshMenu();
 					menu_refreshMenu(); //A second call to menu_RefreshMenu fixes the problem reported in the notes by Craig in Jira http://tcjira01:8080/browse/HRPRO-3140; don't ask me why it fixes it, it just does!
 				}
-
-				// Fault 3503
+				
 				if (sCurrentWorkFramePage == "RECORDEDIT") {
-					//OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit.refreshSize();
+					//display any errors that may have occurred:
+					if (txtErrorMessage.value.length > 0) alert(txtErrorMessage.value);
 				}
 			}
 		}

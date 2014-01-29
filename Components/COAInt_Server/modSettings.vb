@@ -138,7 +138,7 @@ Module modSettings
 
     With objErr
       strErrorText = vbCrLf & vbCrLf & "Runtime error in COAInt_Server.DLL" & vbCrLf & "Error number: " & Err.Number & vbCrLf & "Error description: " & Err.Description & vbCrLf & vbCrLf & "Procedure: " & strProcedureName & vbCrLf & "Line: " & lngErrLine & vbCrLf & "Thread Id: " & System.Threading.Thread.CurrentThread.ManagedThreadId
-      My.Application.Log.WriteEntry(strErrorText, System.Diagnostics.TraceEventType.Error)
+			'My.Application.Log.WriteEntry(strErrorText, System.Diagnostics.TraceEventType.Error)
     End With
   End Sub
 End Module

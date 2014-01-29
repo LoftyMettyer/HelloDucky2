@@ -6023,7 +6023,13 @@ Namespace Controllers
 						.DisplayFilename = Request.Form("txtOLEJustFileName")
 						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
 						.OLEModifiedDate = Request.Form("txtOLEModifiedDate")
-						.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+						Dim oleErrorResponse As String = .SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+
+						If oleErrorResponse.Length > 0 Then
+							oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+						End If
+						Session("errorMessage") = oleErrorResponse
+
 						If .OLEType = 2 Then
 							Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
 						Else

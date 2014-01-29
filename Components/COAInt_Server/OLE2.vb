@@ -411,9 +411,9 @@ Public Class Ole
 	End Sub
 
 	' Commit the file back to the database
-	Public Function SaveStream(ByRef plngRecordID As Integer, ByRef plngColumnID As Integer, ByRef pstrRealSource As String, ByRef pbReadOLEDirect As Boolean, ByVal buffer As Byte()) As Boolean
+	Public Function SaveStream(ByRef plngRecordID As Integer, ByRef plngColumnID As Integer, ByRef pstrRealSource As String, ByRef pbReadOLEDirect As Boolean, ByVal buffer As Byte()) As String
 
-		Dim bOK As Boolean = True
+		Dim strErrMessage As String = ""
 		Dim strOLEType As String
 		Dim bUpdateField As Boolean = False
 		Dim mfileToEmbed As Byte()
@@ -471,16 +471,14 @@ Public Class Ole
 			DB.ExecuteSP("spASRUpdateOLEField_" & plngColumnID, prmCurrentID, prmBlob)
 
 		Catch ex As Exception
-			bOK = False
-			ProgramError("SaveStream", Err, Erl())
-
+			' ProgramError("SaveStream", Err, Erl())
+			strErrMessage = ex.Message
 		End Try
 
-		Return bOK
+		Return strErrMessage
 
 	End Function
-
-
+	
 	' Extracts just the filename from a path
 	Private Function GetFileNameOnly(ByRef pstrFilePath As String) As String
 
