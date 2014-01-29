@@ -739,16 +739,12 @@ Namespace Controllers
 				' =========================
 				' Self-service Find request
 				' =========================
-				Dim lngTopLevelRecordID
-				Dim sTableName
-				Dim sViewName
-				'NPG20081401 Fault 12868
-				Dim dblPreviousColumnWidth
+				Dim lngTopLevelRecordID As Integer
+				Dim sTableName As String
+				Dim sViewName As String
+
 				Dim objUser As New clsSettings
 				objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
-				Dim iRETRIES = 5
-				Dim iRetryCount = 0
 				Dim sErrorDescription = ""
 
 				Dim iRealTableID = 0
@@ -867,97 +863,34 @@ Namespace Controllers
 				End If
 
 				Dim sRecDesc = ""
-				If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And _
-					(Len(sErrorDescription) = 0) Then
+				If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) And (Len(sErrorDescription) = 0) Then
 
+					Try
 
-					Dim cmdGetRecordDesc = CreateObject("ADODB.Command")
-					cmdGetRecordDesc.CommandText = "spASRIntGetRecordDescriptionInView"
-					cmdGetRecordDesc.CommandType = 4 ' Stored procedure
-					cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+						Dim prmRecordDesc As New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmErrorMessage As New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-					Dim prmViewID = cmdGetRecordDesc.CreateParameter("viewID", 3, 1) ' 3 = integer, 1 = input
-					cmdGetRecordDesc.Parameters.Append(prmViewID)
-					prmViewID.value = CleanNumeric(Session("SSILinkViewID"))
+						objDataAccess.ExecuteSP("spASRIntGetRecordDescriptionInView" _
+								, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("SSILinkViewID"))} _
+								, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+								, New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = 0} _
+								, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+								, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+								, prmRecordDesc _
+								, prmErrorMessage)
 
-					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
-					cmdGetRecordDesc.Parameters.Append(prmTableID)
-					prmTableID.value = CleanNumeric(Session("tableID"))
-
-					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
-					cmdGetRecordDesc.Parameters.Append(prmRecordID)
-					prmRecordID.value = 0
-
-					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
-					cmdGetRecordDesc.Parameters.Append(prmParentTableID)
-					prmParentTableID.value = CleanNumeric(Session("parentTableID"))
-
-					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
-					cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
-					prmParentRecordID.value = CleanNumeric(Session("parentRecordID"))
-
-					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 2147483646)
-					cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
-
-					Dim prmErrorMessage = cmdGetRecordDesc.CreateParameter("errorMessage", 200, 2, 2147483646)
-					cmdGetRecordDesc.Parameters.Append(prmErrorMessage)
-
-					Dim fOK = True
-					Dim fDeadlock = True
-					Do While fDeadlock
-						fDeadlock = False
-
-						cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-						cmdGetRecordDesc.Execute()
-						Dim sErrMsg As String
-
-						If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
-							For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-								sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-
-								If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
-									(((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
-										(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
-									((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
-										(InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
-									' The error is for a deadlock.
-									' Sorry about having to use the err.description to trap the error but the err.number
-									' is not specific and MSDN suggests using the err.description.
-									If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
-										iRetryCount = iRetryCount + 1
-										fDeadlock = True
-									Else
-										If Len(sErrorDescription) > 0 Then
-											sErrorDescription = sErrorDescription & vbCrLf
-										End If
-										sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
-										fOK = False
-									End If
-								Else
-									sErrorDescription = sErrorDescription & vbCrLf & _
-										FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
-									fOK = False
-								End If
-							Next
-
-							cmdGetRecordDesc.ActiveConnection.Errors.Clear()
-
-							If Not fOK Then
-								sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
-							End If
-						End If
-					Loop
-
-					If (Len(sErrorDescription) = 0) Then
-						If (Len(cmdGetRecordDesc.Parameters("errorMessage").Value) > 0) Then
-							sErrorDescription = "Unable to get the record description." & vbCrLf & cmdGetRecordDesc.Parameters("errorMessage").Value
+						If prmErrorMessage.Value.ToString().Length > 0 Then
+							sErrorDescription = "Unable to get the record description." & vbCrLf & prmErrorMessage.Value.ToString()
 						Else
-							sRecDesc = cmdGetRecordDesc.Parameters("recordDesc").Value
+							sRecDesc = prmRecordDesc.Value.ToString()
 						End If
-					End If
 
-					cmdGetRecordDesc = Nothing
+					Catch ex As Exception
+						sErrorDescription = "Unable to get the record description." & vbCrLf & ex.Message
+
+					End Try
+
+
 				End If
 
 				If (Len(sErrorDescription) = 0) Then
@@ -2019,22 +1952,14 @@ Namespace Controllers
 				Try
 
 					' Get the record description.
-					Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int)
-					prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))
+					Dim prmRecordDesc = New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-					Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
-					prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
-
-					Dim prmParentTableID = New SqlParameter("piParentTableID", SqlDbType.Int)
-					prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
-
-					Dim prmParentRecordID = New SqlParameter("piParentRecordID", SqlDbType.Int)
-					prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
-
-					Dim prmRecordDesc = New SqlParameter("psRecDesc", SqlDbType.VarChar, 255, ParameterDirection.Output)
-					prmRecordDesc.Value = ""
-
-					objDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription", prmTableID, prmRecordID, prmParentTableID, prmParentRecordID, prmRecordDesc)
+					objDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription" _
+							, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TableID"))} _
+							, New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TopLevelRecID"))} _
+							, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+							, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+							, prmRecordDesc)
 
 					sViewDescription = prmRecordDesc.Value
 
@@ -2055,6 +1980,8 @@ Namespace Controllers
 
 				End Try
 
+			Else
+				Session("ViewDescription") = "My Dashboard"
 			End If
 
 

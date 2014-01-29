@@ -510,5 +510,14 @@ Response.Write("				<INPUT type='hidden' id=txtErrorDescription name=txtErrorDes
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 	</form>
 
-	<script type="text/javascript"> find_window_onload();</script>
+	<script type="text/javascript">
+		find_window_onload();
+		
+		if (menu_isSSIMode()) {
+			$('.ViewDescription p').text('My Dashboard');		
+		} else {
+			$('.ViewDescription p').text('');			
+		}
+
+	</script>
 </div>
