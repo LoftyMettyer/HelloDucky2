@@ -47,7 +47,6 @@
 <script src="<%: Url.Content("~/bundles/utilities_standardreports")%>" type="text/javascript"></script>
 
 <%
-	Dim sKey As String
 		
 	' Clear the session action which is used to botch the prompted values screen in
 	Session("action") = ""
@@ -112,8 +111,8 @@
 	
 	Dim strReportType As String = "AbsenceBreakdown"
 	Dim strType As String
-	Dim lngDefaultColumnID As Long
-	Dim lngConfigColumnID As Long
+	Dim lngDefaultColumnID As Integer
+	Dim lngConfigColumnID As Integer
 	Dim strSaveExisting As String
 	
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
@@ -188,7 +187,7 @@
 	Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
 
 	' Bradford Factor specific stuff
-	If Session("StandardReport_Type") = 16 Then
+	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 		Response.Write("frmAbsenceDefinition.chkSRV.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "SRV", "0")) & ";" & vbCrLf)
 		Response.Write("frmAbsenceDefinition.chkShowDurations.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Show Totals", "1")) & ";" & vbCrLf)
 		Response.Write("frmAbsenceDefinition.chkShowInstances.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Show Count", "0")) & ";" & vbCrLf)
@@ -201,8 +200,8 @@
 		Response.Write("frmAbsenceDefinition.chkOrderBy1Asc.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Order By Asc", "1")) & ";" & vbCrLf)
 		Response.Write("frmAbsenceDefinition.chkOrderBy2Asc.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Group By Asc", "1")) & ";" & vbCrLf)
 			 
-		lngDefaultColumnID = objSettings.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSurname")
-		lngConfigColumnID = objSettings.GetSystemSetting(strReportType, "Order By", lngDefaultColumnID)
+		lngDefaultColumnID = CInt(objSettings.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSurname"))
+		lngConfigColumnID = CInt(objSettings.GetSystemSetting(strReportType, "Order By", lngDefaultColumnID))
 		'Response.Write "frmAbsenceDefinition.cboOrderBy1.value = " & """" & sFieldName & """" & ";" & vbcrlf
 		Response.Write("for (var i=0; i<frmAbsenceDefinition.cboOrderBy1.options.length; i++)" & vbCrLf)
 		Response.Write("	{" & vbCrLf)
@@ -241,7 +240,7 @@
 		Case "6"
 			'MH20031211 Fault 7787
 			'If Bradford then disallow Pivot (make it worksheet instead)
-			If Session("StandardReport_Type") = 16 Then
+			If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 				Response.Write("frmAbsenceDefinition.optOutputFormat4.checked = 1;" & vbCrLf)
 			Else
 				Response.Write("frmAbsenceDefinition.optOutputFormat6.checked = 1;" & vbCrLf)
@@ -329,7 +328,7 @@
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
 					onclick="display_Absence_Page(1);"/>
 				<%
-					If Session("StandardReport_Type") = 16 Then
+					If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 				%>
 				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
 					onclick="display_Absence_Page(2);"/>
@@ -342,7 +341,7 @@
 					onclick="display_Absence_Page(3);"/>
 				<%
 					' Causes problems if button isn't there
-					If Session("StandardReport_Type") <> 16 Then
+					If Session("StandardReport_Type") <> UtilityType.utlBradfordFactor Then
 				%>
 				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
 					onclick="display_Absence_Page(2);"/>
@@ -735,7 +734,7 @@
 													<%
 														'MH20040705
 														'Don't allow CSV for Bradford
-														If Session("StandardReport_Type") = 16 Then
+														If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
 														onclick="formatAbsenceClick(1);" />
@@ -848,7 +847,7 @@
 													<%
 														'MH20031211 Fault 7787
 														'Don't allow Pivot for Bradford
-														If Session("StandardReport_Type") = 16 Then
+														If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 													%>
 													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
 														onclick="formatAbsenceClick(6);" />

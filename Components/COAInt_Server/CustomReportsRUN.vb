@@ -165,7 +165,7 @@ Public Class Report
 
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
-			Return mblnReportHasSummaryInfo Or mbIsBradfordIndexReport
+			Return mblnReportHasSummaryInfo And Not mbIsBradfordIndexReport
 		End Get
 	End Property
 
@@ -2133,8 +2133,7 @@ DoChildOrderString_ERROR:
 
 			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The first parent table picklist contains no records."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 
 			For Each objRow As DataRow In prstTemp.Rows
@@ -2150,8 +2149,7 @@ DoChildOrderString_ERROR:
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
 			Else
 				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 		End If
 
@@ -2177,8 +2175,7 @@ DoChildOrderString_ERROR:
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
 			Else
 				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 		End If
 
@@ -2192,8 +2189,7 @@ DoChildOrderString_ERROR:
 
 			If prstTemp.Rows.Count = 0 Then
 				mstrErrorString = "The selected picklist contains no records."
-				GenerateSQLWhere = False
-				Exit Function
+				Return False
 			End If
 
 			For Each objRow As DataRow In prstTemp.Rows
@@ -2242,8 +2238,6 @@ GenerateSQLWhere_ERROR:
 		Dim pblnNoSelect As Boolean
 		Dim pblnFound As Boolean
 		Dim pstrSource As String
-		Dim pstrOrderFrom1 As String
-		Dim pstrOrderFrom2 As String
 		Dim pintNextIndex As Integer
 
 		On Error GoTo GenerateSQLOrderBy_ERROR
@@ -2281,8 +2275,6 @@ GenerateSQLWhere_ERROR:
 									ReDim Preserve mstrViews(UBound(mstrViews) + 1)
 									mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
 
-									pstrOrderFrom1 = mobjTableView.ViewName
-
 									' Check if view has already been added to the array
 									pblnFound = False
 									For pintNextIndex = 1 To UBound(mlngTableViews, 2)
@@ -2315,8 +2307,6 @@ GenerateSQLWhere_ERROR:
 						pblnNoSelect = True
 					End If
 
-				Else
-					pstrOrderFrom1 = mstrCustomReportsBaseTableName
 				End If
 
 				If pblnNoSelect Then
@@ -2354,8 +2344,6 @@ GenerateSQLWhere_ERROR:
 									ReDim Preserve mstrViews(UBound(mstrViews) + 1)
 									mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
 
-									pstrOrderFrom2 = mobjTableView.ViewName
-
 									' Check if view has already been added to the array
 									pblnFound = False
 									For pintNextIndex = 1 To UBound(mlngTableViews, 2)
@@ -2388,8 +2376,6 @@ GenerateSQLWhere_ERROR:
 						pblnNoSelect = True
 					End If
 
-				Else
-					pstrOrderFrom2 = mstrCustomReportsBaseTableName
 				End If
 
 				If pblnNoSelect Then
@@ -2400,21 +2386,6 @@ GenerateSQLWhere_ERROR:
 			End If
 			'*********************************************************************************
 
-			'TM24032004
-			'      'MH20020521 Fault 3820
-			'      'strOrder = "[" & mstrOrderByColumn & "] " & IIf(mbOrderBy1Asc = True, "Asc", "Desc")
-			'      'If Not mstrGroupByColumn = "<None>" And Not mstrGroupByColumn = mstrOrderByColumn Then
-			'      '  strOrder = strOrder & ",[" & mstrGroupByColumn & "] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
-			'      'End If
-			'      'mstrSQLOrderBy = " ORDER BY " & strOrder & ", [Personnel_ID] Asc, [Start_Date] Asc"
-			'      strOrder = "[" & pstrOrderFrom1 & "].[" & mstrOrderByColumn & "] " & IIf(mbOrderBy1Asc = True, "Asc", "Desc")
-			'      If Not mstrGroupByColumn = "None" And Not mstrGroupByColumn = mstrOrderByColumn Then
-			'        strOrder = strOrder & ", [" & pstrOrderFrom2 & "].[" & mstrGroupByColumn & "] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
-			'      End If
-			'      mstrSQLOrderBy = " ORDER BY " & strOrder & ", [Personnel_ID] Asc"
-			'      If InStr(strOrder, "[Start_Date]") = 0 Then
-			'        mstrSQLOrderBy = mstrSQLOrderBy & ", [Start_Date] Asc"
-			'      End If
 			If mlngOrderByColumnID > 0 Then
 				strOrder = "[Order_1] " & IIf(mbOrderBy1Asc = True, "Asc", "Desc")
 			End If
@@ -3427,12 +3398,14 @@ LoadRecords_ERROR:
 			mblnReportHasSummaryInfo = True
 
 			' Build Bradford Total Summary
-			aryTotalAddString(0) = vbNullString
-			aryTotalAddString(1) = vbNullString
-			aryTotalAddString(2) = vbNullString
-			aryTotalAddString(3) = vbNullString
-			aryTotalAddString(4) = vbNullString
-			aryTotalAddString(5) = vbNullString
+			If mbDisplayBradfordDetail Then
+				aryTotalAddString(0) = vbNullString
+				aryTotalAddString(1) = vbNullString
+				aryTotalAddString(2) = vbNullString
+				aryTotalAddString(3) = vbNullString
+				aryTotalAddString(4) = vbNullString
+				aryTotalAddString(5) = vbNullString
+			End If
 
 			' Add the summary lines
 			If mbBradfordCount Then
@@ -3440,6 +3413,13 @@ LoadRecords_ERROR:
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
+
+			aryTotalAddString(0) = vbNullString
+			aryTotalAddString(1) = vbNullString
+			aryTotalAddString(2) = vbNullString
+			aryTotalAddString(3) = vbNullString
+			aryTotalAddString(4) = vbNullString
+			aryTotalAddString(5) = vbNullString
 
 			If mbBradfordTotals Then
 				aryTotalAddString(10) = "Total"
@@ -3459,7 +3439,7 @@ LoadRecords_ERROR:
 
 			mintPageBreakRowIndex += 1
 
-		End If
+			End If
 
 	End Sub
 
@@ -4386,7 +4366,7 @@ GenerateSQLBradford_ERROR:
 							objReportItem.IDColumnName = "Reason"
 							objReportItem.IsHidden = False
 						Else
-							objReportItem.IDColumnName = "Summary Info"
+							objReportItem.IDColumnName = "Summary"
 							objReportItem.IsHidden = False
 						End If
 					Case 11
@@ -4593,31 +4573,6 @@ GetBradfordRecordSet_ERROR:
 		Next iLoop
 
 		Return sFormattedDate
-
-	End Function
-
-	' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
-	'    which don't exist for standard reports)
-	Public Function SetBradfordDefaultOutputOptions(pbOutputPreview As Boolean, plngOutputFormat As Long, pblnOutputScreen As Boolean, pblnOutputPrinter As Boolean _
-																									, pstrOutputPrinterName As String, pblnOutputSave As Boolean, plngOutputSaveExisting As Long, pblnOutputEmail As Boolean _
-																									, plngOutputEmailID As Long, pstrOutputEmailName As String, pstrOutputEmailSubject As String, pstrOutputEmailAttachAs As String _
-																									, pstrOutputFilename As String) As Boolean
-
-		OutputFormat = plngOutputFormat
-		OutputScreen = pblnOutputScreen
-		mblnOutputPrinter = pblnOutputPrinter
-		mstrOutputPrinterName = pstrOutputPrinterName
-		mblnOutputSave = pblnOutputSave
-		mlngOutputSaveExisting = plngOutputSaveExisting
-		mblnOutputEmail = pblnOutputEmail
-		mlngOutputEmailID = plngOutputEmailID
-		mstrOutputEmailName = GetEmailGroupName(CInt(plngOutputEmailID))
-		mstrOutputEmailSubject = pstrOutputEmailSubject
-		mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-		OutputFilename = pstrOutputFilename
-		OutputPreview = pbOutputPreview
-
-		Return True
 
 	End Function
 

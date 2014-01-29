@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
@@ -296,15 +297,6 @@
 	             		 If fok Then fok = fNotCancelled
 	             	 End If
 		
-
-	             	 ' Need to pass in defined output options 
-	             	 '	(standard report reads from definition, which of course we don't have in a standard report)
-	             	 If fok And bBradfordFactor Then
-	             		 fok = objreport.SetBradfordDefaultOutputOptions(bOutputPreview, lngOutputFormat, pblnOutputScreen, pblnOutputPrinter, pstrOutputPrinterName, pblnOutputSave, plngOutputSaveExisting, pblnOutputEmail, plngOutputEmailID, pstrOutputEmailName, pstrOutputEmailSubject, pstrOutputEmailAttachAs, pstrOutputFilename)
-	             		 fNotCancelled = Response.IsClientConnected
-	             		 If fok Then fok = fNotCancelled
-	             	 End If
-
 	             	 If fok Then
 
 	             		 If fok Then
@@ -511,7 +503,7 @@
 						objThisColumn = objReport.DisplayColumns(iCount - 2)
 
 						e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
-						bGroupWithNext = objThisColumn.GroupWithNextColumn						
+						bGroupWithNext = objThisColumn.GroupWithNextColumn
 
 					Next
 					
@@ -533,9 +525,9 @@
 					e.Row.Cells(1).Visible = False
 				End If
 
-				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 2
+				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
 						
-					objThisColumn = objReport.DisplayColumns(iCount - 1)
+					objThisColumn = objReport.DisplayColumns(iCount - 2)
 					
 					If objThisColumn.IsNumeric Then
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
@@ -543,9 +535,10 @@
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
 					End If
 
+					If Session("utiltype") = UtilityType.utlBradfordFactor Then
+						e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
+					End If
 					
-					'		e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
-									
 				Next
 				
 			End Sub
