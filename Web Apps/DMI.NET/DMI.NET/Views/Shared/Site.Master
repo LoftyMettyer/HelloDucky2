@@ -407,6 +407,8 @@
 									requiredWidth += 'px';
 									$('.tileContent').css('width', requiredWidth);
 								}
+								//reset search box...
+								$('#searchDashboardString').val('');
 							}
 						}
 					} catch (e) {
