@@ -34,13 +34,37 @@
 		}
 
 		setTimeout("wrapTileIcons();", 100);
-		
+
 		$("#fixedlinks").fadeIn("slow");
+
+		//add a little function to jQuery which allows case insensitive searches..
+		$.extend($.expr[":"], {
+			"MyCaseInsensitiveContains": function (elem, i, match, array) {
+				return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+			}
+		});
 		
+		$("#searchDashboardString").keyup(function (event) {
+			//Dashboard search functionality - tiles only.
+			var searchString = $('#searchDashboardString').val();
+
+			if (searchString.length == 0) {
+				$('.pendingworkflowlinkcontent li').css('opacity', '1');
+				$('.dropdownlinkcontent li').css('opacity', '1');
+				$('.hypertextlinkcontent li').css('opacity', '1');
+				$('.buttonlinkcontent li').css('opacity', '1');
+			} else {
+				$('.pendingworkflowlinkcontent li').css('opacity', '.1');
+				$('.dropdownlinkcontent li').css('opacity', '.1');
+				$('.hypertextlinkcontent li').css('opacity', '.1');
+				$('.buttonlinkcontent li').css('opacity', '.1');
+				$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
+				$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
+			}
 		});
 
-
-
+	});
+	
 
 	function wrapTileIcons() {
 		if (window.currentLayout == "tiles") {
@@ -62,14 +86,14 @@
 		
 		//load the themeeditor form now
 		loadPartialView("themeEditor", "home", "divthemeRoller", null);
-
 	}
-
+	
 	//why was this here?...
 	//$("#officebar").tabs();
 
 </script>
 <div id="fixedlinks">
+	<div class="dashboardSearch" id="searchBox"><span>Search: <input type="text" id="searchDashboardString"/></span></div>
 	<div class="ViewDescription">
 		<p></p>
 	</div>
