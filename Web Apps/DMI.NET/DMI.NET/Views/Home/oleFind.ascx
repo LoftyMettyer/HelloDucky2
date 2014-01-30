@@ -2,11 +2,14 @@
 
 <%Dim sErrorDescription = ""
 	Dim sDialogTitle As String
-	If Session("optionOLEReadOnly") = "true" Then
-		sDialogTitle = "Select Document (Read Only)"
+	
+	If Session("optionIsPhoto") = "true" Then
+		sDialogTitle = "Select Image File"
 	Else
-		sDialogTitle = ("Select Document")
+		sDialogTitle = "Select Document"
 	End If
+	
+	If Session("optionOLEReadOnly") = "true" Then sDialogTitle &= " (Read Only)"
 	
 %>
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
@@ -550,16 +553,19 @@
 		// Get the selected file name.
 		sFile = new String(filSelectFile.value);
 
-		//validate Photo Picture Types
-		//VB6 types only :(		
-		var fileExtension = OpenHR.GetFileExtension(filSelectFile.value).toLocaleLowerCase();
-		var validFileExtensions = ["jpg", "bmp", "gif"];
-		if (validFileExtensions.indexOf(fileExtension) == -1) {
-			//invalid extension
-			alert("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
-			return false;
-		}
+		var bIsPhoto = (document.getElementById("txtIsPhoto").value == "true");
 
+		if (bIsPhoto) {
+			//validate Photo Picture Types
+			//VB6 types only :(		
+			var fileExtension = OpenHR.GetFileExtension(filSelectFile.value).toLocaleLowerCase();
+			var validFileExtensions = ["jpg", "bmp", "gif"];
+			if (validFileExtensions.indexOf(fileExtension) == -1) {
+				//invalid extension
+				alert("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
+				return false;
+			}
+		}
 
 		//TODO: move to post
 		////If embedded file, make sure it's not any larger than the defined size		
@@ -1208,6 +1214,7 @@
 			Response.Write("<INPUT type='hidden' id='txtFFOLEType' name='txtFFOLEType' value='" & Session("optionOLEType") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEMaxEmbedSize' name='txtOLEMaxEmbedSize' value='" & Session("optionOLEMaxEmbedSize") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEReadOnly' name='txtOLEReadOnly' value='" & Session("optionOLEReadOnly") & "'>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id='txtIsPhoto' name='txtIsPhoto' value='" & Session("optionIsPhoto") & "'>" & vbCrLf)
 			
 			
 			' Create the document from the database into the temporary UNC path

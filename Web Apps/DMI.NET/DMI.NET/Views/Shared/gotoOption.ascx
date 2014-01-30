@@ -38,3 +38,4 @@
 	<INPUT type="hidden" id=txtGotoOptionOLEType name=txtGotoOptionOLEType>
 	<INPUT type="hidden" id=txtGotoOptionOLEMaxEmbedSize name=txtGotoOptionOLEMaxEmbedSize>
 	<INPUT type="hidden" id=txtGotoOptionOLEReadOnly name=txtGotoOptionOLEReadOnly>
+	<INPUT type="hidden" id=txtGotoOptionIsPhoto name=txtGotoOptionIsPhoto>

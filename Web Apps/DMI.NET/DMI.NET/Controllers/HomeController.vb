@@ -1107,6 +1107,7 @@ Namespace Controllers
 			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
 			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
 			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
+			Session("optionIsPhoto") = Request.Form("txtGotoOptionIsPhoto")
 			Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
 			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 

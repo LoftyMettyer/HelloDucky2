@@ -2741,7 +2741,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	OpenHR.submitForm(frmOptionArea);
 }
 
-	function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
+	function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly, pbIsPhoto) {
 	var frmRecEditArea;
 	var frmOptionArea;
 	
@@ -2759,7 +2759,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-
 	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -2779,6 +2778,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	frmOptionArea.txtGotoOptionOLEType.value = plngOLEType;
 	frmOptionArea.txtGotoOptionOLEMaxEmbedSize.value = plngMaxEmbedSize;
 	frmOptionArea.txtGotoOptionOLEReadOnly.value = pbIsReadOnly;
+	frmOptionArea.txtGotoOptionIsPhoto.value = pbIsPhoto;
 	frmOptionArea.txtGotoOptionLookupMandatory.value = false;
 	frmOptionArea.txtGotoOptionPage.value = "oleFind";
 	frmOptionArea.txtGotoOptionAction.value = "";

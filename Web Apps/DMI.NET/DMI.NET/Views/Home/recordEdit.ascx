@@ -520,8 +520,7 @@
 			var psFile = $(clickObj).attr('data-fileName');
 			var plngMaxEmbedSize = $(clickObj).attr('data-maxEmbedSize');
 			var pbIsReadOnly = $(clickObj).is(':disabled');
-			var frmMenuInfo = document.getElementById('frmMenuInfo');
-
+			var frmMenuInfo = document.getElementById('frmMenuInfo');			
 			var isPhoto = ($(clickObj).attr('data-controlType') == '1024');
 
 			if ($("#txtCurrentRecordID").val() == 0) {
@@ -534,7 +533,7 @@
 				if (plngOleType == 1) {
 					//TODO: assume valid for now: fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
 					if (fOK == true)
-						menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly);
+						menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 					else
 						OpenHR.messageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
 				}
@@ -549,7 +548,7 @@
 
 					//TODO: Assume valid for now:    fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLELocalPath.value);						
 					if (fOK == true) {
-						//menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly);
+						//menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 					} else
 						OpenHR.messageBox("Unable to edit local OLE fields as the OLE (Local) path is not valid.");
 				}
@@ -557,13 +556,13 @@
 					// Embedded OLE
 				else if (plngOleType == 2) {
 					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-					menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly);
+					menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 				}
 
 					// Linked OLE
 				else if (plngOleType == 3) {
 					sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
-					menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly);
+					menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 				}
 			}
 		}
