@@ -1970,7 +1970,7 @@ Namespace Controllers
 
 					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text)
 					If rowViewName.Rows.Count > 0 Then
-						sViewName = rowViewName(0).ToString()
+						sViewName = rowViewName(0)(0).ToString()
 					End If
 
 					' get the view name, and append it.
