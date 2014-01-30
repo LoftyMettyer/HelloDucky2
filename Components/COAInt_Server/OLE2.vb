@@ -182,10 +182,15 @@ Public Class Ole
 
 				' Generate the file if it's not linked
 				If _miOLEType = 2 Then
-					' TODO: content stream to client - no holding area.
+					' TODO: content stream to client - no holding area. - No need for this??? hyperlinks take care of it???
 					' mstrFileName = GenerateDocumentFromStream
 				Else
-					_mstrFileName = _mstrPath & "\" & _mstrFileName
+					If _mstrPath.Length > 0 AndAlso _mstrPath.Substring(0, 2) = "\\" Then
+						_mstrFileName = _mstrPath & "\" & _mstrFileName
+					Else
+						_mstrFileName = _mstrUnc & _mstrPath & "\" & _mstrFileName
+					End If
+
 				End If
 
 			End If
@@ -251,7 +256,7 @@ Public Class Ole
 			If _miOLEType = 2 Then
 				GetPropertiesFromStream = _mstrFileName & "::EMBEDDED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 			Else
-				If _mstrPath.Substring(0, 2) = "\\" Then
+				If _mstrPath.Length > 0 AndAlso _mstrPath.Substring(0, 2) = "\\" Then
 					GetPropertiesFromStream = _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
 				Else
 					GetPropertiesFromStream = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate & vbTab & _misPhoto.ToString()
@@ -323,7 +328,7 @@ Public Class Ole
 
 				End Try
 			Else
-				If _mstrPath.Substring(0, 2) = "\\" Then
+				If _mstrPath.Length > 0 AndAlso _mstrPath.Substring(0, 2) = "\\" Then
 					ExtractPhotoToBase64 = _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate
 				Else
 					ExtractPhotoToBase64 = _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & _mstrDocumentSize & vbTab & _mstrFileCreateDate & vbTab & _mstrFileModifyDate

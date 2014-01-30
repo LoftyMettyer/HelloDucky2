@@ -561,7 +561,11 @@
 			}
 		}
 		return '';
-	};
+		},
+		getFileExtension = function(strFilename) {
+			return strFilename.substr(strFilename.lastIndexOf('.') + 1);
+
+		};
 
 	window.OpenHR = {
 		version: version,
@@ -593,9 +597,10 @@
 		convertLocaleDateToSQL: convertLocaleDateToSQL,
 		getFileNameOnly: getFileNameOnly,
 		ConvertToUNC: ConvertToUNC,
-		GetPathOnly: GetPathOnly,
+		GetPathOnly: GetPathOnly,		
+		getCookie: getCookie,
 		CheckOLEFileNameLength: CheckOLEFileNameLength,
-		getCookie: getCookie
+		GetFileExtension: getFileExtension
 	};
 
 })(window, jQuery);

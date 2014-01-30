@@ -116,10 +116,11 @@
 					button_disable(frmFindForm.cmdLink, true);
 					button_disable(frmFindForm.cmdRemove, (frmFindForm.txtOLEReadOnly.value == 'true'));
 					setASRIntOLE1_FileName(frmGotoOption.txtOLEJustFileName.value);
-					if (frmGotoOption.txtOLEType.value == 3)
-						frmFindForm.cmdRemove.value = "Unlink";
-					else
-						frmFindForm.cmdRemove.value = "Delete";
+					if (frmGotoOption.txtOLEType.value == 3) {
+						//frmFindForm.cmdRemove.value = "Unlink";
+					} else {
+						//frmFindForm.cmdRemove.value = "Delete";
+					}
 				}
 			}
 		
@@ -159,8 +160,8 @@
 					$('#tdDescription h6').text('');
 					$('#oleCaption h3').html('Empty');
 				} else {
-					$('#tdDescription h6').text('Right click or option-click the link below and choose \'Save As...\' to download this file.');
-					$('#oleCaption h3').html('<a title="(Right click or option-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
+					$('#tdDescription h6').text('Right-click or option-click the link below and choose \'Save As...\' to download this file.');
+					$('#oleCaption h3').html('<a title="(Right-click or option-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
 				}
 				break;
 			default:
@@ -549,6 +550,17 @@
 		// Get the selected file name.
 		sFile = new String(filSelectFile.value);
 
+		//validate Photo Picture Types
+		//VB6 types only :(		
+		var fileExtension = OpenHR.GetFileExtension(filSelectFile.value).toLocaleLowerCase();
+		var validFileExtensions = ["jpg", "bmp", "gif"];
+		if (validFileExtensions.indexOf(fileExtension) == -1) {
+			//invalid extension
+			alert("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
+			return false;
+		}
+
+
 		//TODO: move to post
 		////If embedded file, make sure it's not any larger than the defined size		
 		//if ((plngOLEType == 2) && (sFile.length > 0)) {
@@ -628,9 +640,11 @@
 
 			// Change the remove button text
 			if (plngOleType == 3)
-			{ frmFindForm.cmdRemove.value = "Unlink"; }
+			{ //frmFindForm.cmdRemove.value = "Unlink"; 
+			}
 			else
-			{ frmFindForm.cmdRemove.value = "Delete"; }
+			{ //frmFindForm.cmdRemove.value = "Delete"; 
+			}
 
 			//Hide the file input box
 			$('#oleCaption').show();
@@ -773,7 +787,7 @@
 			//sFile = frmGotoOption.txtOLEJustFileName.value; // frmFindForm.ASRIntOLE1.FileName;
 			//bFileEncrypted = false;
 			frmGotoOption.txtOLECommit.value = 0;
-			alert("Right click or option-click the link shown and choose 'Save As...' to download this file.");
+			alert("Right-click or option-click the link shown and choose 'Save As...' to download this file.");
 
 			return false;
 		}
@@ -1059,7 +1073,7 @@
 										Else
 										%>
 										<td width="10">
-											<input id="cmdLink" name="cmdLink" type="button" value="Link" class="btn"
+											<input id="cmdLink" name="cmdLink" type="button" value="Link" class="btn hidden"
 												onclick="showFileUpload(3)"
 												onmouseover="try{button_onMouseOver(this);}catch(e){}"
 												onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -1148,28 +1162,12 @@
 										&nbsp;&nbsp;
 
 															<td width="10">
-																<%
-																	' Embedded / Linked
-																	If Session("optionOLEType") = 2 Then
-																%>
-																<input id="cmdRemove" name="cmdRemove" type="button" value="Delete" class="btn"
+																<input id="cmdRemove" name="cmdRemove" type="button" value="Clear" class="btn"
 																	onclick="Remove()"
 																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																	onfocus="try{button_onFocus(this);}catch(e){}"
 																	onblur="try{button_onBlur(this);}catch(e){}" />
-																<%
-																Else
-																%>
-																<input id="cmdRemove" name="cmdRemove" type="button" value="Unlink" class="btn"
-																	onclick="Remove()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
-																<%
-																End If
-																%>
 															</td>
 
 										<td width="40">&nbsp;&nbsp;
