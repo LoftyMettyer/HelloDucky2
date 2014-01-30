@@ -207,6 +207,8 @@
     <Content Include="Content\images\Chart_Popout.png" />
     <Content Include="Content\images\Default Background.jpg" />
     <Content Include="Content\images\dropdown_icon.gif" />
+    <Content Include="Content\images\OLEIcons\file_down_64.png" />
+    <Content Include="Content\images\OLEIcons\folder_64.png" />
     <Content Include="Content\images\OpenHR_Icon.ico" />
     <Content Include="Content\images\OpenHRWeb_Splash.png" />
     <Content Include="Content\images\Penfold.png" />

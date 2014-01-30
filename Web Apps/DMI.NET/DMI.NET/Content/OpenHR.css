@@ -925,3 +925,11 @@ color: #FFF;
 .pageTitleSmaller {
 	font-size: x-large;
 }
+
+input[type=button].Embed, input[type=button].Link {
+	background-image: url('../Content/images/OLEIcons/folder_64.png');
+}
+
+input[type=button].Embedded, input[type=button].Linked {
+	background-image: url('../Content/images/OLEIcons/file_down_64.png');
+}

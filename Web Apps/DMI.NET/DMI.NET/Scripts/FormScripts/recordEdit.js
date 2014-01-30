@@ -1077,7 +1077,6 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			
 			if (tabIndex > 0) button.tabindex = tabIndex;
 
-			
 			//Check if control should be disabled (read only or screen read only)
 			if (controlItemArray[40] != "0" || controlItemArray[61] != "0") {
 				button.setAttribute("disabled", "disabled");
@@ -2031,16 +2030,16 @@ function updateControl(lngColumnID, value) {
 						
 						switch (Number(oleType)) {
 							case 0:
-								strOLEType = '(Local)';
+								strOLEType = 'Local';
 								break;
 							case 1:
-								strOLEType = '(Server)';
+								strOLEType = 'Server';
 								break;
 							case 2:
-								strOLEType = (filename.length > 0 ? '(Embedded)': '(Embed)');
+								strOLEType = (filename.length > 0 ? 'Embedded' : 'Embed');
 								break;
 							case 3:
-								strOLEType = (filename.length > 0 ? '(Linked)' : '(Link)');								
+								strOLEType = (filename.length > 0 ? 'Linked' : 'Link');								
 								break;
 							default:
 								strOLEType = 'failed to load caption';
@@ -2052,7 +2051,8 @@ function updateControl(lngColumnID, value) {
 						$(this).val(strOLEType);
 						$(this).attr('title', tooltipText);
 						$(this).attr('data-fileName', filename);
-						
+						$(this).removeClass("Embed Embedded Link Linked");
+						$(this).addClass(strOLEType);
 
 
 					}
