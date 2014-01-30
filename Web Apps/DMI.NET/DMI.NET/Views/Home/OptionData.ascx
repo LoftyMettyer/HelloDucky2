@@ -42,9 +42,6 @@
 
 			Const adStateOpen = 1
 
-			Const iRETRIES = 5
-			Dim iRetryCount As Integer = 0
-			' NPG20080904 Fault 13018
 			Session("flagOverrideFilter") = False
 
 			Dim objUtilities As HR.Intranet.Server.Utilities
@@ -53,19 +50,8 @@
 			Dim sNonFatalErrorDescription As String = ""
 
 			Dim prmTableID As ADODB.Parameter
-			Dim prmViewID As ADODB.Parameter
-			Dim prmOrderID As ADODB.Parameter
 			Dim prmThousandColumns As SqlParameter
-			Dim cmdGetFindRecords As Command
 			Dim sThousandColumns As String
-
-			Dim cmdGetFilterValue As Command
-			Dim prmScreenID As ADODB.Parameter
-			Dim prmColumnID As ADODB.Parameter
-			Dim prmRecordID As ADODB.Parameter
-			Dim prmFilterValue As ADODB.Parameter
-			Dim prmParentTableID As ADODB.Parameter
-			Dim prmParentRecordID As ADODB.Parameter
 		
 			Dim iCount As Integer
 			Dim sAddString As String
@@ -82,8 +68,6 @@
 			Dim prmSelectedIDs As ADODB.Parameter
 			Dim prmPromptSQL As ADODB.Parameter
 		
-			Dim fOK As Boolean
-
 			Dim prmErrMsg As ADODB.Parameter
 			Dim cmdPicklist As Command
 			Dim prmExpectedCount As ADODB.Parameter
@@ -186,59 +170,30 @@
 				' Check if the filter value column is in the current screen.
 				' If not, try and get the filter value from the database.
 				If Len(Session("optionFilterValue")) = 0 Then
-					cmdGetFilterValue = New ADODB.Command
-					cmdGetFilterValue.CommandText = "spASRIntGetLookupFilterValue"
-					cmdGetFilterValue.CommandType = 4	' Stored procedure
-					cmdGetFilterValue.ActiveConnection = Session("databaseConnection")
 
-					prmScreenID = cmdGetFilterValue.CreateParameter("screenID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmScreenID)
-					prmScreenID.Value = CleanNumeric(Session("screenID"))
+					Dim prmFilterValue = New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+					Dim prmADOError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 
-					prmColumnID = cmdGetFilterValue.CreateParameter("LookupColumnID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmColumnID)
-					prmColumnID.Value = CleanNumeric(Session("optionColumnID"))
+					Try						
 
-					prmTableID = cmdGetFilterValue.CreateParameter("tableID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmTableID)
-					prmTableID.Value = CleanNumeric(Session("tableID"))
+						objDataAccess.ExecuteSP("spASRIntGetLookupFilterValue" _
+							, New SqlParameter("@piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))} _
+							, New SqlParameter("@piColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
+							, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+							, New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))} _
+							, New SqlParameter("@piRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+							, prmFilterValue _
+							, New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionParentTableID"))} _
+							, New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionParentRecordID"))} _
+							, prmADOError)
 
-					prmViewID = cmdGetFilterValue.CreateParameter("viewID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmViewID)
-					prmViewID.Value = CleanNumeric(Session("viewID"))
-				
-					prmRecordID = cmdGetFilterValue.CreateParameter("recordID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmRecordID)
-					prmRecordID.Value = CleanNumeric(Session("optionRecordID"))
-				
-					prmFilterValue = cmdGetFilterValue.CreateParameter("FilterValue", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-					cmdGetFilterValue.Parameters.Append(prmFilterValue)
-
-					prmParentTableID = cmdGetFilterValue.CreateParameter("ParentTableID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmParentTableID)
-					prmParentTableID.Value = CleanNumeric(Session("optionParentTableID"))
-
-					prmParentRecordID = cmdGetFilterValue.CreateParameter("ParentRecordID", 3, 1)
-					cmdGetFilterValue.Parameters.Append(prmParentRecordID)
-					prmParentRecordID.Value = CleanNumeric(Session("optionParentRecordID"))
-
-					' NPG20080904 Fault 13018
-					Dim prmADOError = cmdGetFilterValue.CreateParameter("Error", 11, 2)	' 11=bit, 2=output
-					cmdGetFilterValue.Parameters.Append(prmADOError)
-
-
-					Err.Clear()
-					cmdGetFilterValue.Execute()
-
-					If (Err.Number <> 0) Then
-						sErrorDescription = "Error reading the lookup filter value." & vbCrLf & formatError(Err.Description)
-					End If
-				
-					If Len(sErrorDescription) = 0 Then
-						Session("optionFilterValue") = cmdGetFilterValue.Parameters("FilterValue").Value
-						Session("flagOverrideFilter") = cmdGetFilterValue.Parameters("Error").Value
-						cmdGetFilterValue = Nothing
-					End If
+						Session("optionFilterValue") = prmFilterValue.Value.ToString()
+						Session("flagOverrideFilter") = prmADOError.Value
+						
+					Catch ex As Exception
+						sErrorDescription = "Error reading the lookup filter value." & vbCrLf & FormatError(Err.Description)
+					End Try
+					
 				End If
 
 				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -373,7 +328,7 @@
 			
 					
 					If Session("IsLookupTable") = "False" Then
-						Response.Write("<input type='hidden' id=txtLookupColumnGridPosition name=txtLookupColumnGridPosition value=" & cmdGetFindRecords.Parameters("LookupColumnGridPosition").Value & ">" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtLookupColumnGridPosition name=txtLookupColumnGridPosition value=" & prmLookupColumnGridPosition.Value & ">" & vbCrLf)
 					Else
 						Response.Write("<input type='hidden' id=txtLookupColumnGridPosition name=txtLookupColumnGridPosition value=0>" & vbCrLf)
 					End If
