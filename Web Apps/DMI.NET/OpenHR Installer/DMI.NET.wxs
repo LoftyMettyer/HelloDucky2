@@ -45,9 +45,6 @@
                 <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
                     <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Web.Infrastructure.dll" />
                 </Component>
-                <Component Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" Guid="*">
-                    <File Id="filB93E309871BBBB64382DAED7AC48DF75" KeyPath="yes" Source="SourceDir\bin\Newtonsoft.Json.dll" />
-                </Component>
                 <Component Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" Guid="*">
                     <File Id="filB0554C99199765789F311022C5041355" KeyPath="yes" Source="SourceDir\bin\System.Web.Helpers.dll" />
                 </Component>
@@ -363,12 +360,6 @@
                         <File Id="fil464E71D641A9870BA20739D4E3E4DBBA" KeyPath="yes" Source="SourceDir\Content\images\Utilities.gif" />
                     </Component>
                     <Directory Id="dir5553BFC53F6A00E225DFB8AF587071D9" Name="ABSLogo">
-                        <Component Id="cmpBAC20A3E99423DBB25DE8D3F9A902BFC" Guid="*">
-                            <File Id="fil93A045F5BA17D2EE074BC59D748DFB3D" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\HCM_alpha1.png" />
-                        </Component>
-                        <Component Id="cmp58B60D5ADBDFC4B49DB6F06C7415622E" Guid="*">
-                            <File Id="filB8D597F1A1C56BC0067553BA04E32A86" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\HCM_alpha2.png" />
-                        </Component>
                         <Component Id="cmpFC703A56CF89C16CF4D9E5C54D09AD08" Guid="*">
                             <File Id="filBB725D32245C06ECA959AA43327D44FC" KeyPath="yes" Source="SourceDir\Content\images\ABSLogo\OpenHRLogo.png" />
                         </Component>
@@ -2221,6 +2212,9 @@
                 <Component Id="cmpB09F13269CC3C2902BD49C715E451ADE" Guid="*">
                     <File Id="filCC6EA5C6F23ECFBF356433E339B1870A" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.23.sql" />
                 </Component>
+                <Component Id="cmpC08CA712901BEE2174EFC1B6DE5E9728" Guid="*">
+                    <File Id="filA33E695B319A3A101C29C038035B07F7" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.24.sql" />
+                </Component>
                 <Component Id="cmpAAD7E3AFD092280B63D6875285B51341" Guid="*">
                     <File Id="fil83488809882E28046EA49DF44F1326C4" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.8.sql" />
                 </Component>
@@ -3400,7 +3394,6 @@
             <ComponentRef Id="cmpB20E79993FF91609D93C6541449A6BF5" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
-            <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
             <ComponentRef Id="cmp5FFDB77ADD8BE767FEDFE1EB9C1D96AA" />
             <ComponentRef Id="cmp6A31FB8007844E13E98BD2057F458827" />
@@ -3498,8 +3491,6 @@
             <ComponentRef Id="cmpF7E32AE94E7C1EAE5ABAEAA1DD109FB1" />
             <ComponentRef Id="cmp08568DD96E55FBAA42339FE5E03A54DE" />
             <ComponentRef Id="cmp8A193E307C99D2FD3B01D6EE274E64F2" />
-            <ComponentRef Id="cmpBAC20A3E99423DBB25DE8D3F9A902BFC" />
-            <ComponentRef Id="cmp58B60D5ADBDFC4B49DB6F06C7415622E" />
             <ComponentRef Id="cmpFC703A56CF89C16CF4D9E5C54D09AD08" />
             <ComponentRef Id="cmp412783814FA08C52F9D7789F88414F42" />
             <ComponentRef Id="cmpF9D1E4DFF6FF072793AC620FED055E15" />
@@ -4088,6 +4079,7 @@
             <ComponentRef Id="cmp569B5AC4B3F222E9B91CB22EBAEE2AAB" />
             <ComponentRef Id="cmp5408484FBA9FEE551613EE775726B77A" />
             <ComponentRef Id="cmpB09F13269CC3C2902BD49C715E451ADE" />
+            <ComponentRef Id="cmpC08CA712901BEE2174EFC1B6DE5E9728" />
             <ComponentRef Id="cmpAAD7E3AFD092280B63D6875285B51341" />
             <ComponentRef Id="cmpF9018DD2E4AA33AE7B809895DF9B1F1C" />
             <ComponentRef Id="cmp19DCA78F9C64B19AB436074021EE1C27" />
