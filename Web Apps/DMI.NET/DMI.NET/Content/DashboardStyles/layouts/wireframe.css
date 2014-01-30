@@ -253,6 +253,7 @@ div.officetab li div.button .disabled {
 	margin: 0;
 	text-decoration: none;
 	padding-right: 10px;
+	padding-top: 2px;
 }
 
 .dropdownlink-displaytype {
