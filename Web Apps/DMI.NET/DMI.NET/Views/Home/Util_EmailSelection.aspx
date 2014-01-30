@@ -1,17 +1,17 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script runat="server">
 	Private Function GetEmailSelection() As String
 		Dim emailSelectionHtmlTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
-
+		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+		
 		'Get the records.
-		Dim cmdDefSelRecords = CreateObject("ADODB.Command")
-		cmdDefSelRecords.CommandText = "spASRIntGetEmailGroups"
-		cmdDefSelRecords.CommandType = 4 'Stored Procedure
-		cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
-		Err.Clear()
-		Dim rstDefSelRecords = cmdDefSelRecords.Execute
+		Dim rstDefSelRecords As DataTable = objDataAccess.GetDataTable("spASRIntGetEmailGroups", CommandType.StoredProcedure)
 
 		'Create an HTML table
 		With emailSelectionHtmlTable
@@ -24,24 +24,17 @@
 
 		'Populate the table
 		Dim i As Integer = 1
-		Do While Not rstDefSelRecords.EOF
+		For Each r As DataRow In rstDefSelRecords.Rows
 			With emailSelectionHtmlTable
 				.Append("<tr>")
-				.Append("<td id='Row" & i & "'>" & rstDefSelRecords.Fields("emailGroupID").Value & "</td>")
-				.Append("<td>" & rstDefSelRecords.Fields("name").Value.ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
+				.Append("<td id='Row" & i & "'>" & r("emailGroupID").ToString & "</td>")
+				.Append("<td>" & r("name").ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
 				.Append("</tr>")
 				i += 1
 			End With
-			rstDefSelRecords.MoveNext()
-		Loop
+		Next
 
 		emailSelectionHtmlTable.Append("</table>")
-
-		rstDefSelRecords.close()
-		rstDefSelRecords = Nothing
-
-		' Release the ADO command object.
-		cmdDefSelRecords = Nothing
 
 		Return emailSelectionHtmlTable.ToString
 	End Function
@@ -55,7 +48,7 @@
 	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>\
+	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
