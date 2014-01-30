@@ -1944,7 +1944,7 @@ Namespace Controllers
 			End If
 
 			Dim sViewDescription As String
-			Dim sViewName As String
+			Dim sViewName As String = ""
 
 			' For SSI, subordinate views
 			If NullSafeInteger(Session("SSILinkViewID")) <> NullSafeInteger(Session("SingleRecordViewID")) Then
@@ -1967,8 +1967,10 @@ Namespace Controllers
 						sViewDescription = " view - " & prmRecordDesc.Value
 					End If
 
-					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text).Rows(0)
-					sViewName = rowViewName(0).ToString()
+					Dim rowViewName = objDataAccess.GetDataTable("SELECT viewname FROM asrsysviews WHERE viewid = " & Session("SSILinkViewID"), CommandType.Text)
+					If rowViewName.Rows.Count > 0 Then
+						sViewName = rowViewName(0).ToString()
+					End If
 
 					' get the view name, and append it.
 					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & sViewDescription
