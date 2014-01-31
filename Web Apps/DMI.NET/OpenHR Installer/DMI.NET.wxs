@@ -45,6 +45,9 @@
                 <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
                     <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Web.Infrastructure.dll" />
                 </Component>
+                <Component Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" Guid="*">
+                    <File Id="filB93E309871BBBB64382DAED7AC48DF75" KeyPath="yes" Source="SourceDir\bin\Newtonsoft.Json.dll" />
+                </Component>
                 <Component Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" Guid="*">
                     <File Id="filB0554C99199765789F311022C5041355" KeyPath="yes" Source="SourceDir\bin\System.Web.Helpers.dll" />
                 </Component>
@@ -451,6 +454,14 @@
                         </Component>
                         <Component Id="cmpA035C9A2DA8C506F157280F96EF0EDBE" Guid="*">
                             <File Id="filD1AD35577325D3141E2705DCC4ED1591" KeyPath="yes" Source="SourceDir\Content\images\CalendarReports\Today_Enabled.gif" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="dirD265C91AA0CD153E5CAA3BAE70C344F1" Name="OLEIcons">
+                        <Component Id="cmpA3EE6A9999E5D25AC28F0AA0ACEAC739" Guid="*">
+                            <File Id="fil6A25E8DB5697E6C6C8855768CF05615F" KeyPath="yes" Source="SourceDir\Content\images\OLEIcons\file_down_64.png" />
+                        </Component>
+                        <Component Id="cmpC909FF261355DC261C2D04793EBC5A9B" Guid="*">
+                            <File Id="filA0890D5F4D8DB7DF1E18ED17C1770CB8" KeyPath="yes" Source="SourceDir\Content\images\OLEIcons\folder_64.png" />
                         </Component>
                     </Directory>
                 </Directory>
@@ -3394,6 +3405,7 @@
             <ComponentRef Id="cmpB20E79993FF91609D93C6541449A6BF5" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
+            <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
             <ComponentRef Id="cmp5FFDB77ADD8BE767FEDFE1EB9C1D96AA" />
             <ComponentRef Id="cmp6A31FB8007844E13E98BD2057F458827" />
@@ -3521,6 +3533,8 @@
             <ComponentRef Id="cmp9434A7F6094CEF5F4054F7E1FB361959" />
             <ComponentRef Id="cmpA40CC69D83F975C4746043EF46169D71" />
             <ComponentRef Id="cmpA035C9A2DA8C506F157280F96EF0EDBE" />
+            <ComponentRef Id="cmpA3EE6A9999E5D25AC28F0AA0ACEAC739" />
+            <ComponentRef Id="cmpC909FF261355DC261C2D04793EBC5A9B" />
             <ComponentRef Id="cmp8DE413E54FE92E0983140AFBC1E0383F" />
             <ComponentRef Id="cmpA06B6988BC11CD170DE7DD2E836E8E95" />
             <ComponentRef Id="cmp8F1623AB2129F5BAD5429C894F5F3026" />
