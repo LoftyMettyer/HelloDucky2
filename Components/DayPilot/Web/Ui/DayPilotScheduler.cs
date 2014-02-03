@@ -25,9 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
-using System.Security.Permissions;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DayPilot.Utils;
@@ -50,7 +48,6 @@ namespace DayPilot.Web.Ui
     [ParseChildren(true)]
     [DefaultProperty(null)]
     [ToolboxBitmap(typeof(Calendar))]
-    [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal), AspNetHostingPermission(SecurityAction.InheritanceDemand, Level = AspNetHostingPermissionLevel.Minimal)]
     public class DayPilotScheduler : DataBoundControl, IPostBackEventHandler
     {
         private List<Day> _days;
@@ -482,8 +479,9 @@ namespace DayPilot.Web.Ui
                 }
                 else
                 {
-                    output.Write("<div unselectable='on' style='display:block; width:" + (thisCellWidth) + "px; height:" + (d.MaxColumns()*EventHeight) + "px;' class='" + PrefixCssClass("_cell") + "'>");
-                    output.Write("</div>");
+									var cellClassName = PrefixCssClass(start.IsWeekend() ? "_weekend" : "_cell");
+	                output.Write("<div unselectable='on' style='display:block; width:" + (thisCellWidth) + "px; height:" + (d.MaxColumns() * EventHeight) + "px;' class='" + cellClassName + "'>");
+                  output.Write("</div>");
                 }
                 output.RenderEndTag();
 

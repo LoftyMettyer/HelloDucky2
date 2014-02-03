@@ -1,9 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Register TagPrefix="DayPilot" Namespace="DayPilot.Web.Ui" Assembly="DayPilot" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="System.Data" %>
 
-<%@ Register Assembly="DayPilot" Namespace="DayPilot.Web.Ui" TagPrefix="DayPilot" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Drawing" %>
@@ -18,6 +17,11 @@
 <script type="text/javascript">
 
 	$("#divReportButtons").css("visibility", "visible");
+	
+	if ($("#chkShowWeekends")[0].checked == true) {
+		toggleWeekends();
+	}
+
 	$('#StartYearDemo').MonthPicker(
 		{
 			StartYear: $("#txtYear").val(),
@@ -61,6 +65,15 @@
 		frmExport.submit();
 
 		return true;
+	}
+
+	function toggleWeekends() {
+
+		//chkShowWeekends
+//		$(".scheduler_white_weekendcell").addClass("scheduler_white_weekendcell2");
+
+		$(".scheduler_white_weekend").toggleClass("scheduler_white_weekendcell");
+		
 	}
 
 </script>
@@ -139,13 +152,25 @@
 			objCalendar.IncludeWorkingDaysOnly = CBool(Session("CALREP_IncludeWorkingDaysOnly"))
 			objCalendar.ShowBankHolidays = CBool(Session("CALREP_ShowBankHolidays"))
 			objCalendar.ShowCaptions = CBool(Session("CALREP_ShowCaptions"))
-			objCalendar.ShowWeekends = CBool(Session("CALREP_ShowWeekends"))			
+				
+				%>
+		
+	<strong>Options :</strong>
+		<div class="scheduler_white_event_inner" style="position: relative;">
+			
+		<% 
+			If objCalendar.ShowWeekends Then
+				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Highlight Weekends")
+			Else
+				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Highlight Weekends")
+			End If
 		%>
+
+		</div>
 
 	</div>
 
 <script runat="server">
-	
 	
 	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
 			

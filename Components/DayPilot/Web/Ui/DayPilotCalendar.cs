@@ -23,8 +23,6 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing; 
-using System.Security.Permissions;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DayPilot.Web.Ui.Design;
@@ -40,7 +38,6 @@ namespace DayPilot.Web.Ui
     [Themeable(true)]
     [ToolboxBitmap(typeof(Calendar))]
     [Designer(typeof(DayPilotCalendarDesigner))]
-    [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal), AspNetHostingPermission(SecurityAction.InheritanceDemand, Level = AspNetHostingPermissionLevel.Minimal)]
     public partial class DayPilotCalendar : DataBoundControl, IPostBackEventHandler
     {
         private Day[] _days;

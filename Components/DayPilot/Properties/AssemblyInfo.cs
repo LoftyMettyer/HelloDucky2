@@ -58,6 +58,4 @@ using System.Web.UI;
 [assembly: AssemblyVersion("4.0.261.0")]
 [assembly: AssemblyFileVersion("4.0.261.0")]
 
-[assembly: AllowPartiallyTrustedCallers]
-
 [assembly: WebResource("DayPilot.Resources.Splitter.js", "text/javascript")]

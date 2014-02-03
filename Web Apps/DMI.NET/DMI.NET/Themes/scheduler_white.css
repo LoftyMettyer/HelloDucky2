@@ -180,6 +180,11 @@
 	background: #fff;
 }
 
+.scheduler_white_weekendcell
+{
+	background: #dddddd;
+}
+
 .scheduler_white_tree_image_no_children {
 	background-image: url('scheduler_white/tree_nochildren.png');
 }
