@@ -2723,9 +2723,9 @@ function component_saveChanges(psAction, pfPrompt, pfTBOverride)
 			OpenHR.addActiveXHandler("ssOleDBGridCalculations", "KeyPress", "ssOleDBGridCalculations_KeyPress()");
 			OpenHR.addActiveXHandler("ssOleDBGridCalculations", "rowcolchange", "ssOleDBGridCalculations_rowcolchange()");
 			OpenHR.addActiveXHandler("ssOleDBGridCalculations", "dblClick", "ssOleDBGridCalculations_dblClick()");
-			OpenHR.addActiveXHandler("SSOperatorTree", "nodeClick", "SSOperatorTree_nodeClick()");
+			OpenHR.addActiveXHandler("SSOperatorTree", "nodeClick", "SSOperatorTree_nodeClick(param1)");
 			OpenHR.addActiveXHandler("SSOperatorTree", "dblClick", "SSOperatorTree_dblClick()");
-			OpenHR.addActiveXHandler("SSFunctionTree", "nodeClick", "SSFunctionTree_nodeClick()");
+			OpenHR.addActiveXHandler("SSFunctionTree", "nodeClick", "SSFunctionTree_nodeClick(param1)");
 			OpenHR.addActiveXHandler("SSFunctionTree", "dblClick", "SSFunctionTree_dblClick()");
 		}
 		
