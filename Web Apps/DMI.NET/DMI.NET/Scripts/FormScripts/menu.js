@@ -2236,7 +2236,8 @@ function menu_disableFindMenu() {
 	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
 		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
 		$("#officebar").fadeOut("fast");
-	} else { //disable menu items on Record tab.
+	}
+	else { //disable menu items on Record tab.
 		menu_toolbarEnableItem('mnutoolNewRecordFind', false);
 		menu_toolbarEnableItem('mnutoolEditRecordFind', false);
 		menu_toolbarEnableItem('mnutoolCopyRecordFind', false);
@@ -3835,7 +3836,7 @@ function menu_loadQuickFindNoSaveCheck()
 	OpenHR.submitForm(frmOptionArea);
 }
 
-	function menu_loadSelectOrderFilter(psType) {
+function menu_loadSelectOrderFilter(psType) {
 	var sCurrentWorkPage;
 	var frmRecEditArea;
 	var frmOptionArea;
@@ -3848,70 +3849,62 @@ function menu_loadQuickFindNoSaveCheck()
 	menu_disableMenu();
 	
 	if (psType == "ORDER") {
-	sSaveChangesTag = "SELECTORDER";
-	sOptionPage = "orderselect";
+		sSaveChangesTag = "SELECTORDER";
+		sOptionPage = "orderselect";
 
-	//Disable some ribbon items
-	menu_toolbarEnableItem("mnutoolFilterRecordFind", false);
-	$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
-	$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
-	menu_toolbarEnableItem("mnutoolLastRecordFind", false);
-	menu_toolbarEnableItem("mnutoolNextRecordFind", false);
-	menu_toolbarEnableItem("mnutoolChangeOrderRecordFind", false);
-	menu_toolbarEnableItem("mnutoolNewRecordFind", false);
-	menu_toolbarEnableItem("mnutoolCopyRecordFind", false);
-	menu_toolbarEnableItem("mnutoolEditRecordFind", false);
-	menu_toolbarEnableItem("mnutoolDeleteRecordFind", false);
-	menu_toolbarEnableItem("mnutoolCancelCourseRecord", false);
-	menu_toolbarEnableItem("mnutoolParentRecordFind", false);
-}
+		//Disable all ribbon items
+		$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
+		$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
+		menu_disableFindMenu();
+	}
 	else {
-	sSaveChangesTag = "SELECTFILTER";
-	sOptionPage = "filterselect";
-}
+		sSaveChangesTag = "SELECTFILTER";
+		sOptionPage = "filterselect";
+		menu_disableFindMenu();
+	}
 	
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
-	if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
-	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
 
-	if (psType == "ORDER") {
-	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-}
+			if (psType == "ORDER") {
+				frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+			}
 			
-	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-	frmOptionArea.txtGotoOptionValue.value = "";
-	frmOptionArea.txtGotoOptionPage.value = sOptionPage;
-	frmOptionArea.txtGotoOptionAction.value = "";
+			frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmOptionArea.txtGotoOptionValue.value = "";
+			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
+			frmOptionArea.txtGotoOptionAction.value = "";
 
-	OpenHR.submitForm(frmOptionArea);
-}
-}
+			OpenHR.submitForm(frmOptionArea);
+		}
+	}
 	else {
-	if (sCurrentWorkPage == "FIND") {
-	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		if (sCurrentWorkPage == "FIND") {
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-	frmOptionArea.txtGotoOptionScreenID.value = frmFindArea.txtCurrentScreenID.value;
-	frmOptionArea.txtGotoOptionTableID.value = frmFindArea.txtCurrentTableID.value;
-	frmOptionArea.txtGotoOptionViewID.value = frmFindArea.txtCurrentViewID.value;
-	frmOptionArea.txtGotoOptionOrderID.value = frmFindArea.txtCurrentOrderID.value;
-	frmOptionArea.txtGotoOptionFilterDef.value = frmFindArea.txtFilterDef.value;
-	frmOptionArea.txtGotoOptionFilterSQL.value = frmFindArea.txtFilterSQL.value;
-	frmOptionArea.txtGotoOptionValue.value = "";
-	frmOptionArea.txtGotoOptionPage.value = sOptionPage;
-	frmOptionArea.txtGotoOptionAction.value = "";
+			frmOptionArea.txtGotoOptionScreenID.value = frmFindArea.txtCurrentScreenID.value;
+			frmOptionArea.txtGotoOptionTableID.value = frmFindArea.txtCurrentTableID.value;
+			frmOptionArea.txtGotoOptionViewID.value = frmFindArea.txtCurrentViewID.value;
+			frmOptionArea.txtGotoOptionOrderID.value = frmFindArea.txtCurrentOrderID.value;
+			frmOptionArea.txtGotoOptionFilterDef.value = frmFindArea.txtFilterDef.value;
+			frmOptionArea.txtGotoOptionFilterSQL.value = frmFindArea.txtFilterSQL.value;
+			frmOptionArea.txtGotoOptionValue.value = "";
+			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
+			frmOptionArea.txtGotoOptionAction.value = "";
 
-	OpenHR.submitForm(frmOptionArea);
-}
-}	
+			OpenHR.submitForm(frmOptionArea);
+		}
+	}	
 }
 
 	function menu_clearFilter() {
