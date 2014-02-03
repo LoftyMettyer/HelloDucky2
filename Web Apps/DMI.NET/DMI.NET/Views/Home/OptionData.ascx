@@ -90,7 +90,7 @@
 					Dim prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 					Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 		
-					Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetLinkFindRecords" _
+					Dim dsFindRecords = objDataAccess.GetDataSet("sp_ASRIntGetLinkFindRecords" _
 						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
 						, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
 						, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionOrderID"))} _
@@ -108,8 +108,8 @@
 						, prmColumnSize _
 						, prmColumnDecimals)
 
-
 					iCount = 0
+					Dim rstFindRecords = dsFindRecords.Tables(1)
 					For Each objRow As DataRow In rstFindRecords.Rows
 						sAddString = ""
 						
@@ -147,7 +147,7 @@
 						Next
 
 						Response.Write("<input type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-					
+						iCount += 1
 					Next
 
 					Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
@@ -160,7 +160,7 @@
 					Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
 			
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
 
 			ElseIf Session("optionAction") = "LOADLOOKUPFIND" Then
@@ -174,7 +174,7 @@
 					Dim prmFilterValue = New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 					Dim prmADOError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 
-					Try						
+					Try
 
 						objDataAccess.ExecuteSP("spASRIntGetLookupFilterValue" _
 							, New SqlParameter("@piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))} _
@@ -214,7 +214,7 @@
 						Try
 							sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
 						Catch ex As Exception
-							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 						End Try
 														
 						rstFindRecords = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
@@ -247,7 +247,7 @@
 													prmThousandColumns _
 							)
 						Catch ex As Exception
-							sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 						End Try
 
 
@@ -343,7 +343,7 @@
 				Try
 					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
 
 				
@@ -508,7 +508,7 @@
 	
 
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 	
 				End Try
 						
@@ -638,7 +638,7 @@
 					Next
 
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
 
 
@@ -745,7 +745,7 @@
 					Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
 			
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
 
 
@@ -865,7 +865,7 @@
 					Next
 					
 				Catch ex As Exception
-					sErrorDescription = "Error reading the find records." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "Error reading the find records." & vbCrLf & FormatError(ex.Message)
 					
 				End Try
 			
@@ -950,7 +950,7 @@
 				objUtilities = Nothing
 	
 				If (Err.Number <> 0) Then
-					sErrorDescription = "Error reading the records." & vbCrLf & formatError(Err.Description)
+					sErrorDescription = "Error reading the records." & vbCrLf & FormatError(Err.Description)
 				End If
 			
 				If Len(sErrorDescription) = 0 Then
