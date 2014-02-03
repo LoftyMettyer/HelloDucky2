@@ -1450,7 +1450,7 @@ function menu_refreshMenu() {
 		menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		}
 
-		
+
 		// Standard reports group
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1529,12 +1529,12 @@ function menu_refreshMenu() {
 		else {
 				menu_setVisibleMenuItem("mnutoolAbsenceCalendarRecord", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Calendar
 				menu_toolbarEnableItem("mnutoolAbsenceCalendarRecord", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
-				menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceCalendarVisible);	//Menu Item - Absence Breakdown
+				menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownVisible);	//Menu Item - Absence Breakdown
 				menu_toolbarEnableItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
 				menu_setVisibleMenuItem("mnutoolBradfordRecord", fStdRptBradfordFactorVisible);	//Menu Item - Bradford Factor
 				menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
-				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Toolbar Icon
+				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);	//Toolbar Icon
 				//Hide Calendar Reports Group if all items are hidden.
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
 		}
