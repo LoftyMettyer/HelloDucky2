@@ -12,7 +12,7 @@
     Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
     Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
     Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
-    Session("FindRecords") = CLng(objDatabase.GetUserSetting("recordediting", "BlockSize", 1000))
+    Session("FindRecords") = CLng(objDatabase.GetUserSetting("IntranetFindWindow", "BlockSize", 1000))
 	
     ' Get the DefSel 'only mine' settings.
     For i = 0 To 20
@@ -92,15 +92,16 @@
 
 <script type="text/javascript">
     function configuration_window_onload() {
-
-
-        $("#workframe").attr("data-framesource", "CONFIGURATION");
+       
+      
 
         ////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
-        showDefaultRibbon();
+        
 
         var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+        $("#workframe").attr("data-framesource", "CONFIGURATION");
+        showDefaultRibbon();
 
         //// Get menu to refresh the menu.
         menu_refreshMenu();
@@ -152,7 +153,7 @@
         $("#toolbarAdminConfig").parent().show();
         $("#toolbarAdminConfig").click();
         //$('input[name^="txt"]').on("blur", function () { enableSaveButton(); });
-        $('input[name^="txt"]').on("input", function () { enableSaveButton(); });
+        $('input[name^="txt"]').on("input", function () { enableSaveButton(this); });
         $('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
         $('input[name^="chk"]').on("change", function () { enableSaveButton(); });
 
@@ -161,8 +162,11 @@
     }
 
     function enableSaveButton() {
+
         if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
     }
+    
+    
 </script>
 
 
@@ -362,9 +366,10 @@
     }
 
     function Configuration_okClick() {
-        frmConfiguration.txtReaction.value = "CONFIGURATION";
-        saveConfiguration();
-        configuration_window_onload();
+               
+            frmConfiguration.txtReaction.value = "DEFAULT";
+            saveConfiguration();
+      
     }
 
     /* Return to the default page. */
@@ -526,10 +531,12 @@
         }
     }
 
+  
 </script>
 
-<form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration">
-	<br><!-- First tab -->
+
+<form action="configuration_Submit" onsubmit="return false;" method="post" id="frmConfiguration" name="frmConfiguration">
+	<br>
 	<DIV id=div1>
 		<table align=center class="outline" cellPadding=5 cellSpacing=0>
 			<TR>
@@ -1107,4 +1114,5 @@
 
 <script type="text/javascript">
     configuration_window_onload();
+    
 </script>
