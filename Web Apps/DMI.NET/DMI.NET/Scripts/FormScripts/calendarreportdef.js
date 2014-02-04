@@ -3954,7 +3954,7 @@ function util_def_calendarreport_addhandlers() {
 	OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", "grdAccessComboCloseUp()");
 	OpenHR.addActiveXHandler("grdAccess", "GotFocus", "grdAccessGotFocus()");
 	OpenHR.addActiveXHandler("grdAccess", "RowColChange", "grdAccessRowColChange()");
-	OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccessRowLoaded()");
+	//OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccessRowLoaded()");
 }
 
 function ssOleDBGridSortOrderbeforeupdate() {

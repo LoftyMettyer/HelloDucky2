@@ -91,7 +91,7 @@ function util_def_crosstabs_addhandlers() {
 	OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", "grdAccess_ComboCloseUp()");
 	OpenHR.addActiveXHandler("grdAccess", "GotFocus", "grdAccess_GotFocus()");
 	OpenHR.addActiveXHandler("grdAccess", "RowColChange", "grdAccess_RowColChange()");
-	OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccess_RowLoaded()");
+	//OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccess_RowLoaded()");
 }
 
 function display_CrossTab_Page(piPageNumber) {

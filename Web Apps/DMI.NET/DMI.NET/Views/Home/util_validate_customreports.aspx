@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 
@@ -14,9 +17,9 @@
 <body id=bdyMain>
 		
 		
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
+<table id="ValidatingMessageTable" align=center class="outline" cellPadding=5 cellSpacing=0>
+	<tr>
+		<td>
 			<table class="invisible" cellspacing="0" cellpadding="0">
 				<tr> 
 					<td colspan=5 height=10></td>
@@ -61,139 +64,58 @@
 
 
 <%
-		
-	Dim cmdValidate = CreateObject("ADODB.Command")
-	cmdValidate.CommandText = "sp_ASRIntValidateReport"
-	cmdValidate.CommandType = 4	' Stored Procedure
-	cmdValidate.ActiveConnection = Session("databaseConnection")
-
-	Dim prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmUtilName)
-	prmUtilName.value = Request("validateName")
-
-	Dim prmUtilID = cmdValidate.CreateParameter("utilID", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmUtilID)
-	prmUtilID.value = CleanNumeric(Request("validateUtilID"))
-
-	Dim prmTimestamp = cmdValidate.CreateParameter("timestamp", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmTimestamp)
-	prmTimestamp.value = CleanNumeric(Request("validateTimestamp"))
-
-	Dim prmBasePicklist = cmdValidate.CreateParameter("basePicklist", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmBasePicklist)
-	prmBasePicklist.value = CleanNumeric(Request("validateBasePicklist"))
-
-	Dim prmBaseFilter = cmdValidate.CreateParameter("baseFilter", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmBaseFilter)
-	prmBaseFilter.value = CleanNumeric(Request("validateBaseFilter"))
-
-	Dim prmEmailGroup = cmdValidate.CreateParameter("emailGroup", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmEmailGroup)
-	prmEmailGroup.value = CleanNumeric(Request("validateEmailGroup"))
-
-	Dim prmParent1Picklist = cmdValidate.CreateParameter("parent1Picklist", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmParent1Picklist)
-	prmParent1Picklist.value = CleanNumeric(Request("validateP1Picklist"))
-
-	Dim prmParent1Filter = cmdValidate.CreateParameter("parent1Filter", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmParent1Filter)
-	prmParent1Filter.value = CleanNumeric(Request("validateP1Filter"))
-
-	Dim prmParent2Picklist = cmdValidate.CreateParameter("parent2Picklist", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmParent2Picklist)
-	prmParent2Picklist.value = CleanNumeric(Request("validateP2Picklist"))
-
-	Dim prmParent2Filter = cmdValidate.CreateParameter("parent2Filter", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmParent2Filter)
-	prmParent2Filter.value = CleanNumeric(Request("validateP2Filter"))
-
-	Dim prmChildFilter = cmdValidate.CreateParameter("childFilter", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmChildFilter)
-	prmChildFilter.value = Request("validateChildFilter")
-
-	Dim prmCalcs = cmdValidate.CreateParameter("calcs", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmCalcs)
-	prmCalcs.value = Request("validateCalcs")
-
-	Dim prmHiddenGroups = cmdValidate.CreateParameter("hiddenGroups", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenGroups)
-	prmHiddenGroups.value = Request("validateHiddenGroups")
-
-	Dim prmErrorMsg = cmdValidate.CreateParameter("errorMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmErrorMsg)
-
-	Dim prmErrorCode = cmdValidate.CreateParameter("errorCode", 3, 2)	'3=integer, 2=output
-	cmdValidate.Parameters.Append(prmErrorCode)
+	Dim prmErrorCode As New SqlParameter("@piErrorCode", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1} 'We need this parameter outside the Try-Catch, see its use below
+	Try
+		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 	
-	Dim prmDeletedCalcs = cmdValidate.CreateParameter("deletedCalcs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmDeletedCalcs)
+		Dim prmErrorMsg As New SqlParameter("@psErrorMsg", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmDeletedCalcs As New SqlParameter("@psDeletedCalcs", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmHiddenCalcs As New SqlParameter("@psHiddenCalcs", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmDeletedFilters As New SqlParameter("@psDeletedFilters", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmDeletedOrders As New SqlParameter("@psDeletedOrders", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmDeletedPicklists As New SqlParameter("@psDeletedPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+		Dim prmHiddenPicklists As New SqlParameter("@psHiddenPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+        
+		objDataAccess.ExecuteSP("sp_ASRIntValidateReport", _
+						New SqlParameter("@psUtilName", SqlDbType.VarChar) With {.Value = Request("validateName"), .Size = 255}, _
+						New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateUtilID"))}, _
+						New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateTimestamp"))}, _
+						New SqlParameter("@piBasePicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBasePicklist"))}, _
+						New SqlParameter("@piBaseFilterID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBaseFilter"))}, _
+						New SqlParameter("@piEmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateEmailGroup"))}, _
+						New SqlParameter("@piParent1PicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateP1Picklist"))}, _
+						New SqlParameter("@piParent1FilterID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateP1Filter"))}, _
+						New SqlParameter("@piParent2PicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateP2Picklist"))}, _
+						New SqlParameter("@piParent2FilterID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateP2Filter"))},
+						New SqlParameter("@piChildFilterID", SqlDbType.VarChar) With {.Value = Request("validateChildFilter"), .Size = 100}, _
+						New SqlParameter("@psCalculations", SqlDbType.VarChar) With {.Value = Request("validateCalcs"), .Size = -1}, _
+						New SqlParameter("@psHiddenGroups ", SqlDbType.VarChar) With {.Value = Request("validateHiddenGroups"), .Size = -1}, _
+						prmErrorMsg, _
+						prmErrorCode, _
+						prmDeletedCalcs, _
+						prmHiddenCalcs, _
+						prmDeletedFilters, _
+						prmHiddenFilters, _
+						prmDeletedOrders, _
+						prmJobIDsToHide, _
+						prmDeletedPicklists, _
+						prmHiddenPicklists _
+		)
 
-	Dim prmHiddenCalcs = cmdValidate.CreateParameter("hiddenCalcs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenCalcs)
+		Response.Write("<INPUT type=hidden id=txtErrorCode name=txtErrorCode value=" & prmErrorCode.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtDeletedCalcs name=txtDeletedCalcs value=" & prmDeletedCalcs.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtHiddenCalcs name=txtHiddenCalcs value=" & prmHiddenCalcs.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtDeletedFilters name=txtDeletedFilters value=" & prmDeletedFilters.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtHiddenFilters name=txtHiddenFilters value=" & prmHiddenFilters.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtDeletedOrders name=txtDeletedOrders value=" & prmDeletedOrders.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtJobIDsToHide name=txtJobIDsToHide value=""" & prmJobIDsToHide.Value.ToString & """>" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtDeletedPicklists name=txtDeletedPicklists value=" & prmDeletedPicklists.Value.ToString & ">" & vbCrLf)
+		Response.Write("<INPUT type=hidden id=txtHiddenPicklists name=txtHiddenPicklists value=" & prmHiddenPicklists.Value.ToString & ">" & vbCrLf)
 	
-	Dim prmDeletedFilters = cmdValidate.CreateParameter("deletedFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmDeletedFilters)
-
-	Dim prmHiddenFilters = cmdValidate.CreateParameter("hiddenFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenFilters)
-
-	Dim prmDeletedOrders = cmdValidate.CreateParameter("deletedOrders", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmDeletedOrders)
-	
-	Dim prmJobIDsToHide = cmdValidate.CreateParameter("jobsToHide", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmJobIDsToHide)
-
-	Dim prmDeletedPicklists = cmdValidate.CreateParameter("deletedPicklists", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmDeletedPicklists)
-
-	Dim prmHiddenPicklists = cmdValidate.CreateParameter("hiddenPicklists", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenPicklists)
-
-	Err.Clear()
-	cmdValidate.Execute()
-
-	Response.Write("<INPUT type=hidden id=txtErrorCode name=txtErrorCode value=" & cmdValidate.Parameters("errorCode").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtDeletedCalcs name=txtDeletedCalcs value=" & cmdValidate.Parameters("deletedCalcs").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtHiddenCalcs name=txtHiddenCalcs value=" & cmdValidate.Parameters("hiddenCalcs").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtDeletedFilters name=txtDeletedFilters value=" & cmdValidate.Parameters("deletedFilters").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtHiddenFilters name=txtHiddenFilters value=" & cmdValidate.Parameters("hiddenFilters").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtDeletedOrders name=txtDeletedOrders value=" & cmdValidate.Parameters("deletedOrders").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtJobIDsToHide name=txtJobIDsToHide value=""" & cmdValidate.Parameters("jobsToHide").Value & """>" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtDeletedPicklists name=txtDeletedPicklists value=" & cmdValidate.Parameters("deletedPicklists").Value & ">" & vbCrLf)
-	Response.Write("<INPUT type=hidden id=txtHiddenPicklists name=txtHiddenPicklists value=" & cmdValidate.Parameters("hiddenPicklists").Value & ">" & vbCrLf)
-
-	If cmdValidate.Parameters("errorCode").Value = 1 Then
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-		Response.Write("    				    <INPUT TYPE=button VALUE=Close class=""btn"" NAME=Cancel style=""WIDTH: 80px"" width=80 id=Cancel" & vbCrLf)
-		Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-		Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-		Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("					<td width=20></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-	Else
-		If cmdValidate.Parameters("errorCode").Value = 2 Then
+		If CInt(prmErrorCode.Value) = 1 Then
 			Response.Write("			  <tr>" & vbCrLf)
 			Response.Write("					<td width=20></td>" & vbCrLf)
 			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
@@ -204,7 +126,37 @@
 			Response.Write("			  <tr>" & vbCrLf)
 			Response.Write("					<td width=20></td>" & vbCrLf)
 			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-			Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
+			Response.Write("						" & prmErrorMsg.Value.ToString & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr> " & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("    				    <INPUT TYPE=button VALUE=Close class=""btn"" NAME=Cancel style=""WIDTH: 80px"" width=80 id=Cancel" & vbCrLf)
+			Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
+			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+		ElseIf CInt(prmErrorCode.Value) = 2 Then
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						" & prmErrorMsg.Value.ToString & vbCrLf)
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width=20></td>" & vbCrLf)
 			Response.Write("			  </tr>" & vbCrLf)
@@ -232,103 +184,110 @@
 			Response.Write("			    </td>" & vbCrLf)
 			Response.Write("					<td width=20></td>" & vbCrLf)
 			Response.Write("			  </tr>" & vbCrLf)
-
-		Else
-			If cmdValidate.Parameters("errorCode").Value = 3 Then
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-				Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-				Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr>" & vbCrLf)
-				Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-				Response.Write("			  </tr>" & vbCrLf)
-				Response.Write("			  <tr> " & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=right> " & vbCrLf)
-				Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
-				Response.Write("    				        OnClick=""overwrite()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("			    <td align=left> " & vbCrLf)
-				Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
-				Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-				Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-				Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-				Response.Write("			    </td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-			Else
-				If cmdValidate.Parameters("errorCode").Value = 4 Then
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-					Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-					Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr> " & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=right> " & vbCrLf)
-					Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
-					Response.Write("    				        OnClick=""continueSave()""" & vbCrLf)
-					Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("			    <td align=left> " & vbCrLf)
-					Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
-					Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
-					Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-					Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("					<td width=20></td>" & vbCrLf)
-					Response.Write("				</tr>" & vbCrLf)
-				End If
-			End If
+		ElseIf CInt(prmErrorCode.Value) = 3 Then
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						" & prmErrorMsg.Value.ToString & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr> " & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=right> " & vbCrLf)
+			Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
+			Response.Write("    				        OnClick=""overwrite()""" & vbCrLf)
+			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=left> " & vbCrLf)
+			Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
+			Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
+			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("				</tr>" & vbCrLf)
+		ElseIf CInt(prmErrorCode.Value) = 4 Then
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						<H3>Error Saving Report</H3>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=center colspan=3> " & vbCrLf)
+			Response.Write("						" & prmErrorMsg.Value.ToString & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr>" & vbCrLf)
+			Response.Write("					<td height=20 colspan=5></td>" & vbCrLf)
+			Response.Write("			  </tr>" & vbCrLf)
+			Response.Write("			  <tr> " & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=right> " & vbCrLf)
+			Response.Write("    				    <INPUT TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
+			Response.Write("    				        OnClick=""continueSave()""" & vbCrLf)
+			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("			    <td align=left> " & vbCrLf)
+			Response.Write("    				    <INPUT TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
+			Response.Write("    				        OnClick=""self.close()""" & vbCrLf)
+			Response.Write("    				        onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+			Response.Write("    				        onblur=""try{button_onBlur(this);}catch(e){}""/>" & vbCrLf)
+			Response.Write("			    </td>" & vbCrLf)
+			Response.Write("					<td width=20></td>" & vbCrLf)
+			Response.Write("				</tr>" & vbCrLf)
 		End If
-	End If
-	
-	cmdValidate = Nothing
+	Catch ex As Exception
+		
+	End Try
 %>
 				<tr height=10> 
 					<td colspan=5></td>
 				</tr>
 			</table>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 </table>
 
-
+<%
+	'Hide "Validating Report" message if we have an error condition, because we displayed the error message above
+	If CInt(prmErrorCode.Value) > 0 Then
+		Response.Write(String.Concat( _
+							"<script text='text/javascript'>",
+							"		$('#trPleaseWait1').hide();", _
+							"		$('#trPleaseWait2').hide();", _
+							"		$('#trPleaseWait3').hide();", _
+							"</script>" _
+							)
+						)
+	End If
+%>
 
 		<script ID="clientEventHandlersJS" type="text/javascript">
 

@@ -141,7 +141,7 @@
 
 		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "BeforeUpdate", "ssOleDBGridSortOrder_BeforeUpdate()");
 		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "AfterInsert", "ssOleDBGridSortOrder_AfterInsert()");
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowLoaded", "ssOleDBGridSortOrder_RowLoaded()");
+		//OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowLoaded", "ssOleDBGridSortOrder_RowLoaded()");
 		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "RowColChange", "ssOleDBGridSortOrder_RowColChange()");
 		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Change", "ssOleDBGridSortOrder_Change()");
 		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "KeyUp", "ssOleDBGridSortOrder_KeyUp()");
@@ -155,7 +155,7 @@
 		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "DblClick", "ssOleDBGridRepetition_DblClick()");
 		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "KeyUp", "ssOleDBGridRepetition_KeyUp()");
 		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowColChange", "ssOleDBGridRepetition_RowColChange()");
-		OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowLoaded", "ssOleDBGridRepetition_RowLoaded()");
+		//OpenHR.addActiveXHandler("ssOleDBGridRepetition", "RowLoaded", "ssOleDBGridRepetition_RowLoaded()");
 
 		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Change", "ssOleDBGridChildren_Change()");
 		OpenHR.addActiveXHandler("ssOleDBGridChildren", "Click", "ssOleDBGridChildren_Click()");
@@ -166,7 +166,7 @@
 		OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", "grdAccess_ComboCloseUp()");
 		OpenHR.addActiveXHandler("grdAccess", "GotFocus", "grdAccess_GotFocus()");
 		OpenHR.addActiveXHandler("grdAccess", "RowColChange", "grdAccess_RowColChange()");
-		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccess_RowLoaded()");
+		//OpenHR.addActiveXHandler("grdAccess", "RowLoaded", "grdAccess_RowLoaded()"); 
 	}
 
 	function addGridCol(psKey) {
@@ -7140,6 +7140,8 @@
 	}
 
 	function grdAccess_ComboCloseUp() {
+		var frmUseful = document.getElementById('frmUseful');
+		var frmDefinition = document.getElementById('frmDefinition');
 		frmUseful.txtChanged.value = 1;
 		if ((frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) && (frmDefinition.grdAccess.Columns("Access").Text.length > 0)) {
 			ForceAccess(frmDefinition.grdAccess, AccessCode(frmDefinition.grdAccess.Columns("Access").Text));
@@ -7151,15 +7153,19 @@
 	}
 	
 	function grdAccess_GotFocus() {
-		frmDefinition.grdAccess.Col = 1;	
+		var frmDefinition = document.getElementById('frmDefinition');
+		frmDefinition.grdAccess.Col = 1;
 	}
 	
 	function grdAccess_RowColChange(LastRow, LastCol) {
-		
 		var fViewing;
 		var fIsNotOwner;
 		var varBkmk;
 		
+		var frmUseful = document.getElementById('frmUseful');
+		var frmDefinition = document.getElementById('frmDefinition');
+		var frmSelectionAccess = document.getElementById('frmSelectionAccess');
+
 		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
 
@@ -7187,9 +7193,11 @@
 	}      
 
 	function grdAccess_RowLoaded(Bookmark) {
-		
 		var fViewing;
 		var fIsNotOwner;
+
+		var frmUseful = document.getElementById('frmUseful');
+		var frmDefinition = document.getElementById('frmDefinition');
 		
 		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());

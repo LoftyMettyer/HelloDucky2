@@ -2194,7 +2194,7 @@ function removeComponents(psNodeKeys) {
 
 function returnToDefSel() {
 
-	debugger;
+	//debugger;
 	window.location.href = "defsel";
 }
 

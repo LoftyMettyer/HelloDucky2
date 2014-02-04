@@ -909,6 +909,7 @@ function menu_MenuClick(sTool) {
 
 		// Crosstab Reports
 		if (sToolName == "mnutoolCrossTabs") {
+			  $('#grdAccess').remove();
 				if (menu_saveChanges("CROSSTABS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(1, 0, 0, true);
 			}
@@ -917,6 +918,7 @@ function menu_MenuClick(sTool) {
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
+			  $('#grdAccess').remove();
 				if (menu_saveChanges("CUSTOMREPORTS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(2, 0, 0, true);
 			}
@@ -925,6 +927,7 @@ function menu_MenuClick(sTool) {
 		
 		// Calendar Reports
 		if (sToolName == "mnutoolCalendarReports") {
+			$('#grdAccess').remove();
 			if (menu_saveChanges("CALENDAR", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(17, 0, 0, true);
 			}
@@ -934,8 +937,9 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 
 		if (sToolName == "mnutoolMailMerge") {
-				if (menu_saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
-			menu_loadDefSelPage(9, 0, 0, true);
+			$('#grdAccess').remove();
+			if (menu_saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
+				menu_loadDefSelPage(9, 0, 0, true);
 			}
 			return;
 		}

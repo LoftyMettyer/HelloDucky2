@@ -1925,7 +1925,7 @@ function utilDefMailmergeAddActiveXHandlers() {
 	OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", "grdAccessComboCloseUp()");
 	OpenHR.addActiveXHandler("grdAccess", "GotFocus", "grdAccessGotFocus()");
 	OpenHR.addActiveXHandler("grdAccess", "RowColChange(LastRow, LastCol)", "grdAccessRowColChange()");
-	OpenHR.addActiveXHandler("grdAccess", "RowLoaded(Bookmark)", "grdAccessRowLoaded()");
+	//OpenHR.addActiveXHandler("grdAccess", "RowLoaded(Bookmark)", "grdAccessRowLoaded()");
 }
 
 //ssOleDBGridAvailableColumns handlers
