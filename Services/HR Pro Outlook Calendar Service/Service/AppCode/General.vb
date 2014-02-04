@@ -39,7 +39,8 @@ Public Structure VersionNumber
     If Major = 0 AndAlso Minor = 0 AndAlso Build = 0 Then
       Return "<unknown>"
     Else
-      Return String.Format("v{0}.{1}.{2}", Major, Minor, Build)
+      '  Return String.Format("v{0}.{1}.{2}", Major, Minor, Build)
+      Return String.Format("{0}.{1}.{2}", Major, Minor, Build)
     End If
   End Function
 End Structure

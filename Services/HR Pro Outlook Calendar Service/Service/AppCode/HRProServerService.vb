@@ -17,7 +17,7 @@ Public Class OpenHROutlookCalendarService
     ''' <remarks>
     ''' The minimum OpenHR database version required.
     ''' </remarks>
-    Private Const MINIMUMDBVERSION As Single = 5.0
+  Private Const MINIMUMDBVERSION As Single = 8.0
     Private Const POLLINGINTERVAL As Int32 = 60000
     Private Const SERVERTAG As String = "server"
     Private Const DATABASETAG As String = "database"
