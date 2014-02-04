@@ -63,7 +63,7 @@
 				<!-- Include web content. -->
 				<ComponentGroupRef Id="DMI.NET_Project" />
 
-				<!-- Perform changes in the web.custom.config file. -->
+				<!-- Perform changes in the web.custom.config.template file. -->
 				<ComponentRef Id="WebCustomConfigCmp" />
 
 			</Feature>
@@ -73,8 +73,8 @@
 			<!-- Component handling the web.config -->
 			<Component Id="WebCustomConfigCmp" Guid="">
 				<!-- Copy web.config to website folder. -->
-				<File Id="WebCustomConfigFile" KeyPath="yes" Source="$(var.publishDir)\Web.custom.config" Vital="yes" />
-				<!-- Modify Web.custom.config with the setting entered by the user during installation -->
+				<File Id="WebCustomConfigFile" KeyPath="yes" Source="$(var.publishDir)\Web.custom.config.template" Vital="yes" />
+				<!-- Modify Web.custom.config.template with the setting entered by the user during installation -->
 				<util:XmlFile Id="ModifyServerSetting"
 										 Action="setValue"
 										 Permanent="yes"

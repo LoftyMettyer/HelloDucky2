@@ -8,6 +8,6 @@
 	<add key="DMIRequiresIE" value="true" />
 	<add key="SMTP_From" value="harptfs01@advancedcomputersoftware.com" />
 	<add key="SMTP_Host" value="10.145.34.38" />
-	<add key="SMTP_Port" value="25" /> <!-- Default SMT port is 25 -->
+	<add key="SMTP_Port" value="25" /> <!-- Default SMTP port is 25 -->
 	<add key="MailMerge_From" value="todo@company.com"/>
 </appSettings>

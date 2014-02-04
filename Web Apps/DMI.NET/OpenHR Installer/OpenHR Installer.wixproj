@@ -94,6 +94,6 @@
   <Target Name="AfterBuild">
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>"c:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>"c:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll /d "$(TargetFileName)" "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
