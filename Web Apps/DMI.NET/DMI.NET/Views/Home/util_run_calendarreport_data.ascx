@@ -40,13 +40,16 @@
 			
 		});
 
-	function eventCalendarClick(eventID) {
+	function eventCalendarClick(eventID, eventType) {
 
-		var frmEvent = OpenHR.getForm("divEventDetail", "frmEventDetails");
-		frmEvent.txtBaseIndex.value = eventID;
-		OpenHR.submitForm(frmEvent, "CalendarEvent");
-		$("#CalendarEvent").dialog("open");
-		$("#CalendarEvent").dialog("option", "position", ['center', 'center']); //Center popup in screen
+		if (eventType != "bank") {
+			var frmEvent = OpenHR.getForm("divEventDetail", "frmEventDetails");
+			frmEvent.txtBaseIndex.value = eventID;
+			OpenHR.submitForm(frmEvent, "CalendarEvent");
+			$("#CalendarEvent").dialog("open");
+			$("#CalendarEvent").dialog("option", "position", ['center', 'center']); //Center popup in screen
+		}
+
 	}
 
 	function todayClick() {
@@ -68,13 +71,14 @@
 	}
 
 	function toggleWeekends() {
-
-		//chkShowWeekends
-//		$(".scheduler_white_weekendcell").addClass("scheduler_white_weekendcell2");
-
-		$(".scheduler_white_weekend").toggleClass("scheduler_white_weekendcell");
-		
+		$(".scheduler_white_weekend").toggleClass("scheduler_white_weekendcell");	
 	}
+
+	function toggleBankHolidays() {
+		$(".scheduler_white_weekend").toggleClass("scheduler_white_weekendcell");
+	}
+
+	
 
 </script>
 
@@ -85,13 +89,14 @@
 		DataEndField="enddate"
 		DataTextField="description"
 		DataValueField="id"
+		DataTypeField="eventtype"
 		DataResourceField="resource"
 		EventFontSize="11px"
 		CellDuration="1440"
 		NonBusinessBackColor="#FF0000"
 		OnBeforeEventRender="DayPilotScheduler1_BeforeEventRender"
 		EventClickHandling="JavaScript"
-		EventClickJavaScript="eventCalendarClick({0});"
+		EventClickJavaScript="eventCalendarClick({0},'{1}');"
 		TimeFormat="Clock24Hours" 
 		CssOnly="True"
 		CssClassPrefix="scheduler_white"
@@ -138,11 +143,15 @@
 				If objLegend.Count > 0 Then
 
 				%>
-				<div class="scheduler_white_event_inner" style="position: relative; width: 50px; height: 20px">
+		<div class="scheduler_white_event_inner" style="position: relative; background: <% =objLegend.HexColor %>; width: 150px; height: 20px">
+			<% =objLegend.LegendDescription%>
+		</div>
+
+<%--				<div class="scheduler_white_event_inner" style="position: relative; width: 50px; height: 20px">
 					<div class="scheduler_white_event_bar_inner" style="background: <% =objLegend.HexColor %>; width: 100%">
 						<% =objLegend.Text%>
 					</div>
-				</div>
+				</div>--%>
 				<%			
 			
 				End If
@@ -160,10 +169,17 @@
 			
 		<% 
 			If objCalendar.ShowWeekends Then
-				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Highlight Weekends")
+				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Show Weekends" & vbNewLine)
 			Else
-				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Highlight Weekends")
+				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Show Weekends" & vbNewLine)
 			End If
+			
+			'If objCalendar.ShowBankHolidays Then
+			'	Response.Write("<input type='checkbox' id='chkShoBankHolidays' name='chkShoBankHolidays' onclick=""toggleBankHolidays();"" checked=""checked""/>Show Bank Holidays" & vbNewLine)
+			'Else
+			'	Response.Write("<input type='checkbox' id='chkShoBankHolidays' name='chkShoBankHolidays' onclick=""toggleBankHolidays();""/>Show Bank Holidays" & vbNewLine)
+			'End If
+			
 		%>
 
 		</div>
@@ -211,6 +227,7 @@
 		dt.Columns.Add("id", GetType(String))
 		dt.Columns.Add("resource", GetType(String))
 		dt.Columns.Add("color", GetType(String))
+		dt.Columns.Add("eventType", GetType(String))
 		
 		Dim dr As DataRow
 
@@ -229,11 +246,41 @@
 		If objCalendar.Events Is Nothing Then	'Report contains no records, return empty Data Table
 			Return dt
 		End If
+
+		For Each objRow In objCalendar.rsPersonnelBHols.Rows
+			dr = dt.NewRow()
+
+			dr("id") = objRow("id")
+			
+			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = "Bank Holiday")		
+			If Not objLegend Is Nothing Then
+				If objLegend.Count = 0 Then
+					objLegend.Count += 1
+					objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
+					Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
+					iNextColor += 1
+					If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
+					objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
+				End If
+			
+				dr("color") = objLegend.HexColor
+			End If
+						
+			dr("startdate") = CDate(objRow(2))
+			dr("enddate") = CDate(objRow(2)).AddDays(1)
+			dr("description") = "Bank Holiday"
+			dr("eventType") = "bank"
+			
+			dr("resource") = objRow(0)
+			dt.Rows.Add(dr)
+						
+		Next
+		
 		
 		For Each objRow In objCalendar.Events.Rows
 
-			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()
-
+			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()		
+			
 			If sEventDescription = "" Then
 				sEventDescription = objRow(0).ToString()
 			End If
@@ -265,9 +312,16 @@
 			dr("startdate") = dStart
 			dr("enddate") = dEnd
 			dr("description") = sEventDescription
-		
-			Dim sLegendName As String = objRow("LegendName").ToString()
-			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = sLegendName)
+
+			
+			'If objCalendar.IsBankHoliday(dStart, CInt(objRow("baseid")), "") Then
+			'	dr("isbankholiday") = True
+			'End If
+			
+			
+			Dim sLegendKey As String = objRow(5).ToString()
+			'Dim sLegendKey As String = objRow("?ID_EventID").ToString()
+			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = sLegendKey)
 			
 			If Not objLegend Is Nothing Then
 				If objLegend.Count = 0 Then

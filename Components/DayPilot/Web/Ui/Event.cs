@@ -53,6 +53,8 @@ namespace DayPilot.Web.Ui
 		/// </summary>
 		public string PK;
 
+		public string EventType = "";
+
 	    public string Resource;
 
 		/// <summary>
@@ -75,20 +77,22 @@ namespace DayPilot.Web.Ui
 		/// <param name="start"></param>
 		/// <param name="end"></param>
 		/// <param name="name"></param>
-		public Event(string pk, DateTime start, DateTime end, string name) : this(pk, start, end, name, null, null)
+		/// <param name="eventType"></param>
+		public Event(string pk, DateTime start, DateTime end, string name, string eventType) : this(pk, start, end, name, null, null, eventType)
 		{
 
 		}
 
-        public Event(string pk, DateTime start, DateTime end, string name, string resource, object source)
-        {
-            this.PK = pk;
-            this.Start = start;
-            this.End = end;
-            this.Name = name;
-            this.Resource = resource;
-            Source = source;
-        }
+		public Event(string pk, DateTime start, DateTime end, string name, string resource, object source, string eventType)
+		{
+			this.PK = pk;
+			this.Start = start;
+			this.End = end;
+			this.Name = name;
+			this.Resource = resource;
+			this.EventType = eventType;
+			Source = source;
+		}
 
 		/// <summary>
 		/// Gets the starting time of an event box.

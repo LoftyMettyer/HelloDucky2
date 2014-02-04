@@ -73,10 +73,10 @@ namespace DayPilot.Web.Ui
 
         private void stripAndAddEvent(Event e)
         {
-            stripAndAddEvent(e.Start, e.End, e.PK, e.Name, e.Resource, e.Source);
+            stripAndAddEvent(e.Start, e.End, e.PK, e.Name, e.Resource, e.Source, e.EventType);
         }
 
-        private void stripAndAddEvent(DateTime start, DateTime end, string pk, string name, string resource, object source)
+        private void stripAndAddEvent(DateTime start, DateTime end, string pk, string name, string resource, object source, string eventType)
         {
             if (!String.IsNullOrEmpty(Value)) // this applies to resources view only
             {
@@ -105,7 +105,7 @@ namespace DayPilot.Web.Ui
             if (end > End)
                 end = End;
 
-            events.Add(new Event(pk, start, end, name, resource, source));
+						events.Add(new Event(pk, start, end, name, resource, source, eventType));
         }
 
 /*

@@ -56,7 +56,7 @@
 			fNotCancelled = Response.IsClientConnected
 			If fok Then fok = fNotCancelled
 		End If
-
+		
 		If fok Then
 			fok = objCalendar.GenerateSQL
 			fNotCancelled = Response.IsClientConnected

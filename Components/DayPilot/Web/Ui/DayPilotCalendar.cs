@@ -46,6 +46,7 @@ namespace DayPilot.Web.Ui
         private string _dataEndField;
         private string _dataTextField;
         private string _dataValueField;
+				private string _dataTypeField;
 
         // day header
         private bool _showHeader = true;
@@ -1225,8 +1226,9 @@ namespace DayPilot.Web.Ui
                     DateTime end = Convert.ToDateTime(DataBinder.GetPropertyValue(dataItem, DataEndField, null));
                     string name = Convert.ToString(DataBinder.GetPropertyValue(dataItem, DataTextField, null));
                     string pk = Convert.ToString(DataBinder.GetPropertyValue(dataItem, DataValueField, null));
+										string eventType = Convert.ToString(DataBinder.GetPropertyValue(dataItem, DataTypeField, null));
 
-                    var ev = new Event(pk, start, end, name);
+										var ev = new Event(pk, start, end, name, eventType);
                     ev.Source = dataItem;
                     _items.Add(ev);
 
@@ -1539,6 +1541,26 @@ namespace DayPilot.Web.Ui
 
             }
         }
+
+				[Category("Data")]
+				[Description("The name of the column that contains the event type. This will be used for rendering the custom JavaScript actions.")]
+				public string DataTypeField
+				{
+					get
+					{
+						return _dataTypeField;
+					}
+					set
+					{
+						_dataTypeField = value;
+
+						if (Initialized)
+						{
+							OnDataPropertyChanged();
+						}
+
+					}
+				}
 
         /// <summary>
         /// Gets or sets whether the hour numbers should be visible.

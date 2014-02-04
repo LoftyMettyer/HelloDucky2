@@ -13,6 +13,9 @@ Imports VB = Microsoft.VisualBasic
 Public Class CalendarReport
 	Inherits BaseForDMI
 
+	Public rsPersonnelBHols As DataTable
+
+
 	Public Legend As List(Of CalendarLegend)
 	Public LegendColors As List(Of LegendColor)
 
@@ -1456,7 +1459,7 @@ ErrorTrap:
 
 	End Function
 
-	Private Function IsBankHoliday(ByRef pdtDate As Date, ByRef plngBaseID As Integer, ByRef pstrRegion As String) As Boolean
+	Public Function IsBankHoliday(pdtDate As Date, plngBaseID As Integer, pstrRegion As String) As Boolean
 
 		On Error GoTo ErrorTrap
 
@@ -2933,16 +2936,14 @@ ErrorTrap:
 
 	End Function
 
-	Private Function GenerateSQLEvent(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
+	Private Function GenerateSQLEvent(pstrEventKey As String, pstrDynamicKey As String, pstrDynamicName As String) As Boolean
 
-		Dim fOK As Boolean
-
-		fOK = True
+		Dim fOK As Boolean = True
 
 		If fOK Then fOK = GenerateSQLSelect(pstrEventKey, pstrDynamicKey, pstrDynamicName)
 		If fOK Then fOK = GenerateSQLFrom()
-		If fOK Then fOK = GenerateSQLJoin(pstrEventKey, pstrDynamicKey)
-		If fOK Then fOK = GenerateSQLWhere(pstrEventKey, pstrDynamicKey, pstrDynamicName)
+		If fOK Then fOK = GenerateSQLJoin(pstrEventKey)
+		If fOK Then fOK = GenerateSQLWhere(pstrEventKey)
 
 		If fOK Then
 			mstrSQLEvent = mstrSQLSelect & vbNewLine & mstrSQLFrom & vbNewLine & mstrSQLJoin & vbNewLine & mstrSQLWhere & vbNewLine
@@ -2954,7 +2955,7 @@ ErrorTrap:
 		mstrSQLJoin = vbNullString
 		mstrSQLWhere = vbNullString
 
-		GenerateSQLEvent = fOK
+		Return fOK
 
 	End Function
 
@@ -3110,6 +3111,8 @@ ErrorTrap:
 		' Purpose : Sets references to other classes and redimensions arrays
 		'           used for table usage information
 
+		ReadBankHolidayParameters()
+
 		Dim rstData As DataTable
 		mcolBaseDescIndex = New Collection
 
@@ -3141,6 +3144,13 @@ ErrorTrap:
 			objItem.IsCalendarLegendColor = objRow("CalendarLegendColour")
 			LegendColors.Add(objItem)
 		Next
+
+		' Add bank holiday to the legend
+		Dim objLegendEvent As New CalendarLegend
+		objLegendEvent.LegendKey = "Bank Holiday"
+		objLegendEvent.LegendDescription = "Bank Holiday"
+		objLegendEvent.HexColor = "#74B8FD"
+		Legend.Add(objLegendEvent)
 
 	End Sub
 
@@ -4302,7 +4312,7 @@ ErrorTrap:
 			Return False
 		End If
 
-		Dim rsPersonnelBHols As DataTable
+
 		Dim colBankHolidays As clsBankHolidays
 		Dim strSQLAllBHols As String
 		Dim lngBaseRecordID As Integer
@@ -5080,7 +5090,6 @@ Error_Trap:
 		Dim objEvent As clsCalendarEvent
 		Dim rsLegendBreakdown As DataTable
 		Dim objLegendEvent As CalendarLegend
-		Dim objColor As Color
 
 		Dim strSQL As String
 		Dim strDynamicKey As String
@@ -5099,7 +5108,7 @@ Error_Trap:
 					'Event is using a lookup table to find the calendar code for the event.
 					'Therefore use the unique types from the legend information.
 
-					strSQL = String.Format("SELECT DISTINCT {0} FROM {1}", .LegendColumnName, .LegendTableName)
+					strSQL = String.Format("SELECT DISTINCT {0}, {1} FROM {2}", .LegendColumnName, .LegendCodeName, .LegendTableName)
 					rsLegendBreakdown = DB.GetDataTable(strSQL)
 
 					If rsLegendBreakdown.Rows.Count = 0 Then
@@ -5112,12 +5121,12 @@ Error_Trap:
 						mintDynamicEventCount = mintDynamicEventCount + 1
 
 						strDynamicKey = "DYNAMICEVENT" & CStr(mintDynamicEventCount)
-						strDynamicName = Replace(IIf(IsDBNull(objRow(CStr(.LegendColumnName))), "", objRow(CStr(.LegendColumnName))), "'", "''")
+						strDynamicName = Replace(IIf(IsDBNull(objRow(0)), "", objRow(0)), "'", "''")
 						mstrSQLDynamicLegendWhere = vbNullString
 
 						objLegendEvent = New CalendarLegend
-						objLegendEvent.LegendKey = strDynamicName
-						objLegendEvent.Text = strDynamicName
+						objLegendEvent.LegendKey = strDynamicKey
+						objLegendEvent.LegendDescription = IIf(IsDBNull(objRow(1)), "", objRow(1).ToString())
 
 						Legend.Add(objLegendEvent)
 
@@ -5137,11 +5146,11 @@ Error_Trap:
 
 					objLegendEvent = New CalendarLegend
 					objLegendEvent.LegendKey = objEvent.Key
-					objLegendEvent.Text = vbNullString
+					objLegendEvent.LegendDescription = objEvent.LegendCharacter
 					objLegendEvent.HexColor = "#f3f3f3"
 					Legend.Add(objLegendEvent)
 
-					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, vbNullString, vbNullString)
+					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, objEvent.Key, objEvent.Name)
 
 					If Not fOK Then
 						Return False
@@ -5159,7 +5168,7 @@ Error_Trap:
 
 	End Function
 
-	Private Function GenerateSQLSelect(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
+	Private Function GenerateSQLSelect(pstrEventKey As String, pstrDynamicKey As String, pstrDynamicName As String) As Boolean
 
 		' Purpose : This function compiles the SQLSelect string looping
 		'           thru the column details recordset.
@@ -5759,7 +5768,7 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function GenerateSQLJoin(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String) As Boolean
+	Private Function GenerateSQLJoin(pstrEventKey As String) As Boolean
 
 		On Error GoTo GenerateSQLJoin_ERROR
 
@@ -5899,7 +5908,7 @@ GenerateSQLJoin_ERROR:
 
 	End Function
 
-	Private Function GenerateSQLWhere(ByRef pstrEventKey As String, ByRef pstrDynamicKey As String, ByRef pstrDynamicName As String) As Boolean
+	Private Function GenerateSQLWhere(pstrEventKey As String) As Boolean
 
 		' Purpose : Generate the where clauses that cope with the joins
 		'           NB Need to add the where clauses for filters/picklists etc

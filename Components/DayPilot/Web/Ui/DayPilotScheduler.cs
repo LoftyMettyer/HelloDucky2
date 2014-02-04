@@ -55,6 +55,7 @@ namespace DayPilot.Web.Ui
         private string _dataStartField;
         private string _dataEndField;
         private string _dataTextField;
+				private string _dataTypeField;
         private string _dataValueField;
         private string _dataResourceField;
 
@@ -642,7 +643,7 @@ namespace DayPilot.Web.Ui
                     }
                     else
                     {
-                        output.AddAttribute("onclick", "javascript:event.cancelBubble=true;" + String.Format(EventClickJavaScript, p.PK));
+											output.AddAttribute("onclick", "javascript:event.cancelBubble=true;" + String.Format(EventClickJavaScript, p.PK, p.EventType));
                     }
 
                     output.AddStyleAttribute("cursor", "pointer");
@@ -657,6 +658,12 @@ namespace DayPilot.Web.Ui
                 output.AddStyleAttribute("display", "block");
                 output.AddAttribute("unselectable", "on");
                 output.AddAttribute("class", PrefixCssClass("_event_inner"));
+
+
+
+								output.AddStyleAttribute("background", ea.DurationBarColor);
+
+
 
                 if (!String.IsNullOrEmpty(ea.BackgroundColor))
                 {
@@ -1303,6 +1310,28 @@ namespace DayPilot.Web.Ui
 
             }
         }
+
+
+				[Category("Data")]
+				[Description("The name of the column that contains the type of an event.")]
+				public string DataTypeField
+				{
+					get
+					{
+						return _dataTypeField;
+					}
+					set
+					{
+						_dataTypeField = value;
+
+						if (Initialized)
+						{
+							OnDataPropertyChanged();
+						}
+
+					}
+				}
+
 
         /// <summary>
         /// Gets or sets the name of the column that contains the primary key. The primary key will be used for rendering the custom JavaScript actions.
@@ -2112,6 +2141,7 @@ namespace DayPilot.Web.Ui
 
                 string name = DataBinder.GetPropertyValue(dataItem, DataTextField, null);
                 string val = DataBinder.GetPropertyValue(dataItem, DataValueField, null);
+								string eventType = DataBinder.GetPropertyValue(dataItem, DataTypeField, null);
 
                 string resourceId = null;
                 if (ViewType == ViewTypeEnum.Resources)
@@ -2124,7 +2154,7 @@ namespace DayPilot.Web.Ui
                 }
                 
 
-                ((ArrayList)ViewState["Items"]).Add(new Event(val, start, end, name, resourceId, dataItem));
+                ((ArrayList)ViewState["Items"]).Add(new Event(val, start, end, name, resourceId, dataItem, eventType));
 
             }
 
