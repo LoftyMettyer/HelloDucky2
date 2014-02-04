@@ -938,8 +938,8 @@ function menu_MenuClick(sTool) {
 
 		if (sToolName == "mnutoolMailMerge") {
 			$('#grdAccess').remove();
-			if (menu_saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
-				menu_loadDefSelPage(9, 0, 0, true);
+				if (menu_saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
+			menu_loadDefSelPage(9, 0, 0, true);
 			}
 			return;
 		}
@@ -2195,6 +2195,7 @@ function menu_disableMenu() {
 		$("#officebar").fadeOut("fast");
 	} else { //disable menu items on Record tab.
 		menu_toolbarEnableItem('mnutoolNewRecord', false);
+		menu_toolbarEnableItem('mnutoolCopyRecord', false);
 		menu_toolbarEnableItem('mnutoolEditRecord', false);
 		menu_toolbarEnableItem('mnutoolSaveRecord', false);
 		menu_toolbarEnableItem('mnutoolDeleteRecord', false);
