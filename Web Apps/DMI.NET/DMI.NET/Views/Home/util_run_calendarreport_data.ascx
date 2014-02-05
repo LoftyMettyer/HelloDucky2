@@ -172,13 +172,7 @@
 			Else
 				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Show Weekends" & vbNewLine)
 			End If
-			
-			'If objCalendar.ShowBankHolidays Then
-			'	Response.Write("<input type='checkbox' id='chkShoBankHolidays' name='chkShoBankHolidays' onclick=""toggleBankHolidays();"" checked=""checked""/>Show Bank Holidays" & vbNewLine)
-			'Else
-			'	Response.Write("<input type='checkbox' id='chkShoBankHolidays' name='chkShoBankHolidays' onclick=""toggleBankHolidays();""/>Show Bank Holidays" & vbNewLine)
-			'End If
-			
+						
 		%>
 
 		</div>
@@ -255,35 +249,36 @@
 			DayPilotScheduler1.Resources.Add(sDescription, objRow(4).ToString())
 		Next
 
-		For Each objRow In objCalendar.rsPersonnelBHols.Rows
-			dr = dt.NewRow()
+		If Not objCalendar.rsPersonnelBHols Is Nothing Then
+			For Each objRow In objCalendar.rsPersonnelBHols.Rows
+				dr = dt.NewRow()
 
-			dr("id") = objRow("id")
+				dr("id") = objRow("id")
 			
-			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = "Bank Holiday")		
-			If Not objLegend Is Nothing Then
-				If objLegend.Count = 0 Then
-					objLegend.Count += 1
-					objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
-					Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
-					iNextColor += 1
-					If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
-					objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
+				Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = "Bank Holiday")
+				If Not objLegend Is Nothing Then
+					If objLegend.Count = 0 Then
+						objLegend.Count += 1
+						objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
+						Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
+						iNextColor += 1
+						If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
+						objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
+					End If
+			
+					dr("color") = objLegend.HexColor
 				End If
-			
-				dr("color") = objLegend.HexColor
-			End If
 						
-			dr("startdate") = CDate(objRow(2))
-			dr("enddate") = CDate(objRow(2)).AddDays(1)
-			dr("description") = "Bank Holiday"
-			dr("eventType") = "bank"
+				dr("startdate") = CDate(objRow(2))
+				dr("enddate") = CDate(objRow(2)).AddDays(1)
+				dr("description") = "Bank Holiday"
+				dr("eventType") = "bank"
 			
-			dr("resource") = objRow(0)
-			dt.Rows.Add(dr)
+				dr("resource") = objRow(0)
+				dt.Rows.Add(dr)
 						
-		Next
-		
+			Next
+		End If
 		
 		For Each objRow As DataRow In objCalendar.Events.Rows
 
@@ -311,16 +306,9 @@
 			
 			dr("startdate") = dStart
 			dr("enddate") = dEnd
-			dr("description") = sEventDescription
-
-			
-			'If objCalendar.IsBankHoliday(dStart, CInt(objRow("baseid")), "") Then
-			'	dr("isbankholiday") = True
-			'End If
-			
+			dr("description") = sEventDescription		
 			
 			Dim sLegendKey As String = objRow(5).ToString()
-			'Dim sLegendKey As String = objRow("?ID_EventID").ToString()
 			Dim objLegend = objCalendar.Legend.Find(Function(n) n.LegendKey = sLegendKey)
 			
 			If Not objLegend Is Nothing Then

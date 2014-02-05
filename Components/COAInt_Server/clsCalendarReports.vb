@@ -5098,7 +5098,7 @@ Error_Trap:
 
 					objLegendEvent = New CalendarLegend
 					objLegendEvent.LegendKey = objEvent.Key
-					objLegendEvent.LegendDescription = objEvent.LegendCharacter
+					objLegendEvent.LegendDescription = objEvent.Name
 					objLegendEvent.HexColor = "#f3f3f3"
 					Legend.Add(objLegendEvent)
 
