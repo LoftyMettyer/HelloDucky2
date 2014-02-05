@@ -180,7 +180,7 @@
 	             		 pblnOutputPrinter = session("stdReport_OutputPrinter")
 	             		 pstrOutputPrinterName = session("stdReport_OutputPrinterName")
 	             		 pblnOutputSave = session("stdReport_OutputSave")
-	             		 plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
+		'plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
 	             		 pblnOutputEmail = session("stdReport_OutputEmail")
 	             		 plngOutputEmailID = session("stdReport_OutputEmailAddr")
 	             		 pstrOutputEmailName = session("stdReport_OutputEmailName")

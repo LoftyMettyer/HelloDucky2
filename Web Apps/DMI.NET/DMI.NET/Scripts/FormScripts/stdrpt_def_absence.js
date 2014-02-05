@@ -396,7 +396,7 @@ function absence_okClick() {
 
     if (frmAbsenceDefinition.chkDestination2.checked == true) {
     	frmPostDefinition.txtSend_OutputSave.value = 1;
-    	frmPostDefinition.txtSend_OutputSaveExisting.value = frmAbsenceDefinition.cboSaveExisting.options[frmAbsenceDefinition.cboSaveExisting.selectedIndex].value;
+    	//frmPostDefinition.txtSend_OutputSaveExisting.value = frmAbsenceDefinition.cboSaveExisting.options[frmAbsenceDefinition.cboSaveExisting.selectedIndex].value;
     }
     else {
     	frmPostDefinition.txtSend_OutputSave.value = 0;
