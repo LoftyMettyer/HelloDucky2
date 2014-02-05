@@ -888,15 +888,13 @@ Namespace Controllers
 		End Function
 
 		Public Function LogOff()
-
-			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
-			Dim objConnection As Connection
-
-			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
-
 			Session("ErrorText") = Nothing
 
 			Try
+				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
+				Dim objConnection As Connection
+
+				Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 
 				Dim prmLogIn = New SqlParameter("blnLoggingIn", SqlDbType.Bit, 1, ParameterDirection.Input)
 				prmLogIn.Value = False
@@ -922,7 +920,6 @@ Namespace Controllers
 				objServerSession.ActiveConnections -= 1
 
 			Catch ex As Exception
-				Throw
 
 			End Try
 
