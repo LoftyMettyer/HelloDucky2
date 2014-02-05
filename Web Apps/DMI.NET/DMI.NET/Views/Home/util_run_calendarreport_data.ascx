@@ -10,9 +10,12 @@
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/layout.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%: Url.LatestContent("~/Content/MonthPicker.2.1.css")%>" rel="stylesheet" type="text/css" />
 <script src="<%: Url.Content("~/scripts/jquery/jquery.maskedinput.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/scripts/jquery/MonthPicker.2.1.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/scripts/jquery/MonthPicker.js")%>" type="text/javascript"></script>
+
+<%	
+	Dim objCalendar As CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), CalendarReport)
+%>
 
 <script type="text/javascript">
 
@@ -22,23 +25,22 @@
 		toggleWeekends();
 	}
 
-	$('#StartYearDemo').MonthPicker(
-		{
-			StartYear: $("#txtYear").val(),
-			ShowIcon: false,
-			UseInputMask: true,
-			Speed: 10,
-			OnAfterMenuClose: function () {
+	$('#StartYearDemo').monthpicker({
+		selectedYear: $("#txtYear").val(),
+		startYear: <% =objCalendar.ReportStartDate.Year%> - 0,
+		startMonth: <% =objCalendar.ReportStartDate.Month%>  - 0,
+		endMonth: <% =objCalendar.ReportEndDate.Month%>  - 0,		
+		endYear: <% =objCalendar.ReportEndDate.Year%> -0, 	
+		pattern: 'mm/yyyy'});
 
-				var sMonthYear = $('#StartYearDemo').val();
-				var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
-				frmGetDataForm.txtMonth.value = sMonthYear.substring(0, 2);
-				frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7); 
+	$('#StartYearDemo').monthpicker().bind('monthpicker-click-month', function (e, month) {
+		var sMonthYear = $('#StartYearDemo').val();
+		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
+		frmGetDataForm.txtMonth.value = sMonthYear.substring(0, 2);
+		frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7);
+		OpenHR.submitForm(frmGetDataForm);
+	});
 
-				OpenHR.submitForm(frmGetDataForm);
-			}
-			
-		});
 
 	function eventCalendarClick(eventID, eventType) {
 
@@ -107,17 +109,14 @@
 </div>
 
 
-<%	
-		Dim objCalendar As HR.Intranet.Server.CalendarReport
-		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
-	%>
 
 	<div id="CalendarLegend" style="float:right;width:18%">
 		
 		<strong>Select Month :</strong>
 
-		<input id="StartYearDemo" type="text"  value="	
-		<%
+		<input id="StartYearDemo" class="monthpicker" 
+					
+			<% 
 			If objCalendar.StartOnCurrentMonth And Now < objCalendar.ReportEndDate Then
 				Session("CALREP_Year") = Date.Now.Year.ToString.PadLeft(4, "0"c)
 				Session("CALREP_Month") = Date.Now.Month.ToString.PadLeft(2, "0"c)
@@ -127,10 +126,15 @@
 				Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
 			End If
 				
-		Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
-	
-		Response.Write(dStartDate.Month.ToString.PadLeft(2, "0"c) & "/" & dStartDate.Year)
-		%>" />
+			Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
+
+			Response.Write(String.Format("data-selected-year={0} ", dStartDate.Year))
+			Response.Write(String.Format("data-start-year={0} ", objCalendar.ReportStartDate.Year))
+			Response.Write(String.Format("data-final-year={0} ", objCalendar.ReportEndDate.Year))
+			Response.Write(String.Format("value={0}/{1}", Session("CALREP_Month"), Session("CALREP_Year")))
+			%>
+			/>
+		
 
 		<input class="btn" type="button" id="cmdToday" name="cmdToday" value="Today" onclick="todayClick()" />
 
@@ -147,11 +151,6 @@
 			<% =objLegend.LegendDescription%>
 		</div>
 
-<%--				<div class="scheduler_white_event_inner" style="position: relative; width: 50px; height: 20px">
-					<div class="scheduler_white_event_bar_inner" style="background: <% =objLegend.HexColor %>; width: 100%">
-						<% =objLegend.Text%>
-					</div>
-				</div>--%>
 				<%			
 			
 				End If
@@ -239,7 +238,6 @@
 		objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 			
 		Dim sDescription As String
-		Dim sPreviousDescription As String = ""
 		Dim sEventDescription As String
 		
 		Dim dStart As Date

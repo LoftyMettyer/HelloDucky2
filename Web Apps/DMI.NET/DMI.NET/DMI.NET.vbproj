@@ -222,7 +222,6 @@
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
-    <Content Include="Content\MonthPicker.2.1.css" />
     <Content Include="Content\spectrum.css" />
     <Content Include="Content\table.css" />
     <Content Include="Content\themes\activeX\images\animated-overlay.gif" />
@@ -709,6 +708,7 @@
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
+    <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Web.custom.config.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -921,7 +921,6 @@
     <Content Include="Scripts\jquery\jsTree\theme\apple\dot_for_ie.gif" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\style.css" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\throbber.gif" />
-    <Content Include="Scripts\jquery\MonthPicker.2.1.js" />
     <Content Include="Scripts\officebar\images\bg.png" />
     <Content Include="Scripts\officebar\images\bg_tab.png" />
     <Content Include="Scripts\officebar\images\button2_over.png" />
