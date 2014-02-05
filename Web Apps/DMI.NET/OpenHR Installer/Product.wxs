@@ -11,7 +11,7 @@
 	<?define MajorAndMinorProductVersion="$(fileVersion.MajorAndMinorProductVersion($(var.DMINET_DLL)))"?>
 	<?define FullProductVersion="$(fileVersion.FullProductVersion($(var.DMINET_DLL)))"?>
 	
-	<Product Id="{FA1B9338-B6F6-413e-B67F-86CA8BCED6E8}"
+	<Product Id="*"
 			 Name="OpenHR Web $(var.MajorAndMinorProductVersion)"
 			 Language="1033"
 			 Version="$(var.FullProductVersion)"
@@ -134,25 +134,16 @@
 			<![CDATA[Installed OR (SQLCLIENT10INSTALLED > "#0" OR SQLCLIENT11INSTALLED > "#0"]]>
 		</Condition>
 
-		<!-- Get location of aspnet_regiis -->
-		<!--<Property Id="ASPNETREGIIS" >
-			<DirectorySearch Path="[FRAMEWORKBASEPATH]" Depth="4" Id="FindAspNetRegIis">
-				<FileSearch Name="aspnet_regiis.exe" MinVersion="4.0"/>
-			</DirectorySearch>
-		</Property>-->
-
-		<!-- Make app run on .NET version 4.0 -->
-		<!--<CustomAction Id="MakeWepApp40" Directory="INSTALLLOCATION" ExeCommand="[ASPNETREGIIS] -norestart -s W3SVC/1/ROOT/[VIRTUAL_DIR_VAL]" Return="check"/>-->
-
-		<!--<InstallExecuteSequence>
-			<Custom Action="MakeWepApp40" After="InstallFinalize">ASPNETREGIIS AND NOT Installed</Custom>
-		</InstallExecuteSequence>-->
-
 		<!-- License and images -->
 		<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />
 
 		<!-- Specify UI -->
 		<UIRef Id="WixUI_OpenHR" />
+
+		<!-- Upgrade settings -->
+		<MajorUpgrade
+			Schedule="afterInstallInitialize"
+			DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
 
 	</Product>
 </Wix>
