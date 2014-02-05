@@ -251,6 +251,12 @@
 			Return dt
 		End If
 
+		' Add the resources (i.e. people)
+		For Each objRow As DataRow In objCalendar.BaseRecordset.Rows
+			sDescription = objCalendar.ConvertDescription(objRow(0).ToString(), objRow(1).ToString(), objRow(2).ToString())
+			DayPilotScheduler1.Resources.Add(sDescription, objRow(4).ToString())
+		Next
+
 		For Each objRow In objCalendar.rsPersonnelBHols.Rows
 			dr = dt.NewRow()
 
@@ -281,20 +287,12 @@
 		Next
 		
 		
-		For Each objRow In objCalendar.Events.Rows
+		For Each objRow As DataRow In objCalendar.Events.Rows
 
-			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()		
+			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()
 			
 			If sEventDescription = "" Then
 				sEventDescription = objRow(0).ToString()
-			End If
-
-			sDescription = objCalendar.ConvertDescription(objRow("description1").ToString(), objRow("description2").ToString(), objRow("descriptionExpr").ToString())
-
-			' Add to resource collection
-			If Not sPreviousDescription = sDescription Then
-				DayPilotScheduler1.Resources.Add(sDescription, objRow("baseid").ToString())
-				sPreviousDescription = sDescription
 			End If
 
 			dr = dt.NewRow()

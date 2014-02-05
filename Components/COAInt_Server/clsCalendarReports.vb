@@ -3684,7 +3684,7 @@ TidyUpAndExit:
 						Return False
 					End If
 
-					For Each objRow As DataRow In rsTemp.Rows
+					For Each objRow As DataRow In rsIDs.Rows
 						mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & objRow(0)
 					Next
 
