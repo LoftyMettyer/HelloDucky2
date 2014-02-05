@@ -320,7 +320,7 @@
 		trDetails2.style.display = sDisplay;
 	}
 	
-	function updateViews() {
+	function updateViews(isKeyboardVisible) {		
 		$('.header-banner').toggle();
 		$('.ui-widget-header').toggle();
 		$('.loginframetheme img').toggle();
@@ -335,229 +335,222 @@
 		var initial_screen_size = window.innerHeight;
 		/* Android */
 		var ua = navigator.userAgent.toLowerCase();		
-		isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+		var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
 		if (isAndroid) {
 			//remove some padding
+			$('.verticalpadding200').hide();
+			$('.android-padding').toggle();
 			window.addEventListener("resize", function () {
 				is_keyboard = (window.innerHeight < initial_screen_size);
 				is_landscape = (screen.height < screen.width);
-				updateViews();
+				updateViews(is_keyboard);
 			}, false);
-			$('.android-padding').toggle();
 		}
 	}
 
 </script>
 
-<div class="COAwallpapered ui-widget-content ui-widget">
-		
-<%Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
-<table class="ui-dialog-titlebar ui-widget-header" style="margin: 0 auto; width: 100%">
-	<tr> 
-		<td>
-			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
-				<tr style="height:40px"> 
-					<td align=right>
-						<img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align=absbottom onclick="HelpAbout();" />
+	<div class="COAwallpapered ui-widget-content ui-widget">
+
+		<%Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
+		<table class="ui-dialog-titlebar ui-widget-header" style="margin: 0 auto; width: 100%">
+			<tr>
+				<td>
+					<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
+						<tr style="height: 40px">
+							<td align="right">
+								<img src="<%= Url.Content("~/Content/images/help32.png")%>" width="32" height="32" align="absbottom" onclick="HelpAbout();" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<div class="verticalpadding200"></div>
+		<div class="" style="">
+			<table cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+				<tr>
+					<td width="15"></td>
+					<td colspan="3">
+						<p align="center">
+							<img height="188" src="<%= Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>" width="410"></p>
 					</td>
+					<td width="15"></td>
+				</tr>
+				<tr class="android-padding" height="10">
+					<td width="15"></td>
+					<td colspan="3" style="font-weight: bold;" align="center">Version <%=session("Version")%></td>
+					<td width="15"></td>
+				</tr>
+				<tr height="10" class="android-padding">
+					<td colspan="5"></td>
 				</tr>
 			</table>
-		</td>
-	</tr>
-</table>
-<div class="verticalpadding200"></div>
-		<table CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
-				<tr class="android-padding"> 
-						<TD width=15 height="15"></TD>
-						<td colSpan=3 height="15">&nbsp;</td>
-						<TD width=15 height="15"></TD>
-				</tr>
-				<tr class="android-padding">
-					<td height=40></td>
-				</tr>
-				<tr> 
-						<TD width=15></TD>
-						<td colSpan=3> 
-								<p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>" width=410></p>
-						</td>
-						<TD width=15></TD>
-				</tr>
-			<tr height=10 class="android-padding">
-				<td colSpan=5></td>
-			</tr>
-			<tr  class="android-padding" height=10>
-				<TD width=15></TD>
-				<td colSpan=3 style="font-weight: bold;" align=center>Version <%=session("Version")%></td>
-				<TD width=15></TD>
-			</tr>
-			<tr height=10 class="android-padding">
-				<td colSpan=5></td>
-			</tr>
-		</table>
 
-	<table id="ancientBrowser" CELLSPACING="0" CELLPADDING="0" align="center" class="hidden invisible loginframetheme ui-widget-content" >
-				<tr height=10>
-					<td colSpan=5></td>
-			</tr>
-			<tr height=10>
-				<td width=15></td>
-				<td colSpan=3>OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</td>
-				<td width=15></td>
-			</tr>
-		</table>
-<%
+			<table id="ancientBrowser" cellspacing="0" cellpadding="0" align="center" class="hidden invisible loginframetheme ui-widget-content">
+				<tr height="10">
+					<td colspan="5"></td>
+				</tr>
+				<tr height="10">
+					<td width="15"></td>
+					<td colspan="3">OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</td>
+					<td width="15"></td>
+				</tr>
+			</table>
+			<%
 
-	If Len(Session("version")) = 0 Then
-%>
-	<table id="noAppVersion" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
-			<tr height=10>
-				<td colSpan=5></td>
-			</tr>
-			<tr class="" height=10>
-				<td width=15></td>
-				<td style="font-weight: bold;"  colSpan=3 >Unable to determine the OpenHR version.</td>
-				<td width=15></td>
-			</tr>
-			<tr  class="" height=10>
-				<td width=15></td>
-				<td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your web server.</td>
-				<td width=15></td>
-			</tr>
-		</table>
-<%
-Else
-%>
-	<table id="loginFrame" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
+				If Len(Session("version")) = 0 Then
+			%>
+			<table id="noAppVersion" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+				<tr height="10">
+					<td colspan="5"></td>
+				</tr>
+				<tr class="" height="10">
+					<td width="15"></td>
+					<td style="font-weight: bold;" colspan="3">Unable to determine the OpenHR version.</td>
+					<td width="15"></td>
+				</tr>
+				<tr class="" height="10">
+					<td width="15"></td>
+					<td style="font-weight: bold;" colspan="3">Ensure that a virtual directory has been configured on your web server.</td>
+					<td width="15"></td>
+				</tr>
+			</table>
+			<%
+			Else
+			%>
+			<table id="loginFrame" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
 				<tr style="height: 10px">
-				<td style="height: 15px"></td>
-				<td colspan="3" align="center">
-					<table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
+					<td style="height: 15px"></td>
+					<td colspan="3" align="center">
+						<table style="border: 0px; border-spacing: 0px; border-collapse: collapse;">
 							<tr class="" style="display: block;">
-									<td style="font-weight:bold; width: 120px;text-align: left;">User name :</td>
-									<td style="width: 10px"></td>
-									<td style="width: 200px;">
-								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; " onkeypress="CheckKeyPressed(event)"/>
-								<input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
-									</td>
-									
-								</tr>
-							<tr class="" style="display:block;">
-									<td style="font-weight:bold; width: 120px;text-align: left;">Password :</td>
-									<td style="width: 10px">
-							</td>
-									<td style="width: 200px;">
+								<td style="font-weight: bold; width: 120px; text-align: left;">User name :</td>
+								<td style="width: 10px"></td>
+								<td style="width: 200px;">
+									<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px; width: 100%;" onkeypress="CheckKeyPressed(event)" />
+									<input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />
+								</td>
 
-								<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%; " onkeypress="CheckKeyPressed(event);"/>
-									</td>
+							</tr>
+							<tr class="" style="display: block;">
+								<td style="font-weight: bold; width: 120px; text-align: left;">Password :</td>
+								<td style="width: 10px"></td>
+								<td style="width: 200px;">
+
+									<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%;" onkeypress="CheckKeyPressed(event);" />
+								</td>
 							</tr>
 
-							<tr class="" >
-<%
-	If Request.ServerVariables("LOGON_USER") <> "" Then
-%>			
-								<td style="font-weight: bold;text-align: left;" colspan="3" >
-										<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="0"
-												onclick="ToggleWindowsAuthentication()"/> 
-										<label 
-												for="chkWindowsAuthentication"
-												class="checkbox"
-												tabindex="0"
-													onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-											onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-											onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-														onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-														onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-												Use Windows Authentication
-										</label>
+							<tr class="">
+								<%
+									If Request.ServerVariables("LOGON_USER") <> "" Then
+								%>
+								<td style="font-weight: bold; text-align: left;" colspan="3">
+									<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="0"
+										onclick="ToggleWindowsAuthentication()" />
+									<label
+										for="chkWindowsAuthentication"
+										class="checkbox"
+										tabindex="0"
+										onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+										onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+										onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+										onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+										onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+										Use Windows Authentication
+									</label>
 								</td>
 								<td></td>
 								<td></td>
-<%
-Else
-%>
-								<td class="" colspan="3" >
-										<input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
+								<%
+								Else
+								%>
+								<td class="" colspan="3">
+									<input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
 								</td>
-<%
-End If
-%>
-								 </tr>
-
-									<tr class="" style="visibility:hidden;display:none" id="trDetails1">
-											<td style="width: 120px;font-weight: bold;text-align: left;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
-											<td style="width: 10px">
-									</td>
-											<td style="width: 200px;">
-																<div id="DatabaseTextValueDiv" runat="server">
-																		<input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
-																</div>
-											</td>
-									</tr>
-										
-							<tr class="" style="visibility:hidden;display:none" id="trDetails2">
-									<td style="width: 120px;font-weight: bold;text-align: left;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
-									<td style="width: 10px">
-							</td>
-									<td style="width: 200px;">
-														<div id="ServerTextValueDiv" runat="server">
-																<input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
-														</div>
-									</td>
+								<%
+								End If
+								%>
 							</tr>
-					</table>
-					</td>
-				<td style="width:15px"></td>
-			</tr>
-	
-			<tr height=10>
-					<td colSpan=5></td>
-			</tr>
 
-		<tr height="10">
-				<td width="15"></td>
-				<td colspan="3">
-						<table border="0" cellspacing="0" cellpadding="0" align="center">
-								<tr>
-										<td align="center">
-											<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
-														 onclick="SubmitLoginDetails()" value="Login"/>
-										</td>
-										<td width="10"></td>
-										<td align="center">
-											<%--<input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;" onclick="CancelLogin()" value="Cancel"/>--%>
-										</td>
-										<td width="10"></td>
-										<td align="center">
-												<div id="btnToggleDetailsDiv" runat="server">
-													<input type="button" id="details" name="details" class="ui-button" style="" onclick="toggleDetails()" value="Details" />
-												</div>
-										</td>
-								</tr>
+							<tr class="" style="visibility: hidden; display: none" id="trDetails1">
+								<td style="width: 120px; font-weight: bold; text-align: left;">
+									<div id="DatabaseTextLabelDiv" runat="server">Database :</div>
+								</td>
+								<td style="width: 10px"></td>
+								<td style="width: 200px;">
+									<div id="DatabaseTextValueDiv" runat="server">
+										<input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%;" class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
+									</div>
+								</td>
+							</tr>
+
+							<tr class="" style="visibility: hidden; display: none" id="trDetails2">
+								<td style="width: 120px; font-weight: bold; text-align: left;">
+									<div id="ServerTextLabelDiv" runat="server">Server :</div>
+								</td>
+								<td style="width: 10px"></td>
+								<td style="width: 200px;">
+									<div id="ServerTextValueDiv" runat="server">
+										<input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%;" class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
+									</div>
+								</td>
+							</tr>
 						</table>
-				</td>
-				<td width="15"></td>
-		</tr>
-		</table>
-<%
-End If
+					</td>
+					<td style="width: 15px"></td>
+				</tr>
 
-%>
-	<table id="forgotPassword" CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
-			<tr height=10>
-				<td colSpan=5></td>
-			</tr>
-			<tr height=5>
-				<td colSpan=5></td>
-			</tr>   	
-			<tr height=10>
-				<td width="15"></td>
-				<td colSpan=2>
-					<p id="ForgotPasswordLink" style="display: none;text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
-				</td>
-				<td width="15"></td>
-			</tr>
-		</table>
+				<tr height="10">
+					<td colspan="5"></td>
+				</tr>
 
+				<tr height="10">
+					<td width="15"></td>
+					<td colspan="3">
+						<table border="0" cellspacing="0" cellpadding="0" align="center">
+							<tr>
+								<td align="center">
+									<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
+										onclick="SubmitLoginDetails()" value="Login" />
+								</td>
+								<td width="10"></td>
+								<td align="center">
+									<%--<input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;" onclick="CancelLogin()" value="Cancel"/>--%>
+								</td>
+								<td width="10"></td>
+								<td align="center">
+									<div id="btnToggleDetailsDiv" runat="server">
+										<input type="button" id="details" name="details" class="ui-button" style="" onclick="toggleDetails()" value="Details" />
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="15"></td>
+				</tr>
+			</table>
+			<%
+			End If
+
+			%>
+			<table id="forgotPassword" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+				<tr height="10">
+					<td colspan="5"></td>
+				</tr>
+				<tr height="5">
+					<td colspan="5"></td>
+				</tr>
+				<tr height="10">
+					<td width="15"></td>
+					<td colspan="2">
+						<p id="ForgotPasswordLink" style="display: none; text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+					</td>
+					<td width="15"></td>
+				</tr>
+			</table>
+		</div>
 	<input type="hidden" id="txtSetDetails" name="txtSetDetails" value="<%=Session("showLoginDetails")%>">
 	<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat">
 	<input type="hidden" id="txtLocaleDateSeparator" name="txtLocaleDateSeparator">
@@ -576,7 +569,7 @@ End If
 		}
 		
 		//Is this a browser that supports file API; which is OK for all modern browsers (IE10+ etc)
-		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+		if (!(window.File && window.FileReader && window.FileList && window.Blob)) { 
 			//Show 'browser not supported' message...
 			$('#ancientBrowser').removeClass('hidden');
 			$('#loginFrame').addClass('hidden');

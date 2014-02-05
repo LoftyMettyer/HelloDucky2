@@ -17,10 +17,7 @@
 <link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
 <link href="<%:Url.Content("~/Content/jquery.mCustomScrollbar.min.css")%>" rel="stylesheet" />
 <link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
-<%--<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.gridster.js")%>" type="text/javascript"></script>
-<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.mousewheel.js")%>" type="text/javascript"></script>--%>
 <script src="<%:Url.Content("~/Scripts/jquery/jquery.mCustomScrollbar.min.js")%>"></script>
-
 <script src="<%:Url.Content("~/Scripts/FormScripts/linksMain.js")%>"></script>
 
 
@@ -1364,6 +1361,8 @@
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 		if ('<%=session("isMobileDevice")%>' != "True") {
 			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
+		} else {
+			$('.DashContent').attr('overflow', 'auto');
 		}
 
 

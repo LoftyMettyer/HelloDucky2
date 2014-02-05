@@ -12,66 +12,7 @@
 	<%--<meta name="apple-mobile-web-app-capable" content="yes" />--%>
 
 	<%--Keep these media queries inline - external stylesheets cause a delay--%>
-	<!-- ipad -->
-	<link href="Content/images/ABSLogo/OpenHRLogo748x1024.png"
-		media="(device-width: 768px) and (device-height: 1024px)
-								 and (orientation: landscape)
-								 and (-webkit-device-pixel-ratio: 1)"
-		rel="apple-touch-startup-image">
 
-	<!-- iPhone -->
-	<link href="~/Content/images/ABSLogo/OpenHRLogo57.png"
-		sizes="57x57"
-		rel="apple-touch-icon">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo320x460.png"
-		media="(device-width: 320px) and (device-height: 480px)
-								 and (-webkit-device-pixel-ratio: 1)"
-		rel="apple-touch-startup-image">
-
-	<!-- iPhone (Retina) -->
-	<link href="~/Content/images/ABSLogo/OpenHRLogo114.png"
-		sizes="114x114"
-		rel="apple-touch-icon">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo640x920.png"
-		media="(device-width: 320px) and (device-height: 480px)
-								 and (-webkit-device-pixel-ratio: 2)"
-		rel="apple-touch-startup-image">
-
-	<!-- iPhone 5 -->
-	<link href="~/Content/images/ABSLogo/OpenHRLogo640x1096.png"
-		media="(device-width: 320px) and (device-height: 568px)
-								 and (-webkit-device-pixel-ratio: 2)"
-		rel="apple-touch-startup-image">
-
-	<!-- iPad -->
-	<link href="~/Content/images/ABSLogo/OpenHRLogo72.png"
-		sizes="72x72"
-		rel="apple-touch-icon">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo768x1004.png"
-		media="(device-width: 768px) and (device-height: 1024px)
-								 and (orientation: portrait)
-								 and (-webkit-device-pixel-ratio: 1)"
-		rel="apple-touch-startup-image">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo748x1024.png"
-		media="(device-width: 768px) and (device-height: 1024px)
-								 and (orientation: landscape)
-								 and (-webkit-device-pixel-ratio: 1)"
-		rel="apple-touch-startup-image">
-
-	<!-- iPad (Retina) -->
-	<link href="~/Content/images/ABSLogo/OpenHRLogo144.png"
-		sizes="144x144"
-		rel="apple-touch-icon">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo1536x2008.png"
-		media="(device-width: 768px) and (device-height: 1024px)
-								 and (orientation: portrait)
-								 and (-webkit-device-pixel-ratio: 2)"
-		rel="apple-touch-startup-image">
-	<link href="~/Content/images/ABSLogo/OpenHRLogo1496x2048.png"
-		media="(device-width: 768px) and (device-height: 1024px)
-								 and (orientation: landscape)
-								 and (-webkit-device-pixel-ratio: 2)"
-		rel="apple-touch-startup-image">
 
 	<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
 
@@ -207,7 +148,7 @@
 			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-					$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
+				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
 				$('body').addClass('DMI');
 			}
 			else {
@@ -221,84 +162,84 @@
 				window.currentTheme = cookieTheme;	
 	
 
-			var cookiewireframeTheme = getCookie("Intranet_Wireframe_Theme");
-			if (cookiewireframeTheme === undefined || cookiewireframeTheme === "undefined" || cookiewireframeTheme.length <= 0) {			
-				//no local setting for wireframe theme, try to use ui-wireframe-theme setting from application settings...
-				if ('<%:Session("ui-wireframe-theme").ToString()%>' != '') {
-					cookiewireframeTheme = '<%:Session("ui-wireframe-theme").ToString()%>';
-				} else {
-					//nothing set anywhere. Default to ABS.
-					cookiewireframeTheme = "abs";
-				}				
-			}
+				var cookiewireframeTheme = getCookie("Intranet_Wireframe_Theme");
+				if (cookiewireframeTheme === undefined || cookiewireframeTheme === "undefined" || cookiewireframeTheme.length <= 0) {			
+					//no local setting for wireframe theme, try to use ui-wireframe-theme setting from application settings...
+					if ('<%:Session("ui-wireframe-theme").ToString()%>' != '') {
+						cookiewireframeTheme = '<%:Session("ui-wireframe-theme").ToString()%>';
+					} else {
+						//nothing set anywhere. Default to ABS.
+						cookiewireframeTheme = "abs";
+					}				
+				}
 				
-			window.cookieapplyWireframeTheme = getCookie("Apply_Wireframe_Theme");
+				window.cookieapplyWireframeTheme = getCookie("Apply_Wireframe_Theme");
 				if (cookieapplyWireframeTheme === undefined || cookieapplyWireframeTheme === "undefined" || cookieapplyWireframeTheme.length <= 0) {
 					window.cookieapplyWireframeTheme = "false";
 				}
 
 				$('body').addClass('SSI');
-			//Kill themeRoller:
-			if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
-			$("link[id=DMIthemeLink]").attr({ href: "" });
+				//Kill themeRoller:
+				if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
+					$("link[id=DMIthemeLink]").attr({ href: "" });
 				
-			switch (window.currentLayout) {
-			case "winkit":
-			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-			$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-			$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
-			break;
-			case "wireframe":
-			if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
+				switch (window.currentLayout) {
+				case "winkit":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond/jquery-ui.min.css")%>" });
+					break;
+				case "wireframe":
+					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
 
-			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-			$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-			$("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-			break;
-			case "tiles":
-			$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-			$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-			$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-			break;
-		}
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					break;
+				case "tiles":
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					break;
+				}
 
-			switch (window.currentTheme) {
-			case "red":
-			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-			break;
-			case "blue":
-			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-			break;
-			case "white":
-			$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-			default:
-			break;
-		}
+				switch (window.currentTheme) {
+				case "red":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+					break;
+				case "blue":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+					break;
+				case "white":
+					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+				default:
+					break;
+				}
 
-		}
-		//Save some cookies we will need in other parts of the system
-		setCookie("SSIMode", SSIMode, 100);
-		setCookie("currentLayout", "<%=currentLayout%>", 100);
-		setCookie("currentTheme", currentTheme, 100);
-		setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
-		setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
+			}
+			//Save some cookies we will need in other parts of the system
+			setCookie("SSIMode", SSIMode, 100);
+			setCookie("currentLayout", "<%=currentLayout%>", 100);
+			setCookie("currentTheme", currentTheme, 100);
+			setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
+			setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
 
-		//Apply ajax please wait message
-		$(document).ajaxStart(function () {
-			$("body").addClass("loading");
-		});
+			//Apply ajax please wait message
+			$(document).ajaxStart(function () {
+				$("body").addClass("loading");
+			});
 
 			$(document).ajaxStop(function () {
-			$("body").removeClass("loading");
-		});
+				$("body").removeClass("loading");
+			});
 
 		});
 	</script>
 
-	<meta name="viewport" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script type="text/javascript">
-		if ((screen.width < 768) || (screen.height < 768)) {
+	<script type="text/javascript">		
+		if ((screen.width < 768) || (screen.height < 748)) {			
 			viewport = document.querySelector("meta[name=viewport]");
 			viewport.setAttribute('content', 'width=460;');
 			window.isMobileBrowser = true;		
@@ -306,7 +247,7 @@
 		else {
 			window.isMobileBrowser = false;
 		}
-
+		
 		function getCookie(c_name) {
 			var i, x, y, ARRcookies = document.cookie.split(";");
 			for (i = 0; i < ARRcookies.length; i++) {
@@ -332,16 +273,16 @@
 		window.currentLayout = "<%=currentLayout %>";
 		function changeTheme(newThemeName) {
 			switch (newThemeName) {
-				case "theme-Red":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-					break;
-				case "theme-Blue":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-					break;
-				case "theme-White":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-				default:
-					break;
+			case "theme-Red":
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+				break;
+			case "theme-Blue":
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+				break;
+			case "theme-White":
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+			default:
+				break;
 			}
 		}
 

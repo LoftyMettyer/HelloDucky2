@@ -822,7 +822,7 @@ Namespace Controllers
 
 
 
-	
+
 
 			Session("EnableSQL2000Functions") = False
 
@@ -875,7 +875,10 @@ Namespace Controllers
 							' Return RedirectToAction("Main", "Home")
 							ViewBag.SSIMode = False
 						Case Else
-							Return RedirectToAction("login", "account")
+							' Return RedirectToAction("login", "account")
+							Session("ErrorTitle") = "Login Page"
+							Session("ErrorText") = "You could not login to the OpenHR database."
+							Return RedirectToAction("Loginerror", "Account")
 					End Select
 				End If
 
@@ -884,7 +887,6 @@ Namespace Controllers
 
 			End If
 
-			Return RedirectToAction("login", "account")
 		End Function
 
 		Public Function LogOff()
