@@ -118,14 +118,14 @@
 
 		<input id="StartYearDemo" type="text"  value="	
 		<%
-		If objCalendar.StartOnCurrentMonth Then
-			Session("CALREP_Year") = Date.Now.Year.ToString.PadLeft(4, "0"c)
-			Session("CALREP_Month") = Date.Now.Month.ToString.PadLeft(2, "0"c)
-			objCalendar.StartOnCurrentMonth = False
-		ElseIf Session("CALREP_Year") Is Nothing Then
-			Session("CALREP_Year") = objCalendar.ReportStartDate.Year.ToString.PadLeft(4, "0"c)
-			Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
-		End If
+			If objCalendar.StartOnCurrentMonth And Now < objCalendar.ReportEndDate Then
+				Session("CALREP_Year") = Date.Now.Year.ToString.PadLeft(4, "0"c)
+				Session("CALREP_Month") = Date.Now.Month.ToString.PadLeft(2, "0"c)
+				objCalendar.StartOnCurrentMonth = False
+			ElseIf Session("CALREP_Year") Is Nothing Then
+				Session("CALREP_Year") = objCalendar.ReportStartDate.Year.ToString.PadLeft(4, "0"c)
+				Session("CALREP_Month") = objCalendar.ReportStartDate.Month.ToString.PadLeft(2, "0"c)
+			End If
 				
 		Dim dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
 	
@@ -194,7 +194,7 @@
 		Dim dStartDate As DateTime = New DateTime(objCalendar.ReportStartDate.Year, objCalendar.ReportStartDate.Month, 1)
 		
 		If Session("CALREP_Year") Is Nothing Then
-			If objCalendar.StartOnCurrentMonth Then
+			If objCalendar.StartOnCurrentMonth And Now < objCalendar.ReportEndDate Then
 				dStartDate = New DateTime(Now.Year, Now.Month, 1)
 			End If
 		Else
