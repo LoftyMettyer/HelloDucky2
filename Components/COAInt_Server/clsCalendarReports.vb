@@ -83,7 +83,7 @@ Public Class CalendarReport
 	Private mlngStartDateExpr As Integer
 	Private mdtStartDate As Date
 	Private mlngEndDateExpr As Integer
-	Private mdtEndDate As String
+	Private mdtEndDate As Date
 
 	Private mblnShowBankHolidays As Boolean
 	Private mblnShowCaptions As Boolean
@@ -629,49 +629,13 @@ Public Class CalendarReport
 
 	Public ReadOnly Property ReportStartDate() As Date
 		Get
-			ReportStartDate = mdtStartDate
+			Return mdtStartDate
 		End Get
 	End Property
 
 	Public ReadOnly Property ReportEndDate() As Date
 		Get
-			ReportEndDate = CDate(mdtEndDate)
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportStartDate_US() As String
-		Get
-			ReportStartDate_US = VB6.Format(mdtStartDate, "MM/dd/yyyy")
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportStartDate_Calendar() As Date
-		Get
-			ReportStartDate_Calendar = CDate(VB6.Format(mdtStartDate, CALREP_DATEFORMAT))
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportEndDate_Calendar() As Date
-		Get
-			ReportEndDate_Calendar = CDate(VB6.Format(mdtEndDate, CALREP_DATEFORMAT))
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportEndDate_CalendarString() As String
-		Get
-			ReportEndDate_CalendarString = Replace(VB6.Format(mdtEndDate, CALREP_DATEFORMAT), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/")
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportStartDate_CalendarString() As String
-		Get
-			ReportStartDate_CalendarString = Replace(VB6.Format(mdtStartDate, CALREP_DATEFORMAT), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/")
-		End Get
-	End Property
-
-	Public ReadOnly Property ReportEndDate_US() As String
-		Get
-			ReportEndDate_US = VB6.Format(mdtEndDate, "MM/dd/yyyy")
+			Return mdtEndDate
 		End Get
 	End Property
 
@@ -1135,7 +1099,7 @@ AddError:
 
 		Load_Legend()
 
-		intMonthCount = DateDiff(Microsoft.VisualBasic.DateInterval.Month, mdtStartDate, CDate(mdtEndDate))
+		intMonthCount = DateDiff(Microsoft.VisualBasic.DateInterval.Month, mdtStartDate, mdtEndDate)
 
 		'***********************************************************
 		'get an array for the key
@@ -1366,7 +1330,7 @@ ErrorTrap:
 							If dtLabelsDate < mdtStartDate Then
 								mintRangeStartIndex_Output = intControlCount
 							End If
-							If dtLabelsDate = CDate(mdtEndDate) Then
+							If dtLabelsDate = mdtEndDate Then
 								mintRangeEndIndex_Output = intControlCount + 1
 							End If
 
@@ -2486,7 +2450,7 @@ ErrorTrap:
 				Else
 					'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					dtConvertedDate = ConvertCalendarDateToDateFormat(CStr(varTempArray(1, intCount)))
-					If (dtConvertedDate >= mdtStartDate) And (dtConvertedDate <= CDate(mdtEndDate)) Then
+					If (dtConvertedDate >= mdtStartDate) And (dtConvertedDate <= mdtEndDate) Then
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object varTempArray(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						blnIsBankHoliday = IIf(varTempArray(3, intCount) = "1", True, False)
@@ -2745,17 +2709,8 @@ ErrorTrap:
 
 	End Function
 
-	Public Function BaseIndex_Add(ByRef pintCurrentBaseIndex As Short, ByRef plngCurrentRecordID As Integer) As Boolean
-		mcolBaseDescIndex.Add(pintCurrentBaseIndex, CStr(plngCurrentRecordID))
-	End Function
 
-	Public Function BaseIndex_Get(ByRef pstrCurrentRecordID As String) As Object
-		'UPGRADE_WARNING: Couldn't resolve default property of object mcolBaseDescIndex.Item(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object BaseIndex_Get. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		BaseIndex_Get = mcolBaseDescIndex.Item(pstrCurrentRecordID)
-	End Function
-
-	Private Function CheckColumnPermissions(ByRef plngTableID As Integer, ByRef pstrTableName As String, ByRef pstrColumnName As String, ByRef strSQLRef As String) As Boolean
+	Private Function CheckColumnPermissions(plngTableID As Integer, pstrTableName As String, pstrColumnName As String, ByRef strSQLRef As String) As Boolean
 
 		'This function checks if the current user has read(select) permissions
 		'on this column. If the user only has access through views then the
@@ -2932,7 +2887,7 @@ ErrorTrap:
 		End If
 
 		mlngEventViewColumn = 0
-		CheckColumnPermissions = True
+		Return True
 
 	End Function
 
@@ -3154,7 +3109,7 @@ ErrorTrap:
 
 	End Sub
 
-	Private Function IsColumnInView(ByRef plngViewID As Integer, ByRef plngColumnID As Integer) As Boolean
+	Private Function IsColumnInView(plngViewID As Integer, plngColumnID As Integer) As Boolean
 
 		Dim lngCount As Integer
 
@@ -3162,10 +3117,11 @@ ErrorTrap:
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarEventColumnViews(1, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarEventColumnViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			If (mvarEventColumnViews(0, lngCount) = plngViewID) And (mvarEventColumnViews(1, lngCount) = plngColumnID) Then
-				IsColumnInView = True
-				Exit Function
+				Return True
 			End If
 		Next lngCount
+
+		Return False
 
 	End Function
 
@@ -3604,10 +3560,10 @@ TidyUpAndExit:
 				Case CalendarDataType.Fixed
 					mdtEndDate = rowDefinition("FixedEnd")
 				Case CalendarDataType.CurrentDate
-					mdtEndDate = CStr(Today)
+					mdtEndDate = Today
 				Case CalendarDataType.Custom
 					'UPGRADE_WARNING: Couldn't resolve default property of object General.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtEndDate = General.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts)
+					mdtEndDate = CDate(General.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts))
 			End Select
 
 			If iStartDateType = CalendarDataType.Offset And iEndDateType = CalendarDataType.Offset Then
@@ -3627,7 +3583,7 @@ TidyUpAndExit:
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtEndDate = CStr(DateAdd(sDateInterval, CDbl(rowDefinition("EndFrequency")), Today))
+				mdtEndDate = DateAdd(sDateInterval, CDbl(rowDefinition("EndFrequency")), Today)
 
 			ElseIf iStartDateType = CalendarDataType.Offset And Not iEndDateType = CalendarDataType.Offset Then
 				'START DATE
@@ -3637,7 +3593,7 @@ TidyUpAndExit:
 					Case DatePeriod.Months : sDateInterval = "m"
 					Case DatePeriod.Years : sDateInterval = "yyyy"
 				End Select
-				mdtStartDate = DateAdd(sDateInterval, CDbl(rowDefinition("StartFrequency")), CDate(mdtEndDate))
+				mdtStartDate = DateAdd(sDateInterval, CDbl(rowDefinition("StartFrequency")), mdtEndDate)
 
 			ElseIf iEndDateType = CalendarDataType.Offset And Not iStartDateType = CalendarDataType.Offset Then
 				'END DATE
@@ -3651,7 +3607,7 @@ TidyUpAndExit:
 
 			End If
 
-			If mdtStartDate > CDate(mdtEndDate) Then
+			If mdtStartDate > mdtEndDate Then
 				mstrErrorString = "The report end date is before the report start date."
 				GetCalendarReportDefinition = False
 				GoTo TidyUpAndExit
@@ -3952,7 +3908,6 @@ ErrorTrap:
 		If mblnDisableRegions Then Return False
 
 		Dim rsCC As DataTable	'career change data for base records
-		Dim rsPersonnelBHols As DataTable
 		Dim colBankHolidays As clsBankHolidays
 
 		Dim strSQLCC As String 'sql for retieving career change data
@@ -4713,7 +4668,7 @@ DisableRegions:
 
 	End Function
 
-	Private Function CheckPermission_Columns(ByRef plngTableID As Integer, ByRef pstrTableName As String, ByRef pstrColumnName As String, ByRef strSQLRef As String) As Boolean
+	Private Function CheckPermission_Columns(plngTableID As Integer, pstrTableName As String, pstrColumnName As String, ByRef strSQLRef As String) As Boolean
 
 		'This function checks if the current user has read(select) permissions
 		'on this column. If the user only has access through views then the
@@ -4883,7 +4838,6 @@ DisableRegions:
 
 	Private Function CheckPermission_WPInfo() As Boolean
 
-		Dim objTable As TablePrivilege
 		Dim objColumn As CColumnPrivileges
 		Dim pblnColumnOK As Boolean
 		Dim strTableColumn As String
@@ -4946,8 +4900,6 @@ DisableRegions:
 		CheckPermission_WPInfo = True
 
 TidyUpAndExit:
-		'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTable = Nothing
 		'UPGRADE_NOTE: Object objColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objColumn = Nothing
 		Exit Function
@@ -5660,7 +5612,7 @@ GenerateSQLSelect_ERROR:
 
 	End Function
 
-	Private Function CheckCalculationPermissions(ByRef plngBaseTableID As Integer, ByRef plngExprID As Integer, ByRef strSQLRef As String) As Boolean
+	Private Function CheckCalculationPermissions(plngBaseTableID As Integer, plngExprID As Integer, ByRef strSQLRef As String) As Boolean
 
 		'This function checks if the current user has read(select) permissions
 		'on this calculation. If the user only has access through views then the
@@ -6277,14 +6229,7 @@ ClearUp_ERROR:
 
 	End Function
 
-	Public Function EventToolTipText(ByVal pdtStartDate As Date, ByVal pstrStartSession As String, ByVal pdtEndDate As Date, ByVal pstrEndSession As String) As String
-
-		Return String.Format("Start Date: {0}{1} ---> {2}{3}" _
-			, VB6.Format(pdtStartDate, "dd-MMM-yyyy "), LCase(pstrStartSession), VB6.Format(pdtEndDate, "dd-MMM-yyyy "), LCase(pstrEndSession))
-
-	End Function
-
-	Public Function ConvertDescription(ByVal pvarDesc1 As String, ByVal pvarDesc2 As String, ByVal pvarDesc3 As String) As String
+	Public Function ConvertDescription(pvarDesc1 As String, pvarDesc2 As String, pvarDesc3 As String) As String
 
 		Dim strBaseDescription1, strBaseDescription2 As String
 		Dim strBaseDescriptionExpr As String

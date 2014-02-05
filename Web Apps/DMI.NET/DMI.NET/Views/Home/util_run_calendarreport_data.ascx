@@ -191,9 +191,13 @@
 	Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
 			
 		Dim objCalendar As HR.Intranet.Server.CalendarReport = CType(Session("objCalendar" & Session("CalRepUtilID")), HR.Intranet.Server.CalendarReport)
-		Dim dStartDate As DateTime = objCalendar.ReportStartDate
-	
-		If Not Session("CALREP_Year") Is Nothing Then
+		Dim dStartDate As DateTime = New DateTime(objCalendar.ReportStartDate.Year, objCalendar.ReportStartDate.Month, 1)
+		
+		If Session("CALREP_Year") Is Nothing Then
+			If objCalendar.StartOnCurrentMonth Then
+				dStartDate = New DateTime(Now.Year, Now.Month, 1)
+			End If
+		Else
 			dStartDate = DateTime.Parse(String.Format("{0}-{1}-01", Session("CALREP_Year"), Session("CALREP_Month")))
 		End If
 		
