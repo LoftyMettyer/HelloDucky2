@@ -392,7 +392,7 @@
 										</td>
 										<td>&nbsp;
 										</td>
-										<td width="40">Order :
+										<td style="text-align: right;">Order :
 										</td>
 										<td width="10">&nbsp;
 										</td>
