@@ -113,9 +113,6 @@
                 <Component Id="cmpE0C628AAD6BC5EE5AE970829D51BABD4" Guid="*">
                     <File Id="fil6C9F53CD8F9069478114B42833E8BD30" KeyPath="yes" Source="SourceDir\Content\jquery.mCustomScrollbar.min.css" />
                 </Component>
-                <Component Id="cmp66E8E83D3ED86294AEF8192EAF7078A8" Guid="*">
-                    <File Id="filE4DFE5B335C6C759830BABFA5513B32B" KeyPath="yes" Source="SourceDir\Content\MonthPicker.2.1.css" />
-                </Component>
                 <Component Id="cmp37A71693C97DD352EA1B40A8B77B8CEC" Guid="*">
                     <File Id="fil12284FAC5AB05AC0CAD0B5A879B09F07" KeyPath="yes" Source="SourceDir\Content\OpenHR.css" />
                 </Component>
@@ -2404,8 +2401,8 @@
                     <Component Id="cmpDFEA2D1A786AD10B336E4ADC65536D52" Guid="*">
                         <File Id="fil6E182651341E061DF3D0B07006E91667" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery.validate.unobtrusive.js" />
                     </Component>
-                    <Component Id="cmpC7618C9E3052BFFE70C229410BCE8F10" Guid="*">
-                        <File Id="filF9E3566E1635930C6EC0FC448A4F1FEF" KeyPath="yes" Source="SourceDir\Scripts\jquery\MonthPicker.2.1.js" />
+                    <Component Id="cmpD59FA9B39C98A392E3341CDE24E574A3" Guid="*">
+                        <File Id="fil99613826492C1418A62B6BAB6EEF14BD" KeyPath="yes" Source="SourceDir\Scripts\jquery\MonthPicker.js" />
                     </Component>
                     <Directory Id="dirA28C552D4E00C7A7AB1A60E769D4B43A" Name="jOrgChart">
                         <Component Id="cmpA8318D4E1A40E311DE5442F4C5453B18" Guid="*">
@@ -3425,7 +3422,6 @@
             <ComponentRef Id="cmpC84FC9195B38EB282238097CCAA30442" />
             <ComponentRef Id="cmpE904ECF731BA7F3BC7E7A9B01BD4EFD4" />
             <ComponentRef Id="cmpE0C628AAD6BC5EE5AE970829D51BABD4" />
-            <ComponentRef Id="cmp66E8E83D3ED86294AEF8192EAF7078A8" />
             <ComponentRef Id="cmp37A71693C97DD352EA1B40A8B77B8CEC" />
             <ComponentRef Id="cmp96D710794B45BA988996F24A42EB7670" />
             <ComponentRef Id="cmp21EE9DB76B3F6B462090455CB5B24018" />
@@ -4147,7 +4143,7 @@
             <ComponentRef Id="cmpC3CBCF9115B9B3D5647F1D72DB742CE9" />
             <ComponentRef Id="cmp7012903C7838624DB5AB45A40154A087" />
             <ComponentRef Id="cmpDFEA2D1A786AD10B336E4ADC65536D52" />
-            <ComponentRef Id="cmpC7618C9E3052BFFE70C229410BCE8F10" />
+            <ComponentRef Id="cmpD59FA9B39C98A392E3341CDE24E574A3" />
             <ComponentRef Id="cmpA8318D4E1A40E311DE5442F4C5453B18" />
             <ComponentRef Id="cmpF5E11BEA46F16C48A48E4238D797EB51" />
             <ComponentRef Id="cmpC13750B792A0FC1BF1E84A28A2F95C4D" />

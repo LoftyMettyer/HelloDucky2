@@ -35,10 +35,12 @@
 		
 		<!-- Creating directories -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="INETPUB" Name="Inetpub" ComponentGuidGenerationSeed="60f8e27d82ad4207b784e13305dd18dc">
-				<Directory Id="WWWROOT" Name="wwwroot" ComponentGuidGenerationSeed="d6ee5f504eb5453587abbf467ed4375a">
-					<!-- This is the folder where the website content will be located -->
-					<Directory Id="INSTALLLOCATION" Name="OpenHR" ComponentGuidGenerationSeed="f42c48f5f76444628078f9470422592b">
+			<Directory Id="WindowsVolume" Name="WindowsVolume">
+				<Directory Id="INETPUB" Name="Inetpub" ComponentGuidGenerationSeed="60f8e27d82ad4207b784e13305dd18dc">
+					<Directory Id="WWWROOT" Name="wwwroot" ComponentGuidGenerationSeed="d6ee5f504eb5453587abbf467ed4375a">
+						<!-- This is the folder where the website content will be located -->
+						<Directory Id="INSTALLLOCATION" Name="OpenHR" ComponentGuidGenerationSeed="f42c48f5f76444628078f9470422592b">
+						</Directory>
 					</Directory>
 				</Directory>
 			</Directory>
