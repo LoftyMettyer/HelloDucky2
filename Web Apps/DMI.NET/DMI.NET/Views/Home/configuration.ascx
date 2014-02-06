@@ -6,14 +6,7 @@
 	Dim sTemp As String
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-    Session("PrimaryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "primary", RecEditStartType.FindWindow))
-    Session("HistoryStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "history", RecEditStartType.FindWindow))
-    Session("LookupStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "lookup", RecEditStartType.FindWindow))
-    Session("QuickAccessStartMode") = CInt(objDatabase.GetUserSetting("recordediting", "quickaccess", RecEditStartType.FindWindow))
-    Session("ExprColourMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "viewcolours", 1))
-    Session("ExprNodeMode") = CLng(objDatabase.GetUserSetting("expressionbuilder", "nodesize", 1))
-    Session("FindRecords") = CLng(objDatabase.GetUserSetting("IntranetFindWindow", "BlockSize", 1000))
-	
+   	
     ' Get the DefSel 'only mine' settings.
     For i = 0 To 20
         sTemp = "onlymine "
@@ -247,8 +240,7 @@
         frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options(frmConfiguration.cboQuickAccessDisplay.options.selectedIndex).value;
         frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
         frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
-        frmConfiguration.txtFindSize.value = frmConfiguration.txtFindSize.value;
-
+       
         menu_refreshMenu();
         var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
         menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;

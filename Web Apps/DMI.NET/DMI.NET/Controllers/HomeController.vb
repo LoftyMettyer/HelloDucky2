@@ -27,123 +27,129 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function Configuration_Submit(value As FormCollection)
+            'If (Request.Form("txtPrimaryStartMode") = "") Then
+            '    Return View()
+            'End If
+            On Error Resume Next
 
-			On Error Resume Next
+            Dim sTemp
+            Dim sType = ""
+            Dim sControlName
 
-			Dim sTemp
-			Dim sType = ""
-			Dim sControlName
+            If (Request.Form("txtPrimaryStartMode") <> "") Then
 
-			' Save the user configuration settings.
-			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-			objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
-			objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
-			objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
-			objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
-			objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
-			objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
-			objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
+                ' Save the user configuration settings.
+                Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-			Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
-			Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
-			Session("LookupStartMode") = Request.Form("txtLookupStartMode")
-			Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
-			Session("ExprColourMode") = Request.Form("txtExprColourMode")
-			Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
-			Session("FindRecords") = Request.Form("txtFindSize")
+                objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
+                objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
+                objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
+                objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
+                objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
+                objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
+                objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
 
-			'--------------------------------------------
-			' Save the DefSel 'only mine' settings.
-			'--------------------------------------------
-			For i = 0 To 20
-				Select Case i
-					Case 0
-						sType = "BatchJobs"
-					Case 1
-						sType = "Calculations"
-					Case 2
-						sType = "CrossTabs"
-					Case 3
-						sType = "CustomReports"
-					Case 4
-						sType = "DataTransfer"
-					Case 5
-						sType = "Export"
-					Case 6
-						sType = "Filters"
-					Case 7
-						sType = "GlobalAdd"
-					Case 8
-						sType = "GlobalUpdate"
-					Case 9
-						sType = "GlobalDelete"
-					Case 10
-						sType = "Import"
-					Case 11
-						sType = "MailMerge"
-					Case 12
-						sType = "Picklists"
-					Case 13
-						sType = "CalendarReports"
-					Case 14
-						sType = "Labels"
-					Case 15
-						sType = "LabelDefinition"
-					Case 16
-						sType = "MatchReports"
-					Case 17
-						sType = "CareerProgression"
-					Case 18
-						sType = "EmailGroups"
-					Case 19
-						sType = "RecordProfile"
-					Case 20
-						sType = "SuccessionPlanning"
-				End Select
+                Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
+                Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
+                Session("LookupStartMode") = Request.Form("txtLookupStartMode")
+                Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
+                Session("ExprColourMode") = Request.Form("txtExprColourMode")
+                Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
+                Session("FindRecords") = Request.Form("txtFindSize")
 
-				sControlName = "txtOwner_" & sType
-				sTemp = "onlymine " & sType
+                '--------------------------------------------
+                ' Save the DefSel 'only mine' settings.
+                '--------------------------------------------
+                For i = 0 To 20
+                    Select Case i
+                        Case 0
+                            sType = "BatchJobs"
+                        Case 1
+                            sType = "Calculations"
+                        Case 2
+                            sType = "CrossTabs"
+                        Case 3
+                            sType = "CustomReports"
+                        Case 4
+                            sType = "DataTransfer"
+                        Case 5
+                            sType = "Export"
+                        Case 6
+                            sType = "Filters"
+                        Case 7
+                            sType = "GlobalAdd"
+                        Case 8
+                            sType = "GlobalUpdate"
+                        Case 9
+                            sType = "GlobalDelete"
+                        Case 10
+                            sType = "Import"
+                        Case 11
+                            sType = "MailMerge"
+                        Case 12
+                            sType = "Picklists"
+                        Case 13
+                            sType = "CalendarReports"
+                        Case 14
+                            sType = "Labels"
+                        Case 15
+                            sType = "LabelDefinition"
+                        Case 16
+                            sType = "MatchReports"
+                        Case 17
+                            sType = "CareerProgression"
+                        Case 18
+                            sType = "EmailGroups"
+                        Case 19
+                            sType = "RecordProfile"
+                        Case 20
+                            sType = "SuccessionPlanning"
+                    End Select
 
-				objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
+                    sControlName = "txtOwner_" & sType
+                    sTemp = "onlymine " & sType
 
-			Next
+                    objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
 
-			'--------------------------------------------
-			' Save the Utility Warning settings.
-			'--------------------------------------------
-			For i = 0 To 4
-				Select Case i
-					Case 0
-						sType = "DataTransfer"
-					Case 1
-						sType = "GlobalAdd"
-					Case 2
-						sType = "GlobalUpdate"
-					Case 3
-						sType = "GlobalDelete"
-					Case 4
-						sType = "Import"
-				End Select
+                Next
 
-				sControlName = "txtWarn_" & sType
-				sTemp = "warning " & sType
+                '--------------------------------------------
+                ' Save the Utility Warning settings.
+                '--------------------------------------------
+                For i = 0 To 4
+                    Select Case i
+                        Case 0
+                            sType = "DataTransfer"
+                        Case 1
+                            sType = "GlobalAdd"
+                        Case 2
+                            sType = "GlobalUpdate"
+                        Case 3
+                            sType = "GlobalDelete"
+                        Case 4
+                            sType = "Import"
+                    End Select
 
-				objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
+                    sControlName = "txtWarn_" & sType
+                    sTemp = "warning " & sType
 
-			Next
+                    objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
 
-			'--------------------------------------------
-			' Redirect to the save confirmation page.
-			'--------------------------------------------
-			Session("confirmtext") = "User Configuration has been saved successfully."
-			Session("confirmtitle") = "User Configuration"
-			Session("followpage") = "default"
-			Session("reaction") = Request.Form("txtReaction")
+                Next
 
-			Return RedirectToAction("confirmok")
+                '--------------------------------------------
+                ' Redirect to the save confirmation page.
+                '--------------------------------------------
+                'Session("confirmtext") = "User Configuration has been saved successfully."
+                'Session("confirmtitle") = "User Configuration"
+                'Session("followpage") = "default"
+                'Session("reaction") = Request.Form("txtReaction")
+            End If
 
-		End Function
+            Return RedirectToAction("CONFIGURATION")
+
+        End Function
 
 		Function PcConfiguration() As ActionResult
 			Return View()
