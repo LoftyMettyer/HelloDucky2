@@ -64,17 +64,18 @@
 	    if (currentTheme != null) {
 	        document.getElementById('cmbTheme').value = currentTheme;
 	    }	    
-	    
+	    toggleCombos();
 	}
 
 	function saveLayoutandTheme() {
-
-	    if ($("#cmbLayout :selected").text() == "wireframe") {
-	        try { changeLauout($("#cmbLayout :selected").text()); } catch (e) { }
+	   
+	    try { changeLayout($("#cmbLayout :selected").text()); } catch (e) { }
+	    if ($("#cmbLayout :selected").text() == "wireframe") {	      
 	        try { changeTheme($("#cmbTheme :selected").text()); } catch (e) { }
 	        try { applyImportedTheme(document.getElementById('chkAppywireframetheme').checked); } catch (e) { }
-	        themeEditor_window_onload();
+	       
 	    }
+	    themeEditor_window_onload();
 	}
 
 	function toggleCombos() {
