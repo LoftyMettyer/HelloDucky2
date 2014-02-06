@@ -1832,7 +1832,8 @@ function addHTMLControlValues(controlValues) {
 							label.appendChild(document.createTextNode(sValue));
 						}
 						if (alignment == 1) {
-							$(this).css("padding-left", "17px");
+							$(this).css("padding-left", "4px");
+							$(this).css("padding-top", "2px");
 							//Horizontal alignment
 							//radio.style.padding = "0px";
 							radio.style.borderStyle = 'none';
