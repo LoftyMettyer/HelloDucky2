@@ -52,6 +52,45 @@
 
 	});
 
+	function themeEditor_window_onload() {
+	   
+	    var currentLayout = OpenHR.getCookie("Intranet_Layout");
+	    var currentTheme = OpenHR.getCookie("Intranet_Wireframe_Theme");
+	    
+	    if (currentLayout != null) {
+	        document.getElementById('cmbLayout').value = currentLayout;
+	    }
+
+	    if (currentTheme != null) {
+	        document.getElementById('cmbTheme').value = currentTheme;
+	    }	    
+	    
+	}
+
+	function saveLayoutandTheme() {
+
+	    if ($("#cmbLayout :selected").text() == "wireframe") {
+	        try { changeLauout($("#cmbLayout :selected").text()); } catch (e) { }
+	        try { changeTheme($("#cmbTheme :selected").text()); } catch (e) { }
+	        try { applyImportedTheme(document.getElementById('chkAppywireframetheme').checked); } catch (e) { }
+	        themeEditor_window_onload();
+	    }
+	}
+
+	function toggleCombos() {
+	    
+        //theme selection is allowed in wirefamemode only
+	    if ($("#cmbLayout :selected").text() != "wireframe") {
+	        document.getElementById("cmbTheme").disabled = true;
+	        document.getElementById("cmbTheme").value = "";
+	        document.getElementById("divThemeSelector").disabled = true;
+	    }
+	    else {
+	        document.getElementById("cmbTheme").disabled = false;
+	        document.getElementById("divThemeSelector").disabled = false;
+	    }
+	}
+
 </script>
 
 <style>
@@ -68,39 +107,58 @@
 	<div class="application">
 		<div id="themeeditoraccordion" style="margin: 30px;">
 			<p>Choose a predefined theme:</p>
-			<span>Layout:<select style="width: 150px; margin-left: 40px;" onchange="try{changeLayout(this.value);}catch (e) {}"><option></option>
-				<option>wireframe</option>
-				<option>winkit</option>
-				<option>tiles</option>
+			<span>Layout:<select id="cmbLayout" style="width: 150px; margin-left: 40px;" onChange="toggleCombos()"><option></option>
+				<option value="wireframe">wireframe</option>
+				<option value="winkit">winkit</option>
+				<option value="tiles">tiles</option>
 			</select></span>
 			<br />
 			<br />
-			<span>Theme:<select style="width: 150px; margin-left: 40px;" onchange="try{changeTheme(this.value);}catch (e) {}"><option></option>
-				<option>ABS</option>
-				<option>activeX</option>
-				<option>cupertino</option>
-				<option>excite-bike</option>
-				<option>flick</option>
-				<option>hot-sneaks</option>
-				<option>jMetro</option>
-				<option>jqueryui</option>
-				<option>le-frog</option>
-				<option>pink-pip</option>
-				<option>redmond</option>
-				<option>redmond-verdana</option>
-				<option>smoothness</option>
-				<option>sunny</option>
-				<option>ui-darkness</option>
-				<option>ui-lightness</option>
+			<span>Theme:<select  id="cmbTheme" style="width: 150px; margin-left: 40px;"><option></option>
+				<option value="ABS">ABS</option>
+				<option value="activeX">activeX</option>
+				<option value="cupertino">cupertino</option>
+				<option value="excite-bike">excite-bike</option>
+				<option value="flick">flick</option>
+				<option value="hot-sneaks">hot-sneaks</option>
+				<option value="jMetro">jMetro</option>
+				<option value="jqueryui">jqueryui</option>
+				<option value="le-frog">le-frog</option>
+				<option value="pink-pip">pink-pip</option>
+				<option value="redmond">redmond</option>
+				<option value="redmond-verdana">redmond-verdana</option>
+				<option value="smoothness">smoothness</option>
+				<option value="sunny">sunny</option>
+				<option value="ui-darkness">ui-darkness</option>
+				<option value="ui-lightness">ui-lightness</option>               
 			</select>
 			<br />
 				<p style="font-size: x-small">Applies to 'wireframe' layout only.</p>
 			</span>
 			<hr />
 			<p>You can also import a theme:</p>
-			<input type="file" id="themeFile" name="themeFile" onchange="$(this).closest('form').trigger('submit');"/>
-			<br/>
-			<input id="chkAppywireframetheme" type="checkbox" onchange="applyImportedTheme(this.checked);"/>Apply imported theme?
+            <div id ="divThemeSelector">
+			    <input type="file" id="themeFile" name="themeFile" onchange="$(this).closest('form').trigger('submit');"/>
+			    <br/>
+			    <input id="chkAppywireframetheme" type="checkbox" />Apply imported theme?
+            </div>
+            <div id ="divSaveButtons">
+                <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px;" onclick="saveLayoutandTheme()" />
+							</td>
+									
+							<td>
+								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px;"  onclick="themeEditor_window_onload()"/>
+							</td>
+                        </tr>
+                </table>
+                </div>
 		</div>
 	</div>
 </form>
@@ -1135,3 +1193,7 @@
 	<!-- /themeroller -->
 
 <iframe name="submit-iframe" style="display:none;"></iframe>
+<script type="text/javascript">
+    themeEditor_window_onload();
+
+</script>
