@@ -654,6 +654,7 @@
     <Content Include="Database\UpdateScript8.0.22.sql" />
     <Content Include="Database\UpdateScript8.0.23.sql" />
     <Content Include="Database\UpdateScript8.0.24.sql" />
+    <Content Include="Database\UpdateScript8.0.25.sql" />
     <Content Include="Database\UpdateScript8.0.8.sql" />
     <Content Include="Database\UpdateScript8.0.9.sql" />
     <Content Include="lpks\ssmain.lpk" />

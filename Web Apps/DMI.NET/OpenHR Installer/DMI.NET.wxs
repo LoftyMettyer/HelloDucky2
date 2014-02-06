@@ -2223,6 +2223,9 @@
                 <Component Id="cmpC08CA712901BEE2174EFC1B6DE5E9728" Guid="*">
                     <File Id="filA33E695B319A3A101C29C038035B07F7" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.24.sql" />
                 </Component>
+                <Component Id="cmpD4FC9ECB9966F4307058958B8ADE90FB" Guid="*">
+                    <File Id="filDFD4C328F3B9DCF42F6B260A41641F4D" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.25.sql" />
+                </Component>
                 <Component Id="cmpAAD7E3AFD092280B63D6875285B51341" Guid="*">
                     <File Id="fil83488809882E28046EA49DF44F1326C4" KeyPath="yes" Source="SourceDir\Database\UpdateScript8.0.8.sql" />
                 </Component>
@@ -4090,6 +4093,7 @@
             <ComponentRef Id="cmp5408484FBA9FEE551613EE775726B77A" />
             <ComponentRef Id="cmpB09F13269CC3C2902BD49C715E451ADE" />
             <ComponentRef Id="cmpC08CA712901BEE2174EFC1B6DE5E9728" />
+            <ComponentRef Id="cmpD4FC9ECB9966F4307058958B8ADE90FB" />
             <ComponentRef Id="cmpAAD7E3AFD092280B63D6875285B51341" />
             <ComponentRef Id="cmpF9018DD2E4AA33AE7B809895DF9B1F1C" />
             <ComponentRef Id="cmp19DCA78F9C64B19AB436074021EE1C27" />
