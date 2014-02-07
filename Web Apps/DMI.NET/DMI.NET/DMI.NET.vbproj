@@ -60,6 +60,10 @@
     </Reference>
     <Reference Include="Aspose.Email, Version=3.6.0.0, Culture=neutral, PublicKeyToken=ad504e9f0d34714a, processorArchitecture=MSIL" />
     <Reference Include="Aspose.Words, Version=13.10.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL" />
+    <Reference Include="DayPilot, Version=4.0.261.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DayPilotLite-4.0.261\DayPilot.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -1284,10 +1288,6 @@
       <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
       <Name>COAInt_Server</Name>
       <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Components\DayPilot\DayPilot.csproj">
-      <Project>{5d7983a4-ccff-46f6-920f-f184a031d7e1}</Project>
-      <Name>DayPilot</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
