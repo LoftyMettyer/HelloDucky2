@@ -41,9 +41,6 @@ using System.Web.UI;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e5d0e09d-0160-4c7c-a16e-374ba8867712")]
-
 [assembly: TagPrefix("DayPilot.Web.Ui", "DayPilot")]
 
 // Version information for an assembly consists of the following four values:
