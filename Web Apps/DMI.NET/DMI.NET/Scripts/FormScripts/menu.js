@@ -4462,7 +4462,7 @@ function menu_loadSelectOrderFilter(psType) {
 	if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
 	{
 	frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
-	frmSendArea.txtGotoOptionRecordID.value = $('#txtCurrentRecordID').val();
+	frmSendArea.txtGotoOptionRecordID.value = $('#txtCurrentRecordID')[0].value;
 	frmSendArea.txtGotoOptionPage.value = sPage;
 	frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
 	bOK = true;

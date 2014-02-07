@@ -22,5 +22,5 @@
 <input type="hidden" id="txtStandardReportType" name="txtStandardReportType" value="">
 <input type="hidden" id="txtReloadMenu" name="txtReloadMenu" value="0">
 <input type="hidden" id="txtReset" name="txtReset" value="0">
-<input type="hidden" id="txtGotoOptionDefSelRecordID" name="txtGotoOptionDefSelRecordID" value="0">
+<input type="hidden" id="txtGotoOptionDefSelRecordID" name="txtGotoOptionDefSelRecordID" value=0>
 

@@ -134,7 +134,6 @@
 				Dim rstLookupValues As DataTable
 				
 				Dim iPromptCount As Integer
-				Dim iPromptDateType As Integer
 				Dim fDefaultFound As Boolean
 				Dim fFirstValueDone As Boolean
 				Dim sFirstValue As String
@@ -142,18 +141,11 @@
 				Dim iValueType As Integer
 	
 				iPromptCount = 0
-	
-				Dim prmRecordID As New SqlParameter("piRecordID", SqlDbType.Int)
-				If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
-					prmRecordID.Value = 0
-				Else
-					prmRecordID.Value = CleanNumeric(CLng(Session("singleRecordID")))
-				End If
-								
+									
 				rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
 										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
-										prmRecordID)
+										New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = Session("singleRecordID")})
 				
 				If rstPromptedValue.Rows.Count > 0 Then
 

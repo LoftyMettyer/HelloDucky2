@@ -33,11 +33,8 @@
 		objCalendar.CalendarReportID = Session("utilid")
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
-		If CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined" Then
-			objCalendar.SingleRecordID = 0
-		Else
-			objCalendar.SingleRecordID = Session("singleRecordID")
-		End If
+		objCalendar.SingleRecordID = Session("singleRecordID")
+		
 		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
 		If fok Then
 			fok = objCalendar.SetPromptedValues(aPrompts)
@@ -80,7 +77,7 @@
 		fNoRecords = objCalendar.NoRecords
 
 		' Convert data over to DataTables (remove step at later date when rest of code converted)
-		If fok Then		
+		If fok Then
 			objCalendar.Events = objCalendar.EventsRecordset
 		End If
 		

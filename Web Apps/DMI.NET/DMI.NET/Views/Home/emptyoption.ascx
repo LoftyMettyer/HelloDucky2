@@ -6,10 +6,6 @@
 
 <%
 
-	'Clear the single record session variable
-	Session("singleRecordID") = 0
-	Session("optionDefSelRecordID") = 0
-
 	If Len(Session("timestamp")) = 0 Then
 		Session("timestamp") = 0
 	End If

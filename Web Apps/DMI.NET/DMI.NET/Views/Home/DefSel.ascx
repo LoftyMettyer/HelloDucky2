@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%--<%@ Import Namespace="ADODB" %>--%>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -65,80 +65,61 @@
 	
 Session("fromMenu") = 0
 
-If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
-	                                                                     If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
-Session("utilTableID") = Request.Form("txtTableID")
-Else
+	If Session("singleRecordID") < 1 Then
+		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
+			Session("utilTableID") = Request.Form("txtTableID")
+		Else
 
-If Len(Session("tableID")) > 0 Then
-If CLng(Session("tableID")) > 0 Then
-Session("utilTableID") = Session("tableID")
-fGotId = True
-End If
-End If
+			If Len(Session("tableID")) > 0 Then
+				If CLng(Session("tableID")) > 0 Then
+					Session("utilTableID") = Session("tableID")
+					fGotId = True
+				End If
+			End If
 
-If fGotId = False Then
-If (CStr(Session("optionDefSelRecordID")) <> "") Then
-If (Session("optionDefSelRecordID") > 0) Then
-Session("utilTableID") = Session("Personnel_EmpTableID")
-Else
-If (Session("Personnel_EmpTableID") > 0) Then
-Session("utilTableID") = Session("Personnel_EmpTableID")
-Else
-Session("utilTableID") = 0
-End If
-End If
-Else
-If (Session("Personnel_EmpTableID") > 0) Then
-Session("utilTableID") = Session("Personnel_EmpTableID")
-Else
-Session("utilTableID") = 0
-End If
-End If
-End If
-End If
-End If
+			If fGotId = False Then
+				If (Session("singleRecordID") > 0) Then
+					Session("utilTableID") = Session("Personnel_EmpTableID")
+				Else
+					If (Session("Personnel_EmpTableID") > 0) Then
+						Session("utilTableID") = Session("Personnel_EmpTableID")
+					Else
+						Session("utilTableID") = 0
+					End If
+				End If
+			End If
+		End If
+	End If
 	
-If CStr(Session("optionDefSelType")) <> "" Then
-Session("defseltype") = Session("optionDefSelType")
-End If
+	If CStr(Session("optionDefSelType")) <> "" Then
+		Session("defseltype") = Session("optionDefSelType")
+	End If
 
-Session("tableID") = Session("utilTableID")
+	Session("tableID") = Session("utilTableID")
 	
-If CStr(Session("singleRecordID")) <> "" Then
-If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
-	                                                                     If CStr(Session("optionDefSelRecordID")) <> "" Then
-If Session("optionDefSelRecordID") > 0 Then
-Session("singleRecordID") = Session("optionDefSelRecordID")
-End If
-End If
-Else
-If CStr(Session("optionTableID")) <> "" Then
-If Session("optionTableID") > 0 Then
-Session("utilTableID") = Session("optionTableID")
-End If
-End If
-Session("tableID") = Session("utilTableID")
-End If
-Else
-Session("singleRecordID") = 0
-End If
+	If Session("singleRecordID") = 0 Then
+		If CStr(Session("optionTableID")) <> "" Then
+			If Session("optionTableID") > 0 Then
+				Session("utilTableID") = Session("optionTableID")
+			End If
+		End If
+		Session("tableID") = Session("utilTableID")
+	End If
 	
-Session("optionDefSelType") = ""
-Session("optionTableID") = ""
-Session("optionDefSelRecordID") = ""
+	Session("optionDefSelType") = ""
+	Session("optionTableID") = ""
 	
-If CStr(Session("utilTableID")) = "" Then
-Session("utilTableID") = 0
-End If
+	If CStr(Session("utilTableID")) = "" Then
+		Session("utilTableID") = 0
+	End If
 
-If (Session("defseltype") <> 10) And (Session("defseltype") <> 11) And (Session("defseltype") <> 12) Then
-If CStr(Session("singleRecordID")) = "" Or Session("singleRecordID") < 1 Then
-	                                                                     			Session("utilTableID") = 0
-End If
-    Else 'defseltype=10 or 11 or 12 (picklist, filter or calculation)
-        Session("utilTableID") = Session("Personnel_EmpTableID")
-End If
+	If (Session("defseltype") <> UtilityType.utlPicklist) And (Session("defseltype") <> UtilityType.utlFilter) And (Session("defseltype") <> UtilityType.utlCalculation) Then
+		If Session("singleRecordID") < 1 Then
+			Session("utilTableID") = 0
+		End If
+	Else
+		Session("utilTableID") = Session("Personnel_EmpTableID")
+	End If
 %>
 
 <script type="text/javascript">
@@ -149,10 +130,8 @@ End If
         var frmDefSel = document.getElementById("frmDefSel");
 
         if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
-            // DblClick triggers Edit.
-            menu_MenuClick('mnutoolEditToolsFind')
-            //setedit(); 
-           
+	        menu_MenuClick('mnutoolEditToolsFind');
+
         }
         else {
             // DblClick triggers Run after prompting for confirmation. 
@@ -320,42 +299,9 @@ End If
 
     }
 
-
     function rowCount() {
         return $("#DefSelRecords tr").length - 1;
     }
-
-
-    //Case 0
-    //sTemp = sTemp & "BatchJobs"
-    //Case 1
-    //sTemp = sTemp & "CrossTabs"
-    //Case 2
-    //sTemp = sTemp & "CustomReports"
-    //Case 3
-    //sTemp = sTemp & "DataTransfer"
-    //Case 4
-    //sTemp = sTemp & "Export"
-    //Case 5
-    //sTemp = sTemp & "GlobalAdd"
-    //Case 6
-    //sTemp = sTemp & "GlobalDelete"
-    //Case 7
-    //sTemp = sTemp & "GlobalUpdate"
-    //Case 8
-    //sTemp = sTemp & "Import"
-    //Case 9
-    //sTemp = sTemp & "MailMerge"
-    //Case 10
-    //sTemp = sTemp & "Picklists"
-    //Case 11
-    //sTemp = sTemp & "Filters"
-    //Case 12
-    //sTemp = sTemp & "Calculations"
-    //Case 17
-    //sTemp = sTemp & "CalendarReports"
-    //Case 25
-    //sTemp = sTemp & "Workflow"
 
     function disableNonDefselTabs() {
         $("#toolbarRecordFind").parent().hide();
@@ -935,37 +881,37 @@ End If
 														<td colspan="5" height="10">
 																<span class="pageTitle">
 																		<%
-																				If Session("defseltype") = 0 Then           'BATCH JOB
-																						Response.Write("Batch Jobs")
-																				ElseIf Session("defseltype") = 1 Then       'CROSS TAB
-																						Response.Write("Cross Tabs")
-																				ElseIf Session("defseltype") = 2 Then       'CUSTOM REPORTS
-																						Response.Write("Custom Reports")
-																				ElseIf Session("defseltype") = 3 Then       'DATA TRANSFER
-																						Response.Write("Data Transfer")
-																				ElseIf Session("defseltype") = 4 Then       'EXPORT
-																						Response.Write("Export")
-																				ElseIf Session("defseltype") = 5 Then       'GLOBAL ADD
-																						Response.Write("Global Add")
-																				ElseIf Session("defseltype") = 6 Then       'GLOBAL UPDATE
-																						Response.Write("Global Update")
-																				ElseIf Session("defseltype") = 7 Then       'GLOBAL DELETE
-																						Response.Write("Global Delete")
-																				ElseIf Session("defseltype") = 8 Then       'IMPORT
-																						Response.Write("Import")
-																				ElseIf Session("defseltype") = 9 Then       'MAIL MERGE
-																						Response.Write("Mail Merge")
-																				ElseIf Session("defseltype") = 10 Then      'PICKLIST
-																						Response.Write("Picklists")
-																				ElseIf Session("defseltype") = 11 Then      'FILTERS
-																						Response.Write("Filters")
-																				ElseIf Session("defseltype") = 12 Then      'CALCULATIONS
-																						Response.Write("Calculations")
-																				ElseIf Session("defseltype") = 17 Then      'CALENDAR REPORTS
-																						Response.Write("Calendar Reports")
-																				ElseIf Session("defseltype") = 25 Then      'WORKFLOW
-																						Response.Write("Workflow")
-																				End If
+																			If Session("defseltype") = UtilityType.utlBatchJob Then
+																				Response.Write("Batch Jobs")
+																			ElseIf Session("defseltype") = UtilityType.utlCrossTab Then
+																				Response.Write("Cross Tabs")
+																			ElseIf Session("defseltype") = UtilityType.utlCustomReport Then
+																				Response.Write("Custom Reports")
+																			ElseIf Session("defseltype") = UtilityType.utlDataTransfer Then
+																				Response.Write("Data Transfer")
+																			ElseIf Session("defseltype") = UtilityType.utlExport Then
+																				Response.Write("Export")
+																			ElseIf Session("defseltype") = UtilityType.UtlGlobalAdd Then
+																				Response.Write("Global Add")
+																			ElseIf Session("defseltype") = UtilityType.utlGlobalUpdate Then
+																				Response.Write("Global Update")
+																			ElseIf Session("defseltype") = UtilityType.utlGlobalDelete Then
+																				Response.Write("Global Delete")
+																			ElseIf Session("defseltype") = UtilityType.utlImport Then
+																				Response.Write("Import")
+																			ElseIf Session("defseltype") = UtilityType.utlMailMerge Then
+																				Response.Write("Mail Merge")
+																			ElseIf Session("defseltype") = UtilityType.utlPicklist Then
+																				Response.Write("Picklists")
+																			ElseIf Session("defseltype") = UtilityType.utlFilter Then
+																				Response.Write("Filters")
+																			ElseIf Session("defseltype") = UtilityType.utlCalculation Then
+																				Response.Write("Calculations")
+																			ElseIf Session("defseltype") = UtilityType.utlCalendarReport Then
+																				Response.Write("Calendar Reports")
+																			ElseIf Session("defseltype") = UtilityType.utlWorkflow Then
+																				Response.Write("Workflow")
+																			End If
 																		%>
 																</span>
 														</td>
@@ -974,7 +920,7 @@ End If
 												<% 
 														Dim sErrorDescription = ""
 	
-														If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
+													If Session("defseltype") = UtilityType.utlPicklist Or Session("defseltype") = UtilityType.utlFilter Or Session("defseltype") = UtilityType.utlCalculation Then
 												%>
 												<tr height="10">
 
@@ -1154,10 +1100,8 @@ End If
 																				<td>
 																						<input type="button" id="cmdNew" class="btn" name="cmdNew" value="New" style="width: 80px"
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
 																								onclick="setnew();" />
@@ -1170,10 +1114,8 @@ End If
 																				<td>
 																						<input type="button" name="cmdEdit" class="btn" value="Edit" style="width: 80px"
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
 																								onclick="setedit();" />
@@ -1186,10 +1128,8 @@ End If
 																				<td>
 																						<input type="button" name="cmdCopy" class="btn" id="cmdCopy" value="Copy" style="width: 80px"
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
 																								onclick="setcopy();" />
@@ -1202,10 +1142,8 @@ End If
 																				<td>
 																						<input type="button" name="cmdDelete" class="btn" value="Delete" style="width: 80px"
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
 																								onclick="setdelete();" />
@@ -1218,10 +1156,9 @@ End If
 																				<td>
 																						<input type="button" name="cmdPrint" class="btn btndisabled" value="Print" style="width: 80px" disabled
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %> />
 																				</td>
@@ -1233,10 +1170,8 @@ End If
 																				<td>
 																						<input type="button" name="cmdProperties" class="btn" value="Properties" style="width: 80px"
 																								<% 
-																							If Not (CStr(Session("singleRecordID")) = "" Or CStr(Session("singleRecordID")) = "undefined") Then
-																								If (Session("singleRecordID") > 0) Or Session("defseltype") = 25 Then
-																									Response.Write(" style=""visibility:hidden""")
-																								End If
+																							If (Session("singleRecordID") > 0) Or Session("defseltype") = UtilityType.utlWorkflow Then
+																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
 																								onclick="showproperties();" />
@@ -1251,10 +1186,10 @@ End If
 																		<tr>
 																				<td>
 																						<input type="button" name="cmdRun" class="btn" value="Run" style="width: 80px" id="cmdRun"
-																								<% 
-																								If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
-																										Response.Write(" style=""visibility:hidden""")
-																								End If
+																								<% 																						
+																							If Session("defseltype") = UtilityType.utlPicklist Or Session("defseltype") = UtilityType.utlFilter Or Session("defseltype") = UtilityType.utlCalculation Then
+																								Response.Write(" style=""visibility:hidden""")
+																							End If
 %>
 																								onclick="setrun();" />
 																				</td>
@@ -1265,7 +1200,7 @@ End If
 																	<tr>
 																		<td>
 																			<input type="button" name="cmdCancel" class="btn" value='<% 
-																				If Session("defseltype") = 10 Or Session("defseltype") = 11 Or Session("defseltype") = 12 Then
+																				If Session("defseltype") = UtilityType.utlPicklist Or Session("defseltype") = UtilityType.utlFilter Or Session("defseltype") = UtilityType.utlCalculation Then
 																					Response.Write("""OK""")
 																				Else
 																					Response.Write("""Cancel""")
@@ -1283,7 +1218,7 @@ End If
 											<tr>
 												<td colspan="5" height="10"
 													<%
-													If Session("defseltype") = 25 Then
+													If Session("defseltype") = UtilityType.utlWorkflow Then
 														Response.Write(" style=""visibility:hidden""")
 															End If%>>
 													<input type='hidden' id="txtusername" name="txtusername" value="<%=lcase(session("Username"))%>">
@@ -1293,9 +1228,9 @@ End If
 												<tr>
 														<td colspan="4" height="10"
 																<%
-																If Session("defseltype") = 25 Then
-																		Response.Write(" style=""visibility:hidden""")
-																End If
+															If Session("defseltype") = UtilityType.utlWorkflow Then
+																Response.Write(" style=""visibility:hidden""")
+															End If
 %>>
 																<input <% If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" tabindex="0" id="checkbox" name="checkbox" value="checkbox"
 																		onclick="ToggleCheck();" />

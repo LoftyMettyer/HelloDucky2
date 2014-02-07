@@ -22,6 +22,8 @@
 
 
 <%Session("recordID") = 0
+	Session("singleRecordID") = 0
+	
 	Dim fWFDisplayPendingSteps As Boolean = True
 	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 	Dim _StepCount As Integer = 0

@@ -27,129 +27,129 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function Configuration_Submit(value As FormCollection)
-            'If (Request.Form("txtPrimaryStartMode") = "") Then
-            '    Return View()
-            'End If
-            On Error Resume Next
+			'If (Request.Form("txtPrimaryStartMode") = "") Then
+			'    Return View()
+			'End If
+			On Error Resume Next
 
-            Dim sTemp
-            Dim sType = ""
-            Dim sControlName
+			Dim sTemp
+			Dim sType = ""
+			Dim sControlName
 
-            If (Request.Form("txtPrimaryStartMode") <> "") Then
+			If (Request.Form("txtPrimaryStartMode") <> "") Then
 
 
-                ' Save the user configuration settings.
-                Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+				' Save the user configuration settings.
+				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-                objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
-                objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
-                objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
-                objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
-                objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
-                objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
-                objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
+				objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
+				objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
+				objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
+				objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
+				objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
+				objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
+				objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
 
-                Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
-                Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
-                Session("LookupStartMode") = Request.Form("txtLookupStartMode")
-                Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
-                Session("ExprColourMode") = Request.Form("txtExprColourMode")
-                Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
-                Session("FindRecords") = Request.Form("txtFindSize")
+				Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
+				Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
+				Session("LookupStartMode") = Request.Form("txtLookupStartMode")
+				Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
+				Session("ExprColourMode") = Request.Form("txtExprColourMode")
+				Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
+				Session("FindRecords") = Request.Form("txtFindSize")
 
-                '--------------------------------------------
-                ' Save the DefSel 'only mine' settings.
-                '--------------------------------------------
-                For i = 0 To 20
-                    Select Case i
-                        Case 0
-                            sType = "BatchJobs"
-                        Case 1
-                            sType = "Calculations"
-                        Case 2
-                            sType = "CrossTabs"
-                        Case 3
-                            sType = "CustomReports"
-                        Case 4
-                            sType = "DataTransfer"
-                        Case 5
-                            sType = "Export"
-                        Case 6
-                            sType = "Filters"
-                        Case 7
-                            sType = "GlobalAdd"
-                        Case 8
-                            sType = "GlobalUpdate"
-                        Case 9
-                            sType = "GlobalDelete"
-                        Case 10
-                            sType = "Import"
-                        Case 11
-                            sType = "MailMerge"
-                        Case 12
-                            sType = "Picklists"
-                        Case 13
-                            sType = "CalendarReports"
-                        Case 14
-                            sType = "Labels"
-                        Case 15
-                            sType = "LabelDefinition"
-                        Case 16
-                            sType = "MatchReports"
-                        Case 17
-                            sType = "CareerProgression"
-                        Case 18
-                            sType = "EmailGroups"
-                        Case 19
-                            sType = "RecordProfile"
-                        Case 20
-                            sType = "SuccessionPlanning"
-                    End Select
+				'--------------------------------------------
+				' Save the DefSel 'only mine' settings.
+				'--------------------------------------------
+				For i = 0 To 20
+					Select Case i
+						Case 0
+							sType = "BatchJobs"
+						Case 1
+							sType = "Calculations"
+						Case 2
+							sType = "CrossTabs"
+						Case 3
+							sType = "CustomReports"
+						Case 4
+							sType = "DataTransfer"
+						Case 5
+							sType = "Export"
+						Case 6
+							sType = "Filters"
+						Case 7
+							sType = "GlobalAdd"
+						Case 8
+							sType = "GlobalUpdate"
+						Case 9
+							sType = "GlobalDelete"
+						Case 10
+							sType = "Import"
+						Case 11
+							sType = "MailMerge"
+						Case 12
+							sType = "Picklists"
+						Case 13
+							sType = "CalendarReports"
+						Case 14
+							sType = "Labels"
+						Case 15
+							sType = "LabelDefinition"
+						Case 16
+							sType = "MatchReports"
+						Case 17
+							sType = "CareerProgression"
+						Case 18
+							sType = "EmailGroups"
+						Case 19
+							sType = "RecordProfile"
+						Case 20
+							sType = "SuccessionPlanning"
+					End Select
 
-                    sControlName = "txtOwner_" & sType
-                    sTemp = "onlymine " & sType
+					sControlName = "txtOwner_" & sType
+					sTemp = "onlymine " & sType
 
-                    objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
+					objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
 
-                Next
+				Next
 
-                '--------------------------------------------
-                ' Save the Utility Warning settings.
-                '--------------------------------------------
-                For i = 0 To 4
-                    Select Case i
-                        Case 0
-                            sType = "DataTransfer"
-                        Case 1
-                            sType = "GlobalAdd"
-                        Case 2
-                            sType = "GlobalUpdate"
-                        Case 3
-                            sType = "GlobalDelete"
-                        Case 4
-                            sType = "Import"
-                    End Select
+				'--------------------------------------------
+				' Save the Utility Warning settings.
+				'--------------------------------------------
+				For i = 0 To 4
+					Select Case i
+						Case 0
+							sType = "DataTransfer"
+						Case 1
+							sType = "GlobalAdd"
+						Case 2
+							sType = "GlobalUpdate"
+						Case 3
+							sType = "GlobalDelete"
+						Case 4
+							sType = "Import"
+					End Select
 
-                    sControlName = "txtWarn_" & sType
-                    sTemp = "warning " & sType
+					sControlName = "txtWarn_" & sType
+					sTemp = "warning " & sType
 
-                    objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
+					objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
 
-                Next
+				Next
 
-                '--------------------------------------------
-                ' Redirect to the save confirmation page.
-                '--------------------------------------------
-                'Session("confirmtext") = "User Configuration has been saved successfully."
-                'Session("confirmtitle") = "User Configuration"
-                'Session("followpage") = "default"
-                'Session("reaction") = Request.Form("txtReaction")
-            End If
+				'--------------------------------------------
+				' Redirect to the save confirmation page.
+				'--------------------------------------------
+				'Session("confirmtext") = "User Configuration has been saved successfully."
+				'Session("confirmtitle") = "User Configuration"
+				'Session("followpage") = "default"
+				'Session("reaction") = Request.Form("txtReaction")
+			End If
 
-            Return RedirectToAction("CONFIGURATION")
+			Return RedirectToAction("CONFIGURATION")
 
-        End Function
+		End Function
 
 		Function PcConfiguration() As ActionResult
 			Return View()
@@ -1060,9 +1060,8 @@ Namespace Controllers
 			Session("reloadMenu") = Request.Form("txtReloadMenu")
 
 			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
-			Session("optionRecordID") = "0"
-			' Session("singleRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
-
+			Session("singleRecordID") = CInt(Request.Form("txtGotoOptionDefSelRecordID"))
+			Session("optionRecordID") = 0
 			Session("optionAction") = ""
 
 			' Go to the requested page.
@@ -1109,7 +1108,7 @@ Namespace Controllers
 			Session("OptionRealsource") = Request.Form("txtGotoOptionRealsource")
 			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
+			Session("singleRecordID") = CInt(Request.Form("txtGotoOptionDefSelRecordID"))
 			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
 			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
 			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
@@ -4263,7 +4262,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If sAction = "CANCEL" Then
 				' Go to the requested page.
@@ -4922,7 +4920,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTADDFROMWAITINGLIST_1") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
@@ -5027,7 +5024,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTBOOKCOURSE_1") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
@@ -5159,7 +5155,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTBULKBOOKINGS") Then
 				If Len(Session("optionLinkRecordID")) > 0 Then
@@ -5366,7 +5361,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If (sAction = "SELECTTRANSFERBOOKING_1") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
@@ -5494,7 +5488,6 @@ Namespace Controllers
 			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
 			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If sAction = "" Then
 				' Go to the requested page.
