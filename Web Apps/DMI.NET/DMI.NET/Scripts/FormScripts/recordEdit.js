@@ -1275,10 +1275,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textbox.setAttribute("data-columnID", columnID);
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
-			if (controlItemArray[25] > 0) { //Use a jQuery plugin to limit number of characters that can be input
-				if(!$(textbox).hasClass("autoNumeric")) { //Only use the Limit plugin if the textbox doesn't have a class indicating that it is being used by the AutoNumeric plugin
-					$(textbox).limit(controlItemArray[25].toString());
-				}
+			if (controlItemArray[25] > 0) {
+				//set maximum input length for this control
+				$(textbox).attr('maxlength', controlItemArray[25]);
 			}
 
 			if (tabIndex > 0) textbox.tabindex = tabIndex;
@@ -2076,7 +2075,11 @@ function updateControl(lngColumnID, value) {
 					break;
 				default:
 					$(this).val(value);
-
+			}
+			
+			//refresh 'autoNumeric' Columns
+			if ($(this).hasClass('number')) {
+				$(this).autoNumeric('update');
 			}
 		}
 
