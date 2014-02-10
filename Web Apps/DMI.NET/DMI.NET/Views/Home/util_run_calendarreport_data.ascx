@@ -25,6 +25,10 @@
 		toggleWeekends();
 	}
 
+	<%If objCalendar.ReportStartDate > Now Or objCalendar.ReportEndDate < Now Then%>
+		$('#cmdToday')[0].disabled = true;	
+	<%End If%>
+
 	$('#StartYearDemo').monthpicker({
 		selectedYear: $("#txtYear").val(),
 		startYear: <% =objCalendar.ReportStartDate.Year%> - 0,
