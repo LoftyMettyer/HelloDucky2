@@ -137,8 +137,8 @@
 				<option value="excite-bike">excite-bike</option>
 				<option value="flick">flick</option>
 				<option value="hot-sneaks">hot-sneaks</option>
-				<option value="jMetro">jMetro</option>
-				<option value="jqueryui">jqueryui</option>
+				<%--<option value="jMetro">jMetro</option>
+				<option value="jqueryui">jqueryui</option>--%>
 				<option value="le-frog">le-frog</option>
 				<option value="pink-pip">pink-pip</option>
 				<option value="redmond">redmond</option>
