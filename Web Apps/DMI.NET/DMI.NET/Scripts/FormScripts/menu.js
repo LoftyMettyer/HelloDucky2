@@ -694,8 +694,9 @@ function menu_MenuClick(sTool) {
 	}
 		
 	if (sToolName == "mnutoolDeleteRecordFind") {
-			menu_deleteRecord();
-			return;
+	    menu_deleteRecord();
+	    menu_moveRecord("MOVEFIRST");
+	    return;
 	}
 
 	if (sToolName == "mnutoolParentRecordFind") {
