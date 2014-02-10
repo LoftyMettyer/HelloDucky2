@@ -242,7 +242,7 @@ ErrorTrap:
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
 					'MH20010130 Fault 1610
 					'ComponentDescription = Trim(Str(mdblNumericValue))
-					ComponentDescription = General.ConvertNumberForDisplay(CStr(mdblNumericValue))
+					ComponentDescription = ConvertNumberForDisplay(CStr(mdblNumericValue))
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					ComponentDescription = IIf(mfLogicValue, "True", "False").ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_DATE

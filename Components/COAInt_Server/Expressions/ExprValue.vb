@@ -186,16 +186,10 @@ ErrorTrap:
 				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
 					ComponentDescription = Chr(34) & msCharacterValue & Chr(34)
 				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					'MH20010130 Fault 1610
-					'ComponentDescription = Trim(Str(mdblNumericValue))
-					ComponentDescription = General.ConvertNumberForDisplay(CStr(mdblNumericValue))
+					ComponentDescription = ConvertNumberForDisplay(CStr(mdblNumericValue))
 				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
 					ComponentDescription = IIf(mfLogicValue, "True", "False").ToString()
 				Case ExpressionValueTypes.giEXPRVALUE_DATE
-					'MH20010201 Fault 1576
-					'ComponentDescription = Format(mdtDateValue, "Long Date")
-					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					ComponentDescription = IIf(IsDBNull(mdtDateValue), "Empty Date", VB6.Format(mdtDateValue, "Long Date")).ToString()
 				Case Else
 					ComponentDescription = ""

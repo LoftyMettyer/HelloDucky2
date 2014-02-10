@@ -10,13 +10,6 @@ Imports System.Data.SqlClient
 
 Public Module ASRIntranetFunctions
 
-	'TODO
-	Public Function GetRegistrySetting(psAppName As String, psSection As String, psKey As String) As String
-		' Get the required value from the registry with the given registry key values.
-		GetRegistrySetting = GetSetting(AppName:=psAppName, Section:=psSection, Key:=psKey)
-
-	End Function
-
 	Function LocaleDateFormat() As String
 		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
 	End Function

@@ -18,17 +18,6 @@ Public Class clsGeneral
 
 	Const FUNCTIONPREFIX As String = "udf_ASRSys_"
 
-	Public Function ConvertNumberForSQL(strInput As String) As String
-		'Get a number in the correct format for a SQL string
-		'(e.g. on french systems replace decimal comma for a decimal point)
-		Return Replace(strInput, CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")
-	End Function
-
-	Public Function ConvertNumberForDisplay(strInput As String) As String
-		'Get a number in the correct format for display
-		'(e.g. on french systems replace decimal point for a decimal comma)
-		Return Replace(strInput, ".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-	End Function
 
 	Public Function ConvertSQLDateToSystemFormat(pstrDateString As String) As Date
 

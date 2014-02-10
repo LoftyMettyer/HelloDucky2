@@ -1173,8 +1173,8 @@ LocalErr:
 								strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
 
 							Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
-								strHeading(lngCount) = General.ConvertNumberForDisplay(Format(objRow(0), mstrFormat(lngLoop)))
-								strSearch(lngCount) = strColumnName & " = " & General.ConvertNumberForSQL(objRow(0))
+								strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(objRow(0), mstrFormat(lngLoop)))
+								strSearch(lngCount) = strColumnName & " = " & ConvertNumberForSQL(objRow(0))
 
 							Case Else
 								strHeading(lngCount) = HttpUtility.HtmlEncode(objRow(0).ToString)
@@ -1199,9 +1199,9 @@ LocalErr:
 			strSearch(0) = strColumnName & " IS NULL"
 
 			'Second element of range for those less than minimum value of range...
-			strHeading(1) = "< " & General.ConvertNumberForDisplay(Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
+			strHeading(1) = "< " & ConvertNumberForDisplay(VB6.Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
 			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(1) = "Convert(float," & strColumnName & ") < " & General.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
+			strSearch(1) = "Convert(float," & strColumnName & ") < " & ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
 
 			dblUnit = GetSmallestUnit(lngLoop)
 
@@ -1216,9 +1216,9 @@ LocalErr:
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
-				strHeading(lngCount) = General.ConvertNumberForDisplay(Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & General.ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
+				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
 				'MH20010411 Fault 1978 Convert to int stops overflow error !
-				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & General.ConvertNumberForSQL(CStr(dblGroup)) & " AND " & General.ConvertNumberForSQL(CStr(dblGroupMax))
+				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & ConvertNumberForSQL(CStr(dblGroup)) & " AND " & ConvertNumberForSQL(CStr(dblGroupMax))
 
 				lngCount = lngCount + 1
 			Next
@@ -1226,9 +1226,9 @@ LocalErr:
 			ReDim Preserve strHeading(lngCount)
 			ReDim Preserve strSearch(lngCount)
 			'Last element of range for those more than maximum value of range...
-			strHeading(lngCount) = "> " & General.ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
+			strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
 			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & General.ConvertNumberForSQL(CStr(dblGroup - dblUnit))
+			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
 			lngCount = lngCount + 1
 		End If
@@ -1248,7 +1248,7 @@ LocalErr:
 		intFound = InStr(mstrFormat(lngLoop), ".")
 		If intFound > 0 Then
 			strTemp = Mid(mstrFormat(lngLoop), intFound, Len(mstrFormat(lngLoop)) - intFound) & "1"
-			GetSmallestUnit = CDbl(General.ConvertNumberForDisplay(strTemp))
+			GetSmallestUnit = CDbl(ConvertNumberForDisplay(strTemp))
 		Else
 			GetSmallestUnit = 1
 		End If
@@ -1345,7 +1345,7 @@ LocalErr:
 				If IsDBNull(objRow("INS")) Then
 					dblThisIntersectionVal = 0
 				Else
-					dblThisIntersectionVal = Val(General.ConvertNumberForSQL(objRow("INS")))
+					dblThisIntersectionVal = Val(ConvertNumberForSQL(objRow("INS")))
 				End If
 
 
@@ -1429,133 +1429,87 @@ LocalErr:
 
 	Public Function GetGroupNumber(strValue As String, Index As Integer) As Integer
 
-		'This returns which array element a particular value should be added to
-		'Examples:
-		'
-		' value = null, Minimum = 16, Maximum = 70, Step = 5
-		'    GetGroupNumber = 0
-		'
-		' value = 11, Minimum = 16, Maximum = 70, Step = 5
-		'    GetGroupNumber = 1
-		'
-		' value = 18, Minimum = 16, Maximum = 70, Step = 5
-		'    GetGroupNumber = 2
-		'
-		' value = 26, Minimum = 16, Maximum = 70, Step = 5
-		'    GetGroupNumber = 4
-		'
-		' value = 92, Minimum = 16, Maximum = 70, Step = 5
-		'    GetGroupNumber = 13
-
-		On Error GoTo LocalErr
-
 		Dim dblValue As Double
 		Dim lngCount As Integer
 		Dim dblLoop As Double
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetGroupNumber = 0
-		'GetGroupNumber = IIf(strValue = vbNullString, 0, -1)
+		Try
 
-		'Non range column
-		If mdblMin(Index) = 0 And mdblMax(Index) = 0 Then
+			'Non range column
+			If mdblMin(Index) = 0 And mdblMax(Index) = 0 Then
 
-			For lngCount = 0 To UBound(mvarHeadings(Index))
+				For lngCount = 0 To UBound(mvarHeadings(Index))
 
-				Select Case mlngColDataType(Index)
-					Case CStr(SQLDataType.sqlDate)
+					Select Case mlngColDataType(Index)
+						Case CStr(SQLDataType.sqlDate)
 
-						'JDM - 22/10/2003 - Fault 7246 - Below fix seems to gone wrong...
-						'MH20020212 Fault 4893
-						'If mvarHeadings(Index)(lngCount) = Format(strValue, DateFormat) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarHeadings(Index)(lngCount) = VB6.Format(strValue, mstrClientDateFormat) Then
-							'If mvarHeadings(Index)(lngCount) = strValue Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							GetGroupNumber = lngCount
-							Exit For
-						End If
+							If mvarHeadings(Index)(lngCount) = VB6.Format(strValue, mstrClientDateFormat) Then
+								Return lngCount
+							End If
 
-					Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If UCase(mvarHeadings(Index)(lngCount)) = General.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							GetGroupNumber = lngCount
-							Exit For
-						End If
+						Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If UCase(mvarHeadings(Index)(lngCount)) = ConvertNumberForDisplay(VB6.Format(strValue, mstrFormat(Index))) Then
+								Return lngCount
+							End If
 
-					Case CStr(SQLDataType.sqlBoolean)
-						Select Case LCase(strValue)
-							Case ""
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarHeadings(Index)(lngCount) = "<Empty>" Then
-									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									GetGroupNumber = lngCount
-									Exit For
-								End If
-							Case "false", "0"
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarHeadings(Index)(lngCount) = "False" Then
-									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									GetGroupNumber = lngCount
-									Exit For
-								End If
-							Case Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarHeadings(Index)(lngCount) = "True" Then
-									'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									GetGroupNumber = lngCount
-									Exit For
-								End If
-						End Select
+						Case CStr(SQLDataType.sqlBoolean)
+							Select Case LCase(strValue)
+								Case ""
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									If mvarHeadings(Index)(lngCount) = "<Empty>" Then
+										Return lngCount
+									End If
+								Case "false", "0"
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									If mvarHeadings(Index)(lngCount) = "False" Then
+										'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										Return lngCount
+									End If
+								Case Else
+									'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									If mvarHeadings(Index)(lngCount) = "True" Then
+										Return lngCount
+									End If
+							End Select
 
-					Case Else
+						Case Else
 
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If LCase(mvarHeadings(Index)(lngCount)) = LCase(HttpUtility.HtmlEncode(strValue)) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							GetGroupNumber = lngCount
-							Exit For
-						End If
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If LCase(mvarHeadings(Index)(lngCount)) = LCase(HttpUtility.HtmlEncode(strValue)) Then
+								'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								Return lngCount
+							End If
 
-				End Select
+					End Select
 
-			Next
+				Next
 
-		Else 'Numeric ranges...
+			Else 'Numeric ranges...
 
-			dblValue = Val(strValue)
-			If strValue = vbNullString Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetGroupNumber = 0
-				Exit Function
-			ElseIf dblValue < mdblMin(Index) Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetGroupNumber = 1
-				Exit Function
+				dblValue = Val(strValue)
+				If strValue = vbNullString Then
+					Return 0
+				ElseIf dblValue < mdblMin(Index) Then
+					Return 1
+				End If
+
+				lngCount = 1
+				For dblLoop = mdblMin(Index) To mdblMax(Index) Step mdblStep(Index)
+					lngCount = lngCount + 1
+					'If dblValue >= dblLoop And dblValue <= dblLoop + mdblStep(Index) Then
+					If dblValue >= dblLoop And dblValue < dblLoop + mdblStep(Index) Then
+						Return lngCount
+					End If
+				Next
+				Return lngCount + 1
+
 			End If
 
-			lngCount = 1
-			For dblLoop = mdblMin(Index) To mdblMax(Index) Step mdblStep(Index)
-				lngCount = lngCount + 1
-				'If dblValue >= dblLoop And dblValue <= dblLoop + mdblStep(Index) Then
-				If dblValue >= dblLoop And dblValue < dblLoop + mdblStep(Index) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					GetGroupNumber = lngCount
-					Exit Function
-				End If
-			Next
-			'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			GetGroupNumber = lngCount + 1
+		Catch ex As Exception
+			Return 0
 
-		End If
-
-
-		Exit Function
-
-LocalErr:
-		mstrStatusMessage = "Error grouping data <" & strValue & ">"
-		fOK = False
+		End Try
 
 	End Function
 
@@ -1677,62 +1631,63 @@ LocalErr:
 
 		Dim strMask As String
 
-		On Error GoTo LocalErr
+		FormatCell = ""
 
-		strMask = vbNullString
-		FormatCell = vbNullString
+		Try
 
-		If dblCellValue <> 0 Or mblnSuppressZeros = False Then
+			If dblCellValue <> 0 Or mblnSuppressZeros = False Then
 
-			If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
+				If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
 
-				' 1000 seperators
-				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-					strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
+					' 1000 seperators
+					If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
+						strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
+					Else
+						strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
+
+						If lngHOR = 2 Then
+							strMask = New String("#", 20) & "0.00%"
+						ElseIf lngHOR = 0 And mlngCrossTabType = Enums.CrossTabType.cttTurnover Then
+							strMask = New String("#", 20) & "0.0"
+						End If
+					End If
+
 				Else
-					strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
 
-					If lngHOR = 2 Then
-						strMask = New String("#", 20) & "0.00%"
-					ElseIf lngHOR = 0 And mlngCrossTabType = Enums.CrossTabType.cttTurnover Then
-						strMask = New String("#", 20) & "0.0"
-					End If
-				End If
+					' 1000 seperators
+					strMask = IIf(mbUse1000Separator, "#,0", "#0")
 
-			Else
+					If mblnShowPercentage Then
+						'If percentage
+						dblCellValue = dblCellValue * mdblPercentageFactor
+						strMask = strMask & ".00%"
 
-				' 1000 seperators
-				strMask = IIf(mbUse1000Separator, "#,0", "#0")
+					ElseIf mlngType > 0 Then
+						'if not count then
+						'value should be displayed as per field definition
 
-				If mblnShowPercentage Then
-					'If percentage
-					dblCellValue = dblCellValue * mdblPercentageFactor
-					strMask = strMask & ".00%"
+						If mlngIntersectionDecimals > 0 Then
+							strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
+						End If
 
-				ElseIf mlngType > 0 Then
-					'if not count then
-					'value should be displayed as per field definition
-
-					If mlngIntersectionDecimals > 0 Then
-						strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
 					End If
 
 				End If
 
+				If strMask <> vbNullString Then
+					Return VB6.Format(dblCellValue, strMask)
+				End If
+
 			End If
 
-			If strMask <> vbNullString Then
-				FormatCell = Format(dblCellValue, strMask)
-			End If
 
-		End If
+		Catch ex As Exception
+			mstrStatusMessage = "Error formatting data"
+			fOK = False
+			Return ""
 
+		End Try
 
-		Exit Function
-
-LocalErr:
-		mstrStatusMessage = "Error formatting data"
-		fOK = False
 
 	End Function
 
@@ -1838,7 +1793,7 @@ LocalErr:
 			If mblnIntersection Then
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If Not IsDBNull(objRow("Ins")) Then
-					strOutput = strOutput & vbTab & Format(objRow("Ins"), mstrIntersectionMask)
+					strOutput = strOutput & vbTab & VB6.Format(objRow("Ins"), mstrIntersectionMask)
 				End If
 			End If
 

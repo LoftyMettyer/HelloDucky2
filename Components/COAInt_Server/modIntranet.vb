@@ -1,28 +1,20 @@
 Option Strict Off
 Option Explicit On
+
+Imports System.Globalization
+
 Module modIntranet
 
-	Private mobjGeneral As New clsGeneral
-
-	Public Function UDFFunctions(ByRef pastrUDFFunctions() As String, ByRef pbCreate As Boolean) As Boolean
-		Return mobjGeneral.UDFFunctions(pastrUDFFunctions, pbCreate)
+	Friend Function ConvertNumberForSQL(strInput As String) As String
+		'Get a number in the correct format for a SQL string
+		'(e.g. on french systems replace decimal comma for a decimal point)
+		Return Replace(strInput, CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")
 	End Function
 
-	Public Sub Initialise()
-
-
-
-
-	End Sub
-
-	Public Function vbCompiled() As Boolean
-
-		'Much better (and clever-er) !
-		On Error Resume Next
-		Err.Clear()
-		Debug.Print(1 / 0)
-		vbCompiled = (Err.Number = 0)
-
+	Friend Function ConvertNumberForDisplay(strInput As String) As String
+		'Get a number in the correct format for display
+		'(e.g. on french systems replace decimal point for a decimal comma)
+		Return Replace(strInput, ".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
 	End Function
 
 
@@ -53,7 +45,7 @@ Module modIntranet
 	End Function
 
 
-	Friend Function DecToBin(ByRef DeciValue As Integer, Optional ByRef NoOfBits As Short = 8) As String
+	Friend Function DecToBin(DeciValue As Integer, Optional NoOfBits As Short = 8) As String
 
 		Dim i As Short 'make sure there are enough bits to contain the number
 		Do While DeciValue > (2 ^ NoOfBits) - 1

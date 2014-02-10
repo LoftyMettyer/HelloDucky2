@@ -903,7 +903,7 @@ Public Class CalendarReport
 		End If
 
 		If (Not mblnUDFsCreated) Then
-			fOK = UDFFunctions(mastrUDFsRequired, True)
+			fOK = General.UDFFunctions(mastrUDFsRequired, True)
 			mblnUDFsCreated = fOK
 			If Not fOK Then
 				InsertIntoTempTable = False
@@ -3200,7 +3200,7 @@ ErrorTrap:
 		GetDescriptionDataTypes()
 
 		'TM08102003
-		UDFFunctions(mastrUDFsRequired, False)
+		General.UDFFunctions(mastrUDFsRequired, False)
 
 		Return True
 
@@ -3671,7 +3671,7 @@ TidyUpAndExit:
 				blnOK = General.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
-					blnOK = UDFFunctions(mastrUDFsRequired, True)
+					blnOK = General.UDFFunctions(mastrUDFsRequired, True)
 					If blnOK Then
 						rsIDs = DB.GetDataTable(mstrFilteredIDs)
 					End If
@@ -3688,7 +3688,7 @@ TidyUpAndExit:
 						mstrSQLIDs = mstrSQLIDs & IIf(Len(mstrSQLIDs) > 0, ", ", "") & objRow(0)
 					Next
 
-					blnOK = UDFFunctions(mastrUDFsRequired, False)
+					blnOK = General.UDFFunctions(mastrUDFsRequired, False)
 
 				Else
 					' Permission denied on something in the filter.
