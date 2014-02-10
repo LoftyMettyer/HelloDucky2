@@ -75,18 +75,24 @@
 								$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
 									.removeClass('open');
 								$("#workframeset").css("left", "30px");
-								$("#reportframeset").css("left", "30px");
+								// $("#reportframeset").css("left", "30px");
 								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
 
 							} else {
 								$('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
 									.addClass('open');
 								$("#workframeset").css("left", "350px");
-								$("#reportframeset").css("left", "350px");
+								// $("#reportframeset").css("left", "350px");
 								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
 							}
+							
+							//resize defsel/find screen accordingly.
+							$('#findGridTable').setGridWidth($('#findGridRow').width());
+							$('#DefSelRecords').setGridWidth($('#findGridRow').width());
+
 							event.preventDefault();
 						});
+						
 					}
 				};
 				ContextMenuTab.init();
@@ -203,7 +209,7 @@
 
 
 <div id="menuframe" style="display: none;">
-<div class="ContextMenu-panel">
+<div class="ContextMenu-panel open">
 <div class="ContextMenu-tab ui-state-default" style="text-align:center;vertical-align: middle">
 <p style="display:none" class="rot-neg-90">Click here to show/hide this accordian menu...</p>
 <img id="ContextMenuIcon" src="<%= Url.Content("~/content/images/retract.png") %>" alt="x"/>
