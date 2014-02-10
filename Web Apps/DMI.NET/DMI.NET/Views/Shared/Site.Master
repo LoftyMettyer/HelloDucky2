@@ -111,8 +111,8 @@
 			$("#divthemeRoller").dialog({
 				autoOpen: false,
 				modal: true,
-				width: 'auto',
-				height: 'auto',
+				width: 330,
+				height: 280,
 			    resizable: false
 			});
 
