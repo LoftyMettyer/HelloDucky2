@@ -82,7 +82,7 @@
 
 	function showThemeEditor() {
 		$("#divthemeRoller").dialog("open");
-		$("#themeeditoraccordion").accordion("resize");
+		//$("#themeeditoraccordion").accordion("resize");
 		
 		//load the themeeditor form now
 		loadPartialView("themeEditor", "home", "divthemeRoller", null);

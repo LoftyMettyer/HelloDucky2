@@ -71,8 +71,7 @@
 	   
 	    try { changeLayout($("#cmbLayout :selected").text()); } catch (e) { }
 	    if ($("#cmbLayout :selected").text() == "wireframe") {	      
-	        try { changeTheme($("#cmbTheme :selected").text()); } catch (e) { }
-	        try { applyImportedTheme(document.getElementById('chkAppywireframetheme').checked); } catch (e) { }
+	        try { changeTheme($("#cmbTheme :selected").text()); } catch (e) { }      
 	       
 	    }
 	    themeEditor_window_onload();
@@ -80,16 +79,32 @@
 
 	function toggleCombos() {
 	    
-        //theme selection is allowed in wirefamemode only
-	    if ($("#cmbLayout :selected").text() != "wireframe") {
-	        document.getElementById("cmbTheme").disabled = true;
-	        document.getElementById("cmbTheme").value = "";
-	        document.getElementById("divThemeSelector").disabled = true;
+	    //theme selection is allowed in wirefamemode only
+	    if ($("#cmbLayout :selected").text() != "") {
+	        document.getElementById("btnDiv2OK").disabled = false;
+	        if ($("#cmbLayout :selected").text() != "wireframe") {
+	            document.getElementById("cmbTheme").disabled = true;
+	            document.getElementById("cmbTheme").value = "";
+	        }
+	        else {
+	            document.getElementById("cmbTheme").disabled = false;
+	            if ($("#cmbTheme :selected").text() == "") {
+	                document.getElementById("btnDiv2OK").disabled = true;
+	            }
+	            else {
+	                document.getElementById("btnDiv2OK").disabled = false;
+	            }
+	        }
 	    }
 	    else {
-	        document.getElementById("cmbTheme").disabled = false;
-	        document.getElementById("divThemeSelector").disabled = false;
+	        document.getElementById("cmbTheme").value = "";
+	        document.getElementById("btnDiv2OK").disabled = true;
 	    }
+	}
+
+	function themeEditor_cancelClick() {
+	   $("#divthemeRoller").dialog("close");
+	    return false;
 	}
 
 </script>
@@ -115,7 +130,7 @@
 			</select></span>
 			<br />
 			<br />
-			<span>Theme:<select  id="cmbTheme" style="width: 150px; margin-left: 40px;"><option></option>
+			<span>Theme:<select  id="cmbTheme" style="width: 150px; margin-left: 40px;"  onChange="toggleCombos()"><option></option>
 				<option value="ABS">ABS</option>
 				<option value="activeX">activeX</option>
 				<option value="cupertino">cupertino</option>
@@ -134,31 +149,15 @@
 				<option value="ui-lightness">ui-lightness</option>               
 			</select>
 			<br />
-				<p style="font-size: x-small">Applies to 'wireframe' layout only.</p>
+				
 			</span>
 			<hr />
-			<p>You can also import a theme:</p>
-            <div id ="divThemeSelector">
-			    <input type="file" id="themeFile" name="themeFile" onchange="$(this).closest('form').trigger('submit');"/>
-			    <br/>
-			    <input id="chkAppywireframetheme" type="checkbox" />Apply imported theme?
-            </div>
-            <div id ="divSaveButtons">
-                <table>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px;" onclick="saveLayoutandTheme()" />
-							</td>
-									
-							<td>
-								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px;"  onclick="themeEditor_window_onload()"/>
-							</td>
-                        </tr>
-                </table>
+			
+            <div id ="divSaveButtons" style="text-align:right">
+              
+								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px;" onclick="saveLayoutandTheme()" />	
+								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px;"  onclick="themeEditor_cancelClick()"/>
+						
                 </div>
 		</div>
 	</div>
