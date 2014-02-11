@@ -1279,17 +1279,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Components\COAInt_Server\COAInt_Server.vbproj">
-      <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
-      <Name>COAInt_Server</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Components\DayPilot\DayPilot.csproj">
-      <Project>{5d7983a4-ccff-46f6-920f-f184a031d7e1}</Project>
-      <Name>DayPilot</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{EF53050B-882E-4776-B643-EDA472E8E3F2}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -1300,6 +1289,16 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Components\COAInt_Server\COAInt_Server.vbproj">
+      <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
+      <Name>COAInt_Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Components\DayPilot\DayPilot.csproj">
+      <Project>{5d7983a4-ccff-46f6-920f-f184a031d7e1}</Project>
+      <Name>DayPilot</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
