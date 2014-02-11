@@ -55,6 +55,14 @@ body
 	width: 100%;
 }
 
+.FixedLinksLeft ul li {
+	color: #154288;
+}
+
+.FixedLinksLeft li {
+	cursor: default;
+}
+
 .pageTitle {
 	/*display: none!important;*/
 	margin-top: 0;

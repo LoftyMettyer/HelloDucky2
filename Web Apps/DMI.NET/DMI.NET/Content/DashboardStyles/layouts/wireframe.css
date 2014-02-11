@@ -31,6 +31,13 @@ body
 	height: 52px;
 }
 
+.FixedLinksLeft ul li {
+	color: #154288;
+}
+
+.FixedLinksLeft li {
+	cursor: default;
+}
 
 .DashContent {position: absolute; top: 0px; bottom: 2px;left: 0px; right: 0px;}
 
