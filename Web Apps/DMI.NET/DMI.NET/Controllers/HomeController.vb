@@ -1606,7 +1606,7 @@ Namespace Controllers
 
 								Select Case prmResult.Value
 									Case 1 ' Record changed by another user, and is no longer in the current table/view.
-										sErrorMsg = "The record has been amended by another user and is no longer in the current view."
+										sErrorMsg = "The record has been amended by another user and will be refreshed."
 									Case 2 ' Record changed by another user, and still in the current table/view.
 										sErrorMsg = "The record has been amended by another user and will be refreshed."
 									Case 3 ' Record deleted by another user.
@@ -1656,7 +1656,7 @@ Namespace Controllers
 
 					Select Case prmResult.Value
 						Case 2 ' Record changed by another user, and is no longer in the current table/view.
-							sErrorMsg = "The record has been amended by another user and is no longer in the current view."
+							sErrorMsg = "The record has been amended by another user and will be refreshed."
 					End Select
 
 					lngRecordID = 0
