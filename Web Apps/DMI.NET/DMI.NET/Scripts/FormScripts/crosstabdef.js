@@ -2404,3 +2404,24 @@ function grdAccess_RowLoaded() {
 			}
 		}
 }
+
+function ForceAccess(pgrdAccess, psAccess) {
+	var iLoop;
+	var varBookmark;
+	pgrdAccess.redraw = false;
+	for (iLoop = 0; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+		varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+		pgrdAccess.Bookmark = varBookmark;
+
+		if (iLoop == 0) {
+			pgrdAccess.Columns("Access").Text = "";
+		} else {
+			if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+				pgrdAccess.Columns("Access").Text = AccessDescription(psAccess);
+			}
+		}
+	}
+	pgrdAccess.redraw = true;
+
+	pgrdAccess.MoveFirst();
+}
