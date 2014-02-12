@@ -771,6 +771,12 @@ function menu_MenuClick(sTool) {
 			return;
 	}
 
+	// Course Booking
+	if (sToolName == "mnutoolBookCourseFind") {
+		menu_bookCourse();    
+		return;
+	}
+
 		//RecEdit - New, Edit, Copy ----------------------------------------------------------------------------------------------------------------
 	if (sToolName == "mnutoolNewRecord") {
 			menu_newRecord();
@@ -892,11 +898,6 @@ function menu_MenuClick(sTool) {
 	}
 
 		// Course Booking
-	if (sToolName == "mnutoolBookCourseRecord") {
-			menu_bookCourse();    // HC: TODO - Tab and buttons needs to be enabled
-			return;
-	}
-
 	if (sToolName == "mnutoolCancelCourseRecord") {
 			if (OpenHR.messageBox("Are you sure you want to cancel this course?", 36, "OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 					if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
@@ -1455,7 +1456,6 @@ function menu_refreshMenu() {
 		menu_toolbarEnableItem("mnutoolClearFilterRecord", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		}
 
-
 		// Standard reports group
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1571,6 +1571,7 @@ function menu_refreshMenu() {
 			sRecEditDate = sRecEditDate.toUpperCase();
 		}
 		
+		// Course Booking group
 		//sDummyDate = String(dtDummyDate.getVarDate());
 		//sDummyDate = sDummyDate.toUpperCase();
 		//sDummyDate is now a blank, not some weird 1899 baloney.
@@ -2023,10 +2024,15 @@ function menu_refreshMenu() {
 	
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
-	menu_setVisibleMenuItem("mnutoolBookCourseRecord", fBookCourseVisible);
-	menu_toolbarEnableItem("mnutoolBookCourseRecord", fBookCourseEnabled);
+	//menu_setVisibletoolbarGroup("mnuSectionRecordCourseBooking", fCancelCourseVisible);
+	menu_setVisibletoolbarGroupById("mnuSectionRecordCourseBooking", fCancelCourseVisible);
+	if (fCancelCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
 	
-	if (!fBookCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
+	menu_setVisibleMenuItem("mnutoolBookCourseFind", fBookCourseVisible);
+	menu_toolbarEnableItem("mnutoolBookCourseFind", fBookCourseEnabled);
+	//menu_setVisibletoolbarGroup("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
+	menu_setVisibletoolbarGroupById("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
+  if (fBookCourseVisible) $('#mnutoolBookCourseFind').css('width', '100%');
 	
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
@@ -2038,16 +2044,6 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
 	
-	//New functionality
-			//if all these are false, then hide the Training Booking group.			
-	menu_setVisibletoolbarGroupById("mnutoolTransferBookingRecordFind", ((fBulkBookingVisible) ||
-																		(fAddFromWaitingListVisible) || 
-																			(fTransferBookingVisible) || 
-																				(fCancelBookingVisible)));			
-
-	//if all these are false, then hide the Course Booking group.			
-	menu_setVisibletoolbarGroupById("mnuSectionRecordCourseBooking", ((fBookCourseVisible) || (fCancelCourseVisible)));
-
 
 	fCanSeeLookupTableMenu = true;
 	//		if (txtSysPerm_MENU_VIEWLOOKUPTABLES != null) {
@@ -2958,20 +2954,20 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	iTempDecimals = 0;
 }
 					
-	if ((sConvertedValue.substr(0,1) == "+") ||
-	(sConvertedValue.substr(0,1) == "-")) {
+						if ((sConvertedValue.substr(0, 1) == "+") ||
+						(sConvertedValue.substr(0, 1) == "-")) {
 	iTempSize = iTempSize - 1;
 }
 
 	iSize = frmFindForm.txtFirstColumnSize.value;
 	iDecimals = frmFindForm.txtFirstColumnDecimals.value;
 
-	if(iTempSize > (iSize - iDecimals)) {
+						if (iTempSize > (iSize - iDecimals)) {
 	fValidLocateValue = false;
 	OpenHR.messageBox("The column can only be compared to values with " + (iSize - iDecimals) + " digit(s) to the left of the decimal separator.");
 }
 	else {
-	if(iTempDecimals > iDecimals) {
+							if (iTempDecimals > iDecimals) {
 	fValidLocateValue = false;
 	OpenHR.messageBox("The column can only be compared to values with " + iDecimals + " decimal place(s).");
 }
@@ -3132,8 +3128,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (psPage == "BOOKCOURSE") {
 	// Get the optionData.asp to get the lookup find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
+				frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+				frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 	frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
 	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -3151,8 +3147,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (psPage == "ADDFROMWAITINGLIST") {
 	// Get the optionData.asp to get the lookup find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
+				frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+				frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 	frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
 	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -3170,8 +3166,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (psPage == "TRANSFERBOOKING") {
 	// Get the optionData.asp to get the lookup find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
+				frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+				frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 	frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
 	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -3720,7 +3716,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (sCurrentWorkPage == "LINKFIND") {
 	// Get the optionData.asp to get the link find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmLinkFindForm");
 	frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
@@ -3737,7 +3733,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (sCurrentWorkPage == "LOOKUPFIND") {
 	// Get the optionData.asp to get the link find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmLookupFindForm");
 	frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
@@ -3773,7 +3769,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
 	(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
 	// Get the optionData.asp to get the find records.
-	frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 				
@@ -4440,8 +4436,7 @@ function menu_loadSelectOrderFilter(psType) {
 	//CloseWait();
 }
 
-	function menu_LoadStandardReport(psReportType, psRecordSelection)
-	{
+	function menu_LoadStandardReport(psReportType, psRecordSelection) {
 	var sUtilReportType;
 	var frmSendArea;
 	var bOK;
@@ -4460,8 +4455,7 @@ function menu_loadSelectOrderFilter(psType) {
 	// If we came from an individual record
 	if (psRecordSelection == "REC") {
 
-	if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
-	{
+			if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2) {
 	frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
 	frmSendArea.txtGotoOptionRecordID.value = $('#txtCurrentRecordID')[0].value;
 	frmSendArea.txtGotoOptionPage.value = sPage;
@@ -4469,19 +4463,16 @@ function menu_loadSelectOrderFilter(psType) {
 	bOK = true;
 }
 }
-	else
-	{
-	if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
-	{
-	frmSendArea = OpenHR.getForm("workframe","frmGoto");
+		else {
+			if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2) {
+				frmSendArea = OpenHR.getForm("workframe", "frmGoto");
 	frmSendArea.txtGotoPage.value = sPage;			
 	frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
 	bOK = true;
 }
 }
 
-	if (bOK == true)
-	{
+		if (bOK == true) {
 
 	frmSendArea.txtStandardReportType.value = sUtilReportType;
 	OpenHR.submitForm(frmSendArea);
@@ -4647,8 +4638,7 @@ function menu_loadSelectOrderFilter(psType) {
 
 	function menu_toolbarEnableItem(itemId, fNewSetting) {
 
-	if ($("#" + itemId).length == 0)
-	{
+		if ($("#" + itemId).length == 0) {
 	//console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
 }
 	
@@ -4719,7 +4709,6 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
-	var sNewValue = "";
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 	$("#" + itemId).parent().show();
@@ -4729,16 +4718,12 @@ function menu_loadSelectOrderFilter(psType) {
 }
 }
 
-	function menu_setVisibletoolbarGroupById(itemId, fNewSetting)
-	{
-	var sNewValue = "";
+	function menu_setVisibletoolbarGroupById(itemId, fNewSetting) {
 
-	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1)
-	{
+		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 	$("#" + itemId).show();
 }
-	else
-	{
+		else {
 	$("#" + itemId).hide();
 }
 }
@@ -4752,7 +4737,7 @@ function menu_loadSelectOrderFilter(psType) {
 	function applyJSTree(element) {
 	//Add treeview functionality to all divs in the accordion
 	if (element == undefined) element = "";
-
+	
 		
 
 	$(".accordion div" + element).jstree({
@@ -4760,7 +4745,7 @@ function menu_loadSelectOrderFilter(psType) {
 	"dots": false,
 	"icons": true
 },
-	"plugins" : [ "html_data", "ui", "themeroller" ],
+			"plugins": ["html_data", "ui", "themeroller"],
 	types: {
 	"types": {
 	"disabled": {
@@ -4777,11 +4762,11 @@ function menu_loadSelectOrderFilter(psType) {
 	"item_clsd": false,
 	"item_open": false        	
 }
-	});
+});
 		
 	$('.accordion div' + element).removeClass('ui-widget-content');
 		$('.ui-accordion-content').addClass('ui-widget-content');
-	}
+}
 
 	function menu_SetmnutoolRecordPositionCaption(newCaption) {
 	//update the record position text.

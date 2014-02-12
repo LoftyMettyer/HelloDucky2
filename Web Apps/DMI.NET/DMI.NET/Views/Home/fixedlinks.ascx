@@ -247,6 +247,17 @@
 								</a>
 							</div>
 						</li>
+						<li id="mnuSectionRecordFindCourseBooking"><span>Course Booking</span>
+							<div id="mnutoolBookCourseFind" class="button">
+								<a href="#" rel="table" title="Book Course">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
+										alt="" />
+									<i class="icon-BookCourseRecord"></i>
+									<h6>Book<br />
+										Course</h6>
+								</a>
+							</div>							
+						</li>
 						<li id="mnuSectionRecordFindTrainingBooking"><span>Training Booking</span>
 							<div id="mnutoolBulkBookingRecordFind" class="button">
 								<a href="#" rel="table" title="Bulk Booking">
@@ -422,6 +433,7 @@
 							</div>
 						</li>
 						<li id="mnuSectionRecordCourseBooking"><span>Course Booking</span>
+<%--
 							<div id="mnutoolBookCourseRecord" class="button">
 								<a href="#" rel="table" title="Book Course">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
@@ -431,6 +443,7 @@
 										Course</h6>
 								</a>
 							</div>
+--%>
 							<div id="mnutoolCancelCourseRecord" class="button">
 								<a href="#" rel="table" title="Cancel Course">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
