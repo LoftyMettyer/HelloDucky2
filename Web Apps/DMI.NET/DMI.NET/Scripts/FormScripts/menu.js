@@ -1578,7 +1578,8 @@ function menu_refreshMenu() {
 		sDummyDate = "";
 
 		fCancelCourseVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtTB_CourseTableID.value) &&
-				(frmMenuInfo.txtUserType.value == 0));
+			(frmMenuInfo.txtUserType.value == 0)) &&
+			(!menu_isSSIMode());
 		
 		fCancelCourseEnabled = ((frmRecEdit.txtCurrentRecordID.value > 0) &&
 					(frmMenuInfo.txtUserType.value == 0) &&
@@ -1730,7 +1731,8 @@ function menu_refreshMenu() {
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&
-					(frmMenuInfo.txtUserType.value == 0));
+				(frmMenuInfo.txtUserType.value == 0)) &&
+				(!menu_isSSIMode());
 
 			fBookCourseEnabled = ((lngRecordID > 0) &&
 					(frmMenuInfo.txtUserType.value == 0) &&
@@ -2024,13 +2026,11 @@ function menu_refreshMenu() {
 	
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
-	//menu_setVisibletoolbarGroup("mnuSectionRecordCourseBooking", fCancelCourseVisible);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordCourseBooking", fCancelCourseVisible);
 	if (fCancelCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
 	
 	menu_setVisibleMenuItem("mnutoolBookCourseFind", fBookCourseVisible);
 	menu_toolbarEnableItem("mnutoolBookCourseFind", fBookCourseEnabled);
-	//menu_setVisibletoolbarGroup("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
   if (fBookCourseVisible) $('#mnutoolBookCourseFind').css('width', '100%');
 	
@@ -4781,9 +4781,9 @@ function menu_loadSelectOrderFilter(psType) {
 
 
 	function menu_isSSIMode() {
-	if ((window.SSIMode.toLowerCase() == "true") || (window.SSIMode == true)) {
-	return true;
-} else {
-	return false;
-}
-}
+		if ((window.SSIMode.toLowerCase() == "true") || (window.SSIMode == true)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
