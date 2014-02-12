@@ -110,4 +110,12 @@ Public Module ASRFunctions
 
 	End Function
 
+	Public Function Max(Of T As IComparable)(value1 As T, value2 As T) As T
+		Return If(value1.CompareTo(value2) > 0, value1, value2)
+	End Function
+
+	Public Function Min(Of T As IComparable)(value1 As T, value2 As T) As T
+		Return If(value1.CompareTo(value2) < 0, value1, value2)
+	End Function
+
 End Module

@@ -1,5 +1,5 @@
 ﻿Option Explicit On
-Option Strict Off
+Option Strict On
 
 Imports System.IO
 Imports Aspose.Cells
@@ -9,9 +9,6 @@ Imports DayPilot.Web.Ui
 
 Namespace Code
 	Public Class CalendarOutput
-
-		'Public ReportStart As DateTime
-		'Public ReportEnd As DateTime
 
 		Public ReportData As DataTable
 		Public Document As MemoryStream
@@ -32,8 +29,11 @@ Namespace Code
 			Const xOffSet = 1
 			Const yOffset = 1
 
-			Dim dCurrentMonth As DateTime
+			Dim dCurrentMonthStart As DateTime
+			Dim dCurrentMonthEnd As DateTime
+
 			Dim iRow As Integer
+			Dim iLegendColumn As Integer
 
 			Dim objDayPilot As New DayPilotScheduler
 			Dim iSaveFormat As SaveFormat
@@ -51,6 +51,9 @@ Namespace Code
 			Dim objDocument As New Workbook
 			Dim objMonthSheet As Worksheet
 			Dim objRange As Range
+			Dim iStartRange As Integer
+			Dim iRangeLength As Integer
+			Dim iLastRangeEnd As Integer
 
 			' Why, oh why, does it create a useless first worksheet?
 			objDocument.Worksheets.RemoveAt("Sheet1")
@@ -65,6 +68,11 @@ Namespace Code
 			stlEvent.Font.Name = objDocument.DefaultStyle.Font.Name
 			stlEvent.Font.Size = objDocument.DefaultStyle.Font.Size
 
+			Dim stlLegend As Style = objDocument.Styles(objDocument.Styles.Add())
+			stlLegend.Pattern = BackgroundType.Solid
+			stlLegend.Font.Name = objDocument.DefaultStyle.Font.Name
+			stlLegend.Font.Size = objDocument.DefaultStyle.Font.Size
+
 			Dim stlCaption As Style = objDocument.Styles(objDocument.Styles.Add())
 			stlCaption.IndentLevel = 2
 			stlCaption.Font.Size += 5
@@ -72,7 +80,7 @@ Namespace Code
 
 			Dim stlWeekend As Style = objDocument.Styles(objDocument.Styles.Add())
 			stlWeekend.Pattern = BackgroundType.Solid
-			stlWeekend.ForegroundColor = Color.GhostWhite
+			stlWeekend.ForegroundColor = Color.LightGray
 
 			Dim stlWorkingDay As Style = objDocument.Styles(objDocument.Styles.Add())
 			stlWorkingDay.Pattern = BackgroundType.Solid
@@ -83,7 +91,9 @@ Namespace Code
 			stlHeading.Font.IsBold = True
 			stlHeading.Font.Name = objDocument.DefaultStyle.Font.Name
 			stlHeading.Font.Size = objDocument.DefaultStyle.Font.Size
-
+			stlHeading.HorizontalAlignment = TextAlignmentType.Left
+			stlHeading.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.LightGray)
+			stlHeading.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.LightGray)
 
 			Dim objEnd As DateTime = Calendar.ReportEndDate
 
@@ -92,42 +102,62 @@ Namespace Code
 			Dim iMonthsBetweenStartAndEnd = CInt(DateDiff(DateInterval.Month, dMonthStart, dMonthEnd))
 
 			For iMonth = 0 To iMonthsBetweenStartAndEnd
-				dCurrentMonth = dMonthStart.AddMonths(iMonth)
+				dCurrentMonthStart = dMonthStart.AddMonths(iMonth)
+				dCurrentMonthEnd = dCurrentMonthStart.AddMonths(1)
 
-				objDayPilot.StartDate = dCurrentMonth
-				objDayPilot.Days = DateTime.DaysInMonth(dCurrentMonth.Year, dCurrentMonth.Month)
+				objDayPilot.StartDate = dCurrentMonthStart
+				objDayPilot.Days = DateTime.DaysInMonth(dCurrentMonthStart.Year, dCurrentMonthStart.Month)
 
 				objDayPilot.DataBind()
 				objDayPilot.LoadEventsToDays()
 
-				objMonthSheet = objDocument.Worksheets.Add(String.Format("{0} {1}", MonthName(dCurrentMonth.Month, True), dCurrentMonth.Year))
+				objMonthSheet = objDocument.Worksheets.Add(String.Format("{0} {1}", MonthName(dCurrentMonthStart.Month, True), dCurrentMonthStart.Year))
 				objMonthSheet.IsRowColumnHeadersVisible = False
 				objMonthSheet.IsGridlinesVisible = False
 
-
 				' Nice display of month and year
-				Dim strWorksheetTitle = (String.Format("{0} ({1} {2})", Calendar.CalendarReportName, MonthName(dCurrentMonth.Month), dCurrentMonth.Year))
+				Dim strWorksheetTitle = (String.Format("{0} ({1} {2})", Calendar.CalendarReportName, MonthName(dCurrentMonthStart.Month), dCurrentMonthStart.Year))
 				objMonthSheet.Cells(yOffset, 0).PutValue(strWorksheetTitle)
 				objMonthSheet.Cells(yOffset, 0).SetStyle(stlCaption)
 				objMonthSheet.AutoFitRow(yOffset)
 
 				' Display day numbers
+				Dim iCellColumn As Integer = xOffSet + 1
 				For iCount = 1 To objDayPilot.Days
-					objMonthSheet.Cells(yOffset + 2, iCount + xOffSet).PutValue(iCount)
-					objMonthSheet.Cells(yOffset + 2, iCount + xOffSet).SetStyle(stlHeading)
-					objMonthSheet.Cells.SetColumnWidth(iCount + yOffset, 2.75)
+
+					objMonthSheet.Cells(yOffset + 2, iCellColumn).PutValue(iCount)
+					objMonthSheet.Cells(yOffset + 2, iCellColumn).SetStyle(stlHeading)
+					objMonthSheet.Cells(yOffset + 2, iCellColumn + 1).SetStyle(stlHeading)
+					objMonthSheet.Cells.SetColumnWidth(iCellColumn, 1.5)
+					objMonthSheet.Cells.SetColumnWidth(iCellColumn + 1, 1.5)
+
+					objMonthSheet.Cells.Merge(yOffset + 2, iCellColumn, 1, 2)
+					iCellColumn += 2
 				Next
 
-				' Style the calendar background
-				For iCount = 1 To objDayPilot.Days
-					objRange = objMonthSheet.Cells.CreateRange(yOffset + 3, iCount + xOffSet + 2, 20, 1)
+				' Style the calendar background (Apply weekends)
+				iCellColumn = xOffSet + 1
+				Dim iEventCount = 500
 
-					If dCurrentMonth.AddDays(iCount).DayOfWeek = DayOfWeek.Saturday Or dCurrentMonth.AddDays(iCount).DayOfWeek = DayOfWeek.Sunday Then
+				' Weekend styles
+				For iCount = 0 To objDayPilot.Days - 1
+					If dCurrentMonthStart.AddDays(iCount).DayOfWeek = DayOfWeek.Saturday Or dCurrentMonthStart.AddDays(iCount).DayOfWeek = DayOfWeek.Sunday Then
+						objRange = objMonthSheet.Cells.CreateRange(yOffset + 3, iCellColumn, iEventCount, 2)
 						objRange.SetStyle(stlWeekend)
-						'Else
-						'	objRange.SetStyle(stlWorkingDay)
 					End If
+					iCellColumn += 2
+				Next
 
+
+				' Day styles
+				iCellColumn = xOffSet + 1
+				For iCount = 0 To objDayPilot.Days - 1
+					If Not dCurrentMonthStart.AddDays(iCount).DayOfWeek = DayOfWeek.Saturday Or dCurrentMonthStart.AddDays(iCount).DayOfWeek = DayOfWeek.Sunday Then
+						objRange = objMonthSheet.Cells.CreateRange(yOffset + 3, iCellColumn, iEventCount, 2)
+						objRange.SetOutlineBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.LightGray)
+						objRange.SetOutlineBorder(BorderType.RightBorder, CellBorderType.Thin, Color.LightGray)
+					End If
+					iCellColumn += 2
 				Next
 
 
@@ -139,63 +169,104 @@ Namespace Code
 
 					For Each objEvent As DayPilot.Web.Ui.Event In objDay.events
 
-						' Event Name
-						objMonthSheet.Cells(iRow, objEvent.Start.Day + xOffSet).PutValue(objEvent.Name)
-						'objMonthSheet.Cells(iRow, objEvent.Start.Day + xOffSet).SetStyle(stlHeading)
+						Dim dEventStart = Max(objEvent.Start, dCurrentMonthStart)
+						Dim dEventEnd = Min(objEvent.End, dCurrentMonthEnd)
+
+						iStartRange = dEventStart.Day * 2
+						'			iRangeLength = (dEventEnd.Day - dEventStart.Day) * 2
+
+						iRangeLength = CInt(CInt(DateDiff(DateInterval.Hour, dEventStart, dEventEnd)) / 12)
+
+						' Cater for AM
+						If dEventStart.Hour > 0 Then
+							iStartRange += 1
+							'		iRangeLength -= 1
+						End If
+
+						' Cater for PM
+						'If dEventEnd.Hour >= 12 Then
+						'	iRangeLength += 1
+						'End If
 
 						' Event itself
-						stlEvent.ForegroundColor = ColorTranslator.FromHtml(objEvent.Source.Row(6).ToString())
-						objRange = objMonthSheet.Cells.CreateRange(iRow, objEvent.Start.Day + xOffSet, 1, objEvent.End.Day - objEvent.Start.Day)
+						stlEvent.ForegroundColor = ColorTranslator.FromHtml(CType(objEvent.Source, DataRowView).Row(6).ToString())
 
-						'						objRange.SetOutlineBorder(BorderType.TopBorder, BorderStyle.Solid, Color.LightGray)
-						objRange.SetOutlineBorders(BorderStyle.Solid, Color.LightGray)
+						'		objMonthSheet.Shapes.AddShape(msoShapeRoundedRectangle)
 
+						' If overlapping event jump to next row
+						If iStartRange < iLastRangeEnd Then
+							iRow += 1
+						End If
 
+						objRange = objMonthSheet.Cells.CreateRange(iRow, iStartRange, 1, iRangeLength)
+						objRange.PutValue(objEvent.Name, False, False)
 						objRange.SetStyle(stlEvent)
+						objRange.SetOutlineBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.LightGray)
+						objRange.SetOutlineBorder(BorderType.TopBorder, CellBorderType.Thin, Color.LightGray)
+						objRange.SetOutlineBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.LightGray)
+						objRange.SetOutlineBorder(BorderType.RightBorder, CellBorderType.Thin, Color.LightGray)
 
-						' Blank text afetr event to stop over lapping
-						objMonthSheet.Cells(iRow, objEvent.End.Day + xOffSet).PutValue(" ")
+						objRange.Merge()
+
+						' Blank text after event to stop over lapping
+						objMonthSheet.Cells(iRow, iStartRange + iRangeLength).PutValue(" ")
 						objMonthSheet.AutoFitRow(iRow)
 
-
-						'objMonthSheet.Cells(iRow, objEvent.Start.Day + xOffSet).PutValue(objEvent.Name)
-						'For iDayStyle = objEvent.Start.Day To objEvent.End.Day - 1
-						'	stlEvent.ForegroundColor = ColorTranslator.FromHtml(objEvent.Source.Row(6).ToString())
-						'	objMonthSheet.Cells(iRow, iDayStyle + xOffSet).SetStyle(stlEvent)
-						'Next
-
+						iLastRangeEnd = iStartRange + iRangeLength
 					Next
 
-						iRow += 1
-					Next
+					' Underline current event
+					objRange = objMonthSheet.Cells.CreateRange(iRow, yOffset, 1, (objDayPilot.Days * 2) + 1)
+					objRange.SetOutlineBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.LightGray)
+
+					iRow += 1
+					iLastRangeEnd = 0
+				Next
+
+
+				' Clear styling of unused rows
+				objRange = objMonthSheet.Cells.CreateRange(iRow, yOffset, 500, (objDayPilot.Days * 2) + 1)
+				objRange.SetStyle(objDocument.DefaultStyle)
+
+				' Place borders
+				objRange = objMonthSheet.Cells.CreateRange(xOffSet + 2, yOffset, iRow - xOffSet - 2, (objDayPilot.Days * 2) + 1)
+				objRange.SetOutlineBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.LightGray)
+				objRange.SetOutlineBorder(BorderType.TopBorder, CellBorderType.Thin, Color.LightGray)
+				objRange.SetOutlineBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.LightGray)
+				objRange.SetOutlineBorder(BorderType.RightBorder, CellBorderType.Thin, Color.LightGray)
+
+				objRange = objMonthSheet.Cells.CreateRange(xOffSet + 2, yOffset, 1, 1)
+				objRange.SetOutlineBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.LightGray)
 
 
 				' Display legend
+				iLegendColumn = (objDayPilot.Days * 2) + 3
 				iRow = yOffset + 2
-				objMonthSheet.Cells(iRow, 34).PutValue("Legend")
+				objMonthSheet.Cells(iRow, iLegendColumn).PutValue("Legend")
 				iRow += 1
 				For Each objLegend In Calendar.Legend
 					If objLegend.Count > 0 Then
-						stlEvent.ForegroundColor = ColorTranslator.FromHtml(objLegend.HexColor)
-						objMonthSheet.Cells(iRow, 34).SetStyle(stlEvent)
-						objMonthSheet.Cells(iRow, 34).PutValue(objLegend.LegendDescription)
+						stlLegend.ForegroundColor = ColorTranslator.FromHtml(objLegend.HexColor)
+						objMonthSheet.Cells(iRow, iLegendColumn).SetStyle(stlLegend)
+						objMonthSheet.Cells(iRow, iLegendColumn).PutValue(objLegend.LegendDescription)
 
 						iRow += 2
 					End If
 				Next
 
+
 				' Autosize some columns
-				objMonthSheet.AutoFitColumn(34)
+				objMonthSheet.AutoFitColumn(iLegendColumn)
 				objMonthSheet.AutoFitColumn(xOffSet)
 
 			Next
+
 
 			iSaveFormat = SaveAsFormat(Path.GetExtension(DownloadFileName))
 			GeneratedFile = Path.GetTempFileName().Replace(".tmp", ".xlsx")
 
 			objDocument.Worksheets.ActiveSheetIndex = 0
 			objDocument.Save(GeneratedFile, iSaveFormat)
-
 
 			Return True
 
