@@ -199,8 +199,8 @@
 					break;
 				case "tiles":
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/dot-luv/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/dot-luv/jquery-ui.min.css")%>" });
 					break;
 				}
 				

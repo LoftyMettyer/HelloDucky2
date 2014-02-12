@@ -98,10 +98,10 @@
 		<p></p>
 	</div>
 	<div class="FixedLinksLeft">
-		<div id="officebar" class="officebar ui-widget-header ui-widget-content">
+		<div id="officebar" class="officebar">
 			<ul>
 						<%-- Home --%>
-				<li class="current ui-state-default"><a id="toolbarHome" href="#" rel="home">Home</a>
+				<li class="current"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>&nbsp;   </span><%-- Fixed Links value removed By mayank to avoide duplicasy--%>
 							<div id="mnutoolFixedSelfService" class="button">
@@ -123,7 +123,7 @@
 				</li>
 
 								<%-- Record: Find Record--%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarRecordFind" href="#" rel="Find">Find</a>
+				<li class="ui-corner-top"><a id="toolbarRecordFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li id="mnuSectionRecordFindEdit"><span>Edit</span>											
 							<div id="mnutoolNewRecordFind" class="button">
@@ -309,7 +309,7 @@
 			</li>
 
 								<%-- Record: Record Edit --%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="Record">Record</a>
+				<li class="ui-corner-top"><a id="toolbarRecord" href="#" rel="Record">Record</a>
 					<ul>
 						<li id="mnuSectionRecordEdit"><span>Edit</span>											
 							<div id="mnutoolNewRecord" class="button">
@@ -516,7 +516,7 @@
 
 
 				<%-- Record - Absence Calendar --%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarRecordAbsence" href="#" rel="toolbarRecord_Absence">Absence Calendar</a>
+				<li class="ui-corner-top"><a id="toolbarRecordAbsence" href="#" rel="toolbarRecord_Absence">Absence Calendar</a>
 					<ul>
 						<li id="mnuSectionRecordAbsence"><span>Absence Calendar</span>
 							<div id="mnutoolPrintRecordAbsence" class="button" title="Print">
@@ -538,7 +538,7 @@
 				</li>
 
 								<%-- Record - Quick Find --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarRecordQuickFind" href="#" rel="toolbarRecord_QuickFind">Quick Find</a>
+								<li class="ui-corner-top"><a id="toolbarRecordQuickFind" href="#" rel="toolbarRecord_QuickFind">Quick Find</a>
 					<ul>
 						<li id="mnuSectionRecordQuickFind"><span>Quick Find</span>
 							<div id="mnutoolFindRecordQuickFind" class="button" title="Find">
@@ -560,7 +560,7 @@
 				</li>
 
 								<%-- Record - Sort Order --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarRecordSortOrder" href="#" rel="Record_SortOrder">Sort Order</a>
+								<li class="ui-corner-top"><a id="toolbarRecordSortOrder" href="#" rel="Record_SortOrder">Sort Order</a>
 					<ul>
 						<li id="mnuSectionRecordSortOrder"><span>Sort Order</span>
 							<div id="mnutoolCheckRecordSortOrder" class="button" title="Select">
@@ -582,7 +582,7 @@
 				</li>
 
 								<%-- Record - Filter --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarRecordFilter" href="#" rel="Record_Filter">Filter</a>
+								<li class="ui-corner-top"><a id="toolbarRecordFilter" href="#" rel="Record_Filter">Filter</a>
 					<ul>
 						<li id="mnuSectionRecordFilter"><span>Filter</span>
 							<div id="mnutoolApplyRecordFilter" class="button" title="Apply">
@@ -604,7 +604,7 @@
 				</li>
 
 								<%-- Record - Mail Merge --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarRecordMailMerge" href="#" rel="Record_MailMerge">Filter</a>
+								<li class="ui-corner-top"><a id="toolbarRecordMailMerge" href="#" rel="Record_MailMerge">Filter</a>
 					<ul>
 						<li id="mnuSectionRecordMailMerge"><span>Filter</span>
 							<div id="mnutoolRunRecordMailMerge" class="button" title="Run">
@@ -626,7 +626,7 @@
 				</li>
 
 				<%-- Record - Booking - Transfer Booking / Add from waiting list --%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarDelegateBookingTransfer" href="#" rel="Delegate Booking">Delegate Booking</a>
+				<li class="ui-corner-top"><a id="toolbarDelegateBookingTransfer" href="#" rel="Delegate Booking">Delegate Booking</a>
 					<ul>
 						<li id="mnuSectionSelectDelegateBookingTransfer"><span>Select</span>
 							<div id="mnutoolSelectDelegateBookingTransfer" class="button" title="Select">
@@ -678,7 +678,7 @@
 
 				<%-- Record - Booking - Bulk Booking --%>
 
-				<li class="ui-state-default ui-corner-top"><a id="toolbarDelegateBookingBulkBooking" href="#" rel="Report_NewEditCopy">Bulk Booking</a>
+				<li class="ui-corner-top"><a id="toolbarDelegateBookingBulkBooking" href="#" rel="Report_NewEditCopy">Bulk Booking</a>
 					<ul>
 						<li id="mnuSectionDelegateBookingBulkBooking"><span>Report</span>
 							<div id="mnutoolSaveDelegateBookingBulkBooking" class="button">
@@ -700,7 +700,7 @@
 
 				<%-- Report NewEditCopy --%>
 								<%-- Report Find --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarReportFind" href="#" rel="Report_Find">Find</a>
+								<li class="ui-corner-top"><a id="toolbarReportFind" href="#" rel="Report_Find">Find</a>
 					<ul>
 						<li id="mnuSectionReportFind"><span>Find</span>
 							<div id="mnutoolNewReportFind" class="button">
@@ -757,7 +757,7 @@
 				</li>
 
 								<%-- Report NewEditCopy --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Definition</a>
+								<li class="ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Definition</a>
 					<ul>
 						<li id="mnuSectionNewEditCopyReport"><span>Definition</span>
 							<div id="mnutoolSaveReport" class="button">
@@ -779,7 +779,7 @@
 				</li>
 
 								<%-- Report Run --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarReportRun" href="#" rel="Report_Run">Definition</a>
+								<li class="ui-corner-top"><a id="toolbarReportRun" href="#" rel="Report_Run">Definition</a>
 					<ul>
 						<li id="mnuSectionRunReport"><span>Output</span>
 							<div id="mnutoolOutputReport" class="button">
@@ -801,7 +801,7 @@
 				</li>
 
 								<%-- Utilities Find --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarUtilitiesFind" href="#" rel="Utilities_Find">Find</a>
+								<li class="ui-corner-top"><a id="toolbarUtilitiesFind" href="#" rel="Utilities_Find">Find</a>
 					<ul>
 						<li id="mnuSectionUtilitiesFind"><span>Find</span>
 							<div id="mnutoolNewUtilitiesFind" class="button">
@@ -858,7 +858,7 @@
 				</li>
 
 								<%-- Utilities NewEditCopy --%>
-								<li class="ui-state-default ui-corner-top"><a id="toolbarUtilitiesNewEditCopy" href="#" rel="Utilities_NewEditCopy">Utilities</a>
+								<li class="ui-corner-top"><a id="toolbarUtilitiesNewEditCopy" href="#" rel="Utilities_NewEditCopy">Utilities</a>
 					<ul>
 						<li id="mnuSectionNewEditCopyUtilities"><span>Utilities</span>
 							<div id="mnutoolSaveUtilities" class="button">
@@ -880,7 +880,7 @@
 				</li>
 
 								<%-- Tools Find --%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarToolsFind" href="#" rel="Tools_Find">Find</a>
+				<li class="ui-corner-top"><a id="toolbarToolsFind" href="#" rel="Tools_Find">Find</a>
 					<ul>
 						<li id="mnuSectionToolsFind"><span>Find</span>
 							<div id="mnutoolNewToolsFind" class="button">
@@ -930,7 +930,7 @@
 				</li>
 
 								<%-- EventLog Find--%>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarEventLogFind" href="#" rel="Find">Find</a>
+				<li class="ui-corner-top"><a id="toolbarEventLogFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li><span>Edit</span>											
 							<div id="mnutoolViewEventLogFind" class="button">
@@ -965,7 +965,7 @@
 					</ul>
 				</li>
 
-				<li class="ui-state-default ui-corner-top"><a id="toolbarEventLogView" href="#" rel="Find">View</a>
+				<li class="ui-corner-top"><a id="toolbarEventLogView" href="#" rel="Find">View</a>
 					<ul>
 						<li><span>View</span>											
 							<div id="mnutoolEmailEventLogView" class="button">
@@ -994,7 +994,7 @@
 				</li>
 
 
-				<li class="ui-state-default ui-corner-top"><a id="toolbarWFPendingStepsFind" href="#" rel="Find">Find</a>
+				<li class="ui-corner-top"><a id="toolbarWFPendingStepsFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li><span>Find</span>											
 							<div id="mnutoolRefreshWFPendingStepsFind" class="button">
@@ -1023,7 +1023,7 @@
 					</ul>
 				</li>
 
-				<li class="ui-state-default ui-corner-top"><a id="toolbarAdminConfig" href="#" rel="Find">Configure</a>
+				<li class="ui-corner-top"><a id="toolbarAdminConfig" href="#" rel="Find">Configure</a>
 					<ul>
 						<li><span>Configure</span>											
 											<div id="mnutoolSaveAdminConfig" class="button">
