@@ -171,6 +171,7 @@
 	}
 
 	function SubmitLoginDetails() {
+	    debugger;
 		/* Try to login to the OpenHR database. */
 		var sUserName;
 		var sPassword;
@@ -191,35 +192,40 @@
 
 		if (fLoginOK) {
 			if (sUserName == "") {
-				alert("The user name is not valid.");
+			    //alert("The user name is not valid.");
+			    OpenHR.modalMessage('The user name is not valid', 'OpenHR Web')
+			    fLoginOK = false;
+			}
+		}
+
+		if (fLoginOK) {
+		    if (sUserName == "SA") {
+		        OpenHR.modalMessage('The System Administrator cannot use the OpenHR Web module.', 'OpenHR Web')
+				//alert("The System Administrator cannot use the OpenHR Web module.");
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
-			if (sUserName == "SA") {
-				alert("The System Administrator cannot use the OpenHR Web module.");
+		    if (sDatabase == "") {
+		        OpenHR.modalMessage('The database is not valid.', 'OpenHR Web')
+				//alert("The database is not valid.");
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
-			if (sDatabase == "") {
-				alert("The database is not valid.");
-				fLoginOK = false;
-			}
-		}
-
-		if (fLoginOK) {
-			if (sDatabase.indexOf("'") > 0) {
-				alert("The database name contains an apostrophe.");
+		    if (sDatabase.indexOf("'") > 0) {
+		        OpenHR.modalMessage('The database name contains an apostrophe.', 'OpenHR Web')
+				//alert("The database name contains an apostrophe.");
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
 			if (sServer == "") {
-				alert("The server is not valid.");
+			    OpenHR.modalMessage('The server is not valid.', 'OpenHR Web')
+			    //alert("The server is not valid.");
 				fLoginOK = false;
 			}
 		}
