@@ -55,14 +55,6 @@ body
 	width: 100%;
 }
 
-.FixedLinksLeft ul li {
-	color: #154288;
-}
-
-.FixedLinksLeft li {
-	cursor: default;
-}
-
 .pageTitle {
 	/*display: none!important;*/
 	margin-top: 0;
@@ -954,3 +946,37 @@ div.officetab li div.textboxlist input {
 	text-align: left;
 }
 /* End of User dropdown menu */
+
+.headerbar {background-color: #e9eef7;}
+.DashHeader {background-color: rgb(191, 219, 255);}
+
+li {background-color: transparent;}
+
+.linkspagebuttonseparatorframe {border-color: rgb(191, 219, 255);}
+.hypertextlinkseparatorframe {border-color: rgb(191, 219, 255);}
+.hypertextlinkseparator {
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
+	 background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
+	 background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);	
+}
+
+.linkspagebuttonseparator {
+	 /* Chuck all possibilities at the browser for gradients... */
+	 background-color: #1a82f7; 
+	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
+	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
+	 background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
+	 background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
+	 background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);	
+}
+
+.hypertextlinktext:hover { background-color: rgb(55, 151, 251); }
+.linkspagebuttontext:hover {	background-color: rgb(55, 151, 251); }
+.linkspagebutton .displayonly { background-color: transparent; }
+.generaltheme {background-color: rgb(191, 219, 255);}

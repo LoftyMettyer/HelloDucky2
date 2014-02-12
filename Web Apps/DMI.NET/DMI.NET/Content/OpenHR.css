@@ -560,7 +560,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', end
 	{		
 		margin: 0px;
 		font-size: xx-large;
-		color: white;
+		/*color: white;*/
 		/*font-weight: bold;*/
 	}
 
@@ -785,10 +785,10 @@ header {
 
 /* Color picker */
 .colorPicker {
-  height: 10px;
-  left: 175px;
-  position: absolute;
-  top: 190px;
+	height: 10px;
+	left: 175px;
+	position: absolute;
+	top: 190px;
 }
 
 
@@ -897,7 +897,7 @@ header {
 }
 
 #userDropdownmenu ul .active > a {
-	color: #FFF;
+	/*color: #FFF;*/
 	background-image: linear-gradient(blue, blue);
 }
 
@@ -914,11 +914,11 @@ header {
 }
 
 #userDropdownmenu ul .active > a:after {
-color: #FFF;
+/*color: #FFF;*/
 }
 
 #userDropdownmenu_Items a {
-	color: black;
+	/*color: black;*/
 }
 
 /* End of User dropdown menu */

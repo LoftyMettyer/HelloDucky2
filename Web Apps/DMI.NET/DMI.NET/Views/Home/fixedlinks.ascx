@@ -1047,17 +1047,17 @@
 		<div class="userid">
 				&nbsp;
 			</div>
-		<div class="groupid" style="color: white">
+		<div class="groupid">
 			<%=Session("UserGroup")%>		
 		</div>
 		</div>
 	</div>
 	<!-- User dropdown menu -->
 	<div id="userDropdownmenu">
-		<a href="#" style="color: white"><%=Session("welcomeName")%> ▼</a>
+		<a href="#"><%=Session("welcomeName")%> ▼</a>
 		<ul>
 			<li class="active has-sub last">
-				<ul id="userDropdownmenu_Items">
+				<ul id="userDropdownmenu_Items" class="ui-widget-header">
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedPasswordChange" href="#">
 							<span>Change Password</span>
@@ -1107,6 +1107,7 @@
 		});
 
 		$("#userDropdownmenu_Items").menu();
+
 	});
 </script>
 

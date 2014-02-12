@@ -19,11 +19,11 @@
 	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
-		Dim currentTheme As String = "blue"
+		'Dim currentTheme As String = "blue"
 		Dim currentLayout As String = "winkit"
 		If Not ua = Nothing Then
 			If ua.Contains("iPhone") Or ua.Contains("iPad") Or ua.Contains("Android") Then
-				currentTheme = "blue"
+				'currentTheme = "blue"
 				currentLayout = "tiles"				
 				Session("isMobileDevice") = True
 			End If
@@ -147,7 +147,6 @@
 			$("button").css("margin", "5px");
 
 			//if ($("#workframeset").length > 0) {
-			
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });			    
@@ -161,7 +160,7 @@
 
 				var cookieTheme = getCookie('Intranet_Theme');
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
-				window.currentTheme = cookieTheme;	
+				//window.currentTheme = cookieTheme;	
 	
 
 				var cookiewireframeTheme = getCookie("Intranet_Wireframe_Theme");
@@ -204,25 +203,25 @@
 					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
 					break;
 				}
-
-				switch (window.currentTheme) {
-				case "red":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-					break;
-				case "blue":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-					break;
-				case "white":
-					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-				default:
-					break;
-				}
+				
+//				switch (window.currentTheme) {
+//				case "red":
+//					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+//					break;
+//				case "blue":
+//					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+//					break;
+//				case "white":
+//					$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+//				default:
+//					break;
+//				}
 
 			}
 			//Save some cookies we will need in other parts of the system
 			setCookie("SSIMode", SSIMode, 100);
 			setCookie("currentLayout", "<%=currentLayout%>", 100);
-			setCookie("currentTheme", currentTheme, 100);
+			//setCookie("currentTheme", currentTheme, 100);
 			setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
 			setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
 
@@ -271,22 +270,8 @@
 			document.cookie = c_name + "=" + c_value;
 		}
 		
-		window.currentTheme = "<%=currentTheme %>";
+		//window.currentTheme = "<d%=currentTheme %>";
 		window.currentLayout = "<%=currentLayout %>";
-		function changeTheme(newThemeName) {
-			switch (newThemeName) {
-			case "theme-Red":
-				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-				break;
-			case "theme-Blue":
-				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-				break;
-			case "theme-White":
-				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-			default:
-				break;
-			}
-		}
 
 		//set up ROOT variable for use in external JS files.
 		window.ROOT = '<%= Url.Content("~/") %>';
