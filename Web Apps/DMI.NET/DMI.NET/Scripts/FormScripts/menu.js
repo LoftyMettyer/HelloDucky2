@@ -4780,7 +4780,8 @@ function menu_loadSelectOrderFilter(psType) {
 	});
 		
 	$('.accordion div' + element).removeClass('ui-widget-content');
-}
+		$('.ui-accordion-content').addClass('ui-widget-content');
+	}
 
 	function menu_SetmnutoolRecordPositionCaption(newCaption) {
 	//update the record position text.
