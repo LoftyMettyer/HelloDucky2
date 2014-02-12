@@ -1329,6 +1329,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		        legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
 		        legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
 		        legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+		        legend.className = 'ui-helper-reset';
+			    
 		    }
 		    fieldset.setAttribute("data-control-key", key);
 
