@@ -1302,11 +1302,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			span = document.createElement('span');
 			applyLocation(span, controlItemArray, false);
 			span.style.backgroundColor = "transparent";
-			//span.style.color = "Black";
 			span.style.fontFamily = controlItemArray[11];
 			span.style.fontSize = controlItemArray[12] + 'pt';
 			span.textContent = controlItemArray[8];
-			span.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
+			if(Number(controlItemArray[10]) !== 0) span.style.color = decimalColorToHTMLcolor(controlItemArray[10]);			//only colour label if not black (0)
 			span.setAttribute("data-control-key", key);
 
 			//replaces the SetControlLevel function in recordDMI.ocx.
@@ -1461,7 +1460,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				dayLink.style.fontFamily = controlItemArray[11];
 				dayLink.style.fontSize = fontSize + "pt";
 				dayLink.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-				dayLink.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
+				if (Number(controlItemArray[10]) !== 0) dayLink.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
 				dayLink.style.position = "absolute";
 				dayLink.style.top = "0px";
 				dayLink.style.left = offsetLeft + "px";
@@ -1631,7 +1630,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					hyperlink.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
 					hyperlink.style.textDecoration = "underline"; //(Number(controlItemArray[16]) != 0) ? "underline" : "none";
 					hyperlink.appendChild(document.createTextNode(displayText));
-					hyperlink.style.color = controlItemArray[10];
+					if(Number(controlItemArray[10]) !== 0) hyperlink.style.color = controlItemArray[10];
 					hyperlink.style.backgroundColor = controlItemArray[9];
 					hyperlink.setAttribute("href", formatAddress(controlItemArray[58]));
 					hyperlink.setAttribute("target", "_blank");
