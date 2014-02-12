@@ -29,6 +29,7 @@ body
 	background: url("../../../Content/images/ABSYellowGradient_64colors.png") no-repeat center center fixed;
 	background: url("../../../Content/images/ABSLittleLessBrightTilesBackground.png") no-repeat center center fixed;
 	*/
+	bottom: 40px;
 	background-size: cover;
 	background-color: rgb(4, 106, 169);
 	top: 0!important;
