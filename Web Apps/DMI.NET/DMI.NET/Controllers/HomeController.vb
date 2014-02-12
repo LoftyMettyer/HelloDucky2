@@ -3282,22 +3282,33 @@ Namespace Controllers
 
 		Function util_run_calendarreport_download() As FileStreamResult
 
-			Dim sDownloadFilename As String
-			Dim objCalendar As HR.Intranet.Server.CalendarReport
-			objCalendar = Session("objCalendar" & Session("UtilID"))
+			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim objCalendar = CType(Session("objCalendar" & Session("UtilID")), CalendarReport)
 
 			Dim objOutput As New CalendarOutput
 			objOutput.ReportData = objCalendar.Events
 			objOutput.Calendar = objCalendar
 
-			If objOutput.Generate(OutputFormats.fmtWordDoc) Then
-
-				sDownloadFilename = objCalendar.OutputFilename
-				If sDownloadFilename = "" Then sDownloadFilename = objCalendar.CalendarReportName + ".docx"
-
-				Return File(objOutput.Document, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-					, Path.GetFileName(sDownloadFilename))
+			If strDownloadFileName = "" Then
+				strDownloadFileName = objCalendar.CalendarReportName + ".xlsx"
 			End If
+
+
+			objOutput.DownloadFileName = strDownloadFileName
+			objOutput.Generate(objCalendar.OutputFormat)
+
+			If IO.File.Exists(objOutput.GeneratedFile) Then
+				Try
+					Response.ClearContent()
+					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+					Response.TransmitFile(objOutput.GeneratedFile)
+					Response.Flush()
+				Catch ex As Exception
+				Finally
+					IO.File.Delete(objOutput.GeneratedFile)
+				End Try
+			End If
+
 
 		End Function
 

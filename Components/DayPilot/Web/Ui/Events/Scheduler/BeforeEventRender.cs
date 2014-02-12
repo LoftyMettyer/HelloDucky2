@@ -38,7 +38,7 @@ namespace DayPilot.Web.Ui.Events.Scheduler
     public class BeforeEventRenderEventArgs : EventArgs
     {
 
-        internal BeforeEventRenderEventArgs(Event e)
+        public BeforeEventRenderEventArgs(Event e)
         {
             this.Value = e.PK;
             this.Start = e.Start;

@@ -11,10 +11,9 @@ Imports HR.Intranet.Server.Structures
 Imports VB = Microsoft.VisualBasic
 
 Public Class CalendarReport
-	Inherits BaseForDMI
+	Inherits BaseReport
 
 	Public rsPersonnelBHols As DataTable
-
 
 	Public Legend As List(Of CalendarLegend)
 	Public LegendColors As List(Of LegendColor)
@@ -152,9 +151,6 @@ Public Class CalendarReport
 	'Instance of the previewform
 	'Private mfrmOutput As frmCalendarReportPreview
 
-	'Has the user cancelled the report ?
-	Private mblnUserCancelled As Boolean
-
 	'Does the report generate no records ?
 	Private mblnNoRecords As Boolean
 
@@ -169,8 +165,6 @@ Public Class CalendarReport
 	Private mcolHistoricBankHolidays As Collection
 	Private mcolStaticWorkingPatterns As Collection
 	Private mcolHistoricWorkingPatterns As Collection
-
-	Private mcolBaseDescIndex As Collection
 
 	Private mblnPersonnelBase As Boolean
 
@@ -528,12 +522,6 @@ Public Class CalendarReport
 	Public ReadOnly Property StaticReg() As Boolean
 		Get
 			StaticReg = mblnStaticReg
-		End Get
-	End Property
-
-	Public ReadOnly Property UserCancelled() As Boolean
-		Get
-			UserCancelled = mblnUserCancelled
 		End Get
 	End Property
 
@@ -3069,7 +3057,6 @@ ErrorTrap:
 		ReadBankHolidayParameters()
 
 		Dim rstData As DataTable
-		mcolBaseDescIndex = New Collection
 
 		Legend = New List(Of CalendarLegend)()
 
@@ -3137,8 +3124,6 @@ ErrorTrap:
 		mobjTableView = Nothing
 		'UPGRADE_NOTE: Object mobjColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjColumnPrivileges = Nothing
-		'UPGRADE_NOTE: Object mcolBaseDescIndex may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolBaseDescIndex = Nothing
 
 		'UPGRADE_NOTE: Object mcolHistoricBankHolidays may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolHistoricBankHolidays = Nothing
@@ -3810,7 +3795,6 @@ Error_Trap:
 		Dim strSQLCC As String 'sql for retieving career change data
 
 		Dim avCareerRanges(,) As String
-		Dim lngBaseRecordID As Integer
 
 		ReDim avCareerRanges(4, 0)
 
@@ -3833,9 +3817,6 @@ Error_Trap:
 				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " "
 		rsCareerChange = DB.GetDataTable(strSQLCC)
 
-		lngBaseRecordID = -1
-
-		lngBaseRecordID = -1
 
 		'##############################################################################
 		'populate form WP string with form data
@@ -6089,8 +6070,6 @@ GenerateSQLWhere_ERROR:
 		mintDynamicEventCount = 0
 
 		' Class references
-		'UPGRADE_NOTE: Object mcolBaseDescIndex may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolBaseDescIndex = Nothing
 		'UPGRADE_NOTE: Object mcolEvents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolEvents = Nothing
 

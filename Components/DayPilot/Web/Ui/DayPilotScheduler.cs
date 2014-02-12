@@ -85,6 +85,30 @@ namespace DayPilot.Web.Ui
             }  
         }
 
+
+				public string Blah { get; set; }
+
+
+				public ArrayList Items
+				{
+					get
+					{
+						return (ArrayList)ViewState["Items"];
+					}
+				}
+
+
+				public List<Day> EventDays
+				{
+					get
+					{
+						return (List<Day>)_days;
+					}
+				}
+
+
+
+
         /// <summary>
         /// Sum of column widths defined in RowHeaderColumnWidths property.
         /// </summary>
@@ -1020,7 +1044,7 @@ namespace DayPilot.Web.Ui
             }
         }
 
-        private void LoadEventsToDays()
+        public void LoadEventsToDays()
         {
             _days = new List<Day>();
             ArrayList items = (ArrayList)ViewState["Items"];

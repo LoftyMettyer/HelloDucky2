@@ -31,7 +31,7 @@ namespace DayPilot.Web.Ui
 	{
 
         [NonSerialized]
-        internal object Source;
+        public object Source;
 
 	    /// <summary>
 	    /// Event start.

@@ -30,9 +30,9 @@ namespace DayPilot.Web.Ui
     /// <summary>
     /// Day handles events of a single day.
     /// </summary>
-    internal class Day : ISerializable
+    public class Day : ISerializable
     {
-        internal List<Event> events = new List<Event>();
+        public List<Event> events = new List<Event>();
         private List<Block> blocks = new List<Block>();
 
         internal int cellDuration; // in minutes
@@ -40,7 +40,7 @@ namespace DayPilot.Web.Ui
         private DateTime start;
         internal DateTime end;
 
-        internal string Name;
+        public string Name;
         internal string Value;
         internal List<ResourceColumn> Columns = null;
 
