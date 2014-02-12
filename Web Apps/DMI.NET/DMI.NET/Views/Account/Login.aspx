@@ -171,8 +171,7 @@
 	}
 
 	function SubmitLoginDetails() {
-	    debugger;
-		/* Try to login to the OpenHR database. */
+	    /* Try to login to the OpenHR database. */
 		var sUserName;
 		var sPassword;
 		var sDatabase;
