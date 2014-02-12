@@ -276,7 +276,7 @@
 						%>
 						<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 							data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
-							<a class="hypertextlinktext hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#"><%=sText%></a>
+							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%=sText%>"><%=sText%></a>
 							<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
 						</li>
 						<%
