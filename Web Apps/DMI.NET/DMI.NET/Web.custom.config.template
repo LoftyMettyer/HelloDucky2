@@ -1,10 +1,12 @@
 ﻿<appSettings>
 	<add key="LoginPage_Database" value="npg_openhr8" />
 	<add key="LoginPage_Server" value="harpdev02" />
-	<add key="UI_Theme" value="redmond" />
+	<add key="UI_Theme" value="winkit" />
 	<add key="UI_Banner_Colour" value="" />
 	<add key="UI_Banner_Justification" value="" />
 	<add key="UI_Wireframe_Theme" value="abs" />
+	<add key="UI_Self_Service_Layout" value="winkit" />
+	<add key="UI_Layout_Selectable" value="true" />
 	<add key="DMIRequiresIE" value="true" />
 	<add key="SMTP_From" value="harptfs01@advancedcomputersoftware.com" />
 	<add key="SMTP_Host" value="10.145.34.38" />
