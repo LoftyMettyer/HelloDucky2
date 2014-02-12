@@ -2153,6 +2153,8 @@ function menu_refreshMenu() {
 	//}
 
 	if (sCurrentWorkPage == "TBBULKBOOKING") {
+		$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
+		$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
 		menu_disableFindMenu();
 	} else {
 		menu_enableMenu();
