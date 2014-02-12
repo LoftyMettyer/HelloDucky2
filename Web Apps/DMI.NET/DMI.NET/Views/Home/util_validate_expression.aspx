@@ -18,9 +18,10 @@
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
-
 	<script type="text/javascript">
+
 		function util_validate_window_onload() {
+
 			if (window.txtDisplay.value != "False") {
 				$('#PleaseWaitDiv').hide();
 			}
@@ -64,7 +65,7 @@
 		}
 
 		function makeHidden() {
-				window.dialogArguments.OpenHR.makeHidden(self);
+			document.parentWindow.parent.window.dialogArguments.window.makeHidden(self);
 		}
 
 		function nextPass() {
@@ -84,8 +85,8 @@
 				}
 		}
 
-		function cancelClick()
-		{
+		function cancelClick() {
+
 				var iIndex;
 				var sCurrentPage = window.dialogArguments.document.location;
 
@@ -113,7 +114,7 @@
 
 				self.close();
 		}
-</script>
+	</script>
 
 </head>
 
@@ -457,59 +458,23 @@
 							' Need to make the expression hidden too.
 							If (Request.Form("validateAccess") <> "HD") Then
 								fDisplay = True
-	
-								Response.Write("			  <tr>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-								Response.Write("						<h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
-								Response.Write("			    </td>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
-								Response.Write("			  <tr>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-								Response.Write("						 The following calculations and filters have been made hidden. The " & sUtilType2 & " will now be made hidden." & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
-								Response.Write("			  <tr>" & vbCrLf)
-								Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
-											
+								
+								Response.Write("<div style='text-align: center'>")
+								Response.Write("<h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
+								Response.Write("The following calculations and filters have been made hidden. The " & sUtilType2 & " will now be made hidden.<br/><br/>")
+								
 								iIndex = InStr(sHiddenOwnerDescs, "	")
 								Do While iIndex > 0
 									sDesc = Left(sHiddenOwnerDescs, iIndex - 1)
-
-									Response.Write("			  <tr>" & vbCrLf)
-									Response.Write("					<td width='20'></td>" & vbCrLf)
-									Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-									Response.Write("						 " & sDesc & vbCrLf)
-									Response.Write("			    </td>" & vbCrLf)
-									Response.Write("					<td width='20'></td>" & vbCrLf)
-									Response.Write("			  </tr>" & vbCrLf)
-												
+									Response.Write(sDesc & "<br/>")											
 									sHiddenOwnerDescs = Mid(sHiddenOwnerDescs, iIndex + 1)
 									iIndex = InStr(sHiddenOwnerDescs, "	")
 								Loop
 
-								Response.Write("			  <tr>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-								Response.Write("						 " & sHiddenOwnerDescs & vbCrLf)
-								Response.Write("			    </td>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
-
-								Response.Write("			  <tr>" & vbCrLf)
-								Response.Write("					<td height='20' colspan='5'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
-								Response.Write("			  <tr> " & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			    <td align='center' colspan='3'> " & vbCrLf)
-								Response.Write("    				    <input type='button' value='Close' class='btn' name='makeHidden' style='width: 80px' id='makeHidden'" & vbCrLf)
-								Response.Write("    				        OnClick=""makeHidden()""/>" & vbCrLf)
-								Response.Write("			    </td>" & vbCrLf)
-								Response.Write("					<td width='20'></td>" & vbCrLf)
-								Response.Write("			  </tr>" & vbCrLf)
+								Response.Write(sHiddenOwnerDescs & "<br/><br/>")
+								Response.Write("<input type='button' value='Close' class='btn' name='makeHidden' style='width: 80px' id='makeHidden' OnClick='makeHidden()'/>" & vbCrLf)
+								Response.Write("</div>")
+								
 							End If
 						End If
 					Else
