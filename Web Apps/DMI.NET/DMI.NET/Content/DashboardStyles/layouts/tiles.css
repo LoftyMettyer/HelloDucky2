@@ -480,7 +480,7 @@ COMMENT OUT COLOURS 1 TO 8 BELOW TO GET ABS COLOURS ABOVE */
 }
 
 .FixedLinksLeft ul {
-	padding-top: 5px;
+	padding-top: 2px;
 }
 
 
@@ -569,11 +569,6 @@ div.officetab div.panel > span { display: none;}
 	line-height: 50px;
 	float: left;
 }
-
-#divFindForm .pageTitle  {
-	color: black;
-}
-
 
 .pageTitleIcon:hover {
 	color: orange;
