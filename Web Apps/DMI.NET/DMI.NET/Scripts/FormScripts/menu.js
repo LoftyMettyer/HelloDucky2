@@ -4752,7 +4752,9 @@ function menu_loadSelectOrderFilter(psType) {
 	function applyJSTree(element) {
 	//Add treeview functionality to all divs in the accordion
 	if (element == undefined) element = "";
-	
+
+		
+
 	$(".accordion div" + element).jstree({
 	"themes": {
 	"dots": false,
@@ -4775,7 +4777,9 @@ function menu_loadSelectOrderFilter(psType) {
 	"item_clsd": false,
 	"item_open": false        	
 }
-});
+	});
+		
+	$('.accordion div' + element).removeClass('ui-widget-content');
 }
 
 	function menu_SetmnutoolRecordPositionCaption(newCaption) {

@@ -407,10 +407,10 @@ table.calendarcell
 .ContextMenu-panel {
 		 /*padding:20px;*/
 		 width: 350px;	       
-	border-right: 1px;
-	border-right-color: #29216d;
+	/*border-right: 1px;
+	border-right-color: #29216d;*/
 	 /*background: white;*/
-	border-right-style: solid;
+	/*border-right-style: solid;*/
 		 position:absolute;
 		 top:170px;
 		 bottom: 0px;
@@ -432,14 +432,14 @@ table.calendarcell
 	z-index: 99;
 	cursor: pointer;
 
-	background: rgba(247,251,253,1);
+	/*background: rgba(247,251,253,1);
 	background: -moz-linear-gradient(left, rgba(247,251,253,1) 0%, rgba(89,183,227,1) 0%, rgba(76,158,199,1) 30%, rgba(239,246,251,1) 100%);
 	background: -webkit-gradient(left top, right top, color-stop(0%, rgba(247,251,253,1)), color-stop(0%, rgba(89,183,227,1)), color-stop(30%, rgba(76,158,199,1)), color-stop(100%, rgba(239,246,251,1)));
 	background: -webkit-linear-gradient(left, rgba(247,251,253,1) 0%, rgba(89,183,227,1) 0%, rgba(76,158,199,1) 30%, rgba(239,246,251,1) 100%);
 	background: -o-linear-gradient(left, rgba(247,251,253,1) 0%, rgba(89,183,227,1) 0%, rgba(76,158,199,1) 30%, rgba(239,246,251,1) 100%);
 	background: -ms-linear-gradient(left, rgba(247,251,253,1) 0%, rgba(89,183,227,1) 0%, rgba(76,158,199,1) 30%, rgba(239,246,251,1) 100%);
 	background: linear-gradient(to right, rgba(247,251,253,1) 0%, rgba(89,183,227,1) 0%, rgba(76,158,199,1) 30%, rgba(239,246,251,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7fbfd', endColorstr='#eff6fb', GradientType=1 );
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7fbfd', endColorstr='#eff6fb', GradientType=1 );*/
 }
 
 .ContextMenu-panel .ContextMenu-content {
@@ -508,9 +508,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', end
 	bottom: 0px;
 }
 
-.loginframetheme {background-color: white;
+.loginframetheme {
 	border-radius: 20px 0px 20px 0px;
-									}
+	width: 440px;							}
 									
 .logintext 
 {

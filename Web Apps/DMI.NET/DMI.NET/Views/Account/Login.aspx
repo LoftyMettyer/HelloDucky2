@@ -171,7 +171,7 @@
 	}
 
 	function SubmitLoginDetails() {
-	    /* Try to login to the OpenHR database. */
+		/* Try to login to the OpenHR database. */
 		var sUserName;
 		var sPassword;
 		var sDatabase;
@@ -193,12 +193,12 @@
 			if (sUserName == "") {
 			    //alert("The user name is not valid.");
 			    OpenHR.modalMessage('The user name is not valid', 'OpenHR Web')
-			    fLoginOK = false;
+				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
-		    if (sUserName == "SA") {
+			if (sUserName == "SA") {
 		        OpenHR.modalMessage('The System Administrator cannot use the OpenHR Web module.', 'OpenHR Web')
 				//alert("The System Administrator cannot use the OpenHR Web module.");
 				fLoginOK = false;
@@ -206,7 +206,7 @@
 		}
 
 		if (fLoginOK) {
-		    if (sDatabase == "") {
+			if (sDatabase == "") {
 		        OpenHR.modalMessage('The database is not valid.', 'OpenHR Web')
 				//alert("The database is not valid.");
 				fLoginOK = false;
@@ -214,7 +214,7 @@
 		}
 
 		if (fLoginOK) {
-		    if (sDatabase.indexOf("'") > 0) {
+			if (sDatabase.indexOf("'") > 0) {
 		        OpenHR.modalMessage('The database name contains an apostrophe.', 'OpenHR Web')
 				//alert("The database name contains an apostrophe.");
 				fLoginOK = false;
@@ -372,8 +372,8 @@
 			</tr>
 		</table>
 		<div class="verticalpadding200"></div>
-		<div class="" style="">
-			<table cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+		<div class="ui-widget-content ui-corner-tl ui-corner-br" style="width: 450px; margin: 0 auto;">
+			<table cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme">
 				<tr>
 					<td width="15"></td>
 					<td colspan="3">
@@ -392,7 +392,7 @@
 				</tr>
 			</table>
 
-			<table id="ancientBrowser" cellspacing="0" cellpadding="0" align="center" class="hidden invisible loginframetheme ui-widget-content">
+			<table id="ancientBrowser" cellspacing="0" cellpadding="0" align="center" class="hidden invisible loginframetheme">
 				<tr height="10">
 					<td colspan="5"></td>
 				</tr>
@@ -406,7 +406,7 @@
 
 				If Len(Session("version")) = 0 Then
 			%>
-			<table id="noAppVersion" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+			<table id="noAppVersion" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme">
 				<tr height="10">
 					<td colspan="5"></td>
 				</tr>
@@ -424,7 +424,7 @@
 			<%
 			Else
 			%>
-			<table id="loginFrame" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+			<table id="loginFrame" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme">
 				<tr style="height: 10px">
 					<td style="height: 15px"></td>
 					<td colspan="3" align="center">
@@ -540,7 +540,7 @@
 			End If
 
 			%>
-			<table id="forgotPassword" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme ui-widget-content">
+			<table id="forgotPassword" cellspacing="0" cellpadding="0" align="center" class="invisible loginframetheme">
 				<tr height="10">
 					<td colspan="5"></td>
 				</tr>
