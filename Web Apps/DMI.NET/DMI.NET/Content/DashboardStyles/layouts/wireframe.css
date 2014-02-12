@@ -45,6 +45,7 @@ body
 
 div.officetab li div.button .disabled {
 	color: gray!important;
+	cursor: default;
 }
 
 .hypertextlinks 

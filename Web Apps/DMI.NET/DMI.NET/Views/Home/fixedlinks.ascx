@@ -73,6 +73,12 @@
 			//$(".officetab i[class^='icon-']").css("padding-bottom", "4px");
 			$(".officetab i[class^='icon-']").wrap("<span class='icon-stack' />");
 			$(".officetab .icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
+			
+			$('#officebar .button').addClass('ui-state-default');
+			$('#officebar .button').hover(
+				function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+				function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); });
+			
 		}
 	}
 

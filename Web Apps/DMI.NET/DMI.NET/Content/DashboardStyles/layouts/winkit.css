@@ -430,6 +430,7 @@ div.officebar ul li.current a {
 
 div.officebar ul li.current .button.disabled a {
 	color: gray;
+
 }
 
 div.officetab {
@@ -606,6 +607,11 @@ div.officetab li div.button {
 	background-color: transparent;
 	background-image: none;
 }
+
+div.officetab li div.button .disabled {
+	cursor: default;
+}
+
 
 div.officetab li div.button:hover:not(.disabled) {
 	/*background-image: url("images/ui-bg_glass_85_dfeffc_1x400.png");*/
