@@ -312,40 +312,20 @@
 				}
 	
 				try {
-					//NPG - recedit not resizing. Do it manually.
-					var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);
-					var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
+					  //  //NPG - recedit not resizing. Do it manually.
+					  //  var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15));
+					  //  var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
+					  //  // NHRD TFS 719 this division by 2 seems to work nice for getting the border around the screen nicely for screens with at least 4 rows of tabs.
+					  //  $("#ctlRecordEdit").height(newHeight + (document.getElementById("tabHeaders").offsetHeight / 2) + "px");
+					  //  $("#ctlRecordEdit").width(newWidth + "px");
 
-					$("#ctlRecordEdit").height(newHeight + document.getElementById("tabHeaders").offsetHeight + "px");
-					$("#ctlRecordEdit").width(newWidth + "px");
-					
-					if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
-						//Only for SSI mode view, zoom in on recedit until it reaches full screen, or twice it's original size.
-						var screenWidth = document.getElementById("workframeset").offsetWidth;
-						var screenHeight = document.getElementById("workframeset").offsetHeight;
-						var scaleFactor = 0;
+					  //// Mayank's code
+					  //  var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);
+					  //  var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
 
-						//Calculate the scale factor
-						if ((screenWidth / newWidth) < (screenHeight / newHeight)) {
-							//use width as factor
-							scaleFactor = (screenWidth * .9) / newWidth;
-						} else {
-							//use height
-							scaleFactor = (screenHeight * .9) / newHeight;
-						}
+					  //  $("#ctlRecordEdit").height(newHeight + document.getElementById("tabHeaders").offsetHeight + "px");
+					  //  $("#ctlRecordEdit").width(newWidth + "px");
 
-						scaleFactor = (scaleFactor * 0.8);
-						
-						//Limit the scale factor to 1.5x
-						scaleFactor = Math.min(scaleFactor, 1.5);
-						
-						$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
-						$("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
-						$("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
-						$("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
-						$("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
-						$("#ctlRecordEdit").css("transform-origin", "50% top");
-					}
 					
 					//use zoom for IE9?
 
@@ -802,5 +782,45 @@
 	//must run after onload (which populates the screen)
 		addActiveXHandlers();
 
+		$(document).ready(function () {
+			// Harry's code
 
+			var newWidth = $("#txtRecEditWidth").val() / 15.2;
+			$("#ctlRecordEdit").width(newWidth + "px");
+
+			var tabheight = Number($("#tabHeaders").height());
+			var newHeight = (Number($("#txtRecEditHeight").val()) / Number(15.2)) + tabheight - 40;
+			$("#ctlRecordEdit").height(newHeight + "px");
+
+
+			if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
+				//Only for SSI mode view, zoom in on recedit until it reaches full screen, or twice it's original size.
+				var screenWidth = document.getElementById("workframeset").offsetWidth;
+				var screenHeight = document.getElementById("workframeset").offsetHeight;
+				var scaleFactor = 0;
+
+				//Calculate the scale factor
+				if ((screenWidth / newWidth) < (screenHeight / newHeight)) {
+					//use width as factor
+					scaleFactor = (screenWidth * .9) / newWidth;
+				} else {
+					//use height
+					scaleFactor = (screenHeight * .9) / newHeight;
+				}
+
+				scaleFactor = (scaleFactor * 0.8);
+
+				//Limit the scale factor to 1.5x
+				scaleFactor = Math.min(scaleFactor, 1.5);
+
+				$("#ctlRecordEdit").css("-webkit-transform", "scale(" + scaleFactor + ")");
+				$("#ctlRecordEdit").css("-webkit-transform-origin", "50% top");
+				$("#ctlRecordEdit").css("-moz-transform", "scale(" + scaleFactor + ")");
+				$("#ctlRecordEdit").css("-moz-transform-origin", "50% top");
+				$("#ctlRecordEdit").css("transform", "scale(" + scaleFactor + ")");
+				$("#ctlRecordEdit").css("transform-origin", "50% top");
+			}
+
+		});
+		
 </script>
