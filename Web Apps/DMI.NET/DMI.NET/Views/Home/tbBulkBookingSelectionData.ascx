@@ -191,7 +191,7 @@
 
 			If dsFindData.Tables.Count > 0 Then
 			
-				Dim rstFindRecords = dsFindData.Tables(1)
+				Dim rstFindRecords = dsFindData.Tables(0)
 			
 				For Each objRow As DataRow In rstFindRecords.Rows
 

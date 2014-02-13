@@ -174,7 +174,7 @@
 
 				If dsData.Tables.Count > 0 Then
 
-					Dim rstFindRecords = dsData.Tables(1)
+					Dim rstFindRecords = dsData.Tables(0)
 					For Each objRow As DataRow In rstFindRecords.Rows
 
 						sAddString = ""
