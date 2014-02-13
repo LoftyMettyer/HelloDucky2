@@ -400,7 +400,7 @@ LocalErr:
 
 			'Get List of IDs from Picklist
 			rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID)
-			fOK = Not (rsTemp.Rows.Count > 0)
+			fOK = (rsTemp.Rows.Count > 0)
 
 			If Not fOK Then
 				mstrStatusMessage = "The base table picklist contains no records."

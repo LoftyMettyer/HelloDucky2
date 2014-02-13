@@ -60,7 +60,13 @@ Public Class clsDataAccess
 	Public Function GetFromSP(ProcedureName As String, ParamArray args() As SqlParameter) As DataTable
 
 		Try
-			Return GetDataSet(ProcedureName, CommandType.StoredProcedure, args).Tables(0)
+			Dim dsData = GetDataSet(ProcedureName, CommandType.StoredProcedure, args)
+
+			If dsData.Tables.Count > 0 Then
+				Return dsData.Tables(0)
+			Else
+				Return Nothing
+			End If
 
 		Catch ex As Exception
 			Throw

@@ -604,12 +604,12 @@ ErrorTrap:
 				mlngType = 0
 			End If
 
-			fOK = IsRecordSelectionValid(objRow("PickListID"), objRow("FilterID"))
+			fOK = IsRecordSelectionValid(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
 			If fOK = False Then
 				Exit Function
 			End If
 
-			mstrPicklistFilter = GetPicklistFilterSelect(objRow("PickListID"), objRow("FilterID"))
+			mstrPicklistFilter = GetPicklistFilterSelect(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
 			If fOK = False Then
 				Exit Function
 			End If
@@ -683,7 +683,7 @@ LocalErr:
 
 			'Get List of IDs from Picklist
 			rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & lngPicklistID)
-			fOK = Not (rsTemp.Rows.Count > 0)
+			fOK = (rsTemp.Rows.Count > 0)
 
 			If Not fOK Then
 				mstrStatusMessage = "The base table picklist contains no records."
