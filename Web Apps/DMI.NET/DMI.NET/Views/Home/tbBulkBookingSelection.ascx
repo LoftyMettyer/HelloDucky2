@@ -640,7 +640,7 @@
 	function tbBulkBookingSelection_addhandlers() {
 		OpenHR.addActiveXHandler("abMainMenu", "DataReady", "abMainMenu_DataReady()");
 		OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", "abMainMenu_PreCustomizeMenu()");
-		OpenHR.addActiveXHandler("abMainMenu", "Click", "abMainMenu_Click()");
+		OpenHR.addActiveXHandler("abMainMenu", "Click", "abMainMenu_Click(param1)");
 		OpenHR.addActiveXHandler("abMainMenu", "KeyDown", "abMainMenu_KeyDown()");
 		OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", "abMainMenu_ComboSelChange()");
 		OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", "abMainMenu_PreSysMenu()");
