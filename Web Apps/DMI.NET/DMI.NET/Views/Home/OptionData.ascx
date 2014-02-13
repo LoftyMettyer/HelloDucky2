@@ -109,47 +109,49 @@
 						, prmColumnDecimals)
 
 					iCount = 0
-					Dim rstFindRecords = dsFindRecords.Tables(1)
-					For Each objRow As DataRow In rstFindRecords.Rows
-						sAddString = ""
+					If dsFindRecords.Tables.Count > 0 Then
+						Dim rstFindRecords = dsFindRecords.Tables(1)
+						For Each objRow As DataRow In rstFindRecords.Rows
+							sAddString = ""
 						
-						For iloop = 0 To (rstFindRecords.Columns.Count - 1)
-							If iloop > 0 Then
-								sAddString = sAddString & "	"
-							End If
+							For iloop = 0 To (rstFindRecords.Columns.Count - 1)
+								If iloop > 0 Then
+									sAddString = sAddString & "	"
+								End If
 							
-							If iCount = 0 Then
-								sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString()
-								Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-							End If
+								If iCount = 0 Then
+									sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString()
+									Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+								End If
 							
-							If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
-								' Field is a date so format as such.
-								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
-							ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
-								' Field is a numeric so format as such.
-								If Not IsDBNull(objRow(iloop)) Then
-									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-										sTemp = FormatNumber(objRow(iloop), , True, False, True)
-									Else
-										sTemp = FormatNumber(objRow(iloop), , True, False, False)
+								If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
+									' Field is a date so format as such.
+									sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
+								ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
+									' Field is a numeric so format as such.
+									If Not IsDBNull(objRow(iloop)) Then
+										If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
+											sTemp = FormatNumber(objRow(iloop), , True, False, True)
+										Else
+											sTemp = FormatNumber(objRow(iloop), , True, False, False)
+										End If
+										sTemp = Replace(sTemp, ".", "x")
+										sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+										sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+										sAddString = sAddString & sTemp
 									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-									sAddString = sAddString & sTemp
+								Else
+									If Not IsDBNull(objRow(iloop)) Then
+										sAddString = sAddString & Replace(objRow(iloop).ToString, """", "&quot;")
+									End If
 								End If
-							Else
-								If Not IsDBNull(objRow(iloop)) Then
-									sAddString = sAddString & Replace(objRow(iloop).ToString, """", "&quot;")
-								End If
-							End If
+							Next
+
+							Response.Write("<input type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+							iCount += 1
 						Next
-
-						Response.Write("<input type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-						iCount += 1
-					Next
-
+					End If
+					
 					Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
 					Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
 					Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
