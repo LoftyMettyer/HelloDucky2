@@ -312,12 +312,12 @@
 				}
 	
 				try {
-						//NPG - recedit not resizing. Do it manually.
-						var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15));
-						var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
-						// NHRD TFS 719 this division by 2 seems to work nice for getting the border around the screen nicely for screens with at least 4 rows of tabs.
-						$("#ctlRecordEdit").height(newHeight + (document.getElementById("tabHeaders").offsetHeight / 2) + "px");
-						$("#ctlRecordEdit").width(newWidth + "px");
+					//NPG - recedit not resizing. Do it manually.
+					var newHeight = ((frmRecordEditForm.txtRecEditHeight.value / 15) + 20);
+					var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
+
+					$("#ctlRecordEdit").height(newHeight + document.getElementById("tabHeaders").offsetHeight + "px");
+					$("#ctlRecordEdit").width(newWidth + "px");
 					
 					if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
 						//Only for SSI mode view, zoom in on recedit until it reaches full screen, or twice it's original size.
