@@ -4047,41 +4047,42 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	function menu_bookCourse() {
-	var lngRecordID;
-	var frmOptionArea;
-	
-	lngRecordID = selectedRecordID();	//shold be in scope
+		var lngRecordID;
+		var frmOptionArea;
 
-	if (lngRecordID > 0) {
-	//TODO: ShowWait("Loading matching courses. Please wait...");
-	menu_disableMenu();
+		lngRecordID = selectedRecordID();	//shold be in scope
 
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		if (lngRecordID > 0) {
+			//TODO: ShowWait("Loading matching courses. Please wait...");
+			menu_disableMenu();
 
-	frmOptionArea.txtGotoOptionScreenID.value = 0;
-	frmOptionArea.txtGotoOptionTableID.value = 0;
-	frmOptionArea.txtGotoOptionViewID.value = 0;
-	frmOptionArea.txtGotoOptionOrderID.value = 0;
-	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-	frmOptionArea.txtGotoOptionFilterDef.value = "";
-	frmOptionArea.txtGotoOptionFilterSQL.value = "";
-	frmOptionArea.txtGotoOptionValue.value = "";
-	frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
-	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-	frmOptionArea.txtGotoOptionPage.value = "tbBookCourseFind";
-	frmOptionArea.txtGotoOptionAction.value = "";
-	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+			var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
 
-	OpenHR.submitForm(frmOptionArea);
-}
-	else {
-	OpenHR.messageBox("You must select a course to book.");
-}
-}
+			frmOptionArea.txtGotoOptionScreenID.value = 0;
+			frmOptionArea.txtGotoOptionTableID.value = 0;
+			frmOptionArea.txtGotoOptionViewID.value = 0;
+			frmOptionArea.txtGotoOptionOrderID.value = 0;
+			frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+			frmOptionArea.txtGotoOptionFilterDef.value = "";
+			frmOptionArea.txtGotoOptionFilterSQL.value = "";
+			frmOptionArea.txtGotoOptionValue.value = "";
+			frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
+			frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+			frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+			frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+			frmOptionArea.txtGotoOptionPage.value = "tbBookCourseFind";
+			frmOptionArea.txtGotoOptionAction.value = "";
+			frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+			frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+			frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+
+			OpenHR.submitForm(frmOptionArea);
+		}
+		else {
+			OpenHR.messageBox("You must select a course to book.");
+		}
+	}
 
 	function menu_transferBooking() {
 	var lngRecordID;
