@@ -473,7 +473,7 @@ function menu_MenuClick(sTool) {
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
 	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
-		try {
+		try {		
 			showDefaultRibbon();
 			setnew();
 			$("#toolbarReportNewEditCopy").parent().show();
@@ -694,9 +694,9 @@ function menu_MenuClick(sTool) {
 	}
 		
 	if (sToolName == "mnutoolDeleteRecordFind") {
-	    menu_deleteRecord();
-	    menu_moveRecord("MOVEFIRST");
-	    return;
+			menu_deleteRecord();
+			menu_moveRecord("MOVEFIRST");
+			return;
 	}
 
 	if (sToolName == "mnutoolParentRecordFind") {
@@ -911,7 +911,7 @@ function menu_MenuClick(sTool) {
 
 		// Crosstab Reports
 		if (sToolName == "mnutoolCrossTabs") {
-			  $('#grdAccess').remove();
+				$('#grdAccess').remove();
 				if (menu_saveChanges("CROSSTABS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(1, 0, 0, true);
 			}
@@ -920,7 +920,7 @@ function menu_MenuClick(sTool) {
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
-			  $('#grdAccess').remove();
+				$('#grdAccess').remove();
 				if (menu_saveChanges("CUSTOMREPORTS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(2, 0, 0, true);
 			}
@@ -1142,15 +1142,7 @@ function toggle_Leaf(sTool) {
 }
 
 function menu_ShowWait(sMessage) {
-
-//	window.parent.parent.frames("waitframe").SetDisplayText(sMessage);
-
-//	var fs = window.parent.parent.document.all.item("mainframeset")
-//	if (fs) {
-//		fs.rows = "0, 0, 0, 0, 0, *";
-//		}
-//	//ASRIntranetFunctions.ShowPopup(sMessage);
-
+	$('#txtProgressMessage').val(sMessage);	
 }
 
 
@@ -1201,8 +1193,8 @@ function showDefaultRibbon() {
 }
 
 function menu_refreshMenu() {	
-    // Refresh the menu.
-   	var lngRecordID;
+		// Refresh the menu.
+		var lngRecordID;
 	var sCaption;
 	var fCancelCourseVisible;
 	var fCancelCourseEnabled;
@@ -1527,7 +1519,7 @@ function menu_refreshMenu() {
 
 		$("#mnutoolHistory").click();
 
-	    // Standard reports (toolbar)
+			// Standard reports (toolbar)
 		if (menu_isSSIMode() == true) {
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);  //hide for SSI
 		}
@@ -1543,18 +1535,18 @@ function menu_refreshMenu() {
 				//Hide Calendar Reports Group if all items are hidden.
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
 		}
-	    
+	
 		// Mail Merge (Toolbar!)
 		if (fMailMergeVisible && !menu_isSSIMode()) {
-		    menu_setVisibleMenuItem("mnutoolMailMergeRecord", true);
-		    menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
+				menu_setVisibleMenuItem("mnutoolMailMergeRecord", true);
+				menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
 		} else {
-		    menu_setVisibleMenuItem("mnutoolMailMergeRecord", false);
-		    menu_setVisibletoolbarGroup("mnutoolMailMergeRecord", false);
-		    //I think its safe to include not showing Record Position items here
-		    menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
+				menu_setVisibleMenuItem("mnutoolMailMergeRecord", false);
+				menu_setVisibletoolbarGroup("mnutoolMailMergeRecord", false);
+				//I think its safe to include not showing Record Position items here
+				menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
 		}
-	    
+			
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
 			//menu_enableMenuItem("mnutoolHistory", false)
@@ -1966,8 +1958,8 @@ function menu_refreshMenu() {
 							else {
 								if ((sCurrentWorkPage == "PCCONFIGURATION") ||
 										(sCurrentWorkPage == "CONFIGURATION")) {
-								    // handled in configuration.configuration_window_onload()
-								    menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
+										// handled in configuration.configuration_window_onload()
+										menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
 								}
 						}
 					}
@@ -2032,7 +2024,7 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolBookCourseFind", fBookCourseVisible);
 	menu_toolbarEnableItem("mnutoolBookCourseFind", fBookCourseEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
-  if (fBookCourseVisible) $('#mnutoolBookCourseFind').css('width', '100%');
+	if (fBookCourseVisible) $('#mnutoolBookCourseFind').css('width', '100%');
 	
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
@@ -2333,7 +2325,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtTBOverride.value = pfTBOverride;
 
 					if (frmDataArea.txtInsertUpdateDef.value != "") {
-						//ShowWait("Saving record. Please wait...");
+						menu_ShowWait("Saving record. Please wait...");
 						menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
 						ExecutePostSaveCode();
@@ -2444,7 +2436,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var sToolKey;
 	var frmMenuInfo = document.getElementById('frmMenuInfo');
 	
-	//ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen. Please wait...");
 	menu_disableMenu();
 	
 	// Get the table, view and screen info from the tool name.
@@ -2546,7 +2538,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmWorkArea;
 	var frmRecEdit;
 	
-	//TODO: ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records. Please wait...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -2595,7 +2587,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmData;
 	var iIndex;
 		
-	//ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records. Please wait...");
 	//disableMenu();
 
 	// Get the table, view and screen info from the tool name.
@@ -2650,7 +2642,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var frmOptionArea;
 	
-	//ShowWait("Loading lookup find records. Please wait...");
+	menu_ShowWait("Loading lookup find records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -2686,7 +2678,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmOptionArea;
 
 	
-	//ShowWait("Loading link find records. Please wait...");
+	menu_ShowWait("Loading link find records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -2716,7 +2708,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var frmOptionArea;
 
-	//ShowWait("Loading matching course records. Please wait...");
+	menu_ShowWait("Loading matching course records. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
 	
@@ -2751,13 +2743,13 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmOptionArea;
 	
 	if (plngOLEType == 1) {
-	//ShowWait("Loading OLE (server) list. Please wait...");
+	menu_ShowWait("Loading OLE (server) list. Please wait...");
 }
 	else if (plngOLEType == 0) {
-	//ShowWait("Loading OLE (local) list. Please wait...");
+	menu_ShowWait("Loading OLE (local) list. Please wait...");
 }
 	else if (plngOLEType > 1) {
-	//ShowWait("Loading document. Please wait...");
+	menu_ShowWait("Loading document. Please wait...");
 }
 
 	menu_disableMenu();
@@ -3004,10 +2996,10 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (fValidLocateValue == true) {
 	if (psAction == "RELOAD") {
-	//TODO: (maybe) ShowWait("Reloading find records. Please wait...");
+	menu_ShowWait("Reloading find records. Please wait...");
 }
 	else {
-	//TODO: (maybe) ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records. Please wait...");
 }
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
@@ -3285,7 +3277,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		if (menu_saveChanges("NEW", true, false) != 2) { // 2 = vbCancel
-		  // Get the data.asp to get the default values for a NEW record.
+			// Get the data.asp to get the default values for a NEW record.
 			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
@@ -3310,7 +3302,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 		if (sCurrentWorkPage == "FIND") {
 			// Submit the current "workframe" form, and then load the required record Edit page.
 					// And then get it to create a new record.
-					//TODO: ShowWait("Loading screen. Please wait...");
+					menu_ShowWait("Loading screen. Please wait...");
 			menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
 			frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -3358,7 +3350,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	if (sCurrentWorkPage == "FIND") {			
 	// Submit the current "workframe" form, and then load the required record Edit page.
 			// And then get it to create a new record.
-			//TODO: ShowWait("Loading screen. Please wait...");
+			menu_ShowWait("Loading screen. Please wait...");
 	menu_disableMenu();
 				
 	lngRecordID = selectedRecordID();	// function in find.aspx
@@ -3393,7 +3385,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	lngRecordID = selectedRecordID();
 
 	if (lngRecordID > 0) {
-	//ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen. Please wait...");
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -3428,7 +3420,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-	//ShowWait("Deleting record. Please wait...");
+	menu_ShowWait("Deleting record. Please wait...");
 			//disableMenu();
 					
 			// Get the data.asp to get the save the current record.
@@ -3462,7 +3454,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	if (lngRecordID > 0) {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 	// Get the data.asp to get the save the current record.
-					//ShowWait("Deleting record. Please wait...");
+					menu_ShowWait("Deleting record. Please wait...");
 					//disableMenu()	;
 						
 	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
@@ -3519,7 +3511,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 	else {
 	if (sCurrentWorkPage == "FIND") {
-	//TODO: ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen. Please wait...");
 			
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
@@ -3580,7 +3572,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var iIndex;
 
-	//TODO: ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 					
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -3636,7 +3628,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	lngRecordID = frmFindArea.txtCurrentRecordID.value;
 	
 	if (lngRecordID > 0) {
-	//TODO: ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen. Please wait...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	
@@ -3681,7 +3673,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	if (sCurrentWorkPage == "RECORDEDIT") {
 	if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
 	// Get the data.asp to get the move to the FIRST record.
-			//TODO: ShowWait("Locating record. Please wait...");
+			menu_ShowWait("Locating record. Please wait...");
 	menu_disableMenu();
 					
 	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
@@ -4053,7 +4045,7 @@ function menu_loadSelectOrderFilter(psType) {
 		lngRecordID = selectedRecordID();	//shold be in scope
 
 		if (lngRecordID > 0) {
-			//TODO: ShowWait("Loading matching courses. Please wait...");
+			menu_ShowWait("Loading matching courses. Please wait...");
 			menu_disableMenu();
 
 			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4091,7 +4083,7 @@ function menu_loadSelectOrderFilter(psType) {
 	lngRecordID = selectedRecordID();
 
 	if (lngRecordID > 0) {
-	//TODO: ShowWait("Loading matching courses. Please wait...");
+	menu_ShowWait("Loading matching courses. Please wait...");
 	menu_disableMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4196,7 +4188,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
 	
 	if (lngRecordID > 0) {
-	//ShowWait("Loading matching employees. Please wait...");
+	menu_ShowWait("Loading matching employees. Please wait...");
 	menu_disableMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4421,7 +4413,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var strRealSource;
 
 	// Show loading screen
-	//TODO: window.parent.frames("menuframe").ShowWait("Loading absence calendar. Please wait...");
+	menu_ShowWait("Loading absence calendar. Please wait...");
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required page.

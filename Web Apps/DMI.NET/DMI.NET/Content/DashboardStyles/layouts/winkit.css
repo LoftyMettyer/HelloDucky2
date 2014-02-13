@@ -839,7 +839,7 @@ div.officetab li div.textboxlist input {
 	 our animation centered, and no-repeating */
 .modal {
 		display:    none;
-		position:   fixed;
+		position:   absolute;
 		z-index:    1000;
 		top:        0;
 		left:       0;
@@ -848,9 +848,24 @@ div.officetab li div.textboxlist input {
 		background: rgba( 255, 255, 255, 0) 
 								url("../../images/spinnerBig.gif") 
 								50% 50% 
-								no-repeat;
+								no-repeat;	
 }
 
+.divProgressMessage {
+	display: inline-block;
+	position: absolute;
+	width: 100%;	
+	vertical-align: middle;
+	top: 54%;
+}
+
+.progressMessage {
+	text-align: center;	
+}
+
+.progressMessage span {
+	padding: 5px;
+}
 
 /* Formatting for SSI based utilities	*/
 .SSI #dataRow {

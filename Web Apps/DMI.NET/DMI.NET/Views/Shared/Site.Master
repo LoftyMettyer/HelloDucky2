@@ -227,14 +227,21 @@
 
 			//Apply ajax please wait message
 			$(document).ajaxStart(function () {
+				setTimeout('updateProgressMsg()', 50);
 				$("body").addClass("loading");
 			});
 
 			$(document).ajaxStop(function () {
+				$('#txtProgressMessage').val('Please wait...');
 				$("body").removeClass("loading");
+				setTimeout('updateProgressMsg()', 50);
 			});
 
 		});
+		
+		function updateProgressMsg() {
+			$('.progressMessage span').text($('#txtProgressMessage').val());
+		}
 	</script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -370,6 +377,9 @@
 	<asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
 	<div class="modal">
 		<!-- AJAX please wait spinner -->
+		<div class="divProgressMessage">			
+			<p class="progressMessage"><span class="ui-state-highlight ui-corner-all">Please wait...</span></p>
+		</div>
 	</div>
 
 	<div id="About" title="About OpenHR" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>

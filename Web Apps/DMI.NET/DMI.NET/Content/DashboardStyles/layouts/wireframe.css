@@ -437,6 +437,24 @@ div.officetab div.panel > span { display: none;}
 								no-repeat;
 }
 
+
+.divProgressMessage {
+	display: inline-block;
+	position: absolute;
+	width: 100%;	
+	vertical-align: middle;
+	top: 54%;
+}
+
+.progressMessage {
+	text-align: center;	
+}
+
+.progressMessage span {
+	padding: 5px;
+}
+
+
 /* Formatting for SSI based utilities	*/
 .SSI #dataRow {
 	width: 30%; margin: 0 auto;color: black;

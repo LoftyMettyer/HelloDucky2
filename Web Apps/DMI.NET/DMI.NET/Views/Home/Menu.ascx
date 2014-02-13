@@ -491,6 +491,8 @@
 	<input type="hidden" id="txtDoneSelfServiceStart" name="txtDoneSelfServiceStart" value="0">
 
 	<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
+	
+	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value=""/>
 </FORM>
 
 <script type="text/javascript">
