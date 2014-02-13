@@ -399,7 +399,7 @@
 	Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Session("optionFilterDef"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Replace(Session("optionFilterDef"), """", "&quot;"), "'", "&#39;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)

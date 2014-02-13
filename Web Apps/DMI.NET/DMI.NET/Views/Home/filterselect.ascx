@@ -1,5 +1,8 @@
 <%@ control language="VB" inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ import namespace="DMI.NET" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <object
 	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -211,7 +214,7 @@
 	}
 </script>
 
-<script language="JavaScript">
+<script type="text/javascript">
 	function SelectFilter() {
 		var frmFilterForm = document.getElementById("frmFilterForm");
 		var sRealSource;
@@ -1428,107 +1431,49 @@
 										<td width="175" height="10">
 											<select id="selectColumn" name="selectColumn" class="combo" style="HEIGHT: 22px; WIDTH: 200px"
 												onchange="refreshOperatorCombo()">
-											<%
+<%
 	' Populate the columns combo.
-	dim iCount
-	dim sErrorDescription = ""
-	if Len(sErrorDescription) = 0 then
+	Dim iCount
+	Dim sErrorDescription = ""
+	Dim dtFilterColumns As DataTable
+	If Len(sErrorDescription) = 0 Then
 		' Get the column records.
-		dim  cmdFilterColumns = CreateObject("ADODB.Command")
-		cmdFilterColumns.CommandText = "sp_ASRIntGetFilterColumns"
-		cmdFilterColumns.CommandType = 4 ' Stored Procedure
-		cmdFilterColumns.ActiveConnection = session("databaseConnection")
-
-		dim  prmTableID = cmdFilterColumns.CreateParameter("tableID",3,1)
-		cmdFilterColumns.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionTableID"))
-
-		dim prmViewID = cmdFilterColumns.CreateParameter("viewID",3,1)
-		cmdFilterColumns.Parameters.Append(prmViewID)
-		prmViewID.value = cleanNumeric(session("optionViewID"))
-
-		Dim prmRealSource = cmdFilterColumns.CreateParameter("realSource",200,2,8000) '200=varchar, 2=output, 8000=size
-		cmdFilterColumns.Parameters.Append(prmRealSource)
-
-		err.Clear()
-		dim rstFilterColumns = cmdFilterColumns.Execute
-
-		if (err.Number <> 0) then
-			sErrorDescription = "The filter columns could not be retrieved." & vbcrlf & formatError(Err.Description)
-		end if
-
-		if len(sErrorDescription) = 0 then
+		Try
+			Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+			Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
+			dtFilterColumns = objDataAccess.GetDataTable("sp_ASRIntGetFilterColumns", _
+															CommandType.StoredProcedure, _
+															New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))}, _
+															New SqlParameter("@plngViewID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))}, _
+															psRealSource _
+															)
+	
 			iCount = 0
-			do while not rstFilterColumns.EOF
-				Response.Write("						<OPTION value=" & rstFilterColumns.Fields(0).Value)
-				if iCount = 0 then
+			For Each dr As DataRow In dtFilterColumns.Rows
+				Response.Write("						<OPTION value=" & dr(0).ToString)
+				If iCount = 0 Then
 					Response.Write(" SELECTED")
-				end if
-				
-				Response.write(">" & replace(rstFilterColumns.Fields(1).Value, "_", " ") & "</OPTION>" & vbcrlf)
+				End If
+				Response.Write(">" & Replace(dr(1).ToString, "_", " ") & "</OPTION>" & vbCrLf)
 				iCount = iCount + 1
-				rstFilterColumns.MoveNext
-			loop
+			Next
 
-			Response.Write("					</SELECT>" & vbcrlf)
+			Response.Write("					</SELECT>" & vbCrLf)
 
-			' Release the ADO recordset object.
-			rstFilterColumns.close
-			rstFilterColumns = nothing
-
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and set it to nothing before using the output parameters. 
-			Response.Write( "<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & replace(replace(cmdFilterColumns.Parameters("realSource").Value, "'", "'''"), """", "&quot;") & """>" & vbcrlf)
-		end if
-	
-		' Release the ADO command object.
-		cmdFilterColumns = nothing
-	end if
-
-	' Populate the columns combo.
-	if len(sErrorDescription) = 0 then
-		' Get the column records.
-		dim cmdFilterColumns = CreateObject("ADODB.Command")
-		cmdFilterColumns.CommandText = "sp_ASRIntGetFilterColumns"
-		cmdFilterColumns.CommandType = 4 ' Stored Procedure
-		cmdFilterColumns.ActiveConnection = session("databaseConnection")
-
-		dim prmTableID = cmdFilterColumns.CreateParameter("tableID",3,1) '3=integer, 1=input
-		cmdFilterColumns.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionTableID"))
-
-		dim prmViewID = cmdFilterColumns.CreateParameter("viewID",3,1) '3=integer, 1=input
-		cmdFilterColumns.Parameters.Append(prmViewID)
-		prmViewID.value = cleanNumeric(session("optionViewID"))
-
-		dim prmRealSource = cmdFilterColumns.CreateParameter("realSource",200,2,8000) '200=varchar, 2=output, 8000=size
-		cmdFilterColumns.Parameters.Append(prmRealSource)
-
-		err.Clear()
-		dim rstFilterColumns = cmdFilterColumns.Execute
-
-		if (err.Number <> 0) then
-			sErrorDescription = "The filter columns could not be retrieved." & vbcrlf & formatError(Err.Description)
-		end if
-
-		if len(sErrorDescription) = 0 then
-			do while not rstFilterColumns.EOF
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumn_" & rstFilterColumns.Fields(0).Value & " name=txtFilterColumn_" & rstFilterColumns.Fields(0).Value & " value=" & rstFilterColumns.Fields(2).Value & ">")
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumnSize_" & rstFilterColumns.Fields(0).Value & " name=txtFilterColumnSize_" & rstFilterColumns.Fields(0).Value & " value=" & rstFilterColumns.Fields("size").Value & ">")
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumnDecimals_" & rstFilterColumns.Fields(0).Value & " name=txtFilterColumnDecimals_" & rstFilterColumns.Fields(0).Value & " value=" & rstFilterColumns.Fields("decimals").Value & ">")
-				rstFilterColumns.MoveNext
-			loop
-
-			' Release the ADO recordset object.
-			rstFilterColumns.close
-			rstFilterColumns = nothing
-		end if
-	
-		' Release the ADO command object.
-		cmdFilterColumns = nothing
-	end if
-											%>
+			Response.Write("<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & Replace(Replace(psRealSource.Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+			
+			For Each dr As DataRow In dtFilterColumns.Rows
+				Response.Write("					<INPUT type='hidden' id=txtFilterColumn_" & dr(0).ToString & " name=txtFilterColumn_" & dr(0).ToString & " value=" & dr(2).ToString & ">")
+				Response.Write("					<INPUT type='hidden' id=txtFilterColumnSize_" & dr(0).ToString & " name=txtFilterColumnSize_" & dr(0).ToString & " value=" & dr("size").ToString & ">")
+				Response.Write("					<INPUT type='hidden' id=txtFilterColumnDecimals_" & dr(0).ToString & " name=txtFilterColumnDecimals_" & dr(0).ToString & " value=" & dr("decimals").ToString & ">")
+			Next
+			
+		Catch ex As Exception
+			sErrorDescription = "The filter columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+		End Try
+	End If
+%>
 
 										</td>
 										<td width="10" height="10"></td>
