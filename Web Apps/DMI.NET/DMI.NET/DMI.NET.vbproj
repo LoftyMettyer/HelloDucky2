@@ -1100,7 +1100,9 @@
     <Content Include="Database\UpdateScript8.0.25.sql" />
     <Content Include="Database\UpdateScript8.0.8.sql" />
     <Content Include="Database\UpdateScript8.0.9.sql" />
-    <Content Include="lpks\ssmain.lpk" />
+    <Content Include="lpks\ssmain.lpk">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
