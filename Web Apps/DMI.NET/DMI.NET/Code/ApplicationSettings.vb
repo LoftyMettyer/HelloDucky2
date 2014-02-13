@@ -33,6 +33,16 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("UI_Wireframe_Theme")
 			End Get
 		End Property
+		Public Shared ReadOnly Property UI_Self_Service_Layout As String
+			Get
+				Return ConfigurationManager.AppSettings("UI_Self_Service_Layout")
+			End Get
+		End Property
+		Public Shared ReadOnly Property UI_Layout_Selectable As String 'Strictly speaking this property should return a Boolean, but since everything else is boolean, this is too.
+			Get
+				Return ConfigurationManager.AppSettings("UI_Layout_Selectable")
+			End Get
+		End Property
 		Public Shared ReadOnly Property DMIRequiresIE As String	'Strictly speaking this property should return a Boolean, but it has been used as a string throughout the application, so String it is
 			Get
 				Return ConfigurationManager.AppSettings("DMIRequiresIE")
