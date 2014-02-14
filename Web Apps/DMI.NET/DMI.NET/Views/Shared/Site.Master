@@ -296,12 +296,11 @@
 				dataType: 'html',
 				type: "POST",
 				success: function (html) {
-					try {
-
+					try {						
 						if ((action.toUpperCase() != "POLL") && (action.toUpperCase() != "REFRESH") && (action.toUpperCase() != "THEMEEDITOR")) {
 							if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
 								//$('#' + targetDiv).fadeOut('slow');
-								$('.DashContent').show();
+								$('.DashContent').show();								
 							} else {
 								$('.DashContent').fadeOut('slow');
 								$('#' + targetDiv).show();
@@ -345,6 +344,10 @@
 								//reset search box...
 								$('#searchDashboardString').val('');
 							}
+							
+							showDefaultRibbon();
+							$("#toolbarHome").show();
+							$("#toolbarHome").click();							
 						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);
