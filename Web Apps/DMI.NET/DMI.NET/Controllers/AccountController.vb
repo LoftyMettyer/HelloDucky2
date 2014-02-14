@@ -248,7 +248,7 @@ Namespace Controllers
 			Dim GetSQLProviderString As String = objSettings.GetSQLProviderString
 			If GetSQLProviderString = vbNullString Then
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "SQL Server Client is not installed on the server where OpenHR is installed; please contact support."
+				Session("ErrorText") = "SQL Server Client is missing on the server where OpenHR is installed.  Please contact support."
 				Return RedirectToAction("Loginerror")
 			End If
 
