@@ -343,11 +343,7 @@
 								}
 								//reset search box...
 								$('#searchDashboardString').val('');
-							}
-							
-							showDefaultRibbon();
-							$("#toolbarHome").show();
-							$("#toolbarHome").click();							
+							}															
 						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);

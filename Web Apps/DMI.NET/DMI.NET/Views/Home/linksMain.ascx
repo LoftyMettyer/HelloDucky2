@@ -1268,15 +1268,16 @@
 	$(document).ready(function () {
 
 		$("#fixedlinksframe").show();
+		
+		showDefaultRibbon();
 
-		//Hide DMI button for non-IE browsers			
+		//Hide DMI button for non-IE browsers					
 		if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) {
 			$('#mnutoolFixedOpenHR').hide();
 			$("#toolbarHome").parent().hide();
 		}
 		else
-		{
-			showDefaultRibbon();
+		{			
 			$("#toolbarHome").show();
 			$("#toolbarHome").click();
 		}
