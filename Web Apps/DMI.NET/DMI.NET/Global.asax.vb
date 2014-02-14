@@ -3,6 +3,7 @@ Imports DMI.NET.Code
 Imports DMI.NET.App_Start
 Imports System.Drawing
 Imports HR.Intranet.Server
+Imports System.IO
 
 ' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 ' visit http://go.microsoft.com/?LinkId=9394802
@@ -62,6 +63,11 @@ Public Class MvcApplication
 		Session("ui-theme") = ApplicationSettings.UI_Theme
 		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
 
+		' Check for a valid themename, then default to redmond if not valid.
+		If Not File.Exists(Server.MapPath("/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")) Then
+			Session("ui-theme") = "redmond"
+		End If
+
 		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
 		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
 
@@ -71,6 +77,11 @@ Public Class MvcApplication
 		' get the WIREFRAME theme out the web config.
 		Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
 		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
+
+		' Check for a valid themename, then default to redmond if not valid.
+		If Not File.Exists(Server.MapPath("/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
+			Session("ui-wireframe-theme") = "redmond"
+		End If
 
 		' Set browser compatibility
 		Session("DMIRequiresIE") = ApplicationSettings.DMIRequiresIE
