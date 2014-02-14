@@ -785,10 +785,13 @@
 		$(document).ready(function () {
 			// Harry's code
 
-			var newWidth = $("#txtRecEditWidth").val() / 15.2;
+			var newWidth = $("#txtRecEditWidth").val() / 14.8;
 			$("#ctlRecordEdit").width(newWidth + "px");
 
 			var tabheight = Number($("#tabHeaders").height());
+			if (tabheight < 40) {
+				tabheight = 40;
+			}
 			var newHeight = (Number($("#txtRecEditHeight").val()) / Number(15.2)) + tabheight - 40;
 			$("#ctlRecordEdit").height(newHeight + "px");
 
