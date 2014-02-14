@@ -64,7 +64,7 @@ Public Class MvcApplication
 		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
 
 		' Check for a valid themename, then default to redmond if not valid.
-		If Not File.Exists(Server.MapPath("/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")) Then
+		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")) Then
 			Session("ui-theme") = "redmond"
 		End If
 
@@ -79,7 +79,7 @@ Public Class MvcApplication
 		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
 
 		' Check for a valid themename, then default to redmond if not valid.
-		If Not File.Exists(Server.MapPath("/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
+		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
 			Session("ui-wireframe-theme") = "redmond"
 		End If
 
