@@ -243,7 +243,16 @@ Namespace Controllers
 			End Try
 
 			Dim objSettings = New HR.Intranet.Server.clsSettings
-			sConnectString = objSettings.GetSQLProviderString.ToString() & "Data Source=" & sServerName & ";Initial Catalog=" &
+
+			'Check that SQL Server client is installed
+			Dim GetSQLProviderString As String = objSettings.GetSQLProviderString
+			If GetSQLProviderString = vbNullString Then
+				Session("ErrorTitle") = "Login Page"
+				Session("ErrorText") = "SQL Server Client is not installed on the server where OpenHR is installed; please contact support."
+				Return RedirectToAction("Loginerror")
+			End If
+
+			sConnectString = GetSQLProviderString & "Data Source=" & sServerName & ";Initial Catalog=" &
 			 sDatabaseName & ";Application Name=OpenHR Intranet;DataTypeCompatibility=80;MARS Connection=True;"
 			objSettings = Nothing
 
