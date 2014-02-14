@@ -7,7 +7,7 @@ Friend Class clsOutputGrid
 	Inherits BaseOutputFormat
 
 
-	'''Private WithEvents mgrdPrintGrid As SSDBGrid
+	''Private WithEvents mgrdPrintGrid As SSDBGrid
 	'	Private mobjPrintGrid As clsPrintGrid
 	Private mobjParent As clsOutputRun
 
@@ -24,7 +24,7 @@ Friend Class clsOutputGrid
 	Private mstrFileName As String
 
 	Public Sub ClearUp()
-		'''  Set mgrdPrintGrid = Nothing
+		''  Set mgrdPrintGrid = Nothing
 		'UPGRADE_NOTE: Object mobjPrintGrid may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		'mobjPrintGrid = Nothing
 	End Sub
@@ -75,35 +75,35 @@ Friend Class clsOutputGrid
 		End Set
 	End Property
 
-	'''Public Sub DataGrid(objNewValue As SSDBGrid)
-	'''
-	'''  Dim strDefaultPrinter As String
-	'''
-	'''  Set mgrdPrintGrid = objNewValue
-	'''
-	'''  If mstrErrorMessage <> vbNullString Then
-	'''    Exit Sub
-	'''  End If
-	'''
-	'''
-	'''  If mlngPageCount = 1 Then
-	'''    Set mobjPrintGrid = New clsPrintGrid
-	'''  End If
-	'''
-	'''  mobjParent.SetPrinter
-	'''
-	'''  mobjPrintGrid.Heading = mstrDefTitle
-	'''  mobjPrintGrid.Grid = mgrdPrintGrid
-	'''  mobjPrintGrid.SuppressPrompt = (mlngPageCount > 1)
-	'''  mobjPrintGrid.PrintGrid False
-	'''
-	'''  If mobjPrintGrid.Cancelled Then
-	'''    mstrErrorMessage = "Cancelled by User."
-	'''  End If
-	'''
-	'''  mobjParent.ResetDefaultPrinter
-	'''
-	'''End Sub
+	''Public Sub DataGrid(objNewValue As SSDBGrid)
+	''
+	''  Dim strDefaultPrinter As String
+	''
+	''  Set mgrdPrintGrid = objNewValue
+	''
+	''  If mstrErrorMessage <> vbNullString Then
+	''    Exit Sub
+	''  End If
+	''
+	''
+	''  If mlngPageCount = 1 Then
+	''    Set mobjPrintGrid = New clsPrintGrid
+	''  End If
+	''
+	''  mobjParent.SetPrinter
+	''
+	''  mobjPrintGrid.Heading = mstrDefTitle
+	''  mobjPrintGrid.Grid = mgrdPrintGrid
+	''  mobjPrintGrid.SuppressPrompt = (mlngPageCount > 1)
+	''  mobjPrintGrid.PrintGrid False
+	''
+	''  If mobjPrintGrid.Cancelled Then
+	''    mstrErrorMessage = "Cancelled by User."
+	''  End If
+	''
+	''  mobjParent.ResetDefaultPrinter
+	''
+	''End Sub
 
 	'Public Function RecordProfilePage(pfrmRecProfile As Form, _
 	''  piPageNumber As Integer, _
@@ -158,8 +158,8 @@ Friend Class clsOutputGrid
 	'''  Call mobjPrintGrid.PrintInitialise(ssPrintInfo)
 	'''End Sub
 
-	Public Function AddPage(ByRef strDefTitle As String, ByRef mstrSheetName As String, ByRef colStyles As Collection) As Object
+	Public Sub AddPage(ByRef strDefTitle As String, ByRef mstrSheetName As String, ByRef colStyles As Collection)
 		mstrDefTitle = strDefTitle
 		mlngPageCount = mlngPageCount + 1
-	End Function
+	End Sub
 End Class

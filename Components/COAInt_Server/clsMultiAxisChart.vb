@@ -671,8 +671,6 @@ GenerateSQLSelect_ERROR:
 
 
 	Private Function GenerateSQLFrom(ByRef strTableName As String) As Boolean
-
-		Dim iLoop As Short
 		Dim pobjTableView As TablePrivilege
 
 		pobjTableView = New TablePrivilege
@@ -773,7 +771,7 @@ GenerateSQLFrom_ERROR:
 		''  lngTempMaxRecords = 0
 		''  lngTempFilterID = 0
 		''
-		'''  If mlngCustomReportsChildTable > 0 Then
+		''  If mlngCustomReportsChildTable > 0 Then
 		''  If miChildTablesCount > 0 Then
 		''    For i = 0 To UBound(mvarChildTables, 2) Step 1
 		''      lngTempChildID = mvarChildTables(0, i)
@@ -783,13 +781,13 @@ GenerateSQLFrom_ERROR:
 		''
 		''      pblnChildUsed = False
 		''
-		'''      ' are any child fields in the report ? # 12/06/00 RH - FAULT 419
-		'''      For pintLoop = 1 To UBound(mvarColDetails, 2)
-		'''        If GetTableIDFromColumn(CLng(mvarColDetails(12, pintLoop))) = lngTempChildID Then
-		'''          pblnChildUsed = True
-		'''          Exit For
-		'''        End If
-		'''      Next pintLoop
+		''      ' are any child fields in the report ? # 12/06/00 RH - FAULT 419
+		''      For pintLoop = 1 To UBound(mvarColDetails, 2)
+		''        If GetTableIDFromColumn(CLng(mvarColDetails(12, pintLoop))) = lngTempChildID Then
+		''          pblnChildUsed = True
+		''          Exit For
+		''        End If
+		''      Next pintLoop
 		''
 		''      'TM20020409 Fault 3745 - Only do the join if columns from the table are used.
 		''      pblnChildUsed = IsChildTableUsed(lngTempChildID)
@@ -799,27 +797,27 @@ GenerateSQLFrom_ERROR:
 		''
 		''      If pblnChildUsed = True Then
 		''
-		'''        Set objChildTable = gcoTablePrivileges.FindTableID(mlngCustomReportsChildTable)
+		''        Set objChildTable = gcoTablePrivileges.FindTableID(mlngCustomReportsChildTable)
 		''        Set objChildTable = gcoTablePrivileges.FindTableID(lngTempChildID)
 		''
 		''        If objChildTable.AllowSelect Then
 		''          sChildJoinCode = sChildJoinCode & " LEFT OUTER JOIN " & objChildTable.RealSource & _
-		'''                           " ON " & mstrBaseTableRealSource & ".ID = " & _
-		'''                           objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable
+		''                           " ON " & mstrBaseTableRealSource & ".ID = " & _
+		''                           objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable
 		''
 		''          sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN"
 		''
-		'''          sChildJoinCode = sChildJoinCode & _
+		''          sChildJoinCode = sChildJoinCode & _
 		''''          " (SELECT TOP" & IIf(mlngCustomReportsChildMaxRecords = 0, " 100 PERCENT", " " & mlngCustomReportsChildMaxRecords) & _
 		''''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 		''
 		''          'TM20020328 Fault 3714 - ensure the maxrecords is >= zero.
 		''          sChildJoinCode = sChildJoinCode & _
-		'''          " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & _
-		'''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
+		''          " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & _
+		''          " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 		''
 		''          ' Now the child order by bit - done here in case tables need to be joined.
-		'''          Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(mlngCustomReportsChildTable))
+		''          Set rsTemp = General.GetOrderDefinition(General.GetDefaultOrder(mlngCustomReportsChildTable))
 		''          If lngTempOrderID > 0 Then
 		''            Set rsTemp = General.GetOrderDefinition(lngTempOrderID)
 		''          Else
@@ -832,14 +830,14 @@ GenerateSQLFrom_ERROR:
 		''          sChildJoinCode = sChildJoinCode & sChildJoin
 		''
 		''          sChildJoinCode = sChildJoinCode & _
-		'''            " WHERE (" & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable & _
-		'''            " = " & mstrBaseTableRealSource & ".ID)"
+		''            " WHERE (" & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable & _
+		''            " = " & mstrBaseTableRealSource & ".ID)"
 		''
 		''          ' is the child filtered ?
 		''
 		''  '        If mlngCustomReportsChildFilterID > 0 Then
 		''          If lngTempFilterID > 0 Then
-		'''            blnOK = General.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
+		''            blnOK = General.FilteredIDs(mlngCustomReportsChildFilterID, strFilterIDs, mvarPrompts)
 		''            blnOK = General.FilteredIDs(lngTempFilterID, strFilterIDs, mvarPrompts)
 		''
 		''            ' Generate any UDFs that are used in this filter
@@ -849,10 +847,10 @@ GenerateSQLFrom_ERROR:
 		''
 		''            If blnOK Then
 		''              sChildJoinCode = sChildJoinCode & " AND " & _
-		'''                objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
+		''                objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 		''            Else
 		''              ' Permission denied on something in the filter.
-		'''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
+		''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
 		''              mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
 		''              GenerateSQLJoin = False
 		''              Exit Function

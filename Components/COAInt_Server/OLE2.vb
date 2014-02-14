@@ -391,9 +391,9 @@ Public Class Ole
 
 				Case Is < 10
 					DocumentSize = Mid(_mstrDocumentSize, 1, Len(_mstrDocumentSize) - 6) & "MB"
-
+				Case Else
+					DocumentSize = ""
 			End Select
-
 		End Get
 	End Property
 

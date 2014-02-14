@@ -4662,9 +4662,6 @@ DisableRegions:
 		Dim blnColumnOK As Boolean
 		Dim blnFound As Boolean
 		Dim blnNoSelect As Boolean
-		Dim iLoop1 As Short
-		Dim intLoop As Short
-		Dim strColumnCode As String
 		Dim strSource As String
 		Dim intNextIndex As Short
 		Dim blnOK As Boolean

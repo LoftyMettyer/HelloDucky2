@@ -227,12 +227,7 @@ Namespace ExClientCode
 		End Function
 
 		Private Sub GetWorkBook(ByRef strWorkbook As String, ByRef strWorksheet As String)
-
-			Dim strFormat As String
-			Dim strTempFile As String
 			Dim lngCount As Integer
-			' Dim lngOriginalFormat As Integer
-
 
 			If _mblnApplyStyles And _mstrXlTemplate <> "" And Dir(_mstrXlTemplate) <> "" Then
 				If Not IsFileCompatibleWithExcelVersion(_mstrXlTemplate, OfficeVersion) Then

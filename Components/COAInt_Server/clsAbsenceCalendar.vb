@@ -2371,10 +2371,10 @@ FailReport:
 			' Loop thru the views on the table, seeing if any have read permis for the column
 
 			Dim mstrViews(0) As String
-			For Each mobjTableView In gcoTablePrivileges.Collection
-				If (Not mobjTableView.IsTable) And (mobjTableView.TableID = lngTempTableID) And (mobjTableView.AllowSelect) Then
+			For Each mobjTableView1 As TablePrivilege In gcoTablePrivileges.Collection
+				If (Not mobjTableView1.IsTable) And (mobjTableView1.TableID = lngTempTableID) And (mobjTableView1.AllowSelect) Then
 
-					strSource = mobjTableView.ViewName
+					strSource = mobjTableView1.ViewName
 					mstrRealSource = gcoTablePrivileges.Item(strSource).RealSource
 
 					' Get the column permission for the view
@@ -2386,14 +2386,14 @@ FailReport:
 
 							ReDim Preserve mstrViews(UBound(mstrViews) + 1)
 							'UPGRADE_WARNING: Couldn't resolve default property of object mstrViews(UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+							mstrViews(UBound(mstrViews)) = mobjTableView1.ViewName
 
 							' Check if view has already been added to the array
 							blnFound = False
 							For intNextIndex = 0 To UBound(mvarTableViews, 2)
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(2, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(1, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarTableViews(1, intNextIndex) = 1 And mvarTableViews(2, intNextIndex) = mobjTableView.ViewID Then
+								If mvarTableViews(1, intNextIndex) = 1 And mvarTableViews(2, intNextIndex) = mobjTableView1.ViewID Then
 									blnFound = True
 									Exit For
 								End If
@@ -2404,20 +2404,20 @@ FailReport:
 								intNextIndex = UBound(mvarTableViews, 2) + 1
 								ReDim Preserve mvarTableViews(3, intNextIndex)
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mvarTableViews(0, intNextIndex) = mobjTableView.TableID
+								mvarTableViews(0, intNextIndex) = mobjTableView1.TableID
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(1, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								mvarTableViews(1, intNextIndex) = 1
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(2, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mvarTableViews(2, intNextIndex) = mobjTableView.ViewID
+								mvarTableViews(2, intNextIndex) = mobjTableView1.ViewID
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mvarTableViews(3, intNextIndex) = mobjTableView.ViewName
+								mvarTableViews(3, intNextIndex) = mobjTableView1.ViewName
 							End If
 
 						End If
 					End If
 				End If
 
-			Next mobjTableView
+			Next
 			'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			mobjTableView = Nothing
 

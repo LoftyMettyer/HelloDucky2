@@ -2734,7 +2734,7 @@ Namespace Controllers
 						Dim strSQL As String
 
 						Dim strOutput(,) As String
-						Dim strPageValue As String
+						Dim strPageValue As String = ""
 						Dim lngGroupNum As Integer
 						Dim lngCol As Integer
 						Dim lngRow As Integer
@@ -4334,8 +4334,6 @@ Namespace Controllers
 				' SSI Mode
 
 				Dim lngTopLevelRecordID As Int32
-				Dim sTableName As String
-				Dim sViewName As String
 				Dim lngRecID As Int32
 
 				' Response.Write "#<FONT COLOR='Red'><B>session(linkID) = " & session("linkID") & "</B></FONT>#<BR>"

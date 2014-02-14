@@ -104,7 +104,6 @@ Module modTrainingBookingSpecifics
 		Dim pstrBadColumn As String
 		Dim objTable As TablePrivilege
 		Dim objColumn As CColumnPrivileges
-		Dim pblnColumnOK As Boolean
 
 		pblnOK = True
 

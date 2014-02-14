@@ -162,7 +162,7 @@ Public Module svrCleanup
 
   Function ConvertLocaleDateToSQL(psDate As String) As String
     Dim sLocaleFormat As String
-    Dim sSQLFormat As String
+		Dim sSQLFormat As String = ""
     Dim iIndex As Integer
 
     If Len(psDate) > 0 Then

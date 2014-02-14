@@ -38,20 +38,16 @@ Friend Class CColumnPrivileges
 
 	Public Function FindColumnID(ByRef plngColumnID As Integer) As ColumnPrivilege
 		' Return the column privilege object with the given column ID.
-		Dim objColumn As ColumnPrivilege
-		Dim objRequiredColumn As ColumnPrivilege
+		Dim objRequiredColumn As ColumnPrivilege = Nothing
 
-		For Each objColumn In mCol
+		For Each objColumn As ColumnPrivilege In mCol
 			If objColumn.ColumnID = plngColumnID Then
 				objRequiredColumn = objColumn
 				Exit For
 			End If
 		Next objColumn
-		'UPGRADE_NOTE: Object objColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objColumn = Nothing
-
+		
 		FindColumnID = objRequiredColumn
-
 	End Function
 
 	Default Public ReadOnly Property Item(ByVal vntIndexKey As Object) As ColumnPrivilege
@@ -77,8 +73,7 @@ Friend Class CColumnPrivileges
 	'End Property
 
 	Public Function GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
-		'UPGRADE_TODO: Uncomment and change the following line to return the collection enumerator. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="95F9AAD0-1319-4921-95F0-B9D3C4FF7F1C"'
-		'GetEnumerator = mCol.GetEnumerator
+		GetEnumerator = mCol.GetEnumerator
 	End Function
 
 
