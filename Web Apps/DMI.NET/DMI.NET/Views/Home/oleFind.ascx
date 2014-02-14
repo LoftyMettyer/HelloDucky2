@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
+<%' OLE TYPES:  0 = Local OLE, 1 = Server OLE, 2 = Embedded OLE, 3 = Linked OLE. %>
+
+
 <%Dim sErrorDescription = ""
 	Dim sDialogTitle As String
 	
@@ -163,8 +166,13 @@
 					$('#tdDescription h6').text('');
 					$('#oleCaption h3').html('Empty');
 				} else {
-					$('#tdDescription h6').text('Right-click or option-click the link below and choose \'Save As...\' to download this file.');
-					$('#oleCaption h3').html('<a title="(Right-click or option-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
+					if ('<%=Session("MSBrowser")%>' == 'True') {
+						$('#tdDescription h6').text('Right-click the link below and choose \'Save As...\' to download this file.');
+						$('#oleCaption h3').html('<a title="(Right-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
+					} else {
+						//Non-IE browsers
+						$('#oleCaption h3').html('Linked file: ' + newFilename);
+					}
 				}
 				break;
 			default:
@@ -966,7 +974,7 @@
 		}
 		else {			
 			button_disable(frmFindForm.cmdEdit, (frmGotoOption.txtOLEFile.value == ""));
-			//button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
+			button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
 			$('#oleCaption').show();
 			$('#fileUpload').hide();
 		}
