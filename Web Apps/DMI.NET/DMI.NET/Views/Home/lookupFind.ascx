@@ -362,10 +362,12 @@
 														</select>
 													</td>
 													<td width="17" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; " disabled>
+															&nbsp;&nbsp;&nbsp;
 														<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
 														     src="<%=Url.Content("~/Content/images/Help32.png")%>"
 														     
 														     title="What happens if I change the view?" style="width:17px; height:17px; border:0; cursor: pointer"/>
+															&nbsp;&nbsp;&nbsp;
 													</td>
 													<td width="10">
 														<input type="button" value="Go" class="btn" id="btnGoView" name="btnGoView"
@@ -398,9 +400,11 @@
 														</select>
 													</td>
 													<td width="17" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap;" disabled>
+															&nbsp;&nbsp;&nbsp;
 														<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
 														     src="<%=Url.Content("~/Content/images/Help32.png")%>"														     
 														     title="What happens if I change the order?" style="width:17px; height:17px; border:0; cursor: pointer"/>
+															&nbsp;&nbsp;&nbsp;
 													</td>
 													<td width="10">
 														<input type="button" value="Go" class="btn" id="btnGoOrder" name="btnGoOrder"
