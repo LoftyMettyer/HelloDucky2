@@ -241,34 +241,22 @@ namespace DayPilot.Web.Ui
 
         private void RenderMainTable(HtmlTextWriter output)
         {
+						var sStyle = string.Format("width:{0}px; -khtml-user-select: none; -webkit-user-select: none; -moz-user-select:none, user-select:none; position: relative", Width);
+
             output.AddAttribute("id", ClientID);
-            output.AddStyleAttribute("width", Width + "px");
-            output.AddStyleAttribute("-khtml-user-select", "none");
-            output.AddStyleAttribute("-webkit-user-select", "none");
-            output.AddStyleAttribute("-moz-user-select", "none");
-            output.AddStyleAttribute("user-select", "none");
-            if (CssOnly)
-            {
-                output.AddStyleAttribute("position", "relative");
-                output.AddAttribute("class", PrefixCssClass("_main"));
-            }
-            else
-            {
-                output.AddStyleAttribute("line-height", "1.2");
-            }
+            output.AddAttribute("class", PrefixCssClass("_main"));
+						output.AddAttribute("style", sStyle);
+
             output.RenderBeginTag("div");
 
             output.AddAttribute("cellspacing", "0");
             output.AddAttribute("cellpadding", "0");
             output.AddAttribute("border", "0");
-            if (!CssOnly)
-            {
-                output.AddStyleAttribute("background-color", ColorTranslator.ToHtml(HourNameBackColor));
-            }
+
             output.RenderBeginTag("table");
 
             output.RenderBeginTag("tr");
-            output.AddStyleAttribute("width", (RowHeaderWidthResolved) + "px");
+						output.AddAttribute("style", string.Format("width: {0}px", RowHeaderWidthResolved));
             output.RenderBeginTag("td");
             RenderCorner(output);
             output.RenderEndTag(); // td
@@ -280,30 +268,24 @@ namespace DayPilot.Web.Ui
             
             output.RenderEndTag(); // table
 
-
-            if (CssOnly)
-            {
-                RenderDividers(output);
-                RenderMatrixLines(output);
-                RenderEvents(output);
-            }
+            RenderDividers(output);
+            RenderMatrixLines(output);
+            RenderEvents(output);
 
             output.RenderEndTag(); // main
         }
 
         private void RenderDividers(HtmlTextWriter output)
         {
+						string sStyle;
             int top = HeaderHeight;
             for (int i = 0; i < _days.Count; i++)
             {
                 Day d = _days[i];
                 top += d.MaxColumns() * EventHeight;
                 
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("top", top + "px");
-                output.AddStyleAttribute("left", "0px");
-                output.AddStyleAttribute("height", "1px");
-                output.AddStyleAttribute("width", RowHeaderWidthResolved + "px");
+								sStyle = string.Format("top: {0}px; left: 0; height: 1px; width: {1}px; position: absolute", top, RowHeaderWidthResolved);
+								output.AddAttribute("style", sStyle);				
                 output.AddAttribute("class", PrefixCssClass("_resourcedivider"));
                 output.RenderBeginTag("div");
                 output.RenderEndTag();
@@ -312,20 +294,15 @@ namespace DayPilot.Web.Ui
 
             int totalWidth = RowHeaderWidthResolved + GridWidth;
 
-            output.AddStyleAttribute("position", "absolute");
-            output.AddStyleAttribute("top", (HeaderHeight - 1) + "px");
-            output.AddStyleAttribute("left", "0px");
-            output.AddStyleAttribute("height", "1px");
-            output.AddStyleAttribute("width", totalWidth + "px");
-            output.AddAttribute("class", PrefixCssClass("_divider_horizontal"));
+						sStyle = string.Format("top: {0}px; left: 0; height: 1px; width: {1}px; position: absolute", HeaderHeight - 1, totalWidth);
+						output.AddAttribute("style", sStyle);				
+						output.AddAttribute("class", PrefixCssClass("_divider_horizontal"));
             output.RenderBeginTag("div");
             output.RenderEndTag();
 
-            output.AddStyleAttribute("position", "absolute");
-            output.AddStyleAttribute("top", "0px");
-            output.AddStyleAttribute("left", (RowHeaderWidthResolved - 1) + "px");
-            output.AddStyleAttribute("height", top + "px");
-            output.AddStyleAttribute("width", "1px");
+						sStyle = string.Format("top: 0; left: {0}px; height: {1}px; width: 1px; position: absolute", RowHeaderWidthResolved - 1, top);
+						output.AddAttribute("style", sStyle);				
+
             output.AddAttribute("class", PrefixCssClass("_divider"));
             output.RenderBeginTag("div");
             output.RenderEndTag();
@@ -334,18 +311,16 @@ namespace DayPilot.Web.Ui
 
         private void RenderMatrixLines(HtmlTextWriter output)
         {
+	        string sStyle;
             int top = HeaderHeight;
             for (int i = 0; i < _days.Count; i++)
             {
                 Day d = _days[i];
                 top += d.MaxColumns() * EventHeight;
 
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("top", top + "px");
-                output.AddStyleAttribute("left", RowHeaderWidthResolved + "px");
-                output.AddStyleAttribute("height", "1px");
-                output.AddStyleAttribute("width", GridWidth + "px");
-                output.AddAttribute("class", PrefixCssClass("_matrix_horizontal_line"));
+								sStyle = string.Format("left: {0}px; top: {1}px; height: 1px; width: {2}px; position: absolute", RowHeaderWidthResolved, top, GridWidth);
+								output.AddAttribute("style", sStyle);							
+								output.AddAttribute("class", PrefixCssClass("_matrix_horizontal_line"));
                 output.RenderBeginTag("div");
                 output.RenderEndTag();
             }
@@ -354,11 +329,8 @@ namespace DayPilot.Web.Ui
             {
                 int left = RowHeaderWidthResolved + i*CellWidth + CellWidth - 1;
 
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("top", (HeaderHeight + 1) + "px");
-                output.AddStyleAttribute("left", left + "px");
-                output.AddStyleAttribute("height", GridHeight + "px");
-                output.AddStyleAttribute("width", "1px");
+								sStyle = string.Format("left: {0}px; top: {1}px; height: {2}px; width: 1px; position: absolute", left, (HeaderHeight + 1), GridHeight);
+								output.AddAttribute("style", sStyle);
                 output.AddAttribute("class", PrefixCssClass("_matrix_vertical_line"));
                 output.RenderBeginTag("div");
                 output.RenderEndTag();
@@ -368,12 +340,9 @@ namespace DayPilot.Web.Ui
 
         private void RenderEvents(HtmlTextWriter output)
         {
-            output.AddStyleAttribute("position", "absolute");
-            output.AddStyleAttribute("top", "0px");
-            output.AddStyleAttribute("left", "0px");
-            output.AddStyleAttribute("height", "0px");
-            output.AddStyleAttribute("width", "0px");
-            output.RenderBeginTag("div");
+					var sStyle = "left: 0; top: 0; height: 0; width: 0; position: absolute";
+					output.AddAttribute("style", sStyle);
+					output.RenderBeginTag("div");
 
 
             int top = HeaderHeight + 2;
@@ -381,12 +350,10 @@ namespace DayPilot.Web.Ui
             {
                 Day d = _days[i];
 
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("top", top + "px");
-                output.AddStyleAttribute("left", RowHeaderWidthResolved + "px");
-                output.AddStyleAttribute("height", (d.MaxColumns() * EventHeight - 1) + "px"); //
-                output.AddStyleAttribute("overflow", "none");
-                output.AddAttribute("unselectable", "on");
+								sStyle = string.Format("left: {0}px; top: {1}px; height: {2}px; overflow:none; position: absolute", RowHeaderWidthResolved, top, (d.MaxColumns() * EventHeight - 1));
+								output.AddAttribute("style", sStyle);
+								output.AddAttribute("unselectable", "on");
+
                 output.RenderBeginTag("div");
 
                 foreach (Event ep in d.events)
@@ -455,21 +422,7 @@ namespace DayPilot.Web.Ui
                 int thisCellWidth = CellWidth;
                 string back = GetCellColor(start);
 
-                if (!CssOnly)
-                {
-                    if (i == 0)
-                    {
-                        thisCellWidth = CellWidth - 1;
-                    }
-                    if (i == cellsToRender - 1)
-                    {
-                        output.AddStyleAttribute("border-right", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                    }
-                    output.AddStyleAttribute("border-bottom", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                    output.AddStyleAttribute("background-color", back);
-                }
-
-                output.AddStyleAttribute("width", thisCellWidth + "px");
+								var sStyle = string.Format("width: {0}", thisCellWidth);
 
                 if (TimeRangeSelectedHandling != TimeRangeSelectedHandling.Disabled)
                 {
@@ -482,20 +435,14 @@ namespace DayPilot.Web.Ui
                         output.AddAttribute("onclick", "javascript:" + String.Format(TimeRangeSelectedJavaScript, start.ToString("s"), d.Value));
                     }
 
-                    if (!CssOnly)
-                    {
-                        output.AddAttribute("onmouseover", "this.style.backgroundColor='" + ColorTranslator.ToHtml(HoverColor) + "';");
-                        output.AddAttribute("onmouseout", "this.style.backgroundColor='" + back + "';");
-                    }
-
-                    output.AddStyleAttribute("cursor", "pointer");
+										sStyle += "cursor: pointer";
                 }
                 else
                 {
-                    output.AddStyleAttribute("cursor", "default");
+									sStyle += "cursor: default";
                 }
 
-
+								output.AddAttribute("style", sStyle);
                 output.RenderBeginTag("td");
 
                 if (!CssOnly)
@@ -521,10 +468,9 @@ namespace DayPilot.Web.Ui
             }
             else
             {
-                output.AddStyleAttribute("position", "relative");
-                output.AddStyleAttribute("height", (d.MaxColumns() * EventHeight - 1) + "px"); //
-                output.AddStyleAttribute("overflow", "none");
-                output.AddAttribute("unselectable", "on");
+								var sStyle = string.Format("height: {0}px; position: relative; overflow: none", (d.MaxColumns() * EventHeight - 1));
+								output.AddAttribute("style", sStyle);						
+								output.AddAttribute("unselectable", "on");
                 output.RenderBeginTag("div");
 
                 foreach (Event ep in d.events)
@@ -555,6 +501,7 @@ namespace DayPilot.Web.Ui
 
         private void RenderEvent(Day d, Event p, HtmlTextWriter output)
         {
+						string sStyle;
 
             BeforeEventRenderEventArgs ea = new BeforeEventRenderEventArgs(p);
             ea.InnerHTML = p.Name;
@@ -597,67 +544,10 @@ namespace DayPilot.Web.Ui
 
             width = Math.Max(width, 2);
 
-            if (!CssOnly)
-            {
                 output.AddAttribute("unselectable", "on");
-
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("left", left + "px");
-                output.AddStyleAttribute("top", top + "px");
-                output.AddStyleAttribute("width", width + "px");
-                output.AddStyleAttribute("height", height + "px");
-                output.AddStyleAttribute("overflow", "hidden");
-                output.AddStyleAttribute("border", "1px solid " + ColorTranslator.ToHtml(EventBorderColor));
-                output.AddStyleAttribute("background-color", ea.BackgroundColor);
-                output.AddStyleAttribute("white-space", "nowrap");
-                output.AddStyleAttribute("font-family", EventFontFamily);
-                output.AddStyleAttribute("font-size", EventFontSize);
-
-                if (ea.EventClickEnabled && EventClickHandling != EventClickHandlingEnum.Disabled)
-                {
-                    if (EventClickHandling == EventClickHandlingEnum.PostBack)
-                    {
-                        output.AddAttribute("onclick", "javascript:event.cancelBubble=true;" + Page.ClientScript.GetPostBackEventReference(this, "PK:" + p.PK));
-                    }
-                    else
-                    {
-                        output.AddAttribute("onclick", "javascript:event.cancelBubble=true;" + String.Format(EventClickJavaScript, p.PK));
-                    }
-
-                    output.AddStyleAttribute("cursor", "pointer");
-                }
-                else
-                {
-                    output.AddStyleAttribute("cursor", "default");
-                }
-
-                output.RenderBeginTag("div");
-
-                if (DurationBarVisible)
-                {
-                    output.Write("<div unselectable='on' style='width:" + realWidth + "px; margin-left: " + startDelta + "px; height:2px; background-color:" + ea.DurationBarColor + "; font-size:1px; position:relative;' ></div>");
-                    output.Write("<div unselectable='on' style='width:" + width + "px; height:1px; background-color:" + ColorTranslator.ToHtml(EventBorderColor) + "; font-size:1px; position:relative;' ></div>");
-                }
-
-                output.AddStyleAttribute("display", "block");
-                output.AddStyleAttribute("padding-left", "1px");
-                output.AddAttribute("unselectable", "on");
-                output.RenderBeginTag("div");
-                output.Write(ea.InnerHTML);
-                output.RenderEndTag();
-                output.RenderEndTag();    
-            }
-            else
-            {
-                output.AddAttribute("unselectable", "on");
-
-                output.AddStyleAttribute("position", "absolute");
-                output.AddStyleAttribute("left", left + "px");
-                output.AddStyleAttribute("top", top + "px");
-                output.AddStyleAttribute("width", width + "px");
-                output.AddStyleAttribute("height", height + "px");
-                output.AddStyleAttribute("overflow", "hidden");
                 output.AddAttribute("class", PrefixCssClass("_event"));
+
+								sStyle = string.Format("display: block; left: {0}px; top: {1}px; height: {2}px; width:{3}px; position: absolute; overflow:hidden;", left, top, height, width);
 
                 if (ea.EventClickEnabled && EventClickHandling != EventClickHandlingEnum.Disabled)
                 {
@@ -670,62 +560,28 @@ namespace DayPilot.Web.Ui
 											output.AddAttribute("onclick", "javascript:event.cancelBubble=true;" + String.Format(EventClickJavaScript, p.PK, p.EventType));
                     }
 
-                    output.AddStyleAttribute("cursor", "pointer");
+	                sStyle += "cursor: pointer;";
+
                 }
                 else
                 {
-                    output.AddStyleAttribute("cursor", "default");
+	                sStyle += "cursor: default;";
                 }
 
+								output.AddAttribute("style", sStyle);
                 output.RenderBeginTag("div");
 
-                output.AddStyleAttribute("display", "block");
-                output.AddAttribute("unselectable", "on");
-                output.AddAttribute("class", PrefixCssClass("_event_inner"));
+              output.AddAttribute("unselectable", "on");
+							output.AddAttribute("class", PrefixCssClass("_event_inner"));
 
+							sStyle = string.Format("display: block; background: {0};", ea.DurationBarColor);
+								output.AddAttribute("style", sStyle);
 
-
-								output.AddStyleAttribute("background", ea.DurationBarColor);
-
-
-
-                if (!String.IsNullOrEmpty(ea.BackgroundColor))
-                {
-                    output.AddStyleAttribute("background", ea.BackgroundColor);
-                }
 
                 output.RenderBeginTag("div");
                 output.Write(ea.InnerHTML);
                 output.RenderEndTag();
-
-                if (DurationBarVisible)
-                {
-                    output.AddStyleAttribute("position", "absolute");
-                    output.AddAttribute("unselectable", "on");
-                    output.AddAttribute("class", PrefixCssClass("_event_bar"));
-                    output.RenderBeginTag("div");
-
-                    double barLeft = 100.0 * startDelta / width;
-                    double barWidth = 100.0 * realWidth / width;
-
-                    output.AddAttribute("class", PrefixCssClass("_event_bar_inner"));
-                    output.AddStyleAttribute("left", barLeft + "%");
-                    output.AddStyleAttribute("width", barWidth + "%");
-                    if (!String.IsNullOrEmpty(ea.DurationBarColor))
-                    {
-                        output.AddStyleAttribute("background", ea.DurationBarColor);
-                    }
-                    output.RenderBeginTag("div");
-                    output.RenderEndTag();
-
-                    output.RenderEndTag();
-                    //output.Write("<div unselectable='on' style='width:" + realWidth + "px; margin-left: " + startDelta + "px; height:2px; background-color:" + ea.DurationBarColor + "; font-size:1px; position:relative;' ></div>");
-                    //output.Write("<div unselectable='on' style='width:" + width + "px; height:1px; background-color:" + ColorTranslator.ToHtml(EventBorderColor) + "; font-size:1px; position:relative;' ></div>");
-                }
-
                 output.RenderEndTag();    
-                
-            }
 
             
         }
@@ -747,25 +603,6 @@ namespace DayPilot.Web.Ui
 
         private void RenderRowCells(HtmlTextWriter output, Day d)
         {
-
-            if (!CssOnly)
-            {
-                // render all events in the first cell
-                output.AddStyleAttribute("width", "1px");
-                    output.AddStyleAttribute("border-bottom", "1px solid black");
-                    output.AddStyleAttribute("background-color", GetCellColor(d.Start));
-
-                output.AddAttribute("valign", "top");
-                output.AddAttribute("unselectable", "on");
-                output.RenderBeginTag("td");
-
-                RenderEvents(d, output);
-
-                // td
-                output.RenderEndTag();
-            }
-
-
             RenderCells(output, d);
         }
 
@@ -791,20 +628,8 @@ namespace DayPilot.Web.Ui
                 height -= 1;
             }
 
-            output.AddStyleAttribute("width", (RowHeaderWidthResolved) + "px");
-
-            if (!CssOnly)
-            {
-                output.AddStyleAttribute("border-right", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("border-left", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("border-bottom", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("background-color", ColorTranslator.ToHtml(HourNameBackColor));
-                output.AddStyleAttribute("font-family", HeaderFontFamily);
-                output.AddStyleAttribute("font-size", HeaderFontSize);
-                output.AddStyleAttribute("color", ColorTranslator.ToHtml(HeaderFontColor));
-                output.AddStyleAttribute("cursor", "default");
-            }
-
+						var sStyle = string.Format("width:{0}px;", RowHeaderWidthResolved);
+						output.AddAttribute("style", sStyle); 
             output.AddAttribute("unselectable", "on");
             output.AddAttribute("resource", d.Value);
             output.AddAttribute("id", ClientID + "row" + d.Value);
@@ -903,44 +728,30 @@ namespace DayPilot.Web.Ui
         private void RenderCorner(HtmlTextWriter output)
         {
 
-            output.AddStyleAttribute("width", (RowHeaderWidthResolved) + "px");
-            if (!CssOnly)
-            {
-                output.AddStyleAttribute("height", (HeaderHeight - 1) + "px");
-                output.AddStyleAttribute("line-height", (HeaderHeight - 1) + "px");
-                output.AddStyleAttribute("border-right", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("border-top", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("border-left", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("border-bottom", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                output.AddStyleAttribute("background-color", ColorTranslator.ToHtml(HourNameBackColor));
-                output.AddStyleAttribute("cursor", "default");
-                output.AddStyleAttribute("white-space", "nowrap");
-            }
-            else
-            {
-                output.AddStyleAttribute("height", (HeaderHeight) + "px");
-                output.AddAttribute("class", PrefixCssClass("_corner"));
-            }
+					var sStyle = string.Format("width: {0}px; height: {1}px; overflow: hidden", RowHeaderWidthResolved, HeaderHeight);
+					output.AddAttribute("style", sStyle);
+          output.AddAttribute("class", PrefixCssClass("_corner"));
+          output.AddAttribute("unselectable", "on");
+          output.RenderBeginTag("div");
 
-            output.AddStyleAttribute("overflow", "hidden");
-            output.AddAttribute("unselectable", "on");
-            output.RenderBeginTag("div");
+          output.AddAttribute("id", ClientID + "_corner");
+          output.AddAttribute("unselectable", "on");
 
-            output.AddAttribute("id", ClientID + "_corner");
-            output.AddAttribute("unselectable", "on");
-            output.AddStyleAttribute("height", (HeaderHeight - 1) + "px");
-            if (CssOnly)
-            {
-                output.AddAttribute("class", PrefixCssClass("_corner_inner"));
-            }
-            output.RenderBeginTag("div");
-            output.RenderEndTag();
+					sStyle = string.Format("height: {0}px; overflow: hidden", HeaderHeight - 1);
+					output.AddAttribute("style", sStyle);
 
-            output.RenderEndTag(); // td
+          output.AddAttribute("class", PrefixCssClass("_corner_inner"));
+
+          output.RenderBeginTag("div");
+          output.RenderEndTag();
+
+          output.RenderEndTag(); // td
         }
 
         internal void RenderHeaderCols(HtmlTextWriter output)
         {
+	        string sStyle;
+
             for (int i = 0; i < CellCount; i++)
             {
                 DateTime from = StartDate.AddMinutes(CellDuration * i);
@@ -982,64 +793,31 @@ namespace DayPilot.Web.Ui
                     tooltip = from.Year.ToString();
                 }
 
-                if (!CssOnly)
-                {
-                    if (i == 0)
-                    {
-                        output.AddAttribute("colspan", "2");
-                    }
-                    if (i == CellCount - 1)
-                    {
-                        output.AddStyleAttribute("border-right", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                    }
-                    output.AddStyleAttribute("border-top", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                    output.AddStyleAttribute("border-bottom", "1px solid " + ColorTranslator.ToHtml(BorderColor));
-                    output.AddStyleAttribute("text-align", "center");
-                    output.AddStyleAttribute("background-color", ColorTranslator.ToHtml(HourNameBackColor));
-                    output.AddStyleAttribute("font-family", HourFontFamily);
-                    output.AddStyleAttribute("font-size", HourFontSize);
-                    output.AddStyleAttribute("cursor", "default");
-                }
-                output.AddStyleAttribute("width", (CellWidth) + "px");
-                output.AddStyleAttribute("height", (HeaderHeight - 1) + "px");
-                output.AddStyleAttribute("overflow", "hidden");
+
+								sStyle = string.Format("width: {0}px; height: {1}px; overflow: hidden; -khtml-user-select:none; -moz-user-select:none", CellWidth, HeaderHeight - 1);
                 output.AddAttribute("unselectable", "on");
-                output.AddStyleAttribute("-khtml-user-select", "none");
-                output.AddStyleAttribute("-moz-user-select", "none");
+
+								output.AddAttribute("style", sStyle);
                 output.RenderBeginTag("td");
 
-                if (!CssOnly)
-                {
-                    output.AddAttribute("unselectable", "on");
-                    output.AddAttribute("title", tooltip);
-                    output.AddStyleAttribute("height", (HeaderHeight - 1) + "px");
-                    output.AddStyleAttribute("border-right", "1px solid " + ColorTranslator.ToHtml(HourNameBorderColor));
-                    output.AddStyleAttribute("width", (CellWidth - 1) + "px");
-                    output.AddStyleAttribute("overflow", "hidden");
-                    output.RenderBeginTag("div");
-                    output.Write(text);
-                    output.RenderEndTag();
-                }
-                else
-                {
-                    output.AddAttribute("unselectable", "on");
-                    output.AddAttribute("title", tooltip);
-                    output.AddAttribute("class", PrefixCssClass("_timeheadercol"));
-                    output.AddStyleAttribute("height", (HeaderHeight) + "px");
-                    output.AddStyleAttribute("width", (CellWidth) + "px");
-                    output.AddStyleAttribute("position", "relative");
-                    output.AddStyleAttribute("overflow", "hidden");
-                    output.RenderBeginTag("div");
+                output.AddAttribute("unselectable", "on");
+                output.AddAttribute("title", tooltip);
+                output.AddAttribute("class", PrefixCssClass("_timeheadercol"));
 
-                    output.AddAttribute("unselectable", "on");
-                    output.AddAttribute("class", PrefixCssClass("_timeheadercol_inner"));
-                    output.RenderBeginTag("div");
+								 sStyle = string.Format("height: {0}px; width:{1}px; position:relative; overflow:hidden;", HeaderHeight, CellWidth);
+								output.AddAttribute("style", sStyle);
 
-                    output.Write(text);
+                output.RenderBeginTag("div");
+
+                output.AddAttribute("unselectable", "on");
+                output.AddAttribute("class", PrefixCssClass("_timeheadercol_inner"));
+                output.RenderBeginTag("div");
+
+                output.Write(text);
                     
-                    output.RenderEndTag();
-                    output.RenderEndTag();
-                }
+                output.RenderEndTag();
+                output.RenderEndTag();
+
                 output.RenderEndTag();
             }
         }
