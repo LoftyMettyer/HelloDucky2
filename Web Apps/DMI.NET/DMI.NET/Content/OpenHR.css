@@ -794,6 +794,7 @@ header {
 
 /* SSI Specifics */
 .DMI #imgTViewHelp, .DMI #tdTOrderHelp { display: none;}
+/*.DMI #tdTViewHelp, .DMI #tdTOrderHelp { display: none;}*/
 
 /* User picture */
 .userpic {
