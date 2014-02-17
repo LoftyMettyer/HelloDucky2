@@ -96,7 +96,7 @@
 																<td style="width: 20px; white-space: nowrap">&nbsp;</td>
 																<td style="padding-left: 10px; width: 10px">Access :</td>
 																<td style="width: 5px">&nbsp;</td>
-																<td style="width: 40%; height: 100px; vertical-align: top" rowspan="3">
+																<td style="width: 40%; vertical-align: top" rowspan="3">
 																	<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>
 																</td>
 																<td style="width: 5px">&nbsp;</td>

@@ -427,7 +427,7 @@
 														<td width="20" nowrap>&nbsp;</td>
 														<td width="10" valign="top">Access :</td>
 														<td width="5">&nbsp;</td>
-														<td style="height: 140px; width: 40%; vertical-align: top" rowspan="2" valign="top">
+														<td style="width: 40%; vertical-align: top" rowspan="2" valign="top">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>    
 														</td>
 														<td width="5">&nbsp;</td>

@@ -222,7 +222,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td ></td>
 														<td width="10" valign="top" nowrap>Access :</td>
 														
-														<td width="40%" rowspan="1" style="vertical-align: top; height:140px">
+														<td rowspan="1" style="vertical-align: top; width: 40%;">
 															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%> 
 															
 														</td>
