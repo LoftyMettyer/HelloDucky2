@@ -1,7 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
 
@@ -346,22 +347,14 @@
 								<td height="10" colspan="5" align="center">
 									<%
 										' Get the order records.
-										Dim cmdSortOrder As Command = New Command
-										cmdSortOrder.CommandType = CommandTypeEnum.adCmdStoredProc
-										cmdSortOrder.ActiveConnection = Session("databaseConnection")
-										cmdSortOrder.CommandText = "spASRIntGetSortOrderColumns"
+										
+										Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-										Dim prmIncluded = cmdSortOrder.CreateParameter("included", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-										cmdSortOrder.Parameters.Append(prmIncluded)
-										prmIncluded.Value = Request("txtSortInclude")
-
-										Dim prmExcluded = cmdSortOrder.CreateParameter("excluded", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 8000)
-										cmdSortOrder.Parameters.Append(prmExcluded)
-										prmExcluded.Value = Request("txtSortExclude")
-
-										Dim rstSortOrder = cmdSortOrder.Execute
-	
-										If rstSortOrder.EOF Then
+										Dim rstSortOrder = objDataAccess.GetFromSP("spASRIntGetSortOrderColumns" _
+											, New SqlParameter("psIncludedColumns", SqlDbType.VarChar, -1) With {.Value = Request("txtSortInclude")} _
+											, New SqlParameter("psExcludedColumns", SqlDbType.VarChar, -1) With {.Value = Request("txtSortExclude")})
+							
+										If rstSortOrder.Rows.Count = 0 Then
 									%>
 									<h3>Warning</h3>
 								</td>
@@ -422,18 +415,17 @@
 							<%
 							End If
 
-							Do Until rstSortOrder.EOF
-								If Not InStr(Request("txtSortExclude"), rstSortOrder.Fields("columnID").Value) Then
-									Response.Write("<option value=" & Chr(34) & rstSortOrder.Fields("columnID").Value & Chr(34))
+							For Each objRow As DataRow In rstSortOrder.Rows
+								If Not InStr(Request("txtSortExclude"), objRow("columnID").ToString()) Then
+									Response.Write("<option value=" & Chr(34) & objRow("columnID") & Chr(34))
 									If Request("txtSortEditing") = "true" Then
-										If (rstSortOrder.Fields("columnID").Value = CLng(Request("txtSortColumnID"))) Then
+										If (CInt(objRow("columnID")) = CInt(Request("txtSortColumnID"))) Then
 											Response.Write(" selected")
 										End If
 									End If
-									Response.Write(">" & rstSortOrder.Fields("columnName").Value & "</option>" & vbCrLf)
+									Response.Write(">" & objRow("columnName").ToString() & "</option>" & vbCrLf)
 								End If
-								rstSortOrder.MoveNext()
-							Loop
+							Next
 							%>
 						</select>
 					</select>

@@ -35829,10 +35829,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetStandardReportDates]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSortOrderColumns]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetSortOrderColumns]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetSingleRecordViewID]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetSingleRecordViewID]
 GO
@@ -44029,45 +44025,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSortOrderColumns]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetSortOrderColumns] (
-	@psIncludedColumns		varchar(MAX),
-	@psExcludedColumns		varchar(MAX)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @sSQL nvarchar(MAX);
-	
-	/* Clean the input string parameters. */
-	IF len(@psIncludedColumns) > 0 SET @psIncludedColumns = replace(@psIncludedColumns, '''', '''''');
-	IF len(@psExcludedColumns) > 0 SET @psExcludedColumns = replace(@psExcludedColumns, '''', '''''');
-
-	SET @sSQL = 'SELECT ASRSysColumns.columnID, ' +
-		'ASRSysTables.tableName + ''.'' + ASRSysColumns.columnName AS [columnName] ' +
-		'FROM ASRSysColumns ' +
-		'INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID ' +
-		'WHERE ASRSysColumns.columnID IN ('+ @psIncludedColumns + ')';
-
-	IF len(@psExcludedColumns) > 0
-	BEGIN
-		SET @sSQL = @sSQL + ' AND [columnID] NOT IN (' + @psExcludedColumns + ')';
-	END
-
-	SET @sSQL = @sSQL + ' ORDER BY [columnName] ASC';
-	
-	EXECUTE sp_executeSQL @sSQL;
-END
-GO
-
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetStandardReportDates]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -46659,7 +46616,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetStandardReportDates]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSortOrderColumns]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetSortOrderColumns]
 GO
 
@@ -56202,7 +56158,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSortOrderColumns]    Script Date: 13/09/2013 08:58:00 ******/
 SET ANSI_NULLS ON
 GO
 
