@@ -1,4 +1,3 @@
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetMailMergeDefinition]    Script Date: 04/08/2010 13:30:57 ******/
 CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (	
 			@piReportID 			integer, 	
 			@psCurrentUser			varchar(255),		

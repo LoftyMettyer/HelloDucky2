@@ -130,20 +130,14 @@
 																		<tr style="height: 35px">
 																			<td width="5">
 																				<input checked id="optRecordSelection1" name="optRecordSelection" type="radio"
-																					onclick="changeBaseTableRecordOptions()"
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}" />
+																					onclick="changeBaseTableRecordOptions()"/>
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td width="30">
 																				<label
 																					tabindex="-1"
 																					for="optRecordSelection1"
-																					class="radio"
-																					onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																					class="radio">
 																					All
 																				</label>
 																			</td>
@@ -152,20 +146,14 @@
 																		<tr>
 																			<td width="5">
 																				<input id="optRecordSelection2" name="optRecordSelection" type="radio"
-																					onclick="changeBaseTableRecordOptions()"
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}" />
+																					onclick="changeBaseTableRecordOptions()" />
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td width="20">
 																				<label
 																					tabindex="-1"
 																					for="optRecordSelection2"
-																					class="radio"
-																					onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																					class="radio">
 																					Picklist</label>
 																			</td>
 																			<td width="5">&nbsp;</td>
@@ -174,30 +162,20 @@
 																			</td>
 																			<td width="30">
 																				<input id="cmdBasePicklist" name="cmdBasePicklist" style="width: 100%" type="button" value="..." class="btn"
-																					onclick="selectRecordOption('base', 'picklist')"
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
+																					onclick="selectRecordOption('base', 'picklist')" />
 																			</td>
 																		</tr>
 																		<tr>
 																			<td width="5">
 																				<input id="optRecordSelection3" name="optRecordSelection" type="radio"
-																					onclick="changeBaseTableRecordOptions()"
-																					onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																					onfocus="try{radio_onFocus(this);}catch(e){}"
-																					onblur="try{radio_onBlur(this);}catch(e){}" />
+																					onclick="changeBaseTableRecordOptions()" />
 																			</td>
 																			<td width="5">&nbsp;</td>
 																			<td width="20">
 																				<label
 																					tabindex="-1"
 																					for="optRecordSelection3"
-																					class="radio"
-																					onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																					class="radio">
 																					Filter</label>
 																			</td>
 																			<td width="5">&nbsp;</td>
@@ -206,11 +184,7 @@
 																			</td>
 																			<td width="30">
 																				<input id="cmdBaseFilter" name="cmdBaseFilter" style="width: 100%" type="button" value="..." class="btn"
-																					onclick="selectRecordOption('base', 'filter')"
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
+																					onclick="selectRecordOption('base', 'filter')" />
 																			</td>
 																		</tr>
 																	</table>
@@ -294,43 +268,28 @@
 																	<td height="5"></td>
 																	<td style="height: 5px; width: 5%">
 																		<input id="optColumns" name="optAvailType" type="radio" checked disabled="disabled"
-																			onclick="refreshAvailableColumns();"
-																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																			onfocus="try{radio_onFocus(this);}catch(e){}"
-																			onblur="try{radio_onBlur(this);}catch(e){}" />
+																			onclick="refreshAvailableColumns();" />
 																	</td>
 																	<td height="5" width="5">
 																		<label
 																			tabindex="-1"
 																			for="optColumns"
-																			class="radio radiodisabled"
-																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			class="radio radiodisabled">
 																			Columns</label>
 																	</td>
 																	<td width="5" height="5"></td>
 																	<td style="height: 5px; width: 5%">
 																		<input id="optCalc" name="optAvailType" type="radio" disabled="disabled"
-																			onclick="refreshAvailableColumns();"
-																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																			onfocus="try{radio_onFocus(this);}catch(e){}"
-																			onblur="try{radio_onBlur(this);}catch(e){}" />
+																			onclick="refreshAvailableColumns();" />
 																	</td>
 																	<td width="5" height="5">
 																		<label
 																			tabindex="-1"
 																			for="optCalc"
-																			class="radio radiodisabled"
-																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			class="radio radiodisabled">
 																			Calculations</label>
 																	</td>
 																	<td height="5"></td>
-																	<%--																	<tr height="10">
-																		<td height="10" colspan="7" width="100%"></td>
-																	</tr>--%>
 																</tr>
 															</table>
 														</td>
@@ -364,11 +323,7 @@
 																	<td>&nbsp</td>
 																	<td width="100" nowrap align="center">
 																		<input type="button" name="cmdColumnAdd" id="cmdColumnAdd" value="Add..." style="width: 100%; HEIGHT: 100%" class="btn"
-																			onclick="columnSwap(true)"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="columnSwap(true)"/>
 																	</td>
 																	<td>&nbsp;</td>
 																</tr>
@@ -379,11 +334,7 @@
 																	<td></td>
 																	<td width="100" nowrap align="center">
 																		<input type="button" name="cmdColumnAddAll" id="cmdColumnAddAll" value="Add All" style="width: 100%; HEIGHT: 100%" class="btn"
-																			onclick="columnSwapAll(true)"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="columnSwapAll(true)" />
 																	</td>
 																	<td></td>
 																</tr>
@@ -394,11 +345,7 @@
 																	<td></td>
 																	<td width="100" nowrap align="center">
 																		<input type="button" name="cmdColumnRemove" id="cmdColumnRemove" value="Remove" style="width: 100%; HEIGHT: 100%" class="btn"
-																			onclick="columnSwap(false)"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="columnSwap(false)" />
 																	</td>
 																	<td></td>
 																</tr>
@@ -409,11 +356,7 @@
 																	<td></td>
 																	<td width="100" nowrap align="center">
 																		<input type="button" name="cmdColumnRemoveAll" id="cmdColumnRemoveAll" value="Remove All" style="width: 100%; HEIGHT: 100%" class="btn"
-																			onclick="columnSwapAll(false)"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="columnSwapAll(false)" />
 																	</td>
 																	<td></td>
 																</tr>
@@ -497,11 +440,7 @@
 														<td width="10">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortAdd" name="cmdSortAdd" value="Add..." style="width: 100%" class="btn"
-																onclick="sortAdd()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortAdd()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -515,11 +454,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortEdit" name="cmdSortEdit" value="Edit..." style="width: 100%" class="btn"
-																onclick="sortEdit()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortEdit()"/>
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -533,11 +468,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortRemove" name="cmdSortRemove" value="Remove" style="width: 100%" class="btn"
-																onclick="sortRemove()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortRemove()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -550,11 +481,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortRemoveAll" name="cmdSortRemoveAll" value="Remove All" style="width: 100%" class="btn"
-																onclick="sortRemoveAll()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortRemoveAll()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -568,11 +495,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortMoveUp" name="cmdSortMoveUp" value="Move Up" style="width: 100%" class="btn"
-																onclick="sortMove(true)"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortMove(true)" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -586,11 +509,7 @@
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortMoveDown" name="cmdSortMoveDown" value="Move Down" style="width: 100%" class="btn"
-																onclick="sortMove(false)"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortMove(false)" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -629,19 +548,11 @@
 																<tr>
 																	<td>
 																		<input type="button" value="..." id="cmdTemplateSelect" name="cmdTemplateSelect" class="btn"
-																			onclick="TemplateSelect()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="TemplateSelect()" />
 																	</td>
 																	<td>
 																		<input type="button" value="Clear" id="cmdTemplateClear" name="cmdTemplateClear" class="btn"
-																			onclick="TemplateClear()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="TemplateClear()" />
 																	</td>
 																</tr>
 															</table>
@@ -658,18 +569,11 @@
 														<td></td>
 														<td nowrap>
 															<input type="checkbox" id="chkPause" name="chkPause" tabindex="0"
-																onclick="changeTab4Control()"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="changeTab4Control()" />
 															<label
 																for="chkPause"
 																class="checkbox"
-																tabindex="-1"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="-1">
 																Pause before mail merge</label>
 														</td>
 														
@@ -688,18 +592,11 @@
 														<td></td>
 														<td nowrap>
 															<input type="checkbox" id="chkSuppressBlanks" name="chkSuppressBlanks" tabindex="0"
-																onclick="changeTab4Control()"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																onclick="changeTab4Control()" />
 																<label
 																	for="chkSuppressBlanks"
 																	class="checkbox"
-																	tabindex="-1"
-																	onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																	onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																	onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																	onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Suppress blank lines</label>
+																	tabindex="-1">Suppress blank lines</label>
 														</td>
 														<td> </td>
 														<td> </td>
@@ -729,19 +626,13 @@
 																			<tr style="height: 20px">
 																				<td width="5" style="vertical-align: text-top">
 																					<input checked id="optDestination0" name="optDestination" type="radio"
-																						onclick="refreshDestination(); changeTab4Control(); "
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="refreshDestination(); changeTab4Control(); " />
 																				</td>
 																				<%--<td width="5">&nbsp;</td>--%>
 																				<td width="130px" style="vertical-align: text-top; white-space: nowrap">
 																					<label tabindex="-1"
 																						for="optDestination0"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Word Document</label>
 																				</td>
 																				<%--<td>&nbsp;</td>--%>
@@ -749,19 +640,13 @@
 																			<tr style="height: 20px">
 																				<td width="5">
 																					<input id="optDestination1" name="optDestination" type="radio"
-																						onclick="refreshDestination(); changeTab4Control(); "
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="refreshDestination(); changeTab4Control(); " />
 																				</td>
 																				<%--<td width="5">&nbsp;</td>--%>
 																				<td style="width: 130px; white-space: nowrap">
 																					<label tabindex="-1"
 																						for="optDestination1"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Individual Emails</label>
 																				</td>
 																				<td width="5px">&nbsp;</td>
@@ -774,19 +659,13 @@
 																				<%End If%>
 																				<td width="5">
 																					<input id="optDestination2" name="optDestination" type="radio"
-																						onclick="refreshDestination(); changeTab4Control(); "
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="refreshDestination(); changeTab4Control(); "/>
 																				</td>
 																				
 																				<td style="white-space: nowrap">
 																					<label tabindex="-1"
 																						for="optDestination2"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Document Management</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -815,20 +694,13 @@
 																			<tr id="row4" name="row4" style="height: 20px; padding: 5px">
 																				<td style="white-space: nowrap" colspan="2">
 																					<input type="checkbox" id="chkOutputScreen" name="chkOutputScreen" tabindex="0"
-																						onclick="changeTab4Control()"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab4Control()" />
 																				</td>
 																				<td style="width: 200px; white-space: nowrap">
 																					<label
 																						for="chkOutputScreen"
 																						class="checkbox"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Display output on screen
 																					</label>
 																				</td>
@@ -854,18 +726,11 @@
 																				<tr name="row5" id="row5" style="height: 20px; padding: 5px">
 																					<td style="white-space: nowrap;width:200px" colspan="3" >
 																						<input type="checkbox" id="chkOutputPrinter" name="chkOutputPrinter" tabindex="0"
-																							onclick="chkOutputPrinter_Click(); changeTab4Control(); "
-																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																							onclick="chkOutputPrinter_Click(); changeTab4Control(); "/>
 																						<label
 																							for="chkOutputPrinter"
 																							class="checkbox"
-																							tabindex="-1"
-																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																							onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																							onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																							tabindex="-1">
 																							Send to printer</label>
 																					</td>
 																					<%--<td>&nbsp;</td>--%>
@@ -885,18 +750,11 @@
 																				<tr name="row6" id="row6" style="height: 20px; padding: 5px">
 																					<td style="white-space: nowrap;width:200px" colspan="3">
 																						<input type="checkbox" id="chkSave" name="chkSave" tabindex="0"
-																							onclick="chkSave_Click(); changeTab4Control(); "
-																							onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																							onclick="chkSave_Click(); changeTab4Control(); " />
 																						<label
 																							for="chkSave"
 																							class="checkbox"
-																							tabindex="-1"
-																							onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																							onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																							onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																							onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																							tabindex="-1">
 																							Save to file</label>
 																					</td>
 																					<td class="text" style="white-space: nowrap;width: 120px;text-align: left">File name :</td>
@@ -905,19 +763,11 @@
 																					</td>
 																					<td>
 																						<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
-																							onclick="saveFile()"
-																							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																							onfocus="try{button_onFocus(this);}catch(e){}"
-																							onblur="try{button_onBlur(this);}catch(e){}" />
+																							onclick="saveFile()"/>
 																					</td>
 																					<td>
 																						<input type="button" value="Clear" id="cmdClearFile" name="cmdClearFile" class="btn"
-																							onclick="fileClear()"
-																							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																							onfocus="try{button_onFocus(this);}catch(e){}"
-																							onblur="try{button_onBlur(this);}catch(e){}" />
+																							onclick="fileClear()"/>
 																					</td>
 																					<td>&nbsp;</td>
 																				</tr>
@@ -942,18 +792,11 @@
 																			<tr name="row9" id="row9" style="height: 20px; padding: 5px">
 																				<td nowrap colspan="3">
 																					<input type="checkbox" id="chkAttachment" name="chkAttachment" tabindex="0"
-																						onclick="chkAttachment_Click(); changeTab4Control(); "
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="chkAttachment_Click(); changeTab4Control(); " />
 																					<label
 																						for="chkAttachment"
 																						class="checkbox"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Send as attachment
 																					</label>
 																				</td>
@@ -987,17 +830,9 @@
 			<%--these buttons are superceded by ribbon but are 
 			here because the ribbon calls their click event--%>
 			<input type="button" id="cmdOK" name="cmdOK" value="OK" class="btn"
-				onclick="okClick()"
-				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-				onfocus="try{button_onFocus(this);}catch(e){}"
-				onblur="try{button_onBlur(this);}catch(e){}" />
+				onclick="okClick()"/>
 			<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" class="btn"
-				onclick="cancelClick()"
-				onmouseover="try{button_onMouseOver(this);}catch(e){}"
-				onmouseout="try{button_onMouseOut(this);}catch(e){}"
-				onfocus="try{button_onFocus(this);}catch(e){}"
-				onblur="try{button_onBlur(this);}catch(e){}" />
+				onclick="cancelClick()" />
 		</div>
 
 		<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
@@ -1043,213 +878,123 @@
 <form id="frmOriginalDefinition">
 	<%
 		Dim sErrMsg = ""
-		Dim prmUtilID As Object
-	
+
+		Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmSelection = New SqlParameter("piSelection", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputFileName = New SqlParameter("psOutputFileName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmEmailAddrID = New SqlParameter("piEmailAddrID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmEmailSubject = New SqlParameter("psEmailSubject", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmTemplateFileName = New SqlParameter("psTemplateFileName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmEmailAsAttachment = New SqlParameter("pfEmailAsAttachment", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmEmailAttachmentName = New SqlParameter("psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmSuppressBlanks = New SqlParameter("pfSuppressBlanks", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmPauseBeforeMerge = New SqlParameter("pfPauseBeforeMerge", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+		Dim prmDocumentMapID = New SqlParameter("piDocumentMapID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmManualDocManHeader = New SqlParameter("pfManualDocManHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+		Dim prmWarningMsg = New SqlParameter("psWarningMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
 		If Session("action") <> "new" Then
-			Dim cmdDefn = CreateObject("ADODB.Command")
-			cmdDefn.CommandText = "sp_ASRIntGetMailMergeDefinition"
-			cmdDefn.CommandType = 4	' Stored Procedure
-			cmdDefn.ActiveConnection = Session("databaseConnection")
-		
-			prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)
-			' 3=integer, 1=input
-			cmdDefn.Parameters.Append(prmUtilID)
-			prmUtilID.value = CleanNumeric(Session("utilid"))
 
-			Dim prmUser = cmdDefn.CreateParameter("user", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmUser)
-			prmUser.value = Session("username")
+			Dim rstDefinition = objDataAccess.GetFromSP("sp_ASRIntGetMailMergeDefinition" _
+				, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))} _
+				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = Session("username")} _
+				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Session("action")} _
+				, prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID _
+				, prmSelection, prmPicklistID, prmPicklistName, prmPicklistHidden _
+				, prmFilterID, prmFilterName, prmFilterHidden _
+				, prmOutputFormat, prmOutputSave, prmOutputFileName, prmEmailAddrID, prmEmailSubject _
+				, prmTemplateFileName, prmOutputScreen, prmEmailAsAttachment, prmEmailAttachmentName, prmSuppressBlanks _
+				, prmPauseBeforeMerge, prmOutputPrinter, prmOutputPrinterName _
+				, prmDocumentMapID, prmManualDocManHeader, prmTimestamp, prmWarningMsg)
 
-			Dim prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmAction)
-			prmAction.value = Session("action")
-
-			Dim prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmErrMsg)
-
-			Dim prmName = cmdDefn.CreateParameter("name", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmName)
-
-			Dim prmOwner = cmdDefn.CreateParameter("owner", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOwner)
-
-			Dim prmDescription = cmdDefn.CreateParameter("description", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmDescription)
-
-			Dim prmBaseTableID = cmdDefn.CreateParameter("baseTableID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmBaseTableID)
-
-			Dim prmSelection = cmdDefn.CreateParameter("selection", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmSelection)
-
-			Dim prmPicklistID = cmdDefn.CreateParameter("picklistID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmPicklistID)
-
-			Dim prmPicklistName = cmdDefn.CreateParameter("picklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmPicklistName)
-
-			Dim prmPicklistHidden = cmdDefn.CreateParameter("picklistHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmPicklistHidden)
-
-			Dim prmFilterID = cmdDefn.CreateParameter("filterID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmFilterID)
-
-			Dim prmFilterName = cmdDefn.CreateParameter("filterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmFilterName)
-
-			Dim prmFilterHidden = cmdDefn.CreateParameter("filterHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmFilterHidden)
-
-			Dim prmOutputFormat = cmdDefn.CreateParameter("outputFormat", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmOutputFormat)
-
-			Dim prmOutputSave = cmdDefn.CreateParameter("outputSave", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputSave)
-
-			Dim prmOutputFileName = cmdDefn.CreateParameter("outputFileName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputFileName)
-
-			Dim prmEmailAddrID = cmdDefn.CreateParameter("EmailAddrID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmEmailAddrID)
-
-			Dim prmEmailSubject = cmdDefn.CreateParameter("EmailSubject", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmEmailSubject)
-
-			Dim prmTemplateFileName = cmdDefn.CreateParameter("TemplateFileName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmTemplateFileName)
-
-			Dim prmOutputScreen = cmdDefn.CreateParameter("outputScreen", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputScreen)
-
-			Dim prmEmailAsAttachment = cmdDefn.CreateParameter("EmailAsAttachment", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmEmailAsAttachment)
-
-			Dim prmEmailAttachmentName = cmdDefn.CreateParameter("EmailAttachmentName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmEmailAttachmentName)
-
-			Dim prmSuppressBlanks = cmdDefn.CreateParameter("SuppressBlanks", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmSuppressBlanks)
-
-			Dim prmPauseBeforeMerge = cmdDefn.CreateParameter("PauseBeforeMerge", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmPauseBeforeMerge)
-
-			Dim prmOutputPrinter = cmdDefn.CreateParameter("outputPrinter", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputPrinter)
-		
-			Dim prmOutputPrinterName = cmdDefn.CreateParameter("outputPrinterName", 200, 2, 255) '200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputPrinterName)
-
-			Dim prmDocumentMapID = cmdDefn.CreateParameter("documentMapID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmDocumentMapID)
-
-			Dim prmManualDocManHeader = cmdDefn.CreateParameter("manualDocManHeader", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmManualDocManHeader)
-
-			Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	' 3=integer, 2=output
-			cmdDefn.Parameters.Append(prmTimestamp)
-
-			Dim prmWarningMsg = cmdDefn.CreateParameter("warningMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmWarningMsg)
-
-			Err.Clear()
-			Dim rstDefinition = cmdDefn.Execute
 			Dim iHiddenCalcCount = 0
-		
-			If (Err.Number <> 0) Then
-				sErrMsg = CType(("'" & Session("utilname") & "' definition could not be read." & vbCrLf & FormatError(Err.Description)), String)
-			Else
-				If rstDefinition.state <> 0 Then
-					' Read recordset values.
-					Dim iCount = 0
-					Do While Not rstDefinition.EOF
-						iCount = iCount + 1
-						If rstDefinition.fields("definitionType").value = "ORDER" Then
-							Response.Write("<INPUT type=""hidden"" id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & rstDefinition.fields("definitionString").value & """>" & vbCrLf)
-						Else
-							Response.Write("<INPUT type=""hidden"" id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(rstDefinition.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
-	
-							' Check if the report column is a hidden calc.
-							If rstDefinition.fields("hidden").value = "Y" Then
-								iHiddenCalcCount = iHiddenCalcCount + 1
-							End If
-						End If
-						rstDefinition.MoveNext()
-					Loop
+			Dim iCount = 0
 
-					' Release the ADO recordset object.
-					rstDefinition.close()
-				End If
-				'rstDefinition = Nothing
-			
-				' NB. IMPORTANT ADO NOTE.
-				' When calling a stored procedure which returns a recordset AND has output parameters
-				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdDefn.Parameters("errMsg").value) > 0 Then
-					sErrMsg = CType(("'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").value), String)
-				End If
-
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Selection name=txtDefn_Selection value=" & cmdDefn.Parameters("Selection").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & LCase(cmdDefn.Parameters("picklistHidden").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & LCase(cmdDefn.Parameters("filterHidden").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & LCase(cmdDefn.Parameters("OutputSave").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputFileName name=txtDefn_OutputFileName value=""" & cmdDefn.Parameters("OutputFileName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAddrID name=txtDefn_EmailAddrID value=" & cmdDefn.Parameters("EmailAddrID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailSubject name=txtDefn_EmailSubject value=""" & Replace(cmdDefn.Parameters("EmailSubject").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_TemplateFileName name=txtDefn_TemplateFileName value=""" & cmdDefn.Parameters("TemplateFileName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & LCase(cmdDefn.Parameters("OutputScreen").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAsAttachment name=txtDefn_EmailAsAttachment value=" & Replace(LCase(cmdDefn.Parameters("EmailAsAttachment").value), """", "&quot;") & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_EmailAttachmentName name=txtDefn_EmailAttachmentName value=""" & cmdDefn.Parameters("EmailAttachmentName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_SuppressBlanks name=txtDefn_SuppressBlanks value=" & LCase(cmdDefn.Parameters("SuppressBlanks").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_PauseBeforeMerge name=txtDefn_PauseBeforeMerge value=" & LCase(cmdDefn.Parameters("PauseBeforeMerge").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & LCase(cmdDefn.Parameters("OutputPrinter").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapID name=txtDefn_DocumentMapID value=" & cmdDefn.Parameters("DocumentMapID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_ManualDocManHeader name=txtDefn_ManualDocManHeader value=" & LCase(cmdDefn.Parameters("ManualDocManHeader").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").value & ">" & vbCrLf)
-				Response.Write("<INPUT type=""hidden"" id=txtDefn_Warning name=txtDefn_Warning value=""" & Replace(cmdDefn.Parameters("warningMsg").value, """", "&quot;") & """>" & vbCrLf)
-			End If
-		
-			Dim fDocManagement = False
-			Dim lngDocumentMapID = 0
-			If cmdDefn.Parameters("DocumentMapID").value > 0 Then
-				fDocManagement = True
-				lngDocumentMapID = CInt(cmdDefn.Parameters("DocumentMapID").value)
-			End If
-
-			' Release the ADO command object.
-			cmdDefn = Nothing
-		
-			If fDocManagement = True Then
-				' Get the Document Type 'Name' (only the ID is stored in the table)
-				Dim cmdDocManRecords = CreateObject("ADODB.Command")
-				cmdDocManRecords.CommandText = "spASRIntGetDocumentManagementTypes"
-				cmdDocManRecords.CommandType = 4 ' Stored Procedure
-				cmdDocManRecords.ActiveConnection = Session("databaseConnection")
-				Err.Clear()
-				Dim rstDocManRecords = cmdDocManRecords.Execute
-			
-				Dim lngCount = 1
-				Do While Not rstDocManRecords.EOF
-					If CInt(rstDocManRecords.Fields(0).Value) = lngDocumentMapID Then
-						Response.Write("<INPUT type=""hidden"" id=txtDefn_DocumentMapName name=txtDefn_DocumentMapName value=""" & Replace(CType(rstDocManRecords.Fields(1).Value, String), """", "&quot;") & """>" & vbCrLf)
-					End If
-
-					rstDocManRecords.MoveNext()
-					lngCount = lngCount + 1
-				Loop
+			For Each objRow As DataRow In rstDefinition.Rows
 				
-				cmdDocManRecords = Nothing
+				iCount = iCount + 1
+				If objRow("definitionType").ToString() = "ORDER" Then
+					Response.Write("<input type=""hidden"" id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & objRow("definitionString").ToString() & """>" & vbCrLf)
+				Else
+					Response.Write("<input type=""hidden"" id=txtReportDefnColumn_" & iCount & " name=txtReportDefnColumn_" & iCount & " value=""" & Replace(objRow("definitionString").ToString(), """", "&quot;") & """>" & vbCrLf)
+	
+					' Check if the report column is a hidden calc.
+					If objRow("hidden").ToString() = "Y" Then
+						iHiddenCalcCount += 1
+					End If
+				End If
+
+			Next
+
+			If Len(prmErrMsg.Value) > 0 Then
+				sErrMsg = CType(("'" & Session("utilname") & "' " & prmErrMsg.Value), String)
 			End If
+
+			Response.Write("<input type=""hidden"" id=txtDefn_Name name=txtDefn_Name value=""" & Replace(prmName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(prmOwner.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_Description name=txtDefn_Description value=""" & Replace(prmDescription.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & prmBaseTableID.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_Selection name=txtDefn_Selection value=" & prmSelection.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & prmPicklistID.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(prmPicklistName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & LCase(prmPicklistHidden.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_FilterID name=txtDefn_FilterID value=" & prmFilterID.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(prmFilterName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & LCase(prmFilterHidden.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & prmOutputFormat.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & LCase(prmOutputSave.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputFileName name=txtDefn_OutputFileName value=""" & prmOutputFileName.Value & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_EmailAddrID name=txtDefn_EmailAddrID value=" & prmEmailAddrID.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_EmailSubject name=txtDefn_EmailSubject value=""" & Replace(prmEmailSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_TemplateFileName name=txtDefn_TemplateFileName value=""" & prmTemplateFileName.Value & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & LCase(prmOutputScreen.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_EmailAsAttachment name=txtDefn_EmailAsAttachment value=" & Replace(LCase(prmEmailAsAttachment.Value.ToString()), """", "&quot;") & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_EmailAttachmentName name=txtDefn_EmailAttachmentName value=""" & prmEmailAttachmentName.Value & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_SuppressBlanks name=txtDefn_SuppressBlanks value=" & LCase(prmSuppressBlanks.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_PauseBeforeMerge name=txtDefn_PauseBeforeMerge value=" & LCase(prmPauseBeforeMerge.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & LCase(prmOutputPrinter.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & prmOutputPrinterName.Value & """>" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_DocumentMapID name=txtDefn_DocumentMapID value=" & prmDocumentMapID.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_ManualDocManHeader name=txtDefn_ManualDocManHeader value=" & LCase(prmManualDocManHeader.Value) & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value & ">" & vbCrLf)
+			Response.Write("<input type=""hidden"" id=txtDefn_Warning name=txtDefn_Warning value=""" & Replace(prmWarningMsg.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+
+		End If
+		
+		Dim fDocManagement = False
+		Dim lngDocumentMapID = 0
+		If prmDocumentMapID.value > 0 Then
+			fDocManagement = True
+			lngDocumentMapID = CInt(prmDocumentMapID.value)
+		End If
+		
+		If fDocManagement = True Then
+
+			Dim rstDocManRecords = objDataAccess.GetFromSP("spASRIntGetDocumentManagementTypes")
+
+			For Each objRow As DataRow In rstDocManRecords.Rows
+				If CInt(objRow(0)) = lngDocumentMapID Then
+					Response.Write("<input type=""hidden"" id=txtDefn_DocumentMapName name=txtDefn_DocumentMapName value=""" & Replace(objRow(1).ToString(), """", "&quot;") & """>" & vbCrLf)
+				End If
+			Next
+				
 
 		End If
 	%>
