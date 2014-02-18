@@ -45,9 +45,9 @@ Public Class MailMerge
 	Private mlngDocManMapID As Integer
 	Private mblnDocManManualHeader As Boolean
 
-	Private mintType() As Short
+	Private mintType() As SQLDataType
 	Private mlngSize() As Integer
-	Private mintDecimals() As Short
+	Private mintDecimals() As Integer
 
 
 	'SQL Variables
@@ -313,15 +313,15 @@ Public Class MailMerge
 			GoTo TidyAndExit
 		End If
 
-		mstrDefName = objRow("Name")
-		mlngDefBaseTableID = objRow("TableID")
-		mstrDefBaseTable = objRow("TableName")
-		mlngDefPickListID = objRow("PickListID")
-		mlngDefFilterID = objRow("FilterID")
+		mstrDefName = objRow("Name").ToString()
+		mlngDefBaseTableID = CInt(objRow("TableID"))
+		mstrDefBaseTable = objRow("TableName").ToString()
+		mlngDefPickListID = CInt(objRow("PickListID"))
+		mlngDefFilterID = CInt(objRow("FilterID"))
 
-		mstrDefTemplateFile = objRow("TemplateFileName")
-		mblnDefSuppressBlankLines = objRow("SuppressBlanks")
-		mblnDefPauseBeforeMerge = objRow("PauseBeforeMerge")
+		mstrDefTemplateFile = objRow("TemplateFileName").ToString()
+		mblnDefSuppressBlankLines = CBool(objRow("SuppressBlanks"))
+		mblnDefPauseBeforeMerge = CBool(objRow("PauseBeforeMerge"))
 
 		mlngDefEmailAddrCalc = 0
 		'mstrEmailAddr = vbNullString
@@ -329,11 +329,11 @@ Public Class MailMerge
 		mintDefOutputFormat = objRow("OutputFormat")
 		Select Case mintDefOutputFormat
 			Case MailMergeOutputTypes.WordDocument
-				mblnDefOutputScreen = objRow("OutputScreen")
-				mblnDefOutputPrinter = objRow("OutputPrinter")
-				mstrDefOutputPrinterName = objRow("OutputPrinterName")
-				mblnDefOutputSave = objRow("OutputSave")
-				mstrDefOutputFileName = objRow("OutputFilename")
+				mblnDefOutputScreen = CBool(objRow("OutputScreen"))
+				mblnDefOutputPrinter = CBool(objRow("OutputPrinter"))
+				mstrDefOutputPrinterName = objRow("OutputPrinterName").ToString()
+				mblnDefOutputSave = CBool(objRow("OutputSave"))
+				mstrDefOutputFileName = objRow("OutputFilename").ToString()
 
 			Case MailMergeOutputTypes.IndividualEmail
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -345,20 +345,20 @@ Public Class MailMerge
 					GoTo TidyAndExit
 				End If
 
-				mstrDefEMailSubject = objRow("EmailSubject")
-				mlngDefEmailAddrCalc = objRow("EmailAddrID")
-				mblnDefEMailAttachment = objRow("EMailAsAttachment")
+				mstrDefEMailSubject = objRow("EmailSubject").ToString()
+				mlngDefEmailAddrCalc = CInt(objRow("EmailAddrID"))
+				mblnDefEMailAttachment = CBool(objRow("EMailAsAttachment"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrDefAttachmentName = IIf(IsDBNull(objRow("EmailAttachmentName")), "", objRow("EmailAttachmentName"))
+				mstrDefAttachmentName = IIf(IsDBNull(objRow("EmailAttachmentName")), "", objRow("EmailAttachmentName")).ToString()
 
 			Case MailMergeOutputTypes.DocumentManagement
 				mblnDefOutputPrinter = True
-				mblnDefOutputScreen = objRow("OutputScreen")
-				mstrDefOutputPrinterName = objRow("OutputPrinterName")
+				mblnDefOutputScreen = CBool(objRow("OutputScreen"))
+				mstrDefOutputPrinterName = objRow("OutputPrinterName").ToString()
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mlngDocManMapID = IIf(IsDBNull(objRow("DocumentMapID")), 0, objRow("DocumentMapID"))
+				mlngDocManMapID = CInt(IIf(IsDBNull(objRow("DocumentMapID")), 0, objRow("DocumentMapID")))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mblnDocManManualHeader = IIf(IsDBNull(objRow("ManualDocManHeader")), 0, objRow("ManualDocManHeader"))
+				mblnDocManManualHeader = CBool(IIf(IsDBNull(objRow("ManualDocManHeader")), 0, objRow("ManualDocManHeader")))
 
 		End Select
 
@@ -408,7 +408,7 @@ LocalErr:
 				GetPicklistFilterSelect = vbNullString
 
 				For Each objRow As DataRow In rsTemp.Rows
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & objRow(0).ToString()
+					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "").ToString() & objRow(0).ToString()
 
 				Next
 			End If
@@ -474,7 +474,7 @@ LocalErr:
 
 		Dim strPicklistFilterSelect As String
 		Dim objExpr As clsExprExpression
-		Dim intIndex As Short
+		Dim intIndex As Integer
 		Dim objTableView As TablePrivilege
 
 		fOK = True
@@ -528,13 +528,13 @@ LocalErr:
 					ReDim Preserve mintDecimals(intIndex)
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mlngSize(intIndex) = IIf(IsDBNull(objRow("Size")), 0, objRow("Size"))
+					mlngSize(intIndex) = CInt(IIf(IsDBNull(objRow("Size")), 0, objRow("Size")))
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mintDecimals(intIndex) = IIf(IsDBNull(objRow("Decimals")), 0, objRow("Decimals"))
+					mintDecimals(intIndex) = CInt(IIf(IsDBNull(objRow("Decimals")), 0, objRow("Decimals")))
 
 					Select Case objRow("ColExp")
 						Case "Col"
-							Call SQLAddColumn(mstrSQLSelect, objRow("TableID"), objRow("Table"), objRow("Name"), objRow("Table") & "_" & objRow("Name"))
+							Call SQLAddColumn(mstrSQLSelect, CInt(objRow("TableID")), objRow("Table").ToString(), objRow("Name").ToString(), objRow("Table").ToString() & "_" & objRow("Name").ToString())
 							mintType(intIndex) = objRow("Type")
 
 						Case "Exp"
@@ -548,7 +548,7 @@ LocalErr:
 								fOK = False
 								Exit Function
 
-							ElseIf IsCalcValid(objRow("ColExpID")) <> vbNullString Then
+							ElseIf IsCalcValid(CInt(objRow("ColExpID"))) <> vbNullString Then
 								'MH20011127
 								'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
 								'"Please re-visit your definition to remove the hidden calculations." & vbNewLine
@@ -560,7 +560,7 @@ LocalErr:
 								Call SQLAddCalculation(objRow("ColExpID"), objRow("Table") & objRow("Name"))
 
 								objExpr = NewExpression()
-								objExpr.ExpressionID = objRow("ColExpID")
+								objExpr.ExpressionID = CInt(objRow("ColExpID"))
 								objExpr.ConstructExpression()
 								objExpr.ValidateExpression(True)
 
@@ -592,7 +592,7 @@ LocalErr:
 		End With
 
 		If mstrWhereIDs <> vbNullString Then
-			mstrSQLWhere = "(" & mstrWhereIDs & ")" & IIf(mstrSQLWhere <> vbNullString, " OR ", vbNullString) & mstrSQLWhere
+			mstrSQLWhere = "(" & mstrWhereIDs & ")" & IIf(mstrSQLWhere <> vbNullString, " OR ", "").ToString() & mstrSQLWhere
 		End If
 
 		strPicklistFilterSelect = GetPicklistFilterSelect()
@@ -600,7 +600,7 @@ LocalErr:
 			Exit Function
 		End If
 		If strPicklistFilterSelect <> vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", vbNullString) & mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
+			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", "").ToString() & mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
 		End If
 
 		If mstrSQLWhere <> vbNullString Then
@@ -619,14 +619,14 @@ LocalErr:
 
 	End Function
 
-	Private Sub SQLAddColumn(ByRef sColumnList As String, ByVal lngTableID As Integer, ByVal sTableName As String, ByVal sColumnName As String, ByVal strColCode As String)
+	Private Sub SQLAddColumn(ByRef sColumnList As String, lngTableID As Integer, sTableName As String, sColumnName As String, strColCode As String)
 
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim fColumnOK As Boolean
 		Dim sSource As String
 		Dim fFound As Boolean
-		Dim iNextIndex As Short
+		Dim iNextIndex As Integer
 
 		Dim sRealSource As String
 		Dim sCaseStatement As String
@@ -732,7 +732,7 @@ LocalErr:
 
 								mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
 
-								mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString) & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
+								mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString).ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
 
 							End If
 						End If
@@ -770,10 +770,10 @@ LocalErr:
 						sCaseStatement = sCaseStatement & " AS " & "'" & strColCode & "'"
 					End If
 
-					sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "") & vbNewLine & sCaseStatement
+					sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "").ToString() & vbNewLine & sCaseStatement
 
 					If sWhereColumn <> vbNullString Then
-						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString) & "((" & sWhereColumn & "))"
+						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString).ToString() & "((" & sWhereColumn & "))"
 					End If
 
 				End If
@@ -793,46 +793,43 @@ LocalErr:
 		Dim rsTemp As DataTable
 		Dim strSQL As String
 
-		On Error GoTo LocalErr
+		Try
 
-		strSQL = "SELECT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName, ASRSysMailMergeColumns.SortOrder FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " AND SortOrderSequence > 0 ORDER BY SortOrderSequence"
-		rsTemp = DB.GetDataTable(strSQL)
+			strSQL = "SELECT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName, ASRSysMailMergeColumns.SortOrder FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " AND SortOrderSequence > 0 ORDER BY SortOrderSequence"
+			rsTemp = DB.GetDataTable(strSQL)
 
-		With rsTemp
-			For Each objRow As DataRow In .Rows
+			With rsTemp
+				For Each objRow As DataRow In .Rows
 
-				Call SQLAddColumn(mstrSQLOrder, objRow("TableID"), objRow("TableName"), objRow("ColumnName"), vbNullString)
+					SQLAddColumn(mstrSQLOrder, CInt(objRow("TableID")), objRow("TableName").ToString(), objRow("ColumnName").ToString(), vbNullString)
 
-				mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder"), 1) = "A", " ASC", " DESC")
+					mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder"), 1) = "A", " ASC", " DESC").ToString()
 
-				If fOK = False Then
-					Exit Sub
-				End If
-			Next
-		End With
+					If fOK = False Then
+						Exit Sub
+					End If
+				Next
+			End With
 
-		If mstrSQLOrder <> vbNullString Then
-			mstrSQLOrder = " ORDER BY " & mstrSQLOrder
-		End If
+			If mstrSQLOrder <> vbNullString Then
+				mstrSQLOrder = " ORDER BY " & mstrSQLOrder
+			End If
 
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
+		Catch ex As Exception
+			mstrStatusMessage = "Error building 'Order By' clause"
+			fOK = False
 
-		Exit Sub
-
-LocalErr:
-		mstrStatusMessage = "Error building 'Order By' clause"
-		fOK = False
+		End Try
 
 	End Sub
 
-	Private Sub SQLAddCalculation(ByVal lngExpID As Integer, ByRef strColCode As String)
+	Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String)
 
 		Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression
-		Dim intCount As Short
+		Dim intCount As Integer
 		Dim blnFound As Boolean
-		Dim intNextIndex As Short
+		Dim intNextIndex As Integer
 		Dim sCalcCode As String
 		Dim sSource As String
 		Dim lngTestTableID As Integer
@@ -856,7 +853,7 @@ LocalErr:
 		objCalcExpr = Nothing
 
 
-		mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & sCalcCode & " AS '" & strColCode & "'"
+		mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString).ToString() & sCalcCode & " AS '" & strColCode & "'"
 
 
 		' Add the required views to the JOIN code.
@@ -937,7 +934,7 @@ LocalErr:
 
 	End Sub
 
-	Public Sub EventLogChangeHeaderStatus(ByRef lngStatus As Integer)
+	Public Sub EventLogChangeHeaderStatus(lngStatus As EventLog_Status)
 		Logs.ChangeHeaderStatus(lngStatus, mlngSuccessCount, mlngFailCount)
 	End Sub
 
@@ -1059,7 +1056,7 @@ ErrorTrap:
 
 					For Each objRow As DataRow In .Rows
 
-						iResult = ValidateCalculation(objRow("ColumnID"))
+						iResult = ValidateCalculation(CInt(objRow("ColumnID")))
 						Select Case iResult
 							Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 								mstrStatusMessage = "A calculation used in this definition has been deleted by another user."

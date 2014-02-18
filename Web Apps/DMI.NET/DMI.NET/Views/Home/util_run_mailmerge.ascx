@@ -95,15 +95,16 @@
 	%>
 
 <form action="util_run_mailmerge_completed" method="post" id="frmMailMergeOutput" name="frmMailMergeOutput">
-		<input type="hidden" id="deftitle" name="deftitle" value="false">
-		<input type="hidden" id="fok" name="fok" value="false">
-		<input type="hidden" id="cancelled" name="cancelled" value="false">
-		<input type="hidden" id="statusmessage" name="statusmessage" value="">
-		<input type="hidden" id="eventlogid" name="eventlogid" value="false">
-		<input type="hidden" id="successcount" name="successcount" value="false">
-		<input type="hidden" id="failcount" name="failcount" value="false">
-		<input type="hidden" id="norecords" name="norecords" value="false">
-		<input type="hidden" id="nodefinition" name="nodefinition" value="false">
+	<input type="hidden" id="txtPreview" name="txtPreview" value="false">	
+	<input type="hidden" id="deftitle" name="deftitle" value="false">
+	<input type="hidden" id="fok" name="fok" value="false">
+	<input type="hidden" id="cancelled" name="cancelled" value="false">
+	<input type="hidden" id="statusmessage" name="statusmessage" value="">
+	<input type="hidden" id="eventlogid" name="eventlogid" value="false">
+	<input type="hidden" id="successcount" name="successcount" value="false">
+	<input type="hidden" id="failcount" name="failcount" value="false">
+	<input type="hidden" id="norecords" name="norecords" value="false">
+	<input type="hidden" id="nodefinition" name="nodefinition" value="false">
 </form>
 
 <script type="text/javascript">

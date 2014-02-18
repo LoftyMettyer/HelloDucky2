@@ -62,7 +62,7 @@ Public Class clsEventLog
 
 	End Function
 
-	Public Function ChangeHeaderStatus(ByRef udtStatus As EventLog_Status, ByVal lngSuccess As Integer, ByVal lngFailed As Integer) As Boolean
+	Public Function ChangeHeaderStatus(udtStatus As EventLog_Status, lngSuccess As Integer, lngFailed As Integer) As Boolean
 
 		Dim strSQL As String
 
