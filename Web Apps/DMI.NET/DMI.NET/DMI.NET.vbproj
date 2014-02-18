@@ -1086,17 +1086,6 @@
     <Content Include="Content\themes\vader\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
-    <Content Include="Database\UpdateScript8.0.11.sql" />
-    <Content Include="Database\UpdateScript8.0.13.sql" />
-    <Content Include="Database\UpdateScript8.0.14.sql" />
-    <Content Include="Database\UpdateScript8.0.16.sql" />
-    <Content Include="Database\UpdateScript8.0.20.sql" />
-    <Content Include="Database\UpdateScript8.0.22.sql" />
-    <Content Include="Database\UpdateScript8.0.23.sql" />
-    <Content Include="Database\UpdateScript8.0.24.sql" />
-    <Content Include="Database\UpdateScript8.0.25.sql" />
-    <Content Include="Database\UpdateScript8.0.8.sql" />
-    <Content Include="Database\UpdateScript8.0.9.sql" />
     <Content Include="lpks\ssmain.lpk">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1105,10 +1094,7 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
     <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
-    <Content Include="Database\UpdateScript8.0.18.sql" />
-    <Content Include="Database\UpdateScript8.0.21.sql" />
     <Content Include="Database\UpdateScript8.0.sql" />
-    <Content Include="Database\UpdateScript8.0.26.sql" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server %28Vimal%29.pubxml" />
     <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />
