@@ -106529,8 +106529,28 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysMobileCheckPendingWorkflowSteps]') AND xtype in (N'P'))
+BEGIN
+	declare @nvar nvarchar(MAX);
+
+	SET @nvar = 'CREATE PROCEDURE [dbo].[spASRSysMobileCheckPendingWorkflowSteps] (
+		@psKeyParameter varchar(MAX))
+	AS
+	BEGIN
+
+		SELECT '''' AS [name], '''' AS [description], '''' AS [URL];
+
+	END'
+
+	EXECUTE sp_executeSQL @nvar;
+
+END
 
 
+
+
+
+GO
 DECLARE @sSQL nvarchar(MAX),
 		@sGroup sysname,
 		@sObject sysname,
