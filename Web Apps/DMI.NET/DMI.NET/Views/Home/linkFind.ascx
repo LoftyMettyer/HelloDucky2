@@ -442,7 +442,7 @@
 							<td></td>
 							<td>
 								<div id="linkFindGridRow" style="height: 75%; margin-bottom: 50px;">
-									<table id="ssOleDBGridLinkRecords" name="ssOleDBGridLinkRecords" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px"></table>
+									<table id="ssOleDBGridLinkRecords" name="ssOleDBGridLinkRecords" style="width: 100%"></table>
 								</div>
 							</td>
 							<td></td>
