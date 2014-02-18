@@ -2544,8 +2544,6 @@ Namespace Controllers
 
 #End Region
 
-
-
 #Region "Running Reports"
 
 		Function util_run_crosstabsMain() As ActionResult
@@ -4097,6 +4095,8 @@ Namespace Controllers
 		Function quickfind_Submit(value As FormCollection)
 			Dim sErrorMsg = ""
 
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 			' Only process the form submission if the referring page was the default page.
 			' If it wasn't then redirect to the login page.
 
@@ -4151,63 +4151,38 @@ Namespace Controllers
 			End If
 
 			If sAction = "QUICKFIND" Then
-				' Try to get the record that matches the quick find criteria.
-				Dim cmdQuickFind = CreateObject("ADODB.Command")
-				cmdQuickFind.CommandText = "spASRIntGetQuickFindRecord"
-				cmdQuickFind.CommandType = 4 ' Stored Procedure
-				cmdQuickFind.ActiveConnection = Session("databaseConnection")
 
-				Dim prmTableID = cmdQuickFind.CreateParameter("tableID", 3, 1)
-				cmdQuickFind.Parameters.Append(prmTableID)
-				prmTableID.value = CleanNumeric(Session("optionTableID"))
+				Dim prmResult = New SqlParameter("@plngRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-				Dim prmViewID = cmdQuickFind.CreateParameter("viewID", 3, 1)
-				cmdQuickFind.Parameters.Append(prmViewID)
-				prmViewID.value = CleanNumeric(Session("optionViewID"))
+				Try
 
-				Dim prmColumnID = cmdQuickFind.CreateParameter("columnID", 3, 1)
-				cmdQuickFind.Parameters.Append(prmColumnID)
-				prmColumnID.value = CleanNumeric(Session("optionColumnID"))
+					objDataAccess.ExecuteSP("spASRIntGetQuickFindRecord" _
+						, New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+						, New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
+						, New SqlParameter("@plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
+						, New SqlParameter("@psValue", SqlDbType.VarChar, -1) With {.Value = sValue} _
+						, New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilterDef} _
+						, prmResult _
+						, New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")} _
+						, New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDateFormat")})
 
-				Dim prmValue = cmdQuickFind.CreateParameter("value", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdQuickFind.Parameters.Append(prmValue)
-				prmValue.value = sValue
-
-				Dim prmFilterDef = cmdQuickFind.CreateParameter("filterDef", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdQuickFind.Parameters.Append(prmFilterDef)
-				prmFilterDef.value = sFilterDef
-
-				Dim prmResult = cmdQuickFind.CreateParameter("result", 3, 2)
-				cmdQuickFind.Parameters.Append(prmResult)
-
-				Dim prmDecSeparator = cmdQuickFind.CreateParameter("decSeparator", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdQuickFind.Parameters.Append(prmDecSeparator)
-				prmDecSeparator.value = Session("LocaleDecimalSeparator")
-
-				Dim prmDateFormat = cmdQuickFind.CreateParameter("dateFormat", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-				cmdQuickFind.Parameters.Append(prmDateFormat)
-				prmDateFormat.value = Session("LocaleDateFormat")
-
-				Err.Clear()
-				cmdQuickFind.Execute()
-
-				If Err.Number <> 0 Then
-					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & FormatError(Err.Description)
-				Else
-					If (cmdQuickFind.Parameters("result").Value = 0) Then
+					If (CInt(prmResult.Value) = 0) Then
 						sErrorMsg = "No records match the criteria."
 
 						If Len(sFilterDef) > 0 Then
-							sErrorMsg = sErrorMsg & vbCrLf & _
-								"Try removing the filter."
+							sErrorMsg = sErrorMsg & vbCrLf & "Try removing the filter."
 						End If
 					Else
 						' A record has been found !
-						lngRecordID = cmdQuickFind.Parameters("result").Value
+						lngRecordID = CInt(prmResult.Value)
 					End If
-				End If
 
-				cmdQuickFind = Nothing
+
+				Catch ex As Exception
+					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & FormatError(Err.Description)
+
+				End Try
+
 
 				Session("errorMessage") = sErrorMsg
 

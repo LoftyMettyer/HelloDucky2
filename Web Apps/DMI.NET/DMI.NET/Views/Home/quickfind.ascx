@@ -1,5 +1,8 @@
 <%@ control language="VB" inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ import namespace="DMI.NET" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
 	dim sErrorDescription as String = ""
@@ -45,9 +48,6 @@
 			//window.parent.frames("menuframe").refreshMenu();
 		}
 	}
-</script>
-
-<script type="text/javascript">
 
 	function selectQuickFind() {
 		var frmQuickFindForm = document.getElementById("frmQuickFindForm");
@@ -338,37 +338,25 @@
 							</td>
 						</tr>
 
-						<%
-	' Create the table row with the Field selection combo.
-	' If no valid fields exist then display a message telling the user why
-	' no columns are valid.		
-	if Len(sErrorDescription) = 0 then
-		' Get the unique columns.
-		dim cmdColumns = CreateObject("ADODB.Command")
-		cmdColumns.CommandText = "sp_ASRIntGetUniqueColumns"
-		cmdColumns.CommandType = 4 ' Stored Procedure
-		cmdColumns.ActiveConnection = session("databaseConnection")
+	<%
 
-		dim prmTableID = cmdColumns.CreateParameter("tableID",3,1)
-		cmdColumns.Parameters.Append(prmTableID)
-		prmTableID.value = cleanNumeric(session("optionTableID"))
+		' Create the table row with the Field selection combo.
+		' If no valid fields exist then display a message telling the user why
+		' no columns are valid.		
 
-		dim prmViewID = cmdColumns.CreateParameter("viewID",3,1)
-		cmdColumns.Parameters.Append(prmViewID)
-		prmViewID.value = cleanNumeric(session("optionViewID"))
-
-		dim prmRealSource = cmdColumns.CreateParameter("realSource",200,2,8000) '200=varchar, 2=output, 8000=size
-		cmdColumns.Parameters.Append(prmRealSource)
-
-		err.Clear()
-		dim rstColumns = cmdColumns.Execute
-
-		if (err.Number <> 0) then
-			sErrorDescription = "The unique fields could not be retrieved." & vbcrlf & formatError(Err.Description)
-		end if
-
-		if len(sErrorDescription) = 0 then
-			if (rstColumns.bof and rstColumns.eof) then
+		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+									
+		Dim prmRealSource = New SqlParameter("psRealSource", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim rstColumns As DataTable
+		
+		Try
+			
+			rstColumns = objDataAccess.GetFromSP("sp_ASRIntGetUniqueColumns" _
+				, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+				, New SqlParameter("plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
+			, prmRealSource)
+							
+		If rstColumns.Rows.Count = 0 Then
 						%>
 						<tr>
 							<td width="20"></td>
@@ -389,11 +377,7 @@
 							<td width="20"></td>
 							<td style="text-align: center;">
 								<input id="cmdCancel" name="cmdCancel" class="btn" type="button" value="Cancel" style="WIDTH: 75px" width="75"
-									onclick="CancelQuickFind()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="CancelQuickFind()" />
 							</td>
 							<td width="20"></td>
 						</tr>
@@ -415,17 +399,16 @@
 										<td width="175" height="10">
 											<select id="selectField" name="selectField" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 												<%
-				dim iCount = 0
-				do while not rstColumns.EOF
-					Response.Write("						<OPTION value=" & rstColumns.Fields(0).Value)
-					if iCount = 0 then
-						Response.Write(" SELECTED")
-					end if
+													Dim iCount = 0
+													For Each objRow As DataRow In rstColumns.Rows
+														Response.Write("						<option value=" & objRow(0).ToString())
+														If iCount = 0 Then
+															Response.Write(" selected")
+														End If
 				
-					Response.write(">" & replace(rstColumns.Fields(1).Value, "_", " ") & "</OPTION>" & vbcrlf)
-					iCount = iCount + 1
-					rstColumns.MoveNext
-				loop
+														Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
+														iCount += 1
+													Next
 												%>
 											</select>
 										</td>
@@ -456,20 +439,12 @@
 										<td>&nbsp;</td>
 										<td width="10" height="10">
 											<input id="cmdSelect" name="cmdSelect" class="btn" type="button" value="Find" style="WIDTH: 75px" width="75"
-												onclick="selectQuickFind()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="selectQuickFind()" />
 										</td>
 										<td width="10" height="10"></td>
 										<td width="10" height="10">
 											<input id="cmdCancel" name="cmdCancel" class="btn" type="button" value="Cancel" style="WIDTH: 75px" width="75"
-												onclick="CancelQuickFind()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="CancelQuickFind()" />
 										</td>
 										<td>&nbsp;</td>
 									</tr>
@@ -480,62 +455,25 @@
 						<tr height="20">
 							<td colspan="3" height="10"></td>
 						</tr>
-						<%
-			end if
+			<%
+			
+			End If
 
-			' Release the ADO recordset object.
-			rstColumns.close
-			rstColumns = nothing
+		
+			For Each objRow As DataRow In rstColumns.Rows
+				Response.Write("					<input type='hidden' id=txtColumnDataType_" & objRow(0).ToString() & " name=txtColumnDataType_" & objRow(0).ToString() & " value=" & objRow(2).ToString() & ">")
+				Response.Write("					<input type='hidden' id=txtColumnSize_" & objRow(0).ToString() & " name=txtColumnSize_" & objRow(0).ToString() & " value=" & objRow(3).ToString() & ">")
+				Response.Write("					<input type='hidden' id=txtColumnDecimals_" & objRow(0).ToString() & " name=txtColumnDecimals_" & objRow(0).ToString() & " value=" & objRow(4).ToString() & ">")
+			Next
+				
+			Response.Write("<input type='hidden' id=txtRealSource name=txtRealSource value=""" & Replace(Replace(prmRealSource.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
 
-		end if
+		Catch ex As Exception
+			sErrorDescription = "The unique fields could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
-		' Release the ADO command object.
-		cmdColumns = nothing
+		End Try
 
-		if len(sErrorDescription) = 0 then
-			' Get the unique columns data type, etc.
-			cmdColumns = CreateObject("ADODB.Command")
-			cmdColumns.CommandText = "sp_ASRIntGetUniqueColumns"
-			cmdColumns.CommandType = 4 ' Stored Procedure
-			cmdColumns.ActiveConnection = session("databaseConnection")
 
-			prmTableID = cmdColumns.CreateParameter("tableID",3,1)
-			cmdColumns.Parameters.Append(prmTableID)
-			prmTableID.value = cleanNumeric(session("optionTableID"))
-
-			prmViewID = cmdColumns.CreateParameter("viewID",3,1)
-			cmdColumns.Parameters.Append(prmViewID)
-			prmViewID.value = cleanNumeric(session("optionViewID"))
-
-			prmRealSource = cmdColumns.CreateParameter("realSource",200,2,8000) '200=varchar, 2=output, 8000=size
-			cmdColumns.Parameters.Append(prmRealSource)
-
-			err.Clear()
-			rstColumns = cmdColumns.Execute
-
-			if (err.Number <> 0) then
-				sErrorDescription = "The unique fields could not be retrieved." & vbcrlf & formatError(Err.Description)
-			end if
-
-			if len(sErrorDescription) = 0 then
-				do while not rstColumns.EOF
-					Response.Write("					<INPUT type='hidden' id=txtColumnDataType_" & rstColumns.Fields(0).Value & " name=txtColumnDataType_" & rstColumns.Fields(0).Value & " value=" & rstColumns.Fields(2).Value & ">")
-					Response.Write("					<INPUT type='hidden' id=txtColumnSize_" & rstColumns.Fields(0).Value & " name=txtColumnSize_" & rstColumns.Fields(0).Value & " value=" & rstColumns.Fields(3).Value & ">")
-					Response.Write("					<INPUT type='hidden' id=txtColumnDecimals_" & rstColumns.Fields(0).Value & " name=txtColumnDecimals_" & rstColumns.Fields(0).Value & " value=" & rstColumns.Fields(4).Value & ">")
-					rstColumns.MoveNext
-				loop
-
-				' Release the ADO recordset object.
-				rstColumns.close
-				rstColumns = nothing
-
-				Response.Write("<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & replace(replace(cmdColumns.Parameters("realSource").Value, "'", "'''"), """", "&quot;") & """>" & vbcrlf)
-			end if
-	
-			' Release the ADO command object.
-			cmdColumns = nothing
-		end if
-	end if
 						%>
 					</table>
 				</td>
