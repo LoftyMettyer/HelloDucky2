@@ -1,4 +1,3 @@
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntSaveMailMerge]    Script Date: 04/08/2010 13:42:14 ******/
 CREATE PROCEDURE [dbo].[sp_ASRIntSaveMailMerge] (
 	@psName				varchar(255),
 	@psDescription		varchar(MAX),
