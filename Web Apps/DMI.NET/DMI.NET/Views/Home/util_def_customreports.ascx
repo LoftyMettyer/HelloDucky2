@@ -81,9 +81,7 @@
 														<td width="5">&nbsp;</td>
 														<td style="width: 40%;vertical-align: top" rowspan="2" colspan="2">
 															<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
-																onkeyup="changeTab1Control()"
-																onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
-																onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
+																onkeyup="changeTab1Control()">
 													</textarea>
 														</td>
 														<td width="20" nowrap>&nbsp;</td>

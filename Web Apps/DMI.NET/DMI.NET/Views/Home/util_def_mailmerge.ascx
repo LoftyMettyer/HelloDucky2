@@ -88,9 +88,7 @@
 																		name="txtDescription"
 																		class="textarea"
 																		style="height: 99%; width: 100%" maxlength="255"
-																		onkeyup="changeDescription()"
-																		onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}"
-																		onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
+																		onkeyup="changeDescription()">
 																	</textarea>
 																</td>
 																<td style="width: 20px; white-space: nowrap">&nbsp;</td>
