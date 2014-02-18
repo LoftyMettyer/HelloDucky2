@@ -32,7 +32,7 @@ body
 }
 
 .FixedLinksLeft ul li {
-	color: #154288;
+	/*color: #154288;*/
 }
 
 .FixedLinksLeft li {
@@ -44,7 +44,7 @@ body
 .dashboardSearch { display: none;}
 
 div.officetab li div.button .disabled {
-	color: gray!important;
+	/*color: gray!important;*/
 	cursor: default;
 }
 
@@ -414,7 +414,7 @@ div.officetab div.panel > span { display: none;}
 	/*background-color: rgb(43, 120, 228);*/
 	background-color: transparent;
 	background-image: none;
-	color: white;
+	/*color: white;*/
 	border-style: none;
 }
 
@@ -457,7 +457,8 @@ div.officetab div.panel > span { display: none;}
 
 /* Formatting for SSI based utilities	*/
 .SSI #dataRow {
-	width: 30%; margin: 0 auto;color: black;
+	width: 30%; margin: 0 auto;
+	/*color: black;*/
 }
 
 #pwfs { display: none;}

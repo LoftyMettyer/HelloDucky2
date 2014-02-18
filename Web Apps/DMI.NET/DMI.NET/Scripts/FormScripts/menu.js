@@ -4642,11 +4642,13 @@ function menu_loadSelectOrderFilter(psType) {
 	$("#" + itemId).removeClass("disabled");
 	$("#" + itemId + " a").removeClass("disabled");
 	$("#" + itemId + " a h6").removeClass("disabled");
-
-	//$("#" + itemId).removeClass("ui-state-disabled");
-			//$("#" + itemId + " a").removeClass("ui-state-disabled");
-			//$("#" + itemId + " a h6").removeClass("ui-state-disabled");
-}
+	//$('#' + itemId + " a h6").addClass('ui-state-default');
+	$('#' + itemId + " a h6").removeClass('ui-state-disabled');
+	$('#' + itemId).prop('disabled', true);		
+		//$("#" + itemId).removeClass("ui-state-disabled");
+		//$("#" + itemId + " a").removeClass("ui-state-disabled");
+		//$("#" + itemId + " a h6").removeClass("ui-state-disabled");
+	}
 } else {
 	//apply disable icon
 	if (currSrc.indexOf("DIS") <= 0) {
@@ -4654,12 +4656,12 @@ function menu_loadSelectOrderFilter(psType) {
 	$("#" + itemId).addClass("disabled");
 	$("#" + itemId + " a").addClass("disabled");
 	$("#" + itemId + " a h6").addClass("disabled");
+	//$('#' + itemId + " a h6").removeClass('ui-state-default');
+	$('#' + itemId + " a h6").addClass('ui-state-disabled');
+		//$("#" + itemId + " a").addClass("ui-state-disabled");
+		//$("#" + itemId + " a h6").addClass("ui-state-disabled");
 
-	//$("#" + itemId).addClass("ui-state-disabled");
-			//$("#" + itemId + " a").addClass("ui-state-disabled");
-			//$("#" + itemId + " a h6").addClass("ui-state-disabled");
-
-}
+	}
 }
 }
 
@@ -4751,7 +4753,8 @@ function menu_loadSelectOrderFilter(psType) {
 	"themeroller": {
 	"item_leaf": false,
 	"item_clsd": false,
-	"item_open": false        	
+			"item_open": false,
+			"item": "ui-menu-item"
 }
 });
 		

@@ -685,9 +685,16 @@ header {
 }
 
 .jstree a {
+	width: 100%;
+	font-weight: normal!important;
+	/*font-weight: bold;
 	background-color: transparent!important;
 	background-image: none!important;
-	border: none!important;
+	border: none!important;*/
+}
+
+.jstree a:hover {
+	padding: 0 1px!important;
 }
 
 .hidden { display: none!important; }
@@ -794,7 +801,6 @@ header {
 
 /* SSI Specifics */
 .DMI #imgTViewHelp, .DMI #tdTOrderHelp { display: none;}
-/*.DMI #tdTViewHelp, .DMI #tdTOrderHelp { display: none;}*/
 
 /* User picture */
 .userpic {

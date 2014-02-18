@@ -386,11 +386,11 @@ div.officebar ul {
 div.officebar ul li {
 	float: left;
 	margin: 0;
-	padding: 0 0 0 9px;
+	padding: 0 0 0 0px;
 }
 
 div.officebar a {
-	color:#776655;
+	/*color:#776655;*/
 	display:block;
 	float:none;
 	padding: 4px 15px 0px 6px;
@@ -400,7 +400,7 @@ div.officebar a {
 }
 
 div.officebar a:hover {
-	color:#15428B;
+	/*color:#15428B;*/
 }
 
 div.officebar a {
@@ -414,7 +414,7 @@ div.officebar :focus {
 
 div.officebar ul li:hover {
 	/*background: transparent url(../../../Scripts/officebar/images/tab_left_over.gif) no-repeat scroll left top;*/
-	color: #15428B;
+	/*color: #15428B;*/
 }
 div.officebar ul li.current {
 	/*background-image:url(../../../Scripts/officebar/images/tab_left.gif);*/
@@ -425,11 +425,11 @@ div.officebar ul li:hover a {
 }
 div.officebar ul li.current a {
 	/*background: transparent url(../../../Scripts/officebar/images/tab_right.gif) no-repeat scroll right top;*/
-	color: #15428B;
+	/*color: #15428B;*/
 }
 
 div.officebar ul li.current .button.disabled a {
-	color: gray;
+	/*color: gray;*/
 
 }
 
@@ -480,7 +480,7 @@ div.officetab div.panel {
 	float: none;
 	padding: 71px 12px 5px 6px;
 	text-decoration:none;
-	color:#15428B;
+	/*color:#15428B;*/
 	text-align: center;	
 }
 
@@ -501,7 +501,7 @@ div.buttonsplitmenu {
 div.buttonsplitmenu ul {
 	padding: 0;
 	margin: 0;
-	color: #15428B;
+	/*color: #15428B;*/
 	/*background: transparent;*/
 	height: auto;
 	width: auto;
@@ -604,18 +604,22 @@ div.officetab li div.button {
 	line-height: normal;
 	border: 1px solid transparent;
 	padding: 0 4px 5px 4px;
-	background-color: transparent;
+	/*background-color: transparent;*/
 	background-image: none;
 }
 
-div.officetab li div.button .disabled {
+div.officetab li div.button.disabled {
 	cursor: default;
+	background-color: transparent;
 }
 
+div.officetab li div.button:not(:hover) {
+	background-color: transparent;
+}
 
 div.officetab li div.button:hover:not(.disabled) {
 	/*background-image: url("images/ui-bg_glass_85_dfeffc_1x400.png");*/
-	background-color: rgb(223, 239, 252);
+	/*background-color: rgb(223, 239, 252);*/
 }
 
 div.officetab li div.list, div.officetab li div.textlist {

@@ -74,10 +74,11 @@
 			$(".officetab i[class^='icon-']").wrap("<span class='icon-stack' />");
 			$(".officetab .icon-stack").prepend("<i class='icon-check-empty icon-stack-base'></i>");
 			
-			$('#officebar .button').addClass('ui-state-default');
+			//$('#officebar .button').addClass('ui-state-default');
 			$('#officebar .button').hover(
-				function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
-				function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); });
+			//	function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+			//	function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
+			);
 			
 		}
 	}
@@ -107,7 +108,7 @@
 		<div id="officebar" class="officebar">
 			<ul>
 						<%-- Home --%>
-				<li class="current"><a id="toolbarHome" href="#" rel="home">Home</a>
+				<li class="current"><a class="ui-state-active ui-corner-top" id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>&nbsp;   </span><%-- Fixed Links value removed By mayank to avoide duplicasy--%>
 							<div id="mnutoolFixedSelfService" class="button">
@@ -129,7 +130,7 @@
 				</li>
 
 								<%-- Record: Find Record--%>
-				<li class="ui-corner-top"><a id="toolbarRecordFind" href="#" rel="Find">Find</a>
+				<li><a class="ui-state-default ui-corner-top" id="toolbarRecordFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li id="mnuSectionRecordFindEdit"><span>Edit</span>											
 							<div id="mnutoolNewRecordFind" class="button">
