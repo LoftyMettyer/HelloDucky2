@@ -1554,9 +1554,7 @@ Namespace Controllers
 						' Check if we're inserting or updating.
 						If lngRecordID = 0 Then
 							' Inserting.
-
 							Try
-
 								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
 									, prmRecordID _
@@ -1572,10 +1570,13 @@ Namespace Controllers
 
 								objDataAccess.ExecuteSP("spASREmailImmediate", New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
 
+							Catch ex As SqlException
+								If ex.Number.Equals(50000) Then
+									sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
+								Else
+									sErrorMsg = sErrorMsg & FormatError(ex.Message)
+								End If
 
-							Catch ex As Exception
-
-								sErrorMsg = sErrorMsg & FormatError(ex.Message)
 								fOk = False
 
 								Dim sRecDescExists = ""
@@ -1585,16 +1586,10 @@ Namespace Controllers
 
 								sErrorMsg = "The new record could not be created." & sRecDescExists & sErrorMsg
 								sAction = "SAVEERROR"
-
-
 							End Try
-
-
 						Else
 							' Updating.
-
 							Try
-
 								Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 								objDataAccess.ExecuteSP("spASRIntUpdateRecord" _
 									, prmResult _
