@@ -17,8 +17,8 @@
 
 
 	var version = "1.0.0",
-		mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4, vbYesNoCancel: 3 },
-		mbResult = { vbYes: 6, vbNo: 7, vbCancel: 2 },
+		mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4, vbYesNoCancel: 3, vbOKCancel: 1 },
+		mbResult = { vbYes: 6, vbNo: 7, vbCancel: 2, vbOK: 1},
 		messageBox = function (prompt, buttons, title) {
 
 			switch (buttons) {
@@ -51,7 +51,7 @@
 		displayModalDialog = function (prompt, dialogButtons, title) {
 
 			// Default parameters
-			if (!title || title.length == 0) title = 'OpenHR Intranet';
+			if (!title || title.length == 0) title = 'OpenHR Web';
 
 			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
 			$('#dialog-confirm').dialog('option', 'title', title);
@@ -71,24 +71,53 @@
 
 		},
 
-		modalPrompt = function(prompt, buttons, title, followOnFunctionName) {
-			var dialogButtons = {
-				"Yes": function () {
-					$(this).dialog("close");
-					if (followOnFunctionName) followOnFunctionName(6);
-				},
-				"No": function () {
-					$(this).dialog("close");
-					if (followOnFunctionName) followOnFunctionName(7);
-				},
-				"Cancel": function () {
-					$(this).dialog("close");
-					if (followOnFunctionName) followOnFunctionName(2);
-				}
-			};
-
+		modalPrompt = function (prompt, buttons, title, followOnFunctionName) {
+			var defer = $.Deferred();
+			switch (buttons) {
+			case 1:
+				var dialogButtons = {
+					"OK": function() {
+						defer.resolve(1);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(1);
+					},
+					"Cancel": function() {
+						defer.resolve(2);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(2);
+					}
+				};
+				break;
+			case 3:
+				var dialogButtons = {
+					"Yes": function() {
+						defer.resolve(6);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(6);
+					},
+					"No": function() {
+						defer.resolve(7);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(7);
+					},
+					"Cancel": function() {
+						defer.resolve(2);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(2);
+					}
+				};
+				break;
+			default:
+				var dialogButtons = {
+					"OK": function() {
+						defer.resolve(1);
+						$(this).dialog("close");
+						if (followOnFunctionName) followOnFunctionName(1);
+					}
+				};
+			}
 			displayModalDialog(prompt, dialogButtons, title);
-
+			return defer.promise();
 		},
 		
 		showInReportFrame = function (form, asyncFlag) {

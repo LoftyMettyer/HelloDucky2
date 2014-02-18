@@ -1472,21 +1472,15 @@ function cancelClick() {
 
 	if (definitionChanged() == false) {
 		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
-		return false;
 	}
-
-	var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3, "Expression Builder");
-	if (answer == 7) {
-		// No
-		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
-		return (false);
+	else {
+		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			if (answer == 1) {  // OK
+				menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
+			}
+		});
 	}
-	else if (answer == 6) {
-		// Yes
-		okClick();
-	}
-
-	return false;
+	return (false);
 }
 
 function clipboardClick() {
@@ -1888,21 +1882,22 @@ function saveChanges(psAction, pfPrompt, pfTBOverride) {
 	if (definitionChanged() == false) {
 		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 		return 6; // No changes made. Continue navigation
+	} else {
+		return 0;
 	}
-
-	answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Expression Builder");
-	if (answer == 7) { // Cancel
-		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-		return 2; // Cancel the changes and do not save them.
-	}
-	else if (answer == 6) {
-		// OK
-		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-		//okClick();
-		return 6; // 'OK' -> discard changes and continue navigation
-	}
-	else
-		return 2; //Cancel.
+	//answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Expression Builder");
+	//if (answer == 7) { // Cancel
+	//	$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+	//	return 2; // Cancel the changes and do not save them.
+	//}
+	//else if (answer == 6) {
+	//	// OK
+	//	$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+	//	//okClick();
+	//	return 6; // 'OK' -> discard changes and continue navigation
+	//}
+	//else
+	//	return 2; //Cancel.
 }
 
 function definitionChanged() {

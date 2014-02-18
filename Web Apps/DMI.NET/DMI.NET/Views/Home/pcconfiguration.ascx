@@ -307,19 +307,11 @@
     ---------------------------------------------------------------------------------------------------*/
 
     function saveChanges(psAction, pfPrompt, pfTBOverride) {
-        if (definitionChanged() == false) {
-            return 7; //No to saving the changes, as none have been made.
-        }
-
-        answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "PC Configuration");
-        if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-            return 2;
-        }
-        else if (answer == 6) { // 'OK' -> discard changes and continue navigation
-            return 6;
-        }
-        else
-            return 2; //Cancel.
+      if (definitionChanged() == false) {
+          return 6; //No to saving the changes, as none have been made.
+      } else {
+	      return 0;
+      }
     }
 
     function definitionChanged() {

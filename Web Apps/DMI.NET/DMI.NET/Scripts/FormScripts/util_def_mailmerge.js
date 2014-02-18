@@ -987,25 +987,18 @@ function submitDefinition() {
 
 
 function cancelClick() {
-		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-			(definitionChanged() == false)) {
-
-			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
-			return (false);
-		}
-
-		var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3, "Mail Merge");
-		if (answer == 7) {
-			// No
-			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
-			
-			return (false);
-		}
-		if (answer == 6) {
-			// Yes
-			okClick();
-		}
+	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
+		menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
 	}
+	else {
+		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			if (answer == 1) {  // OK
+				menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
+			}
+		});
+	}
+	return (false);
+}
 
 function okClick() {
 	menu_disableMenu();
@@ -1014,23 +1007,10 @@ function okClick() {
 }
 
 function saveChanges(psAction, pfPrompt, pfTBOverride) {
-	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-			(definitionChanged() == false)) {
+	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
 		return 6; // No changes made. Continue navigation
-	}
-
-	answer = OpenHR.messageBox("Mail merge definition changed. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "Mail Merge");
-	if (answer == 6) {
-		return 6;
-		// 'OK' -> discard changes and continue navigation
-	}
-	else if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-		// Cancel the changes and do not save them.
-		return 2; // 2 = vbCancel -> Continue Editing
-	}
-	else {
-		return 2; // Do not save changes, and cancel the operation that called this function.
-	}
+	} else
+		return 0;
 }
 
 function definitionChanged() {

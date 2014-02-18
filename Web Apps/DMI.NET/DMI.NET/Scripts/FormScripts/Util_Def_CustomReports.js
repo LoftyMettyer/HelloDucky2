@@ -2193,23 +2193,17 @@
 	}
 
 	function cancelClick() {
-		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-			(definitionChanged() == false)) {
-				
-				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
-				return (false);		    
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
+			menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
 		}
-
-		answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3, "Custom Reports");
-		if (answer == 7) {
-			// No
-				menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
-				return (false);
+		else {
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
+				}
+			});
 		}
-		if (answer == 6) {
-			// Yes
-			okClick();
-		}
+		return false;
 	}
 
 	function okClick() {
@@ -2233,24 +2227,11 @@
 		submitDefinition();
 	}
 
-	function saveChanges(psAction, pfPrompt, pfTBOverride)
-	{
-		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-			(definitionChanged() == false)) {
+	function saveChanges(psAction, pfPrompt, pfTBOverride) {
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
 			return 6; // No changes made. Continue navigation
-		}
-
-		answer = OpenHR.messageBox("Report definition changed. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36, "Custom Reports");
-		if (answer == 6) {
-			return 6;
-			// 'OK' -> discard changes and continue navigation
-		}
-		else if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-			// Cancel the changes and do not save them.
-			return 2; // 2 = vbCancel -> Continue Editing
-		}
-		else {
-			return 2; // Do not save changes, and cancel the operation that called this function.
+		} else {
+			return 0; // Prompt for navigation
 		}
 	}
 

@@ -1363,49 +1363,18 @@ function HiddenGroups(pgrdAccess) {
 		return (sHiddenGroups);
 }
 
-//function cancelClick()
-//{
-//    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-//        (definitionChanged() == false)) {
-//        //todo
-//        //window.location.href="defsel";
-//        return;
-//    }
-
-//    answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3,"Cross Tabs");
-//    if (answer == 7) {
-//        // No
-//        //todo
-//        //window.location.href="defsel";
-//        return (false);
-//    }
-//    if (answer == 6) {
-//        // Yes
-//        okClick();
-//    }
-//}
-
-
 function cancelClick() {
-		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-		(definitionChanged() == false)) {
-
-				menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
-				return (false);
-		}
-
-		var answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to save your changes, or 'Cancel' to discard.", 3);
-		if (answer == 7) {
-				// No
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
 			menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
-
-				return (false);
+		} else {
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadDefSelPage(1, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
+				}
+			});
 		}
-		if (answer == 6) {
-				// Yes
-				okClick();
-		}
-}
+		return false;
+	}
 
 
 function okClick()
@@ -1434,22 +1403,12 @@ function okClick()
 }
 
 function saveChanges(psAction, pfPrompt, pfTBOverride) {
-
-		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-				(definitionChanged() == false)) {
-				return 7; //No to saving the changes, as none have been made.
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
+			return 6; // No changes made. Continue navigation
+		} else {
+			return 0; // Prompt for navigation
 		}
-
-		answer = OpenHR.messageBox("You have changed the current definition. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 3, "Cross Tabs");
-		if (answer == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-			return 2;
-		}
-		if (answer == 6) { // 'OK' -> discard changes and continue navigation
-			return 6;
-		}
-		else
-			return 2; //Cancel.
-}
+	}
 
 function definitionChanged()
 {
