@@ -3776,6 +3776,7 @@ Namespace Controllers
 		<HttpPost(), ValidateInput(False)>
 		Function util_def_expression_Submit()
 
+
 			Dim objExpression As HR.Intranet.Server.Expression
 			Dim iExprType As Integer
 			Dim iReturnType As Integer
@@ -3789,6 +3790,8 @@ Namespace Controllers
 			On Error Resume Next
 
 			' Get the server DLL to save the expression definition
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim objContext = CType(Session("SessionContext"), SessionInfo)
 			objExpression = New Expression(objContext.LoginInfo)
@@ -3824,24 +3827,11 @@ Namespace Controllers
 						(Request.Form("txtSend_ID") > 0) Then
 						' Hide any utilities that use this filter/calc.
 						' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
-						cmdMakeHidden = CreateObject("ADODB.Command")
-						cmdMakeHidden.CommandText = "sp_ASRIntMakeUtilitiesHidden"
-						cmdMakeHidden.CommandType = 4	' Stored procedure
-						cmdMakeHidden.ActiveConnection = Session("databaseConnection")
-						cmdMakeHidden.CommandTimeout = 180
 
-						prmUtilType = cmdMakeHidden.CreateParameter("UtilType", 3, 1)	' 3 = integer, 1 = input
-						cmdMakeHidden.Parameters.Append(prmUtilType)
-						prmUtilType.value = CleanNumeric(Request.Form("txtSend_type"))
+						objDataAccess.ExecuteSP("sp_ASRIntMakeUtilitiesHidden" _
+							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_type"))} _
+							, New SqlParameter("piUtilityID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_ID"))})
 
-						prmUtilID = cmdMakeHidden.CreateParameter("UtilID", 3, 1)	' 3 = integer, 1 = input
-						cmdMakeHidden.Parameters.Append(prmUtilID)
-						prmUtilID.value = CleanNumeric(Request.Form("txtSend_ID"))
-
-						Err.Clear()
-						cmdMakeHidden.Execute()
-
-						cmdMakeHidden = Nothing
 					End If
 
 					Session("confirmtext") = sUtilType & " has been saved successfully"
