@@ -1,14 +1,14 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
 
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
 Friend Class CTablePrivileges
 
 	Private mCol As Collection
 
-
-	Public Property Collection() As Collection
+	Friend Property Collection() As Collection
 		Get
 			Collection = mCol
 		End Get
@@ -18,19 +18,19 @@ Friend Class CTablePrivileges
 		End Set
 	End Property
 
-	Public ReadOnly Property Item(ByVal vntIndexKey As Object) As TablePrivilege
+	Friend ReadOnly Property Item(vntIndexKey As String) As TablePrivilege
 		Get
-			Item = mCol.Item(vntIndexKey)
+			Return CType(mCol.Item(vntIndexKey), TablePrivilege)
 		End Get
 	End Property
 
-	Public ReadOnly Property Count() As Integer
+	Friend ReadOnly Property Count() As Integer
 		Get
 			Count = mCol.Count()
 		End Get
 	End Property
 
-	Public Function Add(ByVal psTableName As String, ByVal plngTableID As Integer, ByVal piTableType As Short, ByVal plngDfltOrderID As Integer, ByVal plngRecDescID As Integer, ByVal pfIsTable As Boolean, ByVal plngViewID As Integer, ByVal psViewName As String) As TablePrivilege
+	Friend Function Add(psTableName As String, plngTableID As Integer, piTableType As TableTypes, plngDfltOrderID As Integer, plngRecDescID As Integer, pfIsTable As Boolean, plngViewID As Integer, psViewName As String) As TablePrivilege
 		' Add a new member to the collection of table privileges.
 
 		Dim skey As String
@@ -69,11 +69,6 @@ Friend Class CTablePrivileges
 
 	End Function
 
-	Public Sub Remove(ByRef vntIndexKey As Object)
-
-		mCol.Remove(vntIndexKey)
-
-	End Sub
 
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
@@ -91,16 +86,13 @@ Friend Class CTablePrivileges
 		mCol = Nothing
 
 	End Sub
+
 	Protected Overrides Sub Finalize()
 		Class_Terminate_Renamed()
 		MyBase.Finalize()
 	End Sub
 
-
-
-
-
-	Public Function FindRealSource(ByVal psRealSource As String) As TablePrivilege
+	Friend Function FindRealSource(psRealSource As String) As TablePrivilege
 		' Return the table/view privilege object with the given real source.
 		Dim objTable As TablePrivilege
 		Dim objRequiredTable As TablePrivilege
@@ -118,7 +110,7 @@ Friend Class CTablePrivileges
 
 	End Function
 
-	Public Function FindTableID(ByVal plngTableID As Integer) As TablePrivilege
+	Friend Function FindTableID(plngTableID As Integer) As TablePrivilege
 		' Return the table/view privilege object with the given table ID.
 		Dim objTable As TablePrivilege
 		Dim objRequiredTable As TablePrivilege
@@ -135,11 +127,11 @@ Friend Class CTablePrivileges
 		'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objTable = Nothing
 
-		FindTableID = objRequiredTable
+		Return objRequiredTable
 
 	End Function
 
-	Public Function FindViewID(ByVal plngViewID As Integer) As TablePrivilege
+	Friend Function FindViewID(plngViewID As Integer) As TablePrivilege
 		' Return the table/view privilege object with the given table ID.
 		Dim objView As TablePrivilege
 		Dim objRequiredView As TablePrivilege
@@ -153,7 +145,7 @@ Friend Class CTablePrivileges
 		'UPGRADE_NOTE: Object objView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		objView = Nothing
 
-		FindViewID = objRequiredView
+		Return objRequiredView
 
 	End Function
 End Class

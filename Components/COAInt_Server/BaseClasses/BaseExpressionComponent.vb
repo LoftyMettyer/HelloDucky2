@@ -21,7 +21,7 @@ Namespace BaseClasses
 		End Sub
 
 		' keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes
-		Protected Function GetUniqueID(ByRef strSetting As String, ByRef strTable As String, ByRef strColumn As String) As Integer
+		Protected Function GetUniqueID(strSetting As String, strTable As String, strColumn As String) As Integer
 
 			Dim prmSettingKey = New SqlParameter("settingkey", SqlDbType.VarChar, 50)
 			prmSettingKey.Value = strSetting
@@ -38,7 +38,7 @@ Namespace BaseClasses
 
 #Region "From modExpression"
 
-		Protected Function ExprDeleted(ByVal lngExprID As Integer) As Boolean
+		Protected Function ExprDeleted(lngExprID As Integer) As Boolean
 
 			Dim rsExprTemp As DataTable
 			Dim sSQL As String
@@ -53,38 +53,7 @@ Namespace BaseClasses
 
 		End Function
 
-		Public Function GetPickListField(ByVal lngPicklistID As Integer, ByVal sField As String) As Object
-
-			Dim sSQL As String
-			Dim rsExpr As DataTable
-
-			On Error GoTo ErrorTrap
-
-			sSQL = "SELECT * FROM ASRSysPickListName WHERE PickListID = " & lngPicklistID
-			rsExpr = DB.GetDataTable(sSQL)
-
-			With rsExpr
-				If .Rows.Count > 0 Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetPickListField. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					GetPickListField = .Rows(0)(sField)
-				End If
-			End With
-
-
-TidyUpAndExit:
-			'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsExpr = Nothing
-			Exit Function
-
-ErrorTrap:
-			'NO MSGBOX ON THE SERVER ! - MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
-			Resume TidyUpAndExit
-
-		End Function
-
-		Public Function HasExpressionComponent(ByVal plngExprIDBeingSearched As Integer, ByVal plngExprIDSearchedFor As Integer) As Boolean
-			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
+		Public Function HasExpressionComponent(plngExprIDBeingSearched As Integer, plngExprIDSearchedFor As Integer) As Boolean
 
 			Dim rsExprComp As DataTable
 			Dim rsExpr As DataTable
@@ -93,71 +62,70 @@ ErrorTrap:
 
 			HasExpressionComponent = (plngExprIDBeingSearched = plngExprIDSearchedFor)
 
-			If Not HasExpressionComponent Then
-				sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & CStr(plngExprIDBeingSearched)
-				rsExprComp = DB.GetDataTable(sSQL)
+			Try
 
-				With rsExprComp
-					For Each objRow As DataRow In .Rows
 
-						Select Case CType(objRow("Type"), ExpressionComponentTypes)
-							Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								lngSubExprID = CInt(IIf(IsDBNull(objRow("CalculationID")), 0, objRow("CalculationID")))
+				If Not HasExpressionComponent Then
+					sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & CStr(plngExprIDBeingSearched)
+					rsExprComp = DB.GetDataTable(sSQL)
 
-								If lngSubExprID > 0 Then
-									HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-								End If
+					With rsExprComp
+						For Each objRow As DataRow In .Rows
 
-							Case ExpressionComponentTypes.giCOMPONENT_FILTER
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								lngSubExprID = CInt(IIf(IsDBNull(objRow("FilterID")), 0, objRow("FilterID")))
+							Select Case CType(objRow("Type"), ExpressionComponentTypes)
+								Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									lngSubExprID = CInt(IIf(IsDBNull(objRow("CalculationID")), 0, objRow("CalculationID")))
 
-								If lngSubExprID > 0 Then
-									HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-								End If
-
-							Case ExpressionComponentTypes.giCOMPONENT_FIELD
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								lngSubExprID = CInt(IIf(IsDBNull(objRow("FieldSelectionFilter")), 0, objRow("FieldSelectionFilter")))
-
-								If lngSubExprID > 0 Then
-									HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-								End If
-
-							Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-								sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(objRow("ComponentID"))
-								rsExpr = DB.GetDataTable(sSQL)
-								For Each objFunctionRow As DataRow In rsExpr.Rows
-
-									HasExpressionComponent = HasExpressionComponent(CInt(objFunctionRow("ExprID")), plngExprIDSearchedFor)
-
-									If HasExpressionComponent Then
-										Exit For
+									If lngSubExprID > 0 Then
+										HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
 									End If
 
-								Next
-								'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								rsExpr = Nothing
-						End Select
+								Case ExpressionComponentTypes.giCOMPONENT_FILTER
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									lngSubExprID = CInt(IIf(IsDBNull(objRow("FilterID")), 0, objRow("FilterID")))
 
-						If HasExpressionComponent Then
-							Exit For
-						End If
+									If lngSubExprID > 0 Then
+										HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
+									End If
 
-					Next
-				End With
+								Case ExpressionComponentTypes.giCOMPONENT_FIELD
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									lngSubExprID = CInt(IIf(IsDBNull(objRow("FieldSelectionFilter")), 0, objRow("FieldSelectionFilter")))
 
-			End If
+									If lngSubExprID > 0 Then
+										HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
+									End If
 
-TidyUpAndExit:
-			'UPGRADE_NOTE: Object rsExprComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsExprComp = Nothing
+								Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+									sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(objRow("ComponentID"))
+									rsExpr = DB.GetDataTable(sSQL)
+									For Each objFunctionRow As DataRow In rsExpr.Rows
 
-			Exit Function
+										HasExpressionComponent = HasExpressionComponent(CInt(objFunctionRow("ExprID")), plngExprIDSearchedFor)
 
-ErrorTrap:
-			Resume TidyUpAndExit
+										If HasExpressionComponent Then
+											Exit For
+										End If
+
+									Next
+
+							End Select
+
+							If HasExpressionComponent Then
+								Exit For
+							End If
+
+						Next
+					End With
+
+				End If
+
+
+			Catch ex As Exception
+
+
+			End Try
 
 		End Function
 

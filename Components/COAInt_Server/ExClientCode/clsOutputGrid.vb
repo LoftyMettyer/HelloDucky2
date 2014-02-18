@@ -24,7 +24,6 @@ Friend Class clsOutputGrid
 	Private mstrFileName As String
 
 	Public Sub ClearUp()
-		''  Set mgrdPrintGrid = Nothing
 		'UPGRADE_NOTE: Object mobjPrintGrid may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		'mobjPrintGrid = Nothing
 	End Sub

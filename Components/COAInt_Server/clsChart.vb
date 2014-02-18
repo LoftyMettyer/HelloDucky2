@@ -401,7 +401,7 @@ GenerateSQLSelect_ERROR:
 		''  lngTempMaxRecords = 0
 		''  lngTempFilterID = 0
 		''
-		''  If mlngCustomReportsChildTable > 0 Then
+		'' If mlngCustomReportsChildTable > 0 Then
 		''  If miChildTablesCount > 0 Then
 		''    For i = 0 To UBound(mvarChildTables, 2) Step 1
 		''      lngTempChildID = mvarChildTables(0, i)

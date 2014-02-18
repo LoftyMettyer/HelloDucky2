@@ -217,7 +217,6 @@ Friend Class cSetDfltPrinter
 		Dim X As Integer
 		Dim need As Integer	'bytes needed
 		Dim pi5 As PRINTER_INFO_5	'your PRINTER_INFO structure
-
 		' none - exit
 		If DeviceName = "" Then
 			Win95SetDefaultPrinter = False
