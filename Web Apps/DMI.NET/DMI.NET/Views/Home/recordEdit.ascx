@@ -783,10 +783,14 @@
 		addActiveXHandlers();
 
 		$(document).ready(function () {
-			// Harry's code
 
+			//if (controls with a Negative number) {
+			//	$()
+			//}
+			// Harry's code
 			var newWidth = $("#txtRecEditWidth").val() / 14.8;
 			$("#ctlRecordEdit").width(newWidth + "px");
+			$("#ctlRecordEdit").css("overflow", "hidden");
 
 			var tabheight = Number($("#tabHeaders").height());
 			if (tabheight < 40) {
