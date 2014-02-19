@@ -743,19 +743,6 @@ LocalErr:
 
 	End Sub
 
-	Public Sub ResetDefaultPrinter()
-
-		Dim objDefPrinter As cSetDfltPrinter
-
-		If mstrPrinterName <> "<Default Printer>" Then
-			objDefPrinter = New cSetDfltPrinter
-			objDefPrinter.SetPrinterAsDefault(mstrDefaultPrinter)
-			'UPGRADE_NOTE: Object objDefPrinter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objDefPrinter = Nothing
-		End If
-
-	End Sub
-
 	Public Sub SettingOptions(strSettingWordTemplate As String, strSettingExcelTemplate As String, blnSettingExcelGridlines As Boolean, blnSettingExcelHeaders As Boolean _
 														 , blnSettingExcelOmitSpacerRow As Boolean, blnSettingExcelOmitSpacerCol As Boolean, blnSettingAutoFitCols As Boolean _
 														 , blnSettingLandscape As Boolean, blnEmailSystemPermission As Boolean)

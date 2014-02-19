@@ -2922,8 +2922,6 @@ Namespace Controllers
 			If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
 				If Session("OutputOptions_Printer") = True Then
 					ClientDLL.SetPrinter()
-					'		Response.Write("      dataOnlyPrint();" & vbCrLf)
-					ClientDLL.ResetDefaultPrinter()
 				End If
 			Else
 				ClientDLL.HeaderRows = 1

@@ -949,7 +949,6 @@ LocalErr:
 					'Next objWorksheet
 				End If
 
-				'mobjParent.ResetDefaultPrinter
 			End If
 
 

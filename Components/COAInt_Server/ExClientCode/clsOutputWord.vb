@@ -1218,7 +1218,6 @@ LocalErr:
 			mwrdApp.ActivePrinter = mstrPrinterName
 			mwrdDoc.PrintOut()
 			mwrdApp.ActivePrinter = strCurrentPrinter
-			'mobjParent.ResetDefaultPrinter
 		End If
 
 

@@ -100,7 +100,6 @@ Friend Class clsOutputGrid
 	''    mstrErrorMessage = "Cancelled by User."
 	''  End If
 	''
-	''  mobjParent.ResetDefaultPrinter
 	''
 	''End Sub
 
@@ -128,8 +127,6 @@ Friend Class clsOutputGrid
 	'
 	'  fOK = Not mobjPrintGrid.Cancelled
 	'
-	'  mobjParent.ResetDefaultPrinter
-	'
 	'TidyUpAndExit:
 	'  'Set mobjPrintGrid = Nothing
 	'  RecordProfilePage = fOK
@@ -152,10 +149,6 @@ Friend Class clsOutputGrid
 			ErrorMessage = mstrErrorMessage
 		End Get
 	End Property
-
-	'''Private Sub mgrdPrintGrid_PrintInitialize(ByVal ssPrintInfo As SSDataWidgets_B.ssPrintInfo)
-	'''  Call mobjPrintGrid.PrintInitialise(ssPrintInfo)
-	'''End Sub
 
 	Public Sub AddPage(ByRef strDefTitle As String, ByRef mstrSheetName As String, ByRef colStyles As Collection)
 		mstrDefTitle = strDefTitle

@@ -188,7 +188,6 @@
     <Compile Include="ExClientCode\clsOutputRun.vb" />
     <Compile Include="ExClientCode\clsOutputStyle.vb" />
     <Compile Include="ExClientCode\clsOutputWord.vb" />
-    <Compile Include="ExClientCode\cSetDfltPrinter.vb" />
     <Compile Include="ExClientCode\modIntClient.vb" />
     <Compile Include="ExClientCode\modUserSettings.vb" />
     <Compile Include="Expressions\ExprCalculation.vb">
