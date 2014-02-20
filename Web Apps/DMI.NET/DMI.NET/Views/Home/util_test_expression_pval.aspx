@@ -29,6 +29,19 @@
 
 		function util_test_expression_pval_onload() {
 
+			$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+			$(document).on('keydown', '.datepicker', function (event) {
+				var queryDate = new Date();
+				queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+				switch (event.keyCode) {
+					case 113:
+						$(this).val(queryDate);
+						$(this).datepicker('widget').hide('true');
+						break;
+				}
+			});
+
 			// Prevent default behaviour of empty form
 			$(".text").keydown(function(e) {
 				if (e.keyCode == 13) {
@@ -44,13 +57,18 @@
 						var controlCollection = frmPromptedValues.elements;
 						if (controlCollection!=null) {
 								for (i=0; i<controlCollection.length; i++)  {
-										sControlName = controlCollection.item(i).name;
-										sControlPrefix = sControlName.substr(0, 7);
+										var sControlName = controlCollection.item(i).name;
+										var sControlPrefix = sControlName.substr(0, 7);
 	
 										if ((sControlPrefix=="prompt_") || (sControlName.substr(0, 13)=="promptLookup_")) {
+											if (sControlName.substr(0, 9) != "prompt_4_") {
 												controlCollection.item(i).focus();
 												break;
+											}									
 										}
+									
+
+
 								}
 						}
 
@@ -68,8 +86,6 @@
 		}
 
 		function SubmitPrompts() {
-
-
 
 				// Validate the prompt values before submitting the form.
 				var controlCollection = frmPromptedValues.elements;
@@ -481,7 +497,7 @@
 							 
 							' Date Prompted Value
 						ElseIf iValueType = 4 Then
-							Response.Write("        <input type='text' class='text' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='")
+							Response.Write("        <input type='text' class='datepicker' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='")
 							Select Case iPromptDateType
 								Case 0
 									' Explicit value

@@ -29,6 +29,19 @@
 
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
 
+		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+		$(document).on('keydown', '.datepicker', function(event) {
+			var queryDate = new Date();
+			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+			switch (event.keyCode) {
+			case 113:
+				$(this).val(queryDate);
+				$(this).datepicker('widget').hide('true');
+				break;
+			}
+		});
+
 		frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
 		frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
 		frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
@@ -61,7 +74,7 @@
 				$(".popup").dialog("open");				
 			}
 
-		// Set focus on the first prompt control.
+			// Set focus on the first prompt control.
 			var controlCollection = frmPromptedValues.elements;
 			if (controlCollection != null) {
 				for (var i = 0; i < controlCollection.length; i++) {
@@ -69,13 +82,16 @@
 					var sControlPrefix = sControlName.substr(0, 7);
 
 					if ((sControlPrefix == "prompt_") || (sControlName.substr(0, 13) == "promptLookup_")) {
-						controlCollection.item(i).focus();
-						break;
+
+						if (sControlName.substr(0, 9) != "prompt_4_") {
+							controlCollection.item(i).focus();
+							break;
+						}
 					}
 				}
 
 			}
-		}		
+		}
 	}
 </script>
 
@@ -209,7 +225,7 @@
 							' Date Prompted Value
 						ElseIf objRow("ValueType") = 4 Then
 
-							Response.Write("        <input type=text class=""text"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
+							Response.Write("        <input type=text class=""datepicker"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
 									
 							Dim dtDate As Date = CalculatePromptedDate(objRow)
 							Response.Write(ConvertSQLDateToLocale(dtDate))
@@ -521,76 +537,76 @@
 
 							if (fFollowingBackslash == false) {
 								switch (sMask.substring(i, i + 1)) {
-									case "A":
-										// Character must be uppercase.
-										if (sValueChar.toUpperCase() != sValueChar) {
-											fOK = false;
-										}
-										else {
-											iNumber = new Number(sValueChar);
-											if (isNaN(iNumber) == false) {
-												fOK = true;
-											}
-										}
-										iIndex = iIndex + 1;
-										break;
-
-									case "a":
-										// Character must be lowercase.
-										if (sValueChar.toLowerCase() != sValueChar) {
-											fOK = false;
-										}
-										else {
-											iNumber = new Number(sValueChar);
-											if (isNaN(iNumber) == false) {
-												fOK = false;
-											}
-										}
-										iIndex = iIndex + 1;
-										break;
-
-									case "9":
-										// Character must be numeric (0-9).
+								case "A":
+									// Character must be uppercase.
+									if (sValueChar.toUpperCase() != sValueChar) {
+										fOK = false;
+									}
+									else {
 										iNumber = new Number(sValueChar);
-										if (isNaN(iNumber) == true) {
-											fOK = false;
+										if (isNaN(iNumber) == false) {
+											fOK = true;
 										}
-										iIndex = iIndex + 1;
-										break;
+									}
+									iIndex = iIndex + 1;
+									break;
 
-									case "#":
-										// Character must be numeric (0-9) or symbolic (+-%\).
+								case "a":
+									// Character must be lowercase.
+									if (sValueChar.toLowerCase() != sValueChar) {
+										fOK = false;
+									}
+									else {
 										iNumber = new Number(sValueChar);
-										if ((isNaN(iNumber) == true) &&
-												(sValueChar != "+") &&
-												(sValueChar != "-") &&
-												(sValueChar != "%") &&
-												(sValueChar != "\\")) {
+										if (isNaN(iNumber) == false) {
 											fOK = false;
 										}
-										iIndex = iIndex + 1;
-										break;
+									}
+									iIndex = iIndex + 1;
+									break;
 
-									case "B":
-										// Character must be logic (0 or 1).
-										if ((sValueChar != "0") &&
-												(sValueChar != "1")) {
-											fOK = false;
-										}
-										iIndex = iIndex + 1;
-										break;
+								case "9":
+									// Character must be numeric (0-9).
+									iNumber = new Number(sValueChar);
+									if (isNaN(iNumber) == true) {
+										fOK = false;
+									}
+									iIndex = iIndex + 1;
+									break;
 
-									case "\\":
-										// Following character is literal.
-										fFollowingBackslash = true;
-										break;
+								case "#":
+									// Character must be numeric (0-9) or symbolic (+-%\).
+									iNumber = new Number(sValueChar);
+									if ((isNaN(iNumber) == true) &&
+										(sValueChar != "+") &&
+										(sValueChar != "-") &&
+										(sValueChar != "%") &&
+										(sValueChar != "\\")) {
+										fOK = false;
+									}
+									iIndex = iIndex + 1;
+									break;
 
-									default:
-										// Literal.
-										if (sMask.substring(i, i + 1) != sValueChar) {
-											fOK = false;
-										}
-										iIndex = iIndex + 1;
+								case "B":
+									// Character must be logic (0 or 1).
+									if ((sValueChar != "0") &&
+										(sValueChar != "1")) {
+										fOK = false;
+									}
+									iIndex = iIndex + 1;
+									break;
+
+								case "\\":
+									// Following character is literal.
+									fFollowingBackslash = true;
+									break;
+
+								default:
+									// Literal.
+									if (sMask.substring(i, i + 1) != sValueChar) {
+										fOK = false;
+									}
+									iIndex = iIndex + 1;
 								}
 							}
 							else {
@@ -760,8 +776,8 @@
 		var newDateObj = new Date(iYears, iMonths - 1, iDays);
 
 		if ((newDateObj.getDate() != iDays) ||
-				(newDateObj.getMonth() + 1 != iMonths) ||
-				(newDateObj.getFullYear() != iYears)) {
+			(newDateObj.getMonth() + 1 != iMonths) ||
+			(newDateObj.getFullYear() != iYears)) {
 			return "";
 		}
 		else {
