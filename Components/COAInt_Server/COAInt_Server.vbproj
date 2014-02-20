@@ -103,6 +103,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Import Include="HR.Intranet.Server.Extensions" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -134,6 +135,12 @@
     <Compile Include="Enums\PromptedDateType.vb" />
     <Compile Include="Enums\RecEditStartType.vb" />
     <Compile Include="Enums\RelationType.vb" />
+    <Compile Include="Extensions\BaseExtensions.vb" />
+    <Compile Include="Extensions\ModuleSettingExtensions.vb" />
+    <Compile Include="Extensions\PermissionExtension.vb" />
+    <Compile Include="Extensions\RelationExtension.vb" />
+    <Compile Include="Extensions\TablePrivilegeExtensions.vb" />
+    <Compile Include="Extensions\UserSettingExtensions.vb" />
     <Compile Include="Interfaces\IChart.vb" />
     <Compile Include="Metadata\Link.vb" />
     <Compile Include="clsNavigationLinks.vb" />
@@ -226,7 +233,6 @@
     <Compile Include="Expressions\ExprValue.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\Extensions.vb" />
     <Compile Include="General.vb">
       <SubType>Code</SubType>
     </Compile>
