@@ -41,10 +41,10 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('<table align="center" border="solid 1px" bgcolor="#cccccc">');
 	w.document.write("<tr style='font-family:Verdana;font-size:x-small'>");
 	w.document.write("<td>");
-	w.document.write('<input type="button" style="" value="Redraw chart" onclick="loadChart();"/>');
+	w.document.write('<input type="button" value="Redraw chart" onclick="loadChart();"/>');
 	w.document.write('</td>');
 	w.document.write("<td>");
-	w.document.write("Chart Type: <select id='selChartType'>");
+	w.document.write("Chart Type: <select id='selChartType' onchange='loadChart()'>");
 	w.document.write("<option value=\"0\"" + ((iChart_Type == 0) ? " selected " : "") + ">3D Bar</option>");
 	w.document.write("<option value=\"1\"" + ((iChart_Type == 1) ? " selected " : "") + ">2D Bar</option>");
 	w.document.write("<option value=\"2\"" + ((iChart_Type == 2) ? " selected " : "") + ">3D Line</option>");
@@ -56,19 +56,50 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write("<option value=\"14\"" + ((iChart_Type == 14) ? " selected " : "") + ">2D Pie</option>");
 	w.document.write("<option value=\"16\"" + ((iChart_Type == 16) ? " selected " : "") + ">2D XY</option>");
 	w.document.write("</select></td>");
-	w.document.write("<td>Show Legend:<input id='chkshowLegend' type='checkbox' ");
+	w.document.write("<td>Show Legend:<input id='chkshowLegend' type='checkbox' onchange='loadChart()' ");
 	w.document.write((Chart_ShowLegend == "True") ? "Checked " : "");
 	w.document.write("/></td>");
-	w.document.write("<td>Stack Series:<input id='chkstackSeries' type='checkbox' ");
+	w.document.write("<td>Stack Series:<input id='chkstackSeries' type='checkbox' onchange='loadChart()'");
 	w.document.write((Chart_StackSeries == 'True') ? "Checked " : "");
 	w.document.write("/></td> ");
-	w.document.write("<td>Show Gridlines:<input id='chkShowGrid' type='checkbox' ");
+	w.document.write("<td>Show Gridlines:<input id='chkShowGrid' type='checkbox' onchange='loadChart()'");
 	w.document.write((Chart_ShowGrid == 'True') ? "Checked " : "");
 	w.document.write(" /></td> ");
-	w.document.write("<td>Show Values As:<select id='lstValueType' >");
+	w.document.write("<td>Show Values As:<select id='lstValueType' onchange='loadChart()'>");
 	w.document.write("  <option value=\"Values\"" + (Chart_ShowPercentages == 'False' ? " selected " : "") + ">Values</option>");
 	w.document.write("  <option value=\"Percentages\"" + (Chart_ShowPercentages == 'True' ? " selected " : "") + ">Percentages</option>");
 	w.document.write("</select></td>");
+	if (MultiAxis == 'True') {
+		w.document.write("<td>Rotate X: <select id='Inclination' onchange='loadChart()'>");
+		w.document.write("<option value='-90'>-90</option>");
+		w.document.write("<option value='-70'>-70</option>");
+		w.document.write("<option value='-50'>-50</option>");
+		w.document.write("<option value='-30'>-30</option>");
+		w.document.write("<option value='-10'>-10</option>");
+		w.document.write("<option value='0'>0</option>");
+		w.document.write("<option value='10' selected='selected'>10</option>");
+		w.document.write("<option value='30'>30</option>");
+		w.document.write("<option value='50'>50</option>");
+		w.document.write("<option value='70'>70</option>");
+		w.document.write("<option value='90'>90</option>");
+		w.document.write("</select></td>");
+		w.document.write("<td>Rotate Y: <select id='Rotation' onchange='loadChart()'>");
+		w.document.write("<option value='-110'>-110</option>");
+		w.document.write("<option value='-90'>-90</option>");
+		w.document.write("<option value='-70'>-70</option>");
+		w.document.write("<option value='-50'>-50</option>");
+		w.document.write("<option value='-30'>-30</option>");
+		w.document.write("<option value='-10'>-10</option>");
+		w.document.write("<option value='0'>0</option>");
+		w.document.write("<option value='10' selected='selected'>10</option>");
+		w.document.write("<option value='30'>30</option>");
+		w.document.write("<option value='50'>50</option>");
+		w.document.write("<option value='70'>70</option>");
+		w.document.write("<option value='90'>90</option>");
+		w.document.write("<option value='110'>110</option>");
+		w.document.write("</select></td>");
+		w.document.write("<td><input value='Reset rotation' id='btnResetRotation' type='button' onClick='document.getElementById(\"Inclination\").value=10; document.getElementById(\"Rotation\").value=10; loadChart();'/></td>");
+	}
 	w.document.write("<td><input value='Print' id='btnPrint' type='button' onClick='window.print()'/></td>");
 	w.document.write("</tr>");
 	w.document.write("</table>");
@@ -83,6 +114,8 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('var chartShowGridlines = (document.getElementById("chkShowGrid").checked==true);');			
 	w.document.write('var chartShowPercentages = (document.getElementById("lstValueType").value == "Percentages");');
 	if (MultiAxis == 'True') {
+		w.document.write('var rotateX = document.getElementById("Inclination").value;');
+		w.document.write('var rotateY = document.getElementById("Rotation").value;');
 		w.document.write('var psURL = "GetMultiAxisChart?');
 	} else {
 		w.document.write('var psURL = "GetChart?');
@@ -101,6 +134,8 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('&AggregateType=' + iChart_AggregateType);
 	w.document.write('&ElementType=' + iChart_ElementType);
 	if (MultiAxis == 'True') {
+		w.document.write('&RotateX=" + rotateX + "');
+		w.document.write('&RotateY=" + rotateY + "');
 		w.document.write('&TableID_2=' + iChart_TableID_2);
 		w.document.write('&ColumnID_2=' + iChart_ColumnID_2);
 		w.document.write('&TableID_3=' + iChart_TableID_3);
