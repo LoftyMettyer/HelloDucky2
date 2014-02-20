@@ -76,6 +76,12 @@ Public Class MailMerge
 		End Get
 	End Property
 
+	Public ReadOnly Property Columns As DataTable
+		Get
+			Return mrsMailMergeColumns
+		End Get
+	End Property
+
 	Public ReadOnly Property DefName() As String
 		Get
 			Return mstrDefName

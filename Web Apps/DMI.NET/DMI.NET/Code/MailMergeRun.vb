@@ -4,12 +4,13 @@ Option Explicit On
 Imports Aspose.Words
 Imports System.IO
 Imports Aspose.Email.Mail
-Imports System.ComponentModel
 Imports HR.Intranet.Server
+Imports Aspose.Words.Reporting
 
 Namespace Code
 
 	Public Class MailMergeRun
+		Implements IFieldMergingCallback
 
 		Public TemplateName As String
 		Public OutputFileName As String
@@ -23,6 +24,26 @@ Namespace Code
 		Public MergeDocument As MemoryStream
 
 		Public Errors As New List(Of String)
+		Public Columns As DataTable
+
+#Region "Mail Merge Callback"
+
+		Public Sub FieldMerging(args As FieldMergingArgs) Implements IFieldMergingCallback.FieldMerging
+
+			If TypeOf (args.FieldValue) Is DateTime Then
+				Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
+				args.Text = String.Format("{0}", CDate(args.FieldValue).ToString(sLocaleFormat))
+			End If
+
+		End Sub
+
+		Public Sub ImageFieldMerging(args As ImageFieldMergingArgs) Implements IFieldMergingCallback.ImageFieldMerging
+			Throw New NotImplementedException()
+		End Sub
+
+#End Region
+
+
 
 		Public Function ExecuteToEmail() As Boolean
 
@@ -106,28 +127,12 @@ Namespace Code
 
 		End Function
 
-		Private Shared Sub SendCompletedCallback(ByVal sender As Object, ByVal e As AsyncCompletedEventArgs)
-
-				'Get the unique identifier for this asynchronous operation.
-				Dim token As String = DirectCast(e.UserState, String)
-
-				If e.Cancelled Then
-						Console.WriteLine("[{0}] Send canceled.", token)
-				End If
-
-				If e.[Error] IsNot Nothing Then
-						Console.WriteLine("[{0}] {1}", token, e.[Error].ToString())
-
-				Else
-						Console.WriteLine("Message Sent.")
-				End If
-		End Sub
-
 		Public Function ExecuteMailMerge() As Boolean
 
 			Try
 
 				Dim doc As New Document(TemplateName)
+				doc.MailMerge.FieldMergingCallback = Me
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
 				doc.Save(MergeDocument, SaveFormat.Docx)

@@ -28,14 +28,6 @@
 		If fok Then fok = fNotCancelled
 	End If
 
-	objMailMergeOutput.Name = objMailMerge.DefName
-	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
-	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
-	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
-	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
-	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
-	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
-
 	If fok Then
 		lngEventLogID = objMailMerge.EventLogAddHeader
 		fok = (lngEventLogID > 0)
@@ -56,6 +48,15 @@
 		If fok Then fok = fNotCancelled
 	End If
 
+	objMailMergeOutput.Name = objMailMerge.DefName
+	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
+	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
+	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
+	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
+	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
+	objMailMergeOutput.Columns = objMailMerge.Columns
+	
 	If fok Then
 		fok = objMailMergeOutput.ValidateTemplate()
 		fNotCancelled = Response.IsClientConnected
