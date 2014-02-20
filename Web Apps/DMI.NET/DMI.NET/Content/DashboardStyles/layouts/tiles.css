@@ -563,6 +563,9 @@ div.officetab div.panel > span { display: none;}
 	padding-left: 30px!important;
 }
 
+#row1 .pageTitle{
+	color: #000000;
+}
 .pageTitleIcon {
 	color: white;
 	cursor: pointer;
