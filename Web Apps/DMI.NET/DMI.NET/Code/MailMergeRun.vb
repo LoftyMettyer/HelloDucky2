@@ -1,4 +1,7 @@
-﻿Imports Aspose.Words
+﻿Option Strict On
+Option Explicit On
+
+Imports Aspose.Words
 Imports System.IO
 Imports Aspose.Email.Mail
 Imports System.ComponentModel
@@ -11,13 +14,15 @@ Namespace Code
 		Public TemplateName As String
 		Public OutputFileName As String
 		Public EmailSubject As String
-		Public EmailCalculationID As Long
+		Public EmailCalculationID As Integer
 		Public IsAttachment As Boolean
 		Public AttachmentName As String
 		Public Name As String
 
 		Public MergeData As DataTable
 		Public MergeDocument As MemoryStream
+
+		Public Errors As New List(Of String)
 
 		Public Function ExecuteToEmail() As Boolean
 
@@ -40,7 +45,7 @@ Namespace Code
 
 			objOptions.MessageFormat = MessageFormat.Mht
 
-			For Each objRow In MergeData.Rows
+			For Each objRow As DataRow In MergeData.Rows
 				doc = New Document(TemplateName)
 				doc.MailMerge.Execute(objRow)
 				objStream = New MemoryStream()
@@ -74,7 +79,7 @@ Namespace Code
 				message.From = New Aspose.Email.Mail.MailAddress(ApplicationSettings.MailMerge_From, "OpenHR")
 
 				' TODO - Alter this to read with initial dataset - would speed up performance
-				strToEmail = objDatabase.GetEmailAddress(objRow("ID").ToString(), EmailCalculationID)
+				strToEmail = objDatabase.GetEmailAddress(CInt(objRow("ID")), EmailCalculationID)
 
 				If strToEmail.Length > 0 Then
 					message.To.Add(strToEmail)
@@ -135,6 +140,26 @@ Namespace Code
 			End Try
 
 			Return True
+		End Function
+
+
+		Public Function ValidateTemplate() As Boolean
+
+			Dim bFileExits As Boolean
+			Dim bFieldsOK As Boolean = True
+
+			bFileExits = File.Exists(TemplateName)
+			If Not bFileExits Then
+				Errors.Add(String.Format("The file {0} cannot be found. {1}{1} Please ensure that the template file is a valid UNC path" _
+							& " that is accessible from the OpenHR Web server.", TemplateName, "<br />"))
+			End If
+
+			If Not bFieldsOK Then
+				Errors.Add("The template file does not match the mail merge definition. Please edit the template or the definition.")
+			End If
+
+			Return bFileExits And bFieldsOK
+
 		End Function
 
 	End Class

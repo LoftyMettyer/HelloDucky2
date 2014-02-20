@@ -100,6 +100,14 @@
 				position: ['center', 100],
 			});
 
+			$("#warningDialog").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 650,
+				height: "auto",
+				position: ['center', 100],
+			});
+
 			$("#CalendarEvent").dialog({
 				autoOpen: false,
 				modal: true,
@@ -239,6 +247,16 @@
 
 		});
 		
+		function closeWarning() {
+			$("#warningDialog").dialog("close");
+		}
+
+		function raiseWarning(sTitle, sErrorDesc) {
+			$("#warningDialogTitle").text(sTitle);
+			$("#warningDialogContentText").html(sErrorDesc);
+			$("#warningDialog").dialog("open");
+		}
+
 		function updateProgressMsg() {
 			$('.progressMessage span').text($('#txtProgressMessage').val());
 		}
@@ -383,7 +401,7 @@
 
 	<div id="About" title="About OpenHR" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
 
-	<div id="errorDialog" title="AJAX call failed.">
+	<div id="errorDialog" title="AJAX call failed">
 		<div id="errorDialogTitleContent">
 			<h1 id="errorDialogTitle"></h1>
 		</div>
@@ -391,7 +409,20 @@
 			<p id="errorDialogContentText"></p>
 		</div>
 	</div>
-
+	
+	<div id="warningDialog" title="OpenHR Web">
+		<div id="warningDialogTitleContent">
+			<i class="icon-exclamation-sign" style="font-size: 50px; color: dodgerblue; float: left"></i> 
+			<h1 style="position:relative; margin-left: 55px;" id="warningDialogTitle"></h1>
+		</div>
+		<div id="warningDialogContent">
+			<p id="warningDialogContentText"></p>			
+		</div>
+		<div class="centered">
+			<input class="btn" type="button" value="OK" onclick="closeWarning();"/>
+		</div>
+	</div>
+	
 	<div id="CalendarEvent"></div>
 
 	<div id="dialog-confirm" title="">

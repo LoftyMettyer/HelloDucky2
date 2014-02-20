@@ -7,7 +7,7 @@
 	Dim fok As Boolean = True
 	Dim blnSuccess As Boolean
 	Dim bDownloadFile As Boolean
-	Dim objMailMerge As HR.Intranet.Server.MailMerge
+	Dim objMailMerge As MailMerge
 	Dim objMailMergeOutput As New Code.MailMergeRun
 	Dim fNotCancelled As Boolean
 	Dim lngEventLogID As Long
@@ -18,15 +18,23 @@
 	objMailMerge.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 	' Pass required info to the DLL
-	objMailMerge.MailMergeID = Session("utilid")
+	objMailMerge.MailMergeID = CInt(Session("utilid"))
 	objMailMerge.ClientDateFormat = Session("localedateformat")
 	objMailMerge.SingleRecordID = Session("singleRecordID")
-
+	
 	If fok Then
 		fok = objMailMerge.SQLGetMergeDefinition
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
+
+	objMailMergeOutput.Name = objMailMerge.DefName
+	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
+	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
+	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
+	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
+	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
 
 	If fok Then
 		lngEventLogID = objMailMerge.EventLogAddHeader
@@ -49,6 +57,12 @@
 	End If
 
 	If fok Then
+		fok = objMailMergeOutput.ValidateTemplate()
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+	
+	If fok Then
 		fok = objMailMerge.SQLCodeCreate
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
@@ -66,31 +80,24 @@
 		If fok Then fok = fNotCancelled
 	End If
 
-	fok = objMailMerge.UDFFunctions(False)
-	fNotCancelled = Response.IsClientConnected
-	If fok Then fok = fNotCancelled
+	If fok Then
+		fok = objMailMerge.UDFFunctions(False)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
 
-	objMailMergeOutput.Name = objMailMerge.DefName
-	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
-	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+		objMailMergeOutput.MergeData = objMailMerge.MergeData
 
-	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
-	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
-	
-	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
-	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
+		If objMailMerge.DefOutputFormat = MailMergeOutputTypes.WordDocument Then
+			blnSuccess = objMailMergeOutput.ExecuteMailMerge()
+			bDownloadFile = True
+		Else
+			blnSuccess = objMailMergeOutput.ExecuteToEmail()
+			bDownloadFile = False
+		End If
 
-	objMailMergeOutput.MergeData = objMailMerge.MergeData
+		Session("MailMerge_CompletedDocument") = objMailMergeOutput
 
-	If objMailMerge.DefOutputFormat = MailMergeOutputTypes.WordDocument Then
-		blnSuccess = objMailMergeOutput.ExecuteMailMerge()
-		bDownloadFile = True
-	Else
-		blnSuccess = objMailMergeOutput.ExecuteToEmail()
-		bDownloadFile = False
 	End If
-
-	Session("MailMerge_CompletedDocument") = objMailMergeOutput
 	
 	%>
 
@@ -108,8 +115,22 @@
 </form>
 
 <script type="text/javascript">
+	
+	<%
+	If objMailMergeOutput.Errors.Count > 0 Then
+		
+		Dim sErrorMessage = HttpUtility.JavaScriptStringEncode(Join(objMailMergeOutput.Errors.ToArray()))
+		
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))
+		
+	End If
+	%>
+
+
+
+
 	<% If bDownloadFile %>
-		document.getElementById("frmMailMergeOutput").submit();
+	document.getElementById("frmMailMergeOutput").submit();
 	<% End If %>
 	closeclick();
 </script>
