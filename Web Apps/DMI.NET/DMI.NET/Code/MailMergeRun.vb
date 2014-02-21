@@ -6,6 +6,7 @@ Imports System.IO
 Imports Aspose.Email.Mail
 Imports HR.Intranet.Server
 Imports Aspose.Words.Reporting
+Imports HR.Intranet.Server.Metadata
 
 Namespace Code
 
@@ -24,7 +25,7 @@ Namespace Code
 		Public MergeDocument As MemoryStream
 
 		Public Errors As New List(Of String)
-		Public Columns As DataTable
+		Public Columns As List(Of Column)
 
 #Region "Mail Merge Callback"
 
@@ -147,25 +148,55 @@ Namespace Code
 			Return True
 		End Function
 
+		Public Function ValidateDefinition() As Boolean
+
+			Dim duplicates = Columns.GroupBy(Function(i) i.Name.ToLower()) _
+													.Where(Function(g) g.Count() > 1) _
+													.[Select](Function(g) g.Key)
+
+			' Check for dupliacte column names
+			If duplicates.Count > 0 Then
+
+				Errors.Add(String.Format("The following merge fields are duplicated with the same in your defintion:" _
+							& "{0}{0}{1}{0}{0}Please edit your definition.", "<br/>", Join(duplicates.ToArray(), "<br/>")))
+				Return False
+			End If
+
+
+			Return True
+
+		End Function
 
 		Public Function ValidateTemplate() As Boolean
 
-			Dim bFileExits As Boolean
-			Dim bFieldsOK As Boolean = True
-
-			bFileExits = File.Exists(TemplateName)
-			If Not bFileExits Then
+			' Check for file access
+			If Not File.Exists(TemplateName) Then
 				Errors.Add(String.Format("The file {0} cannot be found. {1}{1} Please ensure that the template file is a valid UNC path" _
-							& " that is accessible from the OpenHR Web server.", TemplateName, "<br />"))
+							& " that is accessible from the OpenHR Web server.", TemplateName, "<br/>"))
+				Return False
 			End If
 
-			If Not bFieldsOK Then
-				Errors.Add("The template file does not match the mail merge definition. Please edit the template or the definition.")
+			' Verify template integrity
+			Dim doc As New Document(TemplateName)
+			Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
+
+			For Each objColumn In Columns
+				Dim sFieldName = String.Format("{0}_{1}", objColumn.TableName, objColumn.Name)
+				templateFields.Remove(sFieldName)
+			Next
+
+			If templateFields.Count > 0 Then
+				Errors.Add(String.Format("The template {2} is missing the following merge fields{0}{0}{1}{0}{0}Please edit the template or the definition." _
+											, "<br/>", Join(templateFields.ToArray(), "<br/>"), TemplateName))
+				Return False
 			End If
 
-			Return bFileExits And bFieldsOK
+			Return True
 
 		End Function
+
+
+
 
 	End Class
 End Namespace

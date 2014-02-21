@@ -42,12 +42,6 @@
 		If fok Then fok = fNotCancelled
 	End If
 
-	If fok Then
-		fok = objMailMerge.SQLGetMergeColumns
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
 	objMailMergeOutput.Name = objMailMerge.DefName
 	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
 	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
@@ -62,6 +56,13 @@
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
+
+	If fok Then
+		fok = objMailMergeOutput.ValidateDefinition()
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
+
 	
 	If fok Then
 		fok = objMailMerge.SQLCodeCreate
