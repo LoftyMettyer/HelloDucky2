@@ -332,7 +332,7 @@ Public Class MailMerge
 		mlngDefEmailAddrCalc = 0
 		'mstrEmailAddr = vbNullString
 
-		mintDefOutputFormat = objRow("OutputFormat")
+		mintDefOutputFormat = CType(objRow("OutputFormat"), MailMergeOutputTypes)
 		Select Case mintDefOutputFormat
 			Case MailMergeOutputTypes.WordDocument
 				mblnDefOutputScreen = CBool(objRow("OutputScreen"))
@@ -541,7 +541,7 @@ LocalErr:
 					Select Case objRow("ColExp")
 						Case "Col"
 							Call SQLAddColumn(mstrSQLSelect, CInt(objRow("TableID")), objRow("Table").ToString(), objRow("Name").ToString(), objRow("Table").ToString() & "_" & objRow("Name").ToString())
-							mintType(intIndex) = objRow("Type")
+							mintType(intIndex) = CType(objRow("Type"), SQLDataType)
 
 						Case "Exp"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -563,7 +563,7 @@ LocalErr:
 								Exit Function
 
 							Else
-								Call SQLAddCalculation(objRow("ColExpID"), objRow("Table") & objRow("Name"))
+								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString())
 
 								objExpr = NewExpression()
 								objExpr.ExpressionID = CInt(objRow("ColExpID"))
@@ -659,7 +659,7 @@ LocalErr:
 
 			sRealSource = gcoTablePrivileges.Item(sTableName).RealSource
 
-			sColumnList = sColumnList & IIf(sColumnList <> vbNullString, ", ", "") & sRealSource & "." & sColumnName
+			sColumnList = sColumnList & IIf(sColumnList <> vbNullString, ", ", "").ToString() & sRealSource & "." & sColumnName
 
 			If strColCode <> vbNullString Then
 				sColumnList = sColumnList & " AS " & "'" & strColCode & "'"
@@ -809,7 +809,7 @@ LocalErr:
 
 					SQLAddColumn(mstrSQLOrder, CInt(objRow("TableID")), objRow("TableName").ToString(), objRow("ColumnName").ToString(), vbNullString)
 
-					mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder"), 1) = "A", " ASC", " DESC").ToString()
+					mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder").ToString(), 1) = "A", " ASC", " DESC").ToString()
 
 					If fOK = False Then
 						Exit Sub
