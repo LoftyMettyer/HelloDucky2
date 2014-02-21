@@ -134,7 +134,7 @@ function find_window_onload() {
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
-					rowNum: 100,
+					rowNum: 1000,
 					autowidth: true,
 					shrinktofit: false,
 					ondblClickRow: function () {
