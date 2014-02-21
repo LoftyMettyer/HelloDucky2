@@ -285,7 +285,7 @@ Public Module ASRIntranetFunctions
 
 				dr("startdate") = CDate(objRow(2))
 				dr("enddate") = CDate(objRow(2)).AddDays(1)
-				dr("description") = "Bank Holiday"
+				dr("description") = "B"	'Changed to provide short form for bank holiday 
 				dr("eventType") = "bank"
 
 				dr("resource") = objRow(0)
