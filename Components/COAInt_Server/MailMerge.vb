@@ -73,12 +73,12 @@ Public Class MailMerge
 		End Get
 	End Property
 
-	Public ReadOnly Property Columns As List(Of Column)
+	Public ReadOnly Property Columns As List(Of MergeColumn)
 		Get
-			Dim objColumns As New List(Of Column)
+			Dim objColumns As New List(Of MergeColumn)
 
 			For Each objRow As DataRow In mrsMailMergeColumns.Rows
-				Dim column As New Column
+				Dim column As New MergeColumn
 				column.ID = CInt(objRow("colexpid"))
 				column.TableID = CInt(objRow("tableid"))
 				column.TableName = objRow("table").ToString()
@@ -86,7 +86,8 @@ Public Class MailMerge
 				column.DataType = objRow("type")
 				column.Use1000Separator = CBool(objRow("use1000separator"))
 				column.Size = CLng(objRow("size"))
-				column.Decimals = CShort(objRow("decimals"))
+				column.Decimals = CInt(objRow("decimals"))
+				column.IsExpression = (objRow("colexp").ToString() = "Exp")
 				objColumns.Add(column)
 			Next
 

@@ -25,7 +25,7 @@ Namespace Code
 		Public MergeDocument As MemoryStream
 
 		Public Errors As New List(Of String)
-		Public Columns As List(Of Column)
+		Public Columns As List(Of MergeColumn)
 
 #Region "Mail Merge Callback"
 
@@ -150,7 +150,7 @@ Namespace Code
 
 		Public Function ValidateDefinition() As Boolean
 
-			Dim duplicates = Columns.GroupBy(Function(i) i.Name.ToLower()) _
+			Dim duplicates = Columns.GroupBy(Function(i) i.MergeName.ToLower()) _
 													.Where(Function(g) g.Count() > 1) _
 													.[Select](Function(g) g.Key)
 

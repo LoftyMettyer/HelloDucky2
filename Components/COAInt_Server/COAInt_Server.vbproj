@@ -243,6 +243,7 @@
     <Compile Include="Metadata\LegendColor.vb" />
     <Compile Include="Metadata\Column.vb" />
     <Compile Include="Metadata\Function.vb" />
+    <Compile Include="Metadata\MergeColumn.vb" />
     <Compile Include="Metadata\ModuleSetting.vb" />
     <Compile Include="Metadata\Operator.vb" />
     <Compile Include="Metadata\OperatorParameter.vb" />
