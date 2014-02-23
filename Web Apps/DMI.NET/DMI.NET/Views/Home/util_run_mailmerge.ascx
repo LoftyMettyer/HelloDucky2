@@ -119,11 +119,19 @@
 <script type="text/javascript">
 	
 	<%
-	If objMailMergeOutput.Errors.Count > 0 Then
-		
-		Dim sErrorMessage = HttpUtility.JavaScriptStringEncode(Join(objMailMergeOutput.Errors.ToArray()))
-		
-		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))
+	Dim sErrorMessage As String
+	
+	' Errors during the merge
+	If objMailMergeOutput.Errors.Count > 0 Then		
+		sErrorMessage = HttpUtility.JavaScriptStringEncode(Join(objMailMergeOutput.Errors.ToArray()))		
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))		
+	Else
+	
+		' No data in result set
+		If objMailMerge.NoRecords Then
+			sErrorMessage = "Completed successfully, however there were no records that met the selection citeria. No document has been produced"
+			Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))
+		End If
 		
 	End If
 	%>

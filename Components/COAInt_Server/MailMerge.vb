@@ -212,7 +212,7 @@ Public Class MailMerge
 
 	Public ReadOnly Property NoRecords() As Boolean
 		Get
-			NoRecords = mblnNoRecords
+			Return mblnNoRecords
 		End Get
 	End Property
 
