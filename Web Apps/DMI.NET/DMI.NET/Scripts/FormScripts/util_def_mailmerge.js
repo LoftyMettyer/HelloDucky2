@@ -987,6 +987,7 @@ function submitDefinition() {
 
 
 function cancelClick() {
+
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
 		menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
 	}
@@ -997,7 +998,7 @@ function cancelClick() {
 			}
 		});
 	}
-	return (false);
+	return false;
 }
 
 function okClick() {

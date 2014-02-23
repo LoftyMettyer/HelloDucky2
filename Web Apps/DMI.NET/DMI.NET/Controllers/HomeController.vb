@@ -4536,7 +4536,7 @@ Namespace Controllers
 					, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_jobsToHide")} _
 					, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_jobsToHideGroups")} _
 					, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns")} _
-					, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns")} _
+					, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns2")} _
 				, prmID)
 
 				Session("confirmtext") = "Mail Merge has been saved successfully"

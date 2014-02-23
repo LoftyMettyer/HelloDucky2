@@ -14,7 +14,7 @@ Namespace Code
 		Implements IFieldMergingCallback
 
 		Public TemplateName As String
-		Public OutputFileName As String
+		Private _outputFileName As String
 		Public EmailSubject As String
 		Public EmailCalculationID As Integer
 		Public IsAttachment As Boolean
@@ -26,6 +26,19 @@ Namespace Code
 
 		Public Errors As New List(Of String)
 		Public Columns As List(Of MergeColumn)
+
+		Public Property OutputFileName As String
+			Get
+				If _outputFileName = "" Then
+					Return String.Format("{0}.docx", Name)
+				Else
+					Return _outputFileName
+				End If
+			End Get
+			Set(value As String)
+				_outputFileName = value
+			End Set
+		End Property
 
 #Region "Mail Merge Callback"
 
@@ -181,8 +194,7 @@ Namespace Code
 			Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
 
 			For Each objColumn In Columns
-				Dim sFieldName = String.Format("{0}_{1}", objColumn.TableName, objColumn.Name)
-				templateFields.Remove(sFieldName)
+				templateFields.Remove(objColumn.MergeName)
 			Next
 
 			If templateFields.Count > 0 Then
