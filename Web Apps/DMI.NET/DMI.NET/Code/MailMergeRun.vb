@@ -157,7 +157,7 @@ Namespace Code
 			' Check for dupliacte column names
 			If duplicates.Count > 0 Then
 
-				Errors.Add(String.Format("The following merge fields are duplicated with the same in your defintion:" _
+				Errors.Add(String.Format("The following merge fields are duplicated within your defintion:" _
 							& "{0}{0}{1}{0}{0}Please edit your definition.", "<br/>", Join(duplicates.ToArray(), "<br/>")))
 				Return False
 			End If
@@ -186,7 +186,7 @@ Namespace Code
 			Next
 
 			If templateFields.Count > 0 Then
-				Errors.Add(String.Format("The template {2} is missing the following merge fields{0}{0}{1}{0}{0}Please edit the template or the definition." _
+				Errors.Add(String.Format("The template {2} has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
 											, "<br/>", Join(templateFields.ToArray(), "<br/>"), TemplateName))
 				Return False
 			End If
