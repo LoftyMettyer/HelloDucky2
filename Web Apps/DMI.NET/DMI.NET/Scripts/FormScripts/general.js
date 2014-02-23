@@ -7,6 +7,17 @@ function closeclick() {
 	catch (e) { }
 }
 
+function closepromptedclick() {
+	try {
+		$(".popup").dialog("close");
+
+		if (menu_isSSIMode()) {
+			window.loadPartialView("linksMain", "Home", "workframe", null);
+		}
+	}
+	catch (e) { }
+}
+
 function disableAll() {
 	var i;
 

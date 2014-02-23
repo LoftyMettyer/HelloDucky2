@@ -136,11 +136,14 @@
 	End If
 	%>
 
-
-
-
 	<% If bDownloadFile %>
 	document.getElementById("frmMailMergeOutput").submit();
 	<% End If %>
-	closeclick();
+	
+	$(".popup").dialog("close");
+
+	if (menu_isSSIMode()) {
+		loadPartialView("linksMain", "Home", "workframe", null);
+	}
+
 </script>

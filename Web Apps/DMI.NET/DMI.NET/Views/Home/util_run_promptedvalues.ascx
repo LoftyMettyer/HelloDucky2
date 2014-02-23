@@ -340,7 +340,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="80">
 							<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
-								onclick="closeclick()" />
+								onclick="closepromptedclick()" />
 						</td>
 					</table>
 				</td>
