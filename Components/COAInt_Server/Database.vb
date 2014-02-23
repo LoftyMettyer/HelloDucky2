@@ -15,16 +15,11 @@ Public Class Database
 
 		Try
 
-			Dim prmResult = New SqlParameter("Result", SqlDbType.VarChar)
-			prmResult.Direction = ParameterDirection.Output
+			Dim prmResult = New SqlParameter("hResult", SqlDbType.VarChar, 8000) With {.Direction = ParameterDirection.Output}
 
-			Dim prmEmail = New SqlParameter("EmailID", SqlDbType.Int)
-			prmEmail.Value = lngEmailAddrCalc
-
-			Dim prmRecordID = New SqlParameter("RecordID", SqlDbType.Int)
-			prmRecordID.Value = lngRecordID
-
-			DB.ExecuteSP("spASRSysEmailAddr", prmResult, prmEmail, prmRecordID)
+			DB.ExecuteSP("spASRSysEmailAddr", prmResult _
+										, New SqlParameter("@EmailID", SqlDbType.Int) With {.Value = lngEmailAddrCalc} _
+										, New SqlParameter("@recordID", SqlDbType.Int) With {.Value = lngRecordID})
 
 			Return prmResult.Value.ToString()
 

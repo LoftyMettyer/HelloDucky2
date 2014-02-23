@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="HR.Intranet.Server.Enums" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
@@ -184,7 +184,7 @@
 			<span class="pageTitleSmaller" id="PageDivTitle">
 				<% 
 					If Session("StandardReport_Type") <> "" Then
-						Response.Write(GetReportNameByReportType(CType(Session("StandardReport_Type"), UtilityType)))
+						Response.Write(GetReportNameByReportType(Session("StandardReport_Type")))
 						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
 							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")
 						End If
