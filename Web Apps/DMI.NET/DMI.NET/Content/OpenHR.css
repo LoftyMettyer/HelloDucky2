@@ -932,6 +932,8 @@ header {
 
 .pageTitleSmaller {
 	font-size: x-large;
+	line-height: 50px;
+	padding-left: 10px;
 }
 
 input[type=button].Embed, input[type=button].Link {
