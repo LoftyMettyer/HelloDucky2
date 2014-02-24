@@ -415,8 +415,8 @@ function menu_MenuClick(sTool) {
 	var frmRecEditArea;
 	var frmWorkArea;
 	var frmFindArea;
-	var frmData;
 	var sToolName;
+	var frmData;
 	var sToolNameKey;
 	var hasChanged;
 
@@ -664,8 +664,21 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolLogoff") {
+		hasChanged = menu_saveChanges(sToolName, true, false);
+		if (hasChanged == 0) { // Prompt for navigation
+
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+				if (answer == 1) { // OK
 		menu_logoffIntranet();
-		return;
+					return false;
+				} else {
+					return false;
+	}
+			});
+		} else {
+			menu_logoffIntranet();
+		}
+		return false;
 	}
 
 
@@ -784,52 +797,52 @@ function menu_MenuClick(sTool) {
 		//RecEdit - New, Edit, Copy ----------------------------------------------------------------------------------------------------------------
 	if (sToolName == "mnutoolNewRecord") {
 			menu_newRecord();
-		return;
+		return false;
 	}
 		
 	if (sToolName == "mnutoolEditRecord") {
 			menu_editRecord();
-		return;
+		return false;
 	}
 							
 	if (sToolName == "mnutoolSaveRecord") {
 			menu_saveChanges("", false, false);
-		return;
+		return false;
 	}
 		
 	if (sToolName == "mnutoolDeleteRecord") {
 			menu_deleteRecord();
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolParentRecord") {
 			menu_loadParentRecord();
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolBackRecord") {
 			menu_loadBackPage();
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolFirstRecord") {
 			menu_moveRecord("MOVEFIRST");
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolPreviousRecord") {
 			menu_moveRecord("MOVEPREVIOUS");
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolNextRecord") {
 			menu_moveRecord("MOVENEXT");
-		return;
+		return false;
 	}
 
 	if (sToolName == "mnutoolLastRecord") {
 			menu_moveRecord("MOVELAST");
-		return;
+		return false;
 	}
 
 	if ((sToolName == "mnutoolLocateRecordsCaption")  ||
@@ -839,67 +852,146 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolFindRecord") {
-		if (menu_saveChanges(sTool, true, false) != 2) { // 2 = vbCancel
+		hasChanged = menu_saveChanges(sTool, true, false);
+		if (hasChanged == 6) { // 6 = No Change
 			menu_disableMenu();
 			menu_loadFindPage();
 		}
-		return;
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_disableMenu();
+					menu_loadFindPage();
+	}
+				else {
+				}
+			});
+		}
+		return false;
 	}
 
 	if (sToolName == "mnutoolQuickFindRecord") {
-			menu_loadQuickFind();     // HC: TODO - Tab and buttons needs to be enabled
-		return;
+		hasChanged = menu_saveChanges("QUICKFIND", true, false);
+		if (hasChanged == 6) { // 6 = No Change
+			menu_loadQuickFindNoSaveCheck();
+	}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadQuickFindNoSaveCheck();
+				}
+				else {
+				}
+			});
+		}
+		return false;
 	}
 
 	if (sToolName == "mnutoolChangeOrderRecord") {
-			menu_loadSelectOrderFilter("ORDER");     // HC: TODO - Tab and buttons needs to be enabled
-		return;
+		menu_loadSelectOrderFilter("ORDER");     
+		return false;
 	}
 				
 	if (sToolName == "mnutoolFilterRecord") {
-			menu_loadSelectOrderFilter("FILTER");     // HC: TODO - Tab and buttons needs to be enabled
-		return;
+		menu_loadSelectOrderFilter("FILTER");     
+		return false;
 	}
 				
 	if (sToolName == "mnutoolClearFilterRecord") {
-		menu_clearFilter();     // HC: TODO - Tab and buttons needs to be enabled
-		return;
+		menu_clearFilter();     
+		return false;
 	}
 		
 		// Calendar Reports  (from record menu)
 	if (sToolName == "mnutoolCalendarReportsRecord") {
-			//if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
-			//		menu_loadDefSelPage(17, 0, 0, false);
-		//}
-
+		hasChanged = menu_saveChanges("CALENDAR", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 		menu_loadRecordDefSelPage(17, 0, 0, true);
-
+		}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadRecordDefSelPage(17, 0, 0, true);
+				}
+				else {
+				}
+			});
+		}
 		return false;
 	}
 	
 		// Individual Absence Breakdown (from record menu)
 	if (sToolName == "mnutoolAbsenceBreakdownRecord") {
+		hasChanged = menu_saveChanges("ABSENCEBREAKDOWN", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 			menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
-			return;
+	}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
+				}
+				else {
+				}
+			});
+		}
+		return false;
 	}
 
+	// Individual Absence Calendar (from record menu)
 	if (sToolName == "mnutoolAbsenceCalendarRecord") {
+		hasChanged = menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 			menu_LoadAbsenceCalendar();
-			return;
+	}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_LoadAbsenceCalendar();
+				}
+				else {
+				}
+			});
+		}
+		return false;
 	}
 
 		// Individual Bradford Factor (from record menu)
 	if (sToolName == "mnutoolBradfordRecord") {
+		hasChanged = menu_saveChanges("BRADFORDFACTOR", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 			menu_LoadStandardReport("BRADFORDFACTOR", "REC");
-			return;
+	}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_LoadStandardReport("BRADFORDFACTOR", "REC");
+				}
+				else {
+				}
+			});
+		}
+		return false;
 	}
 
 		// Mail Merge  (from record menu)
 	if (sToolName == "mnutoolMailMergeRecord") {
-		//menu_loadDefSelPage(9, 0, 0, false);
+		hasChanged = menu_saveChanges("MAILMERGE", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 		menu_loadRecordDefSelPage(9, 0, 0, true);
+		}
+		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadRecordDefSelPage(9, 0, 0, true);
+				}
+				else {
+				}
+			});
+		}
 		return false;		
 	}
+
 
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
@@ -1024,8 +1116,7 @@ function menu_MenuClick(sTool) {
 					}
 				});
 			}
-			
-			return false;
+		return false;
 		}
 
 		if (sToolName == "mnutoolWorkflow") {
@@ -1177,27 +1268,69 @@ function menu_MenuClick(sTool) {
 		
 
 		if ((sToolName == "mnutoolWorkflowOutOfOffice") || (sToolName == "mnutoolFixedWorkflowOutOfOffice")) {
-			if (menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
+		hasChanged = menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false);
+		if (hasChanged == 6) { // 6 = No Change
 				menu_WorkflowOutOfOffice();
-		}
+		} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+				if (answer == 1) { // OK
+					menu_WorkflowOutOfOffice();
 			return;
+				} else {
 		}
+			});
+		}
+		return false;
+	}
 
-		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
-
-			if (sToolName.substr(0, 7) == "mnutool") {
-				
-				//if selected item is an expandable menu item, toggle it instead of going to menu_loadPage.
+	// Has the user clicked on a parent node?
 				if ($("#" + sTool).is(".jstree-closed, .jstree-open")) {
 					toggle_Leaf(sTool);
 					return false;
 				}
 
+	hasChanged = menu_saveChanges(sToolName, true, false);
+	if (hasChanged == 0) { // Prompt for navigation
+
+		if (sToolName.substr(0, 7) == "mnutool") {
+				
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
 				//not an expandable menu item, so continue.
 				menu_loadPage(sToolName.substr(7));
 			}
 			else {
+				}
+			});
+			return false;
+		}
+		else {
 				//frmData = window.parent.frames("dataframe").document.forms("frmData");
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
+				}
+				else {
+				}
+			});
+			return false;
+		}
+	}
+	else if (hasChanged == 6) {  // Free navigation
+		if (sToolName.substr(0, 7) == "mnutool") {
+			menu_loadPage(sToolName.substr(7));
+		} else {
+			menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
+		}
+		return false;
+	}
+}
+
+function menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo)
+{
+	var frmData;
+	var sToolNameKey;
+
 				frmData = OpenHR.getForm("dataframe", "frmData");
 				sToolNameKey = sToolName.substr(0, 3);
 
@@ -1260,9 +1393,6 @@ function menu_MenuClick(sTool) {
 				//Default to toggling this leaf (expand/contract)
 				toggle_Leaf(sTool);
 				
-				//OpenHR.messageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
-			}
-		}
 	}
 
 function toggle_Leaf(sTool) {
@@ -2403,7 +2533,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			$('.sp-container').remove();
 		}
 
-		iResult = 2; // 2 = vbCancel - This is a misnomer. '2' Means 'Continue editing'
+		iResult = 6; // Continue navigation
 
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
@@ -2412,18 +2542,21 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			// If prompting, the choice it between discarding changes or cancelling the navigation
 			// If not prompting, it is a straight save
 			if (pfPrompt == true) {
-				iResult = OpenHR.messageBox("Record changed. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36);
 
-				if (iResult == 6) {
-					// 'OK' -> discard changes and continue navigation
-				}
-				else if (iResult == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
-					// Cancel the changes and do not save them.
-					iResult = 2; // 2 = vbCancel -> Continue Editing
-				}
-				else {
-					// Do not save changes, and cancel the operation that called this function.
-				}
+				iResult = 0;
+				
+				//iResult = OpenHR.messageBox("Record changed. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 36);
+
+				//if (iResult == 6) {
+				//	// 'OK' -> discard changes and continue navigation
+				//}
+				//else if (iResult == 7) { // 'Cancel' -> Cancel navigation and return to calling form without saving
+				//	// Cancel the changes and do not save them.
+				//	iResult = 2; // 2 = vbCancel -> Continue Editing
+				//}
+				//else {
+				//	// Do not save changes, and cancel the operation that called this function.
+				//}
 
 			} else {
 				// Try to save the changes.
@@ -2465,6 +2598,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 						data_refreshData();
 					}
 				}
+				iResult = 6;
 			}
 		}
 		else {  // If no change to the data, continue navigation
@@ -2551,8 +2685,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	frmWorkArea.txtGotoOptionDefSelRecordID.value = $('#txtCurrentRecordID').val();
 	OpenHR.submitForm(frmWorkArea, 'optionframe');
 }
-
-	
 }
 
 	function menu_loadRecordEditPage(psToolName) {
@@ -3311,8 +3443,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 }
 
-	function menu_spawnWindow(mypage, myname, winprops) 
-	{
+function menu_spawnWindow(mypage, myname, winprops) {
 //	win = window.open(mypage, myname, winprops)
 //	if (parseInt(navigator.appVersion) >= 4) { 
 //		pausecomp(300);
@@ -3320,8 +3451,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 //	}	
 }
 
-	function menu_pausecomp(millis) 
-	{
+function menu_pausecomp(millis) {
 //	var date = new Date();
 //	var curDate = null;
 
@@ -3387,7 +3517,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	//		}
 	//	}
 
-
 	window.location.href = window.ROOT + "Account/LogOff";
 
 }
@@ -3407,8 +3536,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-	if (sCurrentWorkPage == "RECORDEDIT") {
-		if (menu_saveChanges("NEW", true, false) != 2) { // 2 = vbCancel
+	function new_RecordEdit() {
 			// Get the data.asp to get the default values for a NEW record.
 			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -3428,6 +3556,22 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns(); //TODO: frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
 
 			data_refreshData();
+		return false;
+	}
+	
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+				if (answer == 1) { // OK - Ignore changes
+					new_RecordEdit();
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {  // Don't prompt
+			new_RecordEdit();
+			return false;
 		}
 	}
 	else {
@@ -3464,8 +3608,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var lngRecordID;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-	if (sCurrentWorkPage == "RECORDEDIT") {
-	if (menu_saveChanges("COPY", true, false) != 2) { // 2 = vbCancel
+	function copy_RecordEdit() {
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmDataArea = OpenHR.getForm("dataframe", "frmData");
 
@@ -3476,6 +3619,21 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	$("#ctlRecordEdit #changed").val("true");
 	//TODO: frmRecEditArea.ctlRecordEdit.ChangedOLEPhoto(0, "ALL");
 	menu_refreshMenu();
+	};
+	
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and copy the original record, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK - Ignore changes
+					copy_RecordEdit();
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {  // Don't prompt
+			copy_RecordEdit();
+			return false;
 }
 }
 	else {
@@ -3637,8 +3795,18 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-	if (menu_saveChanges("PARENT", true, false) != 2) { // 2 = vbCancel
+		if (menu_saveChanges("PARENT", true, false) == 0) { // 0 = Prompt for navigation
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+				if (answer == 1) { // OK - Ignore changes
+					menu_loadParent();
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {  // Don't prompt
 	menu_loadParent();
+			return false;
 }
 }
 	else {
@@ -3797,13 +3965,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	sSaveChangesTag = psMovement;
 	sAction = psMovement;
 	
-	if (sCurrentWorkPage == "EVENTLOG") {
-	EventLog_moveRecord(psMovement);  //should be in scope.
-	return;
-}
-	
-	if (sCurrentWorkPage == "RECORDEDIT") {
-	if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
+		function move_RecordEdit() {
 	// Get the data.asp to get the move to the FIRST record.
 			menu_ShowWait("Locating record. Please wait...");
 	menu_disableMenu();
@@ -3832,8 +3994,27 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	data_refreshData();
 }
 		
+
+		if (sCurrentWorkPage == "EVENTLOG") {
+			EventLog_moveRecord(psMovement);  //should be in scope.
 	return;
 }
+
+		if (sCurrentWorkPage == "RECORDEDIT") {
+			if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) { // OK - Ignore changes
+						move_RecordEdit();
+						return false;
+					} else {
+						return false;
+					}
+				});
+			} else {  // Don't prompt
+				move_RecordEdit();
+				return false;
+			}
+		}
 
 	if (sCurrentWorkPage == "FIND") {
 	menu_reloadFindPage(sAction, "");
@@ -3933,13 +4114,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 }
 
-function menu_loadQuickFind() 
-{
-	if (menu_saveChanges("QUICKFIND", true, false) != 2) { // 2 = vbCancel
-		menu_loadQuickFindNoSaveCheck();
-	}
-}
-
 function menu_loadQuickFindNoSaveCheck() 
 {
 	var frmRecEditArea;
@@ -3972,6 +4146,27 @@ function menu_loadSelectOrderFilter(psType) {
 	var sSaveChangesTag;
 	var sOptionPage;
 	
+	function orderfilter_RecordEdit() {
+		frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+
+		frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+		frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+		frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+
+		if (psType == "ORDER") {
+			frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+		}
+
+		frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+		frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+		frmOptionArea.txtGotoOptionValue.value = "";
+		frmOptionArea.txtGotoOptionPage.value = sOptionPage;
+		frmOptionArea.txtGotoOptionAction.value = "";
+
+		OpenHR.submitForm(frmOptionArea);
+	}
+	
 	//disable the menu
 	// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens	
 	menu_disableMenu();
@@ -3994,25 +4189,21 @@ function menu_loadSelectOrderFilter(psType) {
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
-			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-
-			frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-			frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-			frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-
-			if (psType == "ORDER") {
-				frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+		if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK - Ignore changes
+					orderfilter_RecordEdit();
+					menu_refreshMenu();
+					return false;
+				} else {
+					menu_refreshMenu();
+					return false;
 			}
-			
-			frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-			frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-			frmOptionArea.txtGotoOptionValue.value = "";
-			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
-			frmOptionArea.txtGotoOptionAction.value = "";
-
-			OpenHR.submitForm(frmOptionArea);
+			});
+		} else {  // Don't prompt
+			orderfilter_RecordEdit();
+			menu_refreshMenu();
+			return false;
 		}
 	}
 	else {
@@ -4514,8 +4705,6 @@ function menu_loadSelectOrderFilter(psType) {
 	var lngRecordID;
 	var strRealSource;
 
-	if (menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false) != 2) { // 2 = vbCancel
-
 	// Show loading screen
 	OpenHR.disableMenu();
 
@@ -4532,8 +4721,6 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
 	frmOptionArea.txtGotoOptionAction.value = "";
 	OpenHR.submitForm(frmOptionArea);
-
-}
 
 }
 

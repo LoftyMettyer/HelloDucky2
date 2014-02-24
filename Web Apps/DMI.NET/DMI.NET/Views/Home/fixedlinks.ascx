@@ -1086,7 +1086,7 @@
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
-						<a href="<%: Url.Action("LogOff", "Account")%>">
+						<a id="mnutoolLogoff" href="#">
 							<span>Log Off</span>
 						</a>
 					</li>	
