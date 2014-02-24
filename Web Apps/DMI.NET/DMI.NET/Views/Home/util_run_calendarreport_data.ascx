@@ -168,8 +168,8 @@
 				%>
 		
 	<strong>Options :</strong>
-		<div class="scheduler_white_event_inner" style="position: relative;">
-			
+		<%--<div class="scheduler_white_event_inner" style="position: relative;">--%>
+			<div  style="position: relative;">
 		<% 
 			If objCalendar.ShowWeekends Then
 				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Show Weekends" & vbNewLine)

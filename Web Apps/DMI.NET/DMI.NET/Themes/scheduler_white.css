@@ -53,11 +53,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-}
-
-
-.scheduler_white_event_hover .scheduler_white_event_inner 
-{
+	color: black;
 }
 
 .scheduler_white_event_continueright .scheduler_white_event_inner {
