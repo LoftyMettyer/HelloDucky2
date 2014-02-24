@@ -77,6 +77,7 @@
 			Const iMaxRows As Integer = 4
 			Dim iRowNum As Integer = 1
 			Dim iHideablePopupIconID = 1
+			Dim iHideableDrillDownIconID = 1
 			Dim iColNum As Integer = 1
 			Dim iSeparatorNum As Integer = 0
 			Dim sOnClick As String = ""
@@ -457,38 +458,66 @@
 							<a href="#"><%: navlink.Text %>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
+										iHideableDrillDownIconID += 1
 								%>
-								<img src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Drilldown..." title="Drill down to data..."
+								<img id="drillDownIcon<%=iHideableDrillDownIconID%>"  src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Drilldown..." title="Drill down to data..."
 									onclick="<%=sOnClick %>" />
 								<%
 								End If
 								%>
-								<img 
-									<%If navlink.InitialDisplayMode = 0 Then%>
-									id="popupIcon<%=iHideablePopupIconID%>" 
-									<%End If%>
-									src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
+								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
 									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>')" />
 							</a>
 							<p class="linkspagebuttontileIcon">
 								<i class="icon-bar-chart"></i>
 							</p>
-							<%If navlink.InitialDisplayMode = 0 Then%>
+							<%
+								iHideablePopupIconID += 1
+								If navlink.InitialDisplayMode = 0 Then%>
 							<div class="widgetplaceholder chart">
 								<%If fMultiAxis Then%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');" src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 								<%Else%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');" src="<%:Url.Action("GetChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');" src="<%:Url.Action("GetChart", "Home", New With {.Height = 296, .Width = 412, .ShowLegend = navlink.Chart_ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" alt="Chart" /></div>
 								<%End If%>
 								<a href="#"></a>
 							</div>
 							<%
-								iHideablePopupIconID += 1
-							 Else%>
-							<div class="widgetplaceholder datagrid">
+							Else
+								Dim objChart As IChart
+								Dim sErrorDescription As String = ""
+								' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
+																								
+								If fMultiAxis = True Then
+									objChart = New HR.Intranet.Server.clsMultiAxisChart
+								Else
+									objChart = New HR.Intranet.Server.clsChart
+								End If
+
+								objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+								Dim mrstChartData As DataTable
+								Err.Clear()
+			
+								If fMultiAxis = True Then
+									mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+								Else
+									mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, 0, 0, 0, 0, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+								End If
+
+								If (Err.Number <> 0) Then
+									sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+								End If
+			
+								If Not mrstChartData Is Nothing Then
+									If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+								End If
+								%>
+							<div class="widgetplaceholder datagrid" id="WidgetPlaceHolder<%=iRowNum%>">
 								<table cellspacing="0" cellpadding="5" rules="all" frame="box" style="width: 100%; vertical-align: top; border: 3px solid lightgray">
+									<%If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then%>
 									<tr>
 										<th onclick="fsort();" style="font-weight: normal; text-align: left">
 											<%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
@@ -515,41 +544,8 @@
 										</th>
 									</tr>
 									<%
-										Dim objChart As IChart
-										Dim sErrorDescription As String = ""
-										' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
-																								
-										If fMultiAxis = True Then
-											objChart = New HR.Intranet.Server.clsMultiAxisChart
-										Else
-											objChart = New HR.Intranet.Server.clsChart
-										End If
-
-										objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
-										Dim mrstChartData As DataTable
-										Err.Clear()
-			
-										If fMultiAxis = True Then
-											mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
-										Else
-											mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, 0, 0, 0, 0, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
-										End If
-
-										If (Err.Number <> 0) Then
-											sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-										End If
-			
-										If Not mrstChartData Is Nothing Then
-											If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
-										End If
-										
-								
 										If mrstChartData.Rows.Count > 0 Then
-
 											For Each objRow As DataRow In mrstChartData.Rows
-													
-
 									%>
 									<tr>
 										<td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
@@ -586,14 +582,19 @@
 									<%    
 											
 									Next
-								Else
+								End If
+							Else
 									%>
 									<tr>
-										<td class="bordered" style="text-align: left" nowrap="nowrap">No Data
-										</td>
-										<td class="bordered" style="text-align: right" nowrap="nowrap"></td>
+										<td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>
 									</tr>
-
+									<script type="text/javascript">
+										// No data on this chart, adjust UI accordingly
+										$("#WidgetPlaceHolder<%=iRowNum%>").css('height', "40px"); //Reduce the size of the parent div ('widgetplaceholder')
+										$("#WidgetPlaceHolder<%=iRowNum%>").children(0).css('border', 'none'); //Remove the border of the table
+										$("#drillDownIcon<%=iHideableDrillDownIconID%>").hide(); //Hide the drilldown icon
+										$("#popupIcon<%=iHideablePopupIconID - 1%>").hide(); //Hide the popup icon
+									</script>
 									<%
 									End If
 									%>
