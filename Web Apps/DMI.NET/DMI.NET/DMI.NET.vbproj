@@ -1137,6 +1137,7 @@
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
+    <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Web.custom.config.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

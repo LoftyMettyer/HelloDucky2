@@ -19,7 +19,7 @@
 <link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
 <script src="<%:Url.Content("~/Scripts/jquery/jquery.mCustomScrollbar.min.js")%>"></script>
 <script src="<%:Url.Content("~/Scripts/FormScripts/linksMain.js")%>"></script>
-
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.tablesorter.min.js")%>"></script>
 
 <%Session("recordID") = 0
 	Session("singleRecordID") = 0
@@ -514,35 +514,31 @@
 								If Not mrstChartData Is Nothing Then
 									If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
 								End If
+
+								Dim Chart_AggregateType As ChartAggregateType = navlink.Chart_AggregateType
+
 								%>
 							<div class="widgetplaceholder datagrid" id="WidgetPlaceHolder<%=iRowNum%>">
-								<table cellspacing="0" cellpadding="5" rules="all" frame="box" style="width: 100%; vertical-align: top; border: 3px solid lightgray">
+								<table id="DataTable<%=iRowNum%>" cellspacing="0" cellpadding="5" rules="all" frame="box" style="width: 100%; vertical-align: top; border: 3px solid lightgray">
 									<%If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then%>
+									<thead>
 									<tr>
-										<th onclick="fsort();" style="font-weight: normal; text-align: left">
+										<th style="font-weight: normal; text-align: left; cursor: default">
 											<%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
 										</th>
 										<%If fMultiAxis Then%>
-										<th onclick="fsort();" style="font-weight: normal; text-align: left">
+										<th style="font-weight: normal; text-align: left; cursor: default">
 											<%=Trim(Left(NullSafeString(navlink.Chart_ColumnName_2), 50))%>
 										</th>
-										<th onclick="fsort();" style="font-weight: normal; text-align: right">
+										<th style="font-weight: normal; text-align: right; cursor: default">
 											<%Else%>
-										<th onclick="fsort();" style="font-weight: normal; text-align: right">
+										<th style="font-weight: normal; text-align: right; cursor: default">
 											<%End If%>
-											<%If navlink.Chart_AggregateType = 0 Then%>
-														Count
-													<%ElseIf navlink.Chart_AggregateType = 1 Then%>
-														Total
-													<%ElseIf navlink.Chart_AggregateType = 2 Then%>
-														Average
-													<%ElseIf navlink.Chart_AggregateType = 3 Then%>
-														Minimm
-													<%ElseIf navlink.Chart_AggregateType = 4 Then%>
-														Maximum
-													<%End If%>
+											<%Response.Write(Chart_AggregateType.ToString)%>
 										</th>
 									</tr>
+									</thead>
+									<tbody>
 									<%
 										If mrstChartData.Rows.Count > 0 Then
 											For Each objRow As DataRow In mrstChartData.Rows
@@ -582,6 +578,9 @@
 									<%    
 											
 									Next
+									%>
+										</tbody>
+									<%
 								End If
 							Else
 									%>
@@ -599,6 +598,10 @@
 									End If
 									%>
 								</table>
+								<script type="text/javascript">
+									//Attach table sorter to the table
+									$("#DataTable<%=iRowNum%>").tablesorter();
+								</script>
 							</div>
 							<%End If%>
 						</li>
