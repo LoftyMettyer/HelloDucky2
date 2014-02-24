@@ -736,6 +736,8 @@ Namespace Controllers
 
 			''	cmdSSRecord = Nothing
 
+			ResetSessionVars()
+
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
 
