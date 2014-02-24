@@ -129,15 +129,18 @@ Public Class MvcApplication
 	End Sub
 
 	Sub Session_End()
-
 		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-		objDatabase.LogOut()
+		'We need a try-catch here because when the session ends, session objects may have been destroyed by the garbage collector
+		Try
+			objDatabase.LogOut()
 
-		' Clear up any temporary files from OLE functionality
-		Session("OLEObject") = Nothing
-		Session("OLEObject") = ""
+			' Clear up any temporary files from OLE functionality
+			Session("OLEObject") = Nothing
+			Session("OLEObject") = ""
+		Catch ex As Exception
 
+		End Try
 	End Sub
 
 	Private Function FindImageFileByName(ByVal psFileName As String) As String
