@@ -90,7 +90,6 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 		w.document.write("<option value='-50'>-50</option>");
 		w.document.write("<option value='-30'>-30</option>");
 		w.document.write("<option value='-10'>-10</option>");
-		w.document.write("<option value='0'>0</option>");
 		w.document.write("<option value='10' selected='selected'>10</option>");
 		w.document.write("<option value='30'>30</option>");
 		w.document.write("<option value='50'>50</option>");
