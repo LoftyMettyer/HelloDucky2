@@ -129,7 +129,7 @@
 	
 		' No data in result set
 		If objMailMerge.NoRecords Then
-			sErrorMessage = "Completed successfully, however there were no records that met the selection citeria. No document has been produced"
+			sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."
 			Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))
 		End If
 		
