@@ -205,7 +205,7 @@
 			</span>
 		</div>
 
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; overflow: auto;">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; ">
 
 			<%   
 				If Session("utiltype") = "1" Then
@@ -271,9 +271,23 @@
 	
 	<%
 	Session.Remove("CalendarReports_FailedOrNoRecords")
-Else
+ElseIf Session("utiltype") = "16" Then
+	' bradford factor
 	%>
 	$(".popup").dialog({ width: 850, height: 720, resizable: true });
+	<%
+Else
+	%>
+	$(".popup").dialog({
+		width: 810,
+		height: 720,
+		resizable: true,
+		resize: function (event, ui) {
+			var newHeight = $('#main').height() * 0.8;
+			$('#grdReport').setGridHeight(newHeight);
+			$('#grdReport').setGridWidth($('#main').width());
+		}
+	});
 	<%
 End If
 	%>
@@ -287,7 +301,7 @@ End If
 	});
 
 	if (menu_isSSIMode() == false) {
-		$('#main').css('marginTop', '30px').css('borderTop', '1px solid rgb(206, 206, 206)');
+		$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 
 	$("#outputoptions").hide();

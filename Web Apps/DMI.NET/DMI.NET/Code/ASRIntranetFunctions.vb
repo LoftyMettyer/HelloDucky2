@@ -55,7 +55,7 @@ Public Module ASRIntranetFunctions
 	' NullSafeInteger
 	'****************************************************************
 	Public Function NullSafeInteger(ByVal arg As Object, _
-	Optional ByVal returnIfEmpty As Integer = 0) As String
+	Optional ByVal returnIfEmpty As Integer = 0) As Integer
 
 		Dim returnValue As Integer
 

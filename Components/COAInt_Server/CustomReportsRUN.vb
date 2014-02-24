@@ -52,7 +52,7 @@ Public Class Report
 	Private mlngCustomReportsParent2PickListID As Integer
 
 	' Recordsets to store the definition and column information
-	Private mrstCustomReportsDetails As DataTable
+	Public mrstCustomReportsDetails As DataTable
 
 	' TableViewsGuff
 	Private mstrRealSource As String
@@ -90,7 +90,7 @@ Public Class Report
 	Private mstrTempTableName As String
 
 	' Recordset to store the final data from the temp table
-	Private mrstCustomReportsOutput As DataTable
+	Public mrstCustomReportsOutput As DataTable
 
 	'Does the report generate no records ?
 	Private mblnNoRecords As Boolean
@@ -2820,7 +2820,7 @@ CheckRecordSet_ERROR:
 					' Group with next column
 					If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
 						If Not vDisplayData = "" Then
-							sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "") & vbNewLine
+							sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "")	' & vbNewLine
 						End If
 
 					Else

@@ -1125,6 +1125,7 @@
     <None Include="My Project\PublishProfiles\Stuart Jennings machine.pubxml" />
     <None Include="My Project\PublishProfiles\Westminster Kingsway.pubxml" />
     <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
+    <Content Include="Scripts\jquery\grid.locale-en.js" />
     <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\custom.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\jquery.jOrgChart.css" />
@@ -1134,11 +1135,13 @@
     <Content Include="Scripts\jquery\jOrgChart\jquery.jOrgChart.js" />
     <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
+    <Content Include="Scripts\jquery\jquery.jqGrid.min.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
+    <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Web.custom.config.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
