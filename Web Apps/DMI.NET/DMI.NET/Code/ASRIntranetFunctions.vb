@@ -97,8 +97,12 @@ Public Module ASRIntranetFunctions
 	'End Function
 
 	Function GeneratePath(filename As String) As String
+#If DEBUG Then
+		Return String.Format("{0}?v={1}", filename, System.DateTime.Now.Ticks)
+#Else
 		Dim currVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
 		Return String.Format("{0}?v={1}", filename, currVersion)
+#End If
 	End Function
 
 	<System.Runtime.CompilerServices.Extension> _

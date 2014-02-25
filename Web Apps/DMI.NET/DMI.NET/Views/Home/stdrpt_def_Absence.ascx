@@ -44,7 +44,7 @@
 
 <%="" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_standardreports")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_standardreports")%>" type="text/javascript"></script>
 
 <%
 		

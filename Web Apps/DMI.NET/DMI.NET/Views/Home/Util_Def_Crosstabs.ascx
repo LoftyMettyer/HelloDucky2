@@ -6,7 +6,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
 

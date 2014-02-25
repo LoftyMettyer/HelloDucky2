@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-
+<%@Import namespace="DMI.NET" %>
 <%' OLE TYPES:  0 = Local OLE, 1 = Server OLE, 2 = Embedded OLE, 3 = Linked OLE. %>
 
 
@@ -15,7 +15,7 @@
 	If Session("optionOLEReadOnly") = "true" Then sDialogTitle &= " (Read Only)"
 	
 %>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
 
 <script type='text/javascript'>
 
@@ -993,7 +993,7 @@
 	}
 </script>
 
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
 	<form action="oleFind_Submit" method="post" id="frmFindForm" name="frmFindForm" enctype="multipart/form-data" target="submit-iframe">

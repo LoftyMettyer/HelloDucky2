@@ -1,7 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@Import namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
 
 <%
 	Dim fok As Boolean

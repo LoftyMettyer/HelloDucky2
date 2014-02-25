@@ -1,11 +1,12 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+<%@Import namespace="DMI.NET" %>
 <!DOCTYPE html>
 
 <html>
 <head id="Head1" runat="server">
 		<title>Absence Details</title>
 		
-		<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
 		<script type="text/javascript">
 				function absenceCalendar_details_window_onload() {

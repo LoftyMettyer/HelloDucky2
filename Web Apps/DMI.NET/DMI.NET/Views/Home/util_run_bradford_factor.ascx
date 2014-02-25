@@ -4,7 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 <script type="text/javascript">
 	$('#main').css('overflow', 'auto');
 </script>

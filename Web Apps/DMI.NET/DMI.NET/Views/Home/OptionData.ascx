@@ -9,7 +9,7 @@
 	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 %>
-<script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/recordedit")%>" type="text/javascript"></script>
 
 <form action="optionData_Submit" method="post" id="frmGetOptionData" name="frmGetOptionData">
 		<input type="hidden" id="txtOptionAction" name="txtOptionAction">

@@ -11,9 +11,9 @@
 <head runat="server">
 
 	<title>OpenHR Intranet</title>
-	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>

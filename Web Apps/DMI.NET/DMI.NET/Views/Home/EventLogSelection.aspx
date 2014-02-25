@@ -5,9 +5,9 @@
 <html>
 <head>
 	<title>Event Log Selection - OpenHR Intranet</title>
-	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />

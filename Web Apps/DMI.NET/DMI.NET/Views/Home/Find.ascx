@@ -15,7 +15,7 @@
 	Dim rstFindRecords As DataTable
 	Dim resultsDataTable As DataTable
 %>
-<script src="<%: Url.Content("~/bundles/recordedit")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/recordedit")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 	$(document).ready(function () {

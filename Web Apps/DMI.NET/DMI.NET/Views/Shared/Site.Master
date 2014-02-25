@@ -57,11 +57,11 @@
 	<link id="WireframethemeLink" href="" rel="stylesheet" type="text/css" />
 
 	<%--External script resources--%>
-	<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/Microsoft")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 
 
 

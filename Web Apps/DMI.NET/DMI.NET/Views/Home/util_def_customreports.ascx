@@ -6,7 +6,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 

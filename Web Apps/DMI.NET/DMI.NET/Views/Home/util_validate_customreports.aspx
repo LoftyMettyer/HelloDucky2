@@ -4,10 +4,10 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
-<script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
 <!DOCTYPE html>
 <html>

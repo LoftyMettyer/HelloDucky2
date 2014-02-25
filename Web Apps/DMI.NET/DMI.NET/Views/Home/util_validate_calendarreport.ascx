@@ -1,17 +1,17 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<link href="<%:Url.Content("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<script src="<%:Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/openhr.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/jquery/jquery-ui-1.9.2.custom.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/FormScripts/menu.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/jquery/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
-<script src="<%:Url.Content("~/Scripts/jquery/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+<link href="<%:Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/openhr.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery-ui-1.9.2.custom.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.cookie.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/FormScripts/menu.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
+<script src="<%:Url.LatestContent("~/Scripts/jquery/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
+<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
 
 <%--<html>
 <head id="Head1" runat="server">

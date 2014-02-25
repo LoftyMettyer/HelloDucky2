@@ -2,8 +2,8 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
 
 <%
 

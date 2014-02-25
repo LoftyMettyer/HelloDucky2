@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>    
-		<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css">
+<%@Import namespace="DMI.NET" %>
+
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css">
 
 		<script type="text/javascript">
 				function poll_window_onload() {

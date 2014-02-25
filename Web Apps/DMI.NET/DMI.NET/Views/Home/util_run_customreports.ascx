@@ -5,7 +5,7 @@
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 <%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
 <% 
 	Dim bBradfordFactor As Boolean

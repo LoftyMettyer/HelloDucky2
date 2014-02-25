@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@Import namespace="DMI.NET" %>
 
 <SCRIPT type="text/javascript">
 	function tbStatusPrompt_onload() {
@@ -59,7 +60,7 @@
 	}
 	
 </script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
 <FORM action="" method="POST" id="frmForm" name="frmForm">

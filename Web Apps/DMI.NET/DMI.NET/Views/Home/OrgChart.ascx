@@ -1,8 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of IEnumerable (Of DMI.NET.Models.OrgChart))" %>
+<%@Import namespace="DMI.NET" %>
 
-<link href="<%= Url.Content("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css")%>" rel="stylesheet" />
-<link href="<%= Url.Content("~/Scripts/jquery/jOrgChart/css/custom.css")%>" rel="stylesheet" />
-<link href="<%= Url.Content("~/Scripts/jquery/jOrgChart/css/prettify.css")%>" rel="stylesheet" />
+<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css")%>" rel="stylesheet" />
+<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/custom.css")%>" rel="stylesheet" />
+<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/prettify.css")%>" rel="stylesheet" />
 
 <style>
 	.MAT, .SICK, .HOLS, .COMP {

@@ -4,7 +4,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
 
 <form action="" method="POST" id="frmMainForm" name="frmMainForm">

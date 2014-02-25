@@ -9,7 +9,7 @@
 	Dim sErrorDescription = ""
 	Dim sFailureDescription = ""
 %>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 
@@ -771,7 +771,7 @@
 </script>
 
 
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div bgcolor='<%=session("ConvertedDesktopColour")%>' leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
 
