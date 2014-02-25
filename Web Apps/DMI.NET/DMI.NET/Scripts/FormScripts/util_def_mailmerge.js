@@ -985,10 +985,9 @@ function submitDefinition() {
 	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 }
 
-
 function cancelClick() {
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
-		menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, true);
 	}
 	else {
 		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
