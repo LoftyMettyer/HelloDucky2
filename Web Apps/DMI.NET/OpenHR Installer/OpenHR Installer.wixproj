@@ -42,7 +42,6 @@
     <SuppressValidation>True</SuppressValidation>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DMI.NET.wxs" />
     <Compile Include="IisConfiguration.wxs" />
     <Compile Include="OpenHRUI.wxs" />
     <Compile Include="Product.wxs" />
