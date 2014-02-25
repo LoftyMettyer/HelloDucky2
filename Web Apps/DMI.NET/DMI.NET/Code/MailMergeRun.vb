@@ -200,14 +200,20 @@ Namespace Code
 		Public Function ValidateTemplate() As Boolean
 
 			' Check for file access
-			If Not File.Exists(TemplateName) Then
-				Errors.Add(String.Format("The file {0} cannot be found. {1}{1} Please ensure that the template file is a valid UNC path" _
-							& " that is accessible from the OpenHR Web server.", TemplateName, "<br/>"))
+			'If Not File.Exists(TemplateName) Then
+			'	Errors.Add(String.Format("The file {0} cannot be found. {1}{1} Please ensure that the template file is a valid UNC path" _
+			'				& " that is accessible from the OpenHR Web server.", TemplateName, "<br/>"))
+			'	Return False
+			'End If
+
+			Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+			If objTemplate Is Nothing Then
+				Errors.Add("No template file selected")
 				Return False
 			End If
 
 			' Verify template integrity
-			Dim doc As New Document(TemplateName)
+			Dim doc As New Document(objTemplate)
 			Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
 
 			For Each objColumn In Columns
@@ -215,8 +221,8 @@ Namespace Code
 			Next
 
 			If templateFields.Count > 0 Then
-				Errors.Add(String.Format("The template {2} has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
-											, "<br/>", Join(templateFields.ToArray(), "<br/>"), TemplateName))
+				Errors.Add(String.Format("The uploaded template has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
+											, "<br/>", Join(templateFields.ToArray(), "<br/>")))
 				Return False
 			End If
 
