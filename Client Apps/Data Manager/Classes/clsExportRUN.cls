@@ -2696,7 +2696,7 @@ Private Function ExportData_CMGfile() As Boolean
     End If
       
     ' Get audit transaction for this record
-    sSQL = "SELECT NewValue, DateTimeStamp, ColumnID " & _
+    sSQL = "SELECT ISNULL(NewValue, ''), DateTimeStamp, ColumnID " & _
             "FROM ASRSysAuditTrail WHERE ID IN(SELECT MAX(ID) FROM ASRSysAuditTrail " & _
             " WHERE ColumnID IN (" & strColumnIDs & ") And RecordID = " & astrRecordIDs(lngRecordCount) & _
             " AND CMGCommitDate IS null AND ISNULL(OldValue,'') <> ISNULL(NewValue,'') AND NOT (OldValue = '* New Record *' AND NewValue = '')" & _
